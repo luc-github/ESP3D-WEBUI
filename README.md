@@ -32,6 +32,33 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
 - it allows to control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
 
 Please look at screenshots:
+Main tab and menu:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full1.PNG'/>   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full2.PNG'/>   
+Control panel:  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/controls.PNG'/>  
+Macro dialog:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Macro.PNG'/>   
+Temperatures panel:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/temperatures.PNG'/>   
+Extruder panel:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/esxtruders.PNG'/>  
+SD card panel:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.PNG'/>  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.5.PNG'/>   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD2.PNG'/>  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD-Dir.PNG'/>  
+Camera Tab:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Camera.PNG'/>  
+Repetier EEPROM Editor tab:  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
+ESP3D settings Editor:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/ESP3D1.PNG'/>  
+ESP3D Status:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/status.PNG'/>   
+ESP3D SPIFFS:   
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SPIFFS.PNG'/>   
+
 
 ## Installation
 Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
