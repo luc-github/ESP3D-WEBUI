@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span translate>Commands</span>
+        <button class="btn btn-primary btn-xs pull-right" onclick="Monitor_output_Clear()" translate>Clear</button>
+    </div>
+    <div class="panel-body"  >
+        <pre id="cmd_content" style="min-height: 260px; max-height: 260px;" ></pre>
+    </div>
+    <div class="panel-footer"  >
+        <div class="form-inline">
+             <div class='input-group'>
+                <div class='input-group'>
+                    <input class='form-control' type="text" onkeyup="CustomCommand_OnKeyUp(event)" id="custom_cmd_txt" autocomplete="off" translateph placeholder='Send Command...' />
+                    <div class='input-group-btn'>
+                        <button class="btn btn-success" onclick="SendCustomCommand();" translate>Send</button>
+                    </div>
+                </div>
+             </div>
+            <div class="form-group" style="margin-left:20px">
+                <div class="checkbox" >
+                    <label>
+                        <input type="checkbox" onclick=" Monitor_check_autoscroll()" id="monitor_enable_autoscroll" />
+                        <span translate>Autoscroll</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" style="margin-left:20px">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" onclick=" Monitor_check_filter_temperatures()" id="monitor_enable_filter_temperatures" />
+                        <span translate>Filter temperatures</span>
+                    </label>
+                </div>
+                
+            </div>
+        </div>
+   </div>
+</div>

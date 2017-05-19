@@ -52,6 +52,8 @@ Camera Tab:
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Camera.PNG'/>  
 Repetier EEPROM Editor tab:  
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
+Smoothieware config Editor tab:  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/smoothieware.PNG'/>  
 ESP3D settings Editor:   
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/ESP3D1.PNG'/>  
 ESP3D Status:   

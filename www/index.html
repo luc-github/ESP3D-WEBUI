@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP3D WebUI</title>
+    <script>var target_firmware="";</script>
+    <script>var web_ui_version="0.9.1";</script>
+    <script>var direct_sd=false;</script>
+    <script>var fw_version="";</script>
+    <script>var primary_sd= "/ext/";</script>
+    <script>var secondary_sd= "/sd/";</script>
+    <!--removeIf(production)-->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/menu.css" rel="stylesheet">
+    <link href="css/tabs.css" rel="stylesheet">
+    <link href="css/modaldlg.css" rel="stylesheet">
+    <!--endRemoveIf(production)-->
+
+    <!-- smoosh -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- endsmoosh -->
+  </head>
+  <body>
+        <div id='warningmsg' class='warningmsg' >Checking Javascript is enabled....<br> if this is the only thing you see you may need to enable Javascript in your browser.</div>
+        <div id="main_ui" class="container-fluid hide_it">
+        <!-- topnavbar -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; padding-right:2em;" >
+            <div class="navbar-header">
+                <span class="navbar-brand">
+                    <span translate>ESP3D for</span>
+                    <span id='fwName'>&nbsp;</span>
+                    <span id='showSDused'>&nbsp;</span>
+                </span>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#">
+                           <i class="dropbtn">
+                               <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  fill='#337AB7' d='M600 1177q117 0 224 -45.5t184.5 -123t123 -184.5t45.5 -224t-45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5t-184.5 123t-123 184.5t-45.5 224t45.5 224t123 184.5t184.5 123t224 45.5zM675 1000h-150q-10 0 -17.5 -7.5t-7.5 -17.5v-150q0 -10 7.5 -17.5 t17.5 -7.5h150q10 0 17.5 7.5t7.5 17.5v150q0 10 -7.5 17.5t-17.5 7.5zM675 700h-250q-10 0 -17.5 -7.5t-7.5 -17.5v-50q0 -10 7.5 -17.5t17.5 -7.5h75v-200h-75q-10 0 -17.5 -7.5t-7.5 -17.5v-50q0 -10 7.5 -17.5t17.5 -7.5h350q10 0 17.5 7.5t7.5 17.5v50q0 10 -7.5 17.5 t-17.5 7.5h-75v275q0 10 -7.5 17.5t-17.5 7.5z' />
+                                    </g>
+                                </svg>
+                           </i> 
+                    </a>
+                    <div class="dropdown-content">
+                            <div class="menu-title">
+                                <center>
+                                 <span >UI: </span>
+                                 <span id='UI_VERSION' ></span>
+                                 <span > / FW: </span>
+                                 <span id='FW_VERSION' ></span>
+                                 </center>
+                             </div>
+                             <div class="menu-divider"></div>
+                            <a href="https://github.com/luc-github/ESP3D" >
+                                <span class="pull-right" translate>Firmware</span>
+                                <span class="pull-left">
+                                    <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                        <g transform='translate(50,1200) scale(1, -1)'>
+                                            <path  d='M600 1174q33 0 74 -5l38 -152l5 -1q49 -14 94 -39l5 -2l134 80q61 -48 104 -105l-80 -134l3 -5q25 -44 39 -93l1 -6l152 -38q5 -43 5 -73q0 -34 -5 -74l-152 -38l-1 -6q-15 -49 -39 -93l-3 -5l80 -134q-48 -61 -104 -105l-134 81l-5 -3q-44 -25 -94 -39l-5 -2l-38 -151 q-43 -5 -74 -5q-33 0 -74 5l-38 151l-5 2q-49 14 -94 39l-5 3l-134 -81q-60 48 -104 105l80 134l-3 5q-25 45 -38 93l-2 6l-151 38q-6 42 -6 74q0 33 6 73l151 38l2 6q13 48 38 93l3 5l-80 134q47 61 105 105l133 -80l5 2q45 25 94 39l5 1l38 152q43 5 74 5zM600 815 q-89 0 -152 -63t-63 -151.5t63 -151.5t152 -63t152 63t63 151.5t-63 151.5t-152 63z' />
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <a href="https://github.com/luc-github/ESP3D-webui" >
+                                <span class="pull-right" translate>Interface</span>
+                                <span class="pull-left">
+                                <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  d='M600 1094q82 0 160.5 -22.5t140 -59t116.5 -82.5t94.5 -95t68 -95t42.5 -82.5t14 -57.5t-14 -57.5t-43 -82.5t-68.5 -95t-94.5 -95t-116.5 -82.5t-140 -59t-159.5 -22.5t-159.5 22.5t-140 59t-116.5 82.5t-94.5 95t-68.5 95t-43 82.5t-14 57.5t14 57.5t42.5 82.5t68 95 t94.5 95t116.5 82.5t140 59t160.5 22.5zM888 829q-15 15 -18 12t5 -22q25 -57 25 -119q0 -124 -88 -212t-212 -88t-212 88t-88 212q0 59 23 114q8 19 4.5 22t-17.5 -12q-70 -69 -160 -184q-13 -16 -15 -40.5t9 -42.5q22 -36 47 -71t70 -82t92.5 -81t113 -58.5t133.5 -24.5 t133.5 24t113 58.5t92.5 81.5t70 81.5t47 70.5q11 18 9 42.5t-14 41.5q-90 117 -163 189zM448 727l-35 -36q-15 -15 -19.5 -38.5t4.5 -41.5q37 -68 93 -116q16 -13 38.5 -11t36.5 17l35 34q14 15 12.5 33.5t-16.5 33.5q-44 44 -89 117q-11 18 -28 20t-32 -12z' />
+                                    </g>
+                                </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <div class="menu-divider"></div>
+                            <a href="#"  onclick='creditsdlg()'>
+                                <span class="pull-right" translate>Credits</span>
+                                <span class="pull-left">
+                                    <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                        <g transform='translate(50,1200) scale(1, -1)'>
+                                            <path  d='M650 1200h50q40 0 70 -40.5t30 -84.5v-150l-28 -125h328q40 0 70 -40.5t30 -84.5v-100q0 -45 -29 -74l-238 -344q-16 -24 -38 -40.5t-45 -16.5h-250q-7 0 -42 25t-66 50l-31 25h-61q-45 0 -72.5 18t-27.5 57v400q0 36 20 63l145 196l96 198q13 28 37.5 48t51.5 20z M650 1100l-100 -212l-150 -213v-375h100l136 -100h214l250 375v125h-450l50 225v175h-50zM50 800h100q21 0 35.5 -14.5t14.5 -35.5v-500q0 -21 -14.5 -35.5t-35.5 -14.5h-100q-21 0 -35.5 14.5t-14.5 35.5v500q0 21 14.5 35.5t35.5 14.5z' />
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+              </div>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#">
+                                <span class="dropbtn text-info" id="translate_menu">English</span>
+                    </a>
+                    <div class="dropdown-content" id="lang_menu">
+                            <a href="#" onclick="translate_text('en');">
+                                <span >English</span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <a href="#" onclick="translate_text('sp');">
+                                <span >Espa&ntilde;ol</span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <a href="#" onclick="translate_text('fr');">
+                                <span >Fran&ccedil;ais</span>
+                                <span class="clearfix"></span>
+                            </a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" onclick="OnCheckCam()">
+                        <i class="dropbtn">
+                                <input type="checkbox" id="camcheck" >
+                               <i >
+                                   <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  fill='currentColor' d='M75 1000h750q31 0 53 -22t22 -53v-650q0 -31 -22 -53t-53 -22h-750q-31 0 -53 22t-22 53v650q0 31 22 53t53 22zM1200 300l-300 300l300 300v-600z' />
+                                    </g>
+                                </svg>
+                               </i>             
+                        </I>
+                    </a>
+            </li>
+            </ul>
+         </nav>
+        <!-- /topnavbar -->
+        <!-- tabbar -->
+        <div class="tab">
+          <button class="tablinks" onclick="opentab(event, 'maintab')" id="maintablink">
+              <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                <g transform='translate(50,1200) scale(1, -1)'>
+                    <path  fill='currentColor' d='M100 1196h1000q41 0 70.5 -29.5t29.5 -70.5v-100q0 -41 -29.5 -70.5t-70.5 -29.5h-1000q-41 0 -70.5 29.5t-29.5 70.5v100q0 41 29.5 70.5t70.5 29.5zM1100 1096h-200v-100h200v100zM100 796h1000q41 0 70.5 -29.5t29.5 -70.5v-100q0 -41 -29.5 -70.5t-70.5 -29.5h-1000 q-41 0 -70.5 29.5t-29.5 70.5v100q0 41 29.5 70.5t70.5 29.5zM1100 696h-500v-100h500v100zM100 396h1000q41 0 70.5 -29.5t29.5 -70.5v-100q0 -41 -29.5 -70.5t-70.5 -29.5h-1000q-41 0 -70.5 29.5t-29.5 70.5v100q0 41 29.5 70.5t70.5 29.5zM1100 296h-300v-100h300v100z ' />
+                </g>
+            </svg>
+              <span translate>Dashboard</span>
+          </button>
+          <button class="tablinks hide_it" onclick="opentab(event, 'cameratab')" id="camtablink">
+            <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                <g transform='translate(50,1200) scale(1, -1)'>
+                    <path  fill='currentColor' d='M75 1000h750q31 0 53 -22t22 -53v-650q0 -31 -22 -53t-53 -22h-750q-31 0 -53 22t-22 53v650q0 31 22 53t53 22zM1200 300l-300 300l300 300v-600z' />
+                </g>
+            </svg>
+          <span translate>Camera</span>
+          </button>
+          <button class="tablinks hide_it" onclick="opentab(event, 'configtab')" id="configtablink">
+              <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                <g transform='translate(50,1200) scale(1, -1)'>
+                    <path  fill='currentColor' d='M756 1157q164 92 306 -9l-259 -138l145 -232l251 126q6 -89 -34 -156.5t-117 -110.5q-60 -34 -127 -39.5t-126 16.5l-596 -596q-15 -16 -36.5 -16t-36.5 16l-111 110q-15 15 -15 36.5t15 37.5l600 599q-34 101 5.5 201.5t135.5 154.5z' />
+                </g>
+              </svg>
+            <span translate>Printer</span>
+          </button>
+          <button class="tablinks" onclick="opentab(event, 'settingstab')" id="settingtablink">
+              <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                <g transform='translate(50,1200) scale(1, -1)'>
+                    <path  fill='currentColor' d='M212 1198h780q86 0 147 -61t61 -147v-416q0 -51 -18 -142.5t-36 -157.5l-18 -66q-29 -87 -93.5 -146.5t-146.5 -59.5h-572q-82 0 -147 59t-93 147q-8 28 -20 73t-32 143.5t-20 149.5v416q0 86 61 147t147 61zM600 1045q-70 0 -132.5 -11.5t-105.5 -30.5t-78.5 -41.5 t-57 -45t-36 -41t-20.5 -30.5l-6 -12l156 -243h560l156 243q-2 5 -6 12.5t-20 29.5t-36.5 42t-57 44.5t-79 42t-105 29.5t-132.5 12zM762 703h-157l195 261z' />
+                </g>
+              </svg>
+              <span translate>ESP3D</span>
+          </button>
+        </div>
+    <!-- / tabbar -->
+    <!-- content -->
+        <file-include w3-include-html="'sub/dashtab.html'"></file-include>
+        <file-include w3-include-html="'sub/cameratab.html'"></file-include>
+        <file-include w3-include-html="'sub/configtab.html'"></file-include>
+        <file-include w3-include-html="'sub/settingstab.html'"></file-include>
+    <!-- / content -->
+        </div>
+    <!-- template -->
+    <file-include w3-include-html="'sub/connectdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/alertdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/confirmdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/inputdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/creditsdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/scanwifidlg.html'"></file-include>
+    <file-include w3-include-html="'sub/SPIFFSdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/statusdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/updatedlg.html'"></file-include>
+    <file-include w3-include-html="'sub/setupdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/macrodlg.html'"></file-include>
+    <file-include w3-include-html="'sub/restartdlg.html'"></file-include>
+     <!-- / template -->
+    <!--removeIf(production)-->
+     <script src="js/http.js"></script>
+     <script src="js/icons.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/alertdlg.js"></script>
+    <script src="js/confirmdlg.js"></script>
+    <script src="js/inputdlg.js"></script>
+    <script src="js/creditsdlg.js"></script>
+    <script src="js/scanwifidlg.js"></script>
+    <script src="js/connectdlg.js"></script>
+    <script src="js/restartdlg.js"></script>
+    <script src="js/modaldlg.js"></script>
+    <script src="js/SPIFFSdlg.js"></script>
+    <script src="js/statusdlg.js"></script>
+    <script src="js/updatedlg.js"></script>
+    <script src="js/setupdlg.js"></script>
+    <script src="js/macrodlg.js"></script>
+    <script src="js/translate.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/extruders.js"></script>
+    <script src="js/printercmd.js"></script>
+    <script src="js/temperatures.js"></script>
+    <script src="js/controls.js"></script>   
+    <script src="js/smoothie.js"></script>
+    <script src="js/dropmenu.js"></script>
+    <script src="js/localstorage.js"></script>
+    <!--endRemoveIf(production)-->
+    <!-- smoosh -->
+    <script src="js/app.js"></script>
+    <!-- endsmoosh -->
+  </body>
+</html>
