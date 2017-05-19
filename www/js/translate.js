@@ -455,6 +455,10 @@ function translate_text_item( item_text) {
         currenttrans = spanishtrans
         document.getElementById("translate_menu").innerHTML='Espa&ntilde;ol';
         }
+     else if (language == 'de'){
+        currenttrans = germantrans
+        document.getElementById("translate_menu").innerHTML='Deutsch';
+}
     if (language == 'en')  translated_content = item_text;
     else translated_content = currenttrans[item_text];
     if (typeof translated_content === 'undefined' ) translated_content = item_text;
