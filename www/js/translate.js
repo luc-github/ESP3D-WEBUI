@@ -360,7 +360,7 @@ var germantrans = {
 "Send Command...":"Kommando gesendet...",
 "Send":"Senden",
 "Set failed":"Setzen gescheitert",
-"Set":"Enregister",
+"Set":"Registrieren",
 "Signal":"Signal",
 "Size":"Groesse",
 "SSID":"SSID",
@@ -401,7 +401,7 @@ function translate_text(lang){
         }
     else if (lang == 'de'){
         currenttrans = germantrans
-        document.getElementById("translate_menu").innerHTML='deutsch';
+        document.getElementById("translate_menu").innerHTML='Deutsch';
         }
     else {
          document.getElementById("translate_menu").innerHTML='English';
