@@ -25,7 +25,7 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
 - It supports several firmwares based on Repetier, Marlin and Smoothieware.
 - It allows to fully configure ESP wifi
 - It has a macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
-- It supports currently English, French and Spanish languages
+- It supports currently English, French, German (thanks @leseaw) and Spanish languages
 - It allows to display a web camera in UI or detached
 - It allows to edit the Repetier EEPROM and Smoothieware config file
 - It allows to update the ESP3D by uploading the FW
