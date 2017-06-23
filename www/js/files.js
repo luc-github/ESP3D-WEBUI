@@ -345,7 +345,7 @@ function files_serial_M20_list_success(response_text){
                  isdirectory = true;
                  file_name = line;
             } else {
-                if ((target_firmware == "repetier") || (target_firmware == "repetier4davinci")){
+                if ((target_firmware == "repetier") || (target_firmware == "repetier4davinci") || (target_firmware == "marlin")){
                     var pos = line.lastIndexOf(" ");
                     file_name = line.substr(0,pos);
                     fsize =  files_format_size(parseInt(line.substr(pos+1)));
