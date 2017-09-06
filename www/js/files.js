@@ -13,10 +13,16 @@ function init_files_panel(){
         document.getElementById('files_refresh_secondary_sd_btn').innerHTML = secondary_sd.substring(0, secondary_sd.length-1);
         if (primary_sd.toLowerCase()  != "none" )document.getElementById('files_refresh_primary_sd_btn').style.display="inline";
         if (secondary_sd.toLowerCase()  != "none" )document.getElementById('files_refresh_secondary_sd_btn').style.display="inline";
+        document.getElementById('files_createdir_btn').style.display="none";
+        document.getElementById('files_refresh_btn').style.display="none";
     } else {
-        document.getElementById('files_refresh_btn').style.display="inline";
+        if (target_firmware == "???") document.getElementById('files_refresh_btn').style.display="none";
+        else document.getElementById('files_refresh_btn').style.display="inline";
+        document.getElementById('files_refresh_primary_sd_btn').style.display="none";
+        document.getElementById('files_refresh_secondary_sd_btn').style.display="none";
     }
-    if (target_firmware != "marlin")document.getElementById('files_createdir_btn').style.display="inline";
+    if (!((target_firmware == "marlin") ||  (target_firmware == "???")))document.getElementById('files_createdir_btn').style.display="inline";
+    else document.getElementById('files_createdir_btn').style.display="none";
     files_set_button_as_filter(files_filter_sd_list);
     files_refreshFiles(files_currentPath);
 }
@@ -201,10 +207,12 @@ function files_click_file(index){
          files_refreshFiles(path, true);
         return;
     }
-    if (direct_sd && !( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))) {
+    if (direct_sd && (!( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd)) || (target_firmware != "smoothieware"))) {
         //console.log("file on direct SD");
-        var url = files_currentPath.replace(primary_sd, "/SD/") + entry.sdname;
-        window.open(url);
+        var url = "";
+        if ( target_firmware == "smoothieware") url = files_currentPath.replace(primary_sd, "/SD/") + entry.sdname;
+        else url =  "/SD/" + files_currentPath+ entry.sdname;
+        window.open(url.replace("//", "/"));
         return;
     }
     if ( target_firmware == "smoothieware" && entry.isprintable){

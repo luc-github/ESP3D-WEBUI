@@ -2,7 +2,7 @@ var setting_configList = [];
 var setting_error_msg="";
 var setting_lastindex = -1;
 var current_setting_filter = 'network';
-
+var setup_is_done = false;
 
 function refreshSettings() {
         if (http_communication_locked) {
@@ -30,7 +30,7 @@ function build_select_for_setting_list(index){
          html += "<option value='" + setting_configList[index].Options[i].id + "'";
          if (setting_configList[index].Options[i].id == setting_configList[index].defaultvalue) html +=" selected ";
          html += ">";
-         html += setting_configList[index].Options[i].display;
+         html += translate_text_item(setting_configList[index].Options[i].display);
          html += "</option>\n";
         }
     html += "</select>\n";
@@ -39,6 +39,16 @@ function build_select_for_setting_list(index){
     return html;
 }
 
+function getFWshortnamefromid(value) {
+    var response = 0;
+    if ( value == 1 )response = "repetier4davinci";
+    else if ( value == 5 )response = "repetier";
+    else if (  value == 2 ) response = "marlin";
+    else if (  value == 3 ) response = "marlinkimbra";
+    else if ( value == 4 ) response = "smoothieware";
+    else response = "???";
+    return response;
+}
 function update_UI_setting(){
     for (var i = 0; i < setting_configList.length ; i++){ 
         switch (setting_configList[i].pos) {
@@ -62,9 +72,69 @@ function update_UI_setting(){
          case "168":
             document.getElementById("control_z_velocity").value = setting_configList[i].defaultvalue;
             break;
+        //EP_TARGET_FW		461 
+         case "461":
+            target_firmware = getFWshortnamefromid(setting_configList[i].defaultvalue);
+            update_UI_firmware_target() ;
+            init_files_panel();
+            break;        
+        // EP_IS_DIRECT_SD   850
+        case "850":
+            direct_sd = (setting_configList[i].defaultvalue == 1)? true: false;
+            update_UI_firmware_target() ;
+            init_files_panel();
+            break;
         }
     }
 }
+//to generate setting editor in setting or setup
+function build_control_from_index (index, extra_set_function) {
+    var i = index;
+    var content = "";
+     if (i < setting_configList.length) {
+        content+="<div class='input-group'>";
+        content+="<span class='input-group-btn'>";
+        content+="<button class='btn btn-default' onclick='setting_revert_to_default("+i+")' >";
+        content+=get_icon_svg("repeat");
+        content+="</button>";
+        content+="</span>";
+        content+="<div id='status_setting_"+ i + "' class='form-group has-feedback' >";
+        if (setting_configList[i].Options.length > 0){
+            content+=build_select_for_setting_list(i);
+            content+="<span id='icon_setting_"+ i + "'class='form-control-feedback'  style='right: 1em'></span>";
+            }
+        else {
+            content+="<input id='setting_" + i + "' type='text' class='form-control' style='width:auto'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +")' >";
+            content+="<span id='icon_setting_"+ i + "'class='form-control-feedback' ></span>";
+            }
+        
+        content+="</div>";
+        content+="<span class='input-group-btn'>";
+        content+="<button  id='btn_setting_"+ i + "' class='btn btn-default' onclick='settingsetvalue("+ i +");";
+        if (typeof extra_set_function != 'undefined') {
+             content+= extra_set_function + "(" + i + ");"
+            }
+        content+="' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
+         if (setting_configList[i].pos == "1") {
+            content+="<button class='btn btn-default' onclick='scanwifidlg(\"" + i +"\")'>";
+            content+=get_icon_svg("search");
+            content+="</button>";
+        }
+        content+="</span>";
+        content+="</div>";
+        }
+    return content;
+    }
+    
+ //get setting UI for specific component instead of parse all   
+function get_index_from_eeprom_pos(pos){
+    for (var i = 0; i < setting_configList.length ; i++){ 
+        if (pos == setting_configList[i].pos) {
+            return i;
+        }
+    }
+    return -1;
+    }
 
 function build_HTML_setting_list(filter){
     var content="";
@@ -74,35 +144,10 @@ function build_HTML_setting_list(filter){
         if ((setting_configList[i].F.trim().toLowerCase() == filter) || (filter == "all")) {
             content+="<tr>";
             content+="<td style='vertical-align:middle'>";
-            content+=setting_configList[i].label;
+            content+= translate_text_item( setting_configList[i].label);
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
-            content+="<div class='input-group'>";
-            content+="<span class='input-group-btn'>";
-            content+="<button class='btn btn-default' onclick='setting_revert_to_default("+i+")' >";
-            content+=get_icon_svg("repeat");
-            content+="</button>";
-            content+="</span>";
-            content+="<div id='status_setting_"+ i + "' class='form-group has-feedback' >";
-            if (setting_configList[i].Options.length > 0){
-                content+=build_select_for_setting_list(i);
-                content+="<span id='icon_setting_"+ i + "'class='form-control-feedback'  style='right: 1em'></span>";
-                }
-            else {
-                content+="<input id='setting_" + i + "' type='text' class='form-control' style='width:auto'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +")' >";
-                content+="<span id='icon_setting_"+ i + "'class='form-control-feedback' ></span>";
-                }
-            
-            content+="</div>";
-            content+="<span class='input-group-btn'>";
-            content+="<button  id='btn_setting_"+ i + "' class='btn btn-default' onclick='settingsetvalue("+ i +")' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
-             if (setting_configList[i].pos == "1") {
-                content+="<button class='btn btn-default' onclick='scanwifidlg(\"" + i +"\")'>";
-                content+=get_icon_svg("search");
-                content+="</button>";
-            }
-            content+="</span>";
-            content+="</div>";
+            content+= build_control_from_index(i);
             content+="</td>";
            content+="</tr>\n";
         }
@@ -169,7 +214,7 @@ function process_settings_answer(response_text) {
                     
                     }
                 if (vindex > 0 ) {
-                    build_HTML_setting_list(current_setting_filter);
+                    if (setup_is_done)build_HTML_setting_list(current_setting_filter);
                     update_UI_setting();
                     }
                 else result = false;
@@ -281,7 +326,6 @@ function setting_checkchange(index) {
         }
     else if (setting_check_value(val, index)){
         setsettingchanged(index);
-        //console.log("change ok");
         }
         else {
             //console.log("change bad");

@@ -58,7 +58,7 @@ function build_HTML_config_list(){
             content+="</div>";
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
-            content+=config_configList[i].help;
+            content+=HTMLEncode(config_configList[i].help );
         } 
     content+="</td>";
     content+="</tr>\n";

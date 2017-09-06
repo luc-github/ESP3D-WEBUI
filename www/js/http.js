@@ -13,6 +13,7 @@ function SendGetHttp(url, resultfn, errorfn){
                     if (typeof resultfn != 'undefined' && resultfn != null )resultfn(xmlhttp.responseText);
                 }
             else {
+                    if (xmlhttp.status == 401)GetIdentificationStatus();
                     if (typeof errorfn != 'undefined' && errorfn != null )errorfn(xmlhttp.status, xmlhttp.responseText);
             }
         }
@@ -35,6 +36,7 @@ function SendPostHttp(url, postdata,resultfn, errorfn){
                     if (typeof resultfn != 'undefined' && resultfn != null )resultfn(xmlhttp.responseText);
                 }
             else {
+                    if (xmlhttp.status == 401)GetIdentificationStatus();
                     if (typeof errorfn != 'undefined' && errorfn != null)errorfn(xmlhttp.status, xmlhttp.responseText);
             }
         }
@@ -59,6 +61,7 @@ function SendFileHttp(url, postdata, progressfn,resultfn, errorfn){
                     if (typeof resultfn != 'undefined' && resultfn != null )resultfn(xmlhttp.responseText);
                 }
             else {
+                    if (xmlhttp.status == 401)GetIdentificationStatus();
                     if (typeof errorfn != 'undefined' && errorfn != null)errorfn(xmlhttp.status, xmlhttp.responseText);
             }
         }

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ESP3D WebUI</title>
     <script>var target_firmware="";</script>
-    <script>var web_ui_version="0.9.2";</script>
+    <script>var web_ui_version="0.9.51";</script>
     <script>var direct_sd=false;</script>
     <script>var fw_version="";</script>
     <script>var primary_sd= "/ext/";</script>
@@ -16,6 +16,7 @@
     <link href="css/menu.css" rel="stylesheet">
     <link href="css/tabs.css" rel="stylesheet">
     <link href="css/modaldlg.css" rel="stylesheet">
+    <link href="css/wizard.css" rel="stylesheet">
     <!--endRemoveIf(production)-->
 
     <!-- smoosh -->
@@ -23,7 +24,8 @@
     <!-- endsmoosh -->
   </head>
   <body>
-        <div id='warningmsg' class='warningmsg' >Checking Javascript is enabled....<br> if this is the only thing you see you may need to enable Javascript in your browser.</div>
+        <div id='warningmsg' class='warningmsg' >Checking Javascript is enabled....<br> if this is the only thing you see, you may need to enable Javascript in your browser.</div>
+        <div class="loader hide_it" id="main_page_loader"  style="margin:auto"></div>
         <div id="main_ui" class="container-fluid hide_it">
         <!-- topnavbar -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; padding-right:2em;" >
@@ -56,7 +58,7 @@
                                  </center>
                              </div>
                              <div class="menu-divider"></div>
-                            <a href="https://github.com/luc-github/ESP3D" >
+                                <a href="https://github.com/luc-github/ESP3D" >
                                 <span class="pull-right" translate>Firmware</span>
                                 <span class="pull-left">
                                     <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
@@ -79,6 +81,18 @@
                                 <span class="clearfix"></span>
                             </a>
                             <div class="menu-divider"></div>
+                            <a href="#" onclick="setupdlg ()">
+                                <span class="pull-right" translate>Setup</span>
+                                <span class="pull-left">
+                                <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  d='M1000 1013l108 115q2 1 5 2t13 2t20.5 -1t25 -9.5t28.5 -21.5q22 -22 27 -43t0 -32l-6 -10l-108 -115zM350 1100h400q50 0 105 -13l-187 -187h-368q-41 0 -70.5 -29.5t-29.5 -70.5v-500q0 -41 29.5 -70.5t70.5 -29.5h500q41 0 70.5 29.5t29.5 70.5v182l200 200v-332 q0 -165 -93.5 -257.5t-256.5 -92.5h-400q-165 0 -257.5 92.5t-92.5 257.5v400q0 165 92.5 257.5t257.5 92.5zM1009 803l-362 -362l-161 -50l55 170l355 355z' />
+                                    </g>
+                                </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <div class="menu-divider"></div>
                             <a href="#"  onclick='creditsdlg()'>
                                 <span class="pull-right" translate>Credits</span>
                                 <span class="pull-left">
@@ -93,25 +107,76 @@
               </div>
                 </li>
             </ul>
+             <ul class="nav navbar-nav navbar-right hide_it" id="menu_autthentication">
+                <li class="dropdown">
+                    <a href="#">
+                           <i class="dropbtn">
+                               <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  fill='#337AB7' d='M600 1200q124 0 212 -88t88 -212v-250q0 -46 -31 -98t-69 -52v-75q0 -10 6 -21.5t15 -17.5l358 -230q9 -5 15 -16.5t6 -21.5v-93q0 -10 -7.5 -17.5t-17.5 -7.5h-1150q-10 0 -17.5 7.5t-7.5 17.5v93q0 10 6 21.5t15 16.5l358 230q9 6 15 17.5t6 21.5v75q-38 0 -69 52 t-31 98v250q0 124 88 212t212 88z' />
+                                    </g>
+                                </svg>
+                                <span id="current_ID"></span>
+                                <span id="current_auth_level"></span>
+                           </i> 
+                    </a>
+                    <div class="dropdown-content">
+                             <a href="#" onclick="changepassworddlg()" id="password_menu" class="hide_it">
+                                <span class="pull-right" translate>Password</span>
+                                <span class="pull-left">
+                                    <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                        <g transform='translate(50,1200) scale(1, -1)'>
+                                            <path  d='M900 800v200q0 83 -58.5 141.5t-141.5 58.5h-300q-82 0 -141 -59t-59 -141v-200h-100q-41 0 -70.5 -29.5t-29.5 -70.5v-600q0 -41 29.5 -70.5t70.5 -29.5h900q41 0 70.5 29.5t29.5 70.5v600q0 41 -29.5 70.5t-70.5 29.5h-100zM400 800v150q0 21 15 35.5t35 14.5h200 q20 0 35 -14.5t15 -35.5v-150h-300z' />
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <a href="#" onclick="logindlg()">
+                                <span class="pull-right" translate>Login</span>
+                                <span class="pull-left">
+                                    <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                        <g transform='translate(50,1200) scale(1, -1)'>
+                                            <path  d='M550 1100h400q165 0 257.5 -92.5t92.5 -257.5v-400q0 -165 -92.5 -257.5t-257.5 -92.5h-400q-21 0 -35.5 14.5t-14.5 35.5v100q0 21 14.5 35.5t35.5 14.5h450q41 0 70.5 29.5t29.5 70.5v500q0 41 -29.5 70.5t-70.5 29.5h-450q-21 0 -35.5 14.5t-14.5 35.5v100 q0 21 14.5 35.5t35.5 14.5zM338 867l324 -284q16 -14 16 -33t-16 -33l-324 -284q-16 -14 -27 -9t-11 26v150h-250q-21 0 -35.5 14.5t-14.5 35.5v200q0 21 14.5 35.5t35.5 14.5h250v150q0 21 11 26t27 -9z' />
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                            <div class="menu-divider"></div>
+                            <a href="#" onclick="confirmdlg(translate_text_item('Disconnection requested'), translate_text_item('Please confirm disconnection.'), DisconnectLogin); " id="logout_menu" class="hide_it">
+                                <span class="pull-right" translate>Log out</span>
+                                <span class="pull-left">
+                                <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  d='M350 1100h400q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-450q-41 0 -70.5 -29.5t-29.5 -70.5v-500q0 -41 29.5 -70.5t70.5 -29.5h450q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-400q-165 0 -257.5 92.5t-92.5 257.5v400 q0 165 92.5 257.5t257.5 92.5zM938 867l324 -284q16 -14 16 -33t-16 -33l-324 -284q-16 -14 -27 -9t-11 26v150h-250q-21 0 -35.5 14.5t-14.5 35.5v200q0 21 14.5 35.5t35.5 14.5h250v150q0 21 11 26t27 -9z'' />
+                                    </g>
+                                </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
+                    </div>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#">
                                 <span class="dropbtn text-info" id="translate_menu">English</span>
                     </a>
                     <div class="dropdown-content" id="lang_menu">
-                            <a href="#" onclick="translate_text('de');">
+                            <a href="#" onclick="translate_text('de'); build_HTML_setting_list(current_setting_filter);">
                                 <span >Deutsch</span>
                                 <span class="clearfix"></span>
                             </a>
-                            <a href="#" onclick="translate_text('en');">
+                            <a href="#" onclick="translate_text('en');build_HTML_setting_list(current_setting_filter);">
                                 <span >English</span>
                                 <span class="clearfix"></span>
                             </a>
-                            <a href="#" onclick="translate_text('sp');">
+                            <a href="#" onclick="translate_text('sp');build_HTML_setting_list(current_setting_filter);">
                                 <span >Espa&ntilde;ol</span>
                                 <span class="clearfix"></span>
                             </a>
-                            <a href="#" onclick="translate_text('fr');">
+                            <a href="#" onclick="translate_text('fr');build_HTML_setting_list(current_setting_filter);">
                                 <span >Fran&ccedil;ais</span>
                                 <span class="clearfix"></span>
                             </a>
@@ -182,7 +247,9 @@
     <!-- template -->
     <file-include w3-include-html="'sub/connectdlg.html'"></file-include>
     <file-include w3-include-html="'sub/alertdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/passworddlg.html'"></file-include>
     <file-include w3-include-html="'sub/confirmdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/logindlg.html'"></file-include>
     <file-include w3-include-html="'sub/inputdlg.html'"></file-include>
     <file-include w3-include-html="'sub/creditsdlg.html'"></file-include>
     <file-include w3-include-html="'sub/scanwifidlg.html'"></file-include>
@@ -194,6 +261,7 @@
     <file-include w3-include-html="'sub/restartdlg.html'"></file-include>
      <!-- / template -->
     <!--removeIf(production)-->
+    <script src="js/wizard.js"></script>
      <script src="js/http.js"></script>
      <script src="js/icons.js"></script>
     <script src="js/camera.js"></script>
@@ -202,6 +270,8 @@
     <script src="js/tabs.js"></script>
     <script src="js/alertdlg.js"></script>
     <script src="js/confirmdlg.js"></script>
+    <script src="js/passworddlg.js"></script>
+    <script src="js/logindlg.js"></script>
     <script src="js/inputdlg.js"></script>
     <script src="js/creditsdlg.js"></script>
     <script src="js/scanwifidlg.js"></script>

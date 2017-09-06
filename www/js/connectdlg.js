@@ -6,7 +6,7 @@ function connectdlg () {
     if ( modal == null) return;
     showModal() ;
     //removeIf(production)
-    connectsuccess("FW version:0.9.9X # FW target:Smoothieware # FW HW:Direct SD # primary : /sd/ # secondary : /ext/");
+    connectsuccess("FW version:0.9.9X # FW target:Smoothieware # FW HW:Direct SD # primary : /sd/ # secondary : /ext/ # authentication: no");
     return;
     //endRemoveIf(production)
     retryconnect ();
@@ -14,7 +14,7 @@ function connectdlg () {
 
 function getFWdata(response){
     var tlist = response.split("#");
-    //FW version:0.9.200 # FW target:smoothieware # FW HW:Direct SD # primary sd:/ext/ # secondary sd:/sd/
+    //FW version:0.9.200 # FW target:smoothieware # FW HW:Direct SD # primary sd:/ext/ # secondary sd:/sd/ # authentication: yes
     if (tlist.length < 3) {
         return false;
         }
@@ -50,16 +50,29 @@ function getFWdata(response){
         return false;
         }
     secondary_sd = sublist[1].toLowerCase().trim();
-    
+    //authentication
+    var sublist = tlist[5].split(":");
+    if (sublist.length != 2) {
+        return false;
+        }
+    if ((sublist[0].trim() == "authentication" ) && (sublist[1].trim() == "yes")) ESP3D_authentication = true;
+    else ESP3D_authentication = false;
     return true;
 }
 
 function connectsuccess(response){
         if (getFWdata( response))
             {
-            document.getElementById('main_ui').style.display='block';
+            //document.getElementById('main_ui').style.display='block';
             closeModal("Connection successful");
-            initUI();
+            if (ESP3D_authentication) {
+                document.getElementById('menu_autthentication').style.display='inline';
+                logindlg(initUI, true);
+            }
+            else {
+                document.getElementById('menu_autthentication').style.display='none';
+                initUI();
+                }
             }
         else {
             console.log(response);

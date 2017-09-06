@@ -27,6 +27,15 @@ color:red;
     animation: spin 2s linear infinite;
 }
 
+.loader_centered {
+    background-color: white;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
 
 
 @-webkit-keyframes pulse {

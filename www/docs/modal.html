@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: fadeIn; /* Fade in the background */
+    -webkit-animation-duration: 0.4s;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+    background-color: #fe0000;
+}
+
+.z_index1 {
+        z-index: 1; /* Sit on top */
+}
+
+.z_index2 {
+        z-index: 2; /* Sit on top */
+}
+
+/* Modal Content */
+.modal-content {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    position: relative;
+    margin: auto;
+    padding: 0;
+    background-color: #fefefe;
+    -webkit-animation-name: slideIn;
+    -webkit-animation-duration: 0.4s;
+    animation-name: slideIn;
+    animation-duration: 0.4s
+}
+
+/* The Close Button */
+.close {
+    color: #000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #337AB7;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    color: #0f0f0f;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-body {padding: 10px 16px;}
+
+.modal-footer {
+    padding: 16px 16px;
+    color: #0f0f0f;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes slideIn {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+    width: 580px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+  .modal-content {
+    width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<h2>Bottom Modal</h2>
+
+<!-- Trigger/Open The Modal -->
+<button id="myBtn" onclick="alertdlg ('My tile', 'my body') ">Open Modal</button>
+
+<!-- alert Modal -->
+<div id="alertdlg.html" class="modal">
+  <!-- alert content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="closeModal('cancel')"><b>&times;</b></span>
+      <h3><div class="modal-title"></div></h3>
+    </div>
+    <div class="modal-body">
+        <span>
+            <span>
+                <svg width='26px' height='24px' viewBox='0 0 1300 1200'>
+                    <g transform='translate(50,1200) scale(1, -1)'>
+                        <path  fill='red' d='M-90 100l642 1066q20 31 48 28.5t48 -35.5l642 -1056q21 -32 7.5 -67.5t-50.5 -35.5h-1294q-37 0 -50.5 34t7.5 66zM155 200h345v75q0 10 7.5 17.5t17.5 7.5h150q10 0 17.5 -7.5t7.5 -17.5v-75h345l-445 723zM496 700h208q20 0 32 -14.5t8 -34.5l-58 -252 q-4 -20 -21.5 -34.5t-37.5 -14.5h-54q-20 0 -37.5 14.5t-21.5 34.5l-58 252q-4 20 8 34.5t32 14.5z' />
+                    </g>
+                </svg>
+            </span>
+            <span class="modal-text"></span>
+        </span>
+    </div>
+    <div class="modal-footer">
+      <span class="pull-right"> <button class="btn btn-primary" onclick="closeModal('Ok') ">Ok</button></span>
+    </div>
+  </div>
+    <!-- /alert content -->
+</div>
+<!-- /alert Modal -->
+<script>
+// Create the modal
+var modal =  new Object;
+modal.active=null
+modal.closefn=null;
+function alertdlg (titledlg, textdlg, closefunc) {
+    modal.active=document.getElementById('alertdlg.html');
+    var title = modal.active.getElementsByClassName("modal-title")[0];
+    var body = modal.active.getElementsByClassName("modal-text")[0];
+    title.innerHTML=titledlg;
+    body.innerHTML=textdlg;
+    if (typeof closefunc === 'undefined')closefunc = myfnclose;
+    showModal(closefunc) ;
+}
+// open the modal 
+function showModal(closefunc) {
+    modal.active.style.display = "block";
+    modal.closefn = closefunc;
+}
+
+// When the user clicks on <span> (x), close the modal
+function closeModal( response) {
+    modal.active.style.display = "none";
+    modal.closefn(response);
+}
+
+function myfnclose(value) {
+    console.log(value);
+}
+
+// When the user clicks anywhere outside of the modal, close it
+//window.onclick = function(event) {
+//    if (event.target == modal) {
+ //       modal.style.display = "none";
+//    }
+//}
+</script>
+
+</body>
+</html>

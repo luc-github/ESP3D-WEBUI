@@ -15,8 +15,14 @@ function statussuccess(response){
         var tresponse = response.split("\n");
         var output = "";
         for (var i = 0; i < tresponse.length; i++){
-            var data = tresponse[i].split(":",2);
-            if (data.length == 2)  output+= "<label>" + data[0] + ": </label>&nbsp;<span class='text-info'><strong>" + data[1] +"</strong></span><br>";
+            var data = tresponse[i].split(":");
+            if (data.length >= 2)  {
+                output+= "<label>" + data[0] + ": </label>&nbsp;<span class='text-info'><strong>"+ data[1];
+                for (v=2;v<data.length;v++){
+                    output+=":" + data[v];
+                }
+                output+="</strong></span><br>";
+            }
             else output+= tresponse[i]+ "<br>";
             }
         text.innerHTML= output;
