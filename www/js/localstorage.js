@@ -1,6 +1,12 @@
 function store_localdata(key, value){
-    if (typeof localStorage !== 'undefined'){
-        localStorage.setItem(key, value);
+   
+       if (typeof localStorage !== 'undefined'){
+           try {
+                localStorage.setItem(key, value);
+            }
+            catch (exception) {
+                return false;
+            }
         return true;
     }
     return false;
@@ -8,11 +14,25 @@ function store_localdata(key, value){
 
 function get_localdata(key){
      if (typeof localStorage !== 'undefined'){
-        return localStorage.getItem(key);
+         var r ="";
+         try {
+                r = localStorage.getItem(key);;
+            }
+         catch (exception) {
+                r = "";
+            }
+        return r;
     }
     return "";
 }
 
 function delete_localdata(key){
-     if (typeof localStorage !== 'undefined')window.localStorage.removeItem(key);
+     if (typeof localStorage !== 'undefined')
+     {
+         try {
+               window.localStorage.removeItem(key);
+            }
+         catch (exception) {
+            }
+     }
 }
