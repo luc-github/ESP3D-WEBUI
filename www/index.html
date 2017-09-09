@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ESP3D WebUI</title>
     <script>var target_firmware="";</script>
-    <script>var web_ui_version="0.9.52";</script>
+    <script>var web_ui_version="0.9.53";</script>
     <script>var direct_sd=false;</script>
     <script>var fw_version="";</script>
     <script>var primary_sd= "/ext/";</script>
@@ -161,25 +161,9 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#">
-                                <span class="dropbtn text-info" id="translate_menu">English</span>
+                                <span class="dropbtn text-info" id="translate_menu"></span>
                     </a>
                     <div class="dropdown-content" id="lang_menu">
-                            <a href="#" onclick="translate_text('de'); build_HTML_setting_list(current_setting_filter);">
-                                <span >Deutsch</span>
-                                <span class="clearfix"></span>
-                            </a>
-                            <a href="#" onclick="translate_text('en');build_HTML_setting_list(current_setting_filter);">
-                                <span >English</span>
-                                <span class="clearfix"></span>
-                            </a>
-                            <a href="#" onclick="translate_text('sp');build_HTML_setting_list(current_setting_filter);">
-                                <span >Espa&ntilde;ol</span>
-                                <span class="clearfix"></span>
-                            </a>
-                            <a href="#" onclick="translate_text('fr');build_HTML_setting_list(current_setting_filter);">
-                                <span >Fran&ccedil;ais</span>
-                                <span class="clearfix"></span>
-                            </a>
                     </div>
                 </li>
             </ul>

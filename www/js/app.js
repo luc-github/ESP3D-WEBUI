@@ -11,6 +11,22 @@ window.addEventListener("resize", OnresizeWindow);
 function OnresizeWindow(){
 }
 
+function build_language_menu(){
+var content ="";
+for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
+    content+="<a href='#' onclick=\"translate_text('";
+    content+= language_list[lang_i][0];
+    content+= "'); update_ui_text();\"><span >";
+    content+= language_list[lang_i][1];
+    content+= "</span><span class=\"clearfix\"></span></a>";
+}
+document.getElementById("lang_menu").innerHTML=content;
+}
+
+function update_ui_text(){   
+    build_HTML_setting_list(current_setting_filter);
+}
+
 function update_UI_firmware_target() {
     var fwName;
     if (target_firmware == "repetier" ) {
