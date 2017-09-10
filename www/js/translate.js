@@ -9,7 +9,7 @@ var translated_list=[];
 function translate_text(lang){
     var currenttrans ={};
     var translated_content="";
-     store_localdata('language',lang);
+    store_localdata('language',lang);
     language = lang;
     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
         if ( language_list[lang_i][0] == lang) {

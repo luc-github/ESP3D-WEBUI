@@ -1,6 +1,7 @@
 //Connect dialog
 function connectdlg () {
     var value = get_localdata('language');
+    if (String(value).length == 0 || String(value)=="null") value="en";
     build_language_menu();
     translate_text(value);
     var modal = setactiveModal('connectdlg.html');

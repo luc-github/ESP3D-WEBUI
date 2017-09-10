@@ -27,18 +27,11 @@ function setupdlg () {
      var content = "";
      content+= get_icon_svg("flag") + "&nbsp;";
      content+="<select id='language_selection' onchange='translate_text(this.value)'>\n";
-      content+="<option value='de'";
-     if (language == "de")  content+=" selected";
-     content+=">Deutsch</option>\n";
-     content+="<option value='en'";
-     if (language == "en")  content+=" selected";
-     content+=">English</option>\n";
-     content+="<option value=sp";
-     if (language == "sp")  content+=" selected";
-     content+=">Espa&ntilde;ol</option>\n";
-     content+="<option value='fr'";
-     if (language == "fr")  content+=" selected";
-     content+=">Fran&ccedil;ais</option>\n";
+    for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
+         content+="<option value='" + language_list[lang_i][0] + "'";
+         if ( language_list[lang_i][0] == language) content+=" selected";
+         content+=">" + language_list[lang_i][1] + "</option>\n";
+        }
      content+="</select>\n";
      document.getElementById("setup_langage_list").innerHTML=content;
      

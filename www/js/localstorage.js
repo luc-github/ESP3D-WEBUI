@@ -16,7 +16,7 @@ function get_localdata(key){
      if (typeof localStorage !== 'undefined'){
          var r ="";
          try {
-                r = localStorage.getItem(key);;
+                r = localStorage.getItem(key);
             }
          catch (exception) {
                 r = "";
