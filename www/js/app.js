@@ -19,6 +19,9 @@ for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
     content+= "'); update_ui_text();\"><span >";
     content+= language_list[lang_i][1];
     content+= "</span><span class=\"clearfix\"></span></a>";
+    if ( language_list[lang_i][0] == language){
+    document.getElementById("translate_menu").innerHTML=language_list[lang_i][1];
+    }
 }
 document.getElementById("lang_menu").innerHTML=content;
 }
