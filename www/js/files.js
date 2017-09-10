@@ -515,7 +515,7 @@ function files_build_display_filelist(displaylist){
             }
         files_error_status = "";
         if (files_status_list[0].status.toLowerCase() != "ok"){
-            document.getElementById('files_sd_status_msg').innerHTML = translate_text_item(files_status_list[0].status);
+            document.getElementById('files_sd_status_msg').innerHTML = translate_text_item(files_status_list[0].status, true);
             document.getElementById('files_status_sd_status').style.display="table-row";
         } else {
             document.getElementById('files_status_sd_status').style.display="none";
@@ -566,7 +566,7 @@ function process_check_sd_presence(answer){
              alertdlg (translate_text_item("Upload failed"), translate_text_item("No SD card detected"));
              files_error_status ="No SD card"
              files_build_display_filelist(false);
-             document.getElementById('files_sd_status_msg').innerHTML = files_error_status;
+             document.getElementById('files_sd_status_msg').innerHTML = translate_text_item(files_error_status, true);
             document.getElementById('files_status_sd_status').style.display="table-row";
         } else files_start_upload();
     } else { //for smoothiware ls say no directory
@@ -575,7 +575,7 @@ function process_check_sd_presence(answer){
              alertdlg (translate_text_item("Upload failed"), translate_text_item("No SD card detected"));
              files_error_status ="No SD card"
              files_build_display_filelist(false);
-             document.getElementById('files_sd_status_msg').innerHTML = files_error_status;
+             document.getElementById('files_sd_status_msg').innerHTML = translate_text_item(files_error_status, true);
             document.getElementById('files_status_sd_status').style.display="table-row";
             } else files_start_upload();
         } else files_start_upload();

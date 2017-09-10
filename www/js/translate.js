@@ -55,9 +55,11 @@ function translate_text(lang){
      }
 };
 
-function translate_text_item( item_text) {
+function translate_text_item( item_text, withtag) {
     var currenttrans ={};
     var translated_content;
+    var with_tag = false;
+    if (typeof withtag != "undefined") with_tag = withtag;
     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
         if ( language_list[lang_i][0] == language) {
             currenttrans = eval(language_list[lang_i][2]);
@@ -65,5 +67,9 @@ function translate_text_item( item_text) {
         }
     translated_content = currenttrans[item_text];
     if (typeof translated_content === 'undefined' ) translated_content = item_text;
+    if (with_tag) {
+        var translated_content_tmp = "<span english_content=\""+ item_text + "\" translate>" + translated_content + "</span>";
+        translated_content = translated_content_tmp;
+    }
     return translated_content;
 }
