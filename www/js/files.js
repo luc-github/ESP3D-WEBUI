@@ -24,7 +24,7 @@ function init_files_panel(){
     if (!((target_firmware == "marlin") ||  (target_firmware == "???")))document.getElementById('files_createdir_btn').style.display="inline";
     else document.getElementById('files_createdir_btn').style.display="none";
     files_set_button_as_filter(files_filter_sd_list);
-    files_refreshFiles(files_currentPath);
+    if (direct_sd) files_refreshFiles(files_currentPath);
 }
 
 function files_set_button_as_filter(isfilter){
