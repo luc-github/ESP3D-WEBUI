@@ -407,7 +407,7 @@ function files_directSD_list_success(response_text){
         error = true;
     }
     if(error || typeof response.status == 'undefined' ){
-        files_directSD_list_failed(406, translate_text_item("Wrong data"));
+        files_directSD_list_failed(406, translate_text_item("Wrong data", true));
         return;
     }
     files_file_list = [];

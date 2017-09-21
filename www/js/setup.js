@@ -27,7 +27,7 @@ function setupdlg () {
      var content = "";
      content+= get_icon_svg("flag") + "&nbsp;";
      content+="<select id='language_selection' onchange='translate_text(this.value)'>\n";
-    for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
+     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
          content+="<option value='" + language_list[lang_i][0] + "'";
          if ( language_list[lang_i][0] == language) content+=" selected";
          content+=">" + language_list[lang_i][1] + "</option>\n";

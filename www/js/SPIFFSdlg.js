@@ -64,10 +64,10 @@ function processSPIFFSDelete(answer){
 
 function SPIFFSDeletedir(filename){
     SPIFFS_currentfile = filename;
-    confirmdlg(translate_text_item("Please Confirm"), translate_text_item("Confirm deletion of directory: ") + filename, processSPIFFSDelete);
+    confirmdlg(translate_text_item("Please Confirm"), translate_text_item("Confirm deletion of directory: ") + filename, processSPIFFSDeleteDir);
 }
 
-function processSPIFFSDelete(answer){
+function processSPIFFSDeleteDir(answer){
     if (answer == "yes")SPIFFSSendCommand("deletedir",SPIFFS_currentfile);
     SPIFFS_currentfile = "";
 }
@@ -82,7 +82,8 @@ function SPIFFSSendCommand(action,filename){
     url += "&filename="+encodeURI(filename);
     url += "&path="+encodeURI(SPIFFS_currentpath);
     document.getElementById('SPIFFS_loader').style.visibility="visible";
-    SendGetHttp(url, SPIFFSsuccess, SPIFFSfailed)
+    console.log(url);
+    SendGetHttp(url, SPIFFSsuccess, SPIFFSfailed);
 
 }
 
