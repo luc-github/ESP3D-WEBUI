@@ -222,5 +222,7 @@ var spanishtrans = {
 "Login":"Acceder",
 "Log out":"Cerrar sesi&oacute;n",
 "Password":"Contrase&ntilde;a",
-"No SD Card":"No Tarjeta SD"
+"No SD Card":"No Tarjeta SD",
+"Check for Update":"Buscar actualizaciones",
+"Please use 8.3 filename only.":"Utilizar s&oacute;lo el nombre de archivo de formato 8.3"
 };

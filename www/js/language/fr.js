@@ -222,5 +222,7 @@ var frenchtrans = {
 "Login":"Connexion",
 "Log out":"D&eacute;connexion",
 "Password":"Mot de passe",
-"No SD Card":"Pas de Carte SD"
+"No SD Card":"Pas de Carte SD",
+"Check for Update":"V&eacute;rification de MAJ au d&eacute;marrage",
+"Please use 8.3 filename only.":"Utilisez des noms de fichier au format 8.3 uniquement."
 };

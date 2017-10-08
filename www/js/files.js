@@ -368,6 +368,19 @@ function files_serial_M20_list_success(response_text){
     files_serial_M20_list_display();
 }
 
+function files_is_filename (file_name) {
+    var answer = true;
+    var s_name = String(file_name);
+    var rg1=/^[^\\/:\*\?"<>\|]+$/; // forbidden characters \ / : * ? " < > |
+    var rg2=/^\./; // cannot start with dot (.)
+    var rg3=/^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
+    //a 
+    answer = rg1.test(file_name)&&!rg2.test(file_name)&&!rg3.test(file_name)
+    if ((s_name.length == 0) || (s_name.indexOf(":") != -1) || (s_name.indexOf("..") != -1)) answer = false;
+    
+    return answer;
+}
+
 function files_serial_ls_list_success(response_text){
     var tlist = response_text.split("\n");
     for (var i=0; i < tlist.length; i++){
@@ -388,8 +401,10 @@ function files_serial_ls_list_success(response_text){
                 fsize =  files_format_size(parseInt(line.substr(pos+1)));
             }
             var isprint = files_showprintbutton(file_name,isdirectory);
-            var file_entry = {name:file_name, size: fsize, isdir: isdirectory, datetime: d, isprintable: isprint};
-             files_file_list.push(file_entry);
+            if (files_is_filename (file_name)) {
+                var file_entry = {name:file_name, size: fsize, isdir: isdirectory, datetime: d, isprintable: isprint};
+                files_file_list.push(file_entry);
+            }
         }
     }
     files_build_display_filelist();
@@ -544,7 +559,26 @@ function files_select_upload(){
 }
 
 function files_check_if_upload(){
-    
+    var canupload = true;
+    var files = document.getElementById("files_input_file").files;
+     if ( target_firmware == "marlin" ) {
+        for (var i = 0; i < files.length; i++) {
+             var filename = files[i].name;
+             //check base name can only by 8
+             var sizename = filename.indexOf(".");
+             if (sizename == -1) sizename = filename.length;
+             if (sizename > 8) canupload = false;
+             //check extension cano be more than 4 ".xxx"
+             if ((filename.length - sizename)>4) canupload = false;
+             //check only one dot
+             if (filename.indexOf(".") != filename.lastIndexOf("."))canupload = false;
+             }
+        if (canupload == false) 
+            {
+                alertdlg (translate_text_item("Error"), translate_text_item("Please use 8.3 filename only.")); 
+                return;
+            }  
+        }
     if (direct_sd && !( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))){
         SendPrinterCommand("[ESP200]", false, process_check_sd_presence );
     } else {
@@ -591,10 +625,10 @@ function files_start_upload(){
     }
     var url = "/upload";
     var path = files_currentPath;
-    if (direct_sd && !( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))){
+    if (direct_sd && (target_firmware == "smoothieware" ) && (files_currentPath.startsWith(primary_sd))){
         path = files_currentPath.substring(primary_sd.length);
     } 
-     if (!direct_sd || ( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))){
+    if (!direct_sd || ( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))){
           url = "/upload_serial";
          if (target_firmware == "smoothieware" ) {
              if (files_currentPath.startsWith(secondary_sd)) path = files_currentPath.substring(secondary_sd.length);
@@ -603,6 +637,7 @@ function files_start_upload(){
      }
     //console.log("upload from " + path );
     var files = document.getElementById("files_input_file").files;
+    
     if (files.value == "" || typeof files[0].name === 'undefined') {
         console.log("nothing to upload");
         return;

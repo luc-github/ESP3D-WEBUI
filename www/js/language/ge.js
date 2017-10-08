@@ -222,5 +222,7 @@ var germantrans = {
 "Login":"Login",
 "Log out":"Log out",
 "Password":"Password",
-"No SD Card":"No SD Card"
+"No SD Card":"No SD Card",
+"Check for Update":"Auf update &uuml;berpr&uuml;fen",
+"Please use 8.3 filename only.":"Bitte verwenden sie nur den 8.3-dateinamen."
 };

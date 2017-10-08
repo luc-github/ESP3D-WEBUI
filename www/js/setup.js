@@ -1,7 +1,7 @@
 //setup dialog
 
 var active_wizard_page = 0;
-var maz_page_wizard = 4;
+var maz_page_wizard = 5;
 
 function setupdlg () {
      setup_is_done = false;
@@ -21,6 +21,18 @@ function setupdlg () {
      document.getElementById("step2link").className = "steplinks disabled";
      //reset page 3
      document.getElementById("step2link").className= document.getElementById("step2link").className.replace( " wizard_done", "");
+     document.getElementById("wizard_line3").style.background = "#e0e0e0";
+     document.getElementById("step3link").disabled = true;
+     document.getElementById("step3link").className = "steplinks disabled";
+     if (!direct_sd) {
+         document.getElementById("step3link").style.display='none';
+         document.getElementById("wizard_line4").style.display='none';
+     }else {
+         document.getElementById("step3link").style.display='block';
+         document.getElementById("wizard_line4").style.display='block';
+     }
+    //reset page 4
+     document.getElementById("step3link").className= document.getElementById("step3link").className.replace( " wizard_done", "");
      document.getElementById("wizard_line4").style.background = "#e0e0e0";
      document.getElementById("endsteplink").disabled = true;
      document.getElementById("endsteplink").className = "steplinks disabled";
@@ -59,9 +71,17 @@ function continue_setup_wizard(){
         enablestep2();
         break;
     case 3:
-        enablestep4();
+        if (!direct_sd) {
+            active_wizard_page++;
+             document.getElementById("wizard_line3").style.background = "#337AB7";
+             enablestep4();
+         }
+        else enablestep3();
         break;
     case 4:
+         enablestep4();
+        break;
+    case 5:
         closeModal('ok')
         break;
     default:
@@ -156,10 +176,60 @@ function enablestep2() {
      document.getElementById("step2link").click();
 }
 
-function enablestep4() {
+function define_sd_role(index) {
+    if (setting_configList[index].defaultvalue == 1){
+        document.getElementById("setup_SD").style.display = "block";
+        if (target_firmware == "smoothieware")document.getElementById("setup_primary_SD").style.display = "block";
+        else document.getElementById("setup_primary_SD").style.display = "none";
+    } else {
+        document.getElementById("setup_SD").style.display = "none";
+        document.getElementById("setup_primary_SD").style.display = "none";
+    }
+}
+
+function enablestep3() {
+    var content ="";
     if (document.getElementById("step2link").className.indexOf("wizard_done") == -1){
         document.getElementById("step2link").className += " wizard_done";
         if (!can_revert_wizard) document.getElementById("step2link").className += " no_revert_wizard";
+        }
+     document.getElementById("wizard_line3").style.background = "#337AB7";
+     document.getElementById("step3link").disabled = "";
+     document.getElementById("step3link").className=document.getElementById("step3link").className.replace(" disabled", "");
+     index =  get_index_from_eeprom_pos(850);
+     content+= "<h4>" +  translate_text_item( "SD Card Configuration") + "</h4><hr>";
+     content+=  translate_text_item( "Is ESP connected to SD card:") + "<table><tr><td>";
+     content+=build_control_from_index(index, "define_sd_role");
+     content+= "</td></tr></table>";
+     content+="<hr>\n";
+     content+="<div id='setup_SD'>";
+     index =  get_index_from_eeprom_pos(853);
+     content+=  translate_text_item( "Check update using direct SD access:") + "<table><tr><td>";
+     content+=build_control_from_index(index);
+     content+= "</td></tr></table>";
+     content+="<hr>\n";
+     content+="<div id='setup_primary_SD'>";
+     index =  get_index_from_eeprom_pos(851);
+     content+=  translate_text_item( "SD card connected to ESP") + "<table><tr><td>";
+     content+=build_control_from_index(index);
+     content+= "</td></tr></table>";
+     content+="<hr>\n";
+     index =  get_index_from_eeprom_pos(852);
+     content+= translate_text_item( "SD card connected to printer") + "<table><tr><td>";
+     content+=build_control_from_index(index);
+     content+= "</td></tr></table>";
+     content+="<hr>\n";
+     content+="</div>";
+     content+="</div>";
+     document.getElementById("step3").innerHTML =content;
+     define_sd_role(get_index_from_eeprom_pos(850));
+     document.getElementById("step3link").click();
+}
+
+function enablestep4() {
+    if (document.getElementById("step3link").className.indexOf("wizard_done") == -1){
+        document.getElementById("step3link").className += " wizard_done";
+        if (!can_revert_wizard) document.getElementById("step3link").className += " no_revert_wizard";
         }
      document.getElementById("wizard_button").innerHTML = translate_text_item( "Close"); 
     document.getElementById("wizard_line4").style.background = "#337AB7";
