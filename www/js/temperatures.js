@@ -130,10 +130,10 @@ function process_Temperatures(response){
     var timedata = new Date().getTime();
     while ((result = regex_temp.exec(response)) !== null) {
         var tool = result[1];
-        var value = result[3] + "°C";
+        var value = parseFloat(result[3]).toFixed(2).toString()+ "°C";
         var value2;
-        if (isNaN(parseFloat(result[5]))) value2 = "0.0";
-        else value2 = result[5];
+        if (isNaN(parseFloat(result[5]))) value2 = "0.00";
+        else value2 = parseFloat(result[5]).toFixed(2).toString();
         value += " | " + value2 + "°C";
         if (tool == "T") {
             //to push to graph
