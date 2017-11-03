@@ -1,6 +1,6 @@
 var language = 'en';
 
-var language_list = [['ge', 'Deutsch', 'germantrans'],['en', 'English','englishtrans'], ['sp', 'Espa&ntilde;ol' ,'spanishtrans'],['fr', 'Fran&ccedil;ais', 'frenchtrans']];
+var language_list = [['de', 'Deutsch', 'germantrans'],['en', 'English','englishtrans'], ['sp', 'Espa&ntilde;ol' ,'spanishtrans'],['fr', 'Fran&ccedil;ais', 'frenchtrans']];
 
 //removeIf(production)
 var translated_list=[];
