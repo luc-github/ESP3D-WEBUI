@@ -55,7 +55,7 @@ var germantrans = {
 "Extruders":"Extruder",
 "Fan (0-100%)":"L&uuml;fter (0-100%)",
 "Feed (25-150%)":"Vorschub (25-150%)",
-"Feedrate XY:":"Vorschubgeschwindigkeit XY:",
+"Feedrate :":"Vorschubgeschwindigkeit :",
 "Filename":"Dateiname",
 "Filter temperatures":"Filter Temperatur",
 "Firmware":"Firmware",

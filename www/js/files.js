@@ -6,7 +6,7 @@ var files_status_list = [];
 var files_current_file_index = -1;
 var files_error_status ="";
 
-function init_files_panel(){
+function init_files_panel(dorefresh){
     if ( target_firmware == "smoothieware"){
         files_currentPath =primary_sd;
         document.getElementById('files_refresh_primary_sd_btn').innerHTML = primary_sd.substring(0, primary_sd.length-1);
@@ -24,7 +24,9 @@ function init_files_panel(){
     if (!((target_firmware == "marlin") ||  (target_firmware == "???")))document.getElementById('files_createdir_btn').style.display="inline";
     else document.getElementById('files_createdir_btn').style.display="none";
     files_set_button_as_filter(files_filter_sd_list);
-    if (direct_sd) files_refreshFiles(files_currentPath);
+    var refreshlist = true;
+    if (typeof dorefresh !== 'undefined') refreshlist = dorefresh;
+    if (direct_sd && refreshlist) files_refreshFiles(files_currentPath);
 }
 
 function files_set_button_as_filter(isfilter){
@@ -239,6 +241,7 @@ function files_showdeletebutton(index){
 }
 
 function files_refreshFiles(path, usecache){
+    //console.log("refresh requested " + path);
     var cmdpath = path;
     files_currentPath = path;
     if (typeof usecache === 'undefined') usecache = false;
@@ -250,7 +253,7 @@ function files_refreshFiles(path, usecache){
     document.getElementById('files_nav_loader').style.display="block";
     //this is pure direct SD
     if (direct_sd && !( target_firmware == "smoothieware"  && files_currentPath.startsWith(secondary_sd))){
-        if (target_firmware == "smoothieware")cmdpath = path.substring(5);
+        if (target_firmware == "smoothieware")cmdpath = path.substring(4);
         var url = "/upload?path=" + encodeURI(cmdpath);
         //removeIf(production)
         var response = "{\"files\":[{\"name\":\"test2.gco\",\"shortname\":\"test2.gco\",\"size\":\"992 B\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"simpl3d.gcode\",\"shortname\":\"SIMPL3~1.GCO\",\"size\":\"0 B\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"patt2.g\",\"shortname\":\"patt2.g\",\"size\":\"9.73 MB\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"myfolder\",\"shortname\":\"myfolder\",\"size\":\"-1\",\"datetime\":\"2016-08-01 18:15:00\"},{\"name\":\"wconfig.ok\",\"shortname\":\"wconfig.ok\",\"size\":\"1.10 KB\",\"datetime\":\"2017-01-06 14:35:54\"},{\"name\":\"gpl.txt\",\"shortname\":\"gpl.txt\",\"size\":\"34.98 KB\",\"datetime\":\"2017-04-17 20:22:32\"},{\"name\":\"m1.g\",\"shortname\":\"m1.g\",\"size\":\"17 B\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"m2.g\",\"shortname\":\"m2.g\",\"size\":\"17 B\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"Test4.g\",\"shortname\":\"TEST4.G\",\"size\":\"20.47 KB\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"README.md\",\"shortname\":\"README.md\",\"size\":\"11.83 KB\",\"datetime\":\"2017-04-17 20:25:08\"},{\"name\":\"test file.gcode\",\"shortname\":\"TESTFI~1.GCO\",\"size\":\"11 B\",\"datetime\":\"2000-01-01 01:00:00\"},{\"name\":\"M3.g\",\"shortname\":\"M3.g\",\"size\":\"32 B\",\"datetime\":\"2000-01-01 01:00:00\"}],\"path\":\"/\",\"total\":\"14 GB\",\"used\":\"28 MB\",\"occupation\":\"1\",\"mode\":\"direct\",\"status\":\"Ok\"}";

@@ -34,6 +34,7 @@ function Copytest() {
     return merge(
         gulp.src(['www/index.html'])
         .pipe(removeCode({production: false}))
+        .pipe(removeCode({cleanheader: true}))
          .pipe(gulp.dest('dist')),
         gulp.src(['www/images/**/*.*'])
             .pipe(gulp.dest('dist/images'))
@@ -44,6 +45,7 @@ function Copy() {
     return merge(
         gulp.src(['www/index.html'])
         .pipe(removeCode({production: true}))
+        .pipe(removeCode({cleanheader: true}))
          .pipe(gulp.dest('dist')),
         gulp.src(['www/images/**/*.*'])
             .pipe(gulp.dest('dist/images'))
@@ -55,6 +57,7 @@ function concatApptest() {
         gulp.src([ 'www/js/**/*.js'])
             .pipe(concat('app.js'))
             .pipe(removeCode({production: false}))
+            .pipe(removeCode({cleanheader: true}))
             .pipe(gulp.dest('./dist/js')),
 
         gulp.src([ 'www/css/**/*.css'])
@@ -68,6 +71,7 @@ function concatApp() {
         gulp.src([ 'www/js/**/*.js'])
             .pipe(concat('app.js'))
             .pipe(removeCode({production: true}))
+            .pipe(removeCode({cleanheader: true}))
             .pipe(gulp.dest('./dist/js')),
 
         gulp.src([ 'www/css/**/*.css'])
@@ -140,7 +144,7 @@ var defaultSeries = gulp.series(clean,  lint, Copy, concatApp, minifyApp, includ
 //var packageSeries = gulp.series(clean,  lint, Copy, concatApp, minifyApp, smoosh, compress);
 var packageSeries = gulp.series(clean,  lint, Copy, concatApp, includehtml, includehtml, replaceSVG,  minifyApp, smoosh, compress, clean2);
 var package2Series = gulp.series(clean,  lint, Copy, concatApp, includehtml, includehtml, replaceSVG, smoosh);
-var package2testSeries = gulp.series(clean,  lint, Copy, concatApptest, includehtml, includehtml, replaceSVG, smoosh);
+var package2testSeries = gulp.series(clean,  lint, Copytest, concatApptest, includehtml, includehtml, replaceSVG, smoosh);
 
 gulp.task('default', defaultSeries);
 gulp.task('package', packageSeries);

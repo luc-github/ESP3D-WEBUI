@@ -55,7 +55,7 @@ var frenchtrans = {
 "Extruders":"Extrudeurs",
 "Fan (0-100%)":"Ventilateur (0-100%)",
 "Feed (25-150%)":"Vitesse (25-150%)",
-"Feedrate XY:":"Acc&eacute;l&eacute;ration XY:",
+"Feedrate :":"Acc&eacute;l&eacute;ration :",
 "Filename":"Fichier",
 "Filter temperatures":"Filtrer temp&eacute;ratures",
 "Firmware":"Micrologiciel",

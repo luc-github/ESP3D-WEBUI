@@ -31,7 +31,7 @@ div.step button {
     background: #e0e0e0;
     width: 50px;
     top: 50%;
-     margin: 25px auto; 
+    margin: 25px auto; 
     z-index: 1;
 }
 
@@ -82,3 +82,14 @@ div.step button.active {
     padding: 6px 12px;
 
 }
+
+@media (max-width: 360px) {
+.connecting-line{
+    width:2px!important;
+}
+
+.input-group {
+    display: block;
+    }
+}
+

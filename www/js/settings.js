@@ -76,13 +76,13 @@ function update_UI_setting(){
          case "461":
             target_firmware = getFWshortnamefromid(setting_configList[i].defaultvalue);
             update_UI_firmware_target() ;
-            init_files_panel();
+            init_files_panel(false);
             break;        
         // EP_IS_DIRECT_SD   850
         case "850":
             direct_sd = (setting_configList[i].defaultvalue == 1)? true: false;
             update_UI_firmware_target() ;
-            init_files_panel();
+            init_files_panel(false);
             break;
         }
     }
@@ -104,7 +104,7 @@ function build_control_from_index (index, extra_set_function) {
             content+="<span id='icon_setting_"+ i + "'class='form-control-feedback'  style='right: 1em'></span>";
             }
         else {
-            content+="<input id='setting_" + i + "' type='text' class='form-control' style='width:auto'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +")' >";
+            content+="<input id='setting_" + i + "' type='text' class='form-control'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +")' >";
             content+="<span id='icon_setting_"+ i + "'class='form-control-feedback' ></span>";
             }
         
@@ -147,7 +147,7 @@ function build_HTML_setting_list(filter){
             content+= translate_text_item( setting_configList[i].label);
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
-            content+= build_control_from_index(i);
+            content+= "<table><tr><td>" + build_control_from_index(i) + "</td></tr></table>";
             content+="</td>";
            content+="</tr>\n";
         }

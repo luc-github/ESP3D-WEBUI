@@ -1,11 +1,11 @@
-<div class="panel panel-default" style ="min-width:400px">
+<div class="panel panel-default" >
     <div class="panel-heading">
        <div class="row">
             <div class="col-md-12">
                 <div class="pull-left" >
                    <table >
                        <tr> 
-                            <td><span translate>SD Files</span></td>
+                            <td><b><span translate>SD Files</span></b></td>
                             <td>&nbsp;&nbsp;</td>
                             <td>
                              <button id="files_createdir_btn" onclick="files_Createdir()" class="btn btn-info btn-xs hide_it" style="padding: -2px 2px 0x 0px;">
@@ -62,25 +62,30 @@
         </ul>
     </div>
     <div class="panel-footer panel-footer-height">
-         <div class="row">
+         <div class="row hide_it" id="files_space_sd_status">
             <div class="col-md-12" >
-                <table>
-                    <tr id="files_space_sd_status" class="hide_it">
-                         <td><span translate>Total:</span>&nbsp;<span id="files_sd_status_total"></span></td> 
-                         <td>&nbsp;| <span translate>Used:</span>&nbsp;<span id="files_sd_status_used"> </span></td> 
-                         <td>&nbsp;| <span translate>Ocupation:</span>&nbsp;</td> 
-                         <td >
-                             <meter id="files_sd_status_occupation" style='width:150px' min='0' max='100' high='90' value=50></meter>
-                         </td>
-                         <td><span  id="files_sd_status_percent"></span><span>%</span></td>
-                    </tr>
-                    <tr id="files_status_sd_status" class="hide_it">
-                        <td>
-                            <span id="files_sd_status_msg">Ok</span>
-                        </td>
-                     </tr>
-                </table>
+               <div class="form-inline" >
+                    <div class="form-group">
+                         <span ><span translate>Total:</span>&nbsp;<span id="files_sd_status_total"></span></span> 
+                         <span >&nbsp;|&nbsp;</span>
+                         <span ><span translate>Used:</span>&nbsp;<span id="files_sd_status_used"> </span></span> 
+                         <span >&nbsp;</span>
+                        <span class="noshowonlowres">| &nbsp;</span>
+                        <span class="form-inline" >
+                                <div class="form-group">
+                                    <span><span translate>Ocupation:</span>
+                                    <meter id="files_sd_status_occupation" style='width:150px' min='0' max='100' high='90' value=50></meter></span>
+                                    <span  id="files_sd_status_percent"></span><span>%</span>
+                                </div>
+                        </span>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="row hide_it" id="files_status_sd_status">
+            <div class="col-md-12" >
+                <span id="files_sd_status_msg">Ok</span>
+            </div>    
         </div>
     </div>
 </div>

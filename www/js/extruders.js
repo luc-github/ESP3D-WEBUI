@@ -11,7 +11,7 @@ function init_extruder_panel(){
 function update_second_extruder(){
    temperature_second_extruder(document.getElementById('enable_second_extruder').checked);
   if (document.getElementById('enable_second_extruder').checked) {
-       document.getElementById('second_extruder_UI').style.display='table-row';
+       document.getElementById('second_extruder_UI').style.display='block';
        document.getElementById('temperature_secondExtruder').style.display='table-row';
     }
   else {

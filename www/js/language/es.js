@@ -55,7 +55,7 @@ var spanishtrans = {
 "Extruders":"Extrusores",
 "Fan (0-100%)":"Ventilador (0-100%)",
 "Feed (25-150%)":"Velocidad (25-150%)",
-"Feedrate XY:":"Avance XY:",
+"Feedrate :":"Avance :",
 "Filename":"Archivo",
 "Filter temperatures":"Filtrar temperaturas",
 "Firmware":"Firmware",

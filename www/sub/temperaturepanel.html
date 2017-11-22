@@ -1,9 +1,9 @@
-<div class="panel panel-default" style ="min-width:450px">
+<div class="panel panel-default">
     <div class="panel-heading">
        <div class="row">
             <div class="col-md-12">
                 <div class="pull-left" >
-                      <span translate>Temperatures</span>
+                      <b><span translate>Temperatures</span></b>
                 </div>
                 <div class="pull-right">
                     <div class="form-inline">
@@ -13,8 +13,10 @@
                                     <input type="checkbox" id="autocheck_temperature" onclick="on_autocheck_temperature()"/>
                                     <span  translate>auto-check every:</span>
                                 </label>
-                                <input class='form-control'  type="number"  min="1" max="99" style="width:4em" id="tempInterval_check" onchange="onTempIntervalChange()">
-                                <span translate>sec</span>
+                                <div class="input-group">
+                                <input class='form-control w4'  type="number"  min="1" max="99" id="tempInterval_check" onchange="onTempIntervalChange()" />
+                                <span  class='input-group-addon'  translate>sec</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -23,7 +25,7 @@
         </div>
     </div>
     <div class="panel-body panel-height-temp">
-        <table class="table">
+        <table class="table table-responsive">
             <thead>
                 <tr>
                     <th translate>Name</th>
@@ -44,7 +46,10 @@
                                     </g>
                                 </svg>
                             </button>&nbsp;&nbsp;
-                            <input class='form-control' type="number" style="width:5em" min="0" max="999"  id="heaterT0SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T0')">&deg;C&nbsp;&nbsp;
+                            <div class="input-group">
+                                <input class='form-control w5' type="number" min="0" max="999"  id="heaterT0SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T0')" />
+                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
+                            </div>
                             <button onclick="temperature_heatSet('T0')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -69,7 +74,10 @@
                                     </g>
                                 </svg>
                             </button>&nbsp;&nbsp;
-                            <input class='form-control'  type="number" style="width:5em" min="0" max="999"  id="heaterT1SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T1')">&deg;C&nbsp;&nbsp;
+                             <div class="input-group">
+                                <input class='form-control w5'  type="number" min="0" max="999"  id="heaterT1SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T1')" />
+                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
+                            </div>
                             <button onclick="temperature_heatSet('T1')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -94,7 +102,10 @@
                                     </g>
                                 </svg>
                             </button>&nbsp;&nbsp;
-                            <input class='form-control'  type="number" style="width:5em" min="0" max="999" id="bedSelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'bed')">&deg;C&nbsp;&nbsp;
+                            <div class="input-group">
+                                <input class='form-control w5'  type="number" min="0" max="999" id="bedSelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'bed')" />
+                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
+                            </div>
                             <button onclick="temperature_heatSet('bed')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -109,18 +120,18 @@
             </tr>
             </tbody>
         </table>
-         <table width='100%' id="temperatures_output" class="hide_it">
-            <tr>
-                <td>
-                    <canvas id="extruderTempgraph" height="130"  width="200"></canvas>
-                </td>
-                <td>
-                &nbsp;&nbsp;
-                </td>
-                <td>
+         <ul class="list-group" >
+            <li class='list-group-item hide_it'  id="temperatures_output">
+                <div class='row'>
+                    <div class='col-md-6'>
+                     <canvas id="extruderTempgraph" height="130"  width="200"></canvas>
+                     &nbsp;&nbsp;
+                    </div> 
+                    <div class='col-md-6'>
                     <canvas id="bedTempgraph" height="130"  width="200" ></canvas>
-                </td>
-            </tr>
-        </table>
-    </div>
+                    </div> 
+                </div>
+            </li>
+        </ul>  
+   </div>
 </div>

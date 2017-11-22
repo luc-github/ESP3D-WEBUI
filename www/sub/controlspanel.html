@@ -1,9 +1,9 @@
-<div class="panel panel-default" >
-    <div class="panel-heading">
-          <div class="row">
-                <div class="col-md-12">
+<div class="panel panel-default " >
+    <div class="panel-heading ">
+          <div class="row ">
+            <div class="col-md-12">
                     <div class="pull-left" >
-                          <span translate>Controls</span>
+                          <b><span translate>Controls</span></b>
                     </div>
                     <div class="pull-right">
                         <div class="form-inline">
@@ -11,17 +11,19 @@
                                 <div class="checkbox">
                                     <label>
                                         <input type="checkbox" id="autocheck_position" onclick="on_autocheck_position()"/>
-                                        <span translate>auto-check position every:</span>
+                                        <span translate>auto-check position every:</span>                                    
                                     </label>
-                                    <input class='form-control' type="number" min="1" max="99" style="width:4em" id="posInterval_check" onchange="onPosIntervalChange()"/>
-                                    <span translate>sec</span>
+                                    <div class="input-group">
+                                        <input class='form-control w4' type="number" min="1" max="99" id="posInterval_check" onchange="onPosIntervalChange()" />
+                                        <span class='input-group-addon' translate>sec</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col col-lg-7">
@@ -85,17 +87,21 @@
             <div class="col-md-12">
                 <div class="form-inline">
                     <div class="form-group">
-                        <span translate>Feedrate XY:</span>&nbsp;
-                        <input class='form-control'  type="number" min="1" max="9999" id="control_xy_velocity" onchange="onXYvelocityChange()" style="width: 6em;"/>
-                        &nbsp;<span translate>mm/min</span>
-                        &nbsp;Z:&nbsp;
-                        <input class='form-control'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()" style="width:5em" />
-                        &nbsp;<span translate>mm/min</span>
-                        &nbsp;&nbsp;
-                        <button class="btn btn-primary pull-right" onclick="control_motorsOff()" translate>Motors off</button>
+                        <span class="control-label" translate >Feedrate :</span>
+                        <div class="input-group">
+                            <span class="input-group-addon" >XY:</span>
+                            <input class='form-control w6'  type="number" min="1" max="9999" id="control_xy_velocity" onchange="onXYvelocityChange()" />
+                            <span class='input-group-addon'  translate>mm/min</span>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"translate>Z:</span>
+                            <input class='form-control w5'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()"  />
+                            <span class='input-group-addon'  translate>mm/min</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="control_motorsOff()" translate>Motors off</button>
                     </div>
-                </div>
             </div>
+        </div>
         </div>
     </div>
 </div>

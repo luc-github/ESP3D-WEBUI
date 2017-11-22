@@ -101,7 +101,13 @@ z-index: 20000 ! important; /* Sit on top of the top */
     }
 }
 
-@media screen and (max-width: 767px) {
+@media (min-height: 640px) {
+    .modal {
+    padding-top: 5px;
+    }
+}
+
+@media  (max-width: 767px) {
   .modal-content {
     width: 100%;
     }
