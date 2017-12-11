@@ -105,7 +105,7 @@ function get_Position(){
         var pos2 = result_data.indexOf(" ", pos1);
         if (pos2 > -1){
             result = result_data.substring(pos1,pos2);
-        }
+        } else  result = result_data.substring(pos1);
     }
     return result.trim();
 }

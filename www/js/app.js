@@ -87,7 +87,7 @@ function initUI() {
     init_extruder_panel();
     init_command_panel();
     init_controls_panel();
-    init_files_panel();
+    init_files_panel(false);
     //check if we need setup
     if ( target_firmware == "???"){
         setupdlg();
