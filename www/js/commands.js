@@ -62,7 +62,12 @@ function Monitor_output_Update(message){
     for (var i = 0; i < Monitor_outputLength; i++) {
         if (istempfilter && Monitor_output[i].match(regex)) continue;
         if ((Monitor_output[i].trim()==="\n") || (Monitor_output[i].trim()==="\r") || (Monitor_output[i].trim()==="\r\n") || (Monitor_output[i].trim()==="") )continue;
-        else output += Monitor_output[i];
+        else {
+            m = Monitor_output[i].replace("&", "&amp;");
+            m = m.replace("<", "&lt;");
+            m = m.replace(">", "&gt;");
+            output += m  ;
+        }
     }
     document.getElementById("cmd_content").innerHTML = output;
     Monitor_check_autoscroll();
