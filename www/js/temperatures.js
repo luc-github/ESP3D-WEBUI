@@ -77,6 +77,7 @@ function on_autocheck_temperature(){
        store_localdata('autocheck_temperature', true);
        var interval = parseInt(document.getElementById('tempInterval_check').value);
        if (!isNaN(interval) && interval > 0 && interval < 100) {
+           if (interval_temperature != -1 )clearInterval(interval_temperature);
            interval_temperature = setInterval(function(){ get_Temperatures() }, interval * 1000);
           start_graph_output();
             }
@@ -100,8 +101,7 @@ function on_autocheck_temperature(){
 function onTempIntervalChange(){
 var interval = parseInt(document.getElementById('tempInterval_check').value);
  if (!isNaN(interval) && interval > 0 && interval < 100 ) {
-    if (interval_temperature != -1 )clearInterval(interval_temperature);
-    interval_temperature = setInterval(function(){ get_Temperatures() }, interval * 1000);
+    on_autocheck_temperature();
     }
 else {
     document.getElementById('autocheck_temperature').checked = false;

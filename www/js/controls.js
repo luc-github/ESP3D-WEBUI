@@ -56,6 +56,7 @@ function on_autocheck_position(){
        store_localdata('autocheck_position', true);
        var interval = parseInt(document.getElementById('posInterval_check').value);
        if (!isNaN(interval) && interval > 0 && interval < 100) {
+           if (interval_position != -1 )clearInterval(interval_position);
            interval_position = setInterval(function(){ get_Position() }, interval * 1000);
             }
         else {
@@ -76,8 +77,7 @@ function on_autocheck_position(){
 function onPosIntervalChange(){
 var interval = parseInt(document.getElementById('posInterval_check').value);
  if (!isNaN(interval) && interval > 0 && interval < 100 ) {
-    if (interval_position != -1 )clearInterval(interval_position);
-    interval_position = setInterval(function(){ get_Position() }, interval * 1000);
+       on_autocheck_position();   
     }
 else {
     document.getElementById('autocheck_position').checked = false;
