@@ -24,6 +24,7 @@ before_script:
   - npm install --save-dev gulp-replace
   - npm install --save-dev fs
   - npm install --save-dev gulp-smoosher
+  - npm install gulp
   
 
 script:
