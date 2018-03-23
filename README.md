@@ -1,4 +1,6 @@
-# ESP3D-WEBUI
+# ESP3D-WEBUI 
+ [![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=master)]   
+ 
 ## What is that ?
 A web configuration tool for ESP3D
 Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webui](http://imrahil.github.io/smoothieware-webui/) to get a multi firmware support for [Repetier](https://github.com/repetier/Repetier-Firmware), [Repetier for Davinci printer](https://github.com/luc-github/Repetier-Firmware-0.92), (Marlin)[https://github.com/MarlinFirmware], [Marlin Kimbra](https://github.com/MagoKimbra/MarlinKimbra) and of course [Smoothieware](https://github.com/Smoothieware/Smoothieware)
