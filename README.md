@@ -1,5 +1,5 @@
 # ESP3D-WEBUI 
- [![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=master)]   
+ ![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=master)   
  
 ## What is that ?
 A web configuration tool for ESP3D
