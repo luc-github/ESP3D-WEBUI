@@ -1,0 +1,37 @@
+language: node_js
+
+os:
+  - linux
+  
+before_script:
+  - npm install --global gulp-cli
+  - sleep 3
+  - npm install --save-dev gulp
+  - npm install --save-dev gulp-jshint
+  - npm install --save-dev jshint
+  - npm install --save-dev gulp-if
+  - npm install --save-dev gulp-concat
+  - npm install --save-dev gulp-uglify
+  - npm install --save-dev gulp-clean-css
+  - npm install --save-dev gulp-ng-annotate
+  - npm install --save-dev gulp-bytediff
+  - npm install --save-dev gulp-cdnizer
+  - npm install --save-dev gulp-remove-code
+  - npm install --save-dev merge-stream
+  - npm install --save-dev del
+  - npm install --save-dev gulp-zip
+  - npm install --save-dev gulp-gzip
+  - npm install --save-dev gulp-htmlmin
+  - npm install --save-dev gulp-replace
+  - npm install --save-dev fs
+  - npm install --save-dev gulp-smoosher
+  
+
+script:
+  - echo "build index.html"
+  - gulp package
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
