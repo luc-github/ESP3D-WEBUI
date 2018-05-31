@@ -1,6 +1,6 @@
 language: node_js
 node_js:
- - "node"
+ - "5.8.0"
   
 before_script:
   - npm install --global gulp-cli
