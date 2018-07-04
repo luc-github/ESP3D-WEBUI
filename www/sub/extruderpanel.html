@@ -1,26 +1,14 @@
-<div class="panel panel-default" >
+<div id="extruderPanel" class="panel panel-default panel-flex" >
     <div class="panel-heading">
        <div class="row">
             <div class="col-md-12">
                 <div class="pull-left" >
                       <b><span translate>Extruders</span></b>
                 </div>
-                <div class="pull-right">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="enable_second_extruder" onclick="update_second_extruder()"/>
-                                    <span  translate>enable second extruder</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-    <div class="panel-body panel-height">
+    <div class="panel-body panel-height panel-flex-main">
         <ul class="list-group" >
             <li class='list-group-item' >
                 <div class='row'>
@@ -28,7 +16,20 @@
                     <div class='col-md-8'><b><label  translate>Options</label></b></div> 
                 </div>
             </li>
-            <li class='list-group-item' >
+            <li class='list-group-item hide_it' id="mixed_extruder_UI">
+                <div class='row'>
+                    <div class='col-md-4'><table><tr><td><span  translate>Extruder</span></td><td>&nbsp;</td><td id='extruder_list'><select style="width:4em"class='form-control'  id='active_extruder' onchange='Set_active_extruder(); '><option value='0'>0</option><option value='1'>1</option></select></td></tr></table></div> 
+                    <div class='col-md-8'>
+                        <div class="form-inline">
+                            <div class="form-group">
+                                <button onclick="Extrude_cmd(current_active_extruder, 1)" class="btn btn-primary" translate>Extrude</button>
+                                <button onclick="Extrude_cmd(current_active_extruder, -1)" class="btn btn-info" translate>Reverse</button>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </li>
+            <li class='list-group-item hide_it' id="first_extruder_UI">
                 <div class='row'>
                     <div class='col-md-4'><span  translate>Extruder T0</span></div> 
                     <div class='col-md-8'>
@@ -69,8 +70,8 @@
                                     </button>&nbsp;&nbsp;
                                     <div class="input-group">
                                         <input class='form-control w5'  type="number" min="50"  max="300" id="flowSelectedValue" onkeyup="extruder_handleKeyUp(event, 'Flow')" value=100>
-                                        <span class='input-group-addon' translate>&#37;</span>&nbsp;&nbsp;
-                                    </div>
+                                        <span class='input-group-addon' translate>&#37;</span>
+                                    </div>&nbsp;&nbsp;
                                     <button onclick="flowSet_cmd()" class="btn btn-danger">
                                           <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                             <g transform='translate(50,1200) scale(1, -1)'>
@@ -98,8 +99,8 @@
                                 </button>&nbsp;&nbsp;
                                 <div class="input-group">
                                     <input class='form-control w5'  type="number" min="25"  max="150" id="feedSelectedValue" value=100 onkeyup="extruder_handleKeyUp(event, 'Feed')">
-                                    <span class='input-group-addon' translate>&#37;</span>&nbsp;&nbsp;
-                                </div>
+                                    <span class='input-group-addon' translate>&#37;</span>
+                                </div>&nbsp;&nbsp;
                                 <button onclick="feedSet_cmd()" class="btn btn-danger">
                                     <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                         <g transform='translate(50,1200) scale(1, -1)'>
@@ -112,7 +113,7 @@
                     </div> 
                 </div>
             </li>
-            <li class='list-group-item' >
+            <li class='list-group-item hide_it' id="fan_UI" >
                 <div class='row'>
                     <div class='col-md-4'><span  translate>Fan (0-100%)</span></div> 
                     <div class='col-md-8'>
@@ -127,8 +128,8 @@
                                 </button>&nbsp;&nbsp;
                                 <div class="input-group">
                                     <input class='form-control w5'  type="number" min="0"  max="100"  value=0 id="fanSelectedValue" onkeyup="extruder_handleKeyUp(event, 'Fan')">
-                                    <span class='input-group-addon' translate>&#37;</span>&nbsp;&nbsp;
-                                </div>
+                                    <span class='input-group-addon' translate>&#37;</span>
+                                </div>&nbsp;&nbsp;
                                 <button onclick="fanSet_cmd()" class="btn btn-danger">
                                     <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                         <g transform='translate(50,1200) scale(1, -1)'>
@@ -148,7 +149,6 @@
             <div class="col-md-12" >
                 <div class="form-inline">
                     <div class="form-group">
-                        
                         <div class="input-group">
                             <span class="input-group-addon" translate>Extrude</span>
                             <input class='form-control w4'  type="number" min="1" max="9999" onchange='on_extruder_length_Change()' onkeyup="on_extruder_length_Change()" id="filament_length" value=5 />

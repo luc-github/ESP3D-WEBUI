@@ -6,15 +6,24 @@ var language_list = [['de', 'Deutsch', 'germantrans'],['en', 'English','englisht
 var translated_list=[];
 //endRemoveIf(production)
 
+function build_language_list(id_item) {
+    var content ="<select class='form-control'  id='" + id_item+ "' onchange='translate_text(this.value)'>\n";
+     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
+         content+="<option value='" + language_list[lang_i][0] + "'";
+         if ( language_list[lang_i][0] == language) content+=" selected";
+         content+=">" + language_list[lang_i][1] + "</option>\n";
+        }
+     content+="</select>\n";
+     return content;
+}
+
 function translate_text(lang){
     var currenttrans ={};
     var translated_content="";
-    store_localdata('language',lang);
     language = lang;
     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
         if ( language_list[lang_i][0] == lang) {
             currenttrans = eval(language_list[lang_i][2]);
-            document.getElementById("translate_menu").innerHTML=language_list[lang_i][1];
             }
         }
     var All = document.getElementsByTagName('*');
@@ -49,7 +58,7 @@ function translate_text(lang){
             }
          content = All[i].getAttribute('english_content');
            
-         translated_content = translate_text_item(content); 
+         translated_content = decode_entitie(translate_text_item(content)); 
         All[i].setAttribute( 'placeholder', translated_content)
         }
      }

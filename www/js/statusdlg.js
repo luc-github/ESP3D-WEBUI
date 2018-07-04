@@ -9,6 +9,7 @@ function statusdlg () {
 
 function statussuccess(response){
         document.getElementById('refreshstatusbtn').style.display='block';
+        document.getElementById('status_loader').style.display='none';
         var modal = getactiveModal();
         if ( modal == null) return;
         var text = modal.element.getElementsByClassName("modal-text")[0];
@@ -17,7 +18,12 @@ function statussuccess(response){
         for (var i = 0; i < tresponse.length; i++){
             var data = tresponse[i].split(":");
             if (data.length >= 2)  {
-                output+= "<label>" + data[0] + ": </label>&nbsp;<span class='text-info'><strong>"+ data[1];
+                output+= "<label>" + translate_text_item(data[0]) + ": </label>&nbsp;<span class='text-info'><strong>";
+                var data2 = data[1].split(" (")
+                output+= translate_text_item(data2[0].trim());
+                 for (v=1;v<data2.length;v++){
+                    output+=" (" + data2[v];
+                }
                 for (v=2;v<data.length;v++){
                     output+=":" + data[v];
                 }
@@ -31,6 +37,7 @@ function statussuccess(response){
 
 function statusfailed(errorcode, response){
     document.getElementById('refreshstatusbtn').style.display='block';
+    document.getElementById('status_loader').style.display='none';
     document.getElementById('status_msg').style.display='block';
     console.log("Error " + errorcode + " : " + response);
     document.getElementById('status_msg').innerHTML = "Error " + errorcode + " : " + response;
@@ -38,6 +45,7 @@ function statusfailed(errorcode, response){
 
 function refreshstatus() {
     document.getElementById('refreshstatusbtn').style.display='none';
+    document.getElementById('status_loader').style.display='block';
     var modal = getactiveModal();
     if ( modal == null) return;
     var text = modal.element.getElementsByClassName("modal-text")[0];

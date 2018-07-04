@@ -2,12 +2,24 @@ var interval_position=-1;
 var control_macrolist = [];
 
 function init_controls_panel(){
-    var value = get_localdata('autocheck_position');
-    if (value == 'true'){
-        document.getElementById('autocheck_position').checked =true;
-        on_autocheck_position();
-    }
     loadmacrolist();
+}
+
+function hideZcontrols(){
+    document.getElementById('JogBar').style.display = 'none';
+    document.getElementById('HomeZ').style.display = 'none';
+    document.getElementById('CornerZ').style.display = 'block';
+    document.getElementById('control_z_position_display').style.display = 'none';
+    document.getElementById('z_velocity_display').style.display = 'none';
+}
+
+function showZcontrols(){
+    document.getElementById('CornerZ').style.display = 'none';
+    document.getElementById('JogBar').style.display = 'block';
+    document.getElementById('HomeZ').style.display = 'block';
+    document.getElementById('control_z_position_display').style.display = 'block';
+    document.getElementById('z_velocity_display').style.display = 'inline';
+    
 }
 
 function loadmacrolist() {
@@ -24,8 +36,11 @@ function loadmacrolist() {
 function Macro_build_list(response_text){
     var response = [];
     try {
-     var response = JSON.parse(response_text);
-    }
+        if(response_text.length != 0) 
+        {
+            response = JSON.parse(response_text);
+        }
+        }
     catch (e) {
         console.error("Parsing error:", e); 
     }
@@ -43,17 +58,18 @@ function Macro_build_list(response_text){
 }
 
 function processMacroGetSuccess(response){
-     Macro_build_list(response);
+     if (response.indexOf("<HTML>") == -1)  Macro_build_list(response);
+     else Macro_build_list("");
 }
 
 function processMacroGetFailed(errorcode, response){
      console.log("Error " + errorcode + " : " + response);
-     Macro_build_list(response);
+     Macro_build_list("");
 }
 
-function on_autocheck_position(){
+function on_autocheck_position(use_value){
+    if (typeof (use_value) !== 'undefined' )  document.getElementById('autocheck_position').checked =use_value;
     if (document.getElementById('autocheck_position').checked) {
-       store_localdata('autocheck_position', true);
        var interval = parseInt(document.getElementById('posInterval_check').value);
        if (!isNaN(interval) && interval > 0 && interval < 100) {
            if (interval_position != -1 )clearInterval(interval_position);
@@ -61,14 +77,12 @@ function on_autocheck_position(){
             }
         else {
             document.getElementById('autocheck_position').checked = false;
-            store_localdata('autocheck_position', false);
             document.getElementById('posInterval_check').value = 0;
             if (interval_position != -1 )clearInterval(interval_position);
             interval_position = -1;
         }
     }
   else {
-        store_localdata('autocheck_position', false);
         if (interval_position != -1 )clearInterval(interval_position);
         interval_position = -1;
     }
@@ -89,12 +103,14 @@ else {
 
 function get_Position(){
     var command = "M114";
+    if (target_firmware == "grbl")  command = "?";
     //removeIf(production)
     var response = "ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.0000 ";
+    if (target_firmware == "grbl")  response = "<Idle|MPos:10.000,0.000,0.000|FS:0,0|Ov:71,100,147>";
     process_Position(response);
     return;
     //endRemoveIf(production)
-    SendPrinterCommand(command, false, process_Position);
+    SendPrinterCommand(command, false, process_Position,null, 114, 1);
 }
 
  function Control_get_position_value(label, result_data) {
@@ -111,9 +127,20 @@ function get_Position(){
 }
 
 function process_Position(response){
-    document.getElementById('control_x_position').innerHTML = Control_get_position_value("X:", response);
-    document.getElementById('control_y_position').innerHTML = Control_get_position_value("Y:", response);
-    document.getElementById('control_z_position').innerHTML = Control_get_position_value("Z:", response);
+     if (target_firmware == "grbl"){
+         var tab1 = response.split("MPos:");
+         if (tab1.length >1) {
+            var tab2 = tab1[1].split("|");
+            var tab3 = tab2[0].split(",");
+            document.getElementById('control_x_position').innerHTML = tab3[0];
+            if (tab3.length > 1) document.getElementById('control_y_position').innerHTML = tab3[1];
+            if (tab3.length > 2) document.getElementById('control_z_position').innerHTML = tab3[2];
+            } 
+     } else {
+        document.getElementById('control_x_position').innerHTML = Control_get_position_value("X:", response);
+        document.getElementById('control_y_position').innerHTML = Control_get_position_value("Y:", response);
+        document.getElementById('control_z_position').innerHTML = Control_get_position_value("Z:", response);
+        }
 }
 
 function control_motorsOff(){
@@ -122,24 +149,26 @@ function control_motorsOff(){
 }
 
 function SendHomecommand (cmd){
+     if (document.getElementById('lock_UI').checked )return;
      SendPrinterCommand(cmd, true, get_Position);
 }
 
  function SendJogcommand(cmd, feedrate){
+     if (document.getElementById('lock_UI').checked )return;
      var feedratevalue = "";
      var command ="";
     if (feedrate == "XYfeedrate") {
         feedratevalue = parseInt(document.getElementById('control_xy_velocity').value);
         if (feedratevalue < 1 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
             alertdlg (translate_text_item("Out of range"), translate_text_item( "XY feedrate value must be between 1 mm/min and 9999 mm/min !"));
-            document.getElementById('control_xy_velocity').value = get_localdata('xy_velocity');
+            document.getElementById('control_xy_velocity').value = preferenceslist[0].xy_feedrate;
             return;
         }
     } else {
         feedratevalue = parseInt(document.getElementById('control_z_velocity').value);
          if (feedratevalue < 1 || feedratevalue > 999 || isNaN(feedratevalue) || (feedratevalue === null)) {
             alertdlg (translate_text_item("Out of range"), translate_text_item( "Z feedrate value must be between 1 mm/min and 999 mm/min !"));
-            document.getElementById('control_z_velocity').value = get_localdata('z_velocity');
+            document.getElementById('control_z_velocity').value = preferenceslist[0].z_feedrate;
             return;
         }
     }
@@ -150,15 +179,15 @@ function SendHomecommand (cmd){
  function onXYvelocityChange () {
     var feedratevalue =  parseInt(document.getElementById('control_xy_velocity').value);
     if (feedratevalue < 1 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
+        //we could display error but we do not
         }
-    else store_localdata('xy_velocity', feedratevalue);
 }
         
 function onZvelocityChange () {
     var feedratevalue =  parseInt(document.getElementById('control_z_velocity').value);
     if (feedratevalue < 1 || feedratevalue > 999 || isNaN(feedratevalue) || (feedratevalue === null)) {
+        //we could display error but we do not
         }
-    else store_localdata('z_velocity', feedratevalue);
 }
 
 
@@ -174,7 +203,7 @@ function control_build_macro_button(index){
     var entry  = control_macrolist[index];
     content+="<button class='btn "+control_macrolist[index].class+"' type='text' ";
     if (entry.glyph.length == 0){
-        content+="style='visibility:hidden'";
+        content+="style='display:none'";
      }
     content+= "onclick='macro_command (\"" + entry.target + "\",\"" + entry.filename + "\")'";
     content+="><span style='position:relative; top:3px;'>";
@@ -192,16 +221,24 @@ function control_build_macro_button(index){
 }
 
 function control_build_macro_ui(){
-    var content = "";
-     for (var i = 0; i < 4 ; i++) {
-        content+="<tr><td>" + control_build_macro_button(i) + "</td><tr>";
+    var content = "<button class='btn btn-primary' onclick='showmacrodlg(processMacroSave)'>";
+    content +="<span class='badge'>";
+    content +="<svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>";
+     content +="<g transform='translate(50,1200) scale(1, -1)'>";
+    content +="<path  fill='currentColor' d='M407 800l131 353q7 19 17.5 19t17.5 -19l129 -353h421q21 0 24 -8.5t-14 -20.5l-342 -249l130 -401q7 -20 -0.5 -25.5t-24.5 6.5l-343 246l-342 -247q-17 -12 -24.5 -6.5t-0.5 25.5l130 400l-347 251q-17 12 -14 20.5t23 8.5h429z' />";
+    content +="</g>";
+    content +="</svg>";
+    content +="<svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>";
+    content +="<g transform='translate(50,1200) scale(1, -1)'>";
+    content +="<path  fill='currentColor' d='M1011 1210q19 0 33 -13l153 -153q13 -14 13 -33t-13 -33l-99 -92l-214 214l95 96q13 14 32 14zM1013 800l-615 -614l-214 214l614 614zM317 96l-333 -112l110 335z' />";
+    content +="</g>";
+    content +="</svg>";
+    content +="</span>";
+    content +="</button>";
+     for (var i = 0; i < 9 ; i++) {
+        content+=control_build_macro_button(i);
      }
-     document.getElementById('Macro_col1').innerHTML=content;
-     content = "";
-     for (var i = 4; i <9 ; i++) {
-         content+="<tr><td>" + control_build_macro_button(i) + "</td><tr>";
-     }
-    document.getElementById('Macro_col2').innerHTML=content;
+     document.getElementById('Macro_list').innerHTML=content;
 }
 
 function macro_command (target, filename) {
@@ -213,7 +250,9 @@ function macro_command (target, filename) {
         if (target_firmware != "smoothieware"){
             cmd =  "M23 " + filename + "\nM24"; 
             }
-        } else return;
+        } else if (target == "URI") {
+            window.open(filename);
+            }else return;
     //console.log(cmd);
     SendPrinterCommand(cmd);
 }

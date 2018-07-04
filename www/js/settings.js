@@ -1,6 +1,7 @@
 var setting_configList = [];
 var setting_error_msg="";
 var setting_lastindex = -1;
+var setting_lastsubindex = -1;
 var current_setting_filter = 'network';
 var setup_is_done = false;
 
@@ -24,13 +25,37 @@ function refreshSettings() {
     SendGetHttp(url, getESPsettingsSuccess, getESPsettingsfailed)
 }
 
-function build_select_for_setting_list(index){
-    var html = "<select class='form-control' id='setting_" + index + "' onchange='setting_checkchange(" + index +")' >";
+function build_select_flag_for_setting_list(index,subindex){
+    var html = "";
+    var flag = 
+    html +="<select class='form-control' id='setting_" + index +"_" + subindex+ "' onchange='setting_checkchange(" + index +"," + subindex+")' >";
+    html += "<option value='1'";
+    var tmp = setting_configList[index].defaultvalue 
+    tmp |= settings_get_flag_value(index, subindex);
+    if (tmp == setting_configList[index].defaultvalue) html +=" selected ";
+    html += ">";
+    html += translate_text_item("Disable", true);
+    html += "</option>\n";
+    html += "<option value='0'";
+    var tmp = setting_configList[index].defaultvalue 
+    tmp &= ~(settings_get_flag_value(index, subindex));
+    if (tmp == setting_configList[index].defaultvalue) html +=" selected ";
+    html += ">";
+    html += translate_text_item("Enable", true);
+    html += "</option>\n";
+    html += "</select>\n";
+    //console.log("default:" + setting_configList[index].defaultvalue);
+    //console.log(html);
+    return html;
+}
+
+function build_select_for_setting_list(index, subindex){
+    var html = "<select class='form-control' id='setting_" + index + "_" + subindex + "' onchange='setting_checkchange(" + index  +"," + subindex+")' >";
     for (var i = 0; i < setting_configList[index].Options.length ; i++){
          html += "<option value='" + setting_configList[index].Options[i].id + "'";
          if (setting_configList[index].Options[i].id == setting_configList[index].defaultvalue) html +=" selected ";
          html += ">";
-         html += translate_text_item(setting_configList[index].Options[i].display);
+         html += translate_text_item(setting_configList[index].Options[i].display, true);
          html += "</option>\n";
         }
     html += "</select>\n";
@@ -46,32 +71,13 @@ function getFWshortnamefromid(value) {
     else if (  value == 2 ) response = "marlin";
     else if (  value == 3 ) response = "marlinkimbra";
     else if ( value == 4 ) response = "smoothieware";
+     else if ( value == 6 ) response = "grbl";
     else response = "???";
     return response;
 }
 function update_UI_setting(){
     for (var i = 0; i < setting_configList.length ; i++){ 
         switch (setting_configList[i].pos) {
-        //EP_E_FEEDRATE		    172
-        case "172":
-            document.getElementById("extruder_velocity").value = setting_configList[i].defaultvalue;
-            break;
-        //EP_REFRESH_PAGE_TIME			129
-         case "129":
-            document.getElementById("tempInterval_check").value = setting_configList[i].defaultvalue;
-            break;
-        //EP_REFRESH_PAGE_TIME2		460 
-        case "460":
-            document.getElementById("posInterval_check").value = setting_configList[i].defaultvalue;
-            break;
-        //EP_XY_FEEDRATE		    164
-        case "164":
-            document.getElementById("control_xy_velocity").value = parseInt(setting_configList[i].defaultvalue);
-            break;
-        //EP_Z_FEEDRATE		    168
-         case "168":
-            document.getElementById("control_z_velocity").value = setting_configList[i].defaultvalue;
-            break;
         //EP_TARGET_FW		461 
          case "461":
             target_firmware = getFWshortnamefromid(setting_configList[i].defaultvalue);
@@ -84,45 +90,75 @@ function update_UI_setting(){
             update_UI_firmware_target() ;
             init_files_panel(false);
             break;
+        case "130":
+			//set title using hostname
+			Set_page_title(setting_configList[i].defaultvalue);
+			break;
         }
+       
+		
     }
 }
 //to generate setting editor in setting or setup
 function build_control_from_index (index, extra_set_function) {
     var i = index;
-    var content = "";
+    var content = "<table>";
      if (i < setting_configList.length) {
-        content+="<div class='input-group'>";
-        content+="<span class='input-group-btn'>";
-        content+="<button class='btn btn-default' onclick='setting_revert_to_default("+i+")' >";
-        content+=get_icon_svg("repeat");
-        content+="</button>";
-        content+="</span>";
-        content+="<div id='status_setting_"+ i + "' class='form-group has-feedback' >";
-        if (setting_configList[i].Options.length > 0){
-            content+=build_select_for_setting_list(i);
-            content+="<span id='icon_setting_"+ i + "'class='form-control-feedback'  style='right: 1em'></span>";
+        var nbsub = 1;
+        if( setting_configList[i].type == "F") {
+            nbsub = setting_configList[i].Options.length;
             }
-        else {
-            content+="<input id='setting_" + i + "' type='text' class='form-control'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +")' >";
-            content+="<span id='icon_setting_"+ i + "'class='form-control-feedback' ></span>";
-            }
-        
-        content+="</div>";
-        content+="<span class='input-group-btn'>";
-        content+="<button  id='btn_setting_"+ i + "' class='btn btn-default' onclick='settingsetvalue("+ i +");";
-        if (typeof extra_set_function != 'undefined') {
-             content+= extra_set_function + "(" + i + ");"
-            }
-        content+="' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
-         if (setting_configList[i].pos == "1") {
-            content+="<button class='btn btn-default' onclick='scanwifidlg(\"" + i +"\")'>";
-            content+=get_icon_svg("search");
+        for (var sub_element = 0; sub_element < nbsub;sub_element++) {
+            content+="<tr><td style='vertical-align:middle;'>";
+            if( setting_configList[i].type == "F"){
+                content+="<span >" + translate_text_item(setting_configList[i].Options[sub_element].display, true) +"</span>";
+                content+="</td><td>&nbsp;</td><td style='padding-top:1em'>";
+                }
+            content+="<div id='status_setting_"+ i + "_" + sub_element + "' class='form-group has-feedback' >";
+            content+="<div class='input-group'>";
+            content+="<div class='input-group-btn'>";
+            content+="<button class='btn btn-default' onclick='setting_revert_to_default("+i+","+sub_element+")' >";
+            content+=get_icon_svg("repeat");
             content+="</button>";
+            content+="</div>";
+             content+="<div class='input-group'>";
+             //flag
+            if ( setting_configList[i].type == "F") {
+                //console.log(setting_configList[i].label + " " + setting_configList[i].type);
+                //console.log(setting_configList[i].Options.length);
+                content += build_select_flag_for_setting_list(i, sub_element);
+                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback'  style='right: 1em; top:3px'></span>";
+                }
+            //drop list
+            else if (setting_configList[i].Options.length > 0){
+                content += build_select_for_setting_list(i, sub_element);
+                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback'  style='right: 1em; top:3px'></span>";
+                }
+            //text
+            else {
+                content += "<input id='setting_" + i + "_" + sub_element + "' type='text' class='form-control'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +"," + sub_element + ")' >";
+                content += "<span id='icon_setting_"+ i + "_" + sub_element +  "'class='form-control-feedback' style='top:3px' ></span>";
+                }
+            
+            content+="<div class='input-group-btn'>";
+            content+="<button  id='btn_setting_"+ i +"_" + sub_element + "' class='btn btn-default' onclick='settingsetvalue("+ i +"," +sub_element +");";
+            if (typeof extra_set_function != 'undefined') {
+                 content+= extra_set_function + "(" + i + ");"
+                }
+            content+="' translate english_content='Set' >" + translate_text_item("Set") + "</button>";
+             if (setting_configList[i].pos == "1") {
+                content+="<button class='btn btn-default' onclick='scanwifidlg(\"" + i +"\",\"" + sub_element+"\")'>";
+                content+=get_icon_svg("search");
+                content+="</button>";
+            }
+            content+="</div>";
+            content+="</div>";
+            content+="</div>";
+            content+="</div>";
+            content+="</td></tr>";
+            }
         }
-        content+="</span>";
-        content+="</div>";
-        }
+    content+="</table>";
     return content;
     }
     
@@ -144,7 +180,7 @@ function build_HTML_setting_list(filter){
         if ((setting_configList[i].F.trim().toLowerCase() == filter) || (filter == "all")) {
             content+="<tr>";
             content+="<td style='vertical-align:middle'>";
-            content+= translate_text_item( setting_configList[i].label);
+            content+= translate_text_item( setting_configList[i].label,true);
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
             content+= "<table><tr><td>" + build_control_from_index(i) + "</td></tr></table>";
@@ -155,9 +191,10 @@ function build_HTML_setting_list(filter){
     if (content.length > 0) document.getElementById('settings_list_data').innerHTML = content;
 }
 
-function setting_check_value(value, index){
+function setting_check_value(value, index, subindex){
     var valid = true;
     var entry = setting_configList[index];
+    if (entry.type == "F") return valid;
     //does it part of a list?
      if(entry.Options.length > 0) {
          var in_list = false;
@@ -283,19 +320,55 @@ function is_setting_entry(sline){
     return true;
 }
 
-function setting_revert_to_default(index){
-    document.getElementById('setting_'+index).value = setting_configList[index].defaultvalue
-    document.getElementById('btn_setting_'+index).className = "btn btn-default";
-    document.getElementById('status_setting_'+index).className="form-group has-feedback";
-    document.getElementById('icon_setting_'+index).innerHTML="";
+function settings_get_flag_value(index, subindex){
+    var flag = 0;
+    if(setting_configList[index].type != "F") return -1;
+    if(setting_configList[index].Options.length <= subindex) return -1;
+    flag = parseInt(setting_configList[index].Options[subindex].id);
+    return flag;
 }
 
-function settingsetvalue(index) {
+function settings_get_flag_description(index, subindex){
+    if(setting_configList[index].type != "F") return -1;
+    if(setting_configList[index].Options.length <= subindex) return -1;
+    return setting_configList[index].Options[subindex].display;
+}
+
+function setting_revert_to_default(index, subindex){
+    var sub = 0;
+    if(typeof subindex != 'undefined')sub = subindex;
+    if(setting_configList[index].type == "F") {
+        var flag = settings_get_flag_value(index, subindex);
+        var enabled = 0 ;
+        var tmp =parseInt(setting_configList[index].defaultvalue);
+        tmp |= flag;
+        if (tmp == parseInt(setting_configList[index].defaultvalue)) document.getElementById('setting_' + index + "_" + sub ).value ="1";
+        else document.getElementById('setting_' + index + "_" + sub ).value = "0";
+    } else  document.getElementById('setting_' + index + "_" + sub ).value = setting_configList[index].defaultvalue
+    document.getElementById('btn_setting_'+index+ "_" + sub).className = "btn btn-default";
+    document.getElementById('status_setting_'+index + "_" + sub).className="form-group has-feedback";
+    document.getElementById('icon_setting_'+index+ "_" + sub) .innerHTML="";
+}
+
+function settingsetvalue(index, subindex) {
+    var sub = 0;
+    if(typeof subindex != 'undefined')sub = subindex;
     //remove possible spaces
-    value = document.getElementById('setting_'+index).value.trim();
+    value = document.getElementById('setting_' + index + "_" + sub).value.trim();
+    //Apply flag here
+    if (setting_configList[index].type == "F") {
+        var tmp = setting_configList[index].defaultvalue;
+        if (value == "1") {
+            tmp |= settings_get_flag_value(index, subindex);
+            }
+        else {
+            tmp &= ~(settings_get_flag_value(index, subindex));
+            }
+        value = tmp;
+        }
     if (value == setting_configList[index].defaultvalue) return;
     //check validity of value
-    var isvalid = setting_check_value(value, index);
+    var isvalid = setting_check_value(value, index, subindex);
     //if not valid show error
     if (!isvalid){
         setsettingerror(index);
@@ -304,48 +377,57 @@ function settingsetvalue(index) {
         //value is ok save it
         var cmd = setting_configList[index].cmd + value;
         setting_lastindex = index;
-        setting_configList[index].defaultvalue = value; 
-        document.getElementById('btn_setting_'+index).className = "btn btn-success";
-        document.getElementById('icon_setting_'+index).className="form-control-feedback has-success";
-        document.getElementById('icon_setting_'+index).innerHTML=get_icon_svg("ok");
-        document.getElementById('status_setting_'+index).className="form-group has-feedback has-success";
+        setting_lastsubindex = subindex;
+        setting_configList[index].defaultvalue = value;
+        document.getElementById('btn_setting_'+index+ "_" + sub).className = "btn btn-success";
+        document.getElementById('icon_setting_'+index+ "_" + sub).className="form-control-feedback has-success";
+        document.getElementById('icon_setting_'+index+ "_" + sub).innerHTML=get_icon_svg("ok");
+        document.getElementById('status_setting_'+index+ "_" + sub).className="form-group has-feedback has-success";
         var url = "/command?plain="+encodeURIComponent(cmd);
         SendGetHttp(url, setESPsettingsSuccess, setESPsettingsfailed);
     }
 }
 
-function setting_checkchange(index) {
-    //console.log("check " + "setting_"+index);
-    var val = document.getElementById('setting_'+index).value.trim();
+function setting_checkchange(index, subindex) {
+    var val = document.getElementById('setting_'+index  +"_" + subindex).value.trim();
+    if (setting_configList[index].type == "F") {
+        var tmp = setting_configList[index].defaultvalue;
+        if (val == "1") {
+            tmp |= settings_get_flag_value(index, subindex);
+        } else {
+            tmp &= ~(settings_get_flag_value(index, subindex));
+        }
+        val = tmp;
+    }
      //console.log("value: " + val);
     if (setting_configList[index].defaultvalue == val){
-        document.getElementById('btn_setting_'+index).className = "btn btn-default";
-        document.getElementById('icon_setting_'+index).className="form-control-feedback";
-        document.getElementById('icon_setting_'+index).innerHTML="";
-        document.getElementById('status_setting_'+index).className="form-group has-feedback";
+        document.getElementById('btn_setting_'+index  +"_" + subindex).className = "btn btn-default";
+        document.getElementById('icon_setting_'+index  +"_" + subindex).className="form-control-feedback";
+        document.getElementById('icon_setting_'+index  +"_" + subindex).innerHTML="";
+        document.getElementById('status_setting_'+index  +"_" + subindex).className="form-group has-feedback";
         }
-    else if (setting_check_value(val, index)){
-        setsettingchanged(index);
+    else if (setting_check_value(val, index, subindex)){
+            setsettingchanged(index, subindex);
         }
         else {
             //console.log("change bad");
-            setsettingerror(index);
+            setsettingerror(index, subindex);
             }
 
 }
 
-function setsettingchanged(index){
-        document.getElementById('status_setting_'+index).className="form-group has-feedback has-warning";
-        document.getElementById('btn_setting_'+index).className = "btn btn-warning";
-        document.getElementById('icon_setting_'+index).className="form-control-feedback has-warning";
-        document.getElementById('icon_setting_'+index).innerHTML=get_icon_svg("warning-sign");
+function setsettingchanged(index, subindex){
+        document.getElementById('status_setting_'+index +"_" + subindex).className="form-group has-feedback has-warning";
+        document.getElementById('btn_setting_'+index +"_" + subindex).className = "btn btn-warning";
+        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-warning";
+        document.getElementById('icon_setting_'+index +"_" + subindex).innerHTML=get_icon_svg("warning-sign");
 }
 
-function setsettingerror(index){
-        document.getElementById('btn_setting_'+index).className = "btn btn-danger";
-        document.getElementById('icon_setting_'+index).className="form-control-feedback has-error";
-        document.getElementById('icon_setting_'+index).innerHTML= get_icon_svg("remove");
-        document.getElementById('status_setting_'+index).className="form-group has-feedback has-error";
+function setsettingerror(index, subindex){
+        document.getElementById('btn_setting_'+index +"_" + subindex).className = "btn btn-danger";
+        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-error";
+        document.getElementById('icon_setting_'+index +"_" + subindex).innerHTML= get_icon_svg("remove");
+        document.getElementById('status_setting_'+index +"_" + subindex).className="form-group has-feedback has-error";
 }
 
 function setESPsettingsSuccess(response){
@@ -356,10 +438,10 @@ function setESPsettingsSuccess(response){
 function setESPsettingsfailed(error_code,response){
     alertdlg (translate_text_item("Set failed"), "Error " + error_code + " :" + response);
     console.log("Error " + error_code + " :" + response);
-    document.getElementById('btn_setting_'+setting_lastindex).className = "btn btn-danger";
-    document.getElementById('icon_setting_'+setting_lastindex).className="form-control-feedback has-error";
-    document.getElementById('icon_setting_'+setting_lastindex).innerHTML= get_icon_svg("remove");
-    document.getElementById('status_setting_'+setting_lastindex).className="form-group has-feedback has-error";
+    document.getElementById('btn_setting_'+setting_lastindex+"_"+setting_lastsubindex).className = "btn btn-danger";
+    document.getElementById('icon_setting_'+setting_lastindex+"_"+setting_lastsubindex).className="form-control-feedback has-error";
+    document.getElementById('icon_setting_'+setting_lastindex+"_"+setting_lastsubindex).innerHTML= get_icon_svg("remove");
+    document.getElementById('status_setting_'+setting_lastindex+"_"+setting_lastsubindex).className="form-group has-feedback has-error";
 }
 
 function getESPsettingsSuccess(response){

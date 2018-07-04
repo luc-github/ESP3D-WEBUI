@@ -4,7 +4,7 @@ var current_update_filename="";
 function updatedlg () {
     var modal = setactiveModal('updatedlg.html');
     if ( modal == null) return;
-    document.getElementById('fw-select').style.display = 'block';
+    document.getElementById("fw_file_name").innerHTML=translate_text_item("No file chosen");
     document.getElementById('prgfw').style.display = 'none';
     document.getElementById('uploadfw-button').style.display = 'none';
     document.getElementById('updatemsg').innerHTML = "";
@@ -25,6 +25,17 @@ function  checkupdatefile(){
     document.getElementById('updatemsg').style.display='none';
     if (files.length==0)document.getElementById('uploadfw-button').style.display = 'none';
     else document.getElementById('uploadfw-button').style.display = 'block';
+    if (files.length >0) {
+        if (files.length == 1 ) {
+            document.getElementById("fw_file_name").innerHTML = files[0].name;
+        }
+        else {
+                var tmp = translate_text_item("$n files");
+                document.getElementById("fw_file_name").innerHTML = tmp.replace("$n", files.length);
+        }
+    } else {
+         document.getElementById("fw_file_name").innerHTML=translate_text_item("No file chosen");
+    }
 }
 
 
@@ -55,9 +66,12 @@ function StartUploadUpdatefile( response) {
     var url = "/updatefw";
     for (var i = 0; i < files.length; i++) {
          var file = files[i];
+         var arg ="/" + file.name + "S";
+         //append file size first to check updload is complete
+         formData.append(arg, file.size);
          formData.append('myfile[]', file, "/"+file.name);
          }
-    document.getElementById('fw-select').style.display = 'none';
+    document.getElementById('fw-select_form').style.display = 'none';
     document.getElementById('uploadfw-button').style.display = 'none';
     update_ongoing=true;
     document.getElementById('updatemsg').style.display='block';
@@ -70,7 +84,7 @@ function StartUploadUpdatefile( response) {
 
 function updatesuccess(response){
     document.getElementById('updatemsg').innerHTML = translate_text_item("Restarting, please wait....");
-    document.getElementById('fw-select').value="";
+    document.getElementById("fw_file_name").innerHTML="";
     var i = 0;
 	var interval;
 	var x = document.getElementById("prgfw");
@@ -91,7 +105,7 @@ function updatesuccess(response){
 }
 
 function updatefailed(errorcode, response){
-    document.getElementById('fw-select').style.display = 'block';
+    document.getElementById('fw-select_form').style.display = 'block';
     document.getElementById('prgfw').style.display = 'none';
     document.getElementById('uploadfw-button').style.display = 'block';
     document.getElementById('updatemsg').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;

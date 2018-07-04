@@ -8,9 +8,11 @@ function SPIFFSdlg (root) {
     if ( modal == null) return;
     if (typeof root !== 'undefined')SPIFFS_currentpath = root;
     document.getElementById("SPIFFS-select").value="";
+    document.getElementById("SPIFFS_file_name").innerHTML=translate_text_item("No file chosen");
     document.getElementById("SPIFFS_uploadbtn").style.display='none';
     document.getElementById("SPIFFS_prg").style.display='none';
     document.getElementById("uploadSPIFFSmsg").style.display='none';
+    document.getElementById("SPIFFS_select_files").style.display='none';
     showModal() ;
     refreshSPIFFS();
 }
@@ -92,11 +94,13 @@ function SPIFFSsuccess(response){
 		var jsonresponse = JSON.parse(response);
         document.getElementById('SPIFFS_loader').style.visibility="hidden";
         document.getElementById('refreshSPIFFSbtn').style.display='block';
+        document.getElementById("SPIFFS_select_files").style.display='block';
         SPIFFSdispatchfilestatus(jsonresponse);
 }
 
 function SPIFFSfailed(errorcode, response){
     document.getElementById('SPIFFS_loader').style.visibility="hidden";
+    document.getElementById('refreshSPIFFSbtn').style.display='block';
     document.getElementById('refreshSPIFFSbtn').style.display='block';
     alertdlg (translate_text_item("Error"), "Error " + errorcode + " : " + response);
     console.log("Error " + errorcode + " : " + response);
@@ -126,7 +130,7 @@ function SPIFFSdispatchfilestatus(jsonresponse){
             {
             content +="<tr>";
             content +="<td  style='vertical-align:middle; color:#5BC0DE'>" + get_icon_svg("file") + "</td>";
-            content +="<td  width='100%'  style='vertical-align:middle'><a href=\""+jsonresponse.path+jsonresponse.files[i].name+"\" target=_blank><button  class=\"btn btn-link\">";
+            content +="<td  width='100%'  style='vertical-align:middle'><a href=\""+jsonresponse.path+jsonresponse.files[i].name+"\" target=_blank><button  class=\"btn btn-link no_overflow\">";
             content +=jsonresponse.files[i].name;
             content +="</button></a></td><td nowrap  style='vertical-align:middle'>";
             content +=jsonresponse.files[i].size;
@@ -158,6 +162,7 @@ function SPIFFSdispatchfilestatus(jsonresponse){
  
 function refreshSPIFFS() {
     document.getElementById('refreshSPIFFSbtn').style.display='none';
+    document.getElementById("SPIFFS_select_files").style.display='none';
     //removeIf(production)
     var response = "{\"files\":[{\"name\":\"config.html.gz\",\"size\":\"4.76 KB\"},{\"name\":\"index.html.gz\",\"size\":\"21.44 KB\"},{\"name\":\"favicon.ico\",\"size\":\"1.12 KB\"},{\"name\":\"config.htm\",\"size\":\"19.65 KB\"},{\"name\":\"config2.htm\",\"size\":\"19.98 KB\"},{\"name\":\"Testname\",\"size\":\"-1\"},{\"name\":\"index2.html.gz\",\"size\":\"28.89 KB\"}],\"path\":\"/\",\"status\":\"Ok\",\"total\":\"2.81 MB\",\"used\":\"118.88 KB\",\"occupation\":\"4\"}";
     SPIFFSsuccess(response);
@@ -171,6 +176,17 @@ function checkSPIFFSfiles(){
     document.getElementById('uploadSPIFFSmsg').style.display='none';
     if (files.length==0)document.getElementById('SPIFFS_uploadbtn').style.display = 'none';
     else document.getElementById('SPIFFS_uploadbtn').style.display = 'block';
+    if (files.length >0) {
+        if (files.length == 1 ) {
+            document.getElementById("SPIFFS_file_name").innerHTML = files[0].name;
+        }
+        else {
+                var tmp = translate_text_item("$n files");
+                document.getElementById("SPIFFS_file_name").innerHTML = tmp.replace("$n", files.length);
+        }
+    } else {
+         document.getElementById("SPIFFS_file_name").innerHTML=translate_text_item("No file chosen");
+    }
 }
 
 function SPIFFSUploadProgressDisplay(oEvent){
@@ -193,10 +209,13 @@ function SPIFFS_UploadFile( ) {
     var url = "/files";
     formData.append('path', SPIFFS_currentpath);
     for (var i = 0; i < files.length; i++) {
-         var file = files[i];
+         var file = files[i]; 
+         var arg = SPIFFS_currentpath + file.name + "S";
+         //append file size first to check updload is complete
+         formData.append(arg, file.size);
          formData.append('myfile[]', file, SPIFFS_currentpath + file.name);
          }
-    document.getElementById('SPIFFS-select').style.display = 'none';
+    document.getElementById('SPIFFS-select_form').style.display = 'none';
     document.getElementById('SPIFFS_uploadbtn').style.display = 'none';
     SPIFFS_upload_ongoing=true;
     document.getElementById('uploadSPIFFSmsg').style.display='block';
@@ -209,7 +228,8 @@ function SPIFFS_UploadFile( ) {
 
 function SPIFFSUploadsuccess(response){
     document.getElementById('SPIFFS-select').value="";
-    document.getElementById('SPIFFS-select').style.display = 'block';
+    document.getElementById("SPIFFS_file_name").innerHTML=translate_text_item("No file chosen");
+    document.getElementById('SPIFFS-select_form').style.display = 'block';
     document.getElementById('SPIFFS_prg').style.display = 'none';
     document.getElementById('SPIFFS_uploadbtn').style.display = 'none';
     document.getElementById('uploadSPIFFSmsg').innerHTML ="";
@@ -221,7 +241,7 @@ function SPIFFSUploadsuccess(response){
 }
 
 function SPIFFSUploadfailed(errorcode, response){
-    document.getElementById('SPIFFS-select').style.display = 'block';
+    document.getElementById('SPIFFS-select_form').style.display = 'block';
     document.getElementById('SPIFFS_prg').style.display = 'none';
     document.getElementById('SPIFFS_uploadbtn').style.display = 'block';
     document.getElementById('uploadSPIFFSmsg').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;

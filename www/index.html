@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ESP3D WebUI</title>
     <script>var target_firmware="";</script>
-    <script>var web_ui_version="1.0";</script>
+    <script>var web_ui_version="2.0c8";</script>
     <script>var direct_sd=false;</script>
     <script>var fw_version="";</script>
     <script>var primary_sd= "/ext/";</script>
@@ -24,8 +24,7 @@
     <!-- endsmoosh -->
   </head>
   <body>
-        <div id='warningmsg' class='warningmsg' >Checking Javascript is enabled....<br> if this is the only thing you see, you may need to enable Javascript in your browser.</div>
-        <div class="loader hide_it" id="main_page_loader"  style="margin:auto"></div>
+        <div id='loadingmsg' ><center><H3>Loading....</H3></center></div>
         <div id="main_ui" class="container-fluid hide_it">
         <!-- topnavbar -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; padding-right:2em;" >
@@ -36,14 +35,14 @@
                     <span id='showSDused'>&nbsp;</span>
                 </span>
             </div>
-
+            
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#">
                            <i class="dropbtn">
                                <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
-                                        <path  fill='#337AB7' d='M600 1177q117 0 224 -45.5t184.5 -123t123 -184.5t45.5 -224t-45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5t-184.5 123t-123 184.5t-45.5 224t45.5 224t123 184.5t184.5 123t224 45.5zM675 1000h-150q-10 0 -17.5 -7.5t-7.5 -17.5v-150q0 -10 7.5 -17.5 t17.5 -7.5h150q10 0 17.5 7.5t7.5 17.5v150q0 10 -7.5 17.5t-17.5 7.5zM675 700h-250q-10 0 -17.5 -7.5t-7.5 -17.5v-50q0 -10 7.5 -17.5t17.5 -7.5h75v-200h-75q-10 0 -17.5 -7.5t-7.5 -17.5v-50q0 -10 7.5 -17.5t17.5 -7.5h350q10 0 17.5 7.5t7.5 17.5v50q0 10 -7.5 17.5 t-17.5 7.5h-75v275q0 10 -7.5 17.5t-17.5 7.5z' />
+                                        <path  fill='#337AB7' d='M50 1100h1100q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-1100q-21 0 -35.5 14.5t-14.5 35.5v100q0 21 14.5 35.5t35.5 14.5zM50 800h1100q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-1100q-21 0 -35.5 14.5t-14.5 35.5v100 q0 21 14.5 35.5t35.5 14.5zM50 500h1100q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-1100q-21 0 -35.5 14.5t-14.5 35.5v100q0 21 14.5 35.5t35.5 14.5zM50 200h1100q21 0 35.5 -14.5t14.5 -35.5v-100q0 -21 -14.5 -35.5t-35.5 -14.5h-1100 q-21 0 -35.5 14.5t-14.5 35.5v100q0 21 14.5 35.5t35.5 14.5z' />
                                     </g>
                                 </svg>
                            </i> 
@@ -81,6 +80,17 @@
                                 <span class="clearfix"></span>
                             </a>
                             <div class="menu-divider"></div>
+                             <a href="#" onclick="showpreferencesdlg ()">
+                                <span class="pull-right" translate>Preferences</span>
+                                <span class="pull-left">
+                                <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
+                                    <g transform='translate(50,1200) scale(1, -1)'>
+                                        <path  d='M407 800l131 353q7 19 17.5 19t17.5 -19l129 -353h421q21 0 24 -8.5t-14 -20.5l-342 -249l130 -401q7 -20 -0.5 -25.5t-24.5 6.5l-343 246l-342 -247q-17 -12 -24.5 -6.5t-0.5 25.5l130 400l-347 251q-17 12 -14 20.5t23 8.5h429z' />
+                                    </g>
+                                </svg>
+                                </span>
+                                <span class="clearfix"></span>
+                            </a>
                             <a href="#" onclick="setupdlg ()">
                                 <span class="pull-right" translate>Setup</span>
                                 <span class="pull-left">
@@ -107,7 +117,7 @@
               </div>
                 </li>
             </ul>
-             <ul class="nav navbar-nav navbar-right hide_it" id="menu_autthentication">
+             <ul class="nav navbar-nav navbar-right hide_it" id="menu_authentication">
                 <li class="dropdown">
                     <a href="#">
                            <i class="dropbtn">
@@ -159,30 +169,24 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#">
-                                <span class="dropbtn text-info" id="translate_menu"></span>
-                    </a>
-                    <div class="dropdown-content" id="lang_menu">
-                    </div>
-                </li>
+                <li ><a id="DHT_humidity">20%</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" onclick="OnCheckCam()">
-                        <i class="dropbtn">
-                                <input type="checkbox" id="camcheck" >
-                               <i >
-                                   <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
-                                    <g transform='translate(50,1200) scale(1, -1)'>
-                                        <path  fill='currentColor' d='M75 1000h750q31 0 53 -22t22 -53v-650q0 -31 -22 -53t-53 -22h-750q-31 0 -53 22t-22 53v650q0 31 22 53t53 22zM1200 300l-300 300l300 300v-600z' />
-                                    </g>
-                                </svg>
-                               </i>             
-                        </I>
-                    </a>
-            </li>
+                <li ><a id="DHT_temperature">20&deg;C</a></li>
             </ul>
+             <ul class="nav navbar-nav navbar-right" id='lock_ui_btn'>
+                    <li class="dropdown">
+                        <a href="#" onclick="ontoggleLock()">
+                            <i class="dropbtn">
+                                <label>
+                                    <input type="checkbox" id="lock_UI"/>
+                                    <span  id='lock_UI_btn_txt' >Unlock interface</span>
+                                </label>
+                            </i>
+                        </a>
+                    </li>
+                </ul>
+         
          </nav>
         <!-- /topnavbar -->
         <!-- tabbar -->
@@ -242,7 +246,9 @@
     <file-include w3-include-html="'sub/updatedlg.html'"></file-include>
     <file-include w3-include-html="'sub/setupdlg.html'"></file-include>
     <file-include w3-include-html="'sub/macrodlg.html'"></file-include>
+    <file-include w3-include-html="'sub/preferencesdlg.html'"></file-include>
     <file-include w3-include-html="'sub/restartdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/UIdisableddlg.html'"></file-include>
      <!-- / template -->
     <!--removeIf(cleanheader)-->
     <script src="js/wizard.js"></script>
@@ -267,6 +273,7 @@
     <script src="js/updatedlg.js"></script>
     <script src="js/setupdlg.js"></script>
     <script src="js/macrodlg.js"></script>
+    <script src="js/preferencesdlg.js"></script>
     <script src="js/translate.js"></script>
     <script src="js/commands.js"></script>
     <script src="js/extruders.js"></script>
@@ -276,6 +283,7 @@
     <script src="js/smoothie.js"></script>
     <script src="js/dropmenu.js"></script>
     <script src="js/localstorage.js"></script>
+    <script src="js/UIdisableddlg.js"></script>
     <!--endRemoveIf(cleanheader)-->
     <!-- smoosh -->
     <script src="js/app.js"></script>

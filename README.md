@@ -1,8 +1,8 @@
 # ESP3D-WEBUI 
- ![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=master)   
+ ![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=2.0)   
  
 ## What is that ?
-A web configuration tool for ESP3D
+A web configuration tool for ESP3D 2.0
 Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webui](http://imrahil.github.io/smoothieware-webui/) to get a multi firmware support for [Repetier](https://github.com/repetier/Repetier-Firmware), [Repetier for Davinci printer](https://github.com/luc-github/Repetier-Firmware-0.92), (Marlin)[https://github.com/MarlinFirmware], [Marlin Kimbra](https://github.com/MagoKimbra/MarlinKimbra) and of course [Smoothieware](https://github.com/Smoothieware/Smoothieware)
 
 ## Why doing it ?
@@ -65,7 +65,7 @@ ESP3D SPIFFS:
 
 
 ## Installation
-Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/devt) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
+Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.0) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
 
 ## Contribution / development
 Check wiki section [Contribution/Development](https://github.com/luc-github/ESP3D-WEBUI/wiki/Compilation---Development)

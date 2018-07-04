@@ -3,16 +3,7 @@ var CustomCommand_history_index = -1;
 var Monitor_output = []; 
 
 function init_command_panel(){
-     var value = get_localdata('monitor_autoscroll');
-    if (value == 'true'){
-        document.getElementById('monitor_enable_autoscroll').checked =true;
-        Monitor_check_autoscroll();
-    }
-    value = get_localdata('monitor_filter_temperatures');
-    if (value == 'true'){
-        document.getElementById('monitor_enable_filter_temperatures').checked =true;
-        Monitor_check_filter_temperatures();
-    }
+   
 }
 
 function Monitor_output_autoscrollcmd(){
@@ -21,12 +12,10 @@ function Monitor_output_autoscrollcmd(){
 
 function Monitor_check_autoscroll(){
      if (document.getElementById('monitor_enable_autoscroll').checked == true) Monitor_output_autoscrollcmd();
-      store_localdata('monitor_autoscroll', document.getElementById('monitor_enable_autoscroll').checked);
 }
 
 function Monitor_check_filter_temperatures(){
      Monitor_output_Update();
-     store_localdata('monitor_filter_temperatures', document.getElementById('monitor_enable_filter_temperatures').checked);
 }
     
 function Monitor_output_Clear(){
@@ -112,6 +101,6 @@ function SendCustomCommandSuccess(response){
 }
 
 function SendCustomCommandFailed(error_code,response){
-     Monitor_output_Update("Error " + error_code + " :" + response+ "\n");
-     console.log("Error " + error_code + " :" + response);
+     Monitor_output_Update("Error " + error_code + " :" + decode_entitie(response)+ "\n");
+     console.log("Error " + error_code + " :" + decode_entitie(response));
 }

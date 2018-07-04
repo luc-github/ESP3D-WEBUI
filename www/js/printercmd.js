@@ -1,4 +1,4 @@
-function SendPrinterCommand(cmd, echo_on, processfn, errorfn){
+function SendPrinterCommand(cmd, echo_on, processfn, errorfn, id, max_id){
     var url = "/command?commandText=";
     var push_cmd = true;
     if (typeof echo_on !== 'undefined') {
@@ -14,11 +14,11 @@ function SendPrinterCommand(cmd, echo_on, processfn, errorfn){
     //endRemoveIf(production)
     if (typeof processfn === 'undefined' || processfn == null) processfn = SendPrinterCommandSuccess;
     if (typeof errorfn === 'undefined' || errorfn ==null) errorfn = SendPrinterCommandFailed;
-    SendGetHttp(url + encodeURI(cmd), processfn, errorfn);
+    SendGetHttp(url + encodeURI(cmd), processfn, errorfn, id, max_id);
     //console.log(cmd);
 }
 
-function SendPrinterSilentCommand(cmd, processfn, errorfn){
+function SendPrinterSilentCommand(cmd, processfn, errorfn, id, max_id){
     var url = "/command_silent?commandText=";
     if (cmd.trim().length == 0) return;
     //removeIf(production)
@@ -29,7 +29,7 @@ function SendPrinterSilentCommand(cmd, processfn, errorfn){
     //endRemoveIf(production)
     if (typeof processfn === 'undefined' || processfn == null) processfn = SendPrinterSilentCommandSuccess;
     if (typeof errorfn === 'undefined' || errorfn == null) errorfn = SendPrinterCommandFailed;
-    SendGetHttp(url + encodeURI(cmd), processfn, errorfn);
+    SendGetHttp(url + encodeURI(cmd), processfn, errorfn, id, max_id);
     //console.log(cmd);
 }
 
@@ -44,6 +44,6 @@ function SendPrinterCommandSuccess(response){
 }
 
 function SendPrinterCommandFailed(error_code,response){
-     Monitor_output_Update("Error " + error_code + " :" + response+ "\n");
-     console.log("Error " + error_code + " :" + response);
+     Monitor_output_Update("Error " + error_code + " :" + decode_entitie(response)+ "\n");
+     console.log("Error " + error_code + " :" + decode_entitie(response));
 }

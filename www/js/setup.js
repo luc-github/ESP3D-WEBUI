@@ -5,6 +5,7 @@ var maz_page_wizard = 5;
 
 function setupdlg () {
      setup_is_done = false;
+      language_save = language;
      document.getElementById('main_ui').style.display='none';
       document.getElementById('settings_list_data').innerHTML = "";
      active_wizard_page = 0;
@@ -36,15 +37,10 @@ function setupdlg () {
      document.getElementById("wizard_line4").style.background = "#e0e0e0";
      document.getElementById("endsteplink").disabled = true;
      document.getElementById("endsteplink").className = "steplinks disabled";
-     var content = "";
-     content+= get_icon_svg("flag") + "&nbsp;";
-     content+="<select id='language_selection' onchange='translate_text(this.value)'>\n";
-     for (var lang_i =0 ; lang_i < language_list.length; lang_i++){
-         content+="<option value='" + language_list[lang_i][0] + "'";
-         if ( language_list[lang_i][0] == language) content+=" selected";
-         content+=">" + language_list[lang_i][1] + "</option>\n";
-        }
-     content+="</select>\n";
+     var content = "<table><tr><td>";
+     content+= get_icon_svg("flag") + "&nbsp;</td><td>";
+     content+= build_language_list("language_selection");
+     content+= "</td></tr></table>"; 
      document.getElementById("setup_langage_list").innerHTML=content;
      
     var modal = setactiveModal('setupdlg.html', setupdone);
@@ -57,8 +53,10 @@ function setupdlg () {
 function setupdone(response){
     setup_is_done = true;
     build_HTML_setting_list(current_setting_filter);
+    translate_text(language_save);
     document.getElementById('main_ui').style.display='block';
     closeModal("setup done");
+    
 }
 
 function continue_setup_wizard(){
@@ -66,6 +64,9 @@ function continue_setup_wizard(){
     switch(active_wizard_page) {
     case 1:
         enablestep1();
+        preferenceslist[0].language = language;
+        SavePreferences(true);
+        language_save = language;
         break;
     case 2:
         enablestep2();

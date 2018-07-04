@@ -58,11 +58,11 @@ function files_build_file_line(index){
         if (entry.isdir == true) content +=get_icon_svg("folder-open")  ;
         else content +=get_icon_svg("file");
         content +="</span ></div>";
-        content +="<div class='col-md-4 col-sm-4' ";
+        content +="<div class='col-md-4 col-sm-4 no_overflow' ";
         if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
         }
-        content +=">" + entry.name + "</div>";
+        content +=" >" + entry.name + "</div>";
         content +="<div class='col-md-2 col-sm-2'";
         if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
@@ -650,6 +650,9 @@ function files_start_upload(){
     formData.append('path', path);
      for (var i = 0; i < files.length; i++) {
          var file = files[i];
+         var arg = path + file.name + "S";
+         //append file size first to check updload is complete
+         formData.append(arg, file.size);
          formData.append('myfile[]', file, path + file.name);
          //console.log( path +file.name);
          }

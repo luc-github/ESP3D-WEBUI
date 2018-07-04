@@ -14,7 +14,7 @@
     "gulp-htmlmin": "^3.0.0",
     "gulp-if": "^2.0.2",
     "gulp-jshint": "^2.1.0",
-    "gulp-ng-annotate": "^2.0.0",
+    "gulp-ng-annotate": "^2.1.0",
     "gulp-remove-code": "^1.0.2",
     "gulp-replace": "^0.5.4",
     "gulp-smoosher": "0.0.9",

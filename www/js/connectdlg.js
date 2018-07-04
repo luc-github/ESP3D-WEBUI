@@ -1,17 +1,15 @@
 //Connect dialog
-function connectdlg () {
-    var value = get_localdata('language');
-    if (String(value).length == 0 || String(value)=="null") value="en";
-    build_language_menu();
-    translate_text(value);
+function connectdlg (getFw) {
     var modal = setactiveModal('connectdlg.html');
+    var get_FW = true;
     if ( modal == null) return;
     showModal() ;
     //removeIf(production)
     connectsuccess("FW version:0.9.9X # FW target:Smoothieware # FW HW:Direct SD # primary : /sd/ # secondary : /ext/ # authentication: no");
     return;
     //endRemoveIf(production)
-    retryconnect ();
+    if (typeof getFw != 'undefined')get_FW = getFw;
+    if(get_FW)retryconnect();
 }
 
 function getFWdata(response){
@@ -53,26 +51,50 @@ function getFWdata(response){
         }
     secondary_sd = sublist[1].toLowerCase().trim();
     //authentication
-    var sublist = tlist[5].split(":");
+    sublist = tlist[5].split(":");
     if (sublist.length != 2) {
         return false;
         }
     if ((sublist[0].trim() == "authentication" ) && (sublist[1].trim() == "yes")) ESP3D_authentication = true;
     else ESP3D_authentication = false;
+    //async communications
+    if(tlist.length >6) {
+	sublist = tlist[6].split(":");
+	if ((sublist[0].trim() == "webcommunication" ) && (sublist[1].trim() == "Async")) async_webcommunication = true;
+	else {
+		async_webcommunication = false;
+		websocket_port = sublist[2].trim();
+		}
+	}
+	if(tlist.length >7) {
+	sublist = tlist[7].split(":");
+	if (sublist[0].trim() == "hostname" ) esp_hostname =  sublist[1].trim();
+	}
+	
+	if (async_webcommunication) {
+		if (!!window.EventSource) {
+		  event_source = new EventSource('/events');
+		  event_source.addEventListener('InitID', Init_events, false);
+		  event_source.addEventListener('ActiveID', ActiveID_events, false);
+		  event_source.addEventListener('DHT', DHT_events, false);
+		}
+	}
+	startSocket();
+	
     return true;
 }
 
 function connectsuccess(response){
         if (getFWdata( response))
             {
-            //document.getElementById('main_ui').style.display='block';
-            closeModal("Connection successful");
+            console.log("Fw identification:" + response);
             if (ESP3D_authentication) {
-                document.getElementById('menu_autthentication').style.display='inline';
+				closeModal("Connection successful");
+                document.getElementById('menu_authentication').style.display='inline';
                 logindlg(initUI, true);
             }
             else {
-                document.getElementById('menu_autthentication').style.display='none';
+                document.getElementById('menu_authentication').style.display='none';
                 initUI();
                 }
             }
@@ -86,7 +108,7 @@ function connectfailed(errorcode, response){
     document.getElementById('connectbtn').style.display='block';
     document.getElementById('failed_connect_msg').style.display='block';
     document.getElementById('connecting_msg').style.display='none';
-    console.log("Error " + errorcode + " : " + response);
+    console.log("Fw identification error " + errorcode + " : " + response);
 }
 
 function retryconnect () {

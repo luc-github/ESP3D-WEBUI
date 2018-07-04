@@ -49,6 +49,7 @@ function build_target_selection(index){
     content +="<div class='dropmenu-content dropmenu-content-" + menu_pos+ "' style='min-width:auto'>";
     content +="<a href=# onclick='macro_select_target(event, \"ESP\" ," + index + ")'>ESP</a>";
     content +="<a href=# onclick='macro_select_target(event, \"SD\" ," + index + ")'>SD</a>";
+     content +="<a href=# onclick='macro_select_target(event, \"URI\" ," + index + ")'>URI</a>"
     content +="</div>";
    content +="</div>";
    return content;

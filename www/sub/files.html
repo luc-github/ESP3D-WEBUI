@@ -1,4 +1,4 @@
-<div class="panel panel-default" >
+<div  id="filesPanel"  class="panel panel-default panel-flex" >
     <div class="panel-heading">
        <div class="row">
             <div class="col-md-12">
@@ -20,7 +20,7 @@
                             <td><span id="files_currentPath" ></span></td>
                             <td>&nbsp;&nbsp;</td>
                             <td><div id="files_nav_loader" style="width:1em;height:1em" class="loader hide_it"></div></td>
-                        <tr>
+                        </tr>
                     </table>
                 </div>
                 <div class="hide_it pull-right" id="files_uploading_msg">
@@ -48,7 +48,7 @@
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_btn"  onclick="files_refreshFiles(files_currentPath)" translate>Refresh</button>
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_primary_sd_btn"  onclick="files_refreshFiles(primary_sd)" >SD 1</button>
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_secondary_sd_btn"  onclick="files_refreshFiles(secondary_sd)" >SD 2</button>
-                    <button class="btn btn-xs btn-primary" onclick="files_progress()" translate>Progress</button>
+                    <button id="progress_btn" class="btn btn-xs btn-primary" onclick="files_progress()" translate>Progress</button>
                     <button class="btn btn-xs btn-primary" onclick="files_abort()" translate>Abort</button>
                     <button class="btn btn-xs btn-primary" onclick="files_select_upload()"  translate>Upload</button>
                     <input type="file" id="files_input_file" onchange="files_check_if_upload()" accept=" .g, .gco, .gcode, .G, .GCO, .GCODE" style="display:none" />
@@ -56,7 +56,7 @@
             </div>
         </div>
     </div>    
-    <div class="panel-body panel-height panel-max-height panel-scroll">
+    <div class="panel-body panel-height panel-max-height panel-scroll panel-flex-main">
         <div id="files_list_loader" class="loader hide_it" style="margin:auto"></div>
         <ul class="list-group" id="files_fileList">
         </ul>

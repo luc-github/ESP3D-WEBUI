@@ -37,6 +37,11 @@ stroke:black;
 stroke-width:1;
 filter:url(#f1);
 }
+path.std2 {
+stroke:black;
+stroke-width:1;
+filter:url(#f1);
+}
 path.std:hover {
 fill:orange;
 }
@@ -62,6 +67,7 @@ fill:orange;
 <g id="HomeX" onmouseup="SendHomecommand('G28 X0')"><path class="std" d="M10 57.50 h-10 v-57.5 h57.5 v10 a 125,125 0 0,0 -47.5 47.5 Z" fill="Khaki"></path><use x="3" y="5" width="20" height="18" xlink:href="#HomeIcon"/><text x="25" y="20" class="home"> X </text></g>
 <g id="HomeY" onmouseup="SendHomecommand('G28 Y0')"><path class="std" d="M230 57.50 h10 v-57.5 h-57.5 v10 a 125,125 0 0,1 47.5 47.5 z" fill="SteelBlue"></path><use x="217" y="5" width="20" height="18" xlink:href="#HomeIcon"/><text x="202" y="20" class="home"> Y </text></g>
 <g id="HomeZ" onmouseup="SendHomecommand('G28 Z0')"><path class="std" d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z" fill="DarkSeaGreen"></path><use x="217" y="217" width="20" height="18" xlink:href="#HomeIcon"/><text x="202" y="232" class="home"> Z </text></g>
+<g id="CornerZ" ><path  class="std2" d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z" fill="DarkSeaGreen"></path></g>
 
 <g id="Jog100" fill="#c0c0c0" class="std"><g id="Y+100" onmouseover="Onhover(evt, 'xy100')" onmouseout="Onout(evt, 'xy100')"  onmouseup="SendJogcommand('Y100','XYfeedrate')" transform="translate(120 120)"><path class="std" d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z"></path></g>
 <g id="X+100" onmouseup="SendJogcommand('X100','XYfeedrate')" onmouseover="Onhover(evt, 'xy100')" onmouseout="Onout(evt, 'xy100')"  transform="translate(120 120)"><path class="std" d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"></path></g>

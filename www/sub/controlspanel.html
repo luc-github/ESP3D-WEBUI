@@ -1,4 +1,4 @@
-<div class="panel panel-default " >
+<div id="controlPanel" class="panel panel-default panel-flex">
     <div class="panel-heading ">
           <div class="row ">
             <div class="col-md-12">
@@ -24,61 +24,28 @@
             </div>
         </div>
     </div>
-    <div class="panel-body">
+    <div class="panel-body panel-flex-main">
         <div class="row">
-            <div class="col col-lg-7">
+            <div id="JogUI" class="col col-lg-7">
                     <!-- replaceSVG --><object data="images/jogdial.svg" type="image/svg+xml" ></object><!-- /replaceSVG -->
             </div>
-            <div class="col col-lg-4">   
-                <table>
-                    <tr>
-                        <td valign="top">
-                            <table class="table table-borderless">
-                                    <thead style='border:none'>
-                                        <tr>
-                                            <th>
-                                                <button class="btn btn-primary" onclick="showmacrodlg(processMacroSave)">
-                                                    <span class="badge">
-                                                        <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
-                                                            <g transform='translate(50,1200) scale(1, -1)'>
-                                                                <path  fill='currentColor' d='M407 800l131 353q7 19 17.5 19t17.5 -19l129 -353h421q21 0 24 -8.5t-14 -20.5l-342 -249l130 -401q7 -20 -0.5 -25.5t-24.5 6.5l-343 246l-342 -247q-17 -12 -24.5 -6.5t-0.5 25.5l130 400l-347 251q-17 12 -14 20.5t23 8.5h429z' />
-                                                            </g>
-                                                        </svg>
-                                                        <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
-                                                            <g transform='translate(50,1200) scale(1, -1)'>
-                                                                <path  fill='currentColor' d='M1011 1210q19 0 33 -13l153 -153q13 -14 13 -33t-13 -33l-99 -92l-214 214l95 96q13 14 32 14zM1013 800l-615 -614l-214 214l614 614zM317 96l-333 -112l110 335z' />
-                                                            </g>
-                                                        </svg>
-                                                    </span>
-                                                </button>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="Macro_col1" style='border:none'>
-                                    </tbody>
-                                </table>
-                        </td>
-                        <td valign="top">
-                            <table class="table table-borderless">
-                                    <tbody id="Macro_col2" style='border:none'>
-                                    </tbody>
-                                </table>
-                        </td>
-                    </tr>
-                </table>
+            <div class="col col-lg-4">  
+                <div id="Macro_list" class="macro-container"> 
+                </div>
             </div>
          </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="hide_it2" id="positions_labels">
-            <h4>&nbsp;&nbsp;&nbsp;
-                <span  class="label label-default">X:<span id ="control_x_position"></span></span>
+        <div class="position-container" id="positions_labels">
+            <div class="position_text">
                 &nbsp;&nbsp;
-                <span class="label label-default">Y:<span id="control_y_position"></span></span>
+                <span  class="label label-default">X:<span id ="control_x_position">&nbsp;</span></span>
+            </div>
+            <div class="position_text">
                 &nbsp;&nbsp;
-                <span class="label label-default">Z:<span id="control_z_position"></span></span>
-            </h4>
-        </div>
+                <span  class="label label-default">Y:<span id ="control_y_position">&nbsp;</span></span>
+            </div>
+            <div class="position_text" id="control_z_position_display">
+                &nbsp;&nbsp;
+                <span  class="label label-default">Z:<span id ="control_z_position">&nbsp;</span></span>
             </div>
         </div>
     </div>
@@ -87,17 +54,20 @@
             <div class="col-md-12">
                 <div class="form-inline">
                     <div class="form-group">
-                        <span class="control-label" translate >Feedrate :</span>
                         <div class="input-group">
                             <span class="input-group-addon" >XY:</span>
                             <input class='form-control w6'  type="number" min="1" max="9999" id="control_xy_velocity" onchange="onXYvelocityChange()" />
                             <span class='input-group-addon'  translate>mm/min</span>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"translate>Z:</span>
-                            <input class='form-control w5'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()"  />
-                            <span class='input-group-addon'  translate>mm/min</span>
+                        &nbsp;
+                        <div id="z_velocity_display">
+                            <div class="input-group" >
+                                <span class="input-group-addon"translate>Z:</span>
+                                <input class='form-control w5'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()"  />
+                                <span class='input-group-addon'  translate>mm/min</span>
+                            </div>
                         </div>
+                        &nbsp;
                         <button class="btn btn-primary" onclick="control_motorsOff()" translate>Motors off</button>
                     </div>
             </div>

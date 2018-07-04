@@ -1,23 +1,3 @@
-var cam_is_checked=false;
-function OnCheckCam() {
-     if (typeof document.getElementById('camcheck') != "undefined") {
-         cam_is_checked = !cam_is_checked;
-         document.getElementById("camcheck").checked = cam_is_checked;
-         if (typeof document.getElementById('camtab') != "undefined") {
-             if (cam_is_checked){
-                 document.getElementById('camtablink').style.display = "block";
-                 document.getElementById("camtablink").click();                 
-                 var saddress = document.getElementById('camera_webaddress').value
-                 if (saddress.length == 0)camera_GetAddress();
-             }
-             else {
-                 document.getElementById("maintablink").click();
-                 document.getElementById('camtablink').style.display = "none";
-             }
-         }
-     }
-}
-
 function cameraformataddress() {
     var saddress = document.getElementById('camera_webaddress').value;
     var saddressl =saddress.trim().toLowerCase();
@@ -36,11 +16,13 @@ function camera_loadframe(){
     if(saddress.length == 0) {
         document.getElementById('camera_frame').src = "";
         document.getElementById('camera_frame_display').style.display = "none";
+        document.getElementById('camera_detach_button').style.display = "none";
         }
     else{
         cameraformataddress();
         document.getElementById('camera_frame').src = document.getElementById('camera_webaddress').value;
         document.getElementById('camera_frame_display').style.display = "block";
+        document.getElementById('camera_detach_button').style.display = "table-row";
     } 
 }
 
@@ -51,46 +33,25 @@ function camera_OnKeyUp(event){
     return true;
 }
 
- function DisplayAddress(webaddress){
-    document.getElementById('camera_webaddress').value = webaddress;
-    cameraformataddress();
-    camera_loadframe();
-}
-
-function camera_GetAddress(){
-        var url = "/command?plain="+encodeURIComponent("[ESP301]");
-        SendGetHttp(url, camera_GetAddressSuccess, camera_GetAddressFailed);
-}
 
 function camera_saveaddress(){
-    var saddress = "";
-    var url  = "";
     cameraformataddress();
-    saddress = document.getElementById('camera_webaddress').value;
-    url  = "/command?plain="+encodeURIComponent("[ESP300]" + saddress);
-    SendGetHttp(url, camera_saveaddressSuccess, camera_saveaddressFailed);
+    preferenceslist[0].camera_address = HTMLEncode(document.getElementById('camera_webaddress').value);
+    SavePreferences(true);
 }
 
 function camera_detachcam(){
     var webaddress = document.getElementById('camera_frame').src;
     document.getElementById('camera_frame').src = "";
     document.getElementById('camera_frame_display').style.display = "none";
+    document.getElementById('camera_detach_button').style.display = "none";
     window.open(webaddress);
 }
 
-function camera_GetAddressSuccess(response){
-    //console.log(response);
-    DisplayAddress(response);
+function camera_GetAddress(){
+    if (typeof(preferenceslist[0].camera_address) !== 'undefined') {
+        document.getElementById('camera_webaddress').value = decode_entitie(preferenceslist[0].camera_address);
+    }
+    else document.getElementById('camera_webaddress').value = "";
 }
 
-function camera_GetAddressFailed(error_code,response){
-     console.log("Error " + error_code + " :" + response);
-}
-
-function camera_saveaddressSuccess(response){
-    //console.log(response);
-}
-
-function camera_saveaddressFailed(error_code,response){
-     console.log("Error " + error_code + " :" + response);
-}

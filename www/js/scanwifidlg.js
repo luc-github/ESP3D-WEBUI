@@ -1,9 +1,11 @@
 var ssid_item_scanwifi = -1;
+var ssid_subitem_scanwifi = -1;
 //scanwifi dialog
-function scanwifidlg (item) {
+function scanwifidlg (item, subitem) {
     var modal = setactiveModal('scanwifidlg.html',scanwifidlg_close);
     if ( modal == null) return;
     ssid_item_scanwifi = item;
+    ssid_subitem_scanwifi = subitem;
     showModal() ;
     refresh_scanwifi();
 }
@@ -66,9 +68,9 @@ function process_scanWifi_answer(response_text){
 }
 
 function select_ap_ssid(ssid_name){
-    document.getElementById("setting_" + ssid_item_scanwifi).value=ssid_name;
-    document.getElementById("setting_"+ ssid_item_scanwifi).focus();
-    setsettingchanged(ssid_item_scanwifi);
+    document.getElementById("setting_" + ssid_item_scanwifi + "_" + ssid_subitem_scanwifi).value=ssid_name;
+    document.getElementById("setting_"+ ssid_item_scanwifi+ "_" + ssid_subitem_scanwifi).focus();
+    setsettingchanged(ssid_item_scanwifi, ssid_subitem_scanwifi);
     closeModal("Ok") ;
 }
 

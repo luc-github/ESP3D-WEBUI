@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div id="temperaturesPanel" class="panel panel-default">
     <div class="panel-heading">
        <div class="row">
             <div class="col-md-12">
@@ -48,8 +48,8 @@
                             </button>&nbsp;&nbsp;
                             <div class="input-group">
                                 <input class='form-control w5' type="number" min="0" max="999"  id="heaterT0SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T0')" />
-                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
-                            </div>
+                                <span class='input-group-addon' translate>&deg;C</span>
+                            </div>&nbsp;&nbsp;
                             <button onclick="temperature_heatSet('T0')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -76,8 +76,8 @@
                             </button>&nbsp;&nbsp;
                              <div class="input-group">
                                 <input class='form-control w5'  type="number" min="0" max="999"  id="heaterT1SelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'T1')" />
-                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
-                            </div>
+                                <span class='input-group-addon' translate>&deg;C</span>
+                            </div>&nbsp;&nbsp;
                             <button onclick="temperature_heatSet('T1')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -90,7 +90,7 @@
                 </td>
                 <td><span class="tempDisplay text-nowrap" id="heaterT1DisplayTemp"></span><span id="heaterT1TargetTemp_anime"  class="hide_it loader-pulse pull-right" style="color:red"></span></td>
             </tr>
-            <tr>
+            <tr  id="temperature_bed" class="hide_it">
                 <td translate>Bed</td>
                 <td>
                      <div class="form-inline">
@@ -104,8 +104,8 @@
                             </button>&nbsp;&nbsp;
                             <div class="input-group">
                                 <input class='form-control w5'  type="number" min="0" max="999" id="bedSelectedTemp" value=0 onkeyup="temperature_handleKeyUp(event, 'bed')" />
-                                <span class='input-group-addon' translate>&deg;C</span>&nbsp;&nbsp;
-                            </div>
+                                <span class='input-group-addon' translate>&deg;C</span>
+                            </div>&nbsp;&nbsp;
                             <button onclick="temperature_heatSet('bed')" class="btn btn-danger">
                                 <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
                                     <g transform='translate(50,1200) scale(1, -1)'>
@@ -123,11 +123,11 @@
          <ul class="list-group" >
             <li class='list-group-item hide_it'  id="temperatures_output">
                 <div class='row'>
-                    <div class='col-md-6'>
+                    <div id="extruderstemperaturesgraphic" class='col-md-6'>
                      <canvas id="extruderTempgraph" height="130"  width="200"></canvas>
                      &nbsp;&nbsp;
                     </div> 
-                    <div class='col-md-6'>
+                    <div class='col-md-6' id="bedtemperaturesgraphic">
                     <canvas id="bedTempgraph" height="130"  width="200" ></canvas>
                     </div> 
                 </div>
