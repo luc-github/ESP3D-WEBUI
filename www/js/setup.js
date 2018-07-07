@@ -5,9 +5,9 @@ var maz_page_wizard = 5;
 
 function setupdlg () {
      setup_is_done = false;
-      language_save = language;
+     language_save = language;
      document.getElementById('main_ui').style.display='none';
-      document.getElementById('settings_list_data').innerHTML = "";
+     document.getElementById('settings_list_data').innerHTML = "";
      active_wizard_page = 0;
      //reset page 1
      document.getElementById("startsteplink").className= document.getElementById("startsteplink").className.replace( " wizard_done", "");
@@ -52,6 +52,7 @@ function setupdlg () {
 
 function setupdone(response){
     setup_is_done = true;
+    do_not_build_settings = false;
     build_HTML_setting_list(current_setting_filter);
     translate_text(language_save);
     document.getElementById('main_ui').style.display='block';

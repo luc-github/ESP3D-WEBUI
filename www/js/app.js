@@ -237,7 +237,8 @@ function initUI_2() {
 	AddCmd(display_boot_progress);
     //get all settings from ESP3D
     console.log("Get settings");
-    refreshSettings();
+    //query settings but do not update list in case wizard is showed
+    refreshSettings(true);
     initUI_3();
 }
 function initUI_3() {
@@ -262,7 +263,9 @@ function initUI_4() {
 		closeModal("Connection successful");
         setupdlg();
     } else {
+			//wizard is done UI can be updated
             setup_is_done = true;
+            do_not_build_settings = false;
             AddCmd(display_boot_progress);
             build_HTML_setting_list(current_setting_filter);
             AddCmd(closeModal);

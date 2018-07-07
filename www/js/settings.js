@@ -4,12 +4,15 @@ var setting_lastindex = -1;
 var setting_lastsubindex = -1;
 var current_setting_filter = 'network';
 var setup_is_done = false;
+var do_not_build_settings = false;
 
-function refreshSettings() {
+function refreshSettings(hide_setting_list) {
         if (http_communication_locked) {
                document.getElementById('config_status').innerHTML=translate_text_item("Communication locked by another process, retry later.");
         return;
         }
+    if (typeof hide_setting_list != 'undefined') do_not_build_settings = hide_setting_list;
+    else do_not_build_settings = false;
     document.getElementById('settings_loader').style.display="block";
     document.getElementById('settings_list_content').style.display="none";     
     document.getElementById('settings_status').style.display="none";  
@@ -173,6 +176,8 @@ function get_index_from_eeprom_pos(pos){
     }
 
 function build_HTML_setting_list(filter){
+	//this to prevent concurent process to update after we clean content
+	if (do_not_build_settings)return;
     var content="";
     current_setting_filter = filter;
     document.getElementById(current_setting_filter+"_setting_filter").checked=true;
@@ -194,6 +199,7 @@ function build_HTML_setting_list(filter){
 function setting_check_value(value, index, subindex){
     var valid = true;
     var entry = setting_configList[index];
+    //console.log("checking value");
     if (entry.type == "F") return valid;
     //does it part of a list?
      if(entry.Options.length > 0) {
@@ -389,8 +395,10 @@ function settingsetvalue(index, subindex) {
 }
 
 function setting_checkchange(index, subindex) {
+	//console.log("list value changed");
     var val = document.getElementById('setting_'+index  +"_" + subindex).value.trim();
     if (setting_configList[index].type == "F") {
+		//console.log("it is flag value");
         var tmp = setting_configList[index].defaultvalue;
         if (val == "1") {
             tmp |= settings_get_flag_value(index, subindex);
@@ -399,18 +407,21 @@ function setting_checkchange(index, subindex) {
         }
         val = tmp;
     }
-     //console.log("value: " + val);
+    //console.log("value: " + val);
+    //console.log("default value: " + setting_configList[index].defaultvalue);
     if (setting_configList[index].defaultvalue == val){
+		console.log("values are identical");
         document.getElementById('btn_setting_'+index  +"_" + subindex).className = "btn btn-default";
         document.getElementById('icon_setting_'+index  +"_" + subindex).className="form-control-feedback";
         document.getElementById('icon_setting_'+index  +"_" + subindex).innerHTML="";
         document.getElementById('status_setting_'+index  +"_" + subindex).className="form-group has-feedback";
         }
     else if (setting_check_value(val, index, subindex)){
+			//console.log("Check passed");
             setsettingchanged(index, subindex);
         }
         else {
-            //console.log("change bad");
+            console.log("change bad");
             setsettingerror(index, subindex);
             }
 
