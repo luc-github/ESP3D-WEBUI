@@ -18,7 +18,7 @@ function build_color_selection(index){
     content +="<button class='btn " + entry.class +  "' onclick='showhide_drop_menu(event)'>&nbsp;";
     content +="<svg width='0.8em' height='0.8em' viewBox='0 0 1300 1200' style='pointer-events:none'>";
     content +="<g transform='translate(50,1200) scale(1, -1)'>";
-    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z' />";
+    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z'></path>";
     content +="</g>";
     content +="</svg>";
     content +="</button>";
@@ -42,7 +42,7 @@ function build_target_selection(index){
     content +="<button class='btn btn-default' style='min-width:5em;' onclick='showhide_drop_menu(event)'><span>" + entry.target +  "</span>";
     content +="<svg width='0.8em' height='0.8em' viewBox='0 0 1300 1200' style='pointer-events:none'>";
     content +="<g transform='translate(50,1200) scale(1, -1)'>";
-    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z' />";
+    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z'></path>";
     content +="</g>";
     content +="</svg>";
     content +="</button>";
@@ -64,7 +64,7 @@ function build_glyph_selection(index){
     content +="<button class='btn "+  entry.class +"' onclick='showhide_drop_menu(event)'><span>" + get_icon_svg(entry.glyph) +  "</span>&nbsp;";
     content +="<svg width='0.8em' height='0.8em' viewBox='0 0 1300 1200' style='pointer-events:none'>";
     content +="<g transform='translate(50,1200) scale(1, -1)'>";
-    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z' />";
+    content +="<path  fill='currentColor' d='M100 900h1000q41 0 49.5 -21t-20.5 -50l-494 -494q-14 -14 -35 -14t-35 14l-494 494q-29 29 -20.5 50t49.5 21z'></path>";
     content +="</g>";
     content +="</svg>";
     content +="</button>";

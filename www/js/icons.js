@@ -167,6 +167,6 @@ function get_icon_svg(name, w, h){
 if (has_error) return "";
 var icon = "<svg width='" + w + "' height='" + h + "' viewBox='0 0 1300 1200'><g transform='translate(30,1200) scale(1, -1)'><path  fill='currentColor' d='";
 icon+= content;
-icon+= "' /></g></svg>";
+icon+= "'></path></g></svg>";
 return icon;
  }
