@@ -17,6 +17,9 @@ body {
     line-height: 0;
 }
 
+.noshowonlowrestab {
+}
+
 .noshowonlowres {
 display: inline-block;
 }
@@ -183,6 +186,7 @@ margin-right: -13px;
 {
 float: unset!important;
 }
+noshowonlowrestab,
 .noshowonlowres {
 display: none;
 }
@@ -197,6 +201,7 @@ display: none;
 margin-left: -17px;
 margin-right: -13px;
 }
+noshowonlowrestab,
 .noshowonlowres {
 display: none;
 }

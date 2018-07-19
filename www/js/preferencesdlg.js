@@ -507,14 +507,12 @@ function SavePreferences(current_preferences){
         preferenceslist = JSON.parse(saveprefs);
         } 
     var blob = new Blob([JSON.stringify(preferenceslist, null, " ")], {type : 'application/json'});
-    console.log(navigator.appName);
     var file ;
-    if (navigator.appName !="Netscape") file= new File([blob], preferences_file_name);
-    else {
+   if (browser_is("IE") || browser_is("Edge")){
 		file = blob;
 		file.name=preferences_file_name;
 		file.lastModifiedDate= new Date();
-	}
+	} else file= new File([blob], preferences_file_name);
     var formData = new FormData();
     var url = "/files";
     formData.append('path', '/');

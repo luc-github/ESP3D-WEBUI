@@ -24,12 +24,40 @@ function ActiveID_events(e){
 function DHT_events(e){
   Handle_DHT(e.data);
 }
+//Check for IE
+//Edge
+//Chrome
+function browser_is(bname){
+	var ua = navigator.userAgent;
+	switch(bname){
+		case "IE":
+			if (ua.indexOf("Trident/")!=-1)return true;
+			break;
+		case "Edge":
+			if (ua.indexOf("Edge")!=-1)return true;
+			break;
+		case "Chrome":
+			if (ua.indexOf("Chrome")!=-1)return true;
+			break;
+		default:
+		return false;
+	}
+	return false;
+}
 
 window.onload = function() {
     //to check if javascript is disabled like in anroid preview
     document.getElementById('loadingmsg').style.display = 'none';
     console.log("Connect to board");
     connectdlg();
+    //ugly hack for IE
+    console.log(navigator.userAgent);
+    if (browser_is("IE")){
+		
+		document.getElementById('extruder-body').className="panel-body panel-height";
+		document.getElementById('command-body').className="panel-body";
+		document.getElementById('file-body').className="panel-body panel-height panel-max-height panel-scroll";
+	}
 };
 
 function startSocket(){

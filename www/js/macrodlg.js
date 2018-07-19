@@ -249,14 +249,12 @@ function SaveNewMacroList(){
     }
     
     var blob = new Blob([JSON.stringify(macrodlg_macrolist, null, " ")], {type : 'application/json'});
-    console.log(navigator.appName);
     var file ;
-    if (navigator.appName !="Netscape") file = new File([blob], '/macrocfg.json');
-    else {
+    if (browser_is("IE") || browser_is("Edge")) {
 		file = blob;
 		file.name='/macrocfg.json';
 		file.lastModifiedDate= new Date();
-	}
+	} else file = new File([blob], '/macrocfg.json');
     var formData = new FormData();
     var url = "/files";
     formData.append('path', '/');
