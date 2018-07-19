@@ -228,9 +228,16 @@ display: none;
   grid-template-columns: auto auto;
 }
 
-.panel-flex {
+.panel-flex-col {
     display: flex;
     flex-direction: column;
+    width:100%;
+}
+
+.panel-flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .panel-flex-main {

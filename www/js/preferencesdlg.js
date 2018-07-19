@@ -29,7 +29,7 @@ var defaultpreferenceslist= "[{\
                                             }]";
 var preferences_file_name = '/preferences.json';
 function getpreferenceslist(){
-    var url = preferences_file_name;
+    var url = preferences_file_name +"?"+Date.now();
     preferenceslist = [];
     //removeIf(production)
     var response= defaultpreferenceslist;
@@ -470,6 +470,7 @@ function SavePreferences(current_preferences){
          alertdlg (translate_text_item("Busy..."), translate_text_item("Communications are currently locked, please wait and retry."));
     return;
     }
+    console.log("save prefs");
      if (((typeof( current_preferences ) != 'undefined' )&& !current_preferences) || (typeof( current_preferences ) == 'undefined' )){
         if (!Checkvalues("preferences_pos_Interval_check") ||
              !Checkvalues("preferences_control_xy_velocity") ||
@@ -506,7 +507,14 @@ function SavePreferences(current_preferences){
         preferenceslist = JSON.parse(saveprefs);
         } 
     var blob = new Blob([JSON.stringify(preferenceslist, null, " ")], {type : 'application/json'});
-    var file = new File([blob], preferences_file_name);
+    console.log(navigator.appName);
+    var file ;
+    if (navigator.appName !="Netscape") file= new File([blob], preferences_file_name);
+    else {
+		file = blob;
+		file.name=preferences_file_name;
+		file.lastModifiedDate= new Date();
+	}
     var formData = new FormData();
     var url = "/files";
     formData.append('path', '/');
