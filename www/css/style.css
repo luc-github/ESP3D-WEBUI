@@ -154,21 +154,21 @@ display: inline-block;
   border: 0px solid #ffffff;
 }
 .w4 {
-width:4em;
+width:4em!important;
 }
 .w5 {
-width:5em;
+width:5em!important;
 }
 .w6 {
-width:6em;
+width:6em!important;
 }
 
 w14 {
-width:14em;
+width:14em!important;
 }
 
 .w50 {
-width:50em;
+width:50em!important;
 }
 
 @media (max-width: 360px) {
