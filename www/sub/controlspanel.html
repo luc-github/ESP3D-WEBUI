@@ -6,18 +6,19 @@
                           <b><span translate>Controls</span></b>
                     </div>
                     <div class="pull-right">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <div class="checkbox">
+						
+						<div class="form-group">
+							<div class="form-inline">
+									<table class="checkbox"><tr><td>&nbsp;&nbsp;</td><td>
                                     <label>
                                         <input type="checkbox" id="autocheck_position" onclick="on_autocheck_position()"/>
                                         <span translate>auto-check position every:</span>                                    
                                     </label>
-                                    <div class="input-group">
+                                    </td></tr></table>
+                                    <table class="input-group"><tr><td>
                                         <input class='form-control w4' type="number" min="1" max="99" id="posInterval_check" onchange="onPosIntervalChange()" />
-                                        <span class='input-group-addon' translate>sec</span>
-                                    </div>
-                                </div>
+                                        <span class='input-group-addon form_control' translate>sec</span>
+                                    </td></tr></table>
                             </div>
                         </div>
                     </div>
@@ -50,28 +51,29 @@
         </div>
     </div>
     <div class="panel-footer">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-inline">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" >XY:</span>
+        <div class="panel-flex-row">
+						
+							<table class="input-group"><tr><td>
+                            <span class="input-group-addon form_control" >XY:</span>
+                            <input class="hide_it"></input>
+                            </td><td>
+							<span class="input-group-addon hide_it" ></span>
                             <input class='form-control w6'  type="number" min="1" max="9999" id="control_xy_velocity" onchange="onXYvelocityChange()" />
-                            <span class='input-group-addon'  translate>mm/min</span>
-                        </div>
+                            <span class='input-group-addon form_control'  translate>mm/min</span> 
+                            </td></tr></table>
+                       
                         &nbsp;
-                        <div id="z_velocity_display">
-                            <div class="input-group" >
-                                <span class="input-group-addon"translate>Z:</span>
-                                <input class='form-control w5'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()"  />
-                                <span class='input-group-addon'  translate>mm/min</span>
-                            </div>
-                        </div>
+							<table id="z_velocity_display" class="input-group"><tr><td>
+							<span class="input-group-addon form_control"translate>Z:</span>
+							<input class="hide_it"></input>
+							</td><td>
+							<span class="input-group-addon hide_it" ></span>
+							<input class='form-control w5'  type="number" min="1" max="999" id="control_z_velocity" onchange="onZvelocityChange()"  />
+							<span class='input-group-addon form_control'  translate>mm/min</span>
+							</td></tr></table>
+                        
                         &nbsp;
                         <button class="btn btn-primary" onclick="control_motorsOff()" translate>Motors off</button>
-                    </div>
-            </div>
-        </div>
         </div>
     </div>
 </div>

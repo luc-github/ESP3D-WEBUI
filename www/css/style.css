@@ -4,6 +4,10 @@ body {
     font-size:14px;
 }
 
+.form_control{
+height:34px!important;
+}
+
 .no_overflow {
 	text-overflow: ellipsis;
 	overflow: hidden;
