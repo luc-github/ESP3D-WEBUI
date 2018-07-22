@@ -161,6 +161,10 @@ function SPIFFSdispatchfilestatus(jsonresponse){
  }
  
 function refreshSPIFFS() {
+	document.getElementById('SPIFFS-select').value="";
+	document.getElementById('uploadSPIFFSmsg').innerHTML ="";
+    document.getElementById("SPIFFS_file_name").innerHTML=translate_text_item("No file chosen");
+    document.getElementById('SPIFFS_uploadbtn').style.display = 'none';
     document.getElementById('refreshSPIFFSbtn').style.display='none';
     document.getElementById("SPIFFS_select_files").style.display='none';
     //removeIf(production)
@@ -244,7 +248,9 @@ function SPIFFSUploadfailed(errorcode, response){
     document.getElementById('SPIFFS-select_form').style.display = 'block';
     document.getElementById('SPIFFS_prg').style.display = 'none';
     document.getElementById('SPIFFS_uploadbtn').style.display = 'block';
-    document.getElementById('uploadSPIFFSmsg').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;
+    document.getElementById('SPIFFS_status').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;
+    document.getElementById('uploadSPIFFSmsg').innerHTML ="";
+    document.getElementById("uploadSPIFFSmsg").style.display='none';
     document.getElementById('refreshSPIFFSbtn').style.display='block';
     console.log("Error " + errorcode + " : " + response);
     SPIFFS_upload_ongoing=false;
