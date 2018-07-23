@@ -123,11 +123,11 @@ function process_Temperatures(response){
     var timedata = new Date().getTime();
     while ((result = regex_temp.exec(response)) !== null) {
         var tool = result[1];
-        var value = parseFloat(result[3]).toFixed(2).toString()+ "°C";
+        var value = "<span>" + parseFloat(result[3]).toFixed(2).toString()+ "°C";
         var value2;
         if (isNaN(parseFloat(result[5]))) value2 = "0.00";
         else value2 = parseFloat(result[5]).toFixed(2).toString();
-        value += " | " + value2 + "°C";
+        value += "</span>&nbsp;<span>|</span>&nbsp;" + value2 + "°C</span>";
         if (tool == "T") {
             //to push to graph
             extruder_0_line.append(timedata, parseFloat(result[3]));
@@ -135,20 +135,20 @@ function process_Temperatures(response){
             //extruder_1_line.append(timedata, parseFloat(result[3])+Math.random());
             document.getElementById('heaterT0DisplayTemp').innerHTML = value;
             //to see if heating or not
-            if (Number(value2) >0)document.getElementById('heaterT0TargetTemp_anime').style.display="block";
-            else document.getElementById('heaterT0TargetTemp_anime').style.display="none";
+            if (Number(value2) >0)document.getElementById('heaterT0TargetTemp_anime').style.visibility="visible";
+            else document.getElementById('heaterT0TargetTemp_anime').style.visibility="hidden";
         }
         else if (tool == "T1") {
             extruder_1_line.append(timedata, parseFloat(result[3]));
             document.getElementById('heaterT1DisplayTemp').innerHTML = value;
-            if (Number(value2) >0)document.getElementById('heaterT1TargetTemp_anime').style.display="block";
-            else document.getElementById('heaterT1TargetTemp_anime').style.display="none";
+            if (Number(value2) >0)document.getElementById('heaterT1TargetTemp_anime').style.visibility="visible";
+            else document.getElementById('heaterT1TargetTemp_anime').style.visibility="hidden";
         }
         if (tool == "B") {
             bed_line.append(timedata, parseFloat(result[3]));
             document.getElementById('bedDisplayTemp').innerHTML = value;
-            if (Number(value2) >0)document.getElementById('bedTargetTemp_anime').style.display="block";
-            else document.getElementById('bedTargetTemp_anime').style.display="none";
+            if (Number(value2) >0)document.getElementById('bedTargetTemp_anime').style.visibility="visible";
+            else document.getElementById('bedTargetTemp_anime').style.visibility="hidden";
         }
     }
 }
@@ -157,15 +157,15 @@ function temperature_heatOff(target){
     switch (target) {
         case 'T0':
             document.getElementById('heaterT0SelectedTemp').value = 0;
-            document.getElementById('heaterT0TargetTemp_anime').style.display="none";
+            document.getElementById('heaterT0TargetTemp_anime').style.visibility="hidden";
             break;
         case 'T1':
              document.getElementById('heaterT1SelectedTemp').value = 0;
-            document.getElementById('heaterT1TargetTemp_anime').style.display="none";
+            document.getElementById('heaterT1TargetTemp_anime').style.visibility="hidden";
             break;
         case 'bed':
             document.getElementById('bedSelectedTemp').value = 0;
-            document.getElementById('bedTargetTemp_anime').style.display="none";
+            document.getElementById('bedTargetTemp_anime').style.visibility="hidden";
             break;
     }
     var type = (target == 'bed')? 140 : 104;

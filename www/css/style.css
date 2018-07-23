@@ -16,6 +16,10 @@ height:34px!important;
     display: none;
 }
 
+.not_visible {
+    visibility : hidden;
+}
+
 .no_margin {
     margin: 0 !important;
     line-height: 0;
@@ -69,7 +73,7 @@ display: inline-block;
 .loader-pulse {
   position: relative;
   width: 0.25em;
-  height: 1em;
+  height: 0.4em;
   background: rgba(255, 0, 0, 0.2);
   -webkit-animation: pulse 750ms infinite;
           animation: pulse 750ms infinite;
@@ -80,7 +84,7 @@ display: inline-block;
   content: '';
   position: absolute;
   display: block;
-  height: 0.66em;
+  height: 0.4em;
   width: 0.25em;
   background: rgba(255, 0, 0, 0.2);
   top: 50%;
@@ -96,6 +100,10 @@ display: inline-block;
   left: 0.5em;
   -webkit-animation-delay: 500ms;
           animation-delay: 500ms;
+}
+
+.panel-min-width {
+ min-width: 350px;
 }
 
 .panel-max-height {
@@ -241,6 +249,11 @@ display: none;
     display: flex;
     flex-direction: column;
     width:100%;
+}
+
+.panel-flex-center {
+	align-items: center;
+    justify-content: center;
 }
 
 .panel-flex-row {
