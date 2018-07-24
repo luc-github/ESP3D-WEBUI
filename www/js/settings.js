@@ -112,19 +112,21 @@ function build_control_from_index (index, extra_set_function) {
             nbsub = setting_configList[i].Options.length;
             }
         for (var sub_element = 0; sub_element < nbsub;sub_element++) {
-            content+="<tr><td style='vertical-align:middle;'>";
+			if (sub_element >0) {
+				 content+="<tr><td style='height:10px;'></td></tr>";
+			}
+            content+="<tr><td style='vertical-align: middle;'>";
             if( setting_configList[i].type == "F"){
-                content+="<span >" + translate_text_item(setting_configList[i].Options[sub_element].display, true) +"</span>";
-                content+="</td><td>&nbsp;</td><td style='padding-top:1em'>";
+                content+=translate_text_item(setting_configList[i].Options[sub_element].display, true);
+                content+="</td><td>&nbsp;</td><td>";
                 }
-            content+="<div id='status_setting_"+ i + "_" + sub_element + "' class='form-group has-feedback' >";
+            content+="<div id='status_setting_"+ i + "_" + sub_element + "' class='form-group has-feedback' style='margin: auto;'>";
             content+="<div class='input-group'>";
             content+="<div class='input-group-btn'>";
-            content+="<button class='btn btn-default' onclick='setting_revert_to_default("+i+","+sub_element+")' >";
+            content+="<button class='btn btn-default btn-svg' onclick='setting_revert_to_default("+i+","+sub_element+")' >";
             content+=get_icon_svg("repeat");
             content+="</button>";
             content+="</div>";
-             content+="<div class='input-group'>";
              //flag
             if ( setting_configList[i].type == "F") {
                 //console.log(setting_configList[i].label + " " + setting_configList[i].type);
@@ -150,11 +152,10 @@ function build_control_from_index (index, extra_set_function) {
                 }
             content+="' translate english_content='Set' >" + translate_text_item("Set") + "</button>";
              if (setting_configList[i].pos == "1") {
-                content+="<button class='btn btn-default' onclick='scanwifidlg(\"" + i +"\",\"" + sub_element+"\")'>";
+                content+="<button class='btn btn-default btn-svg' onclick='scanwifidlg(\"" + i +"\",\"" + sub_element+"\")'>";
                 content+=get_icon_svg("search");
                 content+="</button>";
             }
-            content+="</div>";
             content+="</div>";
             content+="</div>";
             content+="</div>";
