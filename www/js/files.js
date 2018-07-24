@@ -50,19 +50,15 @@ function files_build_file_line(index){
     if ((files_filter_sd_list && entry.isprintable) || (!files_filter_sd_list)){
         content +="<li class='list-group-item list-group-hover' >";
         content +="<div class='row'>";
-        content +="<div class='col-md-1 col-sm-1' ";
+        content +="<div class='col-md-5 col-sm-5 no_overflow' ";
          if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")'";
         }
-         content +="><span  style='color:DeepSkyBlue;'>"; 
+         content +="><table><tr><td><span  style='color:DeepSkyBlue;'>"; 
         if (entry.isdir == true) content +=get_icon_svg("folder-open")  ;
         else content +=get_icon_svg("file");
-        content +="</span ></div>";
-        content +="<div class='col-md-4 col-sm-4 no_overflow' ";
-        if (is_clickable){
-            content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
-        }
-        content +=" >" + entry.name + "</div>";
+        content +="</span ></td><td>";
+        content += entry.name + "</td></tr></table></div>";
         content +="<div class='col-md-2 col-sm-2'";
         if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
