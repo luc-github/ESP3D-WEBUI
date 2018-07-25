@@ -1,17 +1,17 @@
 <div id="commandsPanel" class="panel panel-default panel-flex-col">
     <div class="panel-heading">
         <b><span translate>Commands</span></b>
-        <button id='clear_monitor_btn'class="btn btn-primary btn-xs pull-right" onclick="Monitor_output_Clear()" translate>Clear</button>
+        <button id="clear_monitor_btn"class="btn btn-primary btn-xs pull-right" onclick="Monitor_output_Clear()" translate>Clear</button>
     </div>
     <div id="command-body" class="panel-body panel-flex-main"  >
         <pre id="cmd_content" style="min-height: 350px; max-height: 350px;" ></pre>
     </div>
     <div class="panel-footer"  >
         <div class="panel-flex-row">
-             <div class='input-group'>
-                <div class='input-group'>
-                    <input class='form-control w14' type="text" onkeyup="CustomCommand_OnKeyUp(event)" id="custom_cmd_txt" autocomplete="off" translateph placeholder='Send Command...' />
-                    <div class='input-group-btn'>
+             <div class="input-group">
+                <div class="input-group">
+                    <input class="form-control w14" type="text" onkeyup="CustomCommand_OnKeyUp(event)" id="custom_cmd_txt" autocomplete="off" translateph placeholder="Send Command..." />
+                    <div class="input-group-btn">
                         <button class="btn btn-success" onclick="SendCustomCommand();" translate>Send</button>
                     </div>
                 </div>

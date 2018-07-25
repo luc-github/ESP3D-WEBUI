@@ -28,10 +28,16 @@ height:34px!important;
 .noshowonlowrestab {
 }
 .btn-svg {
-	padding: 8px 8px!important; 
-	width:34px!important; 
+	padding: 4px 0px 0px 0px!important; 
+	width:34px!important;
+	height:34px!important; 
+}
+
+.btn-svg-no_pad {
+	padding: 0px 0px 0px 0px!important; 
 	height:34px!important;
 }
+
 .noshowonlowres {
 display: inline-block;
 }

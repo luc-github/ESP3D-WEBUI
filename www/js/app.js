@@ -53,7 +53,7 @@ window.onload = function() {
     //ugly hack for IE
     console.log(navigator.userAgent);
     if (browser_is("IE")){
-		
+		document.getElementById('control-body').className="panel-body";
 		document.getElementById('extruder-body').className="panel-body panel-height";
 		document.getElementById('command-body').className="panel-body";
 		document.getElementById('file-body').className="panel-body panel-height panel-max-height panel-scroll";
