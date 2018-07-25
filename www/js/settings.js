@@ -132,17 +132,17 @@ function build_control_from_index (index, extra_set_function) {
                 //console.log(setting_configList[i].label + " " + setting_configList[i].type);
                 //console.log(setting_configList[i].Options.length);
                 content += build_select_flag_for_setting_list(i, sub_element);
-                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback'  style='right: 1em; top:3px'></span>";
+                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
                 }
             //drop list
             else if (setting_configList[i].Options.length > 0){
                 content += build_select_for_setting_list(i, sub_element);
-                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback'  style='right: 1em; top:3px'></span>";
+                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
                 }
             //text
             else {
                 content += "<input id='setting_" + i + "_" + sub_element + "' type='text' class='form-control'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +"," + sub_element + ")' >";
-                content += "<span id='icon_setting_"+ i + "_" + sub_element +  "'class='form-control-feedback' style='top:3px' ></span>";
+                content += "<span id='icon_setting_"+ i + "_" + sub_element +  "'class='form-control-feedback ico_feedback' ></span>";
                 }
             
             content+="<div class='input-group-btn'>";
@@ -221,6 +221,7 @@ function setting_check_value(value, index, subindex){
         //check maximum?
         if (parseInt(entry.max_val) < parseInt(value)) valid = false;
         if(!valid)setting_error_msg = " between " + entry.min_val + " and " + entry.max_val;
+        if (isNaN(value)) valid = false;
         }
     else if (entry.type == "S"){
         //check minimum?
@@ -387,7 +388,7 @@ function settingsetvalue(index, subindex) {
         setting_lastsubindex = subindex;
         setting_configList[index].defaultvalue = value;
         document.getElementById('btn_setting_'+index+ "_" + sub).className = "btn btn-success";
-        document.getElementById('icon_setting_'+index+ "_" + sub).className="form-control-feedback has-success";
+        document.getElementById('icon_setting_'+index+ "_" + sub).className="form-control-feedback has-success ico_feedback";
         document.getElementById('icon_setting_'+index+ "_" + sub).innerHTML=get_icon_svg("ok");
         document.getElementById('status_setting_'+index+ "_" + sub).className="form-group has-feedback has-success";
         var url = "/command?plain="+encodeURIComponent(cmd);
@@ -431,13 +432,13 @@ function setting_checkchange(index, subindex) {
 function setsettingchanged(index, subindex){
         document.getElementById('status_setting_'+index +"_" + subindex).className="form-group has-feedback has-warning";
         document.getElementById('btn_setting_'+index +"_" + subindex).className = "btn btn-warning";
-        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-warning";
+        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-warning ico_feedback";
         document.getElementById('icon_setting_'+index +"_" + subindex).innerHTML=get_icon_svg("warning-sign");
 }
 
 function setsettingerror(index, subindex){
         document.getElementById('btn_setting_'+index +"_" + subindex).className = "btn btn-danger";
-        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-error";
+        document.getElementById('icon_setting_'+index +"_" + subindex).className="form-control-feedback has-error ico_feedback";
         document.getElementById('icon_setting_'+index +"_" + subindex).innerHTML= get_icon_svg("remove");
         document.getElementById('status_setting_'+index +"_" + subindex).className="form-group has-feedback has-error";
 }
@@ -451,7 +452,7 @@ function setESPsettingsfailed(error_code,response){
     alertdlg (translate_text_item("Set failed"), "Error " + error_code + " :" + response);
     console.log("Error " + error_code + " :" + response);
     document.getElementById('btn_setting_'+setting_lastindex+"_"+setting_lastsubindex).className = "btn btn-danger";
-    document.getElementById('icon_setting_'+setting_lastindex+"_"+setting_lastsubindex).className="form-control-feedback has-error";
+    document.getElementById('icon_setting_'+setting_lastindex+"_"+setting_lastsubindex).className="form-control-feedback has-error ico_feedback";
     document.getElementById('icon_setting_'+setting_lastindex+"_"+setting_lastsubindex).innerHTML= get_icon_svg("remove");
     document.getElementById('status_setting_'+setting_lastindex+"_"+setting_lastsubindex).className="form-group has-feedback has-error";
 }

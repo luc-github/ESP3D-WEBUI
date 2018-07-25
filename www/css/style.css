@@ -8,6 +8,11 @@ body {
 height:34px!important;
 }
 
+.ico_feedback{
+	right:50px!important; 
+	top:3px;
+}
+
 .no_overflow {
 	text-overflow: ellipsis;
 	overflow: hidden;
