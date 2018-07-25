@@ -99,25 +99,23 @@ function build_HTML_config_list(){
             content+=item.label;
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
-            content+="<div id='status_config_"+ prefix + i + "' class='form-group has-feedback' >";
-            content+="<div class='input-group'>";
-            content+="<span class='input-group-btn'>";
-            content+="<button class='btn btn-default' onclick='config_revert_to_default("+i+"," + is_override_config + ")' >";
-            content+=get_icon_svg("repeat");
-            content+="</button>";
-            content+="</span>";
-            content+="<div class='input-group'>";
-            content+="<input id='config_" + prefix + i + "' type='text' class='form-control' style='width:";
+            content+=	"<div id='status_config_"+ prefix + i + "' class='form-group has-feedback' style='margin: auto;'>";
+            content+=		"<div class='input-group'>";
+            content+=			"<span class='input-group-btn'>";
+            content+=				"<button class='btn btn-default btn-svg' onclick='config_revert_to_default("+i+"," + is_override_config + ")' >";
+            content+=					get_icon_svg("repeat");
+            content+=				"</button>";
+            content+=			"</span>";
+            content+=			"<input id='config_" + prefix + i + "' type='text' class='form-control' style='width:";
             if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || is_override_config)content+="25em";
             else content+="auto";
-            content+="'  value='" + item.defaultvalue + "' onkeyup='config_checkchange(" + i +"," + is_override_config +")' />";
-            content+="<span id='icon_config_" + prefix +  i + "'class='form-control-feedback' ></span>";
-            content+="<span class='input-group-btn'>";
-            content+="<button  id='btn_config_" + prefix+ i + "' class='btn btn-default' onclick='configGetvalue("+ i +"," + is_override_config +")' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
-            content+="</span>";
-            content+="</div>";
-            content+="</div>";
-            content+="</div>";
+            content+=				"'  value='" + item.defaultvalue + "' onkeyup='config_checkchange(" + i +"," + is_override_config +")' />";
+            content+=			"<span id='icon_config_" + prefix +  i + "'class='form-control-feedback ico_feedback' ></span>";
+            content+=			"<span class='input-group-btn'>";
+            content+=				"<button  id='btn_config_" + prefix+ i + "' class='btn btn-default' onclick='configGetvalue("+ i +"," + is_override_config +")' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
+            content+=			"</span>";
+            content+=		"</div>";
+            content+=	"</div>";;
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
             content+=HTMLEncode(item.help );
@@ -414,7 +412,7 @@ function configGetvalue(index, is_override) {
     //if not valid show error
     if (!isvalid){
         document.getElementById('btn_config_'+ prefix +index).className = "btn btn-danger";
-        document.getElementById('icon_config_'+ prefix +index).className="form-control-feedback has-error";
+        document.getElementById('icon_config_'+ prefix +index).className="form-control-feedback has-error ico_feedback";
         document.getElementById('icon_config_'+ prefix +index).innerHTML=get_icon_svg("remove");
         document.getElementById('status_config_'+ prefix +index).className="form-group has-feedback has-error";
         alertdlg (translate_text_item("Out of range"), translate_text_item( "Value must be ") + config_error_msg + " !");
@@ -425,7 +423,7 @@ function configGetvalue(index, is_override) {
         config_lastindex_is_override = is_override;
         item.defaultvalue = value; 
         document.getElementById('btn_config_'+ prefix +index).className = "btn btn-success";
-        document.getElementById('icon_config_'+ prefix +index).className="form-control-feedback has-success";
+        document.getElementById('icon_config_'+ prefix +index).className="form-control-feedback has-success ico_feedback";
         document.getElementById('icon_config_'+ prefix +index).innerHTML=get_icon_svg("ok");
         document.getElementById('status_config_'+ prefix +index).className="form-group has-feedback has-success";
         var url = "/command?plain="+encodeURIComponent(cmd);
@@ -452,14 +450,14 @@ function config_checkchange(index, is_override) {
     else if (config_check_value(val, index, is_override)){
         document.getElementById('status_config_' + prefix +index).className="form-group has-feedback has-warning";
         document.getElementById('btn_config_' + prefix +index).className = "btn btn-warning";
-        document.getElementById('icon_config_' + prefix +index).className="form-control-feedback has-warning";
+        document.getElementById('icon_config_' + prefix +index).className="form-control-feedback has-warning ico_feedback";
         document.getElementById('icon_config_' + prefix +index).innerHTML=get_icon_svg("warning-sign");
         //console.log("change ok");
         }
         else {
             //console.log("change bad");
             document.getElementById('btn_config_' + prefix +index).className = "btn btn-danger";
-            document.getElementById('icon_config_' + prefix +index).className="form-control-feedback has-error";
+            document.getElementById('icon_config_' + prefix +index).className="form-control-feedback has-error ico_feedback";
             document.getElementById('icon_config_'+ prefix +index).innerHTML= get_icon_svg("remove");
             document.getElementById('status_config_' + prefix +index).className="form-group has-feedback has-error";
             }
@@ -519,7 +517,7 @@ function setESPconfigfailed(error_code,response){
     var prefix = "";
     if (config_lastindex_is_override) prefix = "_override";
     document.getElementById('btn_config_' + prefix +config_lastindex).className = "btn btn-danger";
-    document.getElementById('icon_config_' + prefix +config_lastindex).className="form-control-feedback has-error";
+    document.getElementById('icon_config_' + prefix +config_lastindex).className="form-control-feedback has-error ico_feedback";
     document.getElementById('icon_config_'  + prefix  +config_lastindex).innerHTML= get_icon_svg("remove");
    document.getElementById('status_config_' + prefix +config_lastindex).className="form-group has-feedback has-error";
 }
