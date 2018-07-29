@@ -132,19 +132,23 @@ function build_control_from_index (index, extra_set_function) {
                 //console.log(setting_configList[i].label + " " + setting_configList[i].type);
                 //console.log(setting_configList[i].Options.length);
                 content += build_select_flag_for_setting_list(i, sub_element);
-                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
+                
                 }
             //drop list
             else if (setting_configList[i].Options.length > 0){
                 content += build_select_for_setting_list(i, sub_element);
-                content += "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
                 }
             //text
             else {
                 content += "<input id='setting_" + i + "_" + sub_element + "' type='text' class='form-control'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +"," + sub_element + ")' >";
-                content += "<span id='icon_setting_"+ i + "_" + sub_element +  "'class='form-control-feedback ico_feedback' ></span>";
                 }
-            
+            content+= "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
+            content+= "</div>";
+            content+="</div>";
+            content+= "</td>";
+            content+= "<td>";
+            content+="<div class='input-group'>";
+			content+="<input class='hide_it'></input>";
             content+="<div class='input-group-btn'>";
             content+="<button  id='btn_setting_"+ i +"_" + sub_element + "' class='btn btn-default' onclick='settingsetvalue("+ i +"," +sub_element +");";
             if (typeof extra_set_function != 'undefined') {
@@ -156,7 +160,6 @@ function build_control_from_index (index, extra_set_function) {
                 content+=get_icon_svg("search");
                 content+="</button>";
             }
-            content+="</div>";
             content+="</div>";
             content+="</div>";
             content+="</td></tr>";
