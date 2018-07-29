@@ -8,6 +8,10 @@ body {
 height:34px!important;
 }
 
+.input-min {
+min-width: 8em;
+}
+
 .ico_feedback{
 	right:5px!important; 
 	top:3px;
@@ -191,6 +195,10 @@ width:5em!important;
 width:6em!important;
 }
 
+.w8 {
+width:8em!important;
+}
+
 w14 {
 width:14em!important;
 }
@@ -270,6 +278,12 @@ display: none;
 .panel-flex-center {
 	align-items: center;
     justify-content: center;
+}
+
+.item-flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .panel-flex-row {

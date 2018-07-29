@@ -48,7 +48,7 @@
                 <div class="form-inline">
                     <div class="form-group">
                         <span><span translate >Camera address</span>:</span>
-                        <input type="text" class="form-control w50" id="preferences_camera_webaddress"  translateph placeholder="Camera address" />
+                        <input type="text" class="form-control w14" id="preferences_camera_webaddress"  translateph placeholder="Camera address" />
                     </div>
                 </div>
             </div>
@@ -63,31 +63,39 @@
                 </div>
             </div>
             <div id="control_preferences" class="panel-body">
-                <div class="form-inline">
-                    <div class="form-group" id="preferences_pos_Interval_check_group">
-                        <span><span translate >Position Refresh Time</span>:&nbsp;</span>
-                        <div class="input-group">
-                            <div class="input-group">
-                                <input class='form-control w4' type="number" min="1" max="99" id="preferences_pos_Interval_check" onchange="Checkvalues('preferences_pos_Interval_check')"/>
-                                <span id="preferences_pos_Interval_check_icon" style="top:3px"class="form-control-feedback"></span>
-                            </div>
-                            <span class='input-group-addon' translate>sec</span>
-                        </div>
-                    </div>
+				<div id="preferences_pos_Interval_check_group">
+					<table><tr><td>
+					<span><span translate >Position Refresh Time</span>:&nbsp;</span>
+					</td><td>
+					<div class="input-group has-control">
+						<input class="form-control w4" type="number" min="1" max="99" id="preferences_pos_Interval_check" onchange="Checkvalues('preferences_pos_Interval_check')"/>
+						<span id="preferences_pos_Interval_check_icon" class="form-control-feedback ico_feedback"></span>
+					</div>
+					</td><td>
+					<div class="input-group">
+						<input class="hide_it"></input>
+						<span class="input-group-addon form_control" translate>sec</span>
+					</div>
+					</td></tr></table>
+					
                 </div>
                 <br>
-                <div class="form-inline">
-                    <div class="form-group" id="preferences_control_xy_velocity_group">
-                        <span><span translate >XY feedrate</span>:&nbsp;</span>
-                        <div class="input-group">
-                            <div class="input-group">
-                                <input class='form-control w6'  type="number" min="1" max="9999" id="preferences_control_xy_velocity" onchange="Checkvalues('preferences_control_xy_velocity')" />
-                                <span id="preferences_control_xy_velocity_icon" style="top:3px"class="form-control-feedback"></span>
-                            </div>
-                            <span class='input-group-addon'  translate>mm/min</span>
-                        </div>
-                    </div>
-                </div>
+				<div id="preferences_control_xy_velocity_group">
+					<table><tr><td>
+					<span><span translate >XY feedrate</span>:&nbsp;</span>
+					</td><td>
+					<div class="input-group  has-control">
+						<input class="form-control w6"  type="number" min="1" max="9999" id="preferences_control_xy_velocity" onchange="Checkvalues('preferences_control_xy_velocity')" />
+						<span id="preferences_control_xy_velocity_icon" class="form-control-feedback ico_feedback"></span>
+					</div>
+					</td><td>
+					<div class="input-group">
+						<input class="hide_it"></input>
+						<span class="input-group-addon form_control"  translate>mm/min</span>
+					</div>
+					</td></tr></table>
+				</div>
+
                 <br>
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -99,18 +107,21 @@
                         </div>
                     </div>
                     <div id="control_z_feedrate" class="panel-body">
-                        <div class="form-inline">
-                            <div class="form-group" id="preferences_control_z_velocity_group">
-                                <span><span translate >Z feedrate</span>:&nbsp;</span>
-                                <div class="input-group">
-                                    <div class="input-group">
-                                        <input class='form-control w6'  type="number" min="1" max="999" id="preferences_control_z_velocity" onchange="Checkvalues('preferences_control_z_velocity')"/>
-                                        <span id="preferences_control_z_velocity_icon" style="top:3px"class="form-control-feedback"></span>
-                                    </div>
-                                    <span class='input-group-addon'  translate>mm/min</span>
-                                </div>
-                            </div>
-                        </div>
+						<div id="preferences_control_z_velocity_group">
+							<table><tr><td>
+							<span><span translate >Z feedrate</span>:&nbsp;</span>
+							</td><td>
+							<div class="input-group has-control">
+								<input class="form-control w6" type="number" min="1" max="999" id="preferences_control_z_velocity" onchange="Checkvalues('preferences_control_z_velocity')"/>
+								<span id="preferences_control_z_velocity_icon" class="form-control-feedback ico_feedback"></span>
+							</div>
+							</td><td>
+							<div class="input-group">
+							<input class="hide_it"></input>
+							<span class="input-group-addon form_control" translate>mm/min</span>
+							</div>
+							</td></tr></table>
+						</div>
                     </div>
                 </div>
             </div>
@@ -125,18 +136,21 @@
                 </div>
             </div>
             <div id="temperatures_preferences" class="panel-body">
-                <div class="form-inline">
-                    <div class="form-group" id="preferences_tempInterval_check_group">
-                        <span><span translate >Temperature Refresh Time</span>:&nbsp;</span>
-                        <div class="input-group" >
-                            <div class="input-group" >
-                                <input class='form-control w4' type="number" min="1" max="99" id="preferences_tempInterval_check" onchange="Checkvalues('preferences_tempInterval_check')"/>
-                                <span id="preferences_tempInterval_check_icon" style="top:3px"class="form-control-feedback"></span>
-                            </div>
-                            <span class='input-group-addon' translate>sec</span>
-                        </div>
-                    </div>
-                </div>
+				<div id="preferences_tempInterval_check_group">
+					<table><tr><td>
+					<span><span translate >Temperature Refresh Time</span>:&nbsp;</span>
+					</td><td>
+					<div class="input-group has-control" >
+						<input class="form-control w4" type="number" min="1" max="99" id="preferences_tempInterval_check" onchange="Checkvalues('preferences_tempInterval_check')"/>
+						<span id="preferences_tempInterval_check_icon" class="form-control-feedback ico_feedback"></span>
+					</div>
+					</td><td>
+					<div class="input-group" >
+						<input class="hide_it"></input>
+						<span class="input-group-addon form_control" translate>sec</span>
+					</div>
+					</td></tr></table>
+				</div>
             </div>
         </div>
         <div class="panel panel-default">
@@ -149,40 +163,49 @@
                 </div>
             </div>
             <div class="panel-body" id="extruder_preferences">
-                 <div class="form-inline">
-                    <div class="form-group" id="preferences_filament_length_group">
-                        <span><span translate >Length</span>:&nbsp;</span>
-                        <div class="input-group">
-                            <div class="input-group">
-                                <input class='form-control w6'  type="number" min="1" max="9999" id="preferences_filament_length" onchange="Checkvalues('preferences_filament_length')" />
-                                <span id="preferences_filament_length_icon" style="top:3px"class="form-control-feedback"></span>
-                            </div>
-                            <span class='input-group-addon'  translate>mm</span>
-                        </div>
-                    </div>
-                </div>
+				<div id="preferences_filament_length_group">
+					<table><tr><td>
+					<span><span translate >Length</span>:&nbsp;</span>
+					</td><td>
+					<div class="input-group has-control">
+						<input class="form-control w6"  type="number" min="1" max="9999" id="preferences_filament_length" onchange="Checkvalues('preferences_filament_length')" />
+						<span id="preferences_filament_length_icon" class="form-control-feedback ico_feedback"></span>
+					</div>
+					</td><td>
+					<div class="input-group">
+						<input class="hide_it"></input>
+						<span class="input-group-addon form_control"  translate>mm</span>
+					</div>
+					</td></tr></table>
+				</div>
                 <br>
-                 <div class="form-inline">
-                    <div class="form-group" id="preferences_e_velocity_group">
-                        <span><span translate >E feedrate</span>:&nbsp;</span>
-                        <div class="input-group">
-                            <div class="input-group">
-                                <input class='form-control w6'  type="number" min="1" max="9999" id="preferences_e_velocity" onchange="Checkvalues('preferences_e_velocity')" />
-                                <span id="preferences_e_velocity_icon" style="top:3px"class="form-control-feedback"></span>
-                            </div>
-                            <span class='input-group-addon'  translate>mm/min</span>
-                        </div>
-                    </div>
-                </div>
+				<div id="preferences_e_velocity_group">
+					<table><tr><td>
+					<span><span translate >E feedrate</span>:&nbsp;</span>
+					</td><td>
+					<div class="input-group has-control">
+						<input class="form-control w6"  type="number" min="1" max="9999" id="preferences_e_velocity" onchange="Checkvalues('preferences_e_velocity')" />
+						<span id="preferences_e_velocity_icon" class="form-control-feedback ico_feedback"></span>
+					</div>
+					</td><td>
+					<div class="input-group">
+						<input class="hide_it"></input>
+						<span class="input-group-addon form_control"  translate>mm/min</span>
+					</div>
+					</td></tr></table>
+				</div>
+
                 <br>
-                <div class="form-inline">
-                    <div class="form-group" id="preferences_control_nb_extruders_group">
-                        <span><span translate >Number of extruders</span>:&nbsp;</span>
-                            <select class='form-control' id='preferences_control_nb_extruders'>
-                            <option value='1'>1</option>
-                            </select>
-                    </div>
-                </div>
+                
+				<div id="preferences_control_nb_extruders_group">
+					<table><tr><td>
+					<span><span translate >Number of extruders</span>:&nbsp;</span>
+					</td><td>
+					<select class="form-control" id="preferences_control_nb_extruders">
+					<option value="1">1</option>
+					</select>
+					</td></tr></table>
+				</div>
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" id="enable_mixed_E_controls" onclick="build_extruder_list()"  />
@@ -243,7 +266,7 @@
       <div class="pull-left" id="preferencesdlg_upload_msg">
         <span translate>Saving</span>
         &nbsp;
-        <progress name='prg' id='preferencesdlg_prg' max='100' ></progress>
+        <progress name="prg" id="preferencesdlg_prg" max="100" ></progress>
         &nbsp;
         <span id="preferencesdlg_upload_percent">0</span>%</td>
       </div>
