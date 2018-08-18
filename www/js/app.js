@@ -60,6 +60,8 @@ window.onload = function() {
 	}
 };
 
+var wsmsg="";
+
 function startSocket(){
 	  if(async_webcommunication){
 		ws_source = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
@@ -88,8 +90,14 @@ function startSocket(){
           var bytes = new Uint8Array(e.data);
           for (var i = 0; i < bytes.length; i++) {
             msg += String.fromCharCode(bytes[i]);
+            if ((bytes[i] == 10)|| (bytes[i] == 13)){
+                wsmsg+=msg;
+                Monitor_output_Update(wsmsg);
+                wsmsg="";
+                msg="";
+            }
           }
-          Monitor_output_Update(msg);
+          wsmsg+=msg;
         } else {
           msg += e.data;
           var tval = msg.split(":");
