@@ -29,7 +29,7 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
 - It has a macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
 - It supports currently English, French, German (thanks @leseaw) and Spanish languages
 - It allows to display a web camera in UI or detached
-- It allows to edit the Repetier EEPROM and Smoothieware config file
+- It allows to edit the Repetier EEPROM, Smoothieware config file, Marlin and GRBL settings
 - It allows to update the ESP3D by uploading the FW
 - it allows to control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
 
@@ -56,6 +56,8 @@ Repetier EEPROM Editor tab:
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
 Smoothieware config Editor tab:  
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/smoothieware.PNG'/>  
+GRBL config Editor tab: 
+<img src='https://user-images.githubusercontent.com/8822552/37540735-60bada08-2958-11e8-92ee-69aee4b83e7a.png'/> 
 ESP3D settings Editor:   
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/ESP3D1.PNG'/>  
 ESP3D Status:   
