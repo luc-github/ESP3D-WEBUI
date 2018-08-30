@@ -421,7 +421,7 @@ function setting_checkchange(index, subindex) {
     //console.log("value: " + val);
     //console.log("default value: " + setting_configList[index].defaultvalue);
     if (setting_configList[index].defaultvalue == val){
-		console.log("values are identical");
+		//console.log("values are identical");
         document.getElementById('btn_setting_'+index  +"_" + subindex).className = "btn btn-default";
         document.getElementById('icon_setting_'+index  +"_" + subindex).className="form-control-feedback";
         document.getElementById('icon_setting_'+index  +"_" + subindex).innerHTML="";
