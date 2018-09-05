@@ -103,7 +103,7 @@ else {
 
 function get_Position(){
     var command = "M114";
-    if (target_firmware == "grbl")  command = "?";
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))  command = "?";
     //removeIf(production)
     var response = "ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.0000 ";
     if (target_firmware == "grbl")  response = "<Idle|MPos:10.000,0.000,0.000|FS:0,0|Ov:71,100,147>";
@@ -127,8 +127,8 @@ function get_Position(){
 }
 
 function process_Position(response){
-     if (target_firmware == "grbl"){
-         var tab1 = response.split("MPos:");
+     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
+         var tab1 = response.split("WPos:");
          if (tab1.length >1) {
             var tab2 = tab1[1].split("|");
             var tab3 = tab2[0].split(",");

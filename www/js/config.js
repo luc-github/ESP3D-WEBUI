@@ -34,8 +34,7 @@ function refreshconfig(is_override) {
 		if(!is_override_config)config_file_name="/sd/config";
 		commandtxt = "cat " + config_file_name;
 	}
-    if (target_firmware == "grbl" ) commandtxt = "$$";
-    if (target_firmware == "grbl" ) commandtxt = "$$";
+    if ((target_firmware == "grbl") ||  (target_firmware == "grbl-embedded")) commandtxt = "$$";
     if ((target_firmware == "marlin" ) || (target_firmware == "marlinkimbra" )) commandtxt = "M503";
     getprinterconfig(is_override_config);
 }
@@ -171,7 +170,7 @@ function config_check_value(value, index, is_override){
             config_error_msg = translate_text_item( "cannot have '-', '#' char or be empty");
             }
         }
-    if (target_firmware == "grbl" ){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
         if ((value.trim()[0] == '-') || ( value.length === 0) || (value.toLowerCase().indexOf("#")!=-1)){
             isvalid = false;
             config_error_msg = translate_text_item( "cannot have '-', '#' char or be empty");
@@ -265,7 +264,7 @@ function is_config_entry(sline){
     if (target_firmware == "smoothieware"){
         return true;
     } 
-    if (target_firmware == "grbl"){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
        if ((line.indexOf("$") ==0) && (line.indexOf("=")  !=-1)) return true;
         else return false
     } 
@@ -281,7 +280,7 @@ function get_config_label(sline){
      if ((target_firmware== "smoothieware") || (target_firmware == "marlin") || (target_firmware == "marlinkimbra")){
           return tline[0];
     }
-    if (target_firmware== "grbl"){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
          var tline2 =  sline.trim().split("=");
           return tline2[0];
     }
@@ -338,7 +337,7 @@ function get_config_help(sline){
 		} 
 		else return "";
 		} 
-    if (target_firmware== "grbl"){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
         return inline_help(get_config_label(sline))
         } 
     var tline =  sline.split("[");
@@ -359,7 +358,7 @@ function get_config_command(sline){
 		command = get_config_label(sline) + " ";
 		return command;
 		}
-	if (target_firmware == "grbl"){
+	if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
 		command = get_config_label(sline) + "=";
 		return command;
 		}

@@ -74,7 +74,7 @@ function getFWshortnamefromid(value) {
     else if (  value == 2 ) response = "marlin";
     else if (  value == 3 ) response = "marlinkimbra";
     else if ( value == 4 ) response = "smoothieware";
-     else if ( value == 6 ) response = "grbl";
+    else if ( value == 6 ) response = "grbl";
     else response = "???";
     return response;
 }

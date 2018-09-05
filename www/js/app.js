@@ -219,6 +219,10 @@ function update_UI_firmware_target() {
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('config_smoothie_nav').style.display = 'block';
         }
+    else if (target_firmware == "grbl-embedded" ) {
+        fwName = "GRBL ESP32";
+        document.getElementById('configtablink').style.display = 'block';
+        }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
         document.getElementById('configtablink').style.display = 'block';
