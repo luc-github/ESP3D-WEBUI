@@ -59,17 +59,25 @@ function files_build_file_line(index){
         else content +=get_icon_svg("file");
         content +="</span ></td><td>";
         content += entry.name + "</td></tr></table></div>";
-        content +="<div class='col-md-2 col-sm-2'";
+        var sizecol = "col-md-2 col-sm-2";
+        var timecol = "col-md-3 col-sm-3";
+        var iconcol = "col-md-2 col-sm-2";
+        if (!entry.isdir && entry.datetime==""){
+            sizecol = "col-md-4 col-sm-4";
+            timecol = "hide_it";
+            iconcol = "col-md-3 col-sm-3";
+        }
+        content +="<div class='" + sizecol +"'";
         if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
         }
         content +=">"+ entry.size+"</div>";
-        content +="<div class='col-md-3 col-sm-3'";
+        content +="<div class='" + timecol + "'";
          if (is_clickable){
             content +="style='cursor:pointer;' onclick='files_click_file(" + index + ")' ";
         }
         content +=">"+ entry.datetime+"</div>";
-        content +="<div class='col-md-2 col-sm-2'>";
+        content +="<div class='" + iconcol + "'>";
         content +="<div class='pull-right'>";
         if (entry.isprintable){
             content +="<button class='btn btn-xs btn-default'  onclick='files_print(" + index + ")' style='padding-top: 4px;'>";
