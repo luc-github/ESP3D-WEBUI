@@ -86,6 +86,7 @@ var frenchtrans = {
 "Please enter directory name":"Entrez le nom du r&eacute;pertoire",
 "Please wait...":"Patientez...",
 "Printer configuration":"Configuration imprimante",
+"GRBL configuration":"Configuration GRBL",
 "Printer":"Imprimante",
 "Progress":"Progression",
 "Protected":"Prot&eacute;g&eacute;",

@@ -240,6 +240,8 @@ function update_UI_firmware_target() {
     else if (target_firmware == "grbl-embedded" ) {
         fwName = "GRBL ESP32";
         document.getElementById('configtablink').style.display = 'block';
+        document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
+        document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
         }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
@@ -256,6 +258,8 @@ function update_UI_firmware_target() {
     else if (target_firmware == "grbl" ) {
         fwName = "Grbl";
         document.getElementById('configtablink').style.display = 'block';
+        document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
+        document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
         }
     else {
             fwName = "Unknown";

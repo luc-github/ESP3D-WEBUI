@@ -86,6 +86,7 @@ var spanishtrans = {
 "Please enter directory name":"Por favor escriba el nombre de la carpeta",
 "Please wait...":"Espere...",
 "Printer configuration":"Configuraci&oacute;n de la impresora",
+"GRBL configuration":"Configuraci&oacute;n de GRBL",
 "Printer":"Impresora ",
 "Progress":"Progreso",
 "Protected":"Protegido",

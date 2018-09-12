@@ -86,6 +86,7 @@ var germantrans = {
 "Please enter directory name":"Bitte Verzeichnisnamen eingeben",
 "Please wait...":"Bitte warten...",
 "Printer configuration":"Drucker Konfiguration",
+"GRBL configuration":"GRBL Konfiguration",
 "Printer":"Drucker",
 "Progress":"Ausf&uuml;hren",
 "Protected":"Gesichert",

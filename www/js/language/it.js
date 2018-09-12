@@ -86,6 +86,7 @@ var italiantrans = {
 "Please enter directory name":"Inserire il nome della cartella",
 "Please wait...":"Attendere...",
 "Printer configuration":"Configurazione stampante",
+"GRBL configuration":"Configurazione GRBL",
 "Printer":"Stampante",
 "Progress":"Avanzamento",
 "Protected":"Protetto",
