@@ -72,7 +72,10 @@ function files_build_file_line(index){
         content +="<div class='col-md-2 col-sm-2'>";
         content +="<div class='pull-right'>";
         if (entry.isprintable){
-            content +="<button class='btn btn-xs btn-default'  onclick='files_print(" + index + ")' style='padding-top: 4px;'>" + get_icon_svg("print","1em","1em") + "</button>";
+            content +="<button class='btn btn-xs btn-default'  onclick='files_print(" + index + ")' style='padding-top: 4px;'>";
+            if ((target_firmware == "grbl-embedded") || (target_firmware == "grbl")) content +=get_icon_svg("play","1em","1em") ;
+            else content +=get_icon_svg("print","1em","1em") ;
+            content +="</button>";
             }
         content +="&nbsp;";
         if (files_showdeletebutton(index)){
@@ -90,11 +93,12 @@ function files_print(index){
     var cmd = "";
     if (target_firmware == "smoothieware"){
         cmd = "play " + files_currentPath + files_file_list[index].name;
-        SendPrinterSilentCommand(cmd);
-    } else{
+    } else if (target_firmware == "grbl-embedded"){
+        cmd = "$F= " + files_currentPath + files_file_list[index].name;
+   } else {
         cmd = "M23 " + files_currentPath + files_file_list[index].name + "\nM24";
-        SendPrinterSilentCommand(cmd);
     }
+   SendPrinterSilentCommand(cmd);
 }
 
 function files_Createdir(){
@@ -223,6 +227,13 @@ function files_click_file(index){
 function files_showprintbutton(filename, isdir){
     if (isdir == true) return false;
     if (filename.toLowerCase().match(/\.g(code)?$/) || filename.toLowerCase().match(/\.gco(de)?$/)) return true;
+    if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
+        var path = files_currentPath + filename.trim();
+        if ((path.indexOf(" ") != -1)  || (path.indexOf("?") != -1)|| (path.indexOf("!") != -1)|| (path.indexOf("~") != -1)) {
+            return false;
+        }
+        if (filename.toLowerCase().match(/\.txt$/) || filename.toLowerCase().match(/\.nc$/)) return true;
+    }
     return false;
 }
 

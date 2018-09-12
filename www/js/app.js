@@ -242,6 +242,7 @@ function update_UI_firmware_target() {
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
         document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
+        document.getElementById('files_input_file').accept = " .g, .gco, .gcode, .txt, .ncc, .G, .GCO, .GCODE, .TXT, .NC";
         }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
@@ -260,6 +261,7 @@ function update_UI_firmware_target() {
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
         document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
+        document.getElementById('files_input_file').accept = " .g, .gco, .gcode, .txt, .ncc, .G, .GCO, .GCODE, .TXT, .NC";
         }
     else {
             fwName = "Unknown";
