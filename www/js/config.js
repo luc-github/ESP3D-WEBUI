@@ -59,7 +59,8 @@ function getprinterconfig(is_override) {
 		is_override_config= true;
 	} else is_override_config = false;
     var url = "/command?plain="+encodeURIComponent(cmd);
-    SendGetHttp(url, getESPconfigSuccess, getESPconfigfailed);
+    if (target_firmware == "grbl-embedded" )SendGetHttp(url);
+    else SendGetHttp(url, getESPconfigSuccess, getESPconfigfailed);
 }
 
 function Apply_config_override(){
@@ -312,7 +313,7 @@ function get_config_value(sline){
 		}
 		return line;
 	}
-    if ( target_firmware == "grbl"){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
 		var tline2 =  sline.trim().split("=");
 		if (tline2.length >1)return tline2[1];
 		else return "???";

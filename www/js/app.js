@@ -7,6 +7,24 @@ var log_off = false;
 var async_webcommunication = false;
 var websocket_port =0;
 var esp_hostname = "ESP3D WebUI";
+var EP_HOSTNAME;
+var EP_STA_SSID;
+var EP_STA_PASSWORD;
+var EP_STA_IP_MODE;
+var EP_STA_IP_VALUE ;
+var EP_STA_GW_VALUE;
+var EP_STA_MK_VALUE;
+var EP_WIFI_MODE;
+var EP_AP_SSID;
+var EP_AP_PASSWORD;
+var EP_AP_IP_VALUE;
+var EP_BAUD_RATE = 112;
+var EP_AUTH_TYPE = 119;
+var EP_TARGET_FW = 461;
+var EP_IS_DIRECT_SD = 850;
+var EP_PRIMARY_SD = 851;
+var EP_SECONDARY_SD = 852;
+var EP_DIRECT_SD_CHECK = 853;
 
 function Init_events(e){
   page_id = e.data;
@@ -61,7 +79,6 @@ window.onload = function() {
 };
 
 var wsmsg="";
-
 function startSocket(){
 	  if(async_webcommunication){
 		ws_source = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
@@ -93,6 +110,7 @@ function startSocket(){
             if ((bytes[i] == 10)|| (bytes[i] == 13)){
                 wsmsg+=msg;
                 Monitor_output_Update(wsmsg);
+                if ((target_firmware == "grbl-embedded" ) || (target_firmware == "marlin-embedded" ))process_socket_response(msg);
                 wsmsg="";
                 msg="";
             }
@@ -243,6 +261,31 @@ function update_UI_firmware_target() {
             fwName = "Unknown";
             document.getElementById('configtablink').style.display = 'none';
             }
+    if ((target_firmware == "grbl-embedded") || target_firmware == "marlin-embedded") {
+        EP_HOSTNAME = "ESP_HOSTNAME";
+        EP_STA_SSID = "STA_SSID";
+        EP_STA_PASSWORD = "STA_PWD";
+        EP_STA_IP_MODE = "STA_IP_MODE";
+        EP_STA_IP_VALUE = "STA_IP";
+        EP_STA_GW_VALUE = "STA_GW";
+        EP_STA_MK_VALUE = "STA_MK";
+        EP_WIFI_MODE = "WIFI_MODE";
+        EP_AP_SSID = "AP_SSID";
+        EP_AP_PASSWORD = "AP_PWD";
+        EP_AP_IP_VALUE = "AP_IP";
+    } else {
+        EP_HOSTNAME = 130;
+        EP_STA_SSID = 1;
+        EP_STA_PASSWORD = 34;
+        EP_STA_IP_MODE = 99;
+        EP_STA_IP_VALUE = 100;
+        EP_STA_MK_VALUE = 104;
+        EP_STA_GW_VALUE = 108;
+        EP_WIFI_MODE = 0;
+        EP_AP_SSID = 218;
+        EP_AP_PASSWORD = 251;
+        EP_AP_IP_VALUE = 316;
+    }
     if (typeof document.getElementById('fwName') != "undefined")document.getElementById('fwName').innerHTML=fwName;
     //SD image or not
     if (direct_sd && typeof document.getElementById('showSDused')!= "undefined")document.getElementById('showSDused').innerHTML="<svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'><g transform='translate(50,1200) scale(1, -1)'><path  fill='#777777' d='M200 1100h700q124 0 212 -88t88 -212v-500q0 -124 -88 -212t-212 -88h-700q-124 0 -212 88t-88 212v500q0 124 88 212t212 88zM100 900v-700h900v700h-900zM500 700h-200v-100h200v-300h-300v100h200v100h-200v300h300v-100zM900 700v-300l-100 -100h-200v500h200z M700 700v-300h100v300h-100z' /></g></svg>";
@@ -354,4 +397,36 @@ tmpelement.innerHTML = str_text;
 str_text = tmpelement.textContent;
 tmpelement.textContent = '';
 return str_text;
+}
+
+var socket_response = "";
+var socket_is_settings = false;
+
+function process_socket_response(msg){
+    
+    if (target_firmware == "grbl-embedded" ) {
+        if (msg.startsWith("<")){
+            //TODO update status
+            console.log(msg);
+        } else if (msg.startsWith("[GC:")){
+            //TODO update status 2
+            console.log(msg);
+        } else if (socket_is_settings) socket_response+=msg;
+        
+        if (!socket_is_settings && msg.startsWith("$0=")){
+            socket_is_settings = true;
+            socket_response=msg;
+        } 
+        
+        if (msg.startsWith("ok")) {
+            if (socket_is_settings) {
+                //update settings
+                getESPconfigSuccess(socket_response);
+                socket_is_settings = false;
+            }
+           
+        }
+    } else { // marlin_embedded
+    }
+
 }
