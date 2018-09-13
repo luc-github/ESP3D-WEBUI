@@ -28,6 +28,73 @@ var defaultpreferenceslist= "[{\
                                             \"enable_temperatures_filters\":\"true\"\
                                             }]";
 var preferences_file_name = '/preferences.json';
+function initpreferences(){
+if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
+    defaultpreferenceslist= "[{\
+                                            \"language\":\"en\",\
+                                            \"enable_lock_UI\":\"false\",\
+                                            \"enable_DHT\":\"false\",\
+                                            \"enable_camera\":\"false\",\
+                                            \"auto_load_camera\":\"false\",\
+                                            \"camera_address\":\"\",\
+                                            \"number_extruders\":\"1\",\
+                                            \"is_mixed_extruder\":\"false\",\
+                                            \"enable_bed\":\"false\",\
+                                            \"enable_fan\":\"false\",\
+                                            \"enable_z\":\"true\",\
+                                            \"enable_control_panel\":\"true\",\
+                                            \"interval_positions\":\"3\",\
+                                            \"interval_temperatures\":\"3\",\
+                                            \"xy_feedrate\":\"1000\",\
+                                            \"z_feedrate\":\"100\",\
+                                            \"e_feedrate\":\"400\",\
+                                            \"e_distance\":\"5\",\
+                                            \"enable_temperatures_panel\":\"false\",\
+                                            \"enable_extruder_panel\":\"false\",\
+                                            \"enable_files_panel\":\"true\",\
+                                            \"enable_commands_panel\":\"true\",\
+                                            \"enable_autoscroll\":\"true\",\
+                                            \"enable_temperatures_filters\":\"true\"\
+                                            }]";
+    
+    document.getElementById('DHT_pref_panel').style.display = 'none';
+    document.getElementById('temp_pref_panel').style.display = 'none';
+    document.getElementById('ext_pref_panel').style.display = 'none';
+    document.getElementById('temp_filter_prefs_check').style.display = 'none';
+} else {
+    defaultpreferenceslist= "[{\
+                                            \"language\":\"en\",\
+                                            \"enable_lock_UI\":\"false\",\
+                                            \"enable_DHT\":\"false\",\
+                                            \"enable_camera\":\"false\",\
+                                            \"auto_load_camera\":\"false\",\
+                                            \"camera_address\":\"\",\
+                                            \"number_extruders\":\"1\",\
+                                            \"is_mixed_extruder\":\"false\",\
+                                            \"enable_bed\":\"false\",\
+                                            \"enable_fan\":\"false\",\
+                                            \"enable_z\":\"true\",\
+                                            \"enable_control_panel\":\"true\",\
+                                            \"interval_positions\":\"3\",\
+                                            \"interval_temperatures\":\"3\",\
+                                            \"xy_feedrate\":\"1000\",\
+                                            \"z_feedrate\":\"100\",\
+                                            \"e_feedrate\":\"400\",\
+                                            \"e_distance\":\"5\",\
+                                            \"enable_temperatures_panel\":\"true\",\
+                                            \"enable_extruder_panel\":\"true\",\
+                                            \"enable_files_panel\":\"true\",\
+                                            \"enable_commands_panel\":\"true\",\
+                                            \"enable_autoscroll\":\"true\",\
+                                            \"enable_temperatures_filters\":\"true\"\
+                                            }]";
+    document.getElementById('DHT_pref_panel').style.display = 'block';
+    document.getElementById('temp_pref_panel').style.display = 'block';
+    document.getElementById('ext_pref_panel').style.display = 'block';
+    document.getElementById('temp_filter_prefs_check').style.display = 'block';
+}
+
+}
 function getpreferenceslist(){
     var url = preferences_file_name +"?"+Date.now();
     preferenceslist = [];

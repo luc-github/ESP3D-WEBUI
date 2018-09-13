@@ -223,6 +223,7 @@ function Disable_interface() {
 
 function update_UI_firmware_target() {
     var fwName;
+    initpreferences();
     document.getElementById('config_smoothie_nav').style.display = 'none';
     if (target_firmware == "repetier" ) {
         fwName = "Repetier";
@@ -299,6 +300,7 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
+
         }
     else if (target_firmware == "marlinkimbra" ) {
         fwName = "Marlin Kimbra";
