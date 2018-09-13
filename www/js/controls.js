@@ -163,6 +163,11 @@ function SendHomecommand (cmd){
      SendPrinterCommand(cmd, true, get_Position);
 }
 
+ function SendZerocommand(cmd){
+     var command = "G10 L20 P0 " + cmd;
+     SendPrinterCommand(command, true, get_Position);
+ }
+
  function SendJogcommand(cmd, feedrate){
      if (document.getElementById('lock_UI').checked )return;
      var feedratevalue = "";

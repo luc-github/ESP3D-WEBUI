@@ -251,10 +251,11 @@ display: none;
 }
 
 .position-container {
+  margin-left:-10px;
   display: inline-grid;
   grid-gap: 10px;
   padding: 10px;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
 }
 
 .position_text {

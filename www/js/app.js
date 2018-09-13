@@ -231,6 +231,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'block';
         document.getElementById('progress_btn').style.display = 'block';
         document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
         }
     else if (target_firmware == "repetier4davinci" ) {
         fwName = "Repetier for Davinci";
@@ -239,6 +243,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'block';
         document.getElementById('progress_btn').style.display = 'block';
         document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
         }
     else if (target_firmware == "smoothieware" ) {
         fwName = "Smoothieware";
@@ -248,6 +256,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'block';
         document.getElementById('progress_btn').style.display = 'block';
         document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
         }
     else if (target_firmware == "grbl-embedded" ) {
         fwName = "GRBL ESP32";
@@ -259,6 +271,10 @@ function update_UI_firmware_target() {
         document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
         document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
         document.getElementById('files_input_file').accept = " .g, .gco, .gcode, .txt, .ncc, .G, .GCO, .GCODE, .TXT, .NC";
+        document.getElementById('zero_xyz_btn').style.display = 'block';
+        document.getElementById('zero_x_btn').style.display = 'block';
+        document.getElementById('zero_y_btn').style.display = 'block';
+        document.getElementById('zero_z_btn').style.display = 'block';
         }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
@@ -267,6 +283,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'block';
         document.getElementById('progress_btn').style.display = 'block';
         document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
         }
     else if (target_firmware == "marlin" ) {
         fwName = "Marlin";
@@ -275,6 +295,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'block';
         document.getElementById('progress_btn').style.display = 'block';
         document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
         }
     else if (target_firmware == "marlinkimbra" ) {
         fwName = "Marlin Kimbra";
@@ -294,6 +318,10 @@ function update_UI_firmware_target() {
         document.getElementById('motor_off_control').style.display = 'none';
         document.getElementById('progress_btn').style.display = 'none';
         document.getElementById('abort_btn').style.display = 'none';
+        document.getElementById('zero_xyz_btn').style.display = 'block';
+        document.getElementById('zero_x_btn').style.display = 'block';
+        document.getElementById('zero_y_btn').style.display = 'block';
+        document.getElementById('zero_z_btn').style.display = 'block';
         }
     else {
             fwName = "Unknown";

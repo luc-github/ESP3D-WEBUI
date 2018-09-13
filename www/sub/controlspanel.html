@@ -33,17 +33,29 @@
             </div>
          </div>
         <div class="position-container" id="positions_labels">
+             <button class="btn btn-xs btn-default" id="zero_xyz_btn"  onclick="SendZerocommand('X0 Y0 Z0')" >&Oslash;<span style="font-size:8px;">XYZ</span></button>
             <div class="position_text">
-                &nbsp;&nbsp;
-                <span  class="label label-default">X:<span id ="control_x_position">&nbsp;</span></span>
+                <table><tr><td>
+                <button class="btn btn-xs btn-default" id="zero_x_btn"  onclick="SendZerocommand('X0')" >&Oslash;</button>
+                </td><td>
+                <span  class="label label-default" >X:<span id ="control_x_position">&nbsp;</span></span>
+                </td><td>
+                </td></tr></table>
             </div>
             <div class="position_text">
-                &nbsp;&nbsp;
+                <table><tr><td>
+                <button class="btn btn-xs btn-default" id="zero_y_btn"  onclick="SendZerocommand('Y0')" >&Oslash;</button>
+                </td><td>
                 <span  class="label label-default">Y:<span id ="control_y_position">&nbsp;</span></span>
+                 </td><td>
+                </td></tr></table>
             </div>
             <div class="position_text" id="control_z_position_display">
-                &nbsp;&nbsp;
+                <table><tr><td>
+                <button class="btn btn-xs btn-default" id="zero_z_btn"  onclick="SendZerocommand('Z0')" >&Oslash;</button>
+                </td><td>
                 <span  class="label label-default">Z:<span id ="control_z_position">&nbsp;</span></span>
+                </td></tr></table>
             </div>
         </div>
     </div>
