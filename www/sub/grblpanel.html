@@ -25,5 +25,8 @@
     <div id="control-body" class="panel-body panel-flex-main">
        <div id='grbl_status'></div>
        <div id='grbl_SD_status'></div>
+       <button onclick='SendRealtimeCmd("!");'>Pause</button>
+       <button onclick='SendRealtimeCmd("~");'>resume</button>
+       <button onclick='SendRealtimeCmd(String.fromCharCode(0x18));'>Stop</button>
     </div>
 </div>

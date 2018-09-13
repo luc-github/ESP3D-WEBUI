@@ -229,12 +229,16 @@ function update_UI_firmware_target() {
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "repetier4davinci" ) {
         fwName = "Repetier for Davinci";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "smoothieware" ) {
         fwName = "Smoothieware";
@@ -242,11 +246,15 @@ function update_UI_firmware_target() {
         document.getElementById('config_smoothie_nav').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "grbl-embedded" ) {
         fwName = "GRBL ESP32";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'none';
+        document.getElementById('progress_btn').style.display = 'none';
+        document.getElementById('abort_btn').style.display = 'none';
         document.getElementById('motor_off_control').style.display = 'none';
         document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
         document.getElementById('tab_printer_configuration').innerHTML= "<span translate>GRBL</span>";
@@ -257,18 +265,24 @@ function update_UI_firmware_target() {
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "marlin" ) {
         fwName = "Marlin";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "marlinkimbra" ) {
         fwName = "Marlin Kimbra";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'block';
         document.getElementById('motor_off_control').style.display = 'block';
+        document.getElementById('progress_btn').style.display = 'block';
+        document.getElementById('abort_btn').style.display = 'block';
         }
     else if (target_firmware == "grbl" ) {
         fwName = "Grbl";
@@ -278,6 +292,8 @@ function update_UI_firmware_target() {
         document.getElementById('files_input_file').accept = " .g, .gco, .gcode, .txt, .ncc, .G, .GCO, .GCODE, .TXT, .NC";
         document.getElementById('auto_check_control').style.display = 'none';
         document.getElementById('motor_off_control').style.display = 'none';
+        document.getElementById('progress_btn').style.display = 'none';
+        document.getElementById('abort_btn').style.display = 'none';
         }
     else {
             fwName = "Unknown";

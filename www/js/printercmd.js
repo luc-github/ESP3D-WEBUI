@@ -39,6 +39,7 @@ function SendPrinterSilentCommandSuccess(response){
 
 
 function SendPrinterCommandSuccess(response){
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")) return;
     if (response[response.length-1] != '\n')Monitor_output_Update(response + "\n");
     else Monitor_output_Update(response);
 }

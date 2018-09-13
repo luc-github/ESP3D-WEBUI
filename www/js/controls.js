@@ -103,14 +103,10 @@ else {
 
 function get_Position(){
     var command = "M114";
-    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))  command = "?";
-    //removeIf(production)
-    var response = "ok C: X:0.0000 Y:0.0000 Z:0.0000 E:0.0000 ";
-    if (target_firmware == "grbl")  response = "<Idle|MPos:10.000,0.000,0.000|FS:0,0|Ov:71,100,147>";
-    process_Position(response);
-    return;
-    //endRemoveIf(production)
-    SendPrinterCommand(command, false, process_Position,null, 114, 1);
+    if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))  {
+        command = "?";
+        SendPrinterCommand(command, false, null,null, 114, 1);
+    } else  SendPrinterCommand(command, false, process_Position,null, 114, 1);
 }
 
  function Control_get_position_value(label, result_data) {
@@ -128,14 +124,7 @@ function get_Position(){
 
 function process_Position(response){
      if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
-         var tab1 = response.split("WPos:");
-         if (tab1.length >1) {
-            var tab2 = tab1[1].split("|");
-            var tab3 = tab2[0].split(",");
-            document.getElementById('control_x_position').innerHTML = tab3[0];
-            if (tab3.length > 1) document.getElementById('control_y_position').innerHTML = tab3[1];
-            if (tab3.length > 2) document.getElementById('control_z_position').innerHTML = tab3[2];
-            } 
+        process_grbl_position(response);
      } else {
         document.getElementById('control_x_position').innerHTML = Control_get_position_value("X:", response);
         document.getElementById('control_y_position').innerHTML = Control_get_position_value("Y:", response);

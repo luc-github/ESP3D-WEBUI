@@ -88,6 +88,10 @@ function process_grbl_SD(response){
     }
 }
 
+function SendRealtimeCmd(cmd){
+    SendPrinterCommand(cmd, false, null,null, cmd.charCodeAt(0), 1);
+}
+
 function process_status(response){
      process_grbl_position(response);
      process_grbl_status(response);

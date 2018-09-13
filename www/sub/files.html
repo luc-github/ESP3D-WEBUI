@@ -49,7 +49,7 @@
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_primary_sd_btn"  onclick="files_refreshFiles(primary_sd)" >SD 1</button>
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_secondary_sd_btn"  onclick="files_refreshFiles(secondary_sd)" >SD 2</button>
                     <button id="progress_btn" class="btn btn-xs btn-primary" onclick="files_progress()" translate>Progress</button>
-                    <button class="btn btn-xs btn-primary" onclick="files_abort()" translate>Abort</button>
+                    <button id="abort_btn" class="btn btn-xs btn-primary" onclick="files_abort()" translate>Abort</button>
                     <button class="btn btn-xs btn-primary" onclick="files_select_upload()"  translate>Upload</button>
                     <input type="file" id="files_input_file" onchange="files_check_if_upload()" accept=" .g, .gco, .gcode, .G, .GCO, .GCODE" style="display:none" />
                 </div>
