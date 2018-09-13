@@ -139,6 +139,27 @@ function control_motorsOff(){
 
 function SendHomecommand (cmd){
      if (document.getElementById('lock_UI').checked )return;
+     if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
+        switch(cmd){
+        case 'G28': 
+            cmd = '$H';
+            break;
+        case 'G28 X0': 
+            cmd = '$HX';
+            break;
+        case 'G28 Y0': 
+            cmd = '$HY';
+            break;
+    
+        case 'G28 Z0': 
+            cmd = '$HZ';
+            break;
+        default: 
+            cmd = '$H';
+            break;
+        }
+        
+     }
      SendPrinterCommand(cmd, true, get_Position);
 }
 
@@ -161,7 +182,10 @@ function SendHomecommand (cmd){
             return;
         }
     }
-    command = "G91\nG1 " + cmd + " F" + feedratevalue + "\nG90"; 
+    if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
+        command = "$J=G91 G21 F" + feedratevalue +  " " + cmd;
+        console.log(command);
+    } else command = "G91\nG1 " + cmd + " F" + feedratevalue + "\nG90"; 
     SendPrinterCommand(command, true, get_Position);
  }
   
