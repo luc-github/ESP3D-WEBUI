@@ -339,6 +339,7 @@ function initUI_3() {
     //init panels 
     console.log("Get macros");
     init_controls_panel(); 
+    init_grbl_panel();
     console.log("Get preferences");
     getpreferenceslist();
 	initUI_4();
@@ -412,8 +413,7 @@ function process_socket_response(msg){
     
     if (target_firmware == "grbl-embedded" ) {
         if (msg.startsWith("<")){
-            //TODO update status
-            console.log(msg);
+            process_status(msg);
         } else if (msg.startsWith("[GC:")){
             //TODO update status 2
             console.log(msg);
