@@ -178,7 +178,7 @@ function config_check_value(value, index, is_override){
             }
     }
     else {
-        if ((value.trim()[0] == '-') || ( value.length === 0) || (value.toLowerCase().indexOf("e")!=-1)){
+        if ((value.trim()[0] == '-') || ( value.length === 0) || ((value.toLowerCase().indexOf("e")!=-1) && (value.toLowerCase().indexOf("true")==-1) && (value.toLowerCase().indexOf("false")==-1))){
             isvalid = false;
             config_error_msg = translate_text_item( "cannot have '-', 'e' char or be empty");
             }
