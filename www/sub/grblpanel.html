@@ -14,7 +14,7 @@
                                     </label>
                                </td></tr></table>
 								<table class="input-group"><tr><td>
-									<input class="form-control w4" type="number" min="1" max="99" id="statusInterval_check" onchange="onstatusIntervalChange()" />
+									<input class="form-control w4" type="number" min="1" max="99" id="statusInterval_check" value=3 onchange="onstatusIntervalChange()" />
 									<span class="input-group-addon form_control" translate>sec</span>
 								</td></tr></table>
                             </div>
@@ -23,6 +23,7 @@
         </div>
     </div>
     <div id="control-body" class="panel-body panel-flex-main">
-       
+       <div id='grbl_status'></div>
+       <div id='grbl_SD_status'></div>
     </div>
 </div>

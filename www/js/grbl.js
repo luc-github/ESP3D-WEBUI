@@ -44,7 +44,7 @@ function get_status(){
     var command = "?";
     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))  command = "?";
     //ID 114 is same as M114 as '?' cannot be an ID
-    SendPrinterCommand(command, false, process_status,null, 114, 1);
+    SendPrinterCommand(command, false, null,null, 114, 1);
 }
 
 function process_grbl_position(response){
@@ -64,7 +64,7 @@ function process_grbl_status(response){
     if (tab1.length >1) {
         var tab2 = tab1[0].replace("<","");
         //TODO
-        console.log(tab2);
+        document.getElementById('grbl_status').innerHTML = tab2;
     }
 }
 
@@ -80,14 +80,12 @@ function process_grbl_SD(response){
             sdname = tab3[1].replace(">","");
         } else {
         progress = progress.replace(">","");
-        
         }
-        
-        console.log("SD print " + sdname + " " + progress + "%");
+        document.getElementById('grbl_SD_status').innerHTML = sdname + "<progress id='print_prg' value=" + progress + " max='100'></progress>"  + progress + "%";
     } else { //no SD printing
-        //TODO
+        //TODO     
+        document.getElementById('grbl_SD_status').innerHTML = "";
     }
-    
 }
 
 function process_status(response){
