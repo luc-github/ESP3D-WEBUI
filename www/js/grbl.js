@@ -63,8 +63,31 @@ function process_grbl_status(response){
     var tab1 = response.split("|");
     if (tab1.length >1) {
         var tab2 = tab1[0].replace("<","");
-        //TODO
-        document.getElementById('grbl_status').innerHTML = tab2;
+        document.getElementById("grbl_status").innerHTML = tab2; 
+        if (tab2.toLowerCase().startsWith("run")){
+            document.getElementById('sd_pause_btn').style.display="table-row";
+            document.getElementById('sd_resume_btn').style.display="none";
+            document.getElementById('sd_stop_btn').style.display="table-row";
+        } else if (tab2.toLowerCase().startsWith("hold")){
+            document.getElementById('sd_pause_btn').style.display="none";
+            document.getElementById('sd_resume_btn').style.display="table-row";
+            document.getElementById('sd_stop_btn').style.display="table-row";
+        } else  if (tab2.toLowerCase().startsWith("alarm")) {
+            //check we are printing or not 
+            if (response.indexOf("|SD:")!=-1) {
+                //guess print is stopped because of alarm so no need to pause
+                document.getElementById('sd_pause_btn').style.display="none";
+                document.getElementById('sd_resume_btn').style.display="table-row";
+                document.getElementById('sd_stop_btn').style.display="table-row";
+                }
+        } else { //TBC for others status
+            document.getElementById('sd_pause_btn').style.display="none";
+            document.getElementById('sd_resume_btn').style.display="none";
+            document.getElementById('sd_stop_btn').style.display="none";
+        } 
+            
+        if (tab2.toLowerCase().startsWith("alarm"))document.getElementById('clear_status_btn').style.display="table-row";
+        else document.getElementById('clear_status_btn').style.display="none";
     }
 }
 
@@ -81,7 +104,7 @@ function process_grbl_SD(response){
         } else {
         progress = progress.replace(">","");
         }
-        document.getElementById('grbl_SD_status').innerHTML = sdname + "<progress id='print_prg' value=" + progress + " max='100'></progress>"  + progress + "%";
+        document.getElementById('grbl_SD_status').innerHTML = sdname + "&nbsp;<progress id='print_prg' value=" + progress + " max='100'></progress>"  + progress + "%";
     } else { //no SD printing
         //TODO     
         document.getElementById('grbl_SD_status').innerHTML = "";
