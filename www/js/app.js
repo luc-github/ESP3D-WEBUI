@@ -283,6 +283,8 @@ function update_UI_firmware_target() {
         document.getElementById('zero_z_btn').style.display = 'block';
         document.getElementById('grblPanel').style.display = 'flex';
         document.getElementById('FW_github').href = 'https://github.com/bdring/Grbl_Esp32';
+        document.getElementById('settings_filters').style.display = 'none';
+        
         }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
