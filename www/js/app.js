@@ -25,6 +25,8 @@ var EP_IS_DIRECT_SD = 850;
 var EP_PRIMARY_SD = 851;
 var EP_SECONDARY_SD = 852;
 var EP_DIRECT_SD_CHECK = 853;
+var SETTINGS_AP_MODE = 1;
+var SETTINGS_STA_MODE = 2;
 
 function Init_events(e){
   page_id = e.data;
@@ -228,10 +230,11 @@ function update_UI_firmware_target() {
     if (target_firmware == "repetier" ) {
         fwName = "Repetier";
         document.getElementById('configtablink').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
+        document.getElementById('grblPanel').style.display = 'none';
         document.getElementById('zero_xyz_btn').style.display = 'none';
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
@@ -240,10 +243,11 @@ function update_UI_firmware_target() {
     else if (target_firmware == "repetier4davinci" ) {
         fwName = "Repetier for Davinci";
         document.getElementById('configtablink').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
+        document.getElementById('grblPanel').style.display = 'none';
         document.getElementById('zero_xyz_btn').style.display = 'none';
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
@@ -253,10 +257,11 @@ function update_UI_firmware_target() {
         fwName = "Smoothieware";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('config_smoothie_nav').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
+        document.getElementById('grblPanel').style.display = 'none';
         document.getElementById('zero_xyz_btn').style.display = 'none';
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
@@ -276,40 +281,47 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'block';
         document.getElementById('zero_y_btn').style.display = 'block';
         document.getElementById('zero_z_btn').style.display = 'block';
+        document.getElementById('grblPanel').style.display = 'flex';
         document.getElementById('FW_github').href = 'https://github.com/bdring/Grbl_Esp32';
         }
     else if (target_firmware == "marlin-embedded" ) {
         fwName = "Marlin ESP32";
         document.getElementById('configtablink').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
         document.getElementById('zero_xyz_btn').style.display = 'none';
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
+        document.getElementById('grblPanel').style.display = 'none';
         }
     else if (target_firmware == "marlin" ) {
         fwName = "Marlin";
         document.getElementById('configtablink').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
         document.getElementById('zero_xyz_btn').style.display = 'none';
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
-
+        document.getElementById('grblPanel').style.display = 'none';
         }
     else if (target_firmware == "marlinkimbra" ) {
         fwName = "Marlin Kimbra";
         document.getElementById('configtablink').style.display = 'block';
-        document.getElementById('auto_check_control').style.display = 'block';
-        document.getElementById('motor_off_control').style.display = 'block';
-        document.getElementById('progress_btn').style.display = 'block';
-        document.getElementById('abort_btn').style.display = 'block';
+        document.getElementById('auto_check_control').style.display = 'flex';
+        document.getElementById('motor_off_control').style.display = 'table-row';
+        document.getElementById('progress_btn').style.display = 'table-row';
+        document.getElementById('abort_btn').style.display = 'table-row';
+        document.getElementById('zero_xyz_btn').style.display = 'none';
+        document.getElementById('zero_x_btn').style.display = 'none';
+        document.getElementById('zero_y_btn').style.display = 'none';
+        document.getElementById('zero_z_btn').style.display = 'none';
+        document.getElementById('grblPanel').style.display = 'none';
         }
     else if (target_firmware == "grbl" ) {
         fwName = "Grbl";
@@ -325,6 +337,8 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'block';
         document.getElementById('zero_y_btn').style.display = 'block';
         document.getElementById('zero_z_btn').style.display = 'block';
+        document.getElementById('grblPanel').style.display = 'flex';
+        //todo extruders temperature panel + temperatures filters
         }
     else {
             fwName = "Unknown";
@@ -342,6 +356,8 @@ function update_UI_firmware_target() {
         EP_AP_SSID = "AP_SSID";
         EP_AP_PASSWORD = "AP_PWD";
         EP_AP_IP_VALUE = "AP_IP";
+        SETTINGS_AP_MODE = 2;
+        SETTINGS_STA_MODE = 1;
     } else {
         EP_HOSTNAME = 130;
         EP_STA_SSID = 1;
@@ -354,6 +370,8 @@ function update_UI_firmware_target() {
         EP_AP_SSID = 218;
         EP_AP_PASSWORD = 251;
         EP_AP_IP_VALUE = 316;
+        SETTINGS_AP_MODE = 1;
+        SETTINGS_STA_MODE = 2;
     }
     if (typeof document.getElementById('fwName') != "undefined")document.getElementById('fwName').innerHTML=fwName;
     //SD image or not

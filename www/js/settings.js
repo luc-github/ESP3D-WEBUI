@@ -160,7 +160,7 @@ function build_control_from_index (index, extra_set_function) {
                  content+= extra_set_function + "(" + i + ");"
                 }
             content+="' translate english_content='Set' >" + translate_text_item("Set") + "</button>";
-             if (setting_configList[i].pos == "1") {
+             if (setting_configList[i].pos == EP_STA_SSID) {
                 content+="<button class='btn btn-default btn-svg' onclick='scanwifidlg(\"" + i +"\",\"" + sub_element+"\")'>";
                 content+=get_icon_svg("search");
                 content+="</button>";

@@ -296,5 +296,9 @@ var frenchtrans = {
 "Unlock interface":"D&eacute;verrouiller interface",
 "You are disconnected":"Vous &ecirc;tes d&eacute;connect&eacute;",
 "Looks like you are connected from another place, so this page is now disconnected":"Apparement vous &ecirc;tes connect&eacute; sur une autre page, donc cette page est d&eacute;sormais d&eacute;connect&eacute;e.",
-"Please reconnect me":"SVP reconnectez-moi"
+"Please reconnect me":"SVP reconnectez-moi",
+"Mist":"Mist",
+"Flood":"Flood",
+"Spindle":"Spindle"
+
 };

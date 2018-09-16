@@ -25,7 +25,7 @@ function setupdlg () {
      document.getElementById("wizard_line3").style.background = "#e0e0e0";
      document.getElementById("step3link").disabled = true;
      document.getElementById("step3link").className = "steplinks disabled";
-     if (!direct_sd) {
+     if (!direct_sd || (target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) {
          document.getElementById("step3link").style.display='none';
          document.getElementById("wizard_line4").style.display='none';
      }else {
@@ -73,7 +73,7 @@ function continue_setup_wizard(){
         enablestep2();
         break;
     case 3:
-        if (!direct_sd) {
+        if (!direct_sd || (target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) {
             active_wizard_page++;
              document.getElementById("wizard_line3").style.background = "#337AB7";
              enablestep4();
@@ -103,13 +103,7 @@ function enablestep1() {
      document.getElementById("step1link").disabled = "";
      document.getElementById("step1link").className=document.getElementById("step1link").className.replace(" disabled", "");
      content+= "<h4>" + translate_text_item( "ESP3D Settings")+"</h4><hr>";
-     if (target_firmware == "grbl-embedded") {
-         content+= translate_text_item( "Target Firmware:<br>");
-         content+= "<div class='text-info'>GRBL ESP32</div>";
-         index =  get_index_from_eeprom_pos(EP_HOSTNAME);
-         content+=build_control_from_index(index);
-         
-     } else {     
+     if (! ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded"))) {     
          index =  get_index_from_eeprom_pos(EP_TARGET_FW);
          content+= translate_text_item( "Save your printer's firmware base:");
          content+=build_control_from_index(index);
@@ -119,18 +113,27 @@ function enablestep1() {
          content+=translate_text_item( "Save your printer's board current baud rate:");
          content+=build_control_from_index(index);
          content+= translate_text_item( "Printer and ESP board must use same baud rate to communicate properly.")+"<br>";
+         content+="<hr>\n";
      }
-     
+     index =  get_index_from_eeprom_pos(EP_HOSTNAME);
+     content+= translate_text_item( "Define ESP name:") + "<table><tr><td>";
+     content+=build_control_from_index(index);
+     content+= "</td></tr></table>";
      
      document.getElementById("step1").innerHTML =content
      document.getElementById("step1link").click();
 }
 
 function define_esp_role(index){
-    if (setting_configList[index].defaultvalue == 1) {
+     if (setting_configList[index].defaultvalue == 0) {
+        document.getElementById("setup_STA").style.display="none";
+        document.getElementById("setup_AP").style.display="none";
+     }
+     if (setting_configList[index].defaultvalue == SETTINGS_AP_MODE) {
         document.getElementById("setup_STA").style.display="none";
         document.getElementById("setup_AP").style.display="block";
-    } else {
+    } 
+    if (setting_configList[index].defaultvalue == SETTINGS_STA_MODE) {
         document.getElementById("setup_STA").style.display="block";
         document.getElementById("setup_AP").style.display="none";
     }
@@ -161,11 +164,6 @@ function enablestep2() {
      content+= translate_text_item( "Password to join access point:") + "<table><tr><td>";
      content+=build_control_from_index(index);
      content+= "</td></tr></table>";
-     content+="<hr>\n";
-     index =  get_index_from_eeprom_pos(EP_HOSTNAME);
-     content+= translate_text_item( "Define ESP name:") + "<table><tr><td>";
-     content+=build_control_from_index(index);
-     content+= "</td></tr></table>";
      content+= "</div>";
      content+= "<div id='setup_AP'>";
      content+= translate_text_item( "What is ESP access point SSID:") + "<table><tr><td>";
@@ -177,11 +175,13 @@ function enablestep2() {
      content+=  translate_text_item( "Password for access point:") + "<table><tr><td>";
      content+=build_control_from_index(index);
      content+= "</td></tr></table>";
-     content+="<hr>\n";
-     content+= translate_text_item( "Define security:") + "<table><tr><td>";
-     index =  get_index_from_eeprom_pos(EP_AUTH_TYPE);
-     content+=build_control_from_index(index);
-     content+= "</td></tr></table>";
+     if (! ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded"))) {
+        content+="<hr>\n";
+        content+= translate_text_item( "Define security:") + "<table><tr><td>";
+        index =  get_index_from_eeprom_pos(EP_AUTH_TYPE);
+        content+=build_control_from_index(index);
+        content+= "</td></tr></table>";
+    }
      content+= "</div>";
      document.getElementById("step2").innerHTML =content;
      define_esp_role(get_index_from_eeprom_pos(EP_WIFI_MODE));

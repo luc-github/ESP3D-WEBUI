@@ -28,6 +28,15 @@ function checkloginsuccess(response_text){
       }
 }
 
+function login_id_OnKeyUp(event) {
+    console.log(event.keyCode);
+    if ((event.keyCode == 13) ) document.getElementById('login_password_text').focus();
+}
+
+function login_password_OnKeyUp(event) {
+    console.log(event.keyCode);
+    if ((event.keyCode == 13)) document.getElementById('login_submit_btn').click();
+}
 
 
 function loginfailed(errorcode, response_text){
@@ -39,6 +48,7 @@ function loginfailed(errorcode, response_text){
       document.getElementById('login_loader').style.display = "none";
       document.getElementById('current_ID').innerHTML = translate_text_item("guest"); 
       document.getElementById('logout_menu').style.display = "none";
+      document.getElementById('logout_menu_divider').style.display = "none";
       document.getElementById("password_menu").style.display = "none";
 }
 
@@ -47,6 +57,7 @@ function loginsuccess(response_text){
     if (typeof(response.authentication_lvl ) !== 'undefined' )document.getElementById('current_auth_level').innerHTML = "(" +  translate_text_item(response.authentication_lvl) + ")";
     document.getElementById('login_loader').style.display = "none";
     document.getElementById('logout_menu').style.display = "block";
+    document.getElementById('logout_menu_divider').style.display = "block";
     document.getElementById("password_menu").style.display = "block";
     closeModal("Connection successful");
 }
@@ -81,6 +92,7 @@ function DisconnectionSuccess(response_text) {
     document.getElementById('current_ID').innerHTML = translate_text_item("guest"); 
     document.getElementById('current_auth_level').innerHTML = "";
     document.getElementById('logout_menu').style.display = "none";
+    document.getElementById('logout_menu_divider').style.display = "none";
     document.getElementById("password_menu").style.display = "none";
 }
 
@@ -88,6 +100,7 @@ function DisconnectionFailed(errorcode, response) {
     document.getElementById('current_ID').innerHTML = translate_text_item("guest"); 
     document.getElementById('current_auth_level').innerHTML = "";
     document.getElementById('logout_menu').style.display = "none";
+    document.getElementById('logout_menu_divider').style.display = "none";
     document.getElementById("password_menu").style.display = "none";
     console.log("Error " + errorcode + " : " + response);
 }
