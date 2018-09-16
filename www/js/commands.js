@@ -71,7 +71,7 @@ function Monitor_output_Update(message){
         m = "<font color='orange'><b>" +m + translate_text_item(m.trim()) +"</b></font>\n";
         }
         if (m.startsWith("error:")) {
-        m = "<font color='red'><b>" + m + translate_text_item(m.trim()) +"</b></font>\n";
+        m = "<font color='red'><b>" + m.toUpperCase() + translate_text_item(m.trim()) +"</b></font>\n";
         }
         output += m  ;
     }
