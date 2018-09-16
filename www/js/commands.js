@@ -68,10 +68,10 @@ function Monitor_output_Update(message){
         m = m.replace("<", "&lt;");
         m = m.replace(">", "&gt;");
         if (m.startsWith("ALARM:") || m.startsWith("Hold:") || m.startsWith("Door:")) {
-        m = "<font color='orange'><b>" + translate_text_item(m.trim()) +"</b></font>\n";
+        m = "<font color='orange'><b>" +m + translate_text_item(m.trim()) +"</b></font>\n";
         }
         if (m.startsWith("error:")) {
-        m = "<font color='red'><b>" + translate_text_item(m.trim()) +"</b></font>\n";
+        m = "<font color='red'><b>" + m + translate_text_item(m.trim()) +"</b></font>\n";
         }
         output += m  ;
     }
