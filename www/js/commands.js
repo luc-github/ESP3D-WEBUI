@@ -67,7 +67,10 @@ function Monitor_output_Update(message){
         m = m.replace("&", "&amp;");
         m = m.replace("<", "&lt;");
         m = m.replace(">", "&gt;");
-        if (m.startsWith("ALARM")) {
+        if (m.startsWith("ALARM:") || m.startsWith("Hold:") || m.startsWith("Door:")) {
+        m = "<font color='orange'><b>" + m +"</b></font>";
+        }
+        if (m.startsWith("error:")) {
         m = "<font color='red'><b>" + m +"</b></font>";
         }
         output += m  ;
