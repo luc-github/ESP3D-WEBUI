@@ -5,7 +5,7 @@ function SendPrinterCommand(cmd, echo_on, processfn, errorfn, id, max_id){
         push_cmd = echo_on;
         }
     if (cmd.trim().length == 0) return;
-    if (push_cmd)Monitor_output_Update(cmd + "\n");
+    if (push_cmd)Monitor_output_Update("[#]"+cmd + "\n");
     //removeIf(production)
     console.log(cmd);
     if (typeof processfn !== 'undefined')processfn("Test response");

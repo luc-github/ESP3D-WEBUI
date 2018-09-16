@@ -14,7 +14,7 @@ function Monitor_check_autoscroll(){
      if (document.getElementById('monitor_enable_autoscroll').checked == true) Monitor_output_autoscrollcmd();
 }
 
-function Monitor_check_filter_temperatures(){
+function Monitor_check_verbose_mode(){
      Monitor_output_Update();
 }
     
@@ -47,16 +47,30 @@ function Monitor_output_Update(message){
     }
     var output = "";
     var Monitor_outputLength = Monitor_output.length;
-    var istempfilter =  document.getElementById("monitor_enable_filter_temperatures").checked;
+    var isverbosefilter =  document.getElementById("monitor_enable_verbose_mode").checked;
     for (var i = 0; i < Monitor_outputLength; i++) {
-        if (istempfilter && Monitor_output[i].match(regex)) continue;
-        if ((Monitor_output[i].trim()==="\n") || (Monitor_output[i].trim()==="\r") || (Monitor_output[i].trim()==="\r\n") || (Monitor_output[i].trim()==="") )continue;
-        else {
-            m = Monitor_output[i].replace("&", "&amp;");
-            m = m.replace("<", "&lt;");
-            m = m.replace(">", "&gt;");
-            output += m  ;
+        //Filter the output  
+        if ((Monitor_output[i].trim().toLowerCase() == "ok") && !isverbosefilter) continue;      
+        if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
+            //no status
+            if ((Monitor_output[i].startsWith("<") || Monitor_output[i].startsWith("[echo:")) && !isverbosefilter)continue;
+        } else {
+            //no temperatures
+            if (!isverbosefilter && Monitor_output[i].match(regex)) continue; 
         }
+        if ((Monitor_output[i].trim()==="\n") || (Monitor_output[i].trim()==="\r") || (Monitor_output[i].trim()==="\r\n") || (Monitor_output[i].trim()==="") )continue;
+        m = Monitor_output[i];
+        if (Monitor_output[i].startsWith("[#]")) {
+            if (!isverbosefilter) continue;
+            else m = m.replace("[#]", "");
+        }
+        m = m.replace("&", "&amp;");
+        m = m.replace("<", "&lt;");
+        m = m.replace(">", "&gt;");
+        if (m.startsWith("ALARM")) {
+        m = "<font color='red'><b>" + m +"</b></font>";
+        }
+        output += m  ;
     }
     document.getElementById("cmd_content").innerHTML = output;
     Monitor_check_autoscroll();

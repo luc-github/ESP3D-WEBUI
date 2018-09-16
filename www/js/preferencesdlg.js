@@ -14,8 +14,10 @@ var defaultpreferenceslist= "[{\
                                             \"enable_fan\":\"false\",\
                                             \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
+                                            \"enable_grbl_panel\":\"false\",\
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
+                                            \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
@@ -25,7 +27,7 @@ var defaultpreferenceslist= "[{\
                                             \"enable_files_panel\":\"true\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_temperatures_filters\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\"\
                                             }]";
 var preferences_file_name = '/preferences.json';
 function initpreferences(){
@@ -43,8 +45,10 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_fan\":\"false\",\
                                             \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
+                                            \"enable_grbl_panel\":\"true\",\
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
+                                            \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
@@ -54,13 +58,13 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_files_panel\":\"true\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_temperatures_filters\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\"\
                                             }]";
     
     document.getElementById('DHT_pref_panel').style.display = 'none';
     document.getElementById('temp_pref_panel').style.display = 'none';
     document.getElementById('ext_pref_panel').style.display = 'none';
-    document.getElementById('temp_filter_prefs_check').style.display = 'none';
+    document.getElementById('grbl_pref_panel').style.display = 'block';
 } else {
     defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
@@ -75,8 +79,10 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_fan\":\"false\",\
                                             \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
+                                            \"enable_grbl_panel\":\"true\",\
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
+                                            \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
@@ -86,12 +92,12 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_files_panel\":\"true\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_temperatures_filters\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\"\
                                             }]";
     document.getElementById('DHT_pref_panel').style.display = 'block';
     document.getElementById('temp_pref_panel').style.display = 'block';
     document.getElementById('ext_pref_panel').style.display = 'block';
-    document.getElementById('temp_filter_prefs_check').style.display = 'block';
+    document.getElementById('grbl_pref_panel').style.display = 'none';
 }
 
 }
@@ -127,6 +133,10 @@ function prefs_toggledisplay(id_source, forcevalue) {
         document.getElementById(id_source).checked = forcevalue;
     }
     switch(id_source) {
+        case 'show_grbl_panel':
+            if (document.getElementById(id_source).checked) document.getElementById("grbl_preferences").style.display = "block";
+            else document.getElementById("grbl_preferences").style.display = "none";
+            break;
         case 'show_camera_panel':
             if (document.getElementById(id_source).checked) document.getElementById("camera_preferences").style.display = "block";
             else document.getElementById("camera_preferences").style.display = "none";
@@ -267,24 +277,27 @@ function applypreferenceslist(){
     if (preferenceslist[0].enable_z === 'true')showZcontrols();
     else hideZcontrols();
     
+    if (preferenceslist[0].enable_grbl_panel === 'true')document.getElementById('grblPanel').style.display='flex';
+    else {
+        document.getElementById('grblPanel').style.display='none';
+        on_autocheck_status(false);
+    }
+    
     if (preferenceslist[0].enable_control_panel === 'true')document.getElementById('controlPanel').style.display='flex';
     else {
         document.getElementById('controlPanel').style.display='none';
         on_autocheck_position(false);
     }
-    
+    if (preferenceslist[0].enable_verbose_mode === 'true'){
+            document.getElementById('monitor_enable_verbose_mode').checked =true;
+            Monitor_check_verbose_mode();
+        } else document.getElementById('monitor_enable_verbose_mode').checked =false;
     if (preferenceslist[0].enable_temperatures_panel === 'true') {
         document.getElementById('temperaturesPanel').style.display='block';
-        document.getElementById('cmd_temperature_filter').style.display='inline';
-        if (preferenceslist[0].enable_temperatures_filters === 'true'){
-            document.getElementById('monitor_enable_filter_temperatures').checked =true;
-            Monitor_check_filter_temperatures();
-        } else document.getElementById('monitor_enable_filter_temperatures').checked =false;
     }
     else {
         document.getElementById('temperaturesPanel').style.display='none';
         on_autocheck_temperature(false);
-        document.getElementById('cmd_temperature_filter').style.display='none';
     }
     
     if (preferenceslist[0].enable_extruder_panel === 'true')document.getElementById('extruderPanel').style.display='flex';
@@ -303,6 +316,7 @@ function applypreferenceslist(){
     else document.getElementById('commandsPanel').style.display='none';
     
     document.getElementById('posInterval_check').value= preferenceslist[0].interval_positions;
+    document.getElementById('statusInterval_check').value= preferenceslist[0].interval_status;
     document.getElementById('control_xy_velocity').value= preferenceslist[0].xy_feedrate;
     document.getElementById('control_z_velocity').value= preferenceslist[0].z_feedrate;
     document.getElementById('tempInterval_check').value= preferenceslist[0].interval_temperatures;
@@ -372,7 +386,11 @@ function build_dlg_preferences_list(){
       if (typeof(preferenceslist[0].enable_z ) !== 'undefined') {
         document.getElementById('enable_z_controls').checked = (preferenceslist[0].enable_z === 'true');
      } else document.getElementById('enable_z_controls').checked = false;
-     //control panel
+     //grbl panel
+      if (typeof(preferenceslist[0].enable_grbl_panel ) !== 'undefined') {
+        document.getElementById('show_grbl_panel').checked = (preferenceslist[0].enable_grbl_panel === 'true');
+     } else document.getElementById('show_grbl_panel').checked = false;
+      //control panel
       if (typeof(preferenceslist[0].enable_control_panel ) !== 'undefined') {
         document.getElementById('show_control_panel').checked = (preferenceslist[0].enable_control_panel === 'true');
      } else document.getElementById('show_control_panel').checked = false;
@@ -396,6 +414,10 @@ function build_dlg_preferences_list(){
       if (typeof(preferenceslist[0].interval_positions ) !== 'undefined') {
         document.getElementById('preferences_pos_Interval_check').value = parseInt(preferenceslist[0].interval_positions) ;
      } else document.getElementById('preferences_pos_Interval_check').value = parseInt(defaultpreferenceslist[0].interval_positions);
+     //interval status
+      if (typeof(preferenceslist[0].interval_status ) !== 'undefined') {
+        document.getElementById('preferences_status_Interval_check').value = parseInt(preferenceslist[0].interval_status) ;
+     } else document.getElementById('preferences_status_Interval_check').value = parseInt(defaultpreferenceslist[0].interval_status);
      //xy feedrate
       if (typeof(preferenceslist[0].xy_feedrate ) !== 'undefined') {
         document.getElementById('preferences_control_xy_velocity').value = parseInt(preferenceslist[0].xy_feedrate) ;
@@ -420,12 +442,13 @@ function build_dlg_preferences_list(){
       if (typeof(preferenceslist[0].enable_autoscroll ) !== 'undefined') {
         document.getElementById('preferences_autoscroll').checked = (preferenceslist[0].enable_autoscroll === 'true');
      } else document.getElementById('preferences_autoscroll').checked = false;
-     //filter temperatures
-      if (typeof(preferenceslist[0].enable_temperatures_filters ) !== 'undefined') {
-        document.getElementById('preferences_filter_temperatures').checked = (preferenceslist[0].enable_temperatures_filters === 'true');
-     } else document.getElementById('preferences_filter_temperatures').checked = false;
+     //Verbose Mode
+      if (typeof(preferenceslist[0].enable_verbose_mode ) !== 'undefined') {
+        document.getElementById('preferences_verbose_mode').checked = (preferenceslist[0].enable_verbose_mode === 'true');
+     } else document.getElementById('preferences_verbose_mode').checked = false;
      
      prefs_toggledisplay( 'show_camera_panel');
+     prefs_toggledisplay( 'show_grbl_panel');
      prefs_toggledisplay( 'show_control_panel');
      prefs_toggledisplay( 'show_extruder_panel');
      prefs_toggledisplay( 'show_temperatures_panel');
@@ -452,14 +475,16 @@ function closePreferencesDialog(){
             (typeof(preferenceslist[0].z_feedrate ) === 'undefined') ||
             (typeof(preferenceslist[0].e_feedrate ) === 'undefined') ||
             (typeof(preferenceslist[0].e_distance ) === 'undefined') ||
-            (typeof(preferenceslist[0].enable_control_panel ) === 'undefined') || 
+            (typeof(preferenceslist[0].enable_control_panel ) === 'undefined') ||
+            (typeof(preferenceslist[0].enable_grbl_panel ) === 'undefined') ||  
             (typeof(preferenceslist[0].enable_temperatures_panel ) === 'undefined') || 
             (typeof(preferenceslist[0].enable_extruder_panel ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_files_panel ) === 'undefined') ||
             (typeof(preferenceslist[0].interval_positions ) === 'undefined') ||
             (typeof(preferenceslist[0].interval_temperatures ) === 'undefined') ||
+            (typeof(preferenceslist[0].interval_status ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_autoscroll ) === 'undefined') ||
-            (typeof(preferenceslist[0].enable_temperatures_filters ) === 'undefined') ||
+            (typeof(preferenceslist[0].enable_verbose_mode ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_commands_panel ) === 'undefined') ){
             modified = true;
         } else {
@@ -487,6 +512,8 @@ function closePreferencesDialog(){
             if (document.getElementById('show_control_panel').checked !=  (preferenceslist[0].enable_control_panel === 'true')) modified = true;
             //temperatures panel
             if (document.getElementById('show_temperatures_panel').checked != (preferenceslist[0].enable_temperatures_panel === 'true')) modified = true;
+            //grbl panel
+            if (document.getElementById('show_grbl_panel').checked != (preferenceslist[0].enable_grbl_panel === 'true')) modified = true;
             //extruder panel
             if (document.getElementById('show_extruder_panel').checked != (preferenceslist[0].enable_extruder_panel === 'true')) modified = true;
             //files panel
@@ -494,21 +521,23 @@ function closePreferencesDialog(){
             //commands
             if (document.getElementById('show_commands_panel').checked != (preferenceslist[0].enable_commands_panel === 'true')) modified = true;
             //interval positions
-             if (document.getElementById('preferences_pos_Interval_check').value != parseInt(preferenceslist[0].interval_positions)) modified = true;
-             //xy feedrate
-             if (document.getElementById('preferences_control_xy_velocity').value != parseInt(preferenceslist[0].xy_feedrate)) modified = true;
-             //z feedrate
-             if (document.getElementById('preferences_control_z_velocity').value != parseInt(preferenceslist[0].z_feedrate)) modified = true;
-             //interval temperatures
-             if (document.getElementById('preferences_tempInterval_check').value != parseInt(preferenceslist[0].interval_temperatures)) modified = true;
-             //e feedrate
-             if (document.getElementById('preferences_e_velocity').value != parseInt(preferenceslist[0].e_feedrate)) modified = true;
-             //e distance
-             if (document.getElementById('preferences_filament_length').value != parseInt(preferenceslist[0].e_distance)) modified = true;
-             //autoscroll
+            if (document.getElementById('preferences_pos_Interval_check').value != parseInt(preferenceslist[0].interval_positions)) modified = true;
+            //interval status
+            if (document.getElementById('preferences_status_Interval_check').value != parseInt(preferenceslist[0].interval_status)) modified = true;
+            //xy feedrate
+            if (document.getElementById('preferences_control_xy_velocity').value != parseInt(preferenceslist[0].xy_feedrate)) modified = true;
+            //z feedrate
+            if (document.getElementById('preferences_control_z_velocity').value != parseInt(preferenceslist[0].z_feedrate)) modified = true;
+            //interval temperatures
+            if (document.getElementById('preferences_tempInterval_check').value != parseInt(preferenceslist[0].interval_temperatures)) modified = true;
+            //e feedrate
+            if (document.getElementById('preferences_e_velocity').value != parseInt(preferenceslist[0].e_feedrate)) modified = true;
+            //e distance
+            if (document.getElementById('preferences_filament_length').value != parseInt(preferenceslist[0].e_distance)) modified = true;
+            //autoscroll
             if (document.getElementById('preferences_autoscroll').checked != (preferenceslist[0].enable_autoscroll === 'true')) modified = true;
-             //filter temperatures
-            if (document.getElementById('preferences_filter_temperatures').checked != (preferenceslist[0].enable_temperatures_filters === 'true')) modified = true;
+            //Verbose Mode
+            if (document.getElementById('preferences_verbose_mode').checked != (preferenceslist[0].enable_verbose_mode === 'true')) modified = true;
         }
     } else  modified = true;
    if (language_save != language)  modified = true;
@@ -540,6 +569,7 @@ function SavePreferences(current_preferences){
     console.log("save prefs");
      if (((typeof( current_preferences ) != 'undefined' )&& !current_preferences) || (typeof( current_preferences ) == 'undefined' )){
         if (!Checkvalues("preferences_pos_Interval_check") ||
+             !Checkvalues("preferences_status_Interval_check") ||
              !Checkvalues("preferences_control_xy_velocity") ||
              !Checkvalues("preferences_control_z_velocity") ||
              !Checkvalues("preferences_e_velocity") ||
@@ -554,22 +584,24 @@ function SavePreferences(current_preferences){
         saveprefs +="\",\"enable_DHT\":\"" + document.getElementById('enable_DHT').checked ; 
         saveprefs +="\",\"enable_lock_UI\":\"" + document.getElementById('enable_lock_UI').checked ; 
         saveprefs +="\",\"is_mixed_extruder\":\"" + document.getElementById('enable_mixed_E_controls').checked ; 
-         saveprefs +="\",\"number_extruders\":\"" +  document.getElementById('preferences_control_nb_extruders').value ;
+        saveprefs +="\",\"number_extruders\":\"" +  document.getElementById('preferences_control_nb_extruders').value ;
         saveprefs +="\",\"enable_bed\":\"" +  document.getElementById('enable_bed_controls').checked ;
         saveprefs +="\",\"enable_fan\":\"" +  document.getElementById('enable_fan_controls').checked ;
         saveprefs +="\",\"enable_z\":\"" +  document.getElementById('enable_z_controls').checked ;
         saveprefs +="\",\"enable_control_panel\":\"" +  document.getElementById('show_control_panel').checked ;
         saveprefs +="\",\"enable_temperatures_panel\":\"" +  document.getElementById('show_temperatures_panel').checked ;
         saveprefs +="\",\"enable_extruder_panel\":\"" +  document.getElementById('show_extruder_panel').checked ;
+        saveprefs +="\",\"enable_grbl_panel\":\"" +  document.getElementById('show_grbl_panel').checked ;
         saveprefs +="\",\"enable_files_panel\":\"" +  document.getElementById('show_files_panel').checked ;
         saveprefs +="\",\"interval_positions\":\"" +  document.getElementById('preferences_pos_Interval_check').value ;
+        saveprefs +="\",\"interval_status\":\"" +  document.getElementById('preferences_status_Interval_check').value ;
         saveprefs +="\",\"xy_feedrate\":\"" +  document.getElementById('preferences_control_xy_velocity').value ;
         saveprefs +="\",\"z_feedrate\":\"" +  document.getElementById('preferences_control_z_velocity').value ;
         saveprefs +="\",\"interval_temperatures\":\"" +  document.getElementById('preferences_tempInterval_check').value ;
         saveprefs +="\",\"e_feedrate\":\"" +  document.getElementById('preferences_e_velocity').value ;
         saveprefs +="\",\"e_distance\":\"" +  document.getElementById('preferences_filament_length').value ;
         saveprefs +="\",\"enable_autoscroll\":\"" +  document.getElementById('preferences_autoscroll').checked ;
-        saveprefs +="\",\"enable_temperatures_filters\":\"" +  document.getElementById('preferences_filter_temperatures').checked ;
+        saveprefs +="\",\"enable_verbose_mode\":\"" +  document.getElementById('preferences_verbose_mode').checked ;
         saveprefs +="\",\"enable_commands_panel\":\""+   document.getElementById('show_commands_panel').checked +"\"}]";
         preferenceslist = JSON.parse(saveprefs);
         } 
@@ -614,6 +646,7 @@ function Checkvalues(id_2_check){
 var status = true;
 var value = 0;
    switch (id_2_check) {
+        case "preferences_status_Interval_check":
         case "preferences_tempInterval_check":
         case "preferences_pos_Interval_check":
             value = parseInt(document.getElementById(id_2_check).value);

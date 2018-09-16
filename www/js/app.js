@@ -155,7 +155,7 @@ function ontoggleLock(forcevalue){
          disable_items(document.getElementById('configtab'), true);
          document.getElementById('progress_btn').disabled=false;
          document.getElementById('clear_monitor_btn').disabled=false;
-         document.getElementById('monitor_enable_filter_temperatures').disabled=false;
+         document.getElementById('monitor_enable_verbose_mode').disabled=false;
          document.getElementById('monitor_enable_autoscroll').disabled=false;
          document.getElementById('settings_update_fw_btn').disabled=true;
          document.getElementById('settings_restart_btn').disabled=true;
