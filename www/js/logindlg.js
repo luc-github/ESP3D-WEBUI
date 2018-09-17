@@ -29,12 +29,12 @@ function checkloginsuccess(response_text){
 }
 
 function login_id_OnKeyUp(event) {
-    console.log(event.keyCode);
+    //console.log(event.keyCode);
     if ((event.keyCode == 13) ) document.getElementById('login_password_text').focus();
 }
 
 function login_password_OnKeyUp(event) {
-    console.log(event.keyCode);
+    //console.log(event.keyCode);
     if ((event.keyCode == 13)) document.getElementById('login_submit_btn').click();
 }
 

@@ -27,6 +27,8 @@ var EP_SECONDARY_SD = 852;
 var EP_DIRECT_SD_CHECK = 853;
 var SETTINGS_AP_MODE = 1;
 var SETTINGS_STA_MODE = 2;
+var interval_ping = -1;
+var last_ping = 0;
 
 function Init_events(e){
   page_id = e.data;
@@ -126,6 +128,12 @@ function startSocket(){
 			  page_id = tval[1];
 			  console.log("connection id = " + page_id); 
 		  }
+           if (tval[0] == 'PING') {
+			  page_id = tval[1];
+			  console.log("ping from id = " + page_id); 
+              last_ping = Date.now();
+              if (interval_ping == -1)interval_ping = setInterval(function(){ check_ping(); }, 10 * 1000);
+		  }
 		  if (tval[0] == 'ACTIVE_ID') {
 			  if(page_id != tval[1]) {
 				Disable_interface();
@@ -141,6 +149,13 @@ function startSocket(){
         
       };
     }
+    
+function check_ping(){
+    if ((Date.now() - last_ping) > 20000){
+    Disable_interface(true);
+    console.log("No heart beat for more than 20s");
+    }
+}
 
 function disable_items(item, state) {
     var liste = item.getElementsByTagName("*");
@@ -203,10 +218,13 @@ function display_boot_progress(step){
 }
 
 
-function Disable_interface() {
+function Disable_interface(lostconnection) {
+    var lostcon = false;
+    if (typeof lostconnection  != "undefined")lostcon= lostconnection;
     //block all communication
     http_communication_locked = true;
     log_off  = true;
+    if (interval_ping != -1)clearInterval(interval_ping);
     //clear all waiting commands
     clear_cmd_list();
     //no camera 
@@ -214,13 +232,14 @@ function Disable_interface() {
     //No auto check
     on_autocheck_position(false);
     on_autocheck_temperature(false); 
+    on_autocheck_status(false); 
     if(async_webcommunication) {
 		event_source.removeEventListener('ActiveID', ActiveID_events, false);
 		event_source.removeEventListener('InitID', Init_events, false);
 		event_source.removeEventListener('DHT', DHT_events, false);
 		}
     ws_source.close();
-    UIdisableddlg();
+    UIdisableddlg(lostcon);
 }
 
 function update_UI_firmware_target() {
