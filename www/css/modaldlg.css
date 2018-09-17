@@ -20,6 +20,10 @@
 z-index: 20000 ! important; /* Sit on top of the top */
 }
 
+.supertopmodal {
+z-index: 30000 ! important; /* Sit on top of the top */
+}
+
 /* Modal Content */
 .modal-content {
     border-top-left-radius: 10px;
