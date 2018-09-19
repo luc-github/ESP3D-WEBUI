@@ -106,6 +106,8 @@ function get_Position(){
     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))  {
         command = "?";
         SendPrinterCommand(command, false, null,null, 114, 1);
+    } else if (target_firmware == "marlin-embedded")  {
+        SendPrinterCommand(command, false, null,null, 114, 1);
     } else  SendPrinterCommand(command, false, process_Position,null, 114, 1);
 }
 

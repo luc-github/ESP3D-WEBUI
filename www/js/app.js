@@ -543,6 +543,12 @@ function process_socket_response(msg){
             socket_is_settings = true;
             socket_response="";
         } 
+        if (msg.startsWith("ok T:")){
+            process_Temperatures(msg);
+        }
+        if (msg.startsWith("X:")){
+            process_Position(msg);
+        }
         if (msg.startsWith("echo:Unknown command: \"*\"")) {
             if (socket_is_settings) {
                 //update settings
