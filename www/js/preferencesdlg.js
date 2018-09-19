@@ -94,7 +94,9 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\"\
                                             }]";
-    document.getElementById('DHT_pref_panel').style.display = 'block';
+    if (target_firmware == "marlin-embedded" ) document.getElementById('DHT_pref_panel').style.display = 'none';
+    else document.getElementById('DHT_pref_panel').style.display = 'block';
+    
     document.getElementById('temp_pref_panel').style.display = 'block';
     document.getElementById('ext_pref_panel').style.display = 'block';
     document.getElementById('grbl_pref_panel').style.display = 'none';
@@ -277,8 +279,13 @@ function applypreferenceslist(){
     if (preferenceslist[0].enable_z === 'true')showZcontrols();
     else hideZcontrols();
     
-    if (preferenceslist[0].enable_grbl_panel === 'true')document.getElementById('grblPanel').style.display='flex';
-    else {
+    if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl")) {
+        if (preferenceslist[0].enable_grbl_panel === 'true')document.getElementById('grblPanel').style.display='flex';
+        else {
+            document.getElementById('grblPanel').style.display='none';
+            on_autocheck_status(false);
+        }
+    } else {
         document.getElementById('grblPanel').style.display='none';
         on_autocheck_status(false);
     }

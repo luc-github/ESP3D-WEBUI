@@ -35,7 +35,7 @@ function refreshconfig(is_override) {
 		commandtxt = "cat " + config_file_name;
 	}
     if ((target_firmware == "grbl") ||  (target_firmware == "grbl-embedded")) commandtxt = "$$";
-    if ((target_firmware == "marlin" ) || (target_firmware == "marlinkimbra" )) commandtxt = "M503";
+    if ((target_firmware == "marlin" ) || (target_firmware == "marlinkimbra" ) || (target_firmware == "marlin-embedded" )) commandtxt = "M503\n*";
     getprinterconfig(is_override_config);
 }
 
@@ -59,7 +59,7 @@ function getprinterconfig(is_override) {
 		is_override_config= true;
 	} else is_override_config = false;
     var url = "/command?plain="+encodeURIComponent(cmd);
-    if (target_firmware == "grbl-embedded" )SendGetHttp(url);
+    if ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded"))SendGetHttp(url);
     else SendGetHttp(url, getESPconfigSuccess, getESPconfigfailed);
 }
 
@@ -113,7 +113,7 @@ function build_HTML_config_list(){
             content+=			"<div class='input-group'>";
             content+=				"<span class='input-group-addon hide_it' ></span>";
             content+=				"<input id='config_" + prefix + i + "' type='text' class='form-control' style='width:";
-            if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || is_override_config)content+="25em";
+            if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" ) || is_override_config)content+="25em";
             else content+="auto";
             content+=				"'  value='" + item.defaultvalue + "' onkeyup='config_checkchange(" + i +"," + is_override_config +")' />";
             content+=				"<span id='icon_config_" + prefix +  i + "'class='form-control-feedback ico_feedback' ></span>";
@@ -227,6 +227,10 @@ function create_config_entry(sentry, vindex){
 		if (sentry.startsWith("Config:  ")) ssentry = sentry.replace("Config:", "");
 		else ssentry = sentry.replace("Config:", "#");
 	}
+    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded")) {
+		if (sentry.startsWith("echo:  ")) ssentry = sentry.replace("echo:", "");
+		else ssentry = sentry.replace("echo:", "#");
+	}
 	while( ssentry.indexOf("\t") > -1){ 
         ssentry = ssentry.replace("\t"," ");
     }
@@ -239,6 +243,10 @@ function create_config_entry(sentry, vindex){
     
     iscomment= is_config_commented(ssentry);
      if (iscomment){
+         while (ssentry.indexOf("<") != -1){
+         var m = ssentry.replace("<", "&lt;");
+         ssentry = m.replace(">", "&gt;");
+         }
          var config_entry = {comment: ssentry, showcomment: true, index: vindex, label: "",help: "", defaultvalue: "", cmd: ""};
          if (is_override_config)config_override_List.push(config_entry); 
          else config_configList.push(config_entry); 
@@ -259,8 +267,9 @@ function create_config_entry(sentry, vindex){
 function is_config_entry(sline){
     var line = sline.trim();
     if (line.length == 0) return false;
-    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra")){
-		return sline.startsWith("Config:");
+    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" )){
+        if (sline.startsWith("Config:") || sline.startsWith("echo:")) return true
+        else return false;
     }
     if (target_firmware == "smoothieware"){
         return true;
@@ -278,7 +287,7 @@ function is_config_entry(sline){
 function get_config_label(sline){
     var tline =  sline.trim().split(" ");
     var tsize = tline.length;
-     if ((target_firmware== "smoothieware") || (target_firmware == "marlin") || (target_firmware == "marlinkimbra")){
+     if ((target_firmware== "smoothieware") || (target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" )){
           return tline[0];
     }
     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
@@ -303,8 +312,11 @@ function get_config_value(sline){
 		if ((tline.length >1) && tline[0][0]!='#') return tline[1];
 		else return "???";
     }
-    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || is_override_config){
-		var tline1 =  sline.trim().split("(");
+    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" ) || is_override_config){
+        
+		var tline1;
+        if (sline.indexOf(";") !=-1) tline1=  sline.trim().split(";");
+        else tline1=  sline.trim().split("(");
 		tline =  tline1[0].split(" ");
 		var line = "";
 		for (var i=1; i < tline.length ; i++){
@@ -330,13 +342,20 @@ function get_config_help(sline){
         if (pos > -1) return sline.slice(pos+1,sline.length);
         else return "";
 		}
-	if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra")){
-		var tline =  sline.trim().split("(");
-		if (tline.length >1){
-			var tline2 = tline[1].split(")");
-			return tline2[0];
-		} 
-		else return "";
+	if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" )){
+		var tline;
+        if ( sline.indexOf(";") != -1) {
+            tline =  sline.trim().split(";");
+            if (tline.length >1)return tline[1];
+            else return "";
+        } else {
+            tline =  sline.trim().split("(");
+            if (tline.length >1){
+                var tline2 = tline[1].split(")");
+                return tline2[0];
+            } 
+            else return "";
+            }
 		} 
     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")){
         return inline_help(get_config_label(sline))
@@ -355,7 +374,7 @@ function get_config_command(sline){
 		command = "config-set sd " + get_config_label(sline) + " ";
 		return command;
 		}
-	if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || is_override_config){
+	if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" ) || is_override_config){
 		command = get_config_label(sline) + " ";
 		return command;
 		}
@@ -379,7 +398,7 @@ function is_config_commented(sline){
     var line = sline.trim();
     if (line.length == 0) return false;
     if (is_override_config)return line.startsWith(";");
-    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "smoothieware")){
+    if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" ) || (target_firmware == "smoothieware")){
 	return line.startsWith("#");
 	} 
     return false;

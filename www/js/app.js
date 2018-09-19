@@ -317,6 +317,8 @@ function update_UI_firmware_target() {
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
         document.getElementById('grblPanel').style.display = 'none';
+        document.getElementById('FW_github').href = 'https://github.com/MarlinFirmware/Marlin';
+        document.getElementById('settings_filters').style.display = 'none';
         }
     else if (target_firmware == "marlin" ) {
         fwName = "Marlin";
@@ -534,7 +536,21 @@ function process_socket_response(msg){
             }
            
         }
-    } else { // marlin_embedded
+    } 
+   if (target_firmware == "marlin-embedded" ) {
+       if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response+=msg;
+       if (!socket_is_settings && msg.startsWith("echo:enqueueing \"M503\"")){
+            socket_is_settings = true;
+            socket_response="";
+        } 
+        if (msg.startsWith("echo:Unknown command: \"*\"")) {
+            if (socket_is_settings) {
+                //update settings
+                console.log(socket_response);
+                getESPconfigSuccess(socket_response);
+                socket_is_settings = false;
+            }
+        }
     }
 
 }
