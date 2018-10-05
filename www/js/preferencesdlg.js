@@ -4,6 +4,7 @@ var language_save = language;
 var defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
+                                            \"enable_ping\":\"true\",\
                                             \"enable_DHT\":\"false\",\
                                             \"enable_camera\":\"false\",\
                                             \"auto_load_camera\":\"false\",\
@@ -35,6 +36,7 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
     defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
+                                            \"enable_ping\":\"true\",\
                                             \"enable_DHT\":\"false\",\
                                             \"enable_camera\":\"false\",\
                                             \"auto_load_camera\":\"false\",\
@@ -69,6 +71,7 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
     defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
+                                            \"enable_ping\":\"true\",\
                                             \"enable_DHT\":\"false\",\
                                             \"enable_camera\":\"false\",\
                                             \"auto_load_camera\":\"false\",\
@@ -263,7 +266,12 @@ function applypreferenceslist(){
         document.getElementById('lock_ui_btn').style.display='none';
         ontoggleLock(false);
         }
-    
+    if (preferenceslist[0].enable_ping === 'true') {
+        ontogglePing(true);
+        }
+    else {
+        ontogglePing(false);
+        }
     if (preferenceslist[0].enable_bed === 'true') {
         document.getElementById('temperature_bed').style.display='table-row';
         document.getElementById('bedtemperaturesgraphic').style.display='block';
@@ -366,7 +374,11 @@ function build_dlg_preferences_list(){
      //lock UI
      if (typeof(preferenceslist[0].enable_lock_UI ) !== 'undefined') {
         document.getElementById('enable_lock_UI').checked = (preferenceslist[0].enable_lock_UI === 'true');
-     } else document.getElementById('enable_lock_UI').checked = false;     
+     } else document.getElementById('enable_lock_UI').checked = false;
+     //Monitor connection
+     if (typeof(preferenceslist[0].enable_ping ) !== 'undefined') {
+        document.getElementById('enable_ping').checked = (preferenceslist[0].enable_ping === 'true');
+     } else document.getElementById('enable_ping').checked = false;     
      //is mixed extruder
      if (typeof(preferenceslist[0].is_mixed_extruder ) !== 'undefined') {
         document.getElementById('enable_mixed_E_controls').checked = (preferenceslist[0].is_mixed_extruder === 'true');
@@ -475,6 +487,7 @@ function closePreferencesDialog(){
             (typeof(preferenceslist[0].number_extruders ) === 'undefined') ||
             (typeof(preferenceslist[0].is_mixed_extruder ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_lock_UI ) === 'undefined') ||
+            (typeof(preferenceslist[0].enable_ping ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_bed ) === 'undefined') || 
             (typeof(preferenceslist[0].enable_fan ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_z ) === 'undefined') ||
@@ -500,11 +513,13 @@ function closePreferencesDialog(){
             //Autoload
             if (document.getElementById('autoload_camera_panel').checked !=  (preferenceslist[0].auto_load_camera === 'true')) modified = true;
             //camera address
-             if (document.getElementById('preferences_camera_webaddress').value !=  decode_entitie(preferenceslist[0].camera_address)) modified = true;
-             //DHT
+            if (document.getElementById('preferences_camera_webaddress').value !=  decode_entitie(preferenceslist[0].camera_address)) modified = true;
+            //DHT
             if (document.getElementById('enable_DHT').checked != (preferenceslist[0].enable_DHT === 'true')) modified = true;
-           //Lock UI
+            //Lock UI
             if (document.getElementById('enable_lock_UI').checked != (preferenceslist[0].enable_lock_UI === 'true')) modified = true;
+            //Monitor connection
+            if (document.getElementById('enable_ping').checked != (preferenceslist[0].enable_ping === 'true')) modified = true;
             //number extruders
             if (document.getElementById('preferences_control_nb_extruders').value != parseInt(preferenceslist[0].number_extruders)) modified = true;
             //is mixed extruder
@@ -590,6 +605,7 @@ function SavePreferences(current_preferences){
         saveprefs += "\",\"camera_address\":\"" + HTMLEncode(document.getElementById('preferences_camera_webaddress').value) ;
         saveprefs +="\",\"enable_DHT\":\"" + document.getElementById('enable_DHT').checked ; 
         saveprefs +="\",\"enable_lock_UI\":\"" + document.getElementById('enable_lock_UI').checked ; 
+        saveprefs +="\",\"enable_ping\":\"" + document.getElementById('enable_ping').checked ;
         saveprefs +="\",\"is_mixed_extruder\":\"" + document.getElementById('enable_mixed_E_controls').checked ; 
         saveprefs +="\",\"number_extruders\":\"" +  document.getElementById('preferences_control_nb_extruders').value ;
         saveprefs +="\",\"enable_bed\":\"" +  document.getElementById('enable_bed_controls').checked ;

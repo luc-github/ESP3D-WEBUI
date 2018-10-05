@@ -299,5 +299,6 @@ var germantrans = {
 "Unlock interface":"Schnittstelle entsperren",
 "You are disconnected":"Du bist nicht verbunden",
 "Looks like you are connected from another place, so this page is now disconnected":"Es sieht so aus, als ob Sie mit einem anderen Ort verbunden sind, daher ist diese Seite jetzt getrennt.",
-"Please reconnect me":"Bitte verbinden Sie mich erneut"
+"Please reconnect me":"Bitte verbinden Sie mich erneut",
+"Connection monitoring":"Verbindungs&uuml;berwachung"
 };

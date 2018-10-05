@@ -301,6 +301,7 @@ var frenchtrans = {
 "Please reconnect me":"SVP reconnectez-moi",
 "Mist":"Mist",
 "Flood":"Flood",
-"Spindle":"Spindle"
+"Spindle":"Spindle",
+"Connection monitoring":"Surveillance de la connexion"
 
 };

@@ -298,5 +298,6 @@ var spanishtrans = {
 "Unlock interface":"Desbloquear interfaz",
 "You are disconnected":"Est&aacute;s desconectado",
 "Looks like you are connected from another place, so this page is now disconnected":"Parece que est&aacute;s conectado a otro lugar, por eso esta p&aacute;gina ahora est&aacute; desconectada.",
-"Please reconnect me":"Por favor vuelva a conectarme"
+"Please reconnect me":"Por favor vuelva a conectarme",
+"Connection monitoring":"Monitoreo de conexi&oacute;n"
 };

@@ -298,6 +298,7 @@ var italiantrans = {
 "Unlock interface":"Sblocca l'interfaccia",
 "You are disconnected":"Sei disconnesso",
 "Looks like you are connected from another place, so this page is now disconnected":"Sembra che ti sia connesso da un altro dispositivo, quindi questa pagina &egrave; ora disconnessa.",
-"Please reconnect me":"Per favore ricollegami"
+"Please reconnect me":"Per favore ricollegami",
+"Connection monitoring":"Monitoraggio della connessione"
 
 };

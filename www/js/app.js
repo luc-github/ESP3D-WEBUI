@@ -29,6 +29,7 @@ var SETTINGS_AP_MODE = 1;
 var SETTINGS_STA_MODE = 2;
 var interval_ping = -1;
 var last_ping = 0;
+var enable_ping = true;
 
 function Init_events(e){
   page_id = e.data;
@@ -128,12 +129,14 @@ function startSocket(){
 			  page_id = tval[1];
 			  console.log("connection id = " + page_id); 
 		  }
-           if (tval[0] == 'PING') {
-			  page_id = tval[1];
-			  console.log("ping from id = " + page_id); 
-              last_ping = Date.now();
-              if (interval_ping == -1)interval_ping = setInterval(function(){ check_ping(); }, 10 * 1000);
-		  }
+		  if (enable_ping) {
+			   if (tval[0] == 'PING') {
+				  page_id = tval[1];
+				  console.log("ping from id = " + page_id); 
+				  last_ping = Date.now();
+				  if (interval_ping == -1)interval_ping = setInterval(function(){ check_ping(); }, 10 * 1000);
+			  }
+			}
 		  if (tval[0] == 'ACTIVE_ID') {
 			  if(page_id != tval[1]) {
 				Disable_interface();
@@ -160,6 +163,20 @@ function check_ping(){
 function disable_items(item, state) {
     var liste = item.getElementsByTagName("*");
      for(i = 0; i < liste.length; i++) liste[i].disabled=state;
+}
+
+function ontogglePing(forcevalue){
+	if (typeof forcevalue != 'undefined') enable_ping = forcevalue;
+	else enable_ping = !enable_ping;
+	if (enable_ping) {
+		if (interval_ping != -1)clearInterval(interval_ping);
+		last_ping = Date.now();
+        interval_ping = setInterval(function(){ check_ping(); }, 10 * 1000);
+        console.log("enable ping");
+			} else {
+		if (interval_ping != -1)clearInterval(interval_ping);
+		console.log("disable ping");
+	}
 }
 
 function ontoggleLock(forcevalue){
