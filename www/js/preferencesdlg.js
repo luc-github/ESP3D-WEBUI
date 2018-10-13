@@ -680,15 +680,15 @@ var value = 0;
             break;
        case "preferences_control_xy_velocity":
             value = parseInt(document.getElementById(id_2_check).value);
-            if (!(!isNaN(value) && value >= 1 && value <= 9999 )) { 
-                error_message = translate_text_item( "XY feedrate value must be between 1 mm/min and 9999 mm/min !");
+            if (!(!isNaN(value) && value >= 1 )) { 
+                error_message = translate_text_item( "XY Feedrate value must be at least 1 mm/min!");
                 status = false;
                 }
             break;
         case "preferences_control_z_velocity":
             value = parseInt(document.getElementById(id_2_check).value);
-            if (!(!isNaN(value) && value >= 1 && value <=999 )) { 
-                error_message = translate_text_item( "Z feedrate value must be between 1 mm/min and 9999 mm/min !");
+            if (!(!isNaN(value) && value >= 1)) { 
+                error_message = translate_text_item( "Z Feedrate value must be at least 1 mm/min!");
                 status = false;
                 }
             break;

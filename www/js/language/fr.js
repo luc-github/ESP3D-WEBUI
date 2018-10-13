@@ -302,6 +302,8 @@ var frenchtrans = {
 "Mist":"Mist",
 "Flood":"Flood",
 "Spindle":"Spindle",
-"Connection monitoring":"Surveillance de la connexion"
+"Connection monitoring":"Surveillance de la connexion",
+"XY Feedrate value must be at least 1 mm/min!":"La valeur de l&#39;acc&eacute;l&eacute;ration XY doit &ecirc;tre sup&eacute;rieure &agrave; 1mm/min !",
+"Z Feedrate value must be at least 1 mm/min!":"La valeur de l&#39;acc&eacute;l&eacute;ration Z doit &ecirc;tre sup&eacute;rieure &agrave; 1mm/min !"
 
 };

@@ -176,15 +176,15 @@ function SendHomecommand (cmd){
      var command ="";
     if (feedrate == "XYfeedrate") {
         feedratevalue = parseInt(document.getElementById('control_xy_velocity').value);
-        if (feedratevalue < 1 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
-            alertdlg (translate_text_item("Out of range"), translate_text_item( "XY feedrate value must be between 1 mm/min and 9999 mm/min !"));
+        if (feedratevalue < 1 || isNaN(feedratevalue) || (feedratevalue === null)) {
+            alertdlg (translate_text_item("Out of range"), translate_text_item( "XY Feedrate value must be at least 1 mm/min!"));
             document.getElementById('control_xy_velocity').value = preferenceslist[0].xy_feedrate;
             return;
         }
     } else {
         feedratevalue = parseInt(document.getElementById('control_z_velocity').value);
-         if (feedratevalue < 1 || feedratevalue > 999 || isNaN(feedratevalue) || (feedratevalue === null)) {
-            alertdlg (translate_text_item("Out of range"), translate_text_item( "Z feedrate value must be between 1 mm/min and 999 mm/min !"));
+         if (feedratevalue < 1  || isNaN(feedratevalue) || (feedratevalue === null)) {
+            alertdlg (translate_text_item("Out of range"), translate_text_item( "Z Feedrate value must be at least 1 mm/min!"));
             document.getElementById('control_z_velocity').value = preferenceslist[0].z_feedrate;
             return;
         }
