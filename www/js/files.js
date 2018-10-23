@@ -20,7 +20,7 @@ function update_files_list(){
         var file_name = files_file_list[i].name;
         files_file_list[i].isprintable = files_showprintbutton(file_name,isdirectory);
     }
-    if (files_filter_sd_list)files_build_display_filelist();
+    files_build_display_filelist();
 }
 
 function build_accept(file_filters_list){
