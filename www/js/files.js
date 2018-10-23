@@ -5,6 +5,41 @@ var files_file_list_cache = [];
 var files_status_list = [];
 var files_current_file_index = -1;
 var files_error_status ="";
+var tfiles_filters;
+
+function build_file_filter_list(filters_list){
+     build_accept(filters_list);
+     update_files_list();
+}
+
+function update_files_list(){
+    console.log("Updating list");
+    if (files_file_list.length == 0) return;
+    for (var i = 0; i < files_file_list.length; i++){
+        var isdirectory = files_file_list[i].isdir;
+        var file_name = files_file_list[i].name;
+        files_file_list[i].isprintable = files_showprintbutton(file_name,isdirectory);
+    }
+    if (files_filter_sd_list)files_build_display_filelist();
+}
+
+function build_accept(file_filters_list){
+    var accept_txt = "";
+    tfiles_filters = file_filters_list.trim().split(";");
+    for (var i=0 ; i < tfiles_filters.length ; i++){
+        var v = tfiles_filters[i].trim();
+        if (v.length > 0){
+            if (accept_txt.length > 0)accept_txt+=", ";
+            accept_txt+="." + v;
+        }
+    }
+    if (accept_txt.length == 0) {
+        accept_txt="*, *.*";
+        tfiles_filters="";
+    }
+    document.getElementById('files_input_file').accept = accept_txt;
+    console.log(accept_txt);
+}
 
 function init_files_panel(dorefresh){
     if ( target_firmware == "smoothieware"){
@@ -234,13 +269,18 @@ function files_click_file(index){
 
 function files_showprintbutton(filename, isdir){
     if (isdir == true) return false;
-    if (filename.toLowerCase().match(/\.g(code)?$/) || filename.toLowerCase().match(/\.gco(de)?$/)) return true;
     if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
         var path = files_currentPath + filename.trim();
         if ((path.indexOf(" ") != -1)  || (path.indexOf("?") != -1)|| (path.indexOf("!") != -1)|| (path.indexOf("~") != -1)) {
             return false;
         }
-        if (filename.toLowerCase().match(/\.txt$/) || filename.toLowerCase().match(/\.nc$/)) return true;
+    }
+    if (tfiles_filters.length == 0){
+        return true;
+    }
+    for (var i=0 ; i < tfiles_filters.length ; i++){
+        var v = "." + tfiles_filters[i].trim();
+        if (filename.endsWith(v))return true;
     }
     return false;
 }
