@@ -1,6 +1,7 @@
 //Preferences dialog
 var preferenceslist = [];
 var language_save = language;
+var default_preferenceslist;
 var defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
@@ -100,6 +101,7 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\"\
                                             }]";
+    default_preferenceslist = JSON.parse(defaultpreferenceslist);
     if (target_firmware == "marlin-embedded" ) document.getElementById('DHT_pref_panel').style.display = 'none';
     else document.getElementById('DHT_pref_panel').style.display = 'block';
     
@@ -438,31 +440,31 @@ function build_dlg_preferences_list(){
      //interval positions
       if (typeof(preferenceslist[0].interval_positions ) !== 'undefined') {
         document.getElementById('preferences_pos_Interval_check').value = parseInt(preferenceslist[0].interval_positions) ;
-     } else document.getElementById('preferences_pos_Interval_check').value = parseInt(defaultpreferenceslist[0].interval_positions);
+     } else document.getElementById('preferences_pos_Interval_check').value = parseInt(default_preferenceslist[0].interval_positions);
      //interval status
       if (typeof(preferenceslist[0].interval_status ) !== 'undefined') {
         document.getElementById('preferences_status_Interval_check').value = parseInt(preferenceslist[0].interval_status) ;
-     } else document.getElementById('preferences_status_Interval_check').value = parseInt(defaultpreferenceslist[0].interval_status);
+     } else document.getElementById('preferences_status_Interval_check').value = parseInt(default_preferenceslist[0].interval_status);
      //xy feedrate
       if (typeof(preferenceslist[0].xy_feedrate ) !== 'undefined') {
         document.getElementById('preferences_control_xy_velocity').value = parseInt(preferenceslist[0].xy_feedrate) ;
-     } else document.getElementById('preferences_control_xy_velocity').value = parseInt(defaultpreferenceslist[0].xy_feedrate);
+     } else document.getElementById('preferences_control_xy_velocity').value = parseInt(default_preferenceslist[0].xy_feedrate);
      //z feedrate
       if (typeof(preferenceslist[0].z_feedrate ) !== 'undefined') {
         document.getElementById('preferences_control_z_velocity').value = parseInt(preferenceslist[0].z_feedrate) ;
-     } else document.getElementById('preferences_control_z_velocity').value = parseInt(defaultpreferenceslist[0].z_feedrate);
+     } else document.getElementById('preferences_control_z_velocity').value = parseInt(default_preferenceslist[0].z_feedrate);
       //interval temperatures
       if (typeof(preferenceslist[0].interval_temperatures ) !== 'undefined') {
         document.getElementById('preferences_tempInterval_check').value = parseInt(preferenceslist[0].interval_temperatures) ;
-     } else document.getElementById('preferences_tempInterval_check').value = parseInt(defaultpreferenceslist[0].interval_temperatures);
+     } else document.getElementById('preferences_tempInterval_check').value = parseInt(default_preferenceslist[0].interval_temperatures);
       //e feedrate
       if (typeof(preferenceslist[0].e_feedrate ) !== 'undefined') {
         document.getElementById('preferences_e_velocity').value = parseInt(preferenceslist[0].e_feedrate) ;
-     } else document.getElementById('preferences_e_velocity').value = parseInt(defaultpreferenceslist[0].e_feedrate);
+     } else document.getElementById('preferences_e_velocity').value = parseInt(default_preferenceslist[0].e_feedrate);
       //e distance
       if (typeof(preferenceslist[0].e_distance ) !== 'undefined') {
         document.getElementById('preferences_filament_length').value = parseInt(preferenceslist[0].e_distance) ;
-     } else document.getElementById('preferences_filament_length').value = parseInt(defaultpreferenceslist[0].e_distance);
+     } else document.getElementById('preferences_filament_length').value = parseInt(default_preferenceslist[0].e_distance);
      //autoscroll
       if (typeof(preferenceslist[0].enable_autoscroll ) !== 'undefined') {
         document.getElementById('preferences_autoscroll').checked = (preferenceslist[0].enable_autoscroll === 'true');
@@ -473,8 +475,12 @@ function build_dlg_preferences_list(){
      } else document.getElementById('preferences_verbose_mode').checked = false;
      //file filters
       if (typeof(preferenceslist[0].f_filters) != 'undefined') {
+        console.log("Use prefs filters");
         document.getElementById('preferences_filters').value = preferenceslist[0].f_filters;
-     } else document.getElementById('preferences_filters').value = defaultpreferenceslist[0].f_filters;
+     } else {
+         console.log("Use default filters");
+         document.getElementById('preferences_filters').value = String(default_preferenceslist[0].f_filters);
+     }
      
      prefs_toggledisplay( 'show_camera_panel');
      prefs_toggledisplay( 'show_grbl_panel');

@@ -25,12 +25,14 @@ function update_files_list(){
 
 function build_accept(file_filters_list){
     var accept_txt = "";
-    tfiles_filters = file_filters_list.trim().split(";");
-    for (var i=0 ; i < tfiles_filters.length ; i++){
-        var v = tfiles_filters[i].trim();
-        if (v.length > 0){
-            if (accept_txt.length > 0)accept_txt+=", ";
-            accept_txt+="." + v;
+    if (typeof file_filters_list != 'undefined') {
+        tfiles_filters = file_filters_list.trim().split(";");
+        for (var i=0 ; i < tfiles_filters.length ; i++){
+            var v = tfiles_filters[i].trim();
+            if (v.length > 0){
+                if (accept_txt.length > 0)accept_txt+=", ";
+                accept_txt+="." + v;
+            }
         }
     }
     if (accept_txt.length == 0) {
