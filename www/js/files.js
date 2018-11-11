@@ -139,6 +139,8 @@ function files_print(index){
     if (target_firmware == "smoothieware"){
         cmd = "play " + files_currentPath + files_file_list[index].name;
     } else if (target_firmware == "grbl-embedded"){
+        SendPrinterCommand("?", false, null,null, 114, 1);
+        on_autocheck_status(true);
         cmd = "$F= " + files_currentPath + files_file_list[index].name;
    } else {
         cmd = "M23 " + files_currentPath + files_file_list[index].name + "\nM24";
