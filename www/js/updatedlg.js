@@ -9,6 +9,8 @@ function updatedlg () {
     document.getElementById('uploadfw-button').style.display = 'none';
     document.getElementById('updatemsg').innerHTML = "";
     document.getElementById('fw-select').value="";
+    if (target_firmware == "grbl-embedded")document.getElementById('fw_update_dlg_title').innerHTML= translate_text_item("ESP3D Update").replace("ESP3D", "GRBL_ESP32");
+    if (target_firmware == "marlin-embedded")document.getElementById('fw_update_dlg_title').innerHTML= translate_text_item("ESP3D Update").replace("ESP3D", "Marlin");
     showModal() ;
 }
 
