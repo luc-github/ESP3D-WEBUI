@@ -98,7 +98,8 @@ function build_HTML_config_list(){
             content+="<td style='vertical-align:middle'>";
             content+=item.label;
             content+="</td>";
-            content+="<td style='vertical-align:middle'>";
+            content+="<td style='vertical-align:middle;'>";
+            content+="<table><tr><td>"
             content+="<div class='item-flex-row'>";
             content+=	"<div id='status_config_"+ prefix + i + "' class='form-group has-feedback' style='margin: auto;'>";
             content+=		"<div class='item-flex-row'>";
@@ -127,6 +128,7 @@ function build_HTML_config_list(){
 			content+=		"</span>";
 			content+=	"</div>";
 			content+="</div>";
+            content+="</td></tr></table>";
             content+="</td>";
             content+="<td style='vertical-align:middle'>";
             content+=HTMLEncode(item.help );
