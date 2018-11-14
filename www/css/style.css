@@ -13,7 +13,7 @@ min-width: 8em;
 }
 
 .ico_feedback{
-	right:5px!important; 
+	right:1em!important; 
 	top:3px;
 	z-index: 10!important;
 }
@@ -184,6 +184,9 @@ display: inline-block;
   background-image: none;
   text-align: left;
   border: 0px solid #ffffff;
+}
+.wauto{
+width:auto!important;
 }
 .w4 {
 width:4em!important;

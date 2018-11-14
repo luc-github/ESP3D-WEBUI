@@ -62,6 +62,12 @@ function browser_is(bname){
 		case "Chrome":
 			if (ua.indexOf("Chrome")!=-1)return true;
 			break;
+        case "Firefox":
+			if (ua.indexOf("Firefox")!=-1)return true;
+			break;
+        case "MacOSX":
+			if (ua.indexOf("Mac OS X")!=-1)return true;
+			break;
 		default:
 		return false;
 	}

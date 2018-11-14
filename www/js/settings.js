@@ -53,13 +53,15 @@ function build_select_flag_for_setting_list(index,subindex){
 }
 
 function build_select_for_setting_list(index, subindex){
-    var html = "<select class='form-control' id='setting_" + index + "_" + subindex + "' onchange='setting_checkchange(" + index  +"," + subindex+")' >";
+    var html = "<select class='form-control input-min wauto' id='setting_" + index + "_" + subindex + "' onchange='setting_checkchange(" + index  +"," + subindex+")' >";
     for (var i = 0; i < setting_configList[index].Options.length ; i++){
          html += "<option value='" + setting_configList[index].Options[i].id + "'";
          if (setting_configList[index].Options[i].id == setting_configList[index].defaultvalue) html +=" selected ";
          html += ">";
          html += translate_text_item(setting_configList[index].Options[i].display, true);
-         html += "</option>\n";
+         //Ugly workaround for OSX Chrome and Safari
+         if (browser_is("MacOSX"))html += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+         html +="</option>\n";
         }
     html += "</select>\n";
     //console.log("default:" + setting_configList[index].defaultvalue);
