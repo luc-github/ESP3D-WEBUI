@@ -141,11 +141,12 @@ function files_print(index){
     } else if (target_firmware == "grbl-embedded"){
         SendPrinterCommand("?", false, null,null, 114, 1);
         on_autocheck_status(true);
-        cmd = "$F= " + files_currentPath + files_file_list[index].name;
+        cmd = "[ESP220]" + files_currentPath + files_file_list[index].name;
    } else {
         cmd = "M23 " + files_currentPath + files_file_list[index].name + "\nM24";
     }
-   SendPrinterSilentCommand(cmd);
+   if (target_firmware == "grbl-embedded")SendPrinterCommand(cmd);
+   else SendPrinterSilentCommand(cmd);
 }
 
 function files_Createdir(){
@@ -273,7 +274,7 @@ function files_click_file(index){
 
 function files_showprintbutton(filename, isdir){
     if (isdir == true) return false;
-    if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
+    if (target_firmware == "grbl" ) {
         var path = files_currentPath + filename.trim();
         if ((path.indexOf(" ") != -1)  || (path.indexOf("?") != -1)|| (path.indexOf("!") != -1)|| (path.indexOf("~") != -1)) {
             return false;
