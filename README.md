@@ -1,5 +1,5 @@
 # ESP3D-WEBUI 
- ![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=2.0)   
+ [![Build Status](https://travis-ci.org/luc-github/ESP3D-WEBUI.svg?branch=2.1)](https://travis-ci.org/luc-github/ESP3D-WEBUI)   
  
 ## What is that ?
 A web configuration tool for ESP3D 2.0
@@ -67,7 +67,7 @@ ESP3D SPIFFS:
 
 
 ## Installation
-Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.0) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
+Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.1) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
 
 ## Contribution / development
 Check wiki section [Contribution/Development](https://github.com/luc-github/ESP3D-WEBUI/wiki/Compilation---Development)
