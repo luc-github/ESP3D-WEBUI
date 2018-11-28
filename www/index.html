@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ESP3D WebUI</title>
+    <script>var target_firmware="";</script>
+    <script>var web_ui_version="2.1b14";</script>
+    <script>var direct_sd=false;</script>
+    <script>var fw_version="";</script>
+    <script>var primary_sd= "/ext/";</script>
+    <script>var secondary_sd= "/sd/";</script>
+    <!--removeIf(cleanheader)-->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/menu.css" rel="stylesheet">
+    <link href="css/tabs.css" rel="stylesheet">
+    <link href="css/modaldlg.css" rel="stylesheet">
+    <link href="css/wizard.css" rel="stylesheet">
+    <!--endRemoveIf(cleanheader)-->
+
+    <!-- smoosh -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- endsmoosh -->
+  </head>
+  <body>
+        <div id='loadingmsg' ><center><H3>Loading....</H3></center></div>
+        <div id="main_ui" class="container-fluid hide_it">
+        <!-- topnavbar -->
+        <file-include w3-include-html="'sub/navbar.html'"></file-include>
+        <!-- /topnavbar -->
+        <!-- tabbar -->
+        <file-include w3-include-html="'sub/tab_bar.html'"></file-include>
+        <!-- / tabbar -->
+    <!-- content -->
+        <file-include w3-include-html="'sub/dashtab.html'"></file-include>
+        <file-include w3-include-html="'sub/cameratab.html'"></file-include>
+        <file-include w3-include-html="'sub/configtab.html'"></file-include>
+        <file-include w3-include-html="'sub/settingstab.html'"></file-include>
+    <!-- / content -->
+        </div>
+    <!-- template -->
+    <file-include w3-include-html="'sub/connectdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/alertdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/passworddlg.html'"></file-include>
+    <file-include w3-include-html="'sub/confirmdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/logindlg.html'"></file-include>
+    <file-include w3-include-html="'sub/inputdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/creditsdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/scanwifidlg.html'"></file-include>
+    <file-include w3-include-html="'sub/SPIFFSdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/statusdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/updatedlg.html'"></file-include>
+    <file-include w3-include-html="'sub/setupdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/macrodlg.html'"></file-include>
+    <file-include w3-include-html="'sub/preferencesdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/restartdlg.html'"></file-include>
+    <file-include w3-include-html="'sub/UIdisableddlg.html'"></file-include>
+     <!-- / template -->
+    <!--removeIf(cleanheader)-->
+    <script src="js/wizard.js"></script>
+    <script src="js/http.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/alertdlg.js"></script>
+    <script src="js/confirmdlg.js"></script>
+    <script src="js/passworddlg.js"></script>
+    <script src="js/logindlg.js"></script>
+    <script src="js/inputdlg.js"></script>
+    <script src="js/creditsdlg.js"></script>
+    <script src="js/scanwifidlg.js"></script>
+    <script src="js/connectdlg.js"></script>
+    <script src="js/restartdlg.js"></script>
+    <script src="js/modaldlg.js"></script>
+    <script src="js/SPIFFSdlg.js"></script>
+    <script src="js/statusdlg.js"></script>
+    <script src="js/updatedlg.js"></script>
+    <script src="js/setupdlg.js"></script>
+    <script src="js/macrodlg.js"></script>
+    <script src="js/preferencesdlg.js"></script>
+    <script src="js/translate.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/extruders.js"></script>
+    <script src="js/printercmd.js"></script>
+    <script src="js/temperatures.js"></script>
+    <script src="js/controls.js"></script> 
+    <script src="js/grbl.js"></script>   
+    <script src="js/smoothie.js"></script>
+    <script src="js/dropmenu.js"></script>
+    <script src="js/localstorage.js"></script>
+    <script src="js/UIdisableddlg.js"></script>
+    <!--endRemoveIf(cleanheader)-->
+    <!-- smoosh -->
+    <script src="js/app.js"></script>
+    <!-- endsmoosh -->
+  </body>
+</html>
