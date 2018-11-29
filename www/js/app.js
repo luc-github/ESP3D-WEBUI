@@ -66,7 +66,7 @@ function startSocket(){
 		}
 	  else {
 		  console.log("Socket port is :" + websocket_port);
-		  ws_source = new WebSocket('ws://'+document.location.host+':' + websocket_port,['arduino']);
+		  ws_source = new WebSocket('ws://'+document.location.hostname+':' + websocket_port,['arduino']);
 	  }
       ws_source.binaryType = "arraybuffer";
       ws_source.onopen = function(e){
