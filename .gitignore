@@ -3,3 +3,4 @@ dist
 
 package-lock.json
 index2.html.gz
+.DS_Store
