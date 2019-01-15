@@ -94,8 +94,10 @@ function SendCustomCommand(){
     CustomCommand_history_index = CustomCommand_history.length;
     document.getElementById("custom_cmd_txt").value = "";
     Monitor_output_Update(cmd + "\n");
-    SendGetHttp(url + encodeURI(cmd), SendCustomCommandSuccess, SendCustomCommandFailed);
-    //console.log(cmd);
+    cmd = encodeURI(cmd);
+    //because # is not encoded
+    cmd = cmd.replace("#","%23");
+    SendGetHttp(url + cmd, SendCustomCommandSuccess, SendCustomCommandFailed);
 }
 
 function CustomCommand_OnKeyUp(event){

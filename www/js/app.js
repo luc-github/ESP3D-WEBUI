@@ -160,10 +160,10 @@ function startSocket(){
     }
     
 function check_ping(){
-    if ((Date.now() - last_ping) > 20000){
-    Disable_interface(true);
-    console.log("No heart beat for more than 20s");
-    }
+    //if ((Date.now() - last_ping) > 20000){
+    //Disable_interface(true);
+    //console.log("No heart beat for more than 20s");
+    //}
 }
 
 function disable_items(item, state) {
