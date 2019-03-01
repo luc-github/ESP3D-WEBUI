@@ -10,7 +10,9 @@
         <div class="panel-flex-row">
              <div class="input-group">
                 <div class="input-group">
-                    <input class="form-control w14" type="text" onkeyup="CustomCommand_OnKeyUp(event)" id="custom_cmd_txt" autocomplete="off" translateph placeholder="Send Command..." />
+                    <form autocomplete="off" onsubmit="return false;">
+						<input autocomplete="off" class="form-control w14" type="text" onkeyup="CustomCommand_OnKeyUp(event)" value="" id="custom_cmd_txt" translateph placeholder="Send Command..." />
+                    </form>
                     <div class="input-group-btn">
                         <button class="btn btn-success" onclick="SendCustomCommand();" translate>Send</button>
                     </div>
