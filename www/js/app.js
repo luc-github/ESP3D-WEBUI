@@ -262,6 +262,7 @@ function Disable_interface(lostconnection) {
 		event_source.removeEventListener('DHT', DHT_events, false);
 		}
     ws_source.close();
+    document.title+= "(" + decode_entitie(translate_text_item("Disabled")) + ")";
     UIdisableddlg(lostcon);
 }
 
