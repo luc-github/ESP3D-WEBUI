@@ -35,7 +35,7 @@ function refreshconfig(is_override) {
 		commandtxt = "cat " + config_file_name;
 	}
     if ((target_firmware == "grbl") ||  (target_firmware == "grbl-embedded")) commandtxt = "$$";
-    if ((target_firmware == "marlin" ) || (target_firmware == "marlinkimbra" ) || (target_firmware == "marlin-embedded" )) commandtxt = "M503\n*";
+    if ((target_firmware == "marlin" ) || (target_firmware == "marlinkimbra" ) || (target_firmware == "marlin-embedded" )) commandtxt = "M503";
     getprinterconfig(is_override_config);
 }
 
@@ -270,7 +270,7 @@ function is_config_entry(sline){
     var line = sline.trim();
     if (line.length == 0) return false;
     if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded" )){
-        if (sline.startsWith("Config:") || sline.startsWith("echo:")) return true
+        if (sline.startsWith("Config:") || sline.startsWith("echo:") || sline.startsWith("\t") || sline.startsWith("  ")) return true
         else return false;
     }
     if (target_firmware == "smoothieware"){
