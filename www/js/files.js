@@ -135,15 +135,19 @@ function files_build_file_line(index){
 }
 
 function files_print(index){
+    files_print_filename(files_currentPath + files_file_list[index].name);
+}
+
+function files_print_filename(filename){
     var cmd = "";
     if (target_firmware == "smoothieware"){
-        cmd = "play " + files_currentPath + files_file_list[index].name;
+        cmd = "play " + filename;
     } else if (target_firmware == "grbl-embedded"){
         SendPrinterCommand("?", false, null,null, 114, 1);
         on_autocheck_status(true);
-        cmd = "[ESP220]" + files_currentPath + files_file_list[index].name;
+        cmd = "[ESP220]" + filename;
    } else {
-        cmd = "M23 " + files_currentPath + files_file_list[index].name + "\nM24";
+        cmd = "M23 " + filename + "\nM24";
     }
    if (target_firmware == "grbl-embedded")SendPrinterCommand(cmd);
    else SendPrinterSilentCommand(cmd);

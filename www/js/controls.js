@@ -266,10 +266,7 @@ function macro_command (target, filename) {
     if (target == "ESP") {
         cmd = "[ESP700]"+filename;
         } else if (target == "SD") {
-        cmd = "play " + filename;
-        if (target_firmware != "smoothieware"){
-            cmd =  "M23 " + filename + "\nM24"; 
-            }
+        files_print_filename(filename);
         } else if (target == "URI") {
             window.open(filename);
             }else return;
