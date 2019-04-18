@@ -3,7 +3,7 @@ var spanishtrans = {
 "es":"Espa&ntilde;ol",
 "ESP3D for":"ESP3D para",
 "Value of auto-check must be between 0s and 99s !!":"&iexcl;El valor del auto-control tiene que estar entre 0s y 99s !",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !":"&iexcl;El valor de la velocidad del extrusor tiene que estar entre 1 mm/min y 9999 mm/min ! ",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !":"&iexcl;El valor de la velocidad del extrusor tiene que estar entre 1 mm/min y 9999 mm/min ! ",
 "Value of filament length must be between 0.001 mm and 9999 mm !":"&iexcl;El valor de la longitud de extrusi&oacute;n de filamento tiene que estar entre 0,001 mm y 9999 mm.!",
 "cannot have '-', '#' char or be empty":"No puede tener el car&aacute;cter '-', '#' o estar vac&iacute;o",
 "cannot have '-', 'e' char or be empty":"No puede tener el car&aacute;cter 'e', '#' o estar vac&iacute;o",

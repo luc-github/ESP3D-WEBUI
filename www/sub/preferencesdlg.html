@@ -262,9 +262,70 @@
                     </div>
                     </td></tr></table>
                 </div>
+                <br>
+                <div class="panel panel-default" id="grbl_pref_probe_tab">
+                    <div class="panel-heading">
+                         <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="show_grbl_probe_tab" onclick="prefs_toggledisplay('show_grbl_probe_tab')"/>
+                                <span  translate>Show probe panel</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="grbl_probe_preferences" class="panel-body">
+                        <div id="preferences_probemaxtravel_group">
+                            <table><tr><td>
+                            <span><span translate >Max travel</span>:&nbsp;</span>
+                            </td><td>
+                            <div class="input-group has-control">
+                                <input class="form-control w8" type="number" min="1" max="99999" id="preferences_probemaxtravel" onchange="Checkvalues('preferences_probemaxtravel')"/>
+                                <span id="preferences_probemaxtravel_icon" class="form-control-feedback ico_feedback"></span>
+                            </div>
+                            </td><td>
+                            <div class="input-group">
+                                <input class="hide_it"></input>
+                                <span class="input-group-addon form_control" translate>mm</span>
+                            </div>
+                            </td></tr></table>
+                        </div>
+                        <br>
+                        <div id="preferences_probefeedrate_group">
+                            <table><tr><td>
+                            <span><span translate >Feed rate</span>:&nbsp;</span>
+                            </td><td>
+                            <div class="input-group has-control">
+                                <input class="form-control w8" type="number" min="1" max="99999" id="preferences_probefeedrate" onchange="Checkvalues('preferences_probefeedrate')"/>
+                                <span id="preferences_probefeedrate_icon" class="form-control-feedback ico_feedback"></span>
+                            </div>
+                            </td><td>
+                            <div class="input-group">
+                                <input class="hide_it"></input>
+                                <span class="input-group-addon form_control" translate>mm/min</span>
+                            </div>
+                            </td></tr></table>
+                        </div>
+                        <br>
+                        <div id="preferences_probetouchplatethickness_group">
+                            <table><tr><td>
+                            <span><span translate >Touch plate thickness</span>:&nbsp;</span>
+                            </td><td>
+                            <div class="input-group has-control">
+                                <input class="form-control w8" type="number" min="0" max="99999" id="preferences_probetouchplatethickness" onchange="Checkvalues('preferences_probetouchplatethickness')"/>
+                                <span id="preferences_probetouchplatethickness_icon" class="form-control-feedback ico_feedback"></span>
+                            </div>
+                            </td><td>
+                            <div class="input-group">
+                                <input class="hide_it"></input>
+                                <span class="input-group-addon form_control" translate>mm</span>
+                            </div>
+                            </td></tr></table>
+                        </div>
+                    
+                    </div>
+                </div>
             </div>
         </div>
-         <div class="panel panel-default">
+        <div class="panel panel-default">
             <div class="panel-heading">
                  <div class="checkbox">
                     <label>
@@ -322,7 +383,7 @@
         &nbsp;
         <progress name="prg" id="preferencesdlg_prg" max="100" ></progress>
         &nbsp;
-        <span id="preferencesdlg_upload_percent">0</span>%</td>
+        <span id="preferencesdlg_upload_percent">0</span>%
       </div>
       <span class="pull-right"> 
         <button class="btn btn-warning" onclick="closePreferencesDialog()" translate>Cancel</button>

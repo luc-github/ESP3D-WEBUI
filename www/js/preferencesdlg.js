@@ -1,7 +1,7 @@
 //Preferences dialog
 var preferenceslist = [];
 var language_save = language;
-var default_preferenceslist;
+var default_preferenceslist = [];
 var defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
@@ -30,7 +30,11 @@ var defaultpreferenceslist= "[{\
                                             \"enable_files_panel\":\"true\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_verbose_mode\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\",\
+                                            \"enable_grbl_probe_panel\":\"false\",\
+                                            \"probemaxtravel\":\"40\",\
+                                            \"probefeedrate\":\"100\",\
+                                            \"probetouchplatethickness\":\"0.5\"\
                                             }]";
 var preferences_file_name = '/preferences.json';
 function initpreferences(){
@@ -63,14 +67,18 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"f_filters\":\"g;G;gco;GCO;gcode;GCODE;nc;NC;ngc;NCG;tap;TAP;txt;TXT\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_verbose_mode\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\",\
+                                            \"enable_grbl_probe_panel\":\"false\",\
+                                            \"probemaxtravel\":\"40\",\
+                                            \"probefeedrate\":\"100\",\
+                                            \"probetouchplatethickness\":\"0.5\"\
                                             }]";
     
     document.getElementById('DHT_pref_panel').style.display = 'none';
     document.getElementById('temp_pref_panel').style.display = 'none';
     document.getElementById('ext_pref_panel').style.display = 'none';
     document.getElementById('grbl_pref_panel').style.display = 'block';
-} else {
+    } else {
     defaultpreferenceslist= "[{\
                                             \"language\":\"en\",\
                                             \"enable_lock_UI\":\"false\",\
@@ -99,17 +107,21 @@ if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )){
                                             \"f_filters\":\"g;G;gco;GCO;gcode;GCODE\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
-                                            \"enable_verbose_mode\":\"true\"\
+                                            \"enable_verbose_mode\":\"true\",\
+                                            \"enable_grbl_probe_panel\":\"false\",\
+                                            \"probemaxtravel\":\"40\",\
+                                            \"probefeedrate\":\"100\",\
+                                            \"probetouchplatethickness\":\"0.5\"\
                                             }]";
-    default_preferenceslist = JSON.parse(defaultpreferenceslist);
+                                            
     if (target_firmware == "marlin-embedded" ) document.getElementById('DHT_pref_panel').style.display = 'none';
     else document.getElementById('DHT_pref_panel').style.display = 'block';
     
     document.getElementById('temp_pref_panel').style.display = 'block';
     document.getElementById('ext_pref_panel').style.display = 'block';
     document.getElementById('grbl_pref_panel').style.display = 'none';
-}
-
+    }
+    default_preferenceslist = JSON.parse(defaultpreferenceslist);
 }
 function getpreferenceslist(){
     var url = preferences_file_name +"?"+Date.now();
@@ -175,6 +187,10 @@ function prefs_toggledisplay(id_source, forcevalue) {
             if (document.getElementById(id_source).checked) document.getElementById("cmd_preferences").style.display = "block";
             else document.getElementById("cmd_preferences").style.display = "none";
             break;
+        case 'show_grbl_probe_tab':
+            if (document.getElementById(id_source).checked) document.getElementById("grbl_probe_preferences").style.display = "block";
+            else document.getElementById("grbl_probe_preferences").style.display = "none";
+            break;
     }
 }
 
@@ -237,6 +253,14 @@ function applypreferenceslist(){
                  document.getElementById('camera_detach_button').style.display = "none";
             }
          }
+    if (preferenceslist[0].enable_grbl_probe_panel === 'true') {
+        document.getElementById('grblprobetablink').style.display='block';
+        }
+    else {
+        document.getElementById("grblcontroltablink").click();
+        document.getElementById('grblprobetablink').style.display='none';
+        }
+    
     if (preferenceslist[0].enable_DHT === 'true') {
         document.getElementById('DHT_humidity').style.display='block';
         document.getElementById('DHT_temperature').style.display='block';
@@ -337,13 +361,16 @@ function applypreferenceslist(){
         }
     else document.getElementById('commandsPanel').style.display='none';
     
-    document.getElementById('posInterval_check').value= preferenceslist[0].interval_positions;
-    document.getElementById('statusInterval_check').value= preferenceslist[0].interval_status;
-    document.getElementById('control_xy_velocity').value= preferenceslist[0].xy_feedrate;
-    document.getElementById('control_z_velocity').value= preferenceslist[0].z_feedrate;
-    document.getElementById('tempInterval_check').value= preferenceslist[0].interval_temperatures;
-    document.getElementById('filament_length').value= preferenceslist[0].e_distance;
-    document.getElementById('extruder_velocity').value= preferenceslist[0].e_feedrate;
+    document.getElementById('posInterval_check').value= parseInt(preferenceslist[0].interval_positions);
+    document.getElementById('statusInterval_check').value= parseInt(preferenceslist[0].interval_status);
+    document.getElementById('control_xy_velocity').value= parseInt(preferenceslist[0].xy_feedrate);
+    document.getElementById('control_z_velocity').value= parseInt(preferenceslist[0].z_feedrate);
+    document.getElementById('probemaxtravel').value= parseFloat(preferenceslist[0].probemaxtravel);
+    document.getElementById('probefeedrate').value= parseInt(preferenceslist[0].probefeedrate);
+    document.getElementById('probetouchplatethickness').value= parseFloat(preferenceslist[0].probetouchplatethickness);
+    document.getElementById('tempInterval_check').value= parseInt(preferenceslist[0].interval_temperatures);
+    document.getElementById('filament_length').value= parseInt(preferenceslist[0].e_distance);
+    document.getElementById('extruder_velocity').value= parseInt(preferenceslist[0].e_feedrate);
     build_file_filter_list(preferenceslist[0].f_filters);
 }
 
@@ -417,6 +444,10 @@ function build_dlg_preferences_list(){
       if (typeof(preferenceslist[0].enable_grbl_panel ) !== 'undefined') {
         document.getElementById('show_grbl_panel').checked = (preferenceslist[0].enable_grbl_panel === 'true');
      } else document.getElementById('show_grbl_panel').checked = false;
+     //grbl probe panel
+      if (typeof(preferenceslist[0].enable_grbl_probe_panel ) !== 'undefined') {
+        document.getElementById('show_grbl_probe_tab').checked = (preferenceslist[0].enable_grbl_probe_panel === 'true');
+     } else document.getElementById('show_grbl_probe_tab').checked = false;
       //control panel
       if (typeof(preferenceslist[0].enable_control_panel ) !== 'undefined') {
         document.getElementById('show_control_panel').checked = (preferenceslist[0].enable_control_panel === 'true');
@@ -453,6 +484,20 @@ function build_dlg_preferences_list(){
       if (typeof(preferenceslist[0].z_feedrate ) !== 'undefined') {
         document.getElementById('preferences_control_z_velocity').value = parseInt(preferenceslist[0].z_feedrate) ;
      } else document.getElementById('preferences_control_z_velocity').value = parseInt(default_preferenceslist[0].z_feedrate);
+     //probemaxtravel
+      if ((typeof(preferenceslist[0].probemaxtravel ) !== 'undefined') && (preferenceslist[0].probemaxtravel.length != 0)) {
+        document.getElementById('preferences_probemaxtravel').value = parseFloat(preferenceslist[0].probemaxtravel) ;
+     } else{
+        document.getElementById('preferences_probemaxtravel').value = parseFloat(default_preferenceslist[0].probemaxtravel);
+      }
+     //probefeedrate
+     if ((typeof(preferenceslist[0].probefeedrate ) !== 'undefined') && (preferenceslist[0].probefeedrate.length != 0)) {
+        document.getElementById('preferences_probefeedrate').value = parseInt(preferenceslist[0].probefeedrate) ;
+     } else document.getElementById('preferences_probefeedrate').value = parseInt(default_preferenceslist[0].probefeedrate);
+     //probetouchplatethickness
+      if ((typeof(preferenceslist[0].probetouchplatethickness ) !== 'undefined')  && (preferenceslist[0].probetouchplatethickness.length != 0)) {
+        document.getElementById('preferences_probetouchplatethickness').value = parseFloat(preferenceslist[0].probetouchplatethickness) ;
+     } else document.getElementById('preferences_probetouchplatethickness').value = parseFloat(default_preferenceslist[0].probetouchplatethickness);
       //interval temperatures
       if (typeof(preferenceslist[0].interval_temperatures ) !== 'undefined') {
         document.getElementById('preferences_tempInterval_check').value = parseInt(preferenceslist[0].interval_temperatures) ;
@@ -490,6 +535,7 @@ function build_dlg_preferences_list(){
      prefs_toggledisplay( 'enable_z_controls');
      prefs_toggledisplay( 'show_commands_panel');
      prefs_toggledisplay( 'show_files_panel');
+     prefs_toggledisplay( 'show_grbl_probe_tab');
 }
 
 function closePreferencesDialog(){
@@ -514,7 +560,11 @@ function closePreferencesDialog(){
             (typeof(preferenceslist[0].e_distance ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_control_panel ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_grbl_panel ) === 'undefined') ||  
+            (typeof(preferenceslist[0].enable_grbl_probe_panel ) === 'undefined') ||  
             (typeof(preferenceslist[0].enable_temperatures_panel ) === 'undefined') || 
+            (typeof(preferenceslist[0].probemaxtravel ) === 'undefined') || 
+            (typeof(preferenceslist[0].probefeedrate ) === 'undefined') || 
+            (typeof(preferenceslist[0].probetouchplatethickness ) === 'undefined') || 
             (typeof(preferenceslist[0].enable_extruder_panel ) === 'undefined') ||
             (typeof(preferenceslist[0].enable_files_panel ) === 'undefined') ||
             (typeof(preferenceslist[0].interval_positions ) === 'undefined') ||
@@ -553,6 +603,8 @@ function closePreferencesDialog(){
             if (document.getElementById('show_temperatures_panel').checked != (preferenceslist[0].enable_temperatures_panel === 'true')) modified = true;
             //grbl panel
             if (document.getElementById('show_grbl_panel').checked != (preferenceslist[0].enable_grbl_panel === 'true')) modified = true;
+            //grbl probe panel
+            if (document.getElementById('show_grbl_probe_tab').checked != (preferenceslist[0].enable_grbl_probe_panel === 'true')) modified = true;
             //extruder panel
             if (document.getElementById('show_extruder_panel').checked != (preferenceslist[0].enable_extruder_panel === 'true')) modified = true;
             //files panel
@@ -579,6 +631,12 @@ function closePreferencesDialog(){
             if (document.getElementById('preferences_verbose_mode').checked != (preferenceslist[0].enable_verbose_mode === 'true')) modified = true;
             //file filters
             if (document.getElementById('preferences_filters').value != preferenceslist[0].f_filters) modified = true;
+            //probemaxtravel
+            if (document.getElementById('preferences_probemaxtravel').value != parseFloat(preferenceslist[0].probemaxtravel)) modified = true;
+            //probefeedrate
+            if (document.getElementById('preferences_probefeedrate').value != parseInt(preferenceslist[0].probefeedrate)) modified = true;
+            //probetouchplatethickness
+            if (document.getElementById('preferences_probetouchplatethickness').value != parseFloat(preferenceslist[0].probetouchplatethickness)) modified = true;
         }
     } else  modified = true;
    if (language_save != language)  modified = true;
@@ -616,7 +674,10 @@ function SavePreferences(current_preferences){
              !Checkvalues("preferences_e_velocity") ||
              !Checkvalues("preferences_tempInterval_check") ||
              !Checkvalues("preferences_filters") ||
-             !Checkvalues("preferences_filament_length")
+             !Checkvalues("preferences_filament_length")||
+             !Checkvalues("preferences_probemaxtravel") ||
+             !Checkvalues("preferences_probefeedrate") ||
+             !Checkvalues("preferences_probetouchplatethickness")
              ) return;
         preferenceslist =[];
         var saveprefs ="[{\"language\":\"" + language ;
@@ -632,10 +693,14 @@ function SavePreferences(current_preferences){
         saveprefs +="\",\"enable_fan\":\"" +  document.getElementById('enable_fan_controls').checked ;
         saveprefs +="\",\"enable_z\":\"" +  document.getElementById('enable_z_controls').checked ;
         saveprefs +="\",\"enable_control_panel\":\"" +  document.getElementById('show_control_panel').checked ;
+        saveprefs +="\",\"enable_grbl_probe_panel\":\"" +  document.getElementById('show_grbl_probe_tab').checked ;
         saveprefs +="\",\"enable_temperatures_panel\":\"" +  document.getElementById('show_temperatures_panel').checked ;
         saveprefs +="\",\"enable_extruder_panel\":\"" +  document.getElementById('show_extruder_panel').checked ;
         saveprefs +="\",\"enable_grbl_panel\":\"" +  document.getElementById('show_grbl_panel').checked ;
         saveprefs +="\",\"enable_files_panel\":\"" +  document.getElementById('show_files_panel').checked ;
+        saveprefs +="\",\"probemaxtravel\":\"" +  document.getElementById('preferences_probemaxtravel').value ;
+        saveprefs +="\",\"probefeedrate\":\"" +  document.getElementById('preferences_probefeedrate').value ;
+        saveprefs +="\",\"probetouchplatethickness\":\"" +  document.getElementById('preferences_probetouchplatethickness').value ;
         saveprefs +="\",\"interval_positions\":\"" +  document.getElementById('preferences_pos_Interval_check').value ;
         saveprefs +="\",\"interval_status\":\"" +  document.getElementById('preferences_status_Interval_check').value ;
         saveprefs +="\",\"xy_feedrate\":\"" +  document.getElementById('preferences_control_xy_velocity').value ;
@@ -723,7 +788,28 @@ var value = 0;
          case "preferences_e_velocity":
          value = parseInt(document.getElementById(id_2_check).value);
             if (!(!isNaN(value) && value >= 1 && value <= 9999 )) { 
-               error_message = translate_text_item( "Value of extruder velocity must be between1 mm/min and 9999 mm/min !");
+               error_message = translate_text_item( "Value of extruder velocity must be between 1 mm/min and 9999 mm/min !");
+               status = false;
+                }
+            break;
+         case "preferences_probefeedrate":
+         value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1 && value <= 9999 )) { 
+               error_message = translate_text_item( "Value of probe feedrate must be between 1 mm/min and 9999 mm/min !");
+               status = false;
+                }
+            break;
+         case "preferences_probemaxtravel":
+         value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1 && value <= 9999 )) { 
+               error_message = translate_text_item( "Value of maximum probe travel must be between 1 mm and 9999 mm !");
+               status = false;
+                }
+            break;
+        case "preferences_probetouchplatethickness":
+         value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 0 && value <= 9999 )) { 
+               error_message = translate_text_item( "Value of probe touch plate thickness must be between 0 mm and 9999 mm !");
                status = false;
                 }
             break;

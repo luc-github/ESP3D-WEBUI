@@ -448,6 +448,11 @@ function initUI() {
     if (typeof document.getElementById('FW_VERSION') != "undefined")document.getElementById('FW_VERSION').innerHTML=fw_version;
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("maintablink").click();
+    if ((target_firmware == "grbl-embedded") || (target_firmware == "grbl-embedded")){
+		if (typeof document.getElementById("grblcontroltablink") !== 'undefined'){
+			document.getElementById("grblcontroltablink").click();
+		}
+	}
     //removeIf(production)
     console.log(JSON.stringify(translated_list));
     //endRemoveIf(production)

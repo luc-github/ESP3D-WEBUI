@@ -3,7 +3,7 @@ var frenchtrans = {
 "fr":"Fran&ccedil;ais",
 "ESP3D for":"ESP3D pour",
 "Value of auto-check must be between 0s and 99s !!":"La valeur de contr&ocirc;le doit &ecirc;tre entre 0s et 99s !!",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !":"La valeur de vitesse d&#39;extrusion doit &ecirc;tre entre 1 mm/min et 9999 mm/min !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !":"La valeur de vitesse d&#39;extrusion doit &ecirc;tre entre 1 mm/min et 9999 mm/min !",
 "Value of filament length must be between 0.001 mm and 9999 mm !":"La valeur de distance d&#39;extrusion doit &ecirc;tre entre 0.001 mm et 9999 mm !",
 "cannot have '-', '#' char or be empty":"ne peut contenir les carat&egrave;res '-', '#'  ou &ecirc;tre vide",
 "cannot have '-', 'e' char or be empty":"ne peut contenir les carat&egrave;res '-', 'e'  ou &ecirc;tre vide",

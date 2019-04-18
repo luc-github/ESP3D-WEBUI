@@ -27,7 +27,7 @@ function Extrude_cmd(extruder, direction){
     var filament_length = parseInt(document.getElementById('filament_length').value);
     var velocity = parseInt(document.getElementById('extruder_velocity').value);
     if (velocity < 1 || velocity > 9999 || isNaN(velocity) || (velocity === null)) {
-        alertdlg (translate_text_item("Out of range"), translate_text_item( "Value of extruder velocity must be between1 mm/min and 9999 mm/min !"));
+        alertdlg (translate_text_item("Out of range"), translate_text_item( "Value of extruder velocity must be between 1 mm/min and 9999 mm/min !"));
         return;
         }
     if (filament_length < 0.001 || filament_length > 9999 || isNaN(filament_length) || (filament_length === null)) {

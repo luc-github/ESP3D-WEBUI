@@ -4,6 +4,27 @@ function init_grbl_panel(){
 
 }
 
+function onprobemaxtravelChange () {
+    var travel =  parseFloat(document.getElementById('probemaxtravel').value);
+    if (travel > 9999 || isNaN(travel) || (travel === null)) {
+        //we could display error but we do not
+        }
+}
+
+function onprobefeedrateChange () {
+    var feedratevalue =  parseInt(document.getElementById('probefeedrate').value);
+    if (feedratevalue < 1 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
+        //we could display error but we do not
+        }
+}
+
+function onprobetouchplatethicknessChange () {
+    var thickness =  parseFloat(document.getElementById('probetouchplatethickness').value);
+    if (thickness <= 0 || thickness > 999 || isNaN(thickness) || (thickness === null)) {
+        //we could display error but we do not
+        }
+}
+
 function on_autocheck_status(use_value){
     if (typeof (use_value) !== 'undefined' )  document.getElementById('autocheck_status').checked =use_value;
     if (document.getElementById('autocheck_status').checked) {

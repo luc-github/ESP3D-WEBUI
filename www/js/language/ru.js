@@ -3,7 +3,7 @@ var russiantrans = {
 "ru": "Русский",
 "ESP3D for": "ESP3D для",
 "Value of auto-check must be between 0s and 99s !!": "Значение автоматической проверки должно быть от 0 до 99 секунд !!",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !": "Значение скорости экструдера должно быть от 1 мм/мин до 9999 мм/мин !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !": "Значение скорости экструдера должно быть от 1 мм/мин до 9999 мм/мин !",
 "Value of filament length must be between 0.001 mm and 9999 mm !": "Значение длины нити должно составлять от 0,001 мм до 9999 мм !",
 "cannot have '-', '#' char or be empty": "не может быть символом '-', '#' или быть пустым",
 "cannot have '-', 'e' char or be empty": "не может быть символом '-', 'e' или быть пустым",

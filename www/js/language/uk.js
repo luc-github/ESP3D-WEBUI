@@ -3,7 +3,7 @@ var ukrtrans = {
 "uk": "Українська",
 "ESP3D for": "ESP3D для",
 "Value of auto-check must be between 0s and 99s !!": "Значення автоматичної перевірки має бути від 0 до 99 секунд !!",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !": "Значення швидкості екструдера повинна бути від 1 мм/хв до 9999 мм/хв !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !": "Значення швидкості екструдера повинна бути від 1 мм/хв до 9999 мм/хв !",
 "Value of filament length must be between 0.001 mm and 9999 mm !": "Значення довжини нитки має становити від 0,001 мм до 9999 мм !",
 "cannot have '-', '#' char or be empty": "не може бути символом '-', '#' або бути порожньою",
 "cannot have '-', 'e' char or be empty": "не може бути символом '-', 'e' або бути порожньою",

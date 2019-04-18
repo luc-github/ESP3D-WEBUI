@@ -3,7 +3,7 @@ var italiantrans = {
 "it":"Italiano",
 "ESP3D for":"ESP3D per",
 "Value of auto-check must be between 0s and 99s !!":"Il valore di controllo deve essere tra 0 e 99 secondi!!",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !":"Il valore della velocit&agrave; di estrusione deve essere tra 1 mm/min e 9999 mm/min !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !":"Il valore della velocit&agrave; di estrusione deve essere tra 1 mm/min e 9999 mm/min !",
 "Value of filament length must be between 0.001 mm and 9999 mm !":"Il valore della distanza di estrusione deve essere tra 0.001 mm e 9999 mm !",
 "cannot have '-', '#' char or be empty":"non pu&oacute; contenere i caratteri '-', '#'  o essere vuoto",
 "cannot have '-', 'e' char or be empty":"non pu&oacute; contenere i caratteri '-', 'e'  o essere vuoto",

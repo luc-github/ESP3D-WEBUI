@@ -3,7 +3,7 @@ var polishtrans = {
 "pl":"Polski",
 "ESP3D for":"ESP3D dla",
 "Value of auto-check must be between 0s and 99s !!":"Warto&sacute;&cacute; automatycznego spawdzania musi by&cacute; z zakresu 0-99s !",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !":"Warto&sacute;&cacute; pr&eogon;dko&sacute;ci ekstrudera musi by&cacute; z zakresu 1-9999 mm/min !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !":"Warto&sacute;&cacute; pr&eogon;dko&sacute;ci ekstrudera musi by&cacute; z zakresu 1-9999 mm/min !",
 "Value of filament length must be between 0.001 mm and 9999 mm !":"Warto&sacute;&cacute; d&lstrok;ugo&sacute;ci filamentu musi by&cacute; z zakresu 0.001-9999 mm !",
 "cannot have '-', '#' char or be empty":"nie mo&zdot;e zawiera&cacute; '-', '#' lub by&cacute; pusty",
 "cannot have '-', 'e' char or be empty":"nie mo&zdot;e zawiera&cacute; '-', 'e' lub by&cacute; pusty",

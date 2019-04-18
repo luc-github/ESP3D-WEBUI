@@ -3,7 +3,7 @@ var germantrans = {
 "de":"Deutsch",
 "ESP3D for":"ESP3D f&uuml;r",
 "Value of auto-check must be between 0s and 99s !!":"Der Wert des Auto-Checks muss zwischen 0s und 99s liegen !!",
-"Value of extruder velocity must be between1 mm/min and 9999 mm/min !":"Der Wert der Extrudergeschwindigkeit muss zwischen 1 mm / min und 9999 mm / min liegen !",
+"Value of extruder velocity must be between 1 mm/min and 9999 mm/min !":"Der Wert der Extrudergeschwindigkeit muss zwischen 1 mm / min und 9999 mm / min liegen !",
 "Value of filament length must be between 0.001 mm and 9999 mm !":"Der wert der filament l&auml;nge muss zwischen 0.001mm und 9999mm liegen !",
 "cannot have '-', '#' char or be empty":"'-', '#' d&uuml;fen nicht benutzt werden oder leer sein",
 "cannot have '-', 'e' char or be empty":"'-', 'e' d&uuml;fen nicht benutzt werden oder leer sein",

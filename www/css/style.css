@@ -294,6 +294,12 @@ display: none;
     flex-wrap: nowrap;
 }
 
+.item-flex-row-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .panel-flex-row {
     display: flex;
     flex-direction: row;
