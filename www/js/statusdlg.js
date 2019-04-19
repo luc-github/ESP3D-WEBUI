@@ -15,7 +15,7 @@ function next_status(){
     if (statuspage == 0){
         text.innerHTML= statuscontent;
     } else {
-        text.innerHTML= "<table><tr><td width='auto' style='vertical-align:top;'><label translate>Browser: </label></td><td>&nbsp;</td><td width='100%'><span class='text-info'><strong>"+navigator.userAgent+"</strong></span></td></tr></table>";
+        text.innerHTML= "<table><tr><td width='auto' style='vertical-align:top;'><label translate>Browser:</label></td><td>&nbsp;</td><td width='100%'><span class='text-info'><strong>"+navigator.userAgent+"</strong></span></td></tr></table>";
     }
     update_btn_status();
 }

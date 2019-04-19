@@ -385,4 +385,5 @@ var langtrans = {
 "Value of probe feedrate must be between 1 mm/min and 9999 mm/min !":"Value of probe feedrate must be between 1 mm/min and 9999 mm/min !",
 "Probe failed !":"Probe failed !",
 "Probe result saved.":"Probe result saved.",
+"Browser:":"Browser:",
 };

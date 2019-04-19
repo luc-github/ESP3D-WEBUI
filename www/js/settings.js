@@ -122,9 +122,10 @@ function build_control_from_index (index, extra_set_function) {
                 content+=translate_text_item(setting_configList[i].Options[sub_element].display, true);
                 content+="</td><td>&nbsp;</td><td>";
                 }
-            content+="<div class='item-flex-row'>";
+            
             content+=	"<div id='status_setting_"+ i + "_" + sub_element + "' class='form-group has-feedback' style='margin: auto;'>";
-            content+=		"<div class='item-flex-row'>";
+            content+="<div class='item-flex-row'>";
+            content+=		"<table><tr><td>";
             content+=			"<div class='input-group'>";
             content+=				"<div class='input-group-btn'>";
             content+=					"<button class='btn btn-default btn-svg' onclick='setting_revert_to_default("+i+","+sub_element+")' >";
@@ -133,6 +134,7 @@ function build_control_from_index (index, extra_set_function) {
             content+=				"</div>";
 			content+=				"<input class='hide_it'></input>";
             content+=			"</div>";
+            content+=			"</td><td>";
             content+=			"<div class='input-group'>";
             content+=				"<span class='input-group-addon hide_it' ></span>";
              //flag
@@ -151,9 +153,9 @@ function build_control_from_index (index, extra_set_function) {
                 content += "<input id='setting_" + i + "_" + sub_element + "' type='text' class='form-control input-min'  value='" + setting_configList[i].defaultvalue + "' onkeyup='setting_checkchange(" + i +"," + sub_element + ")' >";
                 }
             content+= "<span id='icon_setting_"+ i + "_" + sub_element + "'class='form-control-feedback ico_feedback'></span>";
+            content+="<span class='input-group-addon hide_it' ></span>";
             content+= "</div>";
-            content+="</div>";
-            content+="</div>";
+            content+= "</td></tr></table>";
             content+="<div class='input-group'>";
 			content+="<input class='hide_it'></input>";
             content+="<div class='input-group-btn'>";
@@ -167,6 +169,7 @@ function build_control_from_index (index, extra_set_function) {
                 content+=get_icon_svg("search");
                 content+="</button>";
             }
+            content+="</div>";
             content+="</div>";
             content+="</div>";
             content+="</div>";

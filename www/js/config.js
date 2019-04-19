@@ -100,9 +100,9 @@ function build_HTML_config_list(){
             content+="</td>";
             content+="<td style='vertical-align:middle;'>";
             content+="<table><tr><td>"
-            content+="<div class='item-flex-row'>";
             content+=	"<div id='status_config_"+ prefix + i + "' class='form-group has-feedback' style='margin: auto;'>";
             content+=		"<div class='item-flex-row'>";
+            content+=		"<table><tr><td>";
             content+=			"<div class='input-group'>";
             content+=				"<span class='input-group-btn'>";
             content+=					"<button class='btn btn-default btn-svg' onclick='config_revert_to_default("+i+"," + is_override_config + ")' >";
@@ -110,7 +110,8 @@ function build_HTML_config_list(){
             content+=					"</button>";
             content+=				"</span>";
 			content+=				"<input class='hide_it'></input>";
-            content+=			"</div>";            
+            content+=			"</div>";
+            content+=			"</td><td>";           
             content+=			"<div class='input-group'>";
             content+=				"<span class='input-group-addon hide_it' ></span>";
             content+=				"<input id='config_" + prefix + i + "' type='text' class='form-control' style='width:";
@@ -118,15 +119,16 @@ function build_HTML_config_list(){
             else content+="auto";
             content+=				"'  value='" + item.defaultvalue + "' onkeyup='config_checkchange(" + i +"," + is_override_config +")' />";
             content+=				"<span id='icon_config_" + prefix +  i + "'class='form-control-feedback ico_feedback' ></span>";
+            content+="<span class='input-group-addon hide_it' ></span>";
             content+= 			"</div>";
-            content+=		"</div>";
-             content+=	"</div>";
+            content+= "</td></tr></table>";
             content+=	"<div class='input-group'>";
 			content+=		"<input class='hide_it'></input>";
 			content+=		"<span class='input-group-btn'>";
 			content+=		"<button  id='btn_config_" + prefix+ i + "' class='btn btn-default' onclick='configGetvalue("+ i +"," + is_override_config +")' translate english_content='Set' >" + translate_text_item("Set") + "</button>&nbsp;";
 			content+=		"</span>";
 			content+=	"</div>";
+             content+=	"</div>";
 			content+="</div>";
             content+="</td></tr></table>";
             content+="</td>";
