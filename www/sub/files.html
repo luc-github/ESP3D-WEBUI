@@ -36,6 +36,7 @@
                     </table>
                 </div>
                 <div class="pull-right" id="files_navigation_buttons">
+                    <div class="item-flex-row-wrap">
                     <button class="btn btn-xs btn-primary"  onclick="files_filter_button(this);">
                         <span  id="files_filter_glyph" style="position:relative; top:2px">
                             <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
@@ -45,13 +46,19 @@
                             </svg>
                         </span>
                     </button>
+                    &nbsp;
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_btn"  onclick="files_refreshFiles(files_currentPath)" translate>Refresh</button>
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_primary_sd_btn"  onclick="files_refreshFiles(primary_sd)" >SD 1</button>
+                    &nbsp;
                     <button class="btn btn-xs btn-primary hide_it" id="files_refresh_secondary_sd_btn"  onclick="files_refreshFiles(secondary_sd)" >SD 2</button>
+                    &nbsp;
                     <button id="progress_btn" class="btn btn-xs btn-primary" onclick="files_progress()" translate>Progress</button>
+                    &nbsp;
                     <button id="abort_btn" class="btn btn-xs btn-primary" onclick="files_abort()" translate>Abort</button>
+                    &nbsp;
                     <button class="btn btn-xs btn-primary" onclick="files_select_upload()"  translate>Upload</button>
                     <input type="file" id="files_input_file" onchange="files_check_if_upload()" accept=" .g, .gco, .gcode, .G, .GCO, .GCODE" style="display:none" />
+                    </div>
                 </div>
             </div>
         </div>
