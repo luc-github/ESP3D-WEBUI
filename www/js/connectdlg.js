@@ -43,13 +43,21 @@ function getFWdata(response){
     if (sublist.length != 2) {
         return false;
         }
-    primary_sd = sublist[1].toLowerCase().trim();
+    if (!direct_sd && (target_firmware == "smoothieware")) {
+        primary_sd = "sd/";
+    } else {
+        primary_sd = sublist[1].toLowerCase().trim();
+    }
     //secondary sd
     sublist = tlist[4].split(":");
     if (sublist.length != 2) {
         return false;
         }
-    secondary_sd = sublist[1].toLowerCase().trim();
+    if (!direct_sd && (target_firmware == "smoothieware")) {
+        secondary_sd = "ext/";
+    } else {
+        secondary_sd = sublist[1].toLowerCase().trim();
+    }
     //authentication
     sublist = tlist[5].split(":");
     if (sublist.length != 2) {
