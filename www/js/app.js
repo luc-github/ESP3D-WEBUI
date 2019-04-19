@@ -547,6 +547,8 @@ function process_socket_response(msg){
     if (target_firmware == "grbl-embedded" ) {
         if (msg.startsWith("<")){
             process_status(msg);
+        } else if (msg.startsWith("[PRB:")){
+            GetProbeResult(msg);
         } else if (msg.startsWith("[GC:")){
             //TODO update status 2
             console.log(msg);

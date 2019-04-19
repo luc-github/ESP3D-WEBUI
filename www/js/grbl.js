@@ -1,28 +1,34 @@
 var interval_status=-1;
 
 function init_grbl_panel(){
-
+    document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
 }
 
 function onprobemaxtravelChange () {
     var travel =  parseFloat(document.getElementById('probemaxtravel').value);
-    if (travel > 9999 || isNaN(travel) || (travel === null)) {
-        //we could display error but we do not
+    if (travel > 9999  || travel <= 0  ||isNaN(travel) || (travel === null)) {
+        alertdlg (translate_text_item("Out of range"), translate_text_item( "Value of maximum probe travel must be between 1 mm and 9999 mm !"));
+        return false;
         }
+    return true;
 }
 
 function onprobefeedrateChange () {
     var feedratevalue =  parseInt(document.getElementById('probefeedrate').value);
-    if (feedratevalue < 1 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
-        //we could display error but we do not
+    if (feedratevalue <=0 || feedratevalue > 9999 || isNaN(feedratevalue) || (feedratevalue === null)) {
+        alertdlg (translate_text_item("Out of range"), translate_text_item( "Value of probe feedrate must be between 1 mm/min and 9999 mm/min !"));
+        return false
         }
+    return true
 }
 
 function onprobetouchplatethicknessChange () {
     var thickness =  parseFloat(document.getElementById('probetouchplatethickness').value);
     if (thickness <= 0 || thickness > 999 || isNaN(thickness) || (thickness === null)) {
-        //we could display error but we do not
+        alertdlg (translate_text_item("Out of range"), translate_text_item( "Value of probe touch plate thickness must be between 0 mm and 9999 mm !"));
+        return false;
         }
+    return true;
 }
 
 function on_autocheck_status(use_value){
@@ -131,6 +137,19 @@ function process_grbl_SD(response){
         document.getElementById('grbl_SD_status').innerHTML = "";
     }
 }
+function process_grbl_probe_status(response){
+    var tab1 = response.split("|Pn:");
+    if (tab1.length >1) {
+        var tab2 = tab1[1].split("|");
+        if (tab2[0].indexOf("P") != -1) { //probe touch
+            document.getElementById('touch_status_icon').innerHTML = get_icon_svg("ok-circle", "1.3em", "1.2em", "green");
+        } else {//Probe did not touched
+            document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+        }
+    } else {//no info 
+        document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+    }
+}
 
 function SendRealtimeCmd(cmd){
     SendPrinterCommand(cmd, false, null,null, cmd.charCodeAt(0), 1);
@@ -140,4 +159,38 @@ function process_status(response){
      process_grbl_position(response);
      process_grbl_status(response);
      process_grbl_SD(response);
+     process_grbl_probe_status(response);
+}
+
+function GetProbeResult(response){
+    var tab1 = response.split(":");
+    if (tab1.length >2) {
+        var status = tab1[2].replace("]","");
+        if  (parseInt(status.trim()) == 1){
+            var cmd = "G10 L2 P0 Z" ;
+            var tab2 = tab1[1].split(",");
+            var v = 0.0;
+            v = parseFloat(tab2[2]);
+            console.log("z:" + v.toString());
+            v+= parseFloat(document.getElementById('probetouchplatethickness').value);
+            console.log("z + platethickness:" + v.toString());
+            cmd += v.toString();
+            SendPrinterCommand(cmd, true, null,null, 10, 1);
+        } else {
+            alertdlg (translate_text_item("Error"), translate_text_item( "Probe failed !"));
+        }
+    }
+}
+
+function StartProbeProcess(){
+    var cmd ="G38.2 Z";
+    if ( !onprobemaxtravelChange() ||
+         !onprobefeedrateChange() ||
+         !onprobetouchplatethicknessChange()){
+        return;
+    }
+    cmd+=parseFloat(document.getElementById('probemaxtravel').value) + " F" + parseInt(document.getElementById('probefeedrate').value);
+    console.log(cmd);
+    on_autocheck_status(true);
+    SendPrinterCommand(cmd, true, null,null, 38.2, 1);
 }

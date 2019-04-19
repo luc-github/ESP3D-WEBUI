@@ -383,4 +383,6 @@ var langtrans = {
 "Value of maximum probe travel must be between 1 mm and 9999 mm !":"Value of maximum probe travel must be between 1 mm and 9999 mm !",
 "Value of probe touch plate thickness must be between 0 mm and 9999 mm !":"Value of probe touch plate thickness must be between 0 mm and 9999 mm !",
 "Value of probe feedrate must be between 1 mm/min and 9999 mm/min !":"Value of probe feedrate must be between 1 mm/min and 9999 mm/min !",
+"Probe failed !":"Probe failed !",
+"Probe result saved.":"Probe result saved.",
 };

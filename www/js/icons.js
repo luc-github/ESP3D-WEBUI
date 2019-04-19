@@ -152,10 +152,11 @@ var list_icon = {"hourglass":"M1000 1200v-150q0 -21 -14.5 -35.5t-35.5 -14.5h-50v
 "plus":"M450 1100h200q21 0 35.5 -14.5t14.5 -35.5v-350h350q21 0 35.5 -14.5t14.5 -35.5v-200q0 -21 -14.5 -35.5t-35.5 -14.5h-350v-350q0 -21 -14.5 -35.5t-35.5 -14.5h-200q-21 0 -35.5 14.5t-14.5 35.5v350h-350q-21 0 -35.5 14.5t-14.5 35.5v200q0 21 14.5 35.5t35.5 14.5 h350v350q0 21 14.5 35.5t35.5 14.5z",
 };
 
-function get_icon_svg(name, w, h){
+function get_icon_svg(name, w, h, color){
  var content = "";
  if (typeof w == 'undefined') w = "1.3em";
  if (typeof h == 'undefined') h = "1.2em";
+  if (typeof color == 'undefined') color = "currentColor";
  var has_error = false;
  try{
      content = list_icon[name];
@@ -165,7 +166,7 @@ function get_icon_svg(name, w, h){
         has_error = true;
     }
 if (has_error) return "";
-var icon = "<svg width='" + w + "' height='" + h + "' viewBox='0 0 1300 1200'><g transform='translate(30,1200) scale(1, -1)'><path  fill='currentColor' d='";
+var icon = "<svg width='" + w + "' height='" + h + "' viewBox='0 0 1300 1200'><g transform='translate(30,1200) scale(1, -1)'><path  fill='"+color+"' d='";
 icon+= content;
 icon+= "'></path></g></svg>";
 return icon;
