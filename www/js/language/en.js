@@ -12,7 +12,7 @@ var englishtrans = {
 "ALARM:1":"Hard limit has been triggered. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.",
 "ALARM:2":"Soft limit alarm. G-code motion target exceeds machine travel. Machine position retained. Alarm may be safely unlocked.",
 "ALARM:3":"Reset while in motion. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.",
-"ALARM:4":"Probe fail. Probe is not in the expected initial state before starting probe cycle when G38.2 and G38.3 is not triggered and G38.4 and G38.5 is triggered.",
+"ALARM:4":"Probe fail. Probe is not in the expected initial state before starting probe cycle.",
 "ALARM:5":"Probe fail. Probe did not contact the workpiece within the programmed travel for G38.2 and G38.4.",
 "ALARM:6":"Homing fail. The active homing cycle was reset.",
 "ALARM:7":"Homing fail. Safety door was opened during homing cycle.",

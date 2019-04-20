@@ -1,4 +1,6 @@
 var interval_status=-1;
+var probe_progress_status = 0;
+var grbl_error_msg = "";
 
 function init_grbl_panel(){
     document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
@@ -92,7 +94,8 @@ function process_grbl_status(response){
         var tab2 = tab1[0].replace("<","");
         document.getElementById("grbl_status").innerHTML = tab2; 
         if (tab2.toLowerCase().startsWith("run")){
-            document.getElementById('sd_pause_btn').style.display="table-row";
+            grbl_error_msg = "";
+            if(probe_progress_status == 0)document.getElementById('sd_pause_btn').style.display="table-row";
             document.getElementById('sd_resume_btn').style.display="none";
             document.getElementById('sd_stop_btn').style.display="table-row";
         } else if (tab2.toLowerCase().startsWith("hold")){
@@ -100,6 +103,11 @@ function process_grbl_status(response){
             document.getElementById('sd_resume_btn').style.display="table-row";
             document.getElementById('sd_stop_btn').style.display="table-row";
         } else  if (tab2.toLowerCase().startsWith("alarm")) {
+            if (probe_progress_status != 0){
+                document.getElementById('sd_pause_btn').style.display="none";
+                document.getElementById('sd_resume_btn').style.display="none";
+                document.getElementById('sd_stop_btn').style.display="none";
+            }
             //check we are printing or not 
             if (response.indexOf("|SD:")!=-1) {
                 //guess print is stopped because of alarm so no need to pause
@@ -111,11 +119,28 @@ function process_grbl_status(response){
             document.getElementById('sd_pause_btn').style.display="none";
             document.getElementById('sd_resume_btn').style.display="none";
             document.getElementById('sd_stop_btn').style.display="none";
-        } 
-            
+        }
+        if (tab2.toLowerCase().startsWith("idle")){
+            grbl_error_msg = "";
+        }
+        if (!(tab2.toLowerCase().startsWith("run") || tab2.toLowerCase().startsWith("idle")) && (probe_progress_status == 1)){
+                probe_progress_status = 2;
+                finalize_probing();
+            }
+        document.getElementById('grbl_status_text').innerHTML= grbl_error_msg;
         if (tab2.toLowerCase().startsWith("alarm"))document.getElementById('clear_status_btn').style.display="table-row";
         else document.getElementById('clear_status_btn').style.display="none";
     }
+}
+
+function finalize_probing(){
+    SendPrinterCommand("G90", true, null,null, 90, 1);
+    SendPrinterCommand("$#", true, null,null, 91, 1);
+    document.getElementById("probingbtn").style.display="table-row";
+    document.getElementById("probingtext").style.display="none";
+    document.getElementById('sd_pause_btn').style.display="none";
+    document.getElementById('sd_resume_btn').style.display="none";
+    document.getElementById('sd_stop_btn').style.display="none";
 }
 
 function process_grbl_SD(response){
@@ -155,35 +180,68 @@ function SendRealtimeCmd(cmd){
     SendPrinterCommand(cmd, false, null,null, cmd.charCodeAt(0), 1);
 }
 
-function process_status(response){
+function grbl_process_status(response){
      process_grbl_position(response);
      process_grbl_status(response);
      process_grbl_SD(response);
      process_grbl_probe_status(response);
 }
 
-function GetProbeResult(response){
+function grbl_reset_detected(msg){
+    console.log("Reset detected");
+    if (probe_progress_status != 0) {
+        probe_progress_status = 2;
+        finalize_probing();
+    }
+}
+
+function grbl_process_msg(response){
+    if(grbl_error_msg.length == 0)grbl_error_msg = translate_text_item(response.trim());
+}
+function grbl_reset(){
+    probe_progress_status = 3;
+    SendRealtimeCmd(String.fromCharCode(0x18));
+    
+}
+
+function grbl_GetProbeResult(response){
     var tab1 = response.split(":");
     if (tab1.length >2) {
         var status = tab1[2].replace("]","");
         if  (parseInt(status.trim()) == 1){
-            var cmd = "G10 L2 P0 Z" ;
-            var tab2 = tab1[1].split(",");
-            var v = 0.0;
-            v = parseFloat(tab2[2]);
-            console.log("z:" + v.toString());
-            v+= parseFloat(document.getElementById('probetouchplatethickness').value);
-            console.log("z + platethickness:" + v.toString());
-            cmd += v.toString();
-            SendPrinterCommand(cmd, true, null,null, 10, 1);
+            if (probe_progress_status == 1) {
+                var cmd = "G10 L2 P0 Z" ;
+                var tab2 = tab1[1].split(",");
+                var v = 0.0;
+                v = parseFloat(tab2[2]);
+                console.log("z:" + v.toString());
+                v-= parseFloat(document.getElementById('probetouchplatethickness').value);
+                console.log("z + platethickness:" + v.toString());
+                cmd += v.toString();
+                SendPrinterCommand(cmd, true, null,null, 10, 1);
+                finalize_probing();
+            }
         } else {
+            probe_failed_notification();
+        }
+    }
+}
+
+function probe_failed_notification(){
+    if (probe_progress_status != 0) {
+        if (probe_progress_status == 1) {
+            probe_progress_status = 2;
+            finalize_probing();
+        } else  if (probe_progress_status == 2){
             alertdlg (translate_text_item("Error"), translate_text_item( "Probe failed !"));
+            beep(70, 261);
+            probe_progress_status = 0;
         }
     }
 }
 
 function StartProbeProcess(){
-    var cmd ="G38.2 Z";
+    var cmd ="G38.2 G91 Z-";
     if ( !onprobemaxtravelChange() ||
          !onprobefeedrateChange() ||
          !onprobetouchplatethicknessChange()){
@@ -191,6 +249,11 @@ function StartProbeProcess(){
     }
     cmd+=parseFloat(document.getElementById('probemaxtravel').value) + " F" + parseInt(document.getElementById('probefeedrate').value);
     console.log(cmd);
+    probe_progress_status = 1;
     on_autocheck_status(true);
     SendPrinterCommand(cmd, true, null,null, 38.2, 1);
+    document.getElementById("probingbtn").style.display="none";
+    document.getElementById("probingtext").style.display="table-row";
+    grbl_error_msg="";
+    document.getElementById('grbl_status_text').innerHTML= grbl_error_msg;
 }

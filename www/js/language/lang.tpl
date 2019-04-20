@@ -386,4 +386,5 @@ var langtrans = {
 "Probe failed !":"Probe failed !",
 "Probe result saved.":"Probe result saved.",
 "Browser:":"Browser:",
+"Probing...":"Probing...",
 };

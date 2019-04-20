@@ -30,7 +30,7 @@
                    <td class="td_center"> 
                         <table>
                             <tr>
-                                <td class="td_center">
+                                <td>
                                     <button id="clear_status_btn" class="btn btn-default btn-xs hide_it" onclick="SendPrinterCommand('$X', true, null,null, 114, 1);" style="padding: 5px 5px 0 5px;">
                                         <svg width="2em" height="1.8em" viewBox="-200 -200 1700 1600">
                                            <g transform="translate(50,1200) scale(1, -1)">
@@ -41,10 +41,11 @@
                                         </svg>
                                     </button>
                                 </td>
-                                <td>
+                                <td style="text-align: left; width:100%">
                                     <div id="grbl_status" class="status_text"></div>
                                 </td>
                             </tr>
+                            <tr><td colspan="2" style="text-align: left;" id="grbl_status_text"></td></tr>
                         </table>
                     </td>
                     <td class="td_center">
@@ -75,7 +76,7 @@
                                    &nbsp;
                                </td>
                                <td>
-                                   <button id="sd_stop_btn" class="btn btn-default hide_it" onclick="SendRealtimeCmd(String.fromCharCode(0x18));" style="padding: 5px 6px 0 5px;">
+                                   <button id="sd_stop_btn" class="btn btn-default hide_it" onclick="grbl_reset();" style="padding: 5px 6px 0 5px;">
                                        <svg width="2em" height="1.4em" viewBox="0 0 1300 1200">
                                            <g transform="translate(50,1200) scale(1, -1)">
                                                <path fill="red" d="M1100 950v-800q0 -21 -14.5 -35.5t-35.5 -14.5h-800q-21 0 -35.5 14.5t-14.5 35.5v800q0 21 14.5 35.5t35.5 14.5h800q21 0 35.5 -14.5t14.5 -35.5z"></path>
@@ -95,6 +96,7 @@
                     </td>
                 </tr>
             </table>
+           <br> 
              <div class="tab" id="grbluitablinks">
                   <button class="tablinks" onclick="opentab(event, 'grblcontroltab', 'grbluitabscontent', 'grbluitablinks')" id="grblcontroltablink">
                       <svg width='1.3em' height='1.2em' viewBox='0 0 1300 1200'>
@@ -385,7 +387,8 @@
                                 </td>
                                 <td width='100%'>&nbsp;</td>
                                 <td>
-                                    <button class="btn btn-primary" onclick="StartProbeProcess();" translate>Start Probe</button>
+                                    <span class="hide_it" id="probingtext"><table><tr><td><span translate>Probing...</span></td><td><div class="loader" style="width:2em;height:2em;"></div></td></tr></table></span>
+                                    <button class="btn btn-primary" id="probingbtn" onclick="StartProbeProcess();" translate>Start Probe</button>
                                 </td>
                             </tr></table>
                         </div>

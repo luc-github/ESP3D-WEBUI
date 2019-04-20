@@ -31,6 +31,26 @@ var interval_ping = -1;
 var last_ping = 0;
 var enable_ping = true;
 
+function beep(duration, frequency) {
+    var audioCtx;
+    if(typeof window.AudioContext !=='undefined') {
+        audioCtx = new window.AudioContext();
+    } else if(typeof window.webkitAudioContext()  !=='undefined') {
+        audioCtx = new window.webkitAudioContext();
+    }else if(typeof window.audioContext !=='undefined') {
+        audioCtx = new window.audioContext();
+    }  
+    // = new (window.AudioContext() || window.webkitAudioContext() || window.audioContext());
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.value = 1;
+    oscillator.frequency.value = frequency;
+    oscillator.start();
+    setTimeout(function(){oscillator.stop();}, duration);
+}
+
 function Init_events(e){
   page_id = e.data;
   console.log("connection id = " + page_id); 
@@ -91,13 +111,17 @@ window.onload = function() {
 
 var wsmsg="";
 function startSocket(){
-	  if(async_webcommunication){
-		ws_source = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
-		}
-	  else {
-		  console.log("Socket port is :" + websocket_port);
-		  ws_source = new WebSocket('ws://'+document.location.hostname+':' + websocket_port,['arduino']);
-	  }
+      try {
+          if(async_webcommunication){
+            ws_source = new WebSocket('ws://'+document.location.host+'/ws',['arduino']);
+            }
+          else {
+              console.log("Socket port is :" + websocket_port);
+              ws_source = new WebSocket('ws://'+document.location.hostname+':' + websocket_port,['arduino']);
+          }
+      } catch (exception) {
+        console.error(exception);
+        }
       ws_source.binaryType = "arraybuffer";
       ws_source.onopen = function(e){
         console.log("Connected");
@@ -109,6 +133,7 @@ function startSocket(){
         if(!log_off) setTimeout(startSocket, 3000);
       };
       ws_source.onerror = function(e){
+        Monitor_output_Update("[#]Error "+ e.code +" " + e.reason + "\n");
         console.log("ws error", e);
       };
       ws_source.onmessage = function(e){
@@ -546,13 +571,17 @@ function process_socket_response(msg){
     
     if (target_firmware == "grbl-embedded" ) {
         if (msg.startsWith("<")){
-            process_status(msg);
+            grbl_process_status(msg);
         } else if (msg.startsWith("[PRB:")){
-            GetProbeResult(msg);
+            grbl_GetProbeResult(msg);
         } else if (msg.startsWith("[GC:")){
-            //TODO update status 2
             console.log(msg);
-        } else if (socket_is_settings) socket_response+=msg;
+        } else if (msg.startsWith("error:") || msg.startsWith("ALARM:") || msg.startsWith("Hold:") || msg.startsWith("Door:")){
+            grbl_process_msg(msg);
+        } else if (msg.startsWith("Grbl 1.1f [")){
+            grbl_reset_detected(msg);
+        } 
+        else if (socket_is_settings) socket_response+=msg;
         
         if (!socket_is_settings && msg.startsWith("$0=")){
             socket_is_settings = true;

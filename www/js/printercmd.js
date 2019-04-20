@@ -14,7 +14,9 @@ function SendPrinterCommand(cmd, echo_on, processfn, errorfn, id, max_id){
     //endRemoveIf(production)
     if (typeof processfn === 'undefined' || processfn == null) processfn = SendPrinterCommandSuccess;
     if (typeof errorfn === 'undefined' || errorfn ==null) errorfn = SendPrinterCommandFailed;
-    SendGetHttp(url + encodeURI(cmd), processfn, errorfn, id, max_id);
+    cmd=encodeURI(cmd);
+    cmd = cmd.replace("#","%23");
+    SendGetHttp(url + cmd, processfn, errorfn, id, max_id);
     //console.log(cmd);
 }
 
@@ -29,7 +31,9 @@ function SendPrinterSilentCommand(cmd, processfn, errorfn, id, max_id){
     //endRemoveIf(production)
     if (typeof processfn === 'undefined' || processfn == null) processfn = SendPrinterSilentCommandSuccess;
     if (typeof errorfn === 'undefined' || errorfn == null) errorfn = SendPrinterCommandFailed;
-    SendGetHttp(url + encodeURI(cmd), processfn, errorfn, id, max_id);
+    cmd=encodeURI(cmd);
+    cmd = cmd.replace("#","%23");
+    SendGetHttp(url + cmd, processfn, errorfn, id, max_id);
     //console.log(cmd);
 }
 
