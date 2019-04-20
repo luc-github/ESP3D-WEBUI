@@ -375,7 +375,7 @@ var langtrans = {
 "error:70":"Bluetooth failed to start",
 "Max travel":"Max travel",
 "Feed rate":"Feed rate",
-"Touch plate thickness":"Touch plate thickness",
+"Plate thickness":"Touch plate thickness",
 "Show probe panel":"Show probe panel",
 "Probe":"Probe",
 "Start Probe":"Start Probe",
