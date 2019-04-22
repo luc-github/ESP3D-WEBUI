@@ -86,7 +86,7 @@ function process_grbl_position(response){
         if (tab3.length > 2) document.getElementById('control_z_position').innerHTML = tab3[2];
     } 
 }
-
+var previouszposition;
 function process_grbl_status(response){
     
     var tab1 = response.split("|");
@@ -95,17 +95,36 @@ function process_grbl_status(response){
         document.getElementById("grbl_status").innerHTML = tab2; 
         if (tab2.toLowerCase().startsWith("run")){
             grbl_error_msg = "";
-            if(probe_progress_status == 0)document.getElementById('sd_pause_btn').style.display="table-row";
+            if(probe_progress_status == 0){
+                document.getElementById('sd_pause_btn').style.display="table-row";
+                document.getElementById('sd_stop_btn').style.display="table-row";
+            } else {
+                document.getElementById('sd_reset_btn').style.display="table-row";
+            }
             document.getElementById('sd_resume_btn').style.display="none";
-            document.getElementById('sd_stop_btn').style.display="table-row";
+            
+            
         } else if (tab2.toLowerCase().startsWith("hold")){
-            document.getElementById('sd_pause_btn').style.display="none";
-            document.getElementById('sd_resume_btn').style.display="table-row";
-            document.getElementById('sd_stop_btn').style.display="table-row";
+            if(probe_progress_status == 0){
+                document.getElementById('sd_pause_btn').style.display="none";
+                document.getElementById('sd_resume_btn').style.display="table-row";
+                document.getElementById('sd_stop_btn').style.display="table-row";
+            }
+            document.getElementById('sd_reset_btn').style.display="none";
+            if(probe_progress_status == 3){
+                if (previouszposition == document.getElementById('control_z_position').innerHTML){
+                    probe_progress_status == 4;
+                    SendRealtimeCmd(String.fromCharCode(0x18));
+                } else {
+                    previouszposition = document.getElementById('control_z_position').innerHTML;
+                }
+            }
+            
         } else  if (tab2.toLowerCase().startsWith("alarm")) {
             if (probe_progress_status != 0){
                 document.getElementById('sd_pause_btn').style.display="none";
                 document.getElementById('sd_resume_btn').style.display="none";
+                document.getElementById('sd_stop_btn').style.display="none";
                 document.getElementById('sd_stop_btn').style.display="none";
             }
             //check we are printing or not 
@@ -114,11 +133,13 @@ function process_grbl_status(response){
                 document.getElementById('sd_pause_btn').style.display="none";
                 document.getElementById('sd_resume_btn').style.display="table-row";
                 document.getElementById('sd_stop_btn').style.display="table-row";
+                document.getElementById('sd_reset_btn').style.display="none";
                 }
         } else { //TBC for others status
             document.getElementById('sd_pause_btn').style.display="none";
             document.getElementById('sd_resume_btn').style.display="none";
             document.getElementById('sd_stop_btn').style.display="none";
+            document.getElementById('sd_reset_btn').style.display="none";
         }
         if (tab2.toLowerCase().startsWith("idle")){
             grbl_error_msg = "";
@@ -141,6 +162,8 @@ function finalize_probing(){
     document.getElementById('sd_pause_btn').style.display="none";
     document.getElementById('sd_resume_btn').style.display="none";
     document.getElementById('sd_stop_btn').style.display="none";
+    document.getElementById('sd_reset_btn').style.display="none";
+    
 }
 
 function process_grbl_SD(response){
@@ -198,10 +221,14 @@ function grbl_reset_detected(msg){
 function grbl_process_msg(response){
     if(grbl_error_msg.length == 0)grbl_error_msg = translate_text_item(response.trim());
 }
+
 function grbl_reset(){
     probe_progress_status = 3;
+    SendRealtimeCmd('!');    
+}
+
+function grbl_stop(){
     SendRealtimeCmd(String.fromCharCode(0x18));
-    
 }
 
 function grbl_GetProbeResult(response){
@@ -219,6 +246,11 @@ function grbl_GetProbeResult(response){
                 console.log("z + platethickness:" + v.toString());
                 cmd += v.toString();
                 SendPrinterCommand(cmd, true, null,null, 10, 1);
+                cmd = "G4 P0.1";
+                SendPrinterCommand(cmd, true, null,null, 100, 1);
+                cmd = "G0 Z" + document.getElementById('probetouchplatethickness').value;
+                SendPrinterCommand(cmd, true, null,null, 100, 1);
+                probe_progress_status = 0;
                 finalize_probing();
             }
         } else {
