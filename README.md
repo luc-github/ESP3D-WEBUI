@@ -56,6 +56,8 @@ Repetier EEPROM Editor tab:
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
 Smoothieware config Editor tab:  
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/smoothieware.PNG'/>  
+Marlin config Editor tab:  
+<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Marlin.PNG'/>  
 GRBL config Editor tab: 
 <img src='https://user-images.githubusercontent.com/8822552/37540735-60bada08-2958-11e8-92ee-69aee4b83e7a.png'/> 
 ESP3D settings Editor:   
