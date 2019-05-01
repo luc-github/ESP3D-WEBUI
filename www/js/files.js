@@ -397,6 +397,24 @@ function files_serial_M20_list_display(){
     files_build_display_filelist();
 }
 
+function files_serial_M27_progress_success(response_text){
+    var dat = response_text.split(" ");
+    var percent = 0;
+    var display = "";
+    var text = "";
+    if (response_text.indexOf("SD printing byte") >= 0) {
+        var dat = response_text.substring(17,response_text.length).split("/");
+        percent = parseFloat(dat[0])/parseFloat(dat[1])*100;
+        text = Math.round(percent*100)/100+" %";
+    } else {
+        text = translate_text_item("Not SD printing");
+        display = "none";
+    }
+    document.getElementById('files_print_progress').value = percent;
+    document.getElementById('files_print_progress').style.display = display;
+    document.getElementById('files_print_percent').innerHTML = text;
+}
+
 function files_serial_M20_list_success(response_text){
     var path = "";
     var tlist = response_text.split("\n");
@@ -614,7 +632,7 @@ function files_build_display_filelist(displaylist){
 function files_progress(){
     var command = "progress";
     if (target_firmware != "smoothieware")command = "M27";
-    SendPrinterCommand(command);
+    SendPrinterCommand(command, false,files_serial_M27_progress_success,files_serial_M27_progress_success);
 }
 
 function files_abort(){
