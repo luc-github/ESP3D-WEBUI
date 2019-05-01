@@ -6,6 +6,7 @@ var files_status_list = [];
 var files_current_file_index = -1;
 var files_error_status ="";
 var tfiles_filters;
+var interval_progress = -1;
 
 function build_file_filter_list(filters_list){
      build_accept(filters_list);
@@ -397,18 +398,70 @@ function files_serial_M20_list_display(){
     files_build_display_filelist();
 }
 
-function files_serial_M27_progress_success(response_text){
-    var dat = response_text.split(" ");
+function on_autocheck_progress(use_value) {
+    if (typeof (use_value) !== 'undefined') {
+        document.getElementById('autocheck_progress').checked = use_value;
+    }
+    if (document.getElementById('autocheck_progress').checked) {
+        var interval = parseInt(document.getElementById('progressInterval_check').value);
+        if (!isNaN(interval) && interval > 0 && interval < 100) {
+            if (interval_progress != -1) {
+                clearInterval(interval_progress);
+            }
+            interval_progress = setInterval(function () {files_progress() }, interval * 1000);
+        } else {
+            document.getElementById('autocheck_progress').checked = false;
+            document.getElementById('progressInterval_check').value = 0;
+            if (interval_progress != -1) {
+                clearInterval(interval_progress);
+            }
+            interval_progress = -1;
+        }
+    } else {
+        if (interval_progress != -1) {
+            clearInterval(interval_progress);
+        }
+        interval_progress = -1;
+    }
+}
+
+function onProgressIntervalChange() {
+    var interval = parseInt(document.getElementById('progressInterval_check').value);
+    if (!isNaN(interval) && interval > 0 && interval < 100) {
+        on_autocheck_progress();
+    } else {
+        document.getElementById('autocheck_progress').checked = false;
+        document.getElementById('progressInterval_check').value = 0;
+        if (interval != 0)
+            alertdlg(translate_text_item("Out of range"), translate_text_item("Value of auto-check must be between 0s and 99s !!"));
+        on_autocheck_progress();
+    }
+}
+
+function files_serial_M27_progress_success(response_text) {
     var percent = 0;
     var display = "";
     var text = "";
     if (response_text.indexOf("SD printing byte") >= 0) {
-        var dat = response_text.substring(17,response_text.length).split("/");
-        percent = parseFloat(dat[0])/parseFloat(dat[1])*100;
-        text = Math.round(percent*100)/100+" %";
+        var dat = response_text.substring(17, response_text.length).split("/");
+        var tot = parseFloat(dat[1])
+        if (tot > 0) {
+            percent = parseFloat(dat[0]) / tot * 100;
+        } else {
+            display = "none"
+        }
+    } else if (target_firmware == "smoothieware") {
+        var i = response_text.split(/([0-9]*[\.]?[0-9]* % complete)/);
+        if (i.length > 1) {
+            percent = parseFloat(i[1].replace(" % complete", ""));
+        }
     } else {
-        text = translate_text_item("Not SD printing");
         display = "none";
+    }
+    if (display == "none") {
+        text = translate_text_item("Not SD printing");
+    } else {
+        text = Math.round(percent * 100) / 100 + " %";
     }
     document.getElementById('files_print_progress').value = percent;
     document.getElementById('files_print_progress').style.display = display;
