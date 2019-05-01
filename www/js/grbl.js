@@ -3,7 +3,25 @@ var probe_progress_status = 0;
 var grbl_error_msg = "";
 
 function init_grbl_panel(){
-    document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+    grbl_set_probe_detected(false);
+    if (target_firmware == "grbl-embedded" ){
+        on_autocheck_status(true);
+    }
+}
+
+function grbl_clear_status(){
+    grbl_set_probe_detected(false);
+    grbl_error_msg = "";
+    document.getElementById('grbl_status_text').innerHTML= grbl_error_msg;
+    document.getElementById('grbl_status').innerHTML= "";
+}
+
+function grbl_set_probe_detected(state){
+    if (state){
+        document.getElementById('touch_status_icon').innerHTML = get_icon_svg("ok-circle", "1.3em", "1.2em", "green");
+    } else {
+        document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+    }
 }
 
 function onprobemaxtravelChange () {
@@ -34,6 +52,10 @@ function onprobetouchplatethicknessChange () {
 }
 
 function on_autocheck_status(use_value){
+    if (probe_progress_status !=0) {
+                document.getElementById('autocheck_status').checked = true;
+                return;
+            }
     if (typeof (use_value) !== 'undefined' )  document.getElementById('autocheck_status').checked =use_value;
     if (document.getElementById('autocheck_status').checked) {
        var interval = parseInt(document.getElementById('statusInterval_check').value);
@@ -52,6 +74,10 @@ function on_autocheck_status(use_value){
         if (interval_status != -1 )clearInterval(interval_status);
         interval_status = -1;
     }
+    
+ if (document.getElementById('autocheck_status').checked == false){
+     grbl_clear_status();
+ }
 }
 
 function onstatusIntervalChange(){
@@ -190,12 +216,12 @@ function process_grbl_probe_status(response){
     if (tab1.length >1) {
         var tab2 = tab1[1].split("|");
         if (tab2[0].indexOf("P") != -1) { //probe touch
-            document.getElementById('touch_status_icon').innerHTML = get_icon_svg("ok-circle", "1.3em", "1.2em", "green");
+            grbl_set_probe_detected(true);
         } else {//Probe did not touched
-            document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+            grbl_set_probe_detected(false);
         }
     } else {//no info 
-        document.getElementById('touch_status_icon').innerHTML = get_icon_svg("record", "1.3em", "1.2em", "grey");
+        grbl_set_probe_detected(false);
     }
 }
 
