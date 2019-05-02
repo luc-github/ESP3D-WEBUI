@@ -454,6 +454,8 @@ function files_serial_M27_progress_success(response_text) {
         var i = response_text.split(/([0-9]*[\.]?[0-9]* % complete)/);
         if (i.length > 1) {
             percent = parseFloat(i[1].replace(" % complete", ""));
+        } else {
+            display = "none";
         }
     } else {
         display = "none";

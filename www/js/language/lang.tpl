@@ -237,6 +237,7 @@ var langtrans = {
 "Log out":"Log out",
 "Password":"Password",
 "No SD Card":"No SD Card",
+"Not SD printing":"Not SD printing",
 "Check for Update":"Check for Update",
 "Please use 8.3 filename only.":"Please use 8.3 filename only.",
 "Preferences":"Preferences",

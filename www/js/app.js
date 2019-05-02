@@ -339,7 +339,7 @@ function update_UI_firmware_target() {
         fwName = "GRBL ESP32";
         document.getElementById('configtablink').style.display = 'block';
         document.getElementById('auto_check_control').style.display = 'none';
-        document.getElementById('progress_btn').style.display = 'none';
+        document.getElementById('files_print_progress_controls').style.display = 'none';
         document.getElementById('abort_btn').style.display = 'none';
         document.getElementById('motor_off_control').style.display = 'none';
         document.getElementById('tab_title_configuration').innerHTML= "<span translate>GRBL configuration</span>";
@@ -403,7 +403,7 @@ function update_UI_firmware_target() {
         document.getElementById('files_input_file').accept = " .g, .gco, .gcode, .txt, .ncc, .G, .GCO, .GCODE, .TXT, .NC";
         document.getElementById('auto_check_control').style.display = 'none';
         document.getElementById('motor_off_control').style.display = 'none';
-        document.getElementById('progress_btn').style.display = 'none';
+        document.getElementById('files_print_progress_controls').style.display = 'none';
         document.getElementById('abort_btn').style.display = 'none';
         document.getElementById('zero_xyz_btn').style.display = 'block';
         document.getElementById('zero_x_btn').style.display = 'block';
