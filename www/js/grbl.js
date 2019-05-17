@@ -112,7 +112,7 @@ function process_grbl_position(response){
         if (tab3.length > 2) document.getElementById('control_z_position').innerHTML = tab3[2];
     } 
 }
-var previouszposition;
+
 function process_grbl_status(response){
     
     var tab1 = response.split("|");
@@ -121,75 +121,49 @@ function process_grbl_status(response){
         document.getElementById("grbl_status").innerHTML = tab2; 
         if (tab2.toLowerCase().startsWith("run")){
             grbl_error_msg = "";
-            if(probe_progress_status == 0){
-                document.getElementById('sd_pause_btn').style.display="table-row";
-                document.getElementById('sd_stop_btn').style.display="table-row";
-            } else {
-                document.getElementById('sd_reset_btn').style.display="table-row";
-            }
             document.getElementById('sd_resume_btn').style.display="none";
-            
+            document.getElementById('sd_pause_btn').style.display="table-row";
+            document.getElementById('sd_reset_btn').style.display="table-row";
             
         } else if (tab2.toLowerCase().startsWith("hold")){
-            if(probe_progress_status == 0){
-                document.getElementById('sd_pause_btn').style.display="none";
-                document.getElementById('sd_resume_btn').style.display="table-row";
-                document.getElementById('sd_stop_btn').style.display="table-row";
-            }
-            document.getElementById('sd_reset_btn').style.display="none";
-            if(probe_progress_status == 3){
-                if (previouszposition == document.getElementById('control_z_position').innerHTML){
-                    probe_progress_status == 4;
-                    SendRealtimeCmd(String.fromCharCode(0x18));
-                } else {
-                    previouszposition = document.getElementById('control_z_position').innerHTML;
-                }
-            }
+            grbl_error_msg = tab2;
+            document.getElementById('sd_pause_btn').style.display="none";
+            document.getElementById('sd_resume_btn').style.display="table-row";
+            document.getElementById('sd_reset_btn').style.display="table-row";
             
         } else  if (tab2.toLowerCase().startsWith("alarm")) {
             if (probe_progress_status != 0){
-                document.getElementById('sd_pause_btn').style.display="none";
-                document.getElementById('sd_resume_btn').style.display="none";
-                document.getElementById('sd_stop_btn').style.display="none";
-                document.getElementById('sd_stop_btn').style.display="none";
+                probe_failed_notification();
             }
+            //grbl_error_msg = "";
             //check we are printing or not 
             if (response.indexOf("|SD:")!=-1) {
                 //guess print is stopped because of alarm so no need to pause
                 document.getElementById('sd_pause_btn').style.display="none";
                 document.getElementById('sd_resume_btn').style.display="table-row";
-                document.getElementById('sd_stop_btn').style.display="table-row";
                 document.getElementById('sd_reset_btn').style.display="none";
                 }
         } else { //TBC for others status
             document.getElementById('sd_pause_btn').style.display="none";
             document.getElementById('sd_resume_btn').style.display="none";
-            document.getElementById('sd_stop_btn').style.display="none";
             document.getElementById('sd_reset_btn').style.display="none";
         }
         if (tab2.toLowerCase().startsWith("idle")){
             grbl_error_msg = "";
         }
-        if (!(tab2.toLowerCase().startsWith("run") || tab2.toLowerCase().startsWith("idle")) && (probe_progress_status == 1)){
-                probe_progress_status = 2;
-                finalize_probing();
-            }
-        document.getElementById('grbl_status_text').innerHTML= grbl_error_msg;
+        document.getElementById('grbl_status_text').innerHTML= translate_text_item(grbl_error_msg);
         if (tab2.toLowerCase().startsWith("alarm"))document.getElementById('clear_status_btn').style.display="table-row";
         else document.getElementById('clear_status_btn').style.display="none";
     }
 }
 
 function finalize_probing(){
-    SendPrinterCommand("G90", true, null,null, 90, 1);
-    SendPrinterCommand("$#", true, null,null, 91, 1);
+    probe_progress_status = 0;
     document.getElementById("probingbtn").style.display="table-row";
     document.getElementById("probingtext").style.display="none";
     document.getElementById('sd_pause_btn').style.display="none";
     document.getElementById('sd_resume_btn').style.display="none";
-    document.getElementById('sd_stop_btn').style.display="none";
     document.getElementById('sd_reset_btn').style.display="none";
-    
 }
 
 function process_grbl_SD(response){
@@ -238,10 +212,6 @@ function grbl_process_status(response){
 
 function grbl_reset_detected(msg){
     console.log("Reset detected");
-    if (probe_progress_status != 0) {
-        probe_progress_status = 2;
-        finalize_probing();
-    }
 }
 
 function grbl_process_msg(response){
@@ -249,34 +219,28 @@ function grbl_process_msg(response){
 }
 
 function grbl_reset(){
-    probe_progress_status = 3;
-    SendRealtimeCmd('!');    
-}
-
-function grbl_stop(){
-    SendRealtimeCmd(String.fromCharCode(0x18));
+    if(probe_progress_status!=0)probe_failed_notification();
+    SendRealtimeCmd(String.fromCharCode(0x18));    
 }
 
 function grbl_GetProbeResult(response){
+    console.log("yes");
     var tab1 = response.split(":");
     if (tab1.length >2) {
         var status = tab1[2].replace("]","");
         if  (parseInt(status.trim()) == 1){
-            if (probe_progress_status == 1) {
-                var cmd = "G10 L2 P0 Z" ;
+            if (probe_progress_status !=0) {
+                var cmd = "G53 G0 Z" ;
                 var tab2 = tab1[1].split(",");
                 var v = 0.0;
                 v = parseFloat(tab2[2]);
                 console.log("z:" + v.toString());
-                v-= parseFloat(document.getElementById('probetouchplatethickness').value);
-                console.log("z + platethickness:" + v.toString());
-                cmd += v.toString();
+                cmd+=v;
+                SendPrinterCommand(cmd, true, null,null, 53, 1);
+                cmd = "G10 L20 P0 Z" + document.getElementById('probetouchplatethickness').value;;
                 SendPrinterCommand(cmd, true, null,null, 10, 1);
-                cmd = "G4 P0.1";
-                SendPrinterCommand(cmd, true, null,null, 100, 1);
-                cmd = "G0 Z" + document.getElementById('probetouchplatethickness').value;
-                SendPrinterCommand(cmd, true, null,null, 100, 1);
-                probe_progress_status = 0;
+                cmd = "G90";
+                SendPrinterCommand(cmd, true, null,null, 90, 1);
                 finalize_probing();
             }
         } else {
@@ -286,16 +250,9 @@ function grbl_GetProbeResult(response){
 }
 
 function probe_failed_notification(){
-    if (probe_progress_status != 0) {
-        if (probe_progress_status == 1) {
-            probe_progress_status = 2;
-            finalize_probing();
-        } else  if (probe_progress_status == 2){
-            alertdlg (translate_text_item("Error"), translate_text_item( "Probe failed !"));
-            beep(70, 261);
-            probe_progress_status = 0;
-        }
-    }
+    finalize_probing();
+    alertdlg (translate_text_item("Error"), translate_text_item( "Probe failed !"));
+    beep(70, 261);
 }
 
 function StartProbeProcess(){

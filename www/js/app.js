@@ -133,7 +133,7 @@ function startSocket(){
         if(!log_off) setTimeout(startSocket, 3000);
       };
       ws_source.onerror = function(e){
-        Monitor_output_Update("[#]Error "+ e.code +" " + e.reason + "\n");
+        //Monitor_output_Update("[#]Error "+ e.code +" " + e.reason + "\n");
         console.log("ws error", e);
       };
       ws_source.onmessage = function(e){
