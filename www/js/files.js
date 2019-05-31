@@ -147,9 +147,10 @@ function files_print_filename(filename){
         on_autocheck_status(true);
         cmd = "[ESP220]" + filename;
    } else {
-        cmd = "M23 " + filename + "\nM24";
+        cmd = "M23 " + filename.toLowerCase() + "\nM24";  // changed GTMax3D - Luciano
     }
    if (target_firmware == "grbl-embedded")SendPrinterCommand(cmd);
+   else if (target_firmware == "marlin")SendPrinterCommand(cmd); // add. GTMax3D - Luciano
    else SendPrinterSilentCommand(cmd);
 }
 
