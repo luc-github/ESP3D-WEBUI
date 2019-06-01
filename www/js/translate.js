@@ -3,7 +3,8 @@ var language = 'en';
 var language_list = [['de', 'Deutsch', 'germantrans'],['en', 'English','englishtrans'], 
 					 ['es', 'Espa&ntilde;ol' ,'spanishtrans'],['fr', 'Fran&ccedil;ais', 'frenchtrans'], 
 					 ['it', 'Italiano', 'italiantrans'], ['pl', 'Polski', 'polishtrans'], 
-					 ['ru', 'Русский', 'russiantrans'], ['uk', 'Українська', 'ukrtrans']];
+					 ['ru', 'Русский', 'russiantrans'], ['uk', 'Українська', 'ukrtrans'],
+           ['ptbr', 'Português-Br', 'ptbrtrans']];
 
 //removeIf(production)
 var translated_list=[];
