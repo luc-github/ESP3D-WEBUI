@@ -10,6 +10,7 @@ function hideZcontrols(){
     document.getElementById('HomeZ').style.display = 'none';
     document.getElementById('CornerZ').style.display = 'block';
     document.getElementById('control_z_position_display').style.display = 'none';
+    document.getElementById('control_zm_position_row').style.display = 'none';
     document.getElementById('z_velocity_display').style.display = 'none';
 }
 
@@ -18,6 +19,9 @@ function showZcontrols(){
     document.getElementById('JogBar').style.display = 'block';
     document.getElementById('HomeZ').style.display = 'block';
     document.getElementById('control_z_position_display').style.display = 'block';
+    if ((target_firmware == "grbl-embedded" ) || (target_firmware == "grbl" )) {
+        document.getElementById('control_zm_position_row').style.display = 'table-row';
+    }
     document.getElementById('z_velocity_display').style.display = 'inline';
     
 }

@@ -95,7 +95,12 @@ function files_build_file_line(index){
         if (entry.isdir == true) content +=get_icon_svg("folder-open")  ;
         else content +=get_icon_svg("file");
         content +="</span ></td><td>";
-        content += entry.name + "</td></tr></table></div>";
+        if (direct_sd && (target_firmware == "marlin") && (typeof entry.sdname !== 'undefined')) {
+            content += entry.sdname;
+        } else {
+             content += entry.name;
+        }
+        content += "</td></tr></table></div>";
         var sizecol = "col-md-2 col-sm-2";
         var timecol = "col-md-3 col-sm-3";
         var iconcol = "col-md-2 col-sm-2";
@@ -634,7 +639,7 @@ function files_select_upload(){
 function files_check_if_upload(){
     var canupload = true;
     var files = document.getElementById("files_input_file").files;
-     if ( target_firmware == "marlin" ) {
+     if ( target_firmware == "marlin" && !direct_sd) {
         for (var i = 0; i < files.length; i++) {
              var filename = files[i].name;
              //check base name can only by 8
