@@ -21,6 +21,7 @@ min-width: 8em;
 .no_overflow {
 	text-overflow: ellipsis;
 	overflow: hidden;
+    white-space: nowrap;
 }
 .hide_it {
     display: none;
