@@ -125,7 +125,7 @@ function enablestep1() {
 }
 
 function define_esp_role(index){
-     if (setting_configList[index].defaultvalue == 0) {
+     if (!((setting_configList[index].defaultvalue == SETTINGS_AP_MODE) || (setting_configList[index].defaultvalue == SETTINGS_STA_MODE))) {
         document.getElementById("setup_STA").style.display="none";
         document.getElementById("setup_AP").style.display="none";
      }

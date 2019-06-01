@@ -3,6 +3,7 @@ var englishtrans = {
 "en":"English",
 "STA":"Client Station",
 "AP":"Access Point",
+"BT":"Bluetooth",
 "Hold:0":"Hold complete. Ready to resume.",
 "Hold:1":"Hold in-progress. Reset will throw an alarm.",
 "Door:0":"Door closed. Ready to resume.",

@@ -142,6 +142,7 @@ var langtrans = {
 "Modem":"Modem",
 "STA":"STA",
 "AP":"AP",
+"BT":"Bluetooth",
 "Baud Rate":"Baud Rate",
 "Sleep Mode":"Sleep Mode",
 "Web Port":"Web Port",

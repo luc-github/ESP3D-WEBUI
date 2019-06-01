@@ -440,7 +440,11 @@ function update_UI_firmware_target() {
         EP_STA_IP_VALUE = "STA_IP";
         EP_STA_GW_VALUE = "STA_GW";
         EP_STA_MK_VALUE = "STA_MK";
-        EP_WIFI_MODE = "WIFI_MODE";
+        if (target_firmware == "grbl-embedded"){
+            EP_WIFI_MODE = "RADIO_MODE";
+        } else {
+            EP_WIFI_MODE = "WIFI_MODE";
+        }
         EP_AP_SSID = "AP_SSID";
         EP_AP_PASSWORD = "AP_PWD";
         EP_AP_IP_VALUE = "AP_IP";
