@@ -310,7 +310,9 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "repetier4davinci" ) {
         fwName = "Repetier for Davinci";
@@ -324,7 +326,9 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "smoothieware" ) {
         fwName = "Smoothieware";
@@ -339,7 +343,9 @@ function update_UI_firmware_target() {
         document.getElementById('zero_x_btn').style.display = 'none';
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "grbl-embedded" ) {
         fwName = "GRBL ESP32";
@@ -378,7 +384,9 @@ function update_UI_firmware_target() {
         document.getElementById('grblPanel').style.display = 'none';
         document.getElementById('FW_github').href = 'https://github.com/MarlinFirmware/Marlin';
         document.getElementById('settings_filters').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "marlin" ) {
         fwName = "Marlin";
@@ -392,7 +400,9 @@ function update_UI_firmware_target() {
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
         document.getElementById('grblPanel').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "marlinkimbra" ) {
         fwName = "Marlin Kimbra";
@@ -406,7 +416,9 @@ function update_UI_firmware_target() {
         document.getElementById('zero_y_btn').style.display = 'none';
         document.getElementById('zero_z_btn').style.display = 'none';
         document.getElementById('grblPanel').style.display = 'none';
-        //document.getElementById('control_zm_position_display').style.display = 'none';
+        document.getElementById('control_xm_position_row').style.display = 'none';
+        document.getElementById('control_ym_position_row').style.display = 'none';
+        document.getElementById('control_zm_position_row').style.display = 'none';
         }
     else if (target_firmware == "grbl" ) {
         fwName = "Grbl";
@@ -426,7 +438,9 @@ function update_UI_firmware_target() {
         document.getElementById('control_x_position_label').innerHTML="Xw";
         document.getElementById('control_y_position_label').innerHTML="Yw";
         document.getElementById('control_z_position_label').innerHTML="Zw";
-        //todo extruders temperature panel + temperatures filters
+        document.getElementById('control_xm_position_row').style.display = 'table-row';
+        document.getElementById('control_ym_position_row').style.display = 'table-row';
+        document.getElementById('control_zm_position_row').style.display = 'table-row';
         }
     else {
             fwName = "Unknown";
