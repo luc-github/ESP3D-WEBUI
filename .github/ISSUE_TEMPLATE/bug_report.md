@@ -24,7 +24,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **ESP3D Firmware:  (please complete the following information)**
-- Version:[e.g 2.1]
+- Version:[e.g 2.1b4]
+- Web UI Version:[e.g 2.1b14]
 - Wifi mode:[e.g. STA]
 - Any change done in FW
 
@@ -40,7 +41,7 @@ If applicable, add screenshots to help explain your problem.
 **Browser used (please complete the following information):**
 - Name: [e.g. Chrome]
 - Version  [e.g. 2.0]
-- Opereation system [e.g. Windows 10]
+- Operating system [e.g. Windows 10]
 
 **Additional context**
 Add any other context about the problem here.
