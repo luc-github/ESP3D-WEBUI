@@ -633,9 +633,11 @@ function process_socket_response(msg){
     } 
    if (target_firmware == "marlin-embedded" ) {
        if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response+=msg;
-       if (!socket_is_settings && msg.startsWith("echo:enqueueing \"M503\"")){
+       if (!socket_is_settings && (msg.startsWith("  G21")|| msg.startsWith("  G20"))){
             socket_is_settings = true;
-            socket_response="";
+            socket_response=msg;
+            //to stop waiting for data
+            SendGetHttp("/command?commandText=echo");
         } 
         if (msg.startsWith("ok T:")){
             process_Temperatures(msg);
@@ -643,7 +645,7 @@ function process_socket_response(msg){
         if (msg.startsWith("X:")){
             process_Position(msg);
         }
-        if (msg.startsWith("echo:Unknown command: \"*\"")) {
+        if (msg.startsWith("echo:Unknown command: \"echo\"")) {
             if (socket_is_settings) {
                 //update settings
                 console.log(socket_response);

@@ -77,7 +77,7 @@ function Monitor_output_Update(message){
         m = "<font color='red'><b>" + m.toUpperCase() + translate_text_item(m.trim()) +"</b></font>\n";
         }
         if ((m.startsWith("echo:") || m.startsWith("Config:")) && !isverbosefilter)continue;
-        if (m.startsWith("echo:Unknown command: \"*\"") ||  (m.startsWith("echo:enqueueing \"*\""))) continue;
+        if (m.startsWith("echo:Unknown command: \"echo\"") ||  (m.startsWith("echo:enqueueing \"*\""))) continue;
         output += m  ;
     } 
     document.getElementById("cmd_content").innerHTML = output;
