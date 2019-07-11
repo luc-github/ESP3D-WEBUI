@@ -1,6 +1,6 @@
 //Credits dialog
-function creditsdlg () {
+function creditsdlg() {
     var modal = setactiveModal('creditsdlg.html');
-    if ( modal == null) return;
-    showModal() ;
+    if (modal == null) return;
+    showModal();
 }

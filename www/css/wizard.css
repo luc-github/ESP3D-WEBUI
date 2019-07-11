@@ -1,12 +1,10 @@
-
-
 /* Style the step */
 div.step {
     overflow: hidden;
 }
 
 div.no_navigationr {
-pointer-events:none;
+    pointer-events: none;
 }
 
 /* Style the buttons inside the step */
@@ -22,7 +20,7 @@ div.step button {
     cursor: pointer;
     padding: 12px 14px;
     margin: 0 auto;
-    color:#337AB7;
+    color: #337AB7;
 }
 
 .connecting-line {
@@ -31,7 +29,7 @@ div.step button {
     background: #e0e0e0;
     width: 50px;
     top: 50%;
-    margin: 25px auto; 
+    margin: 25px auto;
     z-index: 1;
 }
 
@@ -42,13 +40,13 @@ div.step button {
 }
 
 .steplinks.disabled {
-    cursor:not-allowed;
+    cursor: not-allowed;
     background-color: #ddd;
     border-top: 1px solid #f1f1f1;
     border-bottom: 1px solid #f1f1f1;
     border-left: 1px solid #f1f1f1;
     border-right: 1px solid #f1f1f1;
-     color:#555555;
+    color: #555555;
 }
 
 
@@ -56,24 +54,26 @@ div.step button {
 /* Change background color of buttons on hover */
 div.step button:hover {
     background-color: #23567F;
-    color:#FFFFFF;
+    color: #FFFFFF;
 }
 
 div.step button.disabled:hover {
     background-color: #ddd;
-    color:#555555;
+    color: #555555;
 }
+
 .steplinks.no_revert_wizard:hover,
 .steplinks.no_revert_wizard {
-    cursor:not-allowed;
+    cursor: not-allowed;
     color: #337AB7;
-    background-color:#FFFFFF;
+    background-color: #FFFFFF;
 }
+
 /* Create an active/current steplink class */
 div.step button.active {
     background-color: #337AB7;
-     color:#FFFFFF;
-     margin-bottom: 40;
+    color: #FFFFFF;
+    margin-bottom: 40;
 }
 
 /* Style the step content */
@@ -84,12 +84,11 @@ div.step button.active {
 }
 
 @media (max-width: 360px) {
-.connecting-line{
-    width:2px!important;
-}
+    .connecting-line {
+        width: 2px !important;
+    }
 
-.input-group {
-    display: block;
+    .input-group {
+        display: block;
     }
 }
-

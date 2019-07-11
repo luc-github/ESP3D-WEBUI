@@ -1,125 +1,168 @@
 <div id="controlPanel" class="panel panel-default panel-flex-col panel-min-width">
     <div class="panel-heading ">
-          <div class="row ">
+        <div class="row ">
             <div class="col-md-12">
-                    <div class="pull-left" >
-                          <b><span translate>Controls</span></b>
-                    </div>
-                    <div class="pull-right">
-						<div id="auto_check_control" class="panel-flex-row">
-								<table class="checkbox"><tr><td>&nbsp;&nbsp;</td><td>
+                <div class="pull-left">
+                    <b><span translate>Controls</span></b>
+                </div>
+                <div class="pull-right">
+                    <div id="auto_check_control" class="panel-flex-row">
+                        <table class="checkbox">
+                            <tr>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>
                                     <label>
-                                        <input type="checkbox" id="autocheck_position" onclick="on_autocheck_position()"/>
-                                        <span translate>auto-check position every:</span>                                    
+                                        <input type="checkbox" id="autocheck_position" onclick="on_autocheck_position()" />
+                                        <span translate>auto-check position every:</span>
                                     </label>
-                               </td></tr></table>
-								<table class="input-group"><tr><td>
-									<input class="form-control w4" type="number" min="1" max="99" id="posInterval_check" onchange="onPosIntervalChange()" />
-									<span class="input-group-addon form_control" translate>sec</span>
-								</td></tr></table>
-                            </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="input-group">
+                            <tr>
+                                <td>
+                                    <input class="form-control w4" type="number" min="1" max="99" id="posInterval_check" onchange="onPosIntervalChange()" />
+                                    <span class="input-group-addon form_control" translate>sec</span>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
+                </div>
             </div>
         </div>
     </div>
     <div id="control-body" class="panel-body panel-flex-main">
         <div class="row">
             <div id="JogUI" class="col col-lg-7">
-                    <!-- replaceSVG --><object data="images/jogdial.svg" type="image/svg+xml" ></object><!-- /replaceSVG -->
+                <!-- replaceSVG --><object data="images/jogdial.svg" type="image/svg+xml"></object><!-- /replaceSVG -->
             </div>
-            <div class="col col-lg-4">  
-                <div id="Macro_list" class="macro-container"> 
+            <div class="col col-lg-4">
+                <div id="Macro_list" class="macro-container">
                 </div>
             </div>
-         </div>
+        </div>
         <div class="position-container" id="positions_labels">
             <div>
-            <button class="btn btn-xs btn-default" id="zero_xyz_btn"  onclick="SendZerocommand('X0 Y0 Z0')" >&Oslash;<span style="font-size:8px;">XYZ</span></button>
+                <button class="btn btn-xs btn-default" id="zero_xyz_btn" onclick="SendZerocommand('X0 Y0 Z0')">&Oslash;<span style="font-size:8px;">XYZ</span></button>
             </div>
             <div class="position_text">
-                <table><tr><td>
-                <button class="btn btn-xs btn-default" id="zero_x_btn"  onclick="SendZerocommand('X0')" >&Oslash;</button>
-                </td><td>
-                <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_x_position_label">X</span>:<span id ="control_x_position">&nbsp;</span></span>
-                </td><td>
-                </td></tr>
-                <tr id ="control_xm_position_row">
-                    <td></td>
-                    <td><table>
-                        <tr style="height: 5px;">
-                        </tr>
-                        <tr><td>
-                        <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_xm_position_label">Xm</span>:<span id ="control_xm_position">&nbsp;</span></span></td>
+                <table>
+                    <tr>
+                        <td>
+                            <button class="btn btn-xs btn-default" id="zero_x_btn" onclick="SendZerocommand('X0')">&Oslash;</button>
                         </td>
-                        </tr></table>
-                    </td>
+                        <td>
+                            <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_x_position_label">X</span>:<span id="control_x_position">&nbsp;</span></span>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr id="control_xm_position_row">
+                        <td></td>
+                        <td>
+                            <table>
+                                <tr style="height: 5px;">
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_xm_position_label">Xm</span>:<span id="control_xm_position">&nbsp;</span></span></td>
+                        </td>
+                    </tr>
+                </table>
+                </td>
                 </tr>
                 </table>
             </div>
             <div class="position_text">
-                <table><tr><td>
-                <button class="btn btn-xs btn-default" id="zero_y_btn"  onclick="SendZerocommand('Y0')" >&Oslash;</button>
-                </td><td>
-                <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_y_position_label">Y</span>:<span id ="control_y_position">&nbsp;</span></span>
-                 </td><td>
-                </td></tr>
-                <tr id ="control_ym_position_row">
-                    <td></td>
-                    <td><table>
-                        <tr style="height: 5px;">
-                        </tr>
-                        <tr><td>
-                        <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_yt_position_label">Ym</span>:<span id ="control_ym_position">&nbsp;</span></span></td>
+                <table>
+                    <tr>
+                        <td>
+                            <button class="btn btn-xs btn-default" id="zero_y_btn" onclick="SendZerocommand('Y0')">&Oslash;</button>
                         </td>
-                        </tr></table>
-                    </td>
+                        <td>
+                            <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_y_position_label">Y</span>:<span id="control_y_position">&nbsp;</span></span>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr id="control_ym_position_row">
+                        <td></td>
+                        <td>
+                            <table>
+                                <tr style="height: 5px;">
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_yt_position_label">Ym</span>:<span id="control_ym_position">&nbsp;</span></span></td>
+                        </td>
+                    </tr>
+                </table>
+                </td>
                 </tr>
                 </table>
             </div>
             <div class="position_text" id="control_z_position_display">
-                <table><tr><td>
-                <button class="btn btn-xs btn-default" id="zero_z_btn"  onclick="SendZerocommand('Z0')" >&Oslash;</button>
-                </td><td>
-                <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_z_position_label">Z</span>:<span id ="control_z_position">&nbsp;</span></span>
-                </td></tr>
-                <tr id ="control_zm_position_row">
-                    <td></td>
-                    <td><table>
-                        <tr style="height: 5px;">
-                        </tr>
-                        <tr><td>
-                        <span  class="label label-default" style="padding: 5px 5px 3px 5px;"><span  id ="control_zm_position_label">Zm</span>:<span id ="control_zm_position">&nbsp;</span></span></td>
+                <table>
+                    <tr>
+                        <td>
+                            <button class="btn btn-xs btn-default" id="zero_z_btn" onclick="SendZerocommand('Z0')">&Oslash;</button>
                         </td>
-                        </tr></table>
-                    </td>
+                        <td>
+                            <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_z_position_label">Z</span>:<span id="control_z_position">&nbsp;</span></span>
+                        </td>
+                    </tr>
+                    <tr id="control_zm_position_row">
+                        <td></td>
+                        <td>
+                            <table>
+                                <tr style="height: 5px;">
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="label label-default" style="padding: 5px 5px 3px 5px;"><span id="control_zm_position_label">Zm</span>:<span id="control_zm_position">&nbsp;</span></span></td>
+                        </td>
+                    </tr>
+                </table>
+                </td>
                 </tr>
+                </table>
             </div>
         </div>
     </div>
     <div class="panel-footer">
         <div class="panel-flex-row">
-						
-							<table class="input-group"><tr><td>
-                            <span class="input-group-addon form_control" >XY:</span>
-                            <input class="hide_it"></input>
-                            </td><td>
-							<span class="input-group-addon hide_it" ></span>
-                            <input class="form-control w8"  type="number" min="1" id="control_xy_velocity" onchange="onXYvelocityChange()" />
-                            <span class="input-group-addon form_control"  translate>mm/min</span> 
-                            </td></tr></table>
-                       
-                        &nbsp;
-							<table id="z_velocity_display" class="input-group"><tr><td>
-							<span class="input-group-addon form_control"translate>Z:</span>
-							<input class="hide_it"></input>
-							</td><td>
-							<span class="input-group-addon hide_it" ></span>
-							<input class="form-control w5"  type="number" min="1"  id="control_z_velocity" onchange="onZvelocityChange()"  />
-							<span class="input-group-addon form_control"  translate>mm/min</span>
-							</td></tr></table>
-                        
-                        &nbsp;
-                        <button id='motor_off_control' class="btn btn-primary" onclick="control_motorsOff()" translate>Motors off</button>
+
+            <table class="input-group">
+                <tr>
+                    <td>
+                        <span class="input-group-addon form_control">XY:</span>
+                        <input class="hide_it"></input>
+                    </td>
+                    <td>
+                        <span class="input-group-addon hide_it"></span>
+                        <input class="form-control w8" type="number" min="1" id="control_xy_velocity" onchange="onXYvelocityChange()" />
+                        <span class="input-group-addon form_control" translate>mm/min</span>
+                    </td>
+                </tr>
+            </table>
+
+            &nbsp;
+            <table id="z_velocity_display" class="input-group">
+                <tr>
+                    <td>
+                        <span class="input-group-addon form_control" translate>Z:</span>
+                        <input class="hide_it"></input>
+                    </td>
+                    <td>
+                        <span class="input-group-addon hide_it"></span>
+                        <input class="form-control w5" type="number" min="1" id="control_z_velocity" onchange="onZvelocityChange()" />
+                        <span class="input-group-addon form_control" translate>mm/min</span>
+                    </td>
+                </tr>
+            </table>
+
+            &nbsp;
+            <button id='motor_off_control' class="btn btn-primary" onclick="control_motorsOff()" translate>Motors off</button>
         </div>
     </div>
 </div>
