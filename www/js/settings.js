@@ -221,6 +221,7 @@ function setting_check_value(value, index, subindex) {
     if (entry.Options.length > 0) {
         var in_list = false;
         for (var i = 0; i < entry.Options.length; i++) {
+            //console.log("checking *" + entry.Options[i].id + "* and *"+ value + "*" );
             if (entry.Options[i].id == value) in_list = true;
         }
         valid = in_list;
@@ -315,15 +316,18 @@ function create_setting_entry(sentry, vindex) {
             for (var j in val) {
                 var sub_key = j;
                 var sub_val = val[j];
+                sub_val = sub_val.trim();
+                sub_key = sub_key.trim();
                 var option = {
                     id: sub_val,
                     display: sub_key
                 };
                 options.push(option);
-                //console.log(sub_key + " " + sub_val);
+                //console.log("*" + sub_key + "* and *" + sub_val + "*");
             }
         }
     }
+    svalue = svalue.trim();
     //create entry in list
     var config_entry = {
         index: vindex,
