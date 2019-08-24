@@ -109,6 +109,12 @@ function updatefailed(errorcode, response) {
     document.getElementById('prgfw').style.display = 'none';
     document.getElementById('uploadfw-button').style.display = 'block';
     document.getElementById('updatemsg').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;
+    if (esp_error_code !=0){
+         alertdlg (translate_text_item("Error") + " (" + esp_error_code + ")", esp_error_message);
+         esp_error_code = 0;
+    } else {
+        alertdlg (translate_text_item("Error"), "Error " + errorcode + " : " + response);
+    }
     console.log("Error " + errorcode + " : " + response);
     update_ongoing = false;
 }

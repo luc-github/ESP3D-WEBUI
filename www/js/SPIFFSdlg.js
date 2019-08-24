@@ -101,7 +101,6 @@ function SPIFFSfailed(errorcode, response) {
     document.getElementById('SPIFFS_loader').style.visibility = "hidden";
     document.getElementById('refreshSPIFFSbtn').style.display = 'block';
     document.getElementById('refreshSPIFFSbtn').style.display = 'block';
-    alertdlg(translate_text_item("Error"), "Error " + errorcode + " : " + response);
     console.log("Error " + errorcode + " : " + response);
 }
 
@@ -244,10 +243,17 @@ function SPIFFSUploadfailed(errorcode, response) {
     document.getElementById('SPIFFS-select_form').style.display = 'block';
     document.getElementById('SPIFFS_prg').style.display = 'none';
     document.getElementById('SPIFFS_uploadbtn').style.display = 'block';
-    document.getElementById('SPIFFS_status').innerHTML = translate_text_item("Upload failed : ") + errorcode + " :" + response;
     document.getElementById('uploadSPIFFSmsg').innerHTML = "";
     document.getElementById("uploadSPIFFSmsg").style.display = 'none';
     document.getElementById('refreshSPIFFSbtn').style.display = 'block';
     console.log("Error " + errorcode + " : " + response);
+    if (esp_error_code !=0){
+         alertdlg (translate_text_item("Error") + " (" + esp_error_code + ")", esp_error_message);
+         document.getElementById('SPIFFS_status').innerHTML = translate_text_item("Error : ") + esp_error_message;
+         esp_error_code = 0;
+    } else {
+        alertdlg (translate_text_item("Error"), "Error " + errorcode + " : " + response);
+        document.getElementById('SPIFFS_status').innerHTML = translate_text_item("Upload failed : ") + errorcode;
+    }
     SPIFFS_upload_ongoing = false;
 }

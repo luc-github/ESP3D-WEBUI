@@ -30,6 +30,8 @@ var SETTINGS_STA_MODE = 2;
 var interval_ping = -1;
 var last_ping = 0;
 var enable_ping = true;
+var esp_error_message ="";
+var esp_error_code = 0;
 
 function beep(duration, frequency) {
     var audioCtx;
@@ -157,7 +159,7 @@ function startSocket() {
         } else {
             msg += e.data;
             var tval = msg.split(":");
-            if (tval.length == 2) {
+            if (tval.length >= 2) {
                 if (tval[0] == 'CURRENT_ID') {
                     page_id = tval[1];
                     console.log("connection id = " + page_id);
@@ -179,6 +181,11 @@ function startSocket() {
                 }
                 if (tval[0] == 'DHT') {
                     Handle_DHT(tval[1]);
+                }
+                if (tval[0] == 'ERROR') {
+                  esp_error_message = tval[2];
+                  esp_error_code = tval[1];
+                  console.log(tval[2] + " code:" +  tval[1]);
                 }
             }
 

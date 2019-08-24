@@ -562,7 +562,12 @@ function files_directSD_list_success(response_text) {
 
 function files_serial_M20_list_failed(error_code, response) {
     document.getElementById('files_navigation_buttons').style.display = "block";
-    alertdlg(translate_text_item("Error"), "Error " + error_code + " : " + response);
+    if (esp_error_code !=0){
+         alertdlg (translate_text_item("Error") + " (" + esp_error_code + ")", esp_error_message);
+         esp_error_code = 0;
+    } else {
+        alertdlg (translate_text_item("Error"), "Error " + errorcode + " : " + response);
+    }
     files_build_display_filelist(false);
 }
 

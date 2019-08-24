@@ -54,8 +54,11 @@ function statussuccess(response) {
                 statuscontent += ":" + data[v];
             }
             statuscontent += "</strong></span><br>";
-        } else statuscontent += tresponse[i] + "<br>";
+        } //else statuscontent += tresponse[i] + "<br>";
     }
+    statuscontent += "<label>" + translate_text_item("WebUI version") + ": </label>&nbsp;<span class='text-info'><strong>";
+    statuscontent += web_ui_version
+    statuscontent += "</strong></span><br>";
     text.innerHTML = statuscontent;
     update_btn_status(0);
     //console.log(response);
