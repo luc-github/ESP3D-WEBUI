@@ -101,6 +101,7 @@ function SPIFFSfailed(errorcode, response) {
     document.getElementById('SPIFFS_loader').style.visibility = "hidden";
     document.getElementById('refreshSPIFFSbtn').style.display = 'block';
     document.getElementById('refreshSPIFFSbtn').style.display = 'block';
+    alertdlg(translate_text_item("Error"), "Error " + errorcode + " : " + response);
     console.log("Error " + errorcode + " : " + response);
 }
 
