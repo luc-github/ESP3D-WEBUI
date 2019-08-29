@@ -1,11 +1,12 @@
 var interval_position = -1;
 var control_macrolist = [];
 
+
 function init_controls_panel() {
     loadmacrolist();
 }
 
-function hideZcontrols() {
+function hideAxiscontrols() {
     document.getElementById('JogBar').style.display = 'none';
     document.getElementById('HomeZ').style.display = 'none';
     document.getElementById('CornerZ').style.display = 'block';
@@ -14,7 +15,7 @@ function hideZcontrols() {
     document.getElementById('z_velocity_display').style.display = 'none';
 }
 
-function showZcontrols() {
+function showAxiscontrols() {
     document.getElementById('CornerZ').style.display = 'none';
     document.getElementById('JogBar').style.display = 'block';
     document.getElementById('HomeZ').style.display = 'block';
@@ -168,7 +169,9 @@ function SendHomecommand(cmd) {
                 break;
 
             case 'G28 Z0':
-                cmd = '$HZ';
+                if (grblaxis > 3) {
+                    cmd = '$H' + document.getElementById('control_select_axis').value;
+                } else cmd = '$HZ';
                 break;
             default:
                 cmd = '$H';
@@ -198,12 +201,18 @@ function SendJogcommand(cmd, feedrate) {
     } else {
         feedratevalue = parseInt(document.getElementById('control_z_velocity').value);
         if (feedratevalue < 1 || isNaN(feedratevalue) || (feedratevalue === null)) {
-            alertdlg(translate_text_item("Out of range"), translate_text_item("Z Feedrate value must be at least 1 mm/min!"));
+            var letter = "Z";
+            if ((target_firmware == "grbl-embedded") && (grblaxis > 3)) letter = "Axis";
+            alertdlg(translate_text_item("Out of range"), translate_text_item( letter +" Feedrate value must be at least 1 mm/min!"));
             document.getElementById('control_z_velocity').value = preferenceslist[0].z_feedrate;
             return;
         }
     }
     if ((target_firmware == "grbl-embedded") || (target_firmware == "grbl")) {
+        if(grblaxis > 3){
+            var letter = document.getElementById('control_select_axis').value;
+            cmd = cmd.replace("Z", letter);
+        }
         command = "$J=G91 G21 F" + feedratevalue + " " + cmd;
         console.log(command);
     } else command = "G91\nG1 " + cmd + " F" + feedratevalue + "\nG90";

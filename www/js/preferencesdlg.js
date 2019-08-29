@@ -14,7 +14,6 @@ var defaultpreferenceslist = "[{\
                                             \"is_mixed_extruder\":\"false\",\
                                             \"enable_bed\":\"false\",\
                                             \"enable_fan\":\"false\",\
-                                            \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
                                             \"enable_grbl_panel\":\"false\",\
                                             \"interval_positions\":\"3\",\
@@ -22,6 +21,9 @@ var defaultpreferenceslist = "[{\
                                             \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
+                                            \"a_feedrate\":\"100\",\
+                                            \"b_feedrate\":\"100\",\
+                                            \"c_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
                                             \"e_distance\":\"5\",\
                                             \"f_filters\":\"gco;gcode\",\
@@ -52,7 +54,6 @@ function initpreferences() {
                                             \"is_mixed_extruder\":\"false\",\
                                             \"enable_bed\":\"false\",\
                                             \"enable_fan\":\"false\",\
-                                            \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
                                             \"enable_grbl_panel\":\"true\",\
                                             \"interval_positions\":\"3\",\
@@ -60,6 +61,9 @@ function initpreferences() {
                                             \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
+                                            \"a_feedrate\":\"100\",\
+                                            \"b_feedrate\":\"100\",\
+                                            \"c_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
                                             \"e_distance\":\"5\",\
                                             \"enable_temperatures_panel\":\"false\",\
@@ -92,7 +96,6 @@ function initpreferences() {
                                             \"is_mixed_extruder\":\"false\",\
                                             \"enable_bed\":\"false\",\
                                             \"enable_fan\":\"false\",\
-                                            \"enable_z\":\"true\",\
                                             \"enable_control_panel\":\"true\",\
                                             \"enable_grbl_panel\":\"true\",\
                                             \"interval_positions\":\"3\",\
@@ -100,6 +103,9 @@ function initpreferences() {
                                             \"interval_status\":\"3\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
+                                            \"a_feedrate\":\"100\",\
+                                            \"b_feedrate\":\"100\",\
+                                            \"c_feedrate\":\"100\",\
                                             \"e_feedrate\":\"400\",\
                                             \"e_distance\":\"5\",\
                                             \"enable_temperatures_panel\":\"true\",\
@@ -180,10 +186,6 @@ function prefs_toggledisplay(id_source, forcevalue) {
         case 'show_temperatures_panel':
             if (document.getElementById(id_source).checked) document.getElementById("temperatures_preferences").style.display = "block";
             else document.getElementById("temperatures_preferences").style.display = "none";
-            break;
-        case 'enable_z_controls':
-            if (document.getElementById(id_source).checked) document.getElementById("control_z_feedrate").style.display = "block";
-            else document.getElementById("control_z_feedrate").style.display = "none";
             break;
         case 'show_commands_panel':
             if (document.getElementById(id_source).checked) document.getElementById("cmd_preferences").style.display = "block";
@@ -309,8 +311,6 @@ function applypreferenceslist() {
     if (preferenceslist[0].enable_fan === 'true') document.getElementById('fan_UI').style.display = 'block';
     else document.getElementById('fan_UI').style.display = 'none';
 
-    if (preferenceslist[0].enable_z === 'true') showZcontrols();
-    else hideZcontrols();
 
     if ((target_firmware == "grbl-embedded") || (target_firmware == "grbl")) {
         if (preferenceslist[0].enable_grbl_panel === 'true') document.getElementById('grblPanel').style.display = 'flex';
@@ -357,6 +357,30 @@ function applypreferenceslist() {
     document.getElementById('statusInterval_check').value = parseInt(preferenceslist[0].interval_status);
     document.getElementById('control_xy_velocity').value = parseInt(preferenceslist[0].xy_feedrate);
     document.getElementById('control_z_velocity').value = parseInt(preferenceslist[0].z_feedrate);
+    if (target_firmware == "grbl-embedded"){
+        if (grblaxis > 2 )axis_Z_feedrate = parseInt(preferenceslist[0].z_feedrate);
+        if (grblaxis > 3 )axis_A_feedrate = parseInt(preferenceslist[0].a_feedrate);
+        if (grblaxis > 4 )axis_B_feedrate = parseInt(preferenceslist[0].b_feedrate);
+        if (grblaxis > 5 )axis_C_feedrate = parseInt(preferenceslist[0].c_feedrate);
+        
+        if (grblaxis > 3 ){
+            var letter = document.getElementById('control_select_axis').value;
+            switch(letter) {
+                case "Z":
+                    document.getElementById('control_z_velocity').value = axis_Z_feedrate;
+                break;
+                case "A":
+                    document.getElementById('control_z_velocity').value = axis_A_feedrate;
+                break;
+                case "B":
+                    document.getElementById('control_z_velocity').value = axis_B_feedrate;
+                break;
+                case "C":
+                    document.getElementById('control_z_velocity').value = axis_C_feedrate;
+                break;
+            }
+        }
+    } 
     document.getElementById('probemaxtravel').value = parseFloat(preferenceslist[0].probemaxtravel);
     document.getElementById('probefeedrate').value = parseInt(preferenceslist[0].probefeedrate);
     document.getElementById('probetouchplatethickness').value = parseFloat(preferenceslist[0].probetouchplatethickness);
@@ -428,10 +452,6 @@ function build_dlg_preferences_list() {
     if (typeof(preferenceslist[0].enable_fan) !== 'undefined') {
         document.getElementById('enable_fan_controls').checked = (preferenceslist[0].enable_fan === 'true');
     } else document.getElementById('enable_fan_controls').checked = false;
-    //z axis
-    if (typeof(preferenceslist[0].enable_z) !== 'undefined') {
-        document.getElementById('enable_z_controls').checked = (preferenceslist[0].enable_z === 'true');
-    } else document.getElementById('enable_z_controls').checked = false;
     //grbl panel
     if (typeof(preferenceslist[0].enable_grbl_panel) !== 'undefined') {
         document.getElementById('show_grbl_panel').checked = (preferenceslist[0].enable_grbl_panel === 'true');
@@ -472,10 +492,32 @@ function build_dlg_preferences_list() {
     if (typeof(preferenceslist[0].xy_feedrate) !== 'undefined') {
         document.getElementById('preferences_control_xy_velocity').value = parseInt(preferenceslist[0].xy_feedrate);
     } else document.getElementById('preferences_control_xy_velocity').value = parseInt(default_preferenceslist[0].xy_feedrate);
-    //z feedrate
-    if (typeof(preferenceslist[0].z_feedrate) !== 'undefined') {
-        document.getElementById('preferences_control_z_velocity').value = parseInt(preferenceslist[0].z_feedrate);
-    } else document.getElementById('preferences_control_z_velocity').value = parseInt(default_preferenceslist[0].z_feedrate);
+    if ((target_firmware != "grbl-embedded") || (grblaxis > 2)) {
+        //z feedrate
+        if (typeof(preferenceslist[0].z_feedrate) !== 'undefined') {
+            document.getElementById('preferences_control_z_velocity').value = parseInt(preferenceslist[0].z_feedrate);
+        } else document.getElementById('preferences_control_z_velocity').value = parseInt(default_preferenceslist[0].z_feedrate);
+    }
+    if (target_firmware == "grbl-embedded") {
+        if (grblaxis > 3) {
+            //a feedrate
+            if (typeof(preferenceslist[0].a_feedrate) !== 'undefined') {
+                document.getElementById('preferences_control_a_velocity').value = parseInt(preferenceslist[0].a_feedrate);
+            } else document.getElementById('preferences_control_a_velocity').value = parseInt(default_preferenceslist[0].a_feedrate);
+        }
+        if (grblaxis > 4) {
+            //b feedrate
+            if (typeof(preferenceslist[0].b_feedrate) !== 'undefined') {
+                document.getElementById('preferences_control_b_velocity').value = parseInt(preferenceslist[0].b_feedrate);
+            } else document.getElementById('preferences_control_b_velocity').value = parseInt(default_preferenceslist[0].b_feedrate);
+        }
+        if (grblaxis > 5) {
+            //c feedrate
+            if (typeof(preferenceslist[0].c_feedrate) !== 'undefined') {
+                document.getElementById('preferences_control_c_velocity').value = parseInt(preferenceslist[0].c_feedrate);
+            } else document.getElementById('preferences_control_c_velocity').value = parseInt(default_preferenceslist[0].c_feedrate);
+        }
+    }
     //probemaxtravel
     if ((typeof(preferenceslist[0].probemaxtravel) !== 'undefined') && (preferenceslist[0].probemaxtravel.length != 0)) {
         document.getElementById('preferences_probemaxtravel').value = parseFloat(preferenceslist[0].probemaxtravel);
@@ -524,7 +566,6 @@ function build_dlg_preferences_list() {
     prefs_toggledisplay('show_control_panel');
     prefs_toggledisplay('show_extruder_panel');
     prefs_toggledisplay('show_temperatures_panel');
-    prefs_toggledisplay('enable_z_controls');
     prefs_toggledisplay('show_commands_panel');
     prefs_toggledisplay('show_files_panel');
     prefs_toggledisplay('show_grbl_probe_tab');
@@ -545,7 +586,6 @@ function closePreferencesDialog() {
             (typeof(preferenceslist[0].enable_ping) === 'undefined') ||
             (typeof(preferenceslist[0].enable_bed) === 'undefined') ||
             (typeof(preferenceslist[0].enable_fan) === 'undefined') ||
-            (typeof(preferenceslist[0].enable_z) === 'undefined') ||
             (typeof(preferenceslist[0].xy_feedrate) === 'undefined') ||
             (typeof(preferenceslist[0].z_feedrate) === 'undefined') ||
             (typeof(preferenceslist[0].e_feedrate) === 'undefined') ||
@@ -587,8 +627,6 @@ function closePreferencesDialog() {
             if (document.getElementById('enable_bed_controls').checked != (preferenceslist[0].enable_bed === 'true')) modified = true;
             //fan.
             if (document.getElementById('enable_fan_controls').checked != (preferenceslist[0].enable_fan === 'true')) modified = true;
-            //Z 
-            if (document.getElementById('enable_z_controls').checked != (preferenceslist[0].enable_z === 'true')) modified = true;
             //control panel
             if (document.getElementById('show_control_panel').checked != (preferenceslist[0].enable_control_panel === 'true')) modified = true;
             //temperatures panel
@@ -609,8 +647,24 @@ function closePreferencesDialog() {
             if (document.getElementById('preferences_status_Interval_check').value != parseInt(preferenceslist[0].interval_status)) modified = true;
             //xy feedrate
             if (document.getElementById('preferences_control_xy_velocity').value != parseInt(preferenceslist[0].xy_feedrate)) modified = true;
-            //z feedrate
-            if (document.getElementById('preferences_control_z_velocity').value != parseInt(preferenceslist[0].z_feedrate)) modified = true;
+            if ((target_firmware != "grbl-embedded") || (grblaxis > 2)) {
+                //z feedrate
+                if (document.getElementById('preferences_control_z_velocity').value != parseInt(preferenceslist[0].z_feedrate)) modified = true;
+            }
+            if (target_firmware == "grbl-embedded") {
+                if (grblaxis > 3) {
+                    //a feedrate
+                    if (document.getElementById('preferences_control_a_velocity').value != parseInt(preferenceslist[0].a_feedrate)) modified = true;
+                }
+                if (grblaxis > 4) {
+                    //b feedrate
+                    if (document.getElementById('preferences_control_b_velocity').value != parseInt(preferenceslist[0].b_feedrate)) modified = true;
+                }
+                if (grblaxis > 5) {
+                    //c feedrate
+                    if (document.getElementById('preferences_control_c_velocity').value != parseInt(preferenceslist[0].c_feedrate)) modified = true;
+                }
+            }
             //interval temperatures
             if (document.getElementById('preferences_tempInterval_check').value != parseInt(preferenceslist[0].interval_temperatures)) modified = true;
             //e feedrate
@@ -660,7 +714,6 @@ function SavePreferences(current_preferences) {
         if (!Checkvalues("preferences_pos_Interval_check") ||
             !Checkvalues("preferences_status_Interval_check") ||
             !Checkvalues("preferences_control_xy_velocity") ||
-            !Checkvalues("preferences_control_z_velocity") ||
             !Checkvalues("preferences_e_velocity") ||
             !Checkvalues("preferences_tempInterval_check") ||
             !Checkvalues("preferences_filters") ||
@@ -669,6 +722,14 @@ function SavePreferences(current_preferences) {
             !Checkvalues("preferences_probefeedrate") ||
             !Checkvalues("preferences_probetouchplatethickness")
         ) return;
+        if ((target_firmware != "grbl-embedded") || (grblaxis > 2)) {
+            if(!Checkvalues("preferences_control_z_velocity")) return;
+        }
+        if (target_firmware == "grbl-embedded") {
+            if( (grblaxis > 3) && (!Checkvalues("preferences_control_a_velocity"))) return;
+            if( (grblaxis > 4) && (!Checkvalues("preferences_control_b_velocity"))) return;
+            if( (grblaxis > 5) && (!Checkvalues("preferences_control_c_velocity"))) return;
+        }
         preferenceslist = [];
         var saveprefs = "[{\"language\":\"" + language;
         saveprefs += "\",\"enable_camera\":\"" + document.getElementById('show_camera_panel').checked;
@@ -681,7 +742,6 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"number_extruders\":\"" + document.getElementById('preferences_control_nb_extruders').value;
         saveprefs += "\",\"enable_bed\":\"" + document.getElementById('enable_bed_controls').checked;
         saveprefs += "\",\"enable_fan\":\"" + document.getElementById('enable_fan_controls').checked;
-        saveprefs += "\",\"enable_z\":\"" + document.getElementById('enable_z_controls').checked;
         saveprefs += "\",\"enable_control_panel\":\"" + document.getElementById('show_control_panel').checked;
         saveprefs += "\",\"enable_grbl_probe_panel\":\"" + document.getElementById('show_grbl_probe_tab').checked;
         saveprefs += "\",\"enable_temperatures_panel\":\"" + document.getElementById('show_temperatures_panel').checked;
@@ -694,7 +754,20 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"interval_positions\":\"" + document.getElementById('preferences_pos_Interval_check').value;
         saveprefs += "\",\"interval_status\":\"" + document.getElementById('preferences_status_Interval_check').value;
         saveprefs += "\",\"xy_feedrate\":\"" + document.getElementById('preferences_control_xy_velocity').value;
-        saveprefs += "\",\"z_feedrate\":\"" + document.getElementById('preferences_control_z_velocity').value;
+        if ((target_firmware != "grbl-embedded") || (grblaxis > 2)) {
+            saveprefs += "\",\"z_feedrate\":\"" + document.getElementById('preferences_control_z_velocity').value;
+        }
+        if (target_firmware == "grbl-embedded") {
+            if (grblaxis > 3){
+                saveprefs += "\",\"a_feedrate\":\"" + document.getElementById('preferences_control_a_velocity').value;
+            }
+            if (grblaxis > 4){
+                saveprefs += "\",\"b_feedrate\":\"" + document.getElementById('preferences_control_b_velocity').value;
+            }
+            if (grblaxis > 5){
+                saveprefs += "\",\"c_feedrate\":\"" + document.getElementById('preferences_control_c_velocity').value;
+            }
+        }
         saveprefs += "\",\"interval_temperatures\":\"" + document.getElementById('preferences_tempInterval_check').value;
         saveprefs += "\",\"e_feedrate\":\"" + document.getElementById('preferences_e_velocity').value;
         saveprefs += "\",\"e_distance\":\"" + document.getElementById('preferences_filament_length').value;
@@ -767,6 +840,15 @@ function Checkvalues(id_2_check) {
             value = parseInt(document.getElementById(id_2_check).value);
             if (!(!isNaN(value) && value >= 1)) {
                 error_message = translate_text_item("Z Feedrate value must be at least 1 mm/min!");
+                status = false;
+            }
+            break;
+        case "preferences_control_a_velocity":
+        case "preferences_control_b_velocity":
+        case "preferences_control_c_velocity":
+            value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1)) {
+                error_message = translate_text_item("Axis Feedrate value must be at least 1 mm/min!");
                 status = false;
             }
             break;

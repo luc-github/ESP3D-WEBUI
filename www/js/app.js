@@ -310,6 +310,7 @@ function update_UI_firmware_target() {
     document.getElementById('control_y_position_label').innerHTML = "Y";
     document.getElementById('control_z_position_label').innerHTML = "Z";
     document.getElementById('config_smoothie_nav').style.display = 'none';
+    showAxiscontrols();
     if (target_firmware == "repetier") {
         fwName = "Repetier";
         document.getElementById('configtablink').style.display = 'block';
@@ -370,13 +371,45 @@ function update_UI_firmware_target() {
         document.getElementById('zero_xyz_btn').style.display = 'block';
         document.getElementById('zero_x_btn').style.display = 'block';
         document.getElementById('zero_y_btn').style.display = 'block';
-        document.getElementById('zero_z_btn').style.display = 'block';
+        if (grblaxis >2) {
+            //document.getElementById('control_z_position_display').style.display = 'block';
+            document.getElementById('control_z_position_label').innerHTML = "Zw";
+            document.getElementById('zero_xyz_btn_txt').innerHTML +="Z";
+            grblzerocmd += " Z0";
+            
+        } else {
+            hideAxiscontrols();
+            document.getElementById('preferences_control_z_velocity_group').style.display = 'none';
+        }
+        if (grblaxis >3) {
+            
+            document.getElementById('zero_xyz_btn_txt').innerHTML +="A";
+            grblzerocmd += " A0";
+            build_axis_selection();
+            document.getElementById('preferences_control_a_velocity_group').style.display = 'block';
+            document.getElementById('positions_labels2').style.display = 'inline-grid';
+            document.getElementById('control_a_position_display').style.display = 'block';
+        } 
+        if (grblaxis >4) {
+            document.getElementById('control_b_position_display').style.display = 'block';
+            document.getElementById('zero_xyz_btn_txt').innerHTML +="B";
+            grblzerocmd += " B0";
+            document.getElementById('preferences_control_b_velocity_group').style.display = 'block';
+        } 
+        if (grblaxis >5) {
+            document.getElementById('control_c_position_display').style.display = 'block';
+            document.getElementById('zero_xyz_btn_txt').innerHTML +="C";
+            document.getElementById('preferences_control_c_velocity_group').style.display = 'block';
+            
+        } else {
+            document.getElementById('control_c_position_display').style.display = 'none';
+        }
         document.getElementById('grblPanel').style.display = 'flex';
         document.getElementById('FW_github').href = 'https://github.com/bdring/Grbl_Esp32';
         document.getElementById('settings_filters').style.display = 'none';
         document.getElementById('control_x_position_label').innerHTML = "Xw";
         document.getElementById('control_y_position_label').innerHTML = "Yw";
-        document.getElementById('control_z_position_label').innerHTML = "Zw";
+        
 
     } else if (target_firmware == "marlin-embedded") {
         fwName = "Marlin ESP32";

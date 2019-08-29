@@ -5,6 +5,75 @@ var gotWCO = false;
 var WCOx = 0;
 var WCOy = 0;
 var WCOz = 0;
+var WCOa = 0;
+var WCOb = 0;
+var WCOc = 0;
+var grblaxis = 2;
+var grblzerocmd = 'X0 Y0';
+var axis_Z_feedrate = 0;
+var axis_A_feedrate = 0;
+var axis_B_feedrate = 0;
+var axis_C_feedrate = 0;
+var last_axis_letter = "Z";
+
+function build_axis_selection(){
+    var html = "<select class='form-control wauto' id='control_select_axis' onchange='control_changeaxis()' >";
+    for (var i = 3; i <= grblaxis; i++) {
+        var letter;
+        if (i == 3) letter = "Z";
+        else if (i == 4) letter = "A";
+        else if (i == 5) letter = "B";
+        else if (i == 6) letter = "C";
+        html += "<option value='" + letter + "'";
+        if (i == 3) html += " selected ";
+        html += ">";
+        html += letter;
+        html += "</option>\n";
+    }
+    html += "</select>\n";
+   if(grblaxis > 3) {
+       document.getElementById('axis_selection').innerHTML = html;
+       document.getElementById('axis_label').innerHTML = translate_text_item("Axis") + ":";
+       document.getElementById('axis_selection').style.display = "table-row"
+   }
+}
+
+function control_changeaxis(){
+    var letter = document.getElementById('control_select_axis').value;
+    document.getElementById('axisup').innerHTML = '+'+letter;
+    document.getElementById('axisdown').innerHTML = '-'+letter;
+    document.getElementById('homeZlabel').innerHTML = ' '+letter+' ';
+    switch(last_axis_letter) {
+        case "Z":
+            axis_Z_feedrate = document.getElementById('control_z_velocity').value;
+        break;
+        case "A":
+            axis_A_feedrate = document.getElementById('control_z_velocity').value;
+        break;
+        case "B":
+            axis_B_feedrate = document.getElementById('control_z_velocity').value;
+        break;
+        case "C":
+            axis_C_feedrate = document.getElementById('control_z_velocity').value;
+        break;
+    }
+    
+    last_axis_letter = letter;
+     switch(last_axis_letter) {
+        case "Z":
+            document.getElementById('control_z_velocity').value = axis_Z_feedrate;
+        break;
+        case "A":
+            document.getElementById('control_z_velocity').value = axis_A_feedrate;
+        break;
+        case "B":
+            document.getElementById('control_z_velocity').value = axis_B_feedrate;
+        break;
+        case "C":
+            document.getElementById('control_z_velocity').value = axis_C_feedrate;
+        break;
+    }
+}
 
 function init_grbl_panel() {
     grbl_set_probe_detected(false);
@@ -117,10 +186,25 @@ function process_grbl_position(response) {
         } else {
             WCOy = 0;
         }
-        if (tab3.length > 2) {
+        if ((tab3.length > 2) && (grblaxis > 2)) {
             WCOz = parseFloat(tab3[2]);
         } else {
             WCOz = 0;
+        }
+         if ((tab3.length > 3) && (grblaxis > 3)) {
+            WCOa = parseFloat(tab3[3]);
+        } else {
+            WCOa = 0;
+        }
+         if ((tab3.length > 4) && (grblaxis > 4)){
+            WCOb = parseFloat(tab3[4]);
+        } else {
+            WCOb = 0;
+        }
+         if ((tab3.length > 5) && (grblaxis > 5)) {
+            WCOc = parseFloat(tab3[5]);
+        } else {
+            WCOc = 0;
         }
         gotWCO = true;
     }
@@ -134,9 +218,21 @@ function process_grbl_position(response) {
             document.getElementById('control_y_position').innerHTML = tab3[1];
             if (gotWCO) document.getElementById('control_ym_position').innerHTML = (WCOy + parseFloat(tab3[1])).toFixed(3);
         }
-        if (tab3.length > 2) {
+        if ((tab3.length > 2) && (grblaxis > 2)) {
             document.getElementById('control_z_position').innerHTML = tab3[2];
             if (gotWCO) document.getElementById('control_zm_position').innerHTML = (WCOz + parseFloat(tab3[2])).toFixed(3);
+        }
+        if ((tab3.length > 3) && (grblaxis > 3)) {
+            document.getElementById('control_a_position').innerHTML = tab3[3];
+            if (gotWCO) document.getElementById('control_am_position').innerHTML = (WCOa + parseFloat(tab3[3])).toFixed(3);
+        }
+        if ((tab3.length > 4) && (grblaxis > 4)) {
+            document.getElementById('control_b_position').innerHTML = tab3[4];
+            if (gotWCO) document.getElementById('control_bm_position').innerHTML = (WCOb + parseFloat(tab3[4])).toFixed(3);
+        }
+        if ((tab3.length > 5) && (grblaxis > 5)) {
+            document.getElementById('control_c_position').innerHTML = tab3[5];
+            if (gotWCO) document.getElementById('control_cm_position').innerHTML = (WCOc + parseFloat(tab3[5])).toFixed(3);
         }
 
     } else {
@@ -150,9 +246,21 @@ function process_grbl_position(response) {
                 document.getElementById('control_ym_position').innerHTML = tab3[1];
                 if (gotWCO) document.getElementById('control_y_position').innerHTML = (parseFloat(tab3[1]) - WCOy).toFixed(3);
             }
-            if (tab3.length > 2) {
+            if ((tab3.length > 2) && (grblaxis > 2)) {
                 document.getElementById('control_zm_position').innerHTML = tab3[2];
                 if (gotWCO) document.getElementById('control_z_position').innerHTML = (parseFloat(tab3[2]) - WCOz).toFixed(3);
+            }
+            if ((tab3.length > 3) && (grblaxis > 3)) {
+                document.getElementById('control_am_position').innerHTML = tab3[3];
+                if (gotWCO) document.getElementById('control_a_position').innerHTML = (parseFloat(tab3[3]) - WCOa).toFixed(3);
+            }
+            if ((tab3.length > 4) && (grblaxis > 4)) {
+                document.getElementById('control_bm_position').innerHTML = tab3[4];
+                if (gotWCO) document.getElementById('control_b_position').innerHTML = (parseFloat(tab3[4]) - WCOb).toFixed(3);
+            }
+            if ((tab3.length > 5) && (grblaxis > 5)) {
+                document.getElementById('control_cm_position').innerHTML = tab3[5];
+                if (gotWCO) document.getElementById('control_c_position').innerHTML = (parseFloat(tab3[5]) - WCOc).toFixed(3);
             }
         }
     }

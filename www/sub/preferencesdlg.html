@@ -123,38 +123,90 @@
                     </div>
 
                     <br>
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="enable_z_controls" onclick="prefs_toggledisplay('enable_z_controls')" />
-                                    <span translate>Enable Z controls</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div id="control_z_feedrate" class="panel-body">
-                            <div id="preferences_control_z_velocity_group">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <span><span translate>Z feedrate</span>:&nbsp;</span>
-                                        </td>
-                                        <td>
-                                            <div class="input-group has-control">
-                                                <input class="form-control w6" type="number" min="1" id="preferences_control_z_velocity" onchange="Checkvalues('preferences_control_z_velocity')" />
-                                                <span id="preferences_control_z_velocity_icon" class="form-control-feedback ico_feedback"></span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input class="hide_it"></input>
-                                                <span class="input-group-addon form_control" translate>mm/min</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                            
+                    <div id="preferences_control_z_velocity_group">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span><span translate>Z feedrate</span>:&nbsp;</span>
+                                </td>
+                                <td>
+                                    <div class="input-group has-control">
+                                        <input class="form-control w6" type="number" min="1" id="preferences_control_z_velocity" onchange="Checkvalues('preferences_control_z_velocity')" />
+                                        <span id="preferences_control_z_velocity_icon" class="form-control-feedback ico_feedback"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input class="hide_it"></input>
+                                        <span class="input-group-addon form_control" translate>mm/min</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="preferences_control_a_velocity_group" class="hide_it topmarginspace">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span><span translate>A feedrate</span>:&nbsp;</span>
+                                </td>
+                                <td>
+                                    <div class="input-group has-control">
+                                        <input class="form-control w6" type="number" min="1" id="preferences_control_a_velocity" onchange="Checkvalues('preferences_control_a_velocity')" />
+                                        <span id="preferences_control_a_velocity_icon" class="form-control-feedback ico_feedback"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input class="hide_it"></input>
+                                        <span class="input-group-addon form_control" translate>mm/min</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="preferences_control_b_velocity_group" class="hide_it topmarginspace">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span><span translate>B feedrate</span>:&nbsp;</span>
+                                </td>
+                                <td>
+                                    <div class="input-group has-control">
+                                        <input class="form-control w6" type="number" min="1" id="preferences_control_b_velocity" onchange="Checkvalues('preferences_control_b_velocity')" />
+                                        <span id="preferences_control_b_velocity_icon" class="form-control-feedback ico_feedback"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input class="hide_it"></input>
+                                        <span class="input-group-addon form_control" translate>mm/min</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="preferences_control_c_velocity_group" class="hide_it topmarginspace">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span><span translate>C feedrate</span>:&nbsp;</span>
+                                </td>
+                                <td>
+                                    <div class="input-group has-control">
+                                        <input class="form-control w6" type="number" min="1" id="preferences_control_c_velocity" onchange="Checkvalues('preferences_control_c_velocity')" />
+                                        <span id="preferences_control_c_velocity_icon" class="form-control-feedback ico_feedback"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <input class="hide_it"></input>
+                                        <span class="input-group-addon form_control" translate>mm/min</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
