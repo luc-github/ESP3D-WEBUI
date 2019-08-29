@@ -532,15 +532,27 @@ var grbl_help = {
     "$100": "X steps/mm",
     "$101": "Y steps/mm",
     "$102": "Z steps/mm",
+    "$103": "A steps/mm",
+    "$104": "B steps/mm",
+    "$105": "C steps/mm",
     "$110": "X Max rate, mm/min",
     "$111": "Y Max rate, mm/min",
     "$112": "Z Max rate, mm/min",
+    "$113": "A Max rate, mm/min",
+    "$114": "B Max rate, mm/min",
+    "$115": "C Max rate, mm/min",
     "$120": "X Acceleration, mm/sec^2",
     "$121": "Y Acceleration, mm/sec^2",
     "$122": "Z Acceleration, mm/sec^2",
+    "$123": "A Acceleration, mm/sec^2",
+    "$124": "B Acceleration, mm/sec^2",
+    "$125": "C Acceleration, mm/sec^2",
     "$130": "X Max travel, mm",
     "$131": "Y Max travel, mm",
-    "$132": "Z Max travel, mm"
+    "$132": "Z Max travel, mm",
+    "$133": "A Max travel, mm",
+    "$134": "B Max travel, mm",
+    "$135": "C Max travel, mm"
 
 };
 

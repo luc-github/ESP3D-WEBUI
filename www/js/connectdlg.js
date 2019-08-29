@@ -78,7 +78,14 @@ function getFWdata(response) {
         sublist = tlist[7].split(":");
         if (sublist[0].trim() == "hostname") esp_hostname = sublist[1].trim();
     }
-
+    
+    if ((target_firmware == "grbl-embedded") && (tlist.length > 8)) {
+         sublist = tlist[8].split(":");
+         if (sublist[0].trim() == "axis") {
+             grblaxis = parseInt(sublist[1].trim());
+            }
+    }
+    
     if (async_webcommunication) {
         if (!!window.EventSource) {
             event_source = new EventSource('/events');
