@@ -72,6 +72,12 @@ function getFWdata(response) {
         else {
             async_webcommunication = false;
             websocket_port = sublist[2].trim();
+            if (sublist.length>3) {
+                websocket_ip = sublist[3].trim();
+            } else {
+                console.log("No IP for websocket, use default");
+                 websocket_ip =  document.location.hostname;
+            }
         }
     }
     if (tlist.length > 7) {

@@ -257,4 +257,5 @@ function SPIFFSUploadfailed(errorcode, response) {
         document.getElementById('SPIFFS_status').innerHTML = translate_text_item("Upload failed : ") + errorcode;
     }
     SPIFFS_upload_ongoing = false;
+    refreshSPIFFS();
 }

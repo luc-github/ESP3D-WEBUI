@@ -6,6 +6,7 @@ var event_source;
 var log_off = false;
 var async_webcommunication = false;
 var websocket_port = 0;
+var websocket_ip = "";
 var esp_hostname = "ESP3D WebUI";
 var EP_HOSTNAME;
 var EP_STA_SSID;
@@ -120,8 +121,8 @@ function startSocket() {
         if (async_webcommunication) {
             ws_source = new WebSocket('ws://' + document.location.host + '/ws', ['arduino']);
         } else {
-            console.log("Socket port is :" + websocket_port);
-            ws_source = new WebSocket('ws://' + document.location.hostname + ':' + websocket_port, ['arduino']);
+            console.log("Socket is " + websocket_ip + ":" + websocket_port);
+            ws_source = new WebSocket('ws://' + websocket_ip + ':' + websocket_port, ['arduino']);
         }
     } catch (exception) {
         console.error(exception);
@@ -185,7 +186,13 @@ function startSocket() {
                 if (tval[0] == 'ERROR') {
                   esp_error_message = tval[2];
                   esp_error_code = tval[1];
-                  console.log(tval[2] + " code:" +  tval[1]);
+                  console.log("ERROR: " + tval[2] + " code:" +  tval[1]);
+                  CancelCurrentUpload();
+                }
+                if (tval[0] == 'MSG') {
+                  var error_message = tval[2];
+                  var error_code = tval[1];
+                  console.log("MSG: " + tval[2] + " code:" +  tval[1]);
                 }
             }
 

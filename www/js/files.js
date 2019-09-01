@@ -566,7 +566,7 @@ function files_serial_M20_list_failed(error_code, response) {
          alertdlg (translate_text_item("Error") + " (" + esp_error_code + ")", esp_error_message);
          esp_error_code = 0;
     } else {
-        alertdlg (translate_text_item("Error"), "Error " + errorcode + " : " + response);
+        alertdlg (translate_text_item("Error"), translate_text_item("No connection"));
     }
     files_build_display_filelist(false);
 }

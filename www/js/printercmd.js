@@ -49,6 +49,10 @@ function SendPrinterCommandSuccess(response) {
 }
 
 function SendPrinterCommandFailed(error_code, response) {
-    Monitor_output_Update("Error " + error_code + " :" + decode_entitie(response) + "\n");
-    console.log("Error " + error_code + " :" + decode_entitie(response));
+    if (error_code == 0) {
+        Monitor_output_Update(translate_text_item("No connection") + "\n");
+    } else {
+         Monitor_output_Update(translate_text_item("Error : ") + error_code + " :" + decode_entitie(response) + "\n");
+    }
+    console.log("printer cmd Error " + error_code + " :" + decode_entitie(response));
 }

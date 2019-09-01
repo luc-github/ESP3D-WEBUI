@@ -1,6 +1,7 @@
 var http_communication_locked = false;
 var http_cmd_list = [];
 var processing_cmd = false;
+var xmlhttpupload;
 
 var max_cmd = 20;
 
@@ -217,26 +218,32 @@ function SendFileHttp(url, postdata, progress_fn, result_fn, error_fn) {
     process_cmd();
 }
 
+function CancelCurrentUpload() {
+    xmlhttpupload.abort();
+    //http_communication_locked = false;
+    console.log("Cancel Upload");
+}
+
 function ProcessFileHttp(url, postdata, progressfn, resultfn, errorfn) {
     if (http_communication_locked) {
         errorfn(503, translate_text_item("Communication locked!"));
         return;
     }
     http_communication_locked = true;
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
+    xmlhttpupload = new XMLHttpRequest();
+    xmlhttpupload.onreadystatechange = function() {
+        if (xmlhttpupload.readyState == 4) {
             http_communication_locked = false;
-            if (xmlhttp.status == 200) {
-                if (typeof resultfn != 'undefined' && resultfn != null) resultfn(xmlhttp.responseText);
+            if (xmlhttpupload.status == 200) {
+                if (typeof resultfn != 'undefined' && resultfn != null) resultfn(xmlhttpupload.responseText);
             } else {
-                if (xmlhttp.status == 401) GetIdentificationStatus();
-                if (typeof errorfn != 'undefined' && errorfn != null) errorfn(xmlhttp.status, xmlhttp.responseText);
+                if (xmlhttpupload.status == 401) GetIdentificationStatus();
+                if (typeof errorfn != 'undefined' && errorfn != null) errorfn(xmlhttpupload.status, xmlhttpupload.responseText);
             }
         }
     }
     //console.log(url);
-    xmlhttp.open("POST", url, true);
-    if (typeof progressfn != 'undefined' && progressfn != null) xmlhttp.upload.addEventListener("progress", progressfn, false);
-    xmlhttp.send(postdata);
+    xmlhttpupload.open("POST", url, true);
+    if (typeof progressfn != 'undefined' && progressfn != null) xmlhttpupload.upload.addEventListener("progress", progressfn, false);
+    xmlhttpupload.send(postdata);
 }
