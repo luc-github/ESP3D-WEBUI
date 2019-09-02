@@ -50,7 +50,7 @@ function SendPrinterCommandSuccess(response) {
 
 function SendPrinterCommandFailed(error_code, response) {
     if (error_code == 0) {
-        Monitor_output_Update(translate_text_item("No connection") + "\n");
+        Monitor_output_Update(translate_text_item("Connection error") + "\n");
     } else {
          Monitor_output_Update(translate_text_item("Error : ") + error_code + " :" + decode_entitie(response) + "\n");
     }
