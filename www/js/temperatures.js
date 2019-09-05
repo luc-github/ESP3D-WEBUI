@@ -127,7 +127,7 @@ function get_Temperatures() {
 }
 
 function process_Temperatures(response) {
-    Monitor_output_Update(response);
+    if (target_firmware != "marlin-embedded") Monitor_output_Update(response);
     var regex_temp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi;
     var result;
     var timedata = new Date().getTime();
