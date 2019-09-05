@@ -151,9 +151,9 @@ function startSocket() {
                 if ((bytes[i] == 10) || (bytes[i] == 13)) {
                     wsmsg += msg;
                     Monitor_output_Update(wsmsg);
-                    //msg = wsmsg.replace("\n", "");
-                    //wsmsg = msg.replace("\r", "");
-                    //console.log(wsmsg);
+                    msg = wsmsg.replace("\n", "");
+                    wsmsg = msg.replace("\r", "");
+                    console.log(wsmsg);
                     if ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) process_socket_response(msg);
                     wsmsg = "";
                     msg = "";
@@ -680,12 +680,12 @@ function process_socket_response(msg) {
         }
     }
     if (target_firmware == "marlin-embedded") {
-        if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response += msg;
+        if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response += msg+"\n";
         if (!socket_is_settings && (msg.startsWith("  G21") || msg.startsWith("  G20"))) {
             socket_is_settings = true;
-            socket_response = msg;
+            socket_response = msg + "\n";
             //to stop waiting for data
-            SendGetHttp("/command?commandText=echo");
+            console.log("Got settings Start");
         }
         if (msg.startsWith("ok T:")) {
             process_Temperatures(msg);
@@ -693,9 +693,10 @@ function process_socket_response(msg) {
         if (msg.startsWith("X:")) {
             process_Position(msg);
         }
-        if (msg.startsWith("echo:Unknown command: \"echo\"")) {
+        if (msg.startsWith("ok")) {
             if (socket_is_settings) {
                 //update settings
+                console.log("Got settings End");
                 console.log(socket_response);
                 getESPconfigSuccess(socket_response);
                 socket_is_settings = false;
