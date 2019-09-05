@@ -1,4 +1,5 @@
 var interval_temperature = -1;
+var graph_started = false;
 
 var smoothieextuder = new SmoothieChart({
     millisPerPixel: 200,
@@ -70,11 +71,13 @@ function start_graph_output() {
     document.getElementById('temperatures_output').style.display = 'block';
     smoothieextuder.start();
     smoothiebed.start();
+    graph_started = true;
 }
 
 function stop_graph_output() {
     smoothieextuder.stop();
     smoothiebed.stop();
+    graph_started = false;
 }
 
 function on_autocheck_temperature(use_value) {

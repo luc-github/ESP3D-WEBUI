@@ -687,7 +687,8 @@ function process_socket_response(msg) {
             //to stop waiting for data
             console.log("Got settings Start");
         }
-        if (msg.startsWith("ok T:")) {
+        if (msg.startsWith("ok T:") || msg.startsWith(" T:")) {
+            if (!graph_started)start_graph_output();
             process_Temperatures(msg);
         }
         if (msg.startsWith("X:")) {
