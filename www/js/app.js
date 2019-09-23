@@ -694,6 +694,9 @@ function process_socket_response(msg) {
         if (msg.startsWith("X:")) {
             process_Position(msg);
         }
+        if (msg.startsWith("[esp3d]")) {
+            process_Custom(msg); // handles custom messages sent via M118
+        }
         if (msg.startsWith("ok")) {
             if (socket_is_settings) {
                 //update settings
