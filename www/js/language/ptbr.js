@@ -1,3 +1,4 @@
+//removeIf(ptbr_lang_disabled)
 //Brazilian Portuguese
 var ptbrtrans = {
 "pt-br":"Portugu&ecirc;s",
@@ -422,3 +423,4 @@ var ptbrtrans = {
 "Y Max travel, mm":"Y Max travel, mm",
 "Z Max travel, mm":"Z Max travel, mm"
 };
+//endRemoveIf(ptbr_lang_disabled)

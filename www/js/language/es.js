@@ -1,3 +1,4 @@
+//removeIf(es_lang_disabled)
 //Spanish
 var spanishtrans = {
 "es":"Espa&ntilde;ol",
@@ -365,3 +366,4 @@ var spanishtrans = {
 "error:64":"SD Card file empty",
 "error:70":"Bluetooth failed to start",
 };
+//endRemoveIf(es_lang_disabled)

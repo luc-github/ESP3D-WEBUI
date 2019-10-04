@@ -1,3 +1,4 @@
+//removeIf(it_lang_disabled)
 //italian
 var italiantrans = {
 "it":"Italiano",
@@ -365,3 +366,4 @@ var italiantrans = {
 "error:64":"SD Card file empty",
 "error:70":"Bluetooth failed to start",
 };
+//endRemoveIf(it_lang_disabled)

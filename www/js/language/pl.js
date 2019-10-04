@@ -1,3 +1,4 @@
+//removeIf(pl_lang_disabled)
 //Polish
 var polishtrans = {
 "pl":"Polski",
@@ -367,3 +368,4 @@ var polishtrans = {
 "error:70":"B&lstrok;&aogon;d uruchamiania Bluetooth",
 "error:700":"B&lstrok;&aogon;d: Nieznana komenda",
 };
+//endRemoveIf(pl_lang_disabled)

@@ -13,12 +13,21 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     fs = require('fs'),
     smoosher = require('gulp-smoosher');
+    size = require('gulp-filesize');
 
-var demoMode = false;
-var testMode = false;
+var en_lang = true;
+var fr_lang = false;
+var es_lang = false;
+var de_lang = false;
+var it_lang = false;
+var pl_lang = false;
+var ptbr_lang = false;
+var ru_lang = false;
+var uk_lang = false;
 
 function clean() {
     return del(['dist']);
+    
 }
 
 function clean2() {
@@ -35,7 +44,7 @@ function Copytest() {
         gulp.src(['www/index.html'])
         .pipe(removeCode({production: false}))
         .pipe(removeCode({cleanheader: true}))
-         .pipe(gulp.dest('dist')),
+        .pipe(gulp.dest('dist')),
         gulp.src(['www/images/**/*.*'])
             .pipe(gulp.dest('dist/images'))
     )
@@ -46,7 +55,7 @@ function Copy() {
         gulp.src(['www/index.html'])
         .pipe(removeCode({production: true}))
         .pipe(removeCode({cleanheader: true}))
-         .pipe(gulp.dest('dist')),
+        .pipe(gulp.dest('dist')),
         gulp.src(['www/images/**/*.*'])
             .pipe(gulp.dest('dist/images'))
     )
@@ -88,6 +97,116 @@ function replaceSVG() {
         .pipe(gulp.dest('dist'))
 }
 
+function clearlang() {
+   // fetch command line arguments
+    console.log("Enable Language:");
+    const arg = (argList => {
+
+      let arg = {}, a, opt, thisOpt, curOpt;
+      for (a = 0; a < argList.length; a++) {
+
+        thisOpt = argList[a].trim();
+        opt = thisOpt.replace(/^\-+/, '');
+
+        if (opt === thisOpt) {
+
+          // argument value
+          if (curOpt) arg[curOpt] = opt;
+          curOpt = null;
+
+        }
+        else {
+
+          // argument name
+          curOpt = opt;
+          arg[curOpt] = true;
+
+        }
+
+      }
+
+      return arg;
+
+    })(process.argv);
+    
+    if ((typeof arg.lang == 'undefined') || (arg.lang == 'all')) {
+        en_lang = true;
+        fr_lang = true;
+        es_lang = true;
+        de_lang = true;
+        it_lang = true;
+        pl_lang = true;
+        ptbr_lang = true;
+        ru_lang = true;
+        uk_lang = true;
+    }
+    if (arg.lang == 'en'){
+        en_lang = true;
+    }
+    if(en_lang){
+        console.log("en");
+    }
+    if (arg.lang == 'fr'){
+        fr_lang = true;
+    }
+    if(fr_lang){
+        console.log("fr");
+    }
+    if (arg.lang == 'es'){
+        es_lang = true;
+    }
+    if(es_lang){
+        console.log("es");
+    }
+    if (arg.lang == 'de'){
+        de_lang = true;
+    }
+    if(de_lang){
+        console.log("de");
+    }
+    if (arg.lang == 'it'){
+        it_lang = true;
+    }
+    if(it_lang){
+        console.log("it");
+    }
+    if (arg.lang == 'pl'){
+        pl_lang = true;
+    }
+    if(pl_lang){
+        console.log("pl");
+    }
+    if (arg.lang == 'ptbr'){
+        ptbr_lang = true;
+    }
+    if(ptbr_lang){
+        console.log("ptbr");
+    }
+    if (arg.lang == 'ru'){
+        ru_lang = true;
+    }
+    if(ru_lang){
+        console.log("ru");
+    }
+    if (arg.lang == 'uk'){
+        uk_lang = true;
+    }
+    if(uk_lang){
+        console.log("uk");
+    }
+    return gulp.src('dist/js/app.js')
+        .pipe(removeCode({de_lang_disabled: !de_lang}))
+        .pipe(removeCode({en_lang_disabled: !en_lang}))
+        .pipe(removeCode({es_lang_disabled: !es_lang}))
+        .pipe(removeCode({fr_lang_disabled: !fr_lang}))
+        .pipe(removeCode({it_lang_disabled: !it_lang}))
+        .pipe(removeCode({pl_lang_disabled: !pl_lang}))
+        .pipe(removeCode({ptbr_lang_disabled: !ptbr_lang}))
+        .pipe(removeCode({ru_lang_disabled: !ru_lang}))
+        .pipe(removeCode({uk_lang_disabled: !uk_lang}))
+        .pipe(gulp.dest('./dist/js/'))
+}
+
 function minifyApp() {
     return merge(
         gulp.src(['dist/js/app.js'])
@@ -125,9 +244,11 @@ function smoosh() {
 
 function compress() {
     return gulp.src('dist/index.html')
-        .pipe(gzip())
-        .pipe(gulp.dest('.'));
+        .pipe(gzip({ gzipOptions: { level: 9} }))
+        .pipe(gulp.dest('.'))
+        .pipe(size());
 }
+
 
 gulp.task(clean);
 gulp.task(lint);
@@ -139,10 +260,11 @@ gulp.task(concatApptest);
 gulp.task(minifyApp);
 gulp.task(smoosh);
 gulp.task(clean2);
+gulp.task(clearlang)
 
 var defaultSeries = gulp.series(clean,  lint, Copy, concatApp, minifyApp, includehtml, includehtml, smoosh);
 //var packageSeries = gulp.series(clean,  lint, Copy, concatApp, minifyApp, smoosh, compress);
-var packageSeries = gulp.series(clean,  lint, Copy, concatApp, includehtml, includehtml, replaceSVG,  minifyApp, smoosh, compress, clean2);
+var packageSeries = gulp.series(clean,  lint, Copy, concatApp, includehtml, includehtml, replaceSVG, clearlang, minifyApp, smoosh, compress, clean2);
 var package2Series = gulp.series(clean,  lint, Copy, concatApp, includehtml, includehtml, replaceSVG, smoosh);
 var package2testSeries = gulp.series(clean,  lint, Copytest, concatApptest, includehtml, includehtml, replaceSVG, smoosh);
 

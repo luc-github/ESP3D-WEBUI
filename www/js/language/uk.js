@@ -1,3 +1,4 @@
+//removeIf(uk_lang_disabled)
 //Ukrainian
 var ukrtrans = {
 "uk": "Українська",
@@ -364,3 +365,4 @@ var ukrtrans = {
 "error:64": "Файл відсутній на SD-карті",
 "error:70": "Запуск Bluetooth неможливий"
 };
+//endRemoveIf(uk_lang_disabled)

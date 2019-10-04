@@ -1,3 +1,4 @@
+//removeIf(de_lang_disabled)
 //german
 var germantrans = {
 "de":"Deutsch",
@@ -365,3 +366,4 @@ var germantrans = {
 "error:64":"SD Card file empty",
 "error:70":"Bluetooth failed to start",
 };
+//endRemoveIf(de_lang_disabled)

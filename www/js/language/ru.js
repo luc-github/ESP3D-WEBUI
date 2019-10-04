@@ -1,3 +1,4 @@
+//removeIf(ru_lang_disabled)
 //Russian
 var russiantrans = {
 "ru": "Русский",
@@ -364,3 +365,4 @@ var russiantrans = {
 "error:64": "Файл отсутствует на SD-карте",
 "error:70": "Запуск Bluetooth невозможен"
 };
+//endRemoveIf(ru_lang_disabled)

@@ -1,3 +1,4 @@
+//removeIf(en_lang_disabled)
 //english
 var englishtrans = {
 "en":"English",
@@ -62,3 +63,4 @@ var englishtrans = {
 "error:64":"SD Card file empty",
 "error:70":"Bluetooth failed to start",
 };
+//endRemoveIf(en_lang_disabled)

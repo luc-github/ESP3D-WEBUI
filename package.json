@@ -21,7 +21,8 @@
     "gulp-uglify": "latest",
     "gulp-zip": "latest",
     "jshint": "latest",
-    "merge-stream": "latest"
+    "merge-stream": "latest",
+    "gulp-filesize": "latest"
   },
   "repository": "https://github.com/luc-github/ESP3D-WEBUI",
   "author": "Luc LEBOSSE",
