@@ -244,7 +244,7 @@ function processMacroSave(answer) {
 function control_build_macro_button(index) {
     var content = "";
     var entry = control_macrolist[index];
-    content += "<button class='btn " + control_macrolist[index].class + "' type='text' ";
+    content += "<button class='btn fixedbutton " + control_macrolist[index].class + "' type='text' ";
     if (entry.glyph.length == 0) {
         content += "style='display:none'";
     }

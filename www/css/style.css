@@ -6,7 +6,12 @@ body {
 .form_control {
     height: 34px !important;
 }
-
+.fixedbutton{
+    width: 8em !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 .input-min {
     min-width: 8em;
 }
@@ -344,19 +349,19 @@ w25 {
     flex: 1;
 }
 
-@media only screen and (max-width: 1200px) {
-    .macro-container {
-        grid-template-columns: auto auto auto;
-    }
-}
-
 @media only screen and (max-width: 800px) {
     .grid-container {
         grid-template-columns: 100%;
     }
 }
 
-@media (min-width: 801px) and (max-width: 1600px) {
+@media (min-width: 1200px) and (max-width: 1350px){
+    .fixedbutton {
+        width: 6em !important;
+    }
+}
+
+@media  only screen and (max-width: 1600px) {
     .grid-container {
         grid-template-columns: 50% 50%;
     }

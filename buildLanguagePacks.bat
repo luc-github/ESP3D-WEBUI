@@ -1,4 +1,5 @@
 cd %~dp0
+cmd.exe /c npm install
 rmdir /Q /S languages
 mkdir languages\en
 cmd.exe /c gulp package --lang en
