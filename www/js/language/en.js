@@ -12,7 +12,7 @@ var englishtrans = {
 "Door:2":"Door opened. Hold (or parking retract) in-progress. Reset will throw an alarm.",
 "Door:3":"Door closed and resuming. Restoring from park, if applicable. Reset will throw an alarm.",
 "ALARM:1":"Hard limit has been triggered. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.",
-"ALARM:2":"Soft limit alarm. G-code motion target exceeds machine travel. Machine position retained. Alarm may be safely unlocked.",
+"ALARM:2":"Soft limit alarm. G-code motion target exceeds machine travel. Machine position retained. Alarm may be safely unlocked, click the Reset Button.",
 "ALARM:3":"Reset while in motion. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.",
 "ALARM:4":"Probe fail. Probe is not in the expected initial state before starting probe cycle.",
 "ALARM:5":"Probe fail. Probe did not contact the workpiece within the programmed travel for G38.2 and G38.4.",
