@@ -681,7 +681,7 @@ function process_socket_response(msg) {
     }
     if (target_firmware == "marlin-embedded") {
         if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response += msg+"\n";
-        if (!socket_is_settings && (msg.startsWith("  G21") || msg.startsWith("  G20"))) {
+        if (!socket_is_settings && (msg.startsWith("  G21") || msg.startsWith("  G20") || msg.startsWith("echo:  G21") || msg.startsWith("echo:  G20"))) {
             socket_is_settings = true;
             socket_response = msg + "\n";
             //to stop waiting for data

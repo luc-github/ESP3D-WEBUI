@@ -176,7 +176,7 @@ function config_check_value(value, index, is_override) {
             config_error_msg = translate_text_item("cannot have '-', '#' char or be empty");
         }
     } else {
-        if ((value.trim()[0] == '-') || (value.length === 0) || ((value.toLowerCase().indexOf("e") != -1) && (value.toLowerCase().indexOf("true") == -1) && (value.toLowerCase().indexOf("false") == -1))) {
+        if ((value.trim()[0] == '-') || (value.length === 0) || ((value.indexOf("e") != -1) && (value.toLowerCase().indexOf("true") == -1) && (value.toLowerCase().indexOf("false") == -1))) {
             isvalid = false;
             config_error_msg = translate_text_item("cannot have '-', 'e' char or be empty");
         }
@@ -224,7 +224,7 @@ function create_config_entry(sentry, vindex) {
         else ssentry = sentry.replace("Config:", "#");
     }
     if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra") || (target_firmware == "marlin-embedded")) {
-        if (sentry.startsWith("echo:  ")) ssentry = sentry.replace("echo:", "");
+        if (sentry.startsWith("echo: ")) ssentry = sentry.replace("echo:", "");
         else ssentry = sentry.replace("echo:", "#");
     }
     while (ssentry.indexOf("\t") > -1) {
@@ -456,7 +456,7 @@ function configGetvalue(index, is_override) {
         document.getElementById('icon_config_' + prefix + index).className = "form-control-feedback has-error ico_feedback";
         document.getElementById('icon_config_' + prefix + index).innerHTML = get_icon_svg("remove");
         document.getElementById('status_config_' + prefix + index).className = "form-group has-feedback has-error";
-        alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be ") + config_error_msg + " !");
+        alertdlg(translate_text_item("Out of range"), translate_text_item("Value ") + config_error_msg + " !");
     } else {
         //value is ok save it
         var cmd = item.cmd + value;
