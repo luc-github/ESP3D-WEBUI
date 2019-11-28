@@ -349,6 +349,12 @@ w25 {
     flex: 1;
 }
 
+@media only screen and (max-width: 1200px) {
+    .macro-container {
+        grid-template-columns: auto auto auto;
+    }
+}
+
 @media only screen and (max-width: 800px) {
     .grid-container {
         grid-template-columns: 100%;
@@ -361,7 +367,7 @@ w25 {
     }
 }
 
-@media  only screen and (max-width: 1600px) {
+@media (min-width: 801px) and (max-width: 1600px) {
     .grid-container {
         grid-template-columns: 50% 50%;
     }
