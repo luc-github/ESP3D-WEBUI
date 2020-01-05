@@ -275,6 +275,7 @@ function applypreferenceslist() {
         document.getElementById('first_extruder_UI').style.display = 'none';
         document.getElementById('temperature_secondExtruder').style.display = 'none';
         document.getElementById('mixed_extruder_UI').style.display = 'block';
+        temperature_second_extruder(false);
         var content = "";
         for (i = 0; i < preferenceslist[0].number_extruders; i++) {
             content += "<option value='" + i + "'>" + i + "</option>";
@@ -286,7 +287,12 @@ function applypreferenceslist() {
         if (preferenceslist[0].number_extruders == '2') {
             document.getElementById('second_extruder_UI').style.display = 'block';
             document.getElementById('temperature_secondExtruder').style.display = 'table-row';
-        }
+            temperature_second_extruder(true);
+        } else {
+			document.getElementById('second_extruder_UI').style.display = 'none';
+            document.getElementById('temperature_secondExtruder').style.display = 'none';
+            temperature_second_extruder(false);
+		}
     }
     if (preferenceslist[0].enable_lock_UI === 'true') {
         document.getElementById('lock_ui_btn').style.display = 'block';
