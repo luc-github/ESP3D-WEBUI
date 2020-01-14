@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Wiki
-    url: https://github.com/luc-github/ESP3D/wiki
+    url: https://github.com/luc-github/ESP3D-WEBUI/wiki
     about: The Wiki has lot of informations.
   - name: Gitter chat
     url: https://gitter.im/luc-github/ESP3D
