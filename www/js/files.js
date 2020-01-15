@@ -551,7 +551,7 @@ function files_directSD_list_success(response_text) {
     if (typeof response.used != 'undefined') vused = response.used;
     if (typeof response.occupation != 'undefined') voccupation = response.occupation;
     files_status_list.push({
-        status: response.status,
+        status: (response.status.trim().toLowerCase() == "ok")? translate_text_item("Upload done") : translate_text_item(response.status),
         path: response.path,
         used: vused,
         total: vtotal,
