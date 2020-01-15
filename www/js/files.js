@@ -505,7 +505,7 @@ function files_serial_ls_list_success(response_text) {
 }
 
 function files_directSD_list_success(response_text) {
-    var error = false;
+	var error = false;
     var response;
     document.getElementById('files_navigation_buttons').style.display = "block";
     try {
