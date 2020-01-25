@@ -6,8 +6,8 @@ div.tab {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     background-color: #f1f1f1;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 
@@ -28,7 +28,8 @@ div.tab button {
 
 /* Change background color of buttons on hover */
 div.tab button:hover {
-    background-color: #ddd;
+    background-color: #337ab7;
+    color: #ffffff;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     border-top: 1px solid #ddd;

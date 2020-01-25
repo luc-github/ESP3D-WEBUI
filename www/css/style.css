@@ -1,7 +1,21 @@
 body {
     font-family: "Arial", sans-serif;
     font-size: 14px;
+    background-color: #555;
 }
+
+#bedTempgraph
+{
+    height: 200px !important;
+    width: 300px !important;
+}
+
+#extruderTempgraph
+{
+    height: 200px !important;
+    width: 300px !important;
+}
+
 
 .form_control {
     height: 34px !important;
