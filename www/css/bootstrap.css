@@ -5392,7 +5392,7 @@ button.list-group-item-danger.active:focus {
 }
 
 .panel {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     background-color: #ffffff;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -5671,7 +5671,7 @@ button.list-group-item-danger.active:focus {
 
 .panel-default>.panel-heading {
     color: #333333;
-    background-color: #f5f5f5;
+    background-color: #e2f6ff;
     border-color: #dddddd;
 }
 
