@@ -1,0 +1,57 @@
+<div id="memotab" class="tabcontent">
+   <center>        
+	<h2>SafeMemo</h2>				
+	<!-- Input-Formular -->			
+		<div class="content">				
+			<div style="padding:20px;">								
+					<p>add Note <span id="num_keyvalues"></span></p>
+					<label for="name"></label><textarea id="name" placeholder="Subject">Subject</textarea><br />
+					<label for="value"></label><textarea class="textnote" id="value" placeholder="Note">Note</textarea><br /><br />					
+					<button onclick="setItemToStorage();" title="Save Note" id="greenbutton">
+						<span><svg width='1.3em' height='1.0em' viewBox='0 0 1300 1200'>
+								<g transform='translate(50,1200) scale(1, -1)'>
+								<path  fill='currentColor' d='M1100 1000l-2 -149l-299 -299l-95 95q-9 9 -21.5 9t-21.5 -9l-149 -147h-312v-400h-150q-21 0 -35.5 14.5t-14.5 35.5v1000q0 20 14.5 35t35.5 15h250v-300h500v300h100zM700 1000h-100v200h100v-200zM1132 638l106 -106q7 -7 7 -17.5t-7 -17.5l-420 -421q-8 -7 -18 -7 t-18 7l-202 203q-8 7 -8 17.5t8 17.5l106 106q7 8 17.5 8t17.5 -8l79 -79l297 297q7 7 17.5 7t17.5 -7z' />
+								</g>
+							</svg>
+						</span>					
+					</button>
+					<button onclick="getItemFromStorage();" title="Add Subject -> klick Load -> you get the associated Note" id="greenbutton">
+						<span><svg width='1.3em' height='1.0em' viewBox='0 0 1300 1200'>
+								<g transform='translate(50,1200) scale(1, -1)'>
+								<path  fill='currentColor' d='M947 1060l135 135q7 7 12.5 5t5.5 -13v-361q0 -11 -7.5 -18.5t-18.5 -7.5h-361q-11 0 -13 5.5t5 12.5l134 134q-110 75 -239 75q-116 0 -214.5 -57t-155.5 -155.5t-57 -214.5h-150q0 117 45.5 224t123 184.5t184.5 123t224 45.5q192 0 347 -117zM1027 600h150 q0 -117 -45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5q-192 0 -348 118l-134 -134q-7 -8 -12.5 -5.5t-5.5 12.5v360q0 11 7.5 18.5t18.5 7.5h360q10 0 12.5 -5.5t-5.5 -12.5l-133 -133q110 -76 240 -76q116 0 214.5 57t155.5 155.5t57 214.5z' />
+								</g>
+							</svg>
+						</span>
+					</button>
+					<button onclick="getItemtoNote ();">Take Subject in Note</button>
+					<button onclick="removeItemFromStorage();" id="deletebutton">This Note
+						<span><svg width="1.3em" height="1.0em" viewBox="0 0 1300 1200">
+                                 <g transform="translate(50,1200) scale(1, -1)">
+                                 <path fill="currentColor" d="M500 1300h300q41 0 70.5 -29.5t29.5 -70.5v-100h275q10 0 17.5 -7.5t7.5 -17.5v-75h-1100v75q0 10 7.5 17.5t17.5 7.5h275v100q0 41 29.5 70.5t70.5 29.5zM500 1200v-100h300v100h-300zM1100 900v-800q0 -41 -29.5 -70.5t-70.5 -29.5h-700q-41 0 -70.5 29.5t-29.5 70.5 v800h900zM300 800v-700h100v700h-100zM500 800v-700h100v700h-100zM700 800v-700h100v700h-100zM900 800v-700h100v700h-100z"></path>
+                                    </g>
+                              </svg>
+                          </span>
+					</button>					
+					<button onclick="clearStorage();" id="deletebutton">All Notes
+						<span><svg width="1.3em" height="1.0em" viewBox="0 0 1300 1200">
+                                 <g transform="translate(50,1200) scale(1, -1)">
+                                 <path fill="currentColor" d="M500 1300h300q41 0 70.5 -29.5t29.5 -70.5v-100h275q10 0 17.5 -7.5t7.5 -17.5v-75h-1100v75q0 10 7.5 17.5t17.5 7.5h275v100q0 41 29.5 70.5t70.5 29.5zM500 1200v-100h300v100h-300zM1100 900v-800q0 -41 -29.5 -70.5t-70.5 -29.5h-700q-41 0 -70.5 29.5t-29.5 70.5 v800h900zM300 800v-700h100v700h-100zM500 800v-700h100v700h-100zM700 800v-700h100v700h-100zM900 800v-700h100v700h-100z"></path>
+                                   </g>
+                              </svg>
+                          </span>	
+					</button>
+					
+					<!--Trash can	
+					<div id="drop">
+						Trash can
+				   </div>-->							
+			</div>	
+		</div>	
+			
+				
+	<!-- Output of the entries of localStorage -->				
+		<div id="keyvalues"></div>			
+		
+   </center>
+
+</div>
