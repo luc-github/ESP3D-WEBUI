@@ -30,6 +30,7 @@
     <link href="css/tabs.css" rel="stylesheet">
     <link href="css/modaldlg.css" rel="stylesheet">
     <link href="css/wizard.css" rel="stylesheet">
+	<link href="css/memo.css" rel="stylesheet">
     <!--endRemoveIf(cleanheader)-->
 
     <!-- smoosh -->
@@ -37,7 +38,7 @@
     <!-- endsmoosh -->
 </head>
 
-<body>
+<body onload="showStorage();">
     <div id='loadingmsg'>
         <center>
             <H3>Loading....</H3>
@@ -54,6 +55,7 @@
         <div id="mainuitabscontent">
             <file-include w3-include-html="'sub/dashtab.html'"></file-include>
             <file-include w3-include-html="'sub/cameratab.html'"></file-include>
+			<file-include w3-include-html="'sub/memo.html'"></file-include>
             <file-include w3-include-html="'sub/configtab.html'"></file-include>
             <file-include w3-include-html="'sub/settingstab.html'"></file-include>
         </div>
@@ -113,6 +115,7 @@
     <script src="js/localstorage.js"></script>
     <script src="js/UIdisableddlg.js"></script>
     <script src="js/custom.js"></script>
+	<script src="js/memo.js"></script>
     <!--endRemoveIf(cleanheader)-->
     <!-- smoosh -->
     <script src="js/app.js"></script>
