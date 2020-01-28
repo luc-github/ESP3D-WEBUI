@@ -1,9 +1,4 @@
-			body{
-				font-family: cursive;
-				font-size:14px;
-				background-color:#555555;
-			}
-			
+					
 			label {
 				display: block;
 				float: left;
@@ -97,14 +92,16 @@
 				color:#000000; 
 				padding:20px 20px 10px 20px;
 				text-align:center;	
-				font-weight: bold;
+				font-weight: bold;				
+				overflow:hidden;
 			}
 			
 			.notiz {
 				float:left;
 				color:#000000; 
 				padding:8px 8px 20px 0px;
-				width:75%;						
+				width:75%;		
+				overflow:hidden;				
 			}
 			
 			.img{
@@ -121,111 +118,6 @@
 				margin: 10px 0 10px 10px; 
 				padding: 10px; 
 				float:right;
-			}
-			
-			
+			}			
 
-			
-			
-			
-/* ---------------MENU Anfang----------------------------------------------------------------------------------------------- */			
-			
-			/* General styles for all menus */
-			.cbp-spmenu {
-			background: #ffffff;
-			position: fixed;
-			border-right:5px solid #ececec;
-			}
-
-			.cbp-spmenu h3 {
-			color: #000000;
-			font-size: 1.9em;
-			padding: 13px;
-			margin: 0;
-			font-weight: 300;
-			background: #ffffff;
-			}
-
-			.cbp-spmenu a {
-			display: block;
-			color: #000000;
-			font-size: 1.1em;
-			font-weight: 300;
-			}
-
-			.cbp-spmenu a:hover {
-			background: #ececec;
-			 color: #000000;
-			}
-
-			.cbp-spmenu a:active {
-			background: #ffffff;
-			 color: #47a3da;
-			}
-
-			.cbp-spmenu-vertical {
-			width: 240px;
-			height: 100%;
-			top: 0;
-			z-index: 10000;
-			}
-
-			.cbp-spmenu-vertical a {
-			border-bottom: 1px solid #ececec;
-			padding: 1em;
-			text-decoration: none;
-			}
-
-			.cbp-spmenu-horizontal {
-			width: 100%;
-			height: 150px;
-			left: 0;
-			z-index: 10000;
-			overflow: hidden;
-			}
-
-			.cbp-spmenu-horizontal h3 {
-			height: 100%;
-			width: 20%;
-			float: left;
-			}
-
-			.cbp-spmenu-horizontal a {
-			float: left;
-			width: 20%;
-			padding: 0.8em;
-			border-left: 1px solid #ececec;
-			}
-
-			/* Vertical menu that slides from the left or right */
-
-			.cbp-spmenu-left {
-			left: -240px;
-			}
-
-			.cbp-spmenu-right {
-			right: -240px;
-			}
-
-			.cbp-spmenu-left.cbp-spmenu-open {
-			left: 0px;
-			}
-
-			.cbp-spmenu-right.cbp-spmenu-open {
-			right: 0px;
-			}
-
-			/* Transitions */
-
-			.cbp-spmenu,
-			.cbp-spmenu-push {
-			-webkit-transition: all 0.5s ease;
-			-moz-transition: all 0.5s ease;
-			-ms-transition: all 0.5s ease;
-			-o-transition: all 0.5s ease;
-			transition: all 0.5s ease;
-			}
-			
-
-/* ---------------MENU ENDE----------------------------------------------------------------------------------------------- */
 	

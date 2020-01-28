@@ -448,11 +448,13 @@ hr {
 
 h1,
 h2,
+h3,
 h4,
 h5,
 h6,
 .h1,
 .h2,
+.h3,
 .h4,
 .h5,
 .h6 {
@@ -460,14 +462,6 @@ h6,
     font-weight: 500;
     line-height: 1.1;
     color: inherit;
-}
-
-h3,
-.h3, {
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: #fff;
 }
 
 h1 small,
@@ -557,6 +551,7 @@ h1,
 h2,
 .h2 {
     font-size: 30px;
+	color:#ffffff;
 }
 
 h3,
@@ -2211,7 +2206,6 @@ legend {
 label {
     display: inline-block;
     max-width: 100%;
-    margin-bottom: 5px;
     font-weight: bold;
 }
 

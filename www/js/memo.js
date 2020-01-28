@@ -46,7 +46,7 @@
 			  var keyValuePairs = '';
 			  for (var key in localStorage) {
 				if (! localStorage.hasOwnProperty(key)) continue;
-				keyValuePairs += '<div class="notizeintrag" id="notiz" >' + '<div class="notizheader" id="header">' + key + '</div>' + '<div class="img" >' + '<img src="images/note-small.png" />' + '</div>' + '<div class="notiz">' + localStorage.getItem(key) + '</div>' + '</div>';
+				keyValuePairs += '<div class="notizeintrag" id="notiz" >' + '<div class="notizheader" id="header">' + key + '</div>' + '<div class="img" >' + '►' + '</div>' + '<div class="notiz">' + localStorage.getItem(key) + '</div>' + '</div>';
 			  }
 			  document.getElementById('keyvalues').innerHTML = keyValuePairs;
 			  // zeigt die Anzahl der Notizen Summe als Zahl
