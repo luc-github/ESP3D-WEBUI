@@ -8,7 +8,7 @@ body {
     height: 34px !important;
 }
 .fixedbutton{
-    width: 8em !important;
+    width: 9em !important;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -364,13 +364,19 @@ w25 {
 
 @media (min-width: 1200px) and (max-width: 1350px){
     .fixedbutton {
-        width: 6em !important;
+        width: 7em !important;
     }
 }
 
-@media (min-width: 801px) and (max-width: 1600px) {
+@media (min-width: 801px) and (max-width: 1570px) {
     .grid-container {
         grid-template-columns: 50% 50%;
+    }
+}
+
+@media (min-width: 1571px) and (max-width: 1600px) {
+    .grid-container {
+        grid-template-columns: 40% 30% 30%;
     }
 }
 

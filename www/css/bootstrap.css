@@ -2368,6 +2368,10 @@ input[type="search"] {
     cursor: pointer;
 }
 
+.checkbox label {
+    float:none;
+}
+
 .radio input[type="radio"],
 .radio-inline input[type="radio"],
 .checkbox input[type="checkbox"],
