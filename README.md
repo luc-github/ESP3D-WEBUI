@@ -1,4 +1,6 @@
-# ESP3D-WEBUI 
+# customized ESP3D-BOXUI (WEBUI) 
+This is a customized Version of the WebUi from the ESP3D Project from Luc. I have changed the Design for a better optic and added a note-function called "Safe-Memo". This Note Function works with localStorage, that means it works only on one PC and lose the data if some other device is used. That's because the localStorage is written on every device. So keep it in mind - Your data are not lost, you must go to the device where you have added the Note in SafeMemo-Tab.
+
 [Latest stable release ![Release Version](https://img.shields.io/github/v/release/luc-github/ESP3D-WEBUI?color=green&include_prereleases&style=plastic) ![Release Date](https://img.shields.io/github/release-date/luc-github/ESP3D-WEBUI.svg?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/releases/latest/) ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/2.1?style=plastic)   
 
 [Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0) ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/3.0?style=plastic)   
@@ -71,12 +73,9 @@ ESP3D SPIFFS:
 
 
 ## Installation
-Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.1) and copy the index.html.gz file on root of SPIFFS, in theory ESP3D have a version of web-ui but it may not be the latest one
+Use the index.html.gz File from the root directory of this repository and upload it to your ESP3D with any Webbrowser. Go the ESP3D Settings Tab in the WebUI and upload the File.
+
+If you want change back to the index.html.gz from the original WebUi, copy the index File from the root of ESP3D or better ESP3D WebUI and copy the index.html.gz file on root of SPIFFS. latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/2.1) 
 
 ## Contribution / development
 Check wiki section [Contribution/Development](https://github.com/luc-github/ESP3D-WEBUI/wiki/Compilation---Development)
-
-## Issues / Questions
-You can submit ticket [here](https://github.com/luc-github/ESP3D-WEBUI/issues)
-
- 
