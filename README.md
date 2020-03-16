@@ -44,6 +44,7 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
 Please look at screenshots:
 responsive menu with hamburger menu on 1 colum:  
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/1-colum.JPG'/> 
+
 for 2, 3 and 4 colum the menu is attached to the bottom
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/2-colum-better.JPG'/> 
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/3-colum.JPG'/>
