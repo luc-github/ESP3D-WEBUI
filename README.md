@@ -10,7 +10,7 @@ Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webu
 - Print Progress Bar showing print progress (Marlin firmware)
 - SafeMemo allow to to safe Notes
 - customized Menu for 1, 2, 3 and 4 Colum
-- integrated Clock in Header
+- integrated Clock in Header and a lot of style Changes
 - fully configure ESP wifi
 - macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
 - supports currently English, French, German (thanks @leseaw) and Spanish languages
