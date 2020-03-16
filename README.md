@@ -20,6 +20,7 @@ Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webu
 - control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
 
 Please look at screenshots:
+
 responsive menu with hamburger menu on 1 colum:  
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/1-colum.JPG'/> 
 
