@@ -1,5 +1,5 @@
 # customized ESP3D-BOXUI (WEBUI) 
-This is a customized Version of the WebUi from the ESP3D Project from Luc. I have changed the Design for a better optic and added a note-function called "Safe-Memo". This Note Function works with localStorage, that means it works only on one PC and lose the data if some other device is used. That's because the localStorage is written on every device. So keep it in mind - Your data are not lost, you must go to the device where you have added the Note in SafeMemo-Tab.
+This is a customized Version of the WebUi from the ESP3D Project from Luc. I have changed the Menu and Design for a better optic and added a note-function called "Safe-Memo" and Printprogress function. This Note Function works with localStorage, that means it works only on one PC and lose the data if some other device is used. That's because the localStorage is written on every device. So keep it in mind - Your data are not lost, you must go to the device where you have added the Note in SafeMemo-Tab. The Printprogress works with the Gcode M27 Command. With Marlin Firmware it works really nice, but i don't know how other Firmwares will handle it. 
 
 [Latest stable release ![Release Version](https://img.shields.io/github/v/release/luc-github/ESP3D-WEBUI?color=green&include_prereleases&style=plastic) ![Release Date](https://img.shields.io/github/release-date/luc-github/ESP3D-WEBUI.svg?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/releases/latest/) ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/2.1?style=plastic)   
 
@@ -28,48 +28,52 @@ So I came with a full rewrite using pure javascript and resized resources:
 and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
 
 ## Features
-- It supports several firmwares based on Repetier, Marlin and Smoothieware.
-- It allows to fully configure ESP wifi
-- It has a macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
-- It supports currently English, French, German (thanks @leseaw) and Spanish languages
-- It allows to display a web camera in UI or detached
-- It allows to edit the Repetier EEPROM, Smoothieware config file, Marlin and GRBL settings
-- It allows to update the ESP3D by uploading the FW
-- it allows to control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
+- It supports Marlin firmware.
+- And sholud support several firmwares based on Repetier and Smoothieware.
+- Print Progress Bar shwoing print progress
+- SafeMemo allow to to safe Notes
+- customized Menu for 1, 2, 3 and 4 Colum
+- integrated Clock in Header
+- fully configure ESP wifi
+- macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
+- supports currently English, French, German (thanks @leseaw) and Spanish languages
+- display a web camera in UI or detached
+- edit the Repetier EEPROM, Smoothieware config file, Marlin and GRBL settings
+- update the ESP3D by uploading the FW
+- control and monitor your 3D printer in every aspect (position, temperature, print, SD card content, custom command
 
 Please look at screenshots:
-Main tab and menu:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full1.PNG'/>   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full2.PNG'/>   
-Control panel:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/controls.PNG'/>  
-Macro dialog:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Macro.PNG'/>   
-Temperatures panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/temperatures.PNG'/>   
-Extruder panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/esxtruders.PNG'/>  
-SD card panel:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.PNG'/>  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD1.5.PNG'/>   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD2.PNG'/>  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SD-Dir.PNG'/>  
+responsive menu with hamburger menu on 1 colum:  
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/1-colum.JPG'/> 
+for 2, 3 and 4 colum the menu is attached to the bottom
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/2-colum-better.JPG'/> 
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/3-colum.JPG'/>
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/4-colum.JPG'/>
+Print Progress, Main tab and menu:   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/print-progress.JPG'/>      
+Safe Memo:  
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-safe-memo.JPG'/> 
 Camera Tab:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Camera.PNG'/>  
-Repetier EEPROM Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Repetier.PNG'/>  
-Smoothieware config Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/smoothieware.PNG'/>  
-Marlin config Editor tab:  
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Marlin.PNG'/>  
-GRBL config Editor tab: 
-<img src='https://user-images.githubusercontent.com/8822552/37540735-60bada08-2958-11e8-92ee-69aee4b83e7a.png'/> 
-ESP3D settings Editor:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/ESP3D1.PNG'/>  
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-camera.JPG'/>
+Temperatures panel:   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-temperatur.JPG'/>  
+SD card panel:   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-sd-card.JPG'/>   
+Printer config Editor:  
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-printer-settings2.JPG'/> 
+Command Panel for Printer: 
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-command-panel.JPG'/>
+ESP3D settings:  
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-settings-programm.JPG'/>
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-settings.JPG'/> 
 ESP3D Status:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/status.PNG'/>   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-status.JPG'/>   
 ESP3D SPIFFS:   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/SPIFFS.PNG'/>   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-SPIFFS.JPG'/> 
+Macro Popup dialog:   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-makros.JPG'/>   
+ESP3D Setup Guid:   
+<img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/master/images/esp3d-setup.JPG'/> 
 
 
 ## Installation
