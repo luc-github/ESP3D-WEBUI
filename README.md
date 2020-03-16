@@ -1,31 +1,9 @@
 # customized ESP3D-BOXUI (WEBUI) 
 This is a customized Version of the WebUi from the ESP3D Project from Luc. I have changed the Menu and Design for a better optic and added a note-function called "Safe-Memo" and Printprogress function. This Note Function works with localStorage, that means it works only on one PC and lose the data if some other device is used. That's because the localStorage is written on every device. So keep it in mind - Your data are not lost, you must go to the device where you have added the Note in SafeMemo-Tab. The Printprogress works with the Gcode M27 Command. With Marlin Firmware it works really nice, but i don't know how other Firmwares will handle it. 
 
-[Latest stable release ![Release Version](https://img.shields.io/github/v/release/luc-github/ESP3D-WEBUI?color=green&include_prereleases&style=plastic) ![Release Date](https://img.shields.io/github/release-date/luc-github/ESP3D-WEBUI.svg?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/releases/latest/) ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/2.1?style=plastic)   
-
-[Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0) ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/3.0?style=plastic)   
-
 ## What is that ?
 A web configuration tool for ESP3D 2.1
 Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webui](http://imrahil.github.io/smoothieware-webui/) to get a multi firmware support for [Repetier](https://github.com/repetier/Repetier-Firmware), [Repetier for Davinci printer](https://github.com/luc-github/Repetier-Firmware-0.92), (Marlin)[https://github.com/MarlinFirmware], [Marlin Kimbra](https://github.com/MagoKimbra/MarlinKimbra) and of course [Smoothieware](https://github.com/Smoothieware/Smoothieware)
-
-## Why doing it ?
-Original I ported [smoothieware-webui](http://imrahil.github.io/smoothieware-webui/) to support [ESP3D firmware](https://github.com/luc-github/ESP3D) and it was working pretty well and gave :[smoothieware-webui-for-ESP3D](https://github.com/luc-github/smoothieware-webui-for-ESP3D) 
-But this UI has a 2 big limitations:
-1 - you need internet access to get all libraries available to download, which may not happen when ESP is in AP mode for configuration if you do not have all js/css in your browser cache, or if you want to use in local environement, in that case not only ESP AP mode is not displaying UI properly but also STA mode - so it make the ESP useless
-
-2 - it rely on server availability and certificat check, I got several certificat failure for unknown reason that made the UI not working
-
-So the solution was to make all resources available - easy no ?
-
-Yes but!  ESP webserver is a convenient but it is also a very light webserver, allowing no more than 5 active connections at once and with a pretty limited filesystem space, so even concatenated all resources like bootstrap icon, angular and others libraries do not work as expected and do not fit the available space.
-
-So I came with a full rewrite using pure javascript and resized resources:
-1 - a compressed css based on [bootstrap](http://getbootstrap.com/css/) 
-2 - a local limited version of svg based of [Glyphicons Halflings](http://glyphicons.com/) to get a small footprint.
-3 - a customized version of [smoothiecharts](http://smoothiecharts.org/) is used to display temperatures charts, it is simple and perfectly sized for the current purpose
-
-and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
 
 ## Features
 - support several firmwares based on Marlin, Repetier and Smoothieware.
