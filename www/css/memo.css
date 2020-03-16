@@ -15,7 +15,7 @@
 				width:100%; 
 				color:#000000; 
 				padding:0px; 
-				margin-left: 5px; 
+				margin-left: 0px; 
 				margin-right: 0px; 
 				margin-bottom:15px;
 			}
@@ -79,8 +79,8 @@
 				-moz-box-shadow: 0 8px 6px -6px #ACA4A4; 
 				box-shadow: 0 8px 6px -6px #ACA4A4; 
 				background:#FFFFFF; 
-				width: 32.0%;
-				margin-left: 5px; 
+				width: 32%;
+				margin-left: 0px; 
 				margin-right: 10px; 
 				margin-bottom:10px;			
 			}

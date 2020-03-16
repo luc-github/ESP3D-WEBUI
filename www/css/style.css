@@ -150,7 +150,7 @@ body {
 }
 
 .panel-footer-height {
-    min-height: 5.5em;
+    min-height: 4em;
 }
 
 .panel-scroll {
@@ -257,8 +257,8 @@ w25 {
     }
 
     .panel {
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: -17px;
+        margin-right: -13px;
     }
 
     .pull-left,
@@ -275,13 +275,13 @@ w25 {
 @media (min-width: 361px) and (max-width: 640px) {
     .container-fluid {
         min-width: 350px;
-        margin-left: 0px;
-        margin-right: -5px;
+        margin-left: -10px;
+        margin-right: -10px;
     }
 
     .panel {
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: -17px;
+        margin-right: -13px;
     }
 
     noshowonlowrestab,
@@ -295,13 +295,6 @@ w25 {
     grid-gap: 10px;
     padding: 10px;
     grid-template-columns: auto auto auto auto auto;
-}
-
-.grid-container2 {
-    display: inline-grid;
-    grid-gap: 10px;
-    padding: 1px 0 0 10px;
-    grid-template-columns: auto;
 }
 
 .position-container {
@@ -365,25 +358,7 @@ w25 {
 
 @media only screen and (max-width: 800px) {
     .grid-container {
-        grid-template-columns: 101%;
-    }
-}
-
-@media (min-width: 250px) and (max-width: 360px){
-    .fixedbutton {
-        width: 6em !important;
-    }
-}
-
-@media (min-width: 361px) and (max-width: 470px){
-    .fixedbutton {
-        width: 7em !important;
-    }
-}
-
-@media (min-width: 801px) and (max-width: 920px){
-    .fixedbutton {
-        width: 8em !important;
+        grid-template-columns: 100%;
     }
 }
 
@@ -401,25 +376,25 @@ w25 {
 
 @media (min-width: 1571px) and (max-width: 1600px) {
     .grid-container {
-        grid-template-columns: 39.5% 30% 30%;
+        grid-template-columns: 40% 30% 30%;
     }
 }
 
 @media (min-width: 1601px) and (max-width: 2400px) {
     .grid-container {
-        grid-template-columns: 39.5% 30% 30%;
+        grid-template-columns: 33% 34% 33%;
     }
 }
 
 @media (min-width: 2401px) and (max-width: 3200px) {
     .grid-container {
-        grid-template-columns: 25% 25% 25% 24.5%;
+        grid-template-columns: 25% 25% 25% 25%;
     }
 }
 
 @media (min-width: 3201px) and (max-width: 4000px) {
     .grid-container {
-        grid-template-columns: 20% 20% 20% 20% 19.5%;
+        grid-template-columns: 20% 20% 20% 20% 20%;
     }
 }
 

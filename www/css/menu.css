@@ -1,5 +1,5 @@
 .dropbtn {
-    padding: 23px;
+    padding: 16px;
     font-size: 14px;
     border: none;
     cursor: pointer;
@@ -38,8 +38,8 @@
     display: block;
 }
 
-.dropmenu-content :hover,
-.dropdown-content :hover {
+.dropmenu-content a:hover,
+.dropdown-content a:hover {
 	color: #ffffff;
     background-color: #337ab7;
 }
@@ -59,7 +59,7 @@
 
 .menu-divider {
     height: 1px;
-    margin: 0;
+    margin: 2px 0;
     overflow: hidden;
     background-color: #e5e5e5;
 }
@@ -84,6 +84,6 @@
 @media screen and (max-width: 767px) {
     .dropdown-content {
         top: 3em;
-        right: 0;
+        left: 1.2em;
     }
 }
