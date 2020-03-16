@@ -62,7 +62,7 @@ ESP3D SPIFFS:
 Macro Popup dialog:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-makros.JPG'/>   
 
-ESP3D Setup Guid:   
+ESP3D Setup Guide:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-setup.JPG'/> 
 
 
