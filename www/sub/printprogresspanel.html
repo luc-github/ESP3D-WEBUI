@@ -1,0 +1,32 @@
+<div id="printProgressPanal" class="panel panel-default panel-flex-col">
+    <div class="panel-heading2">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pull-left" >
+                    <b><span translate>Print Progress</span></b>
+                    <b id="nameFilePrint"></b>
+                </div>
+                <div class="pull-right">
+                    <div class="panel-flex-row">
+                        <button id="printProgressPanalUpdate"class="btn btn-primary btn-xs pull-right" onclick="getPrintProgress()"  style="height: 34px!important;" translate>Refresh</button>
+                        <table class="checkbox"><tr><td>&nbsp;&nbsp;</td><td>
+                            <label>
+                                <input type="checkbox" id="autocheck_printprogress" onclick="on_autocheck_PrintProgress()"/>
+                                <span  translate>auto-check:</span>
+                            </label>
+                            </td></tr></table>
+                        <table class="input-group"><tr><td>
+                            <input class="form-control w4"  type="number"  min="1" max="300" id="printProgressInterval_check" onchange="onPrintProgressChange()" />
+                            <span  class="input-group-addon form_control" translate>sec</span>
+                        </td></tr></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="progress-body" class="panel-body panel-flex-main"  >
+        <div class="progress" style="margin-bottom:0px;">
+            <div class="progress-bar" id="printProgressbar" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" translate>Please Refresh!</div>
+        </div>
+    </div>
+</div>

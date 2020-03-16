@@ -1,38 +1,87 @@
 /* Style the tab */
 div.tab {
-    overflow: hidden;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    display:none;
+	overflow: hidden;
     border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
     background-color: #f1f1f1;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
 }
 
+@media (max-width: 641) {
+    div.tab {
+    display: hidden;
+    border-top: 1px solid #ccc;
+    background-color: #f1f1f1;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+	}
+}
+
+#smallmenu {
+    position: absolute;
+    font-size: 1em;
+    outline: 0;
+    border: 0;
+    right: 15%;
+    top: 32%;
+    height: 28px;
+}
+
+ul#smallmenu {
+    margin: 0;
+}
+
+li#smallmenu :hover {
+    background-color: #337ab7;
+	color: #ffffff;
+}
+
+.smallmenu_btn {
+    font-size: 14px;
+	color: #337ab7;
+	width: 100%;
+    padding: 12px 10px;
+    background-color: transparent;
+    border: none;
+	border-radius:0;
+	
+}
+
+@media (min-width: 801px) {
+	#smallmenu {
+        display: none;
+    }
+    .tab {
+        display: block!important;
+    }
+}
 
 /* Style the buttons inside the tab */
 div.tab button {
     background-color: inherit;
     float: left;
-    border-top: 1px solid #f1f1f1;
-    border-bottom: 1px solid #f1f1f1;
+    border-radius: 0;
+	border-bottom: 1px solid #f1f1f1;
     border-left: 1px solid #f1f1f1;
-    border-right: 1px solid #f1f1f1;
+    border-right: 1px solid #dddddd;
     outline: none;
     cursor: pointer;
-    padding: 12px 14px;
+    padding: 10px 12px;
     transition: 0.3s;
     color: #337AB7;
+	font-size: 13px;
+	font-weight: 600;
 }
 
 /* Change background color of buttons on hover */
 div.tab button:hover {
     background-color: #337ab7;
     color: #ffffff;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
@@ -41,18 +90,17 @@ div.tab button:hover {
 /* Create an active/current tablink class */
 div.tab button.active {
     background-color: #ffffff;
-    border-top: 1px solid #ccc;
     border-bottom: 1px solid #fff;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
     color: #555555;
 }
 
 /* Style the tab content */
 .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 10px 12px 0 0;
+	margin-bottom: 50px;
+	margin-top: 40px;
 
 }

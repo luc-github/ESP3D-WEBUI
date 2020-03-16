@@ -960,8 +960,6 @@ pre code {
 .container-fluid {
     margin-right: auto;
     margin-left: auto;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .row {
@@ -3955,10 +3953,17 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
     border-top-left-radius: 0;
 }
 
+.clock{
+	position: absolute;
+	width:100px;	
+	left: 46%; 
+	top: 25%; 
+	font-weight: 600; 
+	color: #777;	
+}
 .navbar {
     position: relative;
-    min-height: 50px;
-    margin-bottom: 20px;
+    min-height: 40px;
     border: 1px solid transparent;
 }
 
@@ -4087,10 +4092,11 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
 .navbar-brand {
     float: left;
-    padding: 15px 15px;
+    padding: 10px 15px;
     font-size: 18px;
+	font-weight: 600;
     line-height: 20px;
-    height: 50px;
+    height: 40px;
 }
 
 .navbar-brand:hover,
@@ -4146,6 +4152,9 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
 .navbar-nav {
     margin: 7.5px -15px;
+	position: absolute;
+    right: -2%;
+    top: -5%;
 }
 
 .navbar-nav>li>a {
@@ -4181,7 +4190,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 368px) {
     .navbar-nav {
         float: left;
         margin: 0;
@@ -4342,7 +4351,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 
     .navbar-right {
         float: right !important;
-        margin-right: -15px;
+        margin-right: 0;
     }
 
     .navbar-right~.navbar-right {
@@ -4351,12 +4360,15 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
 }
 
 .navbar-default {
-    background-color: #e2f6ff;
+    background-color: #ffffff;
     border-color: #e7e7e7;
+	position: fixed;
+    width: 100%;
+    z-index: 11;
 }
 
 .navbar-default .navbar-brand {
-    color: #777777;
+    color: #337ab7;
 }
 
 .navbar-default .navbar-brand:hover,
@@ -5054,7 +5066,7 @@ a.badge:focus {
 }
 
 .progress-bar-success {
-    background-color: #5cb85c;
+    background-color: #337ab7;
 }
 
 .progress-striped .progress-bar-success {
@@ -5397,7 +5409,6 @@ button.list-group-item-danger.active:focus {
 }
 
 .panel {
-    margin-bottom: 10px;
     background-color: #ffffff;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -5414,6 +5425,14 @@ button.list-group-item-danger.active:focus {
     border-bottom: 1px solid transparent;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
+}
+
+.panel-heading2 {
+    padding: 5px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+	background-color: #e2f6ff !important;
 }
 
 .panel-heading>.dropdown .dropdown-toggle {
