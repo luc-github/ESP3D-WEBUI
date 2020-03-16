@@ -2209,6 +2209,12 @@ label {
     font-weight: bold;
 }
 
+.modal-text label {
+    display: block;
+    float: left;
+    width: 250px;
+}
+
 input[type="search"] {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -2370,6 +2376,7 @@ input[type="search"] {
 
 .checkbox label {
     float:none;
+	width:100%;
 }
 
 .radio input[type="radio"],
