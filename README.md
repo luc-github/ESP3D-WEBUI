@@ -48,29 +48,41 @@ for 2, 3 and 4 colum the menu is attached to the bottom
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/2-colum-better.JPG'/> 
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/3-colum.JPG'/>
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/4-colum.JPG'/>
+
 Print Progress, Main tab and menu:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/print-progress.JPG'/>      
+
 Safe Memo:  
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-safe-memo.JPG'/> 
+
 Camera Tab:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-camera.JPG'/>
+
 Temperatures panel:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-temperatur.JPG'/>  
+
 SD card panel:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-sd-card.JPG'/>   
+
 Printer config Editor:  
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-printer-settings2.JPG'/> 
+
 Command Panel for Printer: 
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-command-panel.JPG'/>
+
 ESP3D settings:  
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-settings-programm.JPG'/>
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-settings.JPG'/> 
+
 ESP3D Status:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-status.JPG'/>   
+
 ESP3D SPIFFS:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-SPIFFS.JPG'/> 
+
 Macro Popup dialog:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-makros.JPG'/>   
+
 ESP3D Setup Guid:   
 <img src='https://raw.githubusercontent.com/jayjojayson/ESP3D-WEBUI/2.1/images/esp3d-setup.JPG'/> 
 
