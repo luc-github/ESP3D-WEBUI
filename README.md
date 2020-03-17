@@ -1,10 +1,6 @@
 # customized ESP3D-BOXUI (WEBUI) 
 This is a customized Version of the WebUi from the ESP3D Project from Luc. I have changed the Menu and Design for a better optic and added a note-function called "Safe-Memo" and Printprogress function. The Note Function works with localStorage, that means it works only on one PC/Phone/Tablet and lose the data if some other device is used. That's because the localStorage is written on every device. So keep it in mind - Your data are not lost, you must go to the device where you have added the Note in SafeMemo-Tab. The Printprogress Function works with the Gcode M27 Command. With Marlin Firmware it works really nice, but i don't know how other Firmwares will handle it. GRBL does not support this feature!
 
-## What is that ?
-A web configuration tool for ESP3D 2.1
-Originaly based on great UI from Jarek Szczepanski (imrahil): [smoothieware-webui](http://imrahil.github.io/smoothieware-webui/) to get a multi firmware support for [Repetier](https://github.com/repetier/Repetier-Firmware), [Repetier for Davinci printer](https://github.com/luc-github/Repetier-Firmware-0.92), (Marlin)[https://github.com/MarlinFirmware], [Marlin Kimbra](https://github.com/MagoKimbra/MarlinKimbra) and of course [Smoothieware](https://github.com/Smoothieware/Smoothieware)
-
 ## Features
 - support several firmwares based on Marlin, Repetier and Smoothieware.
 - Print Progress Bar showing print progress (Marlin firmware)
