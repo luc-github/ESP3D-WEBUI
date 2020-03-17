@@ -1,0 +1,64 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+$body-bg: #f7f7f7;
+$color-white: #ffffff;
+$color-muted: #928886;
+
+// Primary
+$color-primary-50: #fdeee7;
+$color-primary-100: #fbd5c2;
+$color-primary-200: #f8b999;
+$color-primary-300: #f59c70;
+$color-primary-400: #f38752;
+$color-primary-500: #f17233;
+$color-primary-600: #ef6a2e;
+$color-primary-700: #ed5f27;
+$color-primary-800: #eb5520;
+$color-primary-900: #e74214;
+$color-primary-a100: #ffffff;
+$color-primary-a200: #ffe8e3;
+$color-primary-a300: #ffbeb0;
+$color-primary-a400: #ffaa96;
+
+// Gray
+$gray-base: $gray-900;
+$gray-darkest: $gray-800;
+$gray-darker: $gray-700;
+$gray-dark: $gray-600;
+$gray: $gray-500;
+$gray-light: $gray-400;
+$gray-lighter: $gray-300;
+$gray-lightest: $gray-200;
+
+// Brand
+$brand-default: $gray-lighter;
+$brand-default-hover: $gray-lightest;
+$brand-default-active: $gray-light;
+$brand-default-100: $gray-100;
+
+$brand-primary: $color-primary-500;
+$brand-primary-hover: $color-primary-400;
+$brand-primary-active: $color-primary-600;
+$brand-primary-400: $color-primary-400;
+$brand-primary-100: $color-primary-100;
+
+$brand-dark: $gray-darker;
+$brand-dark-hover: $gray-dark;
+$brand-dark-active: $gray-darkest;
+$brand-dark-100: $gray-100;
+
+// Text
+$title-color: $gray-darkest;
+$subtitle-color: $gray-darker;
+$text-color: $gray-dark;
+$text-muted: $color-muted;
+
+// Headings
+$h1-font-size: pxtorem(36px);
+$h2-font-size: pxtorem(30px);
+$h3-font-size: pxtorem(24px);
+$h4-font-size: pxtorem(18px);
+$h5-font-size: pxtorem(14px);
+$h6-font-size: pxtorem(12px);

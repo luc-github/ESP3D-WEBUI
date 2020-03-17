@@ -1,0 +1,14 @@
+$font-size-root: 18px !default;
+
+@function pxtorem($px) {
+  $base: null !default;
+  @if unit($font-size-root) == "px" {
+    $base: $font-size-root;
+  } @else if unit($font-size-root) == "%" {
+    $base: ($font-size-root / 100%) * 16px;
+  } @else if unit($font-size-root) == "" {
+    $base: $font-size-root * 16px;
+  }
+
+  @return (floor(ceil(($px / $base) * 1000)) / 1000) * 1rem;
+}

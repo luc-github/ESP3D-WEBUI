@@ -1,0 +1,53 @@
+{
+  "name": "ESP3D-WebUI",
+  "version": "3.0.0",
+  "description": "Preact version of WebUI for ESP3D per @aganov suggestion",
+  "main": "index.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --mode=production",
+    "clean": "rm -rf dist",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --open --mode=development"
+  },
+  "keywords": [],
+  "type": "git",
+  "repository": "https://github.com/luc-github/ESP3D-WEBUI",
+  "author": "",
+  "license": "(ISC OR GPL-3.0)",
+  "devDependencies": {
+    "@babel/core": "latest",
+    "@babel/preset-env": "latest",
+    "@babel/preset-react": "latest",
+    "@babel/register": "latest",
+    "babel-loader": "latest",
+    "compression-webpack-plugin": "latest",
+    "cross-env": "latest",
+    "css-loader": "latest",
+    "html-minifier-webpack-plugin": "latest",
+    "html-webpack-inline-source-plugin": "latest",
+    "html-webpack-plugin": "latest",
+    "mini-css-extract-plugin": "latest",
+    "node-sass": "latest",
+    "optimize-css-assets-webpack-plugin": "latest",
+    "postcss-flexbugs-fixes": "latest",
+    "postcss-import": "latest",
+    "postcss-loader": "latest",
+    "postcss-preset-env": "latest",
+    "postcss-safe-parser": "latest",
+    "remove-files-webpack-plugin": "latest",
+    "sass-loader": "latest",
+    "style-loader": "latest",
+    "terser-webpack-plugin": "latest",
+    "webpack": "latest",
+    "webpack-cli": "latest",
+    "webpack-dev-server": "latest",
+    "webpack-merge": "latest",
+    "webpack-modules": "latest"
+  },
+  "dependencies": {
+    "bootstrap": "latest",
+    "history": "latest",
+    "preact": "latest",
+    "preact-feather": "latest",
+    "preact-router": "latest"
+  }
+}
