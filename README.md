@@ -1,7 +1,7 @@
 # ESP3D-WEBUI 3.0
 using Preact per @aganov suggestion
 
-## Not started in alpha stage - be patient...
+## Not started, in alpha stage - be patient...
 
  [Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0)  ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic)  ![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/3.0?style=plastic)
    
