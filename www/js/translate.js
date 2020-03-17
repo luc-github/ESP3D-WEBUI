@@ -29,6 +29,9 @@ var language_list = [
 //removeIf(uk_lang_disabled)
     ['uk', 'Українська', 'ukrtrans'],
 //endRemoveIf(uk_lang_disabled)
+//removeIf(zh_cn_lang_disabled)
+    ['zh_CN', '&#31616;&#20307;&#20013;&#25991;', 'zh_CN_trans'],
+//endRemoveIf(zh_cn_lang_disabled)
 ];
 
 //removeIf(production)
