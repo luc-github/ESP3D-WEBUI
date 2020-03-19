@@ -18,12 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h, createContext } from "preact"
+import { h } from "preact"
 import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
 import { SendGetCommand } from "./http"
 import { setupWebSocket } from "./websocket"
+import { DialogPage } from "./dialog"
 
 /*
  * Hook variable for communication with UI
@@ -34,7 +35,7 @@ export let globaldispatch
 const initialStateEventData = {
     showDialog: true,
     showPage: false,
-    data: {type:"loading", message:"Connecting board..."},
+    data: { type: "loading", message: "Connecting board..." },
     error: 0,
 }
 
@@ -43,21 +44,19 @@ const initialStateEventData = {
  */
 const reducerPage = (state, action) => {
     switch (action.type) {
-        
         case "WEBSOCKET_SUCCESS":
             return {
                 showDialog: false,
                 showPage: true,
                 error: 0,
-                data: {}
-                
+                data: {},
             }
         case "FETCH_FW_SUCCESS":
             return {
                 showDialog: true,
                 showPage: false,
                 error: 0,
-                data: {type:"loader", message: "Connecting websocket..."}
+                data: { type: "loader", message: "Connecting websocket..." },
             }
         case "WEBSOCKET_ERROR":
         case "FETCH_FW_ERROR":
@@ -65,14 +64,17 @@ const reducerPage = (state, action) => {
                 showDialog: true,
                 showPage: false,
                 error: action.errorcode,
-                data: {type:"error", message: action.errormsg}
+                data: { type: "error", message: action.errormsg },
             }
         case "DISCONNECT_ERROR":
             return {
                 showDialog: true,
                 showPage: true,
                 error: action.errorcode,
-                data: {type:"disconnect", message: "You are now disconnected"}
+                data: {
+                    type: "disconnect",
+                    message: "You are now disconnected",
+                },
             }
         default:
             return state
@@ -88,7 +90,11 @@ function loadConfigSuccess(responseText) {
         data = JSON.parse(responseText)
         if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
             globaldispatch({ type: "FETCH_FW_SUCCESS", payload: data })
-            setupWebSocket(data.WebCommunication, data.WebSocketIP, data.WebSocketport);
+            setupWebSocket(
+                data.WebCommunication,
+                data.WebSocketIP,
+                data.WebSocketport
+            )
         }
     } catch (e) {
         console.error("Parsing error:", e)
@@ -115,37 +121,22 @@ function loadConfigError(errorCode, responseText) {
  * Load Firmware settings
  */
 function loadConfig() {
-    var d = new Date();
-    var PCtime = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0') + "-" + String(d.getHours()).padStart(2, '0') + "-" + String(d.getMinutes()).padStart(2, '0') + "-" + String(d.getSeconds()).padStart(2, '0'); 
-    const url = "/command?cmd=" + encodeURIComponent("[ESP800]" +"time=" + PCtime)
+    var d = new Date()
+    var PCtime =
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0") +
+        "-" +
+        String(d.getHours()).padStart(2, "0") +
+        "-" +
+        String(d.getMinutes()).padStart(2, "0") +
+        "-" +
+        String(d.getSeconds()).padStart(2, "0")
+    const url =
+        "/command?cmd=" + encodeURIComponent("[ESP800]" + "time=" + PCtime)
     SendGetCommand(url, loadConfigSuccess, loadConfigError)
-}
-
-/*
- * Loading page
- *
- */
-const DialogPage = ({ currentState }) => {
-    if (currentState.showDialog) {
-        let classname ="modal d-block"
-        if (currentState.data.type == "disconnect")classname+=" greybg"
-        return (
-            <modal
-                tabindex="-1"
-                className= {classname}
-            >
-                <div class="modal-dialog modal-dialog-centered modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header"></div>
-                        <div class="modal-body">
-                            <center>{currentState.data.message}</center>
-                        </div>
-                        <div class="modal-footer"></div>
-                    </div>
-                </div>
-            </modal>
-        )
-    }
 }
 
 /*
@@ -167,7 +158,10 @@ const MainPage = ({ currentState }) => {
  * App entry
  */
 export function App() {
-    ;[globalstate, globaldispatch] = useReducer(reducerPage, initialStateEventData)
+    ;[globalstate, globaldispatch] = useReducer(
+        reducerPage,
+        initialStateEventData
+    )
     useEffect(() => {
         loadConfig()
     }, [])

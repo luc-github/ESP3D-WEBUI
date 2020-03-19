@@ -4,7 +4,8 @@ import environment from "./environment"
 module.exports = merge(environment, {
     devtool: "inline-source-map",
     devServer: {
-        before: function(app, server, compiler) { //use this part to simulate http response
+        before: function(app, server, compiler) {
+            //use this part to simulate http response
             app.get("/command", function(req, res) {
                 var url = req.originalUrl
                 if (url.indexOf("ESP800") != -1) {

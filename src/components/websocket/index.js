@@ -21,146 +21,148 @@
 "use strict"
 import { globaldispatch } from "../app"
 
-
 /*
  * Local variables
  *
  */
 
 var webSocketClient = {}
-var isLogOff = false;
-var webSocketPort = 0;
-var webSocketIp = "";
-var webSocketType = "";
-var webSocketBuffer = "";
+var isLogOff = false
+var webSocketPort = 0
+var webSocketIp = ""
+var webSocketType = ""
+var webSocketBuffer = ""
 var currentPageId = ""
 
 /*
  * Some constants
  */
- 
+
 /*
  * Set page ID
  */
-function setPageId (id){
-    currentPageId = id;
+function setPageId(id) {
+    currentPageId = id
 }
-
 
 /*
  * Get page ID
  */
-function getPageId (){
-    return currentPageId;
+function getPageId() {
+    return currentPageId
 }
 
 /*
  * Process WS terminal line
  */
-function processWebSocketBuffer(wsBuffer){
-    console.log(wsBuffer);
+function processWebSocketBuffer(wsBuffer) {
+    console.log(wsBuffer)
 }
 
 /*
  * Process WS event line
  */
-function processWebSocketText(wsBuffer){
-    console.log(wsBuffer);
-    var tdata = wsBuffer.split(":");
+function processWebSocketText(wsBuffer) {
+    console.log(wsBuffer)
+    var tdata = wsBuffer.split(":")
     if (tdata.length >= 2) {
         switch (tdata[0]) {
-        case "currentID":
-            setPageId(tdata[1]);
-            break;
-        case "PING":
-            //TODO
-            break;
-        case "activeID":
-             if(getPageId () != tdata[1]) {
-                disconnectWsServer();
+            case "currentID":
+                setPageId(tdata[1])
+                break
+            case "PING":
+                //TODO
+                break
+            case "activeID":
+                if (getPageId() != tdata[1]) {
+                    disconnectWsServer()
                 }
-            break;
-        case "DHT":
-            //TODO
-            break;
-        case "ERROR":
-            //TODO
-            break;
-        default:
-            console.log("Unknow event");
-    }
+                break
+            case "DHT":
+                //TODO
+                break
+            case "ERROR":
+                //TODO
+                break
+            default:
+                console.log("Unknow event")
+        }
     } else {
-        console.log("Error processing event");
+        console.log("Error processing event")
     }
 }
 
 /*
  * Setup WS variables
  */
-function setupWebSocket(wstype, wsIp, wsPort){
-    webSocketIp = wsIp;
-    webSocketPort = wsPort;
-    webSocketType = wstype;
-    connectWsServer();
+function setupWebSocket(wstype, wsIp, wsPort) {
+    webSocketIp = wsIp
+    webSocketPort = wsPort
+    webSocketType = wstype
+    connectWsServer()
 }
 
 /*
  * Connect to WS server and setup events
  */
-function connectWsServer(){
-    isLogOff = false;
-    try { 
-        webSocketClient = new WebSocket('ws://' + webSocketIp + ':' + webSocketPort, ['arduino']);
+function connectWsServer() {
+    isLogOff = false
+    try {
+        webSocketClient = new WebSocket(
+            "ws://" + webSocketIp + ":" + webSocketPort,
+            ["arduino"]
+        )
     } catch (exception) {
         globaldispatch({
-        type: "WEBSOCKET_ERROR",
-        errormsg: "WebSocket failed"
+            type: "WEBSOCKET_ERROR",
+            errormsg: "WebSocket failed",
         })
-        console.error(exception);
-        return;
+        console.error(exception)
+        return
     }
     //this is terminal output, it use binary mode of ws
-    webSocketClient.binaryType = "arraybuffer";
+    webSocketClient.binaryType = "arraybuffer"
     //On open WS
-    webSocketClient.onopen = function(e){
+    webSocketClient.onopen = function(e) {
         globaldispatch({
-        type: "WEBSOCKET_SUCCESS",
+            type: "WEBSOCKET_SUCCESS",
         })
-      };
-    //On close ws 
-    webSocketClient.onclose = function(e){
-        console.log("Disconnected");
+    }
+    //On close ws
+    webSocketClient.onclose = function(e) {
+        console.log("Disconnected")
         //seems sometimes it disconnect so wait 3s and reconnect
         //if it is not a log off
-        if(!isLogOff) setTimeout(connectWsServer, 3000);
-      };
+        if (!isLogOff) setTimeout(connectWsServer, 3000)
+    }
     //On ws error
-    webSocketClient.onerror = function(e){
+    webSocketClient.onerror = function(e) {
         globaldispatch({
-        type: "WEBSOCKET_ERROR",
-        errormsg: "WebSocket failed"
+            type: "WEBSOCKET_ERROR",
+            errormsg: "WebSocket failed",
         })
-        console.log("ws error", e);
-      };
+        console.log("ws error", e)
+    }
     //Handle msg of ws
-    webSocketClient.onmessage = function(e){
+    webSocketClient.onmessage = function(e) {
         //for binary messages used for terminal
-        if(e.data instanceof ArrayBuffer){
-          var bytes = new Uint8Array(e.data);
-          for (var i = 0; i < bytes.length; i++) {
-            //process line by line
-            if ((bytes[i] == 10)|| (bytes[i] == 13)){
-                processWebSocketBuffer(webSocketBuffer);
-                webSocketBuffer="";
-            } else {
-                 webSocketBuffer += String.fromCharCode(bytes[i]);
+        if (e.data instanceof ArrayBuffer) {
+            var bytes = new Uint8Array(e.data)
+            for (var i = 0; i < bytes.length; i++) {
+                //process line by line
+                if (bytes[i] == 10 || bytes[i] == 13) {
+                    processWebSocketBuffer(webSocketBuffer)
+                    webSocketBuffer = ""
+                } else {
+                    webSocketBuffer += String.fromCharCode(bytes[i])
+                }
             }
-          }
-        } else { //for text ws they are events 
+        } else {
+            //for text ws they are events
             //assuming that one come at once and full
-          if(webSocketType == "Synchronous"){
-              processWebSocketText(e.data);
-          }
+            if (webSocketType == "Synchronous") {
+                processWebSocketText(e.data)
+            }
         }
     }
 }
@@ -168,13 +170,13 @@ function connectWsServer(){
 /*
  * Disconnect from WS server
  */
-function disconnectWsServer(){
-    isLogOff = true;
-    webSocketClient.close();
-    document.title='Disconnected';
+function disconnectWsServer() {
+    isLogOff = true
+    webSocketClient.close()
+    document.title = "Disconnected"
     globaldispatch({
         type: "DISCONNECT_ERROR",
     })
 }
 
-export {setupWebSocket, connectWsServer, disconnectWsServer, getPageId  }
+export { setupWebSocket, connectWsServer, disconnectWsServer, getPageId }

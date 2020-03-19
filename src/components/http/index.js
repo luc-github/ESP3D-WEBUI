@@ -29,14 +29,12 @@ var httpCommandList = []
 var isProcessingHttpCommand = false
 var currentHttpCommand = {}
 
-
 /*
  * Some constants
  */
 const maxCmdInList = 20
 const errorListFull = -2
 const errorInvalidId = -3
-
 
 /*
  * Clear the current queries list
