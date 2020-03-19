@@ -19,23 +19,24 @@
 */
 
 "use strict"
+import { getPageId } from "../websocket"
+
 /*
  * Local variables
  *
  */
-
 var httpCommandList = []
 var isProcessingHttpCommand = false
 var currentHttpCommand = {}
-var currentPageId = ""
+
 
 /*
  * Some constants
  */
 const maxCmdInList = 20
-
 const errorListFull = -2
 const errorInvalidId = -3
+
 
 /*
  * Clear the current queries list
@@ -116,7 +117,7 @@ function ProcessGetHttp(url, resultfn, errorfn) {
             }
         }
     }
-    if (url.indexOf("?") != -1) url += "&PAGEID=" + currentPageId
+    if (url.indexOf("?") != -1) url += "&PAGEID=" + getPageId()
     xmlhttp.open("GET", url, true)
     xmlhttp.send()
 }

@@ -23,18 +23,19 @@ import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
 import { SendGetCommand } from "./http"
+import { setupWebSocket } from "./websocket"
 
 /*
  * Hook variable for communication with UI
  */
 let globalstate
-let globaldispatch
+export let globaldispatch
 
-const initialStatePage = {
-    loading: true,
+const initialStateEventData = {
+    showDialog: true,
+    showPage: false,
+    data: {type:"loading", message:"Connecting board..."},
     error: 0,
-    errorMsg: "",
-    data: "",
 }
 
 /*
@@ -42,19 +43,36 @@ const initialStatePage = {
  */
 const reducerPage = (state, action) => {
     switch (action.type) {
+        
+        case "WEBSOCKET_SUCCESS":
+            return {
+                showDialog: false,
+                showPage: true,
+                error: 0,
+                data: {}
+                
+            }
         case "FETCH_FW_SUCCESS":
             return {
-                loading: false,
-                data: action.payload,
+                showDialog: true,
+                showPage: false,
                 error: 0,
-                errorMsg: "",
+                data: {type:"loader", message: "Connecting websocket..."}
             }
+        case "WEBSOCKET_ERROR":
         case "FETCH_FW_ERROR":
             return {
-                loading: true,
-                data: {},
+                showDialog: true,
+                showPage: false,
                 error: action.errorcode,
-                errorMsg: action.errormsg,
+                data: {type:"error", message: action.errormsg}
+            }
+        case "DISCONNECT_ERROR":
+            return {
+                showDialog: true,
+                showPage: true,
+                error: action.errorcode,
+                data: {type:"disconnect", message: "You are now disconnected"}
             }
         default:
             return state
@@ -68,7 +86,10 @@ function loadConfigSuccess(responseText) {
     var data = {}
     try {
         data = JSON.parse(responseText)
-        globaldispatch({ type: "FETCH_FW_SUCCESS", payload: data })
+        if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
+            globaldispatch({ type: "FETCH_FW_SUCCESS", payload: data })
+            setupWebSocket(data.WebCommunication, data.WebSocketIP, data.WebSocketport);
+        }
     } catch (e) {
         console.error("Parsing error:", e)
         globaldispatch({
@@ -94,7 +115,9 @@ function loadConfigError(errorCode, responseText) {
  * Load Firmware settings
  */
 function loadConfig() {
-    const url = "/command?cmd=" + encodeURIComponent("[ESP800]")
+    var d = new Date();
+    var PCtime = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0') + "-" + String(d.getHours()).padStart(2, '0') + "-" + String(d.getMinutes()).padStart(2, '0') + "-" + String(d.getSeconds()).padStart(2, '0'); 
+    const url = "/command?cmd=" + encodeURIComponent("[ESP800]" +"time=" + PCtime)
     SendGetCommand(url, loadConfigSuccess, loadConfigError)
 }
 
@@ -102,24 +125,20 @@ function loadConfig() {
  * Loading page
  *
  */
-const LoadingPage = ({ currentState }) => {
-    let message = "Loading..."
-    if (currentState.error) {
-        message = currentState.errorMsg + " (" + currentState.error + ")"
-    }
-    if (currentState.loading || currentState.error) {
+const DialogPage = ({ currentState }) => {
+    if (currentState.showDialog) {
+        let classname ="modal d-block"
+        if (currentState.data.type == "disconnect")classname+=" greybg"
         return (
             <modal
                 tabindex="-1"
-                className={
-                    currentState.loading ? "modal d-block" : "modal d-none"
-                }
+                className= {classname}
             >
                 <div class="modal-dialog modal-dialog-centered modal-sm">
                     <div class="modal-content">
                         <div class="modal-header"></div>
                         <div class="modal-body">
-                            <center>{message}</center>
+                            <center>{currentState.data.message}</center>
                         </div>
                         <div class="modal-footer"></div>
                     </div>
@@ -133,26 +152,12 @@ const LoadingPage = ({ currentState }) => {
  * Main page
  */
 const MainPage = ({ currentState }) => {
-    if (!(currentState.loading || currentState.error)) {
-        let property
-        let dataarray = []
-        for (property in currentState.data) {
-            let id = property
-            dataarray.push({ id: property, value: currentState.data[property] })
-            console.log(property + " : " + currentState.data[property])
-        }
+    if (currentState.showPage) {
         return (
             <div>
                 <center>
                     ESP3D v<Esp3dVersion />
                 </center>
-                <ul>
-                    {dataarray.map(dataitem => (
-                        <li>
-                            {dataitem.id} : {dataitem.value}{" "}
-                        </li>
-                    ))}
-                </ul>
             </div>
         )
     }
@@ -162,14 +167,14 @@ const MainPage = ({ currentState }) => {
  * App entry
  */
 export function App() {
-    ;[globalstate, globaldispatch] = useReducer(reducerPage, initialStatePage)
+    ;[globalstate, globaldispatch] = useReducer(reducerPage, initialStateEventData)
     useEffect(() => {
         loadConfig()
     }, [])
 
     return (
         <div>
-            <LoadingPage currentState={globalstate} />
+            <DialogPage currentState={globalstate} />
             <MainPage currentState={globalstate} />
         </div>
     )

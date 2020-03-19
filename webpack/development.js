@@ -4,7 +4,7 @@ import environment from "./environment"
 module.exports = merge(environment, {
     devtool: "inline-source-map",
     devServer: {
-        before: function(app, server, compiler) {
+        before: function(app, server, compiler) { //use this part to simulate http response
             app.get("/command", function(req, res) {
                 var url = req.originalUrl
                 if (url.indexOf("ESP800") != -1) {
@@ -23,7 +23,7 @@ module.exports = merge(environment, {
                         Time: "None",
                     })
                 } else {
-                    res.json({ custom: "response2" })
+                    res.json({ custom: "unknown query" })
                 }
             })
             app.get("/camera", function(req, res) {
