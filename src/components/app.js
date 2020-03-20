@@ -75,7 +75,7 @@ const reducerPage = (state, action) => {
                 showDialog: true,
                 showPage: false,
                 error: action.errorcode,
-                data: { type: "error", message: action.errormsg },
+                data: { type: "error", message: T(msg) },
             }
         case "DISCONNECT_ERROR":
             return {

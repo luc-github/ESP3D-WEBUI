@@ -19,6 +19,7 @@
 */
 
 import { h } from "preact"
+import { AlertTriangle } from "preact-feather"
 
 /*
  * Dialog page
@@ -27,6 +28,12 @@ import { h } from "preact"
 export const DialogPage = ({ currentState }) => {
     if (currentState.showDialog) {
         let classname = "modal d-block"
+        let icon 
+        if(currentState.error!=0){
+            icon = <AlertTriangle classeName color='red'/>
+        } else {
+            icon = ""
+        }
         if (currentState.data.type == "disconnect") classname += " greybg"
         return (
             <modal tabindex="-1" className={classname}>
@@ -34,7 +41,7 @@ export const DialogPage = ({ currentState }) => {
                     <div class="modal-content">
                         <div class="modal-header"></div>
                         <div class="modal-body">
-                            <center>{currentState.data.message}</center>
+                            <center>{icon}{currentState.data.message}</center>
                         </div>
                         <div class="modal-footer"></div>
                     </div>
