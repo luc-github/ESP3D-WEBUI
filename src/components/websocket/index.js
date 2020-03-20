@@ -115,7 +115,6 @@ function connectWsServer() {
     } catch (exception) {
         globaldispatch({
             type: "WEBSOCKET_ERROR",
-            errormsg: "WebSocket failed",
         })
         console.error(exception)
         return
@@ -139,7 +138,6 @@ function connectWsServer() {
     webSocketClient.onerror = function(e) {
         globaldispatch({
             type: "WEBSOCKET_ERROR",
-            errormsg: "WebSocket failed",
         })
         console.log("ws error", e)
     }

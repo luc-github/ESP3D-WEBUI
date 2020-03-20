@@ -25,6 +25,7 @@ import { Esp3dVersion } from "./version"
 import { SendGetCommand } from "./http"
 import { setupWebSocket } from "./websocket"
 import { DialogPage } from "./dialog"
+import { setLang, T } from "./translations"
 
 /*
  * Hook variable for communication with UI
@@ -35,7 +36,7 @@ export let globaldispatch
 const initialStateEventData = {
     showDialog: true,
     showPage: false,
-    data: { type: "loading", message: "Connecting board..." },
+    data: { type: "loading", message: T("S1") },
     error: 0,
 }
 
@@ -43,7 +44,15 @@ const initialStateEventData = {
  * Hook for communication with UI
  */
 const reducerPage = (state, action) => {
+    let msg = ""
     switch (action.type) {
+        case "FORCE_RENDER":
+            return {
+                showDialog: false,
+                showPage: true,
+                error: 0,
+                data: {},
+            }
         case "WEBSOCKET_SUCCESS":
             return {
                 showDialog: false,
@@ -56,10 +65,12 @@ const reducerPage = (state, action) => {
                 showDialog: true,
                 showPage: false,
                 error: 0,
-                data: { type: "loader", message: "Connecting websocket..." },
+                data: { type: "loader", message: T("S2") },
             }
         case "WEBSOCKET_ERROR":
+            msg = "S6"
         case "FETCH_FW_ERROR":
+            msg = "S5"
             return {
                 showDialog: true,
                 showPage: false,
@@ -73,7 +84,7 @@ const reducerPage = (state, action) => {
                 error: action.errorcode,
                 data: {
                     type: "disconnect",
-                    message: "You are now disconnected",
+                    message: T("S3"),
                 },
             }
         default:
@@ -101,7 +112,7 @@ function loadConfigSuccess(responseText) {
         globaldispatch({
             type: "FETCH_FW_ERROR",
             errorcode: e,
-            errormsg: "Parsing error",
+            errormsg: "S4",
         })
     }
 }
@@ -113,7 +124,6 @@ function loadConfigError(errorCode, responseText) {
     globaldispatch({
         type: "FETCH_FW_ERROR",
         errorcode: errorCode,
-        errormsg: "Fetching error",
     })
 }
 
@@ -148,6 +158,8 @@ const MainPage = ({ currentState }) => {
             <div>
                 <center>
                     ESP3D v<Esp3dVersion />
+                    <br />
+                    {T("lang")}
                 </center>
             </div>
         )
@@ -165,7 +177,6 @@ export function App() {
     useEffect(() => {
         loadConfig()
     }, [])
-
     return (
         <div>
             <DialogPage currentState={globalstate} />
