@@ -131,7 +131,8 @@ function build_HTML_config_list() {
             content += "</td></tr></table>";
             content += "</td>";
             content += "<td style='vertical-align:middle'>";
-            content += HTMLEncode(item.help);
+            if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded"))content += item.help;
+            else content += HTMLEncode(item.help);
         }
         content += "</td>";
         content += "</tr>\n";
