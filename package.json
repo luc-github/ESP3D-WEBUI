@@ -6,7 +6,10 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode=production",
     "clean": "rm -rf dist",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --open --mode=development"
+    "start": "npm run build && node src/server/index.js",
+    "client": "cross-env NODE_ENV=development webpack-dev-server --open --mode=development",
+    "server": "nodemon src/server/index.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "type": "git",
@@ -41,7 +44,11 @@
     "webpack-cli": "latest",
     "webpack-dev-server": "latest",
     "webpack-merge": "latest",
-    "webpack-modules": "latest"
+    "webpack-modules": "latest",
+    "express": "latest",
+    "nodemon": "latest",
+    "concurrently": "latest",
+    "express-ws": "latest"
   },
   "dependencies": {
     "bootstrap": "latest",
