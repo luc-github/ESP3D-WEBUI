@@ -8,10 +8,6 @@ module.exports = merge(environment, {
     open: true,
     proxy: {
       '/command': 'http://localhost:8080',
-      '/': {
-       target: 'ws://localhost:81',
-       ws: true // important
-    },
     }
   },
 })
