@@ -17,7 +17,7 @@ npm install
 http://localhost:8080
 
 ```
-npm run start
+npm run dev
 ```
 
 ### Build index.html.gz to /dist folder
