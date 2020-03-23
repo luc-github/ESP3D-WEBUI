@@ -28,9 +28,9 @@ import { AlertTriangle } from "preact-feather"
 export const DialogPage = ({ currentState }) => {
     if (currentState.showDialog) {
         let classname = "modal d-block"
-        let icon 
-        if(currentState.error!=0){
-            icon = <AlertTriangle classeName color='red'/>
+        let icon
+        if (currentState.error != 0) {
+            icon = <AlertTriangle classeName color="red" />
         } else {
             icon = ""
         }
@@ -41,7 +41,10 @@ export const DialogPage = ({ currentState }) => {
                     <div class="modal-content">
                         <div class="modal-header"></div>
                         <div class="modal-body">
-                            <center>{icon}{currentState.data.message}</center>
+                            <center>
+                                {icon}
+                                {currentState.data.message}
+                            </center>
                         </div>
                         <div class="modal-footer"></div>
                     </div>
