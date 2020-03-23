@@ -26,7 +26,7 @@ import { SendGetHttp } from "./http"
 import { setupWebSocket } from "./websocket"
 import { DialogPage } from "./dialog"
 import { setLang, T } from "./translations"
-
+let isPreferencesLoaded = false
 /*
  * Hook variable for communication with UI
  */
@@ -38,6 +38,43 @@ const initialStateEventData = {
     showPage: false,
     data: { type: "loading", message: T("S1") },
     error: 0,
+}
+
+/*
+ * Load Firmware settings query success
+ */
+function loadPreferencesSuccess(responseText) {
+    var data = {}
+    try {
+        data = JSON.parse(responseText)
+        setLang(data.language)
+        globaldispatch({
+            type: "FORCE_RENDER",
+        })
+    } catch (e) {
+        console.error("Parsing error:", e)
+        globaldispatch({
+            type: "FETCH_FW_ERROR",
+            errorcode: e,
+            errormsg: "S4",
+        })
+    }
+}
+
+/*
+ * Load Firmware settings query error
+ */
+function loadPreferencesError(errorCode, responseText) {
+    globaldispatch({
+        type: "FETCH_FW_ERROR",
+        errorcode: errorCode,
+    })
+}
+
+function loadPreferences() {
+    isPreferencesLoaded = true
+    const url = "/preferences.json?" + +"?" + Date.now()
+    SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
 }
 
 /*
@@ -53,13 +90,30 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {},
             }
-        case "WEBSOCKET_SUCCESS":
+        case "FETCH_PREFERENCES":
+            console.log("dispatch")
             return {
-                showDialog: false,
-                showPage: true,
+                showDialog: true,
+                showPage: false,
                 error: 0,
-                data: {},
+                data: { type: "loader", message: T("S7") },
             }
+        case "WEBSOCKET_SUCCESS":
+            if (!isPreferencesLoaded) {
+                loadPreferences()
+                return {
+                    showDialog: true,
+                    showPage: false,
+                    error: 0,
+                    data: { type: "loader", message: T("S7") },
+                }
+            } else
+                return {
+                    showDialog: false,
+                    showPage: true,
+                    error: 0,
+                    data: {},
+                }
         case "FETCH_FW_SUCCESS":
             return {
                 showDialog: true,

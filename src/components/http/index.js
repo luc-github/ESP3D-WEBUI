@@ -48,6 +48,7 @@ function clearCommandList() {
  * Handle query success
  */
 function defaultHttpResultFn(response_text) {
+    isProcessingHttpCommand = false
     if (
         httpCommandList.length > 0 &&
         typeof httpCommandList[0].resultfn != "undefined"
@@ -194,27 +195,14 @@ function processCommands() {
             currentHttpCommand.onreadystatechange = function() {
                 if (currentHttpCommand.readyState == 4) {
                     if (currentHttpCommand.status == 200) {
-                        if (
-                            typeof httpCommandList[0].resultfn != "undefined" &&
-                            httpCommandList[0].resultfn != null
-                        )
-                            httpCommandList[0].resultfn(
-                                currentHttpCommand.responseText
-                            )
+                        defaultHttpResultFn(currentHttpCommand.responseText)
                     } else {
                         if (currentHttpCommand.status == 401)
                             requestAuthentication()
-                        if (
-                            typeof httpCommandList[0].errorfn != "undefined" &&
-                            httpCommandList[0].errorfn != null
-                        ) {
-                            httpCommandList[0].errorfn(
-                                currentHttpCommand.status,
-                                currentHttpCommand.responseText
-                            )
-                        } else {
-                            console.log("Code error")
-                        }
+                        defaultHttpErrorFn(
+                            currentHttpCommand.status,
+                            currentHttpCommand.responseText
+                        )
                     }
                 }
             }

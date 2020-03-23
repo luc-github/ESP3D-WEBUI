@@ -1,6 +1,5 @@
-[
  {
-  "language": "zh_CN",
+  "language": "zh_cn",
   "enable_camera": "false",
   "auto_load_camera": "false",
   "camera_address": "",
@@ -32,4 +31,3 @@
   "enable_verbose_mode": "true",
   "enable_commands_panel": "true"
  }
-]

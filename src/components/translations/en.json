@@ -5,5 +5,6 @@
     "S3" : "You are now disconnected",
     "S4" : "Parsing error",
     "S5" : "Fetching error",
-    "S6" : "WebSocket connection error"
+    "S6" : "WebSocket connection error",
+    "S7" : "Fetching preferences..."
 }
