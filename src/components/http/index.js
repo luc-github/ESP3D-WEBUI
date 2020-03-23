@@ -96,67 +96,9 @@ function nextCommand() {
 }
 
 /*
- * Process Get HTTP query
- */
-function ProcessGetHttp(url, resultfn, errorfn) {
-    var xmlhttp = new XMLHttpRequest()
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if (xmlhttp.status == 200) {
-                if (typeof resultfn != "undefined" && resultfn != null)
-                    resultfn(xmlhttp.responseText)
-            } else {
-                if (xmlhttp.status == 401) requestAuthentication()
-                if (typeof errorfn != "undefined" && errorfn != null) {
-                    errorfn(xmlhttp.status, xmlhttp.responseText)
-                } else {
-                    console.log("Code error")
-                }
-            }
-        }
-    }
-    if (url.indexOf("?") != -1) url += "&PAGEID=" + getPageId()
-    xmlhttp.open("GET", url, true)
-    xmlhttp.send()
-}
-
-/*
- * Process all commands one by one
- */
-function processCommands() {
-    if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
-        console.log("Processing command")
-        if (httpCommandList[0].type == "GET") {
-            isProcessingHttpCommand = true
-            ProcessGetHttp(
-                httpCommandList[0].cmd,
-                defaultHttpResultFn,
-                defaultHttpErrorFn
-            )
-        } else if (httpCommandList[0].type == "POST") {
-            //TODO POST queries
-            /* isProcessingHttpCommand = true;
-            if (!(httpCommandList[0].isupload)) {
-                ProcessPostHttp(httpCommandList[0].cmd, httpCommandList[0].data, defaultHttpResultFn, defaultHttpErrorFn);
-            } else {
-                ProcessFileHttp(httpCommandList[0].cmd, httpCommandList[0].data, httpCommandList[0].progressfn, defaultHttpResultFn, defaultHttpErrorFn);
-            }*/
-        } else if (httpCommandList[0].type == "CMD") {
-            isProcessingHttpCommand = true
-            var fn = httpCommandList[0].cmd
-            fn()
-            nextCommand()
-        }
-    } else {
-        if (isProcessingHttpCommand) console.log("Busy, process ongoing")
-        else console.log("Command list is empty")
-    }
-}
-
-/*
  * Add get query to command list
  */
-function SendGetCommand(url, result_fn, error_fn, id, max_id) {
+function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
     if (httpCommandList.length > maxCmdInList && maxCmdInList != -1) {
         console.log("[HTTP]Command rejected: full")
         if (typeof error_fn != "undefined") error_fn(errorListFull)
@@ -179,36 +121,127 @@ function SendGetCommand(url, result_fn, error_fn, id, max_id) {
         }
     }
     var cmd = {
-        cmd: url,
+        uri: url,
         type: "GET",
         isupload: false,
         resultfn: result_fn,
         errorfn: error_fn,
+        progressfn: progress_fn,
         id: cmd_id,
     }
     httpCommandList.push(cmd)
     processCommands()
 }
-
 /*
- * Add local function to command list
+ * Add post query to command list
  */
-function AddCommand(cmd_fn, error_fn, id) {
+function SendPostHttp(
+    url,
+    postdata,
+    result_fn,
+    error_fn,
+    progress_fn,
+    id,
+    max_id
+) {
     if (httpCommandList.length > maxCmdInList && maxCmdInList != -1) {
         console.log("[HTTP]Command rejected: full")
         if (typeof error_fn != "undefined") error_fn(errorListFull)
         return
     }
     var cmd_id = 0
-    if (typeof id != "undefined") cmd_id = id
+    var cmd_max_id = 1
+    if (typeof id != "undefined") {
+        cmd_id = id
+        if (typeof max_id != "undefined") cmd_max_id = max_id
+        for (p = 0; p < httpCommandList.length; p++) {
+            if (httpCommandList[p].id == cmd_id) {
+                cmd_max_id--
+            }
+            if (cmd_max_id <= 0) {
+                console.log("[HTTP]Command rejected: invalid ID")
+                if (typeof error_fn != "undefined") error_fn(errorInvalidId)
+                return
+            }
+        }
+    }
     var cmd = {
-        cmd: cmd_fn,
+        uri: url,
+        type: "POST",
+        isupload: false,
+        data: postdata,
+        resultfn: result_fn,
         errorfn: error_fn,
-        type: "CMD",
+        progressfn: progress_fn,
         id: cmd_id,
     }
-    httpCommandList.push(cmd)
-    processCommands()
+    http_cmd_list.push(cmd)
+    process_cmd()
 }
 
-export { clearCommandList, SendGetCommand, AddCommand }
+/*
+ * Process all commands one by one
+ */
+function processCommands() {
+    if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
+        console.log("Processing command")
+        if (
+            httpCommandList[0].type == "GET" ||
+            httpCommandList[0].type == "POST"
+        ) {
+            isProcessingHttpCommand = true
+            currentHttpCommand = new XMLHttpRequest()
+            currentHttpCommand.onreadystatechange = function() {
+                if (currentHttpCommand.readyState == 4) {
+                    if (currentHttpCommand.status == 200) {
+                        if (
+                            typeof httpCommandList[0].resultfn != "undefined" &&
+                            httpCommandList[0].resultfn != null
+                        )
+                            httpCommandList[0].resultfn(
+                                currentHttpCommand.responseText
+                            )
+                    } else {
+                        if (currentHttpCommand.status == 401)
+                            requestAuthentication()
+                        if (
+                            typeof httpCommandList[0].errorfn != "undefined" &&
+                            httpCommandList[0].errorfn != null
+                        ) {
+                            httpCommandList[0].errorfn(
+                                currentHttpCommand.status,
+                                currentHttpCommand.responseText
+                            )
+                        } else {
+                            console.log("Code error")
+                        }
+                    }
+                }
+            }
+            let url = httpCommandList[0].uri
+            if (url.indexOf("?") != -1) url += "&PAGEID=" + getPageId()
+            currentHttpCommand.open(httpCommandList[0].type, url, true)
+            if (
+                typeof httpCommandList[0].progressfn != "undefined" &&
+                progressfn != null
+            )
+                currentHttpCommand.upload.addEventListener(
+                    "progress",
+                    httpCommandList[0].progressfn,
+                    false
+                )
+            currentHttpCommand.send(
+                httpCommandList[0].type == "POST"
+                    ? httpCommandList[0].postdata
+                    : null
+            )
+        } else {
+            console.log("Unknow request")
+        }
+    } else {
+        if (isProcessingHttpCommand) console.log("Busy, process ongoing")
+        else console.log("Command list is empty")
+    }
+}
+
+export { clearCommandList, SendGetHttp, SendPostHttp }

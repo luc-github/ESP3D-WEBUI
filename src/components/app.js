@@ -22,7 +22,7 @@ import { h } from "preact"
 import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
-import { SendGetCommand } from "./http"
+import { SendGetHttp } from "./http"
 import { setupWebSocket } from "./websocket"
 import { DialogPage } from "./dialog"
 import { setLang, T } from "./translations"
@@ -146,7 +146,7 @@ function loadConfig() {
         String(d.getSeconds()).padStart(2, "0")
     const url =
         "/command?cmd=" + encodeURIComponent("[ESP800]" + "time=" + PCtime)
-    SendGetCommand(url, loadConfigSuccess, loadConfigError)
+    SendGetHttp(url, loadConfigSuccess, loadConfigError)
 }
 
 /*
