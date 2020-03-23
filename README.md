@@ -14,11 +14,11 @@ npm install
 ```
 
 ### Start dev server
-http://localhost:8080
-
 ```
 npm run dev
 ```
+will open http://localhost:3000
+Back end query server is localhost:8080, websocket server is localhost:81
 
 ### Build index.html.gz to /dist folder
 
