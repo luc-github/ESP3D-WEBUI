@@ -1,3 +1,4 @@
 {
-  "watch": ["src/server/"]
+  "watch": ["src/server/"],
+  "ignore": ["public/*"]
 }

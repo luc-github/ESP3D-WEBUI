@@ -7,8 +7,13 @@ const express = require("express")
 const WebSocket = require("ws")
 var currentID = 0
 const app = express()
+const fileUpload = require("express-fileupload")
 let firstconnection = true
-app.use(express.static("dist"))
+app.use(
+    express.static("dist"),
+    fileUpload({ preserveExtension: true, debug: true })
+)
+
 app.get("/command", function(req, res) {
     var url = req.originalUrl
     if (url.indexOf("ESP800") != -1) {
@@ -29,6 +34,19 @@ app.get("/command", function(req, res) {
     } else {
         res.json({ custom: "unknown query" })
     }
+})
+
+app.post("/files", function(req, res) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send("No files were uploaded.")
+    }
+    let myFile = req.files.myfile
+    myFile.mv(__dirname + "/public/" + myFile.name, function(err) {
+        if (err) return res.status(500).send(err)
+
+        res.send("File uploaded!")
+    })
+    console.log("POST CATCHED ")
 })
 
 app.listen(process.env.PORT || 8080, () =>

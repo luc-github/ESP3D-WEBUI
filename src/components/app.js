@@ -22,11 +22,14 @@ import { h } from "preact"
 import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
-import { SendGetHttp } from "./http"
+import { SendGetHttp, SendPostHttp } from "./http"
 import { setupWebSocket } from "./websocket"
 import { DialogPage } from "./dialog"
 import { setLang, T } from "./translations"
 let isPreferencesLoaded = false
+
+const default_preferences = '{"language":"en"}'
+
 /*
  * Hook variable for communication with UI
  */
@@ -65,6 +68,13 @@ function loadPreferencesSuccess(responseText) {
  * Load Firmware settings query error
  */
 function loadPreferencesError(errorCode, responseText) {
+    var blob = new Blob([default_preferences], { type: "application/json" })
+    var file = new File([blob], "preferences.json")
+    var formData = new FormData()
+    var url = "/files"
+    formData.append("path", "/")
+    formData.append("myfile", file, "preferences.json")
+    SendPostHttp(url, formData)
     globaldispatch({
         type: "FETCH_FW_ERROR",
         errorcode: errorCode,

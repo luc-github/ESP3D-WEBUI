@@ -10,6 +10,7 @@ module.exports = merge(environment, {
         open: true,
         proxy: {
             "/command": "http://localhost:8080",
+            "/files": "http://localhost:8080",
         },
     },
 })

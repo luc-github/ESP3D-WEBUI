@@ -48,7 +48,8 @@
     "express": "latest",
     "nodemon": "latest",
     "concurrently": "latest",
-    "express-ws": "latest"
+    "express-ws": "latest",
+    "express-fileupload": "latest"
   },
   "dependencies": {
     "bootstrap": "latest",

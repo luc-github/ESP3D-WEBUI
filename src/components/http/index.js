@@ -91,6 +91,7 @@ function requestAuthentication() {
  * Go to next command in queries list
  */
 function nextCommand() {
+    console.log("pop " + httpCommandList[0].uri)
     httpCommandList.shift()
     isProcessingHttpCommand = false
     processCommands()
@@ -176,8 +177,8 @@ function SendPostHttp(
         progressfn: progress_fn,
         id: cmd_id,
     }
-    http_cmd_list.push(cmd)
-    process_cmd()
+    httpCommandList.push(cmd)
+    processCommands()
 }
 
 /*
@@ -185,7 +186,12 @@ function SendPostHttp(
  */
 function processCommands() {
     if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
-        console.log("Processing command")
+        console.log(
+            "Processing " +
+                httpCommandList[0].type +
+                " command:" +
+                httpCommandList[0].uri
+        )
         if (
             httpCommandList[0].type == "GET" ||
             httpCommandList[0].type == "POST"
@@ -218,17 +224,20 @@ function processCommands() {
                     httpCommandList[0].progressfn,
                     false
                 )
+            if (httpCommandList[0].type == "POST") {
+                console.log("Post query")
+                console.log(httpCommandList[0].data)
+            }
             currentHttpCommand.send(
                 httpCommandList[0].type == "POST"
-                    ? httpCommandList[0].postdata
+                    ? httpCommandList[0].data
                     : null
             )
         } else {
             console.log("Unknow request")
         }
     } else {
-        if (isProcessingHttpCommand) console.log("Busy, process ongoing")
-        else console.log("Command list is empty")
+        if (httpCommandList.length == 0) console.log("Command list is empty")
     }
 }
 
