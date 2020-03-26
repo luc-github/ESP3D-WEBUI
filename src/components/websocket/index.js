@@ -106,6 +106,10 @@ function setupWebSocket(wstype, wsIp, wsPort) {
  * Connect to WS server and setup events
  */
 function connectWsServer() {
+    console.log("connect websocket")
+    globaldispatch({
+        type: "CONNECT_WEBSOCKET",
+    })
     isLogOff = false
     try {
         webSocketClient = new WebSocket(
@@ -123,6 +127,7 @@ function connectWsServer() {
     webSocketClient.binaryType = "arraybuffer"
     //On open WS
     webSocketClient.onopen = function(e) {
+        console.log("ws connection ok")
         globaldispatch({
             type: "WEBSOCKET_SUCCESS",
         })

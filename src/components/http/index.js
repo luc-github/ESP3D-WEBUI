@@ -55,7 +55,7 @@ function defaultHttpResultFn(response_text) {
     ) {
         httpCommandList[0].resultfn(response_text)
     }
-    console.log("Success : " + response_text)
+    //console.log("Success : " + response_text)
     nextCommand()
 }
 
@@ -91,7 +91,7 @@ function requestAuthentication() {
  * Go to next command in queries list
  */
 function nextCommand() {
-    console.log("pop " + httpCommandList[0].uri)
+    //console.log("pop " + httpCommandList[0].uri)
     httpCommandList.shift()
     isProcessingHttpCommand = false
     processCommands()
@@ -186,12 +186,12 @@ function SendPostHttp(
  */
 function processCommands() {
     if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
-        console.log(
+        /*console.log(
             "Processing " +
                 httpCommandList[0].type +
                 " command:" +
                 httpCommandList[0].uri
-        )
+        )*/
         if (
             httpCommandList[0].type == "GET" ||
             httpCommandList[0].type == "POST"
@@ -225,7 +225,7 @@ function processCommands() {
                     false
                 )
             if (httpCommandList[0].type == "POST") {
-                console.log("Post query")
+                //console.log("Post query")
                 console.log(httpCommandList[0].data)
             }
             currentHttpCommand.send(
@@ -237,7 +237,7 @@ function processCommands() {
             console.log("Unknow request")
         }
     } else {
-        if (httpCommandList.length == 0) console.log("Command list is empty")
+        //if (httpCommandList.length == 0) console.log("Command list is empty")
     }
 }
 

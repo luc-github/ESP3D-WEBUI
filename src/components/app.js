@@ -23,12 +23,9 @@ import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
 import { SendGetHttp, SendPostHttp } from "./http"
-import { setupWebSocket } from "./websocket"
 import { DialogPage } from "./dialog"
-import { setLang, T } from "./translations"
-let isPreferencesLoaded = false
-
-const default_preferences = '{"language":"en"}'
+import { T } from "./translations"
+import { initApp } from "./uisettings"
 
 /*
  * Hook variable for communication with UI
@@ -39,52 +36,8 @@ export let globaldispatch
 const initialStateEventData = {
     showDialog: true,
     showPage: false,
-    data: { type: "loading", message: T("S1") },
+    data: { type: "loader" },
     error: 0,
-}
-
-/*
- * Load Firmware settings query success
- */
-function loadPreferencesSuccess(responseText) {
-    var data = {}
-    try {
-        data = JSON.parse(responseText)
-        setLang(data.language)
-        globaldispatch({
-            type: "FORCE_RENDER",
-        })
-    } catch (e) {
-        console.error("Parsing error:", e)
-        globaldispatch({
-            type: "FETCH_FW_ERROR",
-            errorcode: e,
-            errormsg: "S4",
-        })
-    }
-}
-
-/*
- * Load Firmware settings query error
- */
-function loadPreferencesError(errorCode, responseText) {
-    var blob = new Blob([default_preferences], { type: "application/json" })
-    var file = new File([blob], "preferences.json")
-    var formData = new FormData()
-    var url = "/files"
-    formData.append("path", "/")
-    formData.append("myfile", file, "preferences.json")
-    SendPostHttp(url, formData)
-    globaldispatch({
-        type: "FETCH_FW_ERROR",
-        errorcode: errorCode,
-    })
-}
-
-function loadPreferences() {
-    isPreferencesLoaded = true
-    const url = "/preferences.json?" + +"?" + Date.now()
-    SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
 }
 
 /*
@@ -100,46 +53,61 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {},
             }
-        case "FETCH_PREFERENCES":
-            console.log("dispatch")
+        case "INIT":
             return {
                 showDialog: true,
                 showPage: false,
                 error: 0,
-                data: { type: "loader", message: T("S7") },
+                data: { type: "loader", message: "" },
             }
-        case "WEBSOCKET_SUCCESS":
-            if (!isPreferencesLoaded) {
-                loadPreferences()
-                return {
-                    showDialog: true,
-                    showPage: false,
-                    error: 0,
-                    data: { type: "loader", message: T("S7") },
-                }
-            } else
-                return {
-                    showDialog: false,
-                    showPage: true,
-                    error: 0,
-                    data: {},
-                }
-        case "FETCH_FW_SUCCESS":
+        case "FETCH_CONFIGURATION":
+            return {
+                showDialog: true,
+                showPage: false,
+                error: 0,
+                data: { type: "loader", message: T("S1") },
+            }
+        case "FETCH_CONFIGURATION_ERROR":
+            return {
+                showDialog: true,
+                showPage: false,
+                error: action.errorcode,
+                data: { type: "error", message: T("S5") },
+            }
+        case "PARSING_PREFERENCES_ERROR":
+            return {
+                showDialog: true,
+                showPage: false,
+                error: action.errorcode,
+                data: { type: "error", message: T("S4") },
+            }
+        case "PARSING_CONFIGURATION_ERROR":
+            return {
+                showDialog: true,
+                showPage: false,
+                error: action.errorcode,
+                data: { type: "error", message: T("S5") },
+            }
+        case "CONNECT_WEBSOCKET":
             return {
                 showDialog: true,
                 showPage: false,
                 error: 0,
                 data: { type: "loader", message: T("S2") },
             }
-        case "WEBSOCKET_ERROR":
-            msg = "S6"
-        case "FETCH_FW_ERROR":
-            msg = "S5"
+        case "WEBSOCKET_SUCCESS":
+            return {
+                showDialog: false,
+                showPage: true,
+                error: 0,
+                data: {},
+            }
+        case "ERROR":
             return {
                 showDialog: true,
-                showPage: false,
+                showPage: state.showPage,
                 error: action.errorcode,
-                data: { type: "error", message: T(msg) },
+                data: { type: "error", message: T(action.msg) },
             }
         case "DISCONNECT_ERROR":
             return {
@@ -154,63 +122,6 @@ const reducerPage = (state, action) => {
         default:
             return state
     }
-}
-
-/*
- * Load Firmware settings query success
- */
-function loadConfigSuccess(responseText) {
-    var data = {}
-    try {
-        data = JSON.parse(responseText)
-        if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
-            globaldispatch({ type: "FETCH_FW_SUCCESS", payload: data })
-            setupWebSocket(
-                data.WebCommunication,
-                data.WebSocketIP,
-                data.WebSocketport
-            )
-        }
-    } catch (e) {
-        console.error("Parsing error:", e)
-        globaldispatch({
-            type: "FETCH_FW_ERROR",
-            errorcode: e,
-            errormsg: "S4",
-        })
-    }
-}
-
-/*
- * Load Firmware settings query error
- */
-function loadConfigError(errorCode, responseText) {
-    globaldispatch({
-        type: "FETCH_FW_ERROR",
-        errorcode: errorCode,
-    })
-}
-
-/*
- * Load Firmware settings
- */
-function loadConfig() {
-    var d = new Date()
-    var PCtime =
-        d.getFullYear() +
-        "-" +
-        String(d.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(d.getDate()).padStart(2, "0") +
-        "-" +
-        String(d.getHours()).padStart(2, "0") +
-        "-" +
-        String(d.getMinutes()).padStart(2, "0") +
-        "-" +
-        String(d.getSeconds()).padStart(2, "0")
-    const url =
-        "/command?cmd=" + encodeURIComponent("[ESP800]" + "time=" + PCtime)
-    SendGetHttp(url, loadConfigSuccess, loadConfigError)
 }
 
 /*
@@ -239,7 +150,7 @@ export function App() {
         initialStateEventData
     )
     useEffect(() => {
-        loadConfig()
+        initApp()
     }, [])
     return (
         <div>

@@ -20,6 +20,28 @@
 
 import { h } from "preact"
 import { AlertTriangle } from "preact-feather"
+import { T } from "../translations"
+import { initApp } from "../uisettings"
+/*
+ *Spin loader
+ *
+ */
+const SpinLoader = ({ color }) => (
+    <div class="lds-spinner" style={{ color }}>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+)
 
 /*
  * Dialog page
@@ -29,24 +51,45 @@ export const DialogPage = ({ currentState }) => {
     if (currentState.showDialog) {
         let classname = "modal d-block"
         let icon
-        if (currentState.error != 0) {
-            icon = <AlertTriangle classeName color="red" />
+        if (currentState.data.type == "error") {
+            icon = <AlertTriangle color="red" />
         } else {
-            icon = ""
+            if (currentState.data.type == "loader")
+                icon = <SpinLoader color="lightblue" />
         }
         if (currentState.data.type == "disconnect") classname += " greybg"
         return (
             <modal tabindex="-1" className={classname}>
                 <div class="modal-dialog modal-dialog-centered modal-sm">
                     <div class="modal-content">
-                        <div class="modal-header"></div>
+                        <div class="modal-header">
+                            {currentState.data.title}
+                        </div>
                         <div class="modal-body">
                             <center>
-                                {icon}
-                                {currentState.data.message}
+                                <div class="text-center">
+                                    {icon}
+                                    <div
+                                        className={
+                                            currentState.data.type == "error"
+                                                ? "d-none"
+                                                : "d-block"
+                                        }
+                                    />
+                                    <span>{currentState.data.message}</span>
+                                </div>
                             </center>
                         </div>
-                        <div class="modal-footer"></div>
+                        <div class="modal-footer">
+                            {currentState.data.footer}
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                onClick={initApp}
+                            >
+                                {T("S8")}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </modal>
