@@ -84,7 +84,11 @@ export const DialogPage = ({ currentState }) => {
                             {currentState.data.footer}
                             <button
                                 type="button"
-                                class="btn btn-primary"
+                                className={
+                                            currentState.data.type == "disconnect"
+                                                ? "btn btn-primary d-block"
+                                                : "d-none"
+                                        }
                                 onClick={initApp}
                             >
                                 {T("S8")}
