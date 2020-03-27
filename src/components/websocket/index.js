@@ -176,9 +176,8 @@ function connectWsServer() {
 function disconnectWsServer() {
     isLogOff = true
     webSocketClient.close()
-    document.title = "Disconnected"
     globaldispatch({
-        type: "DISCONNECT_ERROR",
+        type: "DISCONNECTION",
     })
 }
 

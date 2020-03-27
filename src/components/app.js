@@ -28,17 +28,22 @@ import { T } from "./translations"
 import { initApp } from "./uisettings"
 
 /*
- * Hook variable for communication with UI
+ * Hook variables for communication with UI
  */
 let globalstate
-export let globaldispatch
-
+let globaldispatch
 const initialStateEventData = {
     showDialog: true,
     showPage: false,
     data: { type: "loader" },
     error: 0,
 }
+
+/*
+ * Local variables
+ *
+ */
+let esp3dSettings
 
 /*
  * Hook for communication with UI
@@ -54,6 +59,7 @@ const reducerPage = (state, action) => {
                 data: {},
             }
         case "INIT":
+            document.title = document.location.host
             return {
                 showDialog: true,
                 showPage: false,
@@ -86,9 +92,12 @@ const reducerPage = (state, action) => {
                 showDialog: true,
                 showPage: false,
                 error: action.errorcode,
-                data: { type: "error", message: T("S5") },
+                data: { type: "error", message: T("S7") },
             }
         case "CONNECT_WEBSOCKET":
+            if (esp3dSettings) {
+                document.title = esp3dSettings.Hostname
+            }
             return {
                 showDialog: true,
                 showPage: false,
@@ -109,14 +118,16 @@ const reducerPage = (state, action) => {
                 error: action.errorcode,
                 data: { type: "error", message: T(action.msg) },
             }
-        case "DISCONNECT_ERROR":
+        case "DISCONNECTION":
+            document.title = document.title + "(" + T("S9") + ")"
             return {
                 showDialog: true,
                 showPage: true,
-                error: action.errorcode,
+                error: 0,
                 data: {
                     type: "disconnect",
                     message: T("S3"),
+                    button1text: T("S8"),
                 },
             }
         default:
@@ -142,9 +153,17 @@ const MainPage = ({ currentState }) => {
 }
 
 /*
+ * Apply necessary settings
+ */
+function applyConfig(data) {
+    console.log("Apply settings")
+    esp3dSettings = data
+}
+
+/*
  * App entry
  */
-export function App() {
+function App() {
     ;[globalstate, globaldispatch] = useReducer(
         reducerPage,
         initialStateEventData
@@ -159,3 +178,5 @@ export function App() {
         </div>
     )
 }
+
+export { App, globaldispatch, applyConfig }

@@ -2,10 +2,11 @@
     "lang" : "English",
     "S1" : "Loading...",
     "S2" : "Connecting websocket...",
-    "S3" : "You are now disconnected",
-    "S4" : "Parsing configuration error, is your version correct?",
-    "S5" : "Cannot connect board.",
+    "S3" : "Looks like you are connected from another place, so this page is now disconnected",
+    "S4" : "Parsing configuration error, file is incorrect",
+    "S5" : "Cannot connect to board's web server",
     "S6" : "WebSocket connection error",
-    "S7" : "Parsing preferences error, is your version correct?",
-    "S8" : "Reconnect"
+    "S7" : "Parsing preferences error, file is incorrect",
+    "S8" : "Please reconnect me",
+    "S9" : "disconnected"
 }

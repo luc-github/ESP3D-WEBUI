@@ -85,13 +85,13 @@ export const DialogPage = ({ currentState }) => {
                             <button
                                 type="button"
                                 className={
-                                            currentState.data.type == "disconnect"
-                                                ? "btn btn-primary d-block"
-                                                : "d-none"
-                                        }
+                                    currentState.data.type == "disconnect"
+                                        ? "btn btn-primary d-block"
+                                        : "d-none"
+                                }
                                 onClick={initApp}
                             >
-                                {T("S8")}
+                                {currentState.data.button1text}
                             </button>
                         </div>
                     </div>

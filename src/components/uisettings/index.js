@@ -19,9 +19,9 @@
 */
 
 "use strict"
-import { setLang, T } from "../translations"
+import { setLang } from "../translations"
 import { SendGetHttp, SendPostHttp } from "../http"
-import { globaldispatch } from "../app"
+import { globaldispatch, applyConfig } from "../app"
 import { setupWebSocket } from "../websocket"
 
 /*
@@ -40,7 +40,6 @@ const preferencesFileName = "preferences.json"
  * Function starting initialization
  */
 function initApp() {
-    document.title = "..."
     preferences = JSON.parse(default_preferences)
     globaldispatch({ type: "INIT" })
     loadPreferences()
@@ -157,13 +156,4 @@ function loadConfigError(errorCode, responseText) {
     })
 }
 
-/*
- * Apply necessary settings
- */
-function applyConfig(data) {
-    //TODO
-    console.log("Apply settings")
-    document.title = data.Hostname
-}
-
-export { initApp }
+export { initApp, preferences }

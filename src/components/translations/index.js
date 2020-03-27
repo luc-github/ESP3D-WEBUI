@@ -30,6 +30,9 @@ import zh_cnLangRessource from "./zh_cn.json"
 let currentLang = "en"
 let currentLangRessource = enLangRessource
 
+/*
+ * Set language
+ */
 function setLang(lang) {
     currentLang = lang
     switch (currentLang) {
@@ -48,6 +51,10 @@ function setLang(lang) {
     }
 }
 
+/*
+ * Give text from id according language selection
+ * give english text if no corresponding id selected language
+ */
 function T(id) {
     let translatedText = currentLangRessource[id]
     if (typeof translatedText === "undefined") {
@@ -59,4 +66,20 @@ function T(id) {
     return translatedText
 }
 
-export { setLang, T }
+/*
+ * Translate language from english
+ * give english if no text found
+ * this is need when text come from outside
+ */
+function Translate(text) {
+    let translatedText = text
+    let property
+    for (property in enLangRessource) {
+        if (enLangRessource[property] == text) {
+            return T(String(property))
+        }
+    }
+    return translatedText
+}
+
+export { setLang, T, Translate }
