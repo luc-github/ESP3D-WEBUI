@@ -4,12 +4,16 @@
   "description": "Preact version of WebUI for ESP3D per @aganov suggestion",
   "main": "index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode=production",
+    "build-grbl": "cross-env NODE_ENV=production TARGET_ENV=grbl webpack --mode=production",
+    "build-printer": "cross-env NODE_ENV=production TARGET_ENV=printer webpack --mode=production",
+    "build": "cross-env NODE_ENV=production TARGET_ENV=printer webpack --mode=production",
     "clean": "rm -rf dist",
-    "start": "npm run build && node src/server/index.js",
-    "client": "cross-env NODE_ENV=development webpack-dev-server --open --mode=development",
+    "grbl": "cross-env NODE_ENV=development TARGET_ENV=grbl webpack-dev-server --open --mode=development",
+    "printer": "cross-env NODE_ENV=development TARGET_ENV=printer webpack-dev-server --open --mode=development",
     "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev-grbl": "concurrently \"npm run server\" \"npm run grbl\"",
+    "dev-printer": "concurrently \"npm run server\" \"npm run printer\"",
+    "dev": "concurrently \"npm run server\" \"npm run printer\""
   },
   "keywords": [],
   "type": "git",

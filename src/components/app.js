@@ -26,6 +26,7 @@ import { SendGetHttp, SendPostHttp } from "./http"
 import { DialogPage } from "./dialog"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
+const { Machine } = require(`./${process.env.TARGET_ENV}`)
 
 /*
  * Hook variables for communication with UI
@@ -146,6 +147,8 @@ const MainPage = ({ currentState }) => {
                     ESP3D v<Esp3dVersion />
                     <br />
                     {T("lang")}
+                    <br />
+                    <Machine />
                 </center>
             </div>
         )

@@ -6,8 +6,13 @@ import htmlMinifierWebpackPlugin from "./html-minifier-webpack-plugin"
 import miniCssExtractPlugin from "./mini-css-extract-plugin"
 import removeFilesWebpackPlugin from "./remove-files-webpack-plugin"
 import terserPlugin from "./terser-plugin"
+import envPlugin from "./env-plugin"
 
-export const environmentPlugins = [htmlWebpackPlugin(), miniCssExtractPlugin()]
+export const environmentPlugins = [
+    htmlWebpackPlugin(),
+    miniCssExtractPlugin(),
+    envPlugin(),
+]
 
 export const optimizationPlugins = {
     minimizer: [terserPlugin(), optimizeCSSAssetsPlugin()],
