@@ -119,6 +119,7 @@ const reducerPage = (state, action) => {
                 error: action.errorcode,
                 data: { type: "error", message: T(action.msg) },
             }
+        case "CONNECTION_LOST":
         case "DISCONNECTION":
             document.title = document.title + "(" + T("S9") + ")"
             return {
@@ -127,7 +128,8 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {
                     type: "disconnect",
-                    message: T("S3"),
+                    message:
+                        action.type == "DISCONNECTION" ? T("S3") : T("S10"),
                     button1text: T("S8"),
                 },
             }

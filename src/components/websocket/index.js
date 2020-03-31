@@ -33,6 +33,8 @@ var webSocketIp = ""
 var webSocketType = ""
 var webSocketBuffer = ""
 var currentPageId = ""
+var reconnectCounter = 0
+const maxRecoonection = 5
 
 /*
  * Some constants
@@ -75,7 +77,7 @@ function processWebSocketText(wsBuffer) {
                 break
             case "activeID":
                 if (getPageId() != tdata[1]) {
-                    disconnectWsServer()
+                    disconnectWsServer("DISCONNECTION")
                 }
                 break
             case "DHT":
@@ -127,6 +129,7 @@ function connectWsServer() {
     webSocketClient.binaryType = "arraybuffer"
     //On open WS
     webSocketClient.onopen = function(e) {
+        reconnectCounter = 0
         console.log("ws connection ok")
         globaldispatch({
             type: "WEBSOCKET_SUCCESS",
@@ -137,7 +140,15 @@ function connectWsServer() {
         console.log("Disconnected")
         //seems sometimes it disconnect so wait 3s and reconnect
         //if it is not a log off
-        if (!isLogOff) setTimeout(connectWsServer, 3000)
+        if (!isLogOff) {
+            reconnectCounter++
+            if (reconnectCounter >= maxRecoonection) {
+                disconnectWsServer("CONNECTION_LOST")
+            } else {
+                console.log("retry : " + reconnectCounter)
+                setTimeout(connectWsServer, 3000)
+            }
+        }
     }
     //On ws error
     webSocketClient.onerror = function(e) {
@@ -173,11 +184,12 @@ function connectWsServer() {
 /*
  * Disconnect from WS server
  */
-function disconnectWsServer() {
+function disconnectWsServer(Type) {
     isLogOff = true
+    reconnectCounter = 0
     webSocketClient.close()
     globaldispatch({
-        type: "DISCONNECTION",
+        type: Type,
     })
 }
 

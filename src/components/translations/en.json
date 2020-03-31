@@ -8,5 +8,6 @@
     "S6" : "WebSocket connection error",
     "S7" : "Parsing preferences error, file is incorrect",
     "S8" : "Please reconnect me",
-    "S9" : "disconnected"
+    "S9" : "disconnected",
+    "S10" : "Connection with board is lost"
 }
