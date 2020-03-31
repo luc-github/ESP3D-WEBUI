@@ -241,4 +241,9 @@ function processCommands() {
     }
 }
 
-export { clearCommandList, SendGetHttp, SendPostHttp }
+function SendCommand(cmd, result_fn, error_fn, progress_fn, id, max_id) {
+    const url = "/command?cmd=" + cmd
+    return SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id)
+}
+
+export { clearCommandList, SendCommand, SendGetHttp, SendPostHttp }

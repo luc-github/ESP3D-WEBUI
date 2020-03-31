@@ -20,7 +20,7 @@
 
 "use strict"
 import { setLang } from "../translations"
-import { SendGetHttp, SendPostHttp } from "../http"
+import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 import { globaldispatch, applyConfig } from "../app"
 import { setupWebSocket } from "../websocket"
 
@@ -112,13 +112,11 @@ function loadConfig() {
         String(d.getMinutes()).padStart(2, "0") +
         "-" +
         String(d.getSeconds()).padStart(2, "0")
-    const url =
-        "/command?cmd=" + encodeURIComponent("[ESP800]" + "time=" + PCtime)
     globaldispatch({
         type: "FETCH_CONFIGURATION",
     })
     console.log("load FW config")
-    SendGetHttp(url, loadConfigSuccess, loadConfigError)
+    SendCommand(cmd, loadConfigSuccess, loadConfigError)
 }
 
 /*
