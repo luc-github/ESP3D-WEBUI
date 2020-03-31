@@ -112,6 +112,7 @@ function loadConfig() {
         String(d.getMinutes()).padStart(2, "0") +
         "-" +
         String(d.getSeconds()).padStart(2, "0")
+    const cmd = encodeURIComponent("[ESP800]" + "time=" + PCtime)
     globaldispatch({
         type: "FETCH_CONFIGURATION",
     })

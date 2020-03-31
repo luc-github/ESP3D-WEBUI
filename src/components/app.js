@@ -23,6 +23,7 @@ import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
 import { DialogPage } from "./dialog"
+import { ESP3DLogo } from "./images"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
 const { Machine } = require(`./${process.env.TARGET_ENV}`)
@@ -148,6 +149,7 @@ const MainPage = ({ currentState }) => {
                     {T("lang")}
                     <br />
                     <Machine />
+                    <ESP3DLogo />
                 </center>
             </div>
         )
