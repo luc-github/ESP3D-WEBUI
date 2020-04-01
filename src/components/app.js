@@ -24,6 +24,7 @@ import { useEffect, useReducer } from "preact/hooks"
 import { Esp3dVersion } from "./version"
 import { DialogPage } from "./dialog"
 import { ESP3DLogo } from "./images"
+import { Header } from "./header"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
 const { Machine } = require(`./${process.env.TARGET_ENV}`)
@@ -145,14 +146,14 @@ const MainPage = ({ currentState }) => {
     if (currentState.showPage) {
         return (
             <div>
-                <center>
+                <Header />
+                <div class="container">
                     ESP3D v<Esp3dVersion />
                     <br />
                     {T("lang")}
                     <br />
                     <Machine />
-                    <ESP3DLogo />
-                </center>
+                </div>
             </div>
         )
     }

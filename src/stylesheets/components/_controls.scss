@@ -1,14 +1,17 @@
 $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23e0a800' d=' M 7.927 6.842 L 4.279 0.76 C 4.106 0.502 3.881 0.595 3.733 0.817 L 3.733 0.817 L 0.084 6.825 C -0.046 7.033 -0.003 7.41 0.311 7.41 L 0.311 7.41 L 7.683 7.41 C 7.984 7.41 8.07 7.059 7.927 6.842 L 7.927 6.842 Z  M 6.535 6.273 L 4.574 6.273 L 4.574 5.847 C 4.574 5.771 4.508 5.705 4.432 5.705 L 4.432 5.705 L 3.579 5.705 C 3.499 5.705 3.437 5.767 3.437 5.847 L 3.437 5.847 L 3.437 6.273 L 1.448 6.273 L 4.006 2.164 L 6.535 6.273 Z  M 4.597 3.432 L 3.415 3.432 C 3.263 3.432 3.157 3.561 3.187 3.71 L 3.187 3.71 L 3.517 5.142 C 3.547 5.294 3.697 5.421 3.852 5.421 L 3.852 5.421 L 4.159 5.421 C 4.31 5.421 4.465 5.29 4.495 5.142 L 4.495 5.142 L 4.824 3.71 C 4.854 3.561 4.749 3.432 4.597 3.432 L 4.597 3.432 Z'/%3e%3c/svg%3e");
 
 .is-changed:focus {
-   box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.25)!important;
+    box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.25) !important;
 }
 
-.form-control.is-changed{
-border-color: #e0a800!important;
-background-image: $warning-icon!important;
+.form-control.is-changed {
+    border-color: #e0a800 !important;
+    background-image: $warning-icon !important;
 }
-.custom-select.is-changed{
-border-color: #e0a800!important;
-background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px, $warning-icon #fff no-repeat center right 1.75rem/calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important ;
+.custom-select.is-changed {
+    border-color: #e0a800 !important;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
+            no-repeat right 0.75rem center/8px 10px,
+        $warning-icon #fff no-repeat center right 1.75rem /
+            calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important ;
 }

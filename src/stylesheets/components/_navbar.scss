@@ -1,68 +1,79 @@
-.header {
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 56px;
-	padding: 0;
-	background: #673AB7;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-	z-index: 50;
+.nav-item {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 15px;
+    min-width: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0);
+    text-decoration: none;
+    color: #eee;
+    will-change: background-color;
 
-	h1 {
-		float: left;
-		margin: 0;
-		padding: 0 15px;
-		font-size: 24px;
-		line-height: 56px;
-		font-weight: 400;
-		color: #FFF;
-	}
-    
-    version {
-		float: right;
-		margin: 0;
-		padding: 0 15px;
-		font-size: 14px;
-		line-height: 56px;
-		font-weight: 400;
-		color: #FFF;
-        a {
-			display: inline-block;
-			height: 56px;
-			line-height: 56px;
-			padding: 0 15px;
-			min-width: 50px;
-			text-align: center;
-			background: rgba(255,255,255,0);
-			text-decoration: none;
-			color: #EEE;
-			will-change: background-color;
+    &:hover,
+    &:active,
+    &:focus {
+        background: rgba(255, 255, 255, 0.3);
+    }
+}
+.espheader {
+    padding: 0;
+    background: #673ab7;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.disable-select {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by any browser but < IE9 */
+}
 
-			&:hover, &:active {
-				background: rgba(255,255,255,0.3);
-			}
-		}
-	}
+.hide-low {
+    display: inline-block;
+}
 
-	nav {
-		font-size: 100%;
+@media only screen and (max-width: 400px) {
+    .hide-low {
+        display: none;
+    }
+}
 
-		a {
-			display: inline-block;
-			height: 56px;
-			line-height: 56px;
-			padding: 0 15px;
-			min-width: 50px;
-			text-align: center;
-			background: rgba(255,255,255,0);
-			text-decoration: none;
-			color: #EEE;
-			will-change: background-color;
+.container {
+    position: relative;
+    top: 50px;
+}
 
-			&:hover, &:active {
-				background: rgba(255,255,255,0.3);
-			}
-		}
-	}
+.ribbon {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    padding: 15px 0;
+    background-color: #3498db;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font: 700 18px/1 "Lato", sans-serif;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* top right*/
+.ribbon-top-right {
+    top: -10px;
+    right: -10px;
+}
+
+.ribbon-top-right span {
+    left: -25px;
+    top: 30px;
+    transform: rotate(45deg);
 }
