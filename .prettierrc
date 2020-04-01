@@ -8,6 +8,11 @@
       "options": {
         "parser": "babel"
       }
+    },
+    {"files": "*.scss",
+      "options": {
+        "parser": "scss"
+      }
     }
   ]
 }
