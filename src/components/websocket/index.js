@@ -34,11 +34,14 @@ var webSocketType = ""
 var webSocketBuffer = ""
 var currentPageId = ""
 var reconnectCounter = 0
-const maxRecoonection = 5
+var pingStarted = false
+var pingPaused = false
 
 /*
  * Some constants
  */
+const maxReconnection = 3
+const pingDelay = 5000
 
 /*
  * Set page ID
@@ -52,6 +55,21 @@ function setPageId(id) {
  */
 function getPageId() {
     return currentPageId
+}
+
+function ping(start = false) {
+    console.log("ping")
+    //be sure it is not reconnection
+    if (!pingStarted) {
+        pingStarted = true
+    } else {
+        if (start) return
+    }
+    setTimeout(ping, pingDelay)
+    if (pingPaused) return
+    if (webSocketClient.readyState == 1) {
+        webSocketClient.send("ping")
+    }
 }
 
 /*
@@ -109,9 +127,10 @@ function setupWebSocket(wstype, wsIp, wsPort) {
  */
 function connectWsServer() {
     console.log("connect websocket")
-    globaldispatch({
-        type: "CONNECT_WEBSOCKET",
-    })
+    if (!pingPaused)
+        globaldispatch({
+            type: "CONNECT_WEBSOCKET",
+        })
     isLogOff = false
     try {
         webSocketClient = new WebSocket(
@@ -134,6 +153,7 @@ function connectWsServer() {
         globaldispatch({
             type: "WEBSOCKET_SUCCESS",
         })
+        ping(true)
     }
     //On close ws
     webSocketClient.onclose = function(e) {
@@ -141,8 +161,8 @@ function connectWsServer() {
         //seems sometimes it disconnect so wait 3s and reconnect
         //if it is not a log off
         if (!isLogOff) {
-            reconnectCounter++
-            if (reconnectCounter >= maxRecoonection) {
+            if (!pingPaused) reconnectCounter++
+            if (reconnectCounter >= maxReconnection) {
                 disconnectWsServer("CONNECTION_LOST")
             } else {
                 console.log("retry : " + reconnectCounter)
