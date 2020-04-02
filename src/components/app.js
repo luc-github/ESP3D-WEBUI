@@ -20,12 +20,13 @@
 
 import { h } from "preact"
 import "../stylesheets/application.scss"
-import { useEffect, useReducer } from "preact/hooks"
+import { useState, useEffect, useReducer } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"
 import { DashboardPage } from "./dashboard"
 import { SettingsPage } from "./settings"
 import { Header } from "./header"
+import { Notification } from "./notification"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
 
@@ -61,6 +62,9 @@ const initialStateEventData = {
     data: { type: "loader" },
     error: 0,
 }
+
+let notificationBottom
+let setNotificationBottom
 
 /*
  * Local variables
@@ -190,16 +194,31 @@ const reducerPage = (state, action) => {
 /*
  * Main page
  */
+const Container = ({ currentState, top }) => {
+    console.log("top is " + top)
+    return (
+        <div class="espcontainer" style={{ top }}>
+            <AboutPage currentState={currentState} />
+            <DashboardPage currentState={currentState} />
+            <SettingsPage currentState={currentState} />
+        </div>
+    )
+}
+
+/*
+ * Main page
+ */
 const MainPage = ({ currentState }) => {
     if (currentState.showPage) {
+        ;[notificationBottom, setNotificationBottom] = useState("50px")
         return (
             <div>
                 <Header />
-                <div class="espcontainer">
-                    <AboutPage currentState={currentState} />
-                    <DashboardPage currentState={currentState} />
-                    <SettingsPage currentState={currentState} />
-                </div>
+                <Notification />
+                <Container
+                    currentState={currentState}
+                    top={notificationBottom}
+                />
             </div>
         )
     }
@@ -232,4 +251,4 @@ function App() {
     )
 }
 
-export { App, globaldispatch, applyConfig, Page, Action }
+export { App, globaldispatch, applyConfig, Page, Action, setNotificationBottom }

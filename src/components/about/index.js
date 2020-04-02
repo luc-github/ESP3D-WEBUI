@@ -25,11 +25,12 @@ import { Page } from "../app"
 import { Esp3dVersion } from "../version"
 
 /*
- * Dialog page
+ * About page
  *
  */
 export const AboutPage = ({ currentState }) => {
     if (currentState.activePage != Page.about) return null
+
     return (
         <div>
             About <br /> ESP3D v<Esp3dVersion />

@@ -37,7 +37,7 @@ function showSettings() {
 }
 
 /*
- * Dialog page
+ * Header component
  *
  */
 export const Header = () => {

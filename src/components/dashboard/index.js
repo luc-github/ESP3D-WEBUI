@@ -23,8 +23,9 @@ import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
 const { Machine } = require(`../${process.env.TARGET_ENV}`)
+
 /*
- * Dialog page
+ * Dashboard page
  *
  */
 export const DashboardPage = ({ currentState }) => {

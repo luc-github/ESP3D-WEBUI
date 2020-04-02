@@ -5,6 +5,7 @@
     right: -10px;
     overflow: hidden;
     position: absolute;
+    z-index: 10;
 }
 
 .espbanner span {
@@ -16,10 +17,10 @@
     top: 30px;
     transform: rotate(45deg);
     background-color: #3498db;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
     color: #fff;
     font: 700 18px/1 "Lato", sans-serif;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
 

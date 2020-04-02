@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI settings file
+ index.js - ESP3D WebUI notification file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,21 +19,26 @@
 */
 
 import { h } from "preact"
+import { useEffect, useRef } from "preact/hooks"
+import { globaldispatch, Action, setNotificationBottom } from "../app"
+import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
-import { initApp } from "../uisettings"
-import { Page } from "../app"
 
 /*
- * Settings page
+ * Notification component
  *
  */
-export const SettingsPage = ({ currentState }) => {
-    if (currentState.activePage != Page.settings) return null
+export const Notification = () => {
+    const notificationRef = useRef(null)
+    useEffect(() => {
+        setNotificationBottom(
+            notificationRef.current.clientHeight +
+                notificationRef.current.getClientRects()[0].top
+        )
+    })
     return (
-        <div>
-            Settings
-            <br />
-            {T("lang")}
+        <div ref={notificationRef} id="notif" class="espnotification fixed-top">
+            Notification area
         </div>
     )
 }
