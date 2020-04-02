@@ -22,6 +22,7 @@ import { h } from "preact"
 import { AlertTriangle } from "preact-feather"
 import { T } from "../translations"
 import { initApp } from "../uisettings"
+
 /*
  *Spin loader
  *

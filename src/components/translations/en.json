@@ -9,5 +9,10 @@
     "S7" : "Parsing preferences error, file is incorrect",
     "S8" : "Please reconnect me",
     "S9" : "disconnected",
-    "S10" : "Connection with board is lost"
+    "S10" : "Connection with board is lost",
+    "S11" : "Support us",
+    "S12" : "About ESP3D",
+    "S13" : "Dashboard",
+    "S14" : "Settings",
+    "S15" : "Donation for ESP3D"
 }

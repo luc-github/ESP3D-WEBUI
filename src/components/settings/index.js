@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI images file
+ index.js - ESP3D WebUI settings file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,6 +19,21 @@
 */
 
 import { h } from "preact"
-import { ESP3DLogo } from "./logo"
-import { ESP3DBanner } from "./banner"
-export { ESP3DLogo, ESP3DBanner }
+import { T } from "../translations"
+import { initApp } from "../uisettings"
+import { Page } from "../app"
+
+/*
+ * Dialog page
+ *
+ */
+export const SettingsPage = ({ currentState }) => {
+    if (currentState.activePage != Page.settings) return null
+    return (
+        <div>
+            Settings
+            <br />
+            {T("lang")}
+        </div>
+    )
+}

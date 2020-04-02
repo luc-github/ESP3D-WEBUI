@@ -19,7 +19,7 @@
 */
 
 "use strict"
-import { globaldispatch } from "../app"
+import { globaldispatch, Action } from "../app"
 
 /*
  * Local variables
@@ -95,7 +95,7 @@ function processWebSocketText(wsBuffer) {
                 break
             case "activeID":
                 if (getPageId() != tdata[1]) {
-                    disconnectWsServer("DISCONNECTION")
+                    disconnectWsServer(Action.disconnection)
                 }
                 break
             case "DHT":
@@ -129,7 +129,7 @@ function connectWsServer() {
     console.log("connect websocket")
     if (!pingPaused)
         globaldispatch({
-            type: "CONNECT_WEBSOCKET",
+            type: Action.connect_websocket,
         })
     isLogOff = false
     try {
@@ -139,7 +139,7 @@ function connectWsServer() {
         )
     } catch (exception) {
         globaldispatch({
-            type: "WEBSOCKET_ERROR",
+            type: Action.websocket_error,
         })
         console.error(exception)
         return
@@ -151,7 +151,7 @@ function connectWsServer() {
         reconnectCounter = 0
         console.log("ws connection ok")
         globaldispatch({
-            type: "WEBSOCKET_SUCCESS",
+            type: Action.websocket_success,
         })
         ping(true)
     }
@@ -163,7 +163,7 @@ function connectWsServer() {
         if (!isLogOff) {
             if (!pingPaused) reconnectCounter++
             if (reconnectCounter >= maxReconnection) {
-                disconnectWsServer("CONNECTION_LOST")
+                disconnectWsServer(Action.connection_lost)
             } else {
                 console.log("retry : " + reconnectCounter)
                 setTimeout(connectWsServer, 3000)
@@ -173,7 +173,7 @@ function connectWsServer() {
     //On ws error
     webSocketClient.onerror = function(e) {
         globaldispatch({
-            type: "WEBSOCKET_ERROR",
+            type: Action.websocket_error,
         })
         console.log("ws error", e)
     }

@@ -19,8 +19,23 @@
 */
 
 import { h } from "preact"
-import { ESP3DLogo } from "../images"
+import { globaldispatch, Page, Action } from "../app"
+import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
+import { T } from "../translations"
+
+function showAbout() {
+    globaldispatch({ type: Action.renderPage, activePage: Page.about })
+}
+
+function showDashboard() {
+    globaldispatch({ type: Action.renderPage, activePage: Page.dashboard })
+}
+
+function showSettings() {
+    globaldispatch({ type: Action.renderPage, activePage: Page.settings })
+}
+
 /*
  * Dialog page
  *
@@ -28,25 +43,18 @@ import { Server, Settings } from "preact-feather"
 export const Header = () => {
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
-            <div class="nav-item active" title="About">
+            <div class="nav-item active" title={T("S12")} onClick={showAbout}>
                 <ESP3DLogo />
             </div>
-            <div class="nav-item" title="Dashboard">
+            <div class="nav-item" title={T("S13")} onClick={showDashboard}>
                 <Server />
-                <span class="disable-select hide-low">Dashboard</span>
+                <span class="disable-select hide-low">&nbsp;{T("S13")}</span>
             </div>
-            <div class="nav-item" title="Settings">
+            <div class="nav-item" title={T("S14")} onClick={showSettings}>
                 <Settings />
-                <span class="disable-select hide-low">Settings</span>
+                <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
             </div>
-            <a
-                href="https://www.paypal.com/donate/?token=i9zEP0Z2LvWbjDpuoToVilO9aYpjpfQUNFZXjgCdudQOj7WOO2D8BPJRMqgCWYwmRqJDaW&country.x=GB&locale.x=GB"
-                target="_blank"
-            >
-                <div class="ribbon ribbon-top-right">
-                    <span>Support us</span>
-                </div>
-            </a>
+            <ESP3DBanner visible={true} title={T("S15")} text={T("S11")} />
         </nav>
     )
 }

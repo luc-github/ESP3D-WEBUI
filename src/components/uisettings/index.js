@@ -21,7 +21,7 @@
 "use strict"
 import { setLang } from "../translations"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
-import { globaldispatch, applyConfig } from "../app"
+import { globaldispatch, applyConfig, Action } from "../app"
 import { setupWebSocket } from "../websocket"
 
 /*
@@ -41,7 +41,7 @@ const preferencesFileName = "preferences.json"
  */
 function initApp() {
     preferences = JSON.parse(default_preferences)
-    globaldispatch({ type: "INIT" })
+    globaldispatch({ type: Action.init })
     loadPreferences()
 }
 
@@ -53,7 +53,7 @@ function loadPreferencesSuccess(responseText) {
         preferences = JSON.parse(responseText)
     } catch (err) {
         globaldispatch({
-            type: "PARSING_PREFERENCES_ERROR",
+            type: Action.parsing_preferences_error,
             errorcode: err,
         })
     }
@@ -114,7 +114,7 @@ function loadConfig() {
         String(d.getSeconds()).padStart(2, "0")
     const cmd = encodeURIComponent("[ESP800]" + "time=" + PCtime)
     globaldispatch({
-        type: "FETCH_CONFIGURATION",
+        type: Action.fetch_configuration,
     })
     console.log("load FW config")
     SendCommand(cmd, loadConfigSuccess, loadConfigError)
@@ -138,7 +138,7 @@ function loadConfigSuccess(responseText) {
     } catch (e) {
         console.error("Parsing error:", e)
         globaldispatch({
-            type: "PARSING_CONFIG_ERROR",
+            type: Action.parsing_configuration_error,
             errorcode: e,
             errormsg: "S4",
         })
@@ -150,7 +150,7 @@ function loadConfigSuccess(responseText) {
  */
 function loadConfigError(errorCode, responseText) {
     globaldispatch({
-        type: "FETCH_CONFIGURATION_ERROR",
+        type: Action.fetch_configuration_error,
         errorcode: errorCode,
     })
 }

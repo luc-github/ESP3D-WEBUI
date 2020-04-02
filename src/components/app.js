@@ -21,14 +21,34 @@
 import { h } from "preact"
 import "../stylesheets/application.scss"
 import { useEffect, useReducer } from "preact/hooks"
-import { Esp3dVersion } from "./version"
 import { DialogPage } from "./dialog"
-import { ESP3DLogo } from "./images"
+import { AboutPage } from "./about"
+import { DashboardPage } from "./dashboard"
+import { SettingsPage } from "./settings"
 import { Header } from "./header"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
-const { Machine } = require(`./${process.env.TARGET_ENV}`)
 
+/*
+ * Some constants
+ */
+const Page = { none: 0, about: 1, dashboard: 2, settings: 3 }
+const Action = {
+    none: 0,
+    error: 1,
+    renderPage: 2,
+    renderAll: 3,
+    init: 4,
+    fetch_configuration: 5,
+    fetch_configuration_error: 6,
+    parsing_configuration_error: 7,
+    parsing_preferences_error: 8,
+    connect_websocket: 9,
+    websocket_success: 10,
+    websocket_error: 11,
+    connection_lost: 12,
+    disconnection: 13,
+}
 /*
  * Hook variables for communication with UI
  */
@@ -36,6 +56,7 @@ let globalstate
 let globaldispatch
 const initialStateEventData = {
     showDialog: true,
+    activePage: Page.about,
     showPage: false,
     data: { type: "loader" },
     error: 0,
@@ -53,88 +74,115 @@ let esp3dSettings
 const reducerPage = (state, action) => {
     let msg = ""
     switch (action.type) {
-        case "FORCE_RENDER":
+        case Action.renderPage:
             return {
                 showDialog: false,
                 showPage: true,
+                activePage: action.activePage,
                 error: 0,
                 data: {},
             }
-        case "INIT":
+        case Action.renderAll:
+            return {
+                showDialog: false,
+                showPage: true,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: {},
+            }
+        case Action.init:
             document.title = document.location.host
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: Page.none,
                 error: 0,
                 data: { type: "loader", message: "" },
             }
-        case "FETCH_CONFIGURATION":
+        case Action.fetch_configuration:
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: globalstate.activePage,
                 error: 0,
                 data: { type: "loader", message: T("S1") },
             }
-        case "FETCH_CONFIGURATION_ERROR":
+        case Action.fetch_configuration_error:
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: globalstate.activePage,
                 error: action.errorcode,
                 data: { type: "error", message: T("S5") },
             }
-        case "PARSING_PREFERENCES_ERROR":
+        case Action.parsing_preferences_error:
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: globalstate.activePage,
                 error: action.errorcode,
                 data: { type: "error", message: T("S4") },
             }
-        case "PARSING_CONFIGURATION_ERROR":
+        case Action.parsing_configuration_error:
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: globalstate.activePage,
                 error: action.errorcode,
                 data: { type: "error", message: T("S7") },
             }
-        case "CONNECT_WEBSOCKET":
+        case Action.connect_websocket:
             if (esp3dSettings) {
                 document.title = esp3dSettings.Hostname
             }
             return {
                 showDialog: true,
                 showPage: false,
+                activePage: globalstate.activePage,
                 error: 0,
                 data: { type: "loader", message: T("S2") },
             }
-        case "WEBSOCKET_SUCCESS":
+        case Action.websocket_success:
             return {
                 showDialog: false,
                 showPage: true,
+                activePage: Page.about,
                 error: 0,
                 data: {},
             }
-        case "ERROR":
+        /*
+        case Action.websocket_error:
+            return {
+            //TBC
+            }
+        */
+        case Action.error:
             return {
                 showDialog: true,
                 showPage: state.showPage,
+                activePage: globalstate.activePage,
                 error: action.errorcode,
                 data: { type: "error", message: T(action.msg) },
             }
-        case "CONNECTION_LOST":
-        case "DISCONNECTION":
+        case Action.connection_lost:
+        case Action.disconnection:
             document.title = document.title + "(" + T("S9") + ")"
             return {
                 showDialog: true,
                 showPage: true,
+                activePage: globalstate.activePage,
                 error: 0,
                 data: {
                     type: "disconnect",
                     message:
-                        action.type == "DISCONNECTION" ? T("S3") : T("S10"),
+                        action.type == Action.disconnection
+                            ? T("S3")
+                            : T("S10"),
                     button1text: T("S8"),
                 },
             }
         default:
+            console.log("Unknow action")
             return state
     }
 }
@@ -147,12 +195,10 @@ const MainPage = ({ currentState }) => {
         return (
             <div>
                 <Header />
-                <div class="container">
-                    ESP3D v<Esp3dVersion />
-                    <br />
-                    {T("lang")}
-                    <br />
-                    <Machine />
+                <div class="espcontainer">
+                    <AboutPage currentState={currentState} />
+                    <DashboardPage currentState={currentState} />
+                    <SettingsPage currentState={currentState} />
                 </div>
             </div>
         )
@@ -186,4 +232,4 @@ function App() {
     )
 }
 
-export { App, globaldispatch, applyConfig }
+export { App, globaldispatch, applyConfig, Page, Action }

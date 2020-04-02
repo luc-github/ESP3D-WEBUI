@@ -8,5 +8,11 @@
     "S6" : "Erreur de connection WebSocket",
     "S7" : "Erreur lors du traitement du fichier de préférences, le fichier est incorrecte",
     "S8" : "SVP reconnectez-moi",
-    "S9" : "déconnecté"
+    "S9" : "déconnecté",
+    "S10" : "Connection with board is lost",
+    "S11" : "Aidez nous",
+    "S12" : "A propos d'ESP3D",
+    "S13" : "Tableau de bord",
+    "S14" : "Parmètres",
+    "S15" : "Donation pour ESP3D"
 }

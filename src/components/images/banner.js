@@ -19,6 +19,23 @@
 */
 
 import { h } from "preact"
-import { ESP3DLogo } from "./logo"
-import { ESP3DBanner } from "./banner"
-export { ESP3DLogo, ESP3DBanner }
+
+/*
+ *ESP3D banner
+ *
+ */
+
+const ESP3DBanner = ({ visible = true, title, text }) => (
+    <div class={visible ? "d-block" : "d-none"}>
+        <a
+            href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
+            target="_blank"
+        >
+            <div title={title} class="espbanner">
+                <span>{text}</span>
+            </div>
+        </a>
+    </div>
+)
+
+export { ESP3DBanner }

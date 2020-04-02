@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI images file
+ index.js - ESP3D WebUI dashboard file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,6 +19,21 @@
 */
 
 import { h } from "preact"
-import { ESP3DLogo } from "./logo"
-import { ESP3DBanner } from "./banner"
-export { ESP3DLogo, ESP3DBanner }
+import { T } from "../translations"
+import { initApp } from "../uisettings"
+import { Page } from "../app"
+const { Machine } = require(`../${process.env.TARGET_ENV}`)
+/*
+ * Dialog page
+ *
+ */
+export const DashboardPage = ({ currentState }) => {
+    if (currentState.activePage != Page.dashboard) return null
+    return (
+        <div>
+            Dashboard
+            <br />
+            <Machine />
+        </div>
+    )
+}
