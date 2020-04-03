@@ -49,6 +49,7 @@ const Action = {
     websocket_error: 11,
     connection_lost: 12,
     disconnection: 13,
+    fetch_data: 14,
 }
 /*
  * Hook variables for communication with UI
@@ -57,7 +58,7 @@ let globalstate
 let globaldispatch
 const initialStateEventData = {
     showDialog: true,
-    activePage: Page.about,
+    activePage: Page.dashboard,
     showPage: false,
     data: { type: "loader" },
     error: 0,
@@ -94,6 +95,14 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {},
             }
+        case Action.fetch_data:
+            return {
+                showDialog: true,
+                showPage: true,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: { type: "loader", message: T("S1") },
+            }
         case Action.init:
             document.title = document.location.host
             return {
@@ -117,7 +126,7 @@ const reducerPage = (state, action) => {
                 showPage: false,
                 activePage: globalstate.activePage,
                 error: action.errorcode,
-                data: { type: "error", message: T("S5") },
+                data: { type: "error-blocking", message: T("S5") },
             }
         case Action.parsing_preferences_error:
             return {
@@ -125,7 +134,11 @@ const reducerPage = (state, action) => {
                 showPage: false,
                 activePage: globalstate.activePage,
                 error: action.errorcode,
-                data: { type: "error", message: T("S4") },
+                data: {
+                    type: "error",
+                    message: T("S7"),
+                    next: action.nextaction,
+                },
             }
         case Action.parsing_configuration_error:
             return {
@@ -133,7 +146,7 @@ const reducerPage = (state, action) => {
                 showPage: false,
                 activePage: globalstate.activePage,
                 error: action.errorcode,
-                data: { type: "error", message: T("S7") },
+                data: { type: "error-blocking", message: T("S4") },
             }
         case Action.connect_websocket:
             if (esp3dSettings) {
@@ -166,7 +179,14 @@ const reducerPage = (state, action) => {
                 showPage: state.showPage,
                 activePage: globalstate.activePage,
                 error: action.errorcode,
-                data: { type: "error", message: T(action.msg) },
+                data: {
+                    type: "error",
+                    message: T(action.msg),
+                    title: action.title ? T(action.title) : T("S22"),
+                    button1text: action.buttontext
+                        ? T(action.buttontext)
+                        : T("S24"),
+                },
             }
         case Action.connection_lost:
         case Action.disconnection:
@@ -195,9 +215,11 @@ const reducerPage = (state, action) => {
  * Main page
  */
 const Container = ({ currentState, top }) => {
-    console.log("top is " + top)
     return (
-        <div class="espcontainer" style={{ top }}>
+        <div
+            class="espcontainer container-fluid row-fluid card"
+            style={{ top }}
+        >
             <AboutPage currentState={currentState} />
             <DashboardPage currentState={currentState} />
             <SettingsPage currentState={currentState} />
@@ -212,7 +234,7 @@ const MainPage = ({ currentState }) => {
     if (currentState.showPage) {
         ;[notificationBottom, setNotificationBottom] = useState("50px")
         return (
-            <div>
+            <div class="full-height">
                 <Header />
                 <Notification />
                 <Container
@@ -244,11 +266,19 @@ function App() {
         initApp()
     }, [])
     return (
-        <div>
+        <div class="full-height">
             <DialogPage currentState={globalstate} />
             <MainPage currentState={globalstate} />
         </div>
     )
 }
 
-export { App, globaldispatch, applyConfig, Page, Action, setNotificationBottom }
+export {
+    App,
+    globaldispatch,
+    applyConfig,
+    Page,
+    Action,
+    setNotificationBottom,
+    esp3dSettings,
+}

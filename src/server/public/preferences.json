@@ -1,5 +1,6 @@
 {
  "settings": {
-  "language": "fr"
+  "language": "fr",
+  "banner": "true"
  }
 }

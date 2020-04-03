@@ -55,9 +55,9 @@ function loadPreferencesSuccess(responseText) {
         globaldispatch({
             type: Action.parsing_preferences_error,
             errorcode: err,
+            nextaction: loadConfig,
         })
     }
-    console.log("set language")
     setLang(preferences.settings.language)
     loadConfig()
 }
@@ -140,7 +140,6 @@ function loadConfigSuccess(responseText) {
         globaldispatch({
             type: Action.parsing_configuration_error,
             errorcode: e,
-            errormsg: "S4",
         })
     }
 }

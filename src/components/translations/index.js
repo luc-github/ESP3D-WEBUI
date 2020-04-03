@@ -67,6 +67,17 @@ function T(id) {
 }
 
 /*
+ * Decode special char in string
+ */
+function decodeEntitie(str_text) {
+    var tmpelement = document.createElement('div');
+    tmpelement.innerHTML = str_text;
+    str_text = tmpelement.textContent;
+    tmpelement.textContent = '';
+    return str_text;
+}
+
+/*
  * Translate language from english
  * give english if no text found
  * this is need when text come from outside
@@ -74,12 +85,14 @@ function T(id) {
 function Translate(text) {
     let translatedText = text
     let property
-    for (property in enLangRessource) {
-        if (enLangRessource[property] == text) {
-            return T(String(property))
+    if (currentLang != "en") {
+        for (property in enLangRessource) {
+            if (enLangRessource[property] == text) {
+                return decodeEntitie(T(String(property)))
+            }
         }
     }
-    return translatedText
+    return decodeEntitie(translatedText)
 }
 
 export { setLang, T, Translate }

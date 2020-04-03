@@ -22,7 +22,7 @@ import { h } from "preact"
 import { AlertTriangle } from "preact-feather"
 import { T } from "../translations"
 import { initApp } from "../uisettings"
-
+import { globaldispatch, Action } from "../app"
 /*
  *Spin loader
  *
@@ -44,6 +44,8 @@ const SpinLoader = ({ color }) => (
     </div>
 )
 
+function close() {}
+
 /*
  * Dialog page
  *
@@ -51,12 +53,18 @@ const SpinLoader = ({ color }) => (
 export const DialogPage = ({ currentState }) => {
     if (currentState.showDialog) {
         let classname = "modal d-block"
-        let icon
+        let iconTitle, iconMsg
         if (currentState.data.type == "error") {
-            icon = <AlertTriangle color="red" />
-        } else {
-            if (currentState.data.type == "loader")
-                icon = <SpinLoader color="lightblue" />
+            iconTitle = <AlertTriangle color="red" />
+            if (!currentState.data.title) {
+                currentState.data.title = T("S22")
+            }
+            if (!currentState.data.button1text) {
+                currentState.data.button1text = T("S24")
+            }
+        }
+        if (currentState.data.type == "loader") {
+            iconMsg = <SpinLoader color="lightblue" />
         }
         if (currentState.data.type == "disconnect") classname += " greybg"
         return (
@@ -64,12 +72,14 @@ export const DialogPage = ({ currentState }) => {
                 <div class="modal-dialog modal-dialog-centered modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
-                            {currentState.data.title}
+                            <div>
+                                {iconTitle} {currentState.data.title}
+                            </div>
                         </div>
                         <div class="modal-body">
                             <center>
                                 <div class="text-center">
-                                    {icon}
+                                    {iconMsg}
                                     <div
                                         className={
                                             currentState.data.type == "error"
@@ -91,6 +101,25 @@ export const DialogPage = ({ currentState }) => {
                                         : "d-none"
                                 }
                                 onClick={initApp}
+                            >
+                                {currentState.data.button1text}
+                            </button>
+                            <button
+                                type="button"
+                                className={
+                                    currentState.data.type == "error"
+                                        ? "btn btn-danger d-block"
+                                        : "d-none"
+                                }
+                                onClick={() => {
+                                    console.log("close")
+                                    if (currentState.data.next)
+                                        currentState.data.next()
+                                    else
+                                        globaldispatch({
+                                            type: Action.renderAll,
+                                        })
+                                }}
                             >
                                 {currentState.data.button1text}
                             </button>

@@ -38,7 +38,7 @@ export const Notification = () => {
     })
     return (
         <div ref={notificationRef} id="notif" class="espnotification fixed-top">
-            Notification area
+            Notification area...soon
         </div>
     )
 }

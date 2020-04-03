@@ -23,6 +23,7 @@ import { globaldispatch, Page, Action } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
+import { preferences } from "../uisettings"
 
 function showAbout() {
     globaldispatch({ type: Action.renderPage, activePage: Page.about })
@@ -41,6 +42,10 @@ function showSettings() {
  *
  */
 export const Header = () => {
+    let showBanner = true
+    if (preferences.settings.banner) {
+        showBanner = preferences.settings.banner == "true" ? true : false
+    }
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
             <div class="nav-item active" title={T("S12")} onClick={showAbout}>
@@ -54,7 +59,11 @@ export const Header = () => {
                 <Settings />
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
             </div>
-            <ESP3DBanner visible={true} title={T("S15")} text={T("S11")} />
+            <ESP3DBanner
+                visible={showBanner}
+                title={T("S15")}
+                text={T("S11")}
+            />
         </nav>
     )
 }

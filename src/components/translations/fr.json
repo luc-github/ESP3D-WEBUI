@@ -14,5 +14,15 @@
     "S12" : "A propos d'ESP3D",
     "S13" : "Tableau de bord",
     "S14" : "Parmètres",
-    "S15" : "Donation pour ESP3D"
+    "S15" : "Donation pour ESP3D",
+    "S16" : "Version micrologiciel",
+    "S17" : "Version interface",
+    "S18" : "Version navigateur",
+    "S19" : "Inconnu", 
+    "S20" : "Go to github",
+    "S21" : "Parsing data error, data are incorrect",
+    "S22" : "Erreur",
+    "S23" : "Refresh information",
+    "S24" : "Fermer",
+    "T9" : "Utilisation sytème de fichiers"
 }
