@@ -70,11 +70,11 @@ function T(id) {
  * Decode special char in string
  */
 function decodeEntitie(str_text) {
-    var tmpelement = document.createElement('div');
-    tmpelement.innerHTML = str_text;
-    str_text = tmpelement.textContent;
-    tmpelement.textContent = '';
-    return str_text;
+    var tmpelement = document.createElement("div")
+    tmpelement.innerHTML = str_text
+    str_text = tmpelement.textContent
+    tmpelement.textContent = ""
+    return str_text
 }
 
 /*

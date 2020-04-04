@@ -20,11 +20,11 @@
 
 import { h } from "preact"
 import { T, Translate } from "../translations"
-import { initApp } from "../uisettings"
 import { Page, esp3dSettings, globaldispatch, Action } from "../app"
 import { SendCommand } from "../http"
 import { Esp3dVersion } from "../version"
 import { RefreshCcw, Github, UploadCloud } from "preact-feather"
+import { SendPostHttp, cancelCurrentUpload, lastError } from "../http"
 
 /*
  * Local variables
@@ -33,6 +33,8 @@ import { RefreshCcw, Github, UploadCloud } from "preact-feather"
 
 let browserInformation = ""
 let dataStatus = {}
+let uploadFiles
+let pathUpload = "/files"
 
 //from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 function getBrowserInformation() {
@@ -65,6 +67,10 @@ function getBrowserInformation() {
  */
 function onClickUpdateFW() {
     console.log("Update FW")
+    pathUpload = "/updatefw"
+    document.getElementById("uploadControl").removeAttribute("multiple")
+    document.getElementById("uploadControl").click()
+    PrepareUpload()
 }
 
 /*
@@ -73,6 +79,151 @@ function onClickUpdateFW() {
  */
 function onClickUpdateUI() {
     console.log("Update UI")
+    pathUpload = "/files"
+    document.getElementById("uploadControl").setAttribute("multiple", "true")
+    PrepareUpload()
+}
+
+function PrepareUpload() {
+    document.getElementById("uploadControl").click()
+    document.getElementById("uploadControl").onchange = () => {
+        console.log("content changed")
+        uploadFiles = document.getElementById("uploadControl").files
+        let fileList =
+            "<div style='text-align: left; overflow: hidden;text-overflow: ellipsis;'><ul>"
+        for (let i = 0; i < uploadFiles.length; i++) {
+            fileList += "<li>"
+            fileList += uploadFiles[i].name
+            fileList += "</li>"
+        }
+        fileList += "</ul></div>"
+        //todo open dialog to confirm
+        globaldispatch({
+            type: Action.confirm_upload,
+            msg: T("S30") + "<br/>" + fileList,
+            nextaction: processUpload,
+            nextaction2: cancelUpload,
+        })
+    }
+}
+
+/*
+ * delete all upload information
+ *
+ */
+function clearUploadInformation() {
+    if (document.getElementById("uploadControl")) {
+        console.log("clear upload info")
+        document.getElementById("uploadControl").value = ""
+    }
+}
+
+/*
+ * Cancel upload silently
+ * e.g: user pressed cancel before upload
+ */
+function cancelUpload() {
+    clearUploadInformation()
+    cancelCurrentUpload()
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
+
+/*
+ * Start upload
+ *
+ */
+function processUpload() {
+    console.log("Now uploading")
+    var formData = new FormData()
+    var url = pathUpload
+    formData.append("path", "/")
+    globaldispatch({
+        type: Action.upload_progress,
+        title: "S32",
+        msg: null,
+        progress: 0,
+        nextaction: cancelUpload,
+    })
+    for (var i = 0; i < uploadFiles.length; i++) {
+        var file = uploadFiles[i]
+        var arg = "/" + file.name + "S"
+        //append file size first to check updload is complete
+        formData.append(arg, file.size)
+        formData.append("myfile", file, "/" + file.name)
+    }
+    SendPostHttp(url, formData, successUpload, errorUpload, progressUpload)
+}
+
+/*
+ * Upload sucess
+ *
+ */
+function successUpload(response) {
+    globaldispatch({
+        type: Action.upload_progress,
+        progress: 100,
+    })
+    console.log("success")
+    clearUploadInformation()
+    globaldispatch({
+        type: Action.message,
+        title: "S34",
+        msg: "S35",
+    })
+    if (pathUpload == "/files") {
+        setTimeout(location.reload, 3000)
+    } else {
+        //wait for restart due to websocket disconnection
+        //so no need to reload
+    }
+}
+
+/*
+ * Upload failed
+ *
+ */
+function errorUpload(errorCode, response) {
+    console.log("error upload code : " + lastError.code + " " + errorCode)
+    clearUploadInformation()
+    if (!lastError.code && errorCode == 0) {
+        cancelCurrentUpload(errorCode, response)
+    }
+}
+
+/*
+ * Upload progress
+ *
+ */
+function progressUpload(oEvent) {
+    if (oEvent.lengthComputable) {
+        var percentComplete = (oEvent.loaded / oEvent.total) * 100
+        console.log(percentComplete.toFixed(0) + "%")
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: percentComplete.toFixed(0),
+            title: "S32",
+        })
+    } else {
+        // Impossible because size is unknown
+    }
+}
+
+/*
+ * Link for github ESP3D
+ *
+ */
+function clickGitFW() {
+    window.open("https://www.github.com/luc-github/ESP3D", "_blank")
+}
+
+/*
+ * Link for github ESP3D-WEBUI
+ *
+ */
+function clickGitUI() {
+    window.open("https://www.github.com/luc-github/ESP3D-WEBUI", "_blank")
 }
 
 /*
@@ -88,76 +239,89 @@ export const AboutPage = ({ currentState }) => {
     return (
         <div class="card-body">
             <h3 class="card-title">{T("S12")}</h3>
-            <div class="card-text">
-                <a
-                    class="link-text"
-                    href="https://www.github.com/luc-github/ESP3D"
-                    title={T("S20")}
-                    target="_blank"
-                >
-                    <hr />
-                    <span class="text-info">{T("S16")}: </span>
-                    {esp3dSettings.FWVersion}&nbsp;
-                </a>
-                <button
-                    type="button"
-                    title={T("S25")}
-                    class="btn btn-sm btn-dark"
-                    onClick={onClickUpdateFW}
-                >
-                    <UploadCloud />
-                    <span class="hide-low">{" " + T("S25")}</span>
-                </button>
-            </div>
-            <div style="height:2px" />
-            <div class="card-text">
-                <a
-                    class="link-text"
-                    href="https://www.github.com/luc-github/ESP3D-WEBUI"
-                    title={T("S20")}
-                    target="_blank"
-                >
-                    <span class="text-info">{T("S17")}: </span>
-                    <Esp3dVersion />
-                    &nbsp;
-                </a>
-                <button
-                    type="button"
-                    title={T("S25")}
-                    class="btn btn-sm btn-dark"
-                    onClick={onClickUpdateUI}
-                >
-                    <UploadCloud />
-                    <span class="hide-low">{" " + T("S25")}</span>
-                </button>
-            </div>
-            <div style="height:2px" />
-            <div class="card-text" title={navigator.userAgent}>
-                <span class="text-info">{T("S18")}: </span>
-                {browserInformation}
-            </div>
-            {dataStatus.Status
-                ? dataStatus.Status.map((entry, index) => {
-                      if (entry.id == "FW version") return null
-                      return (
-                          <div class="card-text">
-                              <span class="text-info">
-                                  {Translate(entry.id)}:{" "}
-                              </span>
-                              {Translate(entry.value)}
-                          </div>
-                      )
-                  })
-                : ""}
             <hr />
-            <button
-                type="button"
-                class="btn btn-primary"
-                title={T("S23")}
-                onClick={loadStatus}
-            >
-                <RefreshCcw />
-            </button>
+            <center>
+                <div style="display:inline-block;text-align:left">
+                    <div class="card-text">
+                        <span class="text-info">{T("S16")}: </span>
+                        {esp3dSettings.FWVersion}&nbsp;
+                        <button
+                            type="button"
+                            title={T("S20")}
+                            class="btn btn-primary"
+                            onClick={clickGitFW}
+                        >
+                            <Github />
+                            <span class="hide-low">{" " + T("S20")}</span>
+                        </button>
+                        &nbsp;
+                        <button
+                            type="button"
+                            title={T("S25")}
+                            class="btn btn-dark"
+                            onClick={onClickUpdateFW}
+                        >
+                            <UploadCloud />
+                            <span class="hide-low">{" " + T("S25")}</span>
+                        </button>
+                    </div>
+                    <div style="height:2px" />
+                    <div class="card-text">
+                        <span class="text-info">{T("S17")}: </span>
+                        <Esp3dVersion />
+                        &nbsp;
+                        <button
+                            type="button"
+                            title={T("S20")}
+                            class="btn btn-primary"
+                            onClick={clickGitUI}
+                        >
+                            <Github />
+                            <span class="hide-low">{" " + T("S20")}</span>
+                        </button>
+                        &nbsp;
+                        <button
+                            type="button"
+                            title={T("S25")}
+                            class="btn btn-dark"
+                            onClick={onClickUpdateUI}
+                        >
+                            <UploadCloud />
+                            <span class="hide-low">{" " + T("S25")}</span>
+                        </button>
+                        <input type="file" class="d-none" id="uploadControl" />
+                    </div>
+                    <div style="height:2px" />
+                    <div class="card-text" title={navigator.userAgent}>
+                        <span class="text-info">{T("S18")}: </span>
+                        {browserInformation}
+                    </div>
+                    {dataStatus.Status
+                        ? dataStatus.Status.map((entry, index) => {
+                              if (entry.id == "FW version") return null
+                              return (
+                                  <div class="card-text">
+                                      <span class="text-info">
+                                          {Translate(entry.id)}:{" "}
+                                      </span>
+                                      {Translate(entry.value)}
+                                  </div>
+                              )
+                          })
+                        : ""}
+                </div>
+            </center>
+            <hr />
+            <center>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    title={T("S23")}
+                    onClick={loadStatus}
+                >
+                    <RefreshCcw />
+                </button>
+            </center>
         </div>
     )
 }

@@ -19,7 +19,8 @@
 */
 
 "use strict"
-import { getPageId } from "../websocket"
+import { getPageId, pausePing } from "../websocket"
+import { globaldispatch, Action } from "../app"
 
 /*
  * Local variables
@@ -28,6 +29,7 @@ import { getPageId } from "../websocket"
 var httpCommandList = []
 var isProcessingHttpCommand = false
 var currentHttpCommand = {}
+var lastError = {}
 
 /*
  * Some constants
@@ -45,10 +47,26 @@ function clearCommandList() {
 }
 
 /*
+ * Cancel the current upload
+ */
+function cancelCurrentUpload(code, message) {
+    currentHttpCommand.abort()
+    lastError.code = code
+    lastError.message = message
+    globaldispatch({
+        type: Action.error,
+        errorcode: lastError.code,
+        msg: "S33",
+    })
+    console.log("Abort Upload :" + code + " " + message)
+}
+
+/*
  * Handle query success
  */
 function defaultHttpResultFn(response_text) {
     isProcessingHttpCommand = false
+    pausePing(false)
     if (
         httpCommandList.length > 0 &&
         typeof httpCommandList[0].resultfn != "undefined"
@@ -74,6 +92,7 @@ function defaultHttpErrorFn(errorcode, response_text) {
         } else {
             fn(errorcode, response_text)
         }
+    } else {
         console.log("Error : " + errorcode + " : " + response_text)
     }
     nextCommand()
@@ -94,6 +113,7 @@ function nextCommand() {
     //console.log("pop " + httpCommandList[0].uri)
     httpCommandList.shift()
     isProcessingHttpCommand = false
+    pausePing(false)
     processCommands()
 }
 
@@ -197,6 +217,7 @@ function processCommands() {
             httpCommandList[0].type == "POST"
         ) {
             isProcessingHttpCommand = true
+            pausePing(true)
             currentHttpCommand = new XMLHttpRequest()
             currentHttpCommand.onreadystatechange = function() {
                 if (currentHttpCommand.readyState == 4) {
@@ -217,7 +238,7 @@ function processCommands() {
             currentHttpCommand.open(httpCommandList[0].type, url, true)
             if (
                 typeof httpCommandList[0].progressfn != "undefined" &&
-                progressfn != null
+                httpCommandList[0].progressfn != null
             )
                 currentHttpCommand.upload.addEventListener(
                     "progress",
@@ -246,4 +267,11 @@ function SendCommand(cmd, result_fn, error_fn, progress_fn, id, max_id) {
     return SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id)
 }
 
-export { clearCommandList, SendCommand, SendGetHttp, SendPostHttp }
+export {
+    clearCommandList,
+    SendCommand,
+    SendGetHttp,
+    SendPostHttp,
+    cancelCurrentUpload,
+    lastError,
+}

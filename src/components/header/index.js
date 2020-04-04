@@ -43,7 +43,7 @@ function showSettings() {
  */
 export const Header = () => {
     let showBanner = true
-    if (preferences.settings.banner) {
+    if (preferences && preferences.settings.banner) {
         showBanner = preferences.settings.banner == "true" ? true : false
     }
     return (

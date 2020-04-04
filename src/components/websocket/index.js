@@ -20,6 +20,7 @@
 
 "use strict"
 import { globaldispatch, Action } from "../app"
+import { cancelCurrentUpload } from "../http"
 
 /*
  * Local variables
@@ -36,6 +37,10 @@ var currentPageId = ""
 var reconnectCounter = 0
 var pingStarted = false
 var pingPaused = false
+
+function pausePing(state) {
+    pingPaused = state
+}
 
 /*
  * Some constants
@@ -58,7 +63,6 @@ function getPageId() {
 }
 
 function ping(start = false) {
-    console.log("ping")
     //be sure it is not reconnection
     if (!pingStarted) {
         pingStarted = true
@@ -68,6 +72,7 @@ function ping(start = false) {
     setTimeout(ping, pingDelay)
     if (pingPaused) return
     if (webSocketClient.readyState == 1) {
+        console.log("ping")
         webSocketClient.send("ping")
     }
 }
@@ -102,7 +107,7 @@ function processWebSocketText(wsBuffer) {
                 //TODO
                 break
             case "ERROR":
-                //TODO
+                cancelCurrentUpload(tdata[1], tdata[2])
                 break
             default:
                 console.log("Unknow event")
@@ -213,4 +218,10 @@ function disconnectWsServer(Type) {
     })
 }
 
-export { setupWebSocket, connectWsServer, disconnectWsServer, getPageId }
+export {
+    setupWebSocket,
+    connectWsServer,
+    disconnectWsServer,
+    getPageId,
+    pausePing,
+}

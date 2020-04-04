@@ -50,6 +50,9 @@ const Action = {
     connection_lost: 12,
     disconnection: 13,
     fetch_data: 14,
+    confirm_upload: 15,
+    upload_progress: 16,
+    message: 17,
 }
 /*
  * Hook variables for communication with UI
@@ -205,6 +208,57 @@ const reducerPage = (state, action) => {
                     button1text: T("S8"),
                 },
             }
+        case Action.confirm_upload:
+            return {
+                showDialog: true,
+                showPage: true,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: {
+                    type: "confirmation",
+                    message: action.msg,
+                    title: action.title ? T(action.title) : T("S26"),
+                    button1text: action.buttontext
+                        ? T(action.buttontext)
+                        : T("S27"),
+                    next: action.nextaction,
+                    next2: action.nextaction2,
+                },
+            }
+        case Action.message:
+            return {
+                showDialog: true,
+                showPage: true,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: {
+                    type: "message",
+                    title: T(action.title),
+                    message: T(action.msg),
+                },
+            }
+        case Action.upload_progress:
+            return {
+                showDialog: true,
+                showPage: true,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: {
+                    type: "progress",
+                    title: action.title
+                        ? T(action.title)
+                        : globalstate.data.title
+                        ? globalstate.data.title
+                        : "",
+                    progress: action.progress,
+                    button1text: action.buttontext
+                        ? T(action.buttontext)
+                        : T("S28"),
+                    next: action.nextaction
+                        ? action.nextaction
+                        : globalstate.data.next,
+                },
+            }
         default:
             console.log("Unknow action")
             return state
@@ -234,7 +288,7 @@ const MainPage = ({ currentState }) => {
     if (currentState.showPage) {
         ;[notificationBottom, setNotificationBottom] = useState("50px")
         return (
-            <div class="full-height">
+            <div class="full-height" id="mainwindow">
                 <Header />
                 <Notification />
                 <Container

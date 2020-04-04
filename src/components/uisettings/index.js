@@ -51,15 +51,16 @@ function initApp() {
 function loadPreferencesSuccess(responseText) {
     try {
         preferences = JSON.parse(responseText)
+        setLang(preferences.settings.language)
+        loadConfig()
     } catch (err) {
+        console.log("error")
         globaldispatch({
             type: Action.parsing_preferences_error,
             errorcode: err,
             nextaction: loadConfig,
         })
     }
-    setLang(preferences.settings.language)
-    loadConfig()
 }
 
 /*
