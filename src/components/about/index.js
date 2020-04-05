@@ -84,6 +84,10 @@ function onClickUpdateUI() {
     PrepareUpload()
 }
 
+/*
+ * Prepare Upload and confirmation dialog 
+ *
+ */
 function PrepareUpload() {
     document.getElementById("uploadControl").click()
     document.getElementById("uploadControl").onchange = () => {
@@ -173,12 +177,19 @@ function successUpload(response) {
         msg: "S35",
     })
     if (pathUpload == "/files") {
-        setTimeout(location.reload, 3000)
+        setTimeout(refreshPage, 3000)
     } else {
         //wait for restart due to websocket disconnection
         //so no need to reload
     }
 }
+/*
+ * Refresh page without cache
+ *
+ */
+function refreshPage() {
+    window.location.reload(true);
+  }
 
 /*
  * Upload failed
