@@ -85,7 +85,7 @@ function onClickUpdateUI() {
 }
 
 /*
- * Prepare Upload and confirmation dialog 
+ * Prepare Upload and confirmation dialog
  *
  */
 function PrepareUpload() {
@@ -188,8 +188,8 @@ function successUpload(response) {
  *
  */
 function refreshPage() {
-    window.location.reload(true);
-  }
+    window.location.reload(true)
+}
 
 /*
  * Upload failed
@@ -259,17 +259,19 @@ export const AboutPage = ({ currentState }) => {
                         <button
                             type="button"
                             title={T("S20")}
-                            class="btn btn-primary"
+                            class="btn btn-light btn-sm"
                             onClick={clickGitFW}
                         >
-                            <Github />
-                            <span class="hide-low">{" " + T("S20")}</span>
+                            <span class="badge badge-pill badge-dark">
+                                <Github />
+                                <span class="hide-low">{" " + T("S20")}</span>
+                            </span>
                         </button>
                         &nbsp;
                         <button
                             type="button"
                             title={T("S25")}
-                            class="btn btn-dark"
+                            class="btn btn-primary btn-sm"
                             onClick={onClickUpdateFW}
                         >
                             <UploadCloud />
@@ -284,17 +286,20 @@ export const AboutPage = ({ currentState }) => {
                         <button
                             type="button"
                             title={T("S20")}
-                            class="btn btn-primary"
+                            class="btn btn-light btn-sm"
                             onClick={clickGitUI}
                         >
-                            <Github />
-                            <span class="hide-low">{" " + T("S20")}</span>
+                            <span class="badge badge-pill badge-dark">
+                                <Github />
+
+                                <span class="hide-low">{" " + T("S20")}</span>
+                            </span>
                         </button>
                         &nbsp;
                         <button
                             type="button"
                             title={T("S25")}
-                            class="btn btn-dark"
+                            class="btn btn-primary btn-sm"
                             onClick={onClickUpdateUI}
                         >
                             <UploadCloud />

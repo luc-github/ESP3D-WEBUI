@@ -85,11 +85,11 @@ app.post("/files", function(req, res) {
     }
     let myFile = req.files.myfile
     for (let i = 0; i < myFile.length; i++) {
-            myFile[i].mv(__dirname + "/public/" + myFile[i].name, function(err) {
+        myFile[i].mv(__dirname + "/public/" + myFile[i].name, function(err) {
             if (err) return res.status(500).send(err)
-            })
-        }
-        res.send("File uploaded!")
+        })
+    }
+    res.send("File uploaded!")
     console.log("POST CATCHED ")
 })
 
