@@ -68,8 +68,7 @@ function getBrowserInformation() {
 function onClickUpdateFW() {
     console.log("Update FW")
     pathUpload = "/updatefw"
-    document.getElementById("uploadControl").removeAttribute("multiple")
-    document.getElementById("uploadControl").click()
+    document.getElementById("uploadControl").setAttribute("accept", ".bin")
     PrepareUpload()
 }
 
@@ -80,6 +79,7 @@ function onClickUpdateFW() {
 function onClickUpdateUI() {
     console.log("Update UI")
     pathUpload = "/files"
+    document.getElementById("uploadControl").setAttribute("accept", "*")
     document.getElementById("uploadControl").setAttribute("multiple", "true")
     PrepareUpload()
 }
