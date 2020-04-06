@@ -25,7 +25,7 @@ import { h } from "preact"
  * default height is 50px
  */
 const ESP3DLogo = ({ height = "50px" }) => (
-    <svg height={height} viewBox="22 56 240 172">
+    <svg height={height} viewBox="22 56 240 180">
         <path
             fill="white"
             d="m 227,91.9 -97,-0.3 0,100.4 83,0 c 20,0 46,-6 47,-36 l 0,-24 c 1,-20 -13,-40 -33,-40.1 z"
