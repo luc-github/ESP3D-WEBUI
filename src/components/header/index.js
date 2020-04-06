@@ -41,21 +41,45 @@ function showSettings() {
  * Header component
  *
  */
-export const Header = () => {
+export const Header = ({ currentState }) => {
     let showBanner = true
     if (preferences && preferences.settings.banner) {
         showBanner = preferences.settings.banner == "true" ? true : false
     }
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
-            <div class="nav-item active" title={T("S12")} onClick={showAbout}>
+            <div
+                class={
+                    currentState.activePage == Page.about
+                        ? "nav-item active"
+                        : "nav-item"
+                }
+                title={T("S12")}
+                onClick={showAbout}
+            >
                 <ESP3DLogo />
             </div>
-            <div class="nav-item" title={T("S13")} onClick={showDashboard}>
+            <div
+                class={
+                    currentState.activePage == Page.dashboard
+                        ? "nav-item active"
+                        : "nav-item"
+                }
+                title={T("S13")}
+                onClick={showDashboard}
+            >
                 <Server />
                 <span class="disable-select hide-low">&nbsp;{T("S13")}</span>
             </div>
-            <div class="nav-item" title={T("S14")} onClick={showSettings}>
+            <div
+                class={
+                    currentState.activePage == Page.settings
+                        ? "nav-item active"
+                        : "nav-item"
+                }
+                title={T("S14")}
+                onClick={showSettings}
+            >
                 <Settings />
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
             </div>

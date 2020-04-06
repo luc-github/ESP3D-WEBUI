@@ -289,8 +289,8 @@ const MainPage = ({ currentState }) => {
         ;[notificationBottom, setNotificationBottom] = useState("50px")
         return (
             <div class="full-height" id="mainwindow">
-                <Header />
-                <Notification />
+                <Header currentState={currentState} />
+                <Notification currentState={currentState} />
                 <Container
                     currentState={currentState}
                     top={notificationBottom}
