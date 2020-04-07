@@ -35,6 +35,7 @@ let browserInformation = ""
 let dataStatus = {}
 let uploadFiles
 let pathUpload = "/files"
+let autoLoad = false;
 
 //from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 function getBrowserInformation() {
@@ -243,16 +244,16 @@ function clickGitUI() {
  */
 export const AboutPage = ({ currentState }) => {
     if (currentState.activePage != Page.about) return null
-    if (browserInformation == "") {
+    if (browserInformation == "" ) {
         browserInformation = getBrowserInformation()
-        loadStatus()
+        if (autoLoad)loadStatus()
     }
     return (
         <div class="card-body">
             <h3 class="card-title">{T("S12")}</h3>
             <hr />
             <center>
-                <div style="display:inline-block;text-align:left">
+                <div class="list-left" >
                     <div class="card-text">
                         <span class="text-info">{T("S16")}: </span>
                         {esp3dSettings.FWVersion}&nbsp;

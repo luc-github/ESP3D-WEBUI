@@ -54,6 +54,7 @@ const Action = {
     upload_progress: 16,
     message: 17,
 }
+const defaultPage = Page.settings
 /*
  * Hook variables for communication with UI
  */
@@ -61,7 +62,7 @@ let globalstate
 let globaldispatch
 const initialStateEventData = {
     showDialog: true,
-    activePage: Page.dashboard,
+    activePage: Page.none,
     showPage: false,
     data: { type: "loader" },
     error: 0,
@@ -166,7 +167,7 @@ const reducerPage = (state, action) => {
             return {
                 showDialog: false,
                 showPage: true,
-                activePage: Page.about,
+                activePage: defaultPage,
                 error: 0,
                 data: {},
             }
