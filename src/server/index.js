@@ -8,7 +8,9 @@ const WebSocket = require("ws")
 var currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
-let firstconnection = true
+const targetFW  = "Repetier"
+
+
 app.use(
     express.static("dist"),
     fileUpload({ preserveExtension: true, debug: true })
@@ -19,7 +21,7 @@ app.get("/command", function(req, res) {
     if (url.indexOf("ESP800") != -1) {
         res.json({
             FWVersion: "3.0.0.a27",
-            FWTarget: "???",
+            FWTarget: targetFW,
             SDConnection: "None",
             Authentication: "Disabled",
             WebCommunication: "Synchronous",

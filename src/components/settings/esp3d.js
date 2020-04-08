@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { RotateCcw, Upload } from "preact-feather"
+import { RefreshCcw, RotateCcw, Upload } from "preact-feather"
 import { Setting } from "../app"
 import { setSettingPage } from "./index"
 

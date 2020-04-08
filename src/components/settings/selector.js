@@ -20,11 +20,10 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { initApp } from "../uisettings"
-import { RotateCcw, Upload } from "preact-feather"
+import { Tool, Eye } from "preact-feather"
 import { Setting, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
-
+import { ESP3DLogo } from "../images"
 /*
  * Local variables
  *
@@ -37,6 +36,7 @@ let esp3dFWSettings //full esp3d settings (ESP400)
  */
 export const Selector = ({ currentPage }) => {
     let visible = false
+    let target = ""
     function onclickesp3d() {
         setSettingPage(Setting.esp3d)
     }
@@ -52,12 +52,14 @@ export const Selector = ({ currentPage }) => {
         esp3dSettings.FWTarget == "???"
     ) {
         visible = false
+        
     } else {
         visible = true
+        target = esp3dSettings.FWTarget
     }
     return (
         <center>
-            <div class="list-left">
+            <div class="list-left disable-select">
                 <ul class="nav nav-pills">
                     <li
                         class={
@@ -67,7 +69,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickesp3d}
                     >
-                        ESP3D
+                      <ESP3DLogo height="1.2em"/> <span class="hide-low" >{T("S36")}</span>
                     </li>
                     <li
                         class={
@@ -77,7 +79,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickui}
                     >
-                        UI
+                       <Eye/> <span class="hide-low" >{T("S17")}</span>
                     </li>
                     <li
                         class={
@@ -89,7 +91,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickmachine}
                     >
-                        Machine
+                         <Tool/><span class="hide-low" >{target}</span>
                     </li>
                 </ul>
             </div>
