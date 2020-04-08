@@ -83,7 +83,7 @@ export const DialogPage = ({ currentState }) => {
     if (
         currentState.data.type == "error" ||
         currentState.data.type == "error-blocking" ||
-        currentState.data.type == "disconnect"
+        ((currentState.data.type == "disconnect") && (currentState.error))
     ) {
         iconTitle = <AlertTriangle color="red" />
         if (!currentState.data.title) {
@@ -102,7 +102,7 @@ export const DialogPage = ({ currentState }) => {
     if (currentState.data.type == "progress") {
         progressbar = "width:" + currentState.data.progress + "%"
     }
-    if (currentState.data.type == "message") {
+    if ((currentState.data.type == "message") || ((currentState.data.type == "disconnect") && (!currentState.error))) {
         iconTitle = <Info color="blue" />
     }
     if (currentState.data.type == "confirmation") {
