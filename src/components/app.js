@@ -33,6 +33,7 @@ import { initApp } from "./uisettings"
 /*
  * Some constants
  */
+const Setting = { none: 0, esp3d: 1, ui: 2, machine: 3 }
 const Page = { none: 0, about: 1, dashboard: 2, settings: 3 }
 const Action = {
     none: 0,
@@ -75,7 +76,7 @@ let setNotificationBottom
  * Local variables
  *
  */
-let esp3dSettings
+let esp3dSettings //light esp3d settings (ESP800)
 
 /*
  * Hook for communication with UI
@@ -329,6 +330,7 @@ function App() {
 }
 
 export {
+    Setting,
     App,
     globaldispatch,
     applyConfig,

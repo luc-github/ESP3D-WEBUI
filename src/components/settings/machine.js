@@ -19,39 +19,31 @@
 */
 
 import { h } from "preact"
-import { useState } from "preact/hooks"
 import { T } from "../translations"
-import { Page, Setting } from "../app"
 import { RotateCcw, Upload } from "preact-feather"
-import { Selector } from "./selector"
-import { MachineSettings } from "./machine"
-import { WebUISettings } from "./webui"
-import { Esp3DSettings } from "./esp3d"
-
+import { Setting, esp3dSettings } from "../app"
+import { setSettingPage } from "./index"
 /*
  * Local variables
  *
  */
 
-let setSettingPage
-let currentSettingPage
-
 /*
  * Settings page
  *
  */
-const SettingsPage = ({ currentState }) => {
-    ;[currentSettingPage, setSettingPage] = useState(Setting.esp3d)
-    if (currentState.activePage != Page.settings) return null
+export const MachineSettings = ({ currentPage }) => {
+    if (
+        currentPage != Setting.machine ||
+        !esp3dSettings ||
+        !esp3dSettings.FWTarget ||
+        esp3dSettings.FWTarget == "???"
+    )
+        return null
+
     return (
-        <div>
-            <br />
-            <Selector currentPage={currentSettingPage} />
-            <Esp3DSettings currentPage={currentSettingPage} />
-            <WebUISettings currentPage={currentSettingPage} />
-            <MachineSettings currentPage={currentSettingPage} />
-        </div>
+        <center>
+            <div class="list-left">Machine</div>
+        </center>
     )
 }
-
-export { SettingsPage, setSettingPage }
