@@ -24,6 +24,7 @@ import { Tool, Eye } from "preact-feather"
 import { Setting, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { ESP3DLogo } from "../images"
+const { firmwareName } = require(`../${process.env.TARGET_ENV}`)
 /*
  * Local variables
  *
@@ -52,10 +53,9 @@ export const Selector = ({ currentPage }) => {
         esp3dSettings.FWTarget == "???"
     ) {
         visible = false
-        
     } else {
         visible = true
-        target = esp3dSettings.FWTarget
+        target = firmwareName(esp3dSettings.FWTarget)
     }
     return (
         <center>
@@ -69,7 +69,8 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickesp3d}
                     >
-                      <ESP3DLogo height="1.2em"/> <span class="hide-low" >{T("S36")}</span>
+                        <ESP3DLogo height="1.2em" />{" "}
+                        <span class="hide-low">{T("S36")}</span>
                     </li>
                     <li
                         class={
@@ -79,7 +80,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickui}
                     >
-                       <Eye/> <span class="hide-low" >{T("S17")}</span>
+                        <Eye /> <span class="hide-low">{T("S17")}</span>
                     </li>
                     <li
                         class={
@@ -91,7 +92,8 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickmachine}
                     >
-                         <Tool/><span class="hide-low" >{target}</span>
+                        <Tool />
+                        <span class="hide-low">{target}</span>
                     </li>
                 </ul>
             </div>

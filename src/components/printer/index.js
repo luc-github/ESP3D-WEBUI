@@ -19,12 +19,45 @@
 */
 
 import { h } from "preact"
+import { Setting, esp3dSettings } from "../app"
 
-export const Machine = ({ currentState }) => {
-    console.log("3D Printer")
+function firmwareName(shortname) {
+    switch (shortname) {
+        case "repetier":
+            return "Repetier"
+        case "repetier4davinci":
+            return "Repetier for Davinci"
+        case "marlin-embedded":
+            return "Marlin ESP32"
+        case "marlin":
+            return "Marlin"
+        case "marlinkimbra":
+            return "Marlin Kimbra"
+        case "smoothieware":
+            return "Smoothieware"
+        default:
+            return "Unknow"
+    }
+}
+
+const MachineSettings = ({ currentPage }) => {
+    if (
+        currentPage != Setting.machine ||
+        !esp3dSettings ||
+        !esp3dSettings.FWTarget ||
+        esp3dSettings.FWTarget == "???"
+    )
+        return null
     return (
         <div>
-            <span>3D Printer</span>
+        <br />
+            <center>
+                3D Printer
+                <br />
+                <div class="list-left">To be implemented!</div>
+            </center>
         </div>
     )
 }
+
+export { MachineSettings, firmwareName }

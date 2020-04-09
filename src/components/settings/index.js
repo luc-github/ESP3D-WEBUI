@@ -24,7 +24,7 @@ import { T } from "../translations"
 import { Page, Setting } from "../app"
 import { RotateCcw, Upload } from "preact-feather"
 import { Selector } from "./selector"
-import { MachineSettings } from "./machine"
+const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
 import { WebUISettings } from "./webui"
 import { Esp3DSettings } from "./esp3d"
 

@@ -200,7 +200,7 @@ const reducerPage = (state, action) => {
                 showDialog: true,
                 showPage: true,
                 activePage: globalstate.activePage,
-                error: (action.type == Action.connection_lost)?1:0,
+                error: action.type == Action.connection_lost ? 1 : 0,
                 data: {
                     type: "disconnect",
                     message:

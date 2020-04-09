@@ -22,6 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { RotateCcw, Upload } from "preact-feather"
 import { Setting } from "../app"
+import { preferences } from "../uisettings"
 import { setSettingPage } from "./index"
 
 /*
@@ -38,7 +39,10 @@ export const WebUISettings = ({ currentPage }) => {
 
     return (
         <center>
-            <div class="list-left">UI</div>
+            <br />
+            <div class="list-left">To be implemented!</div>
+            <br />
+            {preferences.settings.language}
         </center>
     )
 }

@@ -19,12 +19,37 @@
 */
 
 import { h } from "preact"
+import { Setting, esp3dSettings } from "../app"
 
-export const Machine = ({ currentState }) => {
-    console.log("grbl")
+function firmwareName(shortname) {
+    switch (shortname) {
+        case "grbl-embedded":
+            return "GRBL ESP32"
+        case "grbl":
+            return "Grbl"
+        default:
+            return "Unknow"
+    }
+}
+
+const MachineSettings = ({ currentPage }) => {
+    if (
+        currentPage != Setting.machine ||
+        !esp3dSettings ||
+        !esp3dSettings.FWTarget ||
+        esp3dSettings.FWTarget == "???"
+    )
+        return null
     return (
         <div>
-            <span> GRBL</span>
+            <center>
+               <br />
+                GRBL
+                <br />
+                <div class="list-left">To be implemented!</div>
+            </center>
         </div>
     )
 }
+
+export { MachineSettings, firmwareName }

@@ -8,9 +8,9 @@ const WebSocket = require("ws")
 var currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
-const targetFW  = "Repetier"
 
-
+const machine = process.env.TARGET_ENV
+const targetFW = machine == "grbl" ? "grbl" : "repetier"
 app.use(
     express.static("dist"),
     fileUpload({ preserveExtension: true, debug: true })
