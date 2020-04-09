@@ -21,10 +21,15 @@
 import { h } from "preact"
 import { T, Translate } from "../translations"
 import { Page, esp3dSettings, globaldispatch, Action } from "../app"
-import { SendCommand } from "../http"
 import { Esp3dVersion } from "../version"
 import { RefreshCcw, Github, UploadCloud } from "preact-feather"
-import { SendPostHttp, cancelCurrentUpload, lastError } from "../http"
+import {
+    SendCommand,
+    SendPostHttp,
+    cancelCurrentUpload,
+    lastError,
+} from "../http"
+import { preferences } from "../uisettings"
 
 /*
  * Local variables
@@ -35,7 +40,6 @@ let browserInformation = ""
 let dataStatus = {}
 let uploadFiles
 let pathUpload = "/files"
-let autoLoad = false
 
 //from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 function getBrowserInformation() {
@@ -246,7 +250,9 @@ export const AboutPage = ({ currentState }) => {
     if (currentState.activePage != Page.about) return null
     if (browserInformation == "") {
         browserInformation = getBrowserInformation()
-        if (autoLoad) loadStatus()
+        if (preferences && preferences.settings.autoload) {
+            if (preferences.settings.autoload == "true") loadStatus()
+        }
     }
     return (
         <div class="card-body">

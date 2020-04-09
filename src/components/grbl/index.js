@@ -43,7 +43,7 @@ const MachineSettings = ({ currentPage }) => {
     return (
         <div>
             <center>
-               <br />
+                <br />
                 GRBL
                 <br />
                 <div class="list-left">To be implemented!</div>

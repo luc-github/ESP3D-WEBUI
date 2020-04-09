@@ -50,7 +50,7 @@ const MachineSettings = ({ currentPage }) => {
         return null
     return (
         <div>
-        <br />
+            <br />
             <center>
                 3D Printer
                 <br />

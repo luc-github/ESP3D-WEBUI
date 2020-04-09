@@ -22,7 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
-const { Machine } = require(`../${process.env.TARGET_ENV}`)
+//const { Machine } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Dashboard page
@@ -32,9 +32,12 @@ export const DashboardPage = ({ currentState }) => {
     if (currentState.activePage != Page.dashboard) return null
     return (
         <div>
-            Dashboard
-            <br />
-            <Machine />
+            <center>
+                <br />
+                Dashboard for {process.env.TARGET_ENV}
+                <br />
+                To be implemented!
+            </center>
         </div>
     )
 }

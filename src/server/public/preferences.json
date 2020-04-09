@@ -1,6 +1,7 @@
 {
  "settings": {
   "language": "en",
-  "banner": "true"
+  "banner": "true",
+  "autoload" : "false"
  }
 }
