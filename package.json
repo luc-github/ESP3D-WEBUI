@@ -58,7 +58,7 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "history": "^4.10.1",
-    "preact": "^10.3.3",
+    "preact": "^10.4.0",
     "preact-feather": "4.1.0",
     "preact-router": "^3.2.1"
   }
