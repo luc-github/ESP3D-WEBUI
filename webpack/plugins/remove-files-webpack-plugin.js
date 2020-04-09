@@ -4,16 +4,17 @@
  */
 
 const RemoveFilesWebpackPlugin = require("remove-files-webpack-plugin")
+var dist = "dist/" + process.env.TARGET_ENV
 
 const config = {
     before: {
-        include: ["dist"],
+        include: [process.env.TARGET_ENV],
     },
     after: {
-        exclude: ["dist/index.html.gz"],
+        exclude: [dist + "/index.html.gz"],
         test: [
             {
-                folder: "./dist",
+                folder: "./" + dist,
                 method: filePath => {
                     return new RegExp(/\.*$/, "m").test(filePath)
                 },
