@@ -62,6 +62,7 @@ export const Selector = ({ currentPage }) => {
             <div class="list-left disable-select">
                 <ul class="nav nav-pills">
                     <li
+                        title={T("S37")}
                         class={
                             currentPage == Setting.esp3d
                                 ? "nav-link pill-link active"
@@ -73,6 +74,7 @@ export const Selector = ({ currentPage }) => {
                         <span class="hide-low">{T("S36")}</span>
                     </li>
                     <li
+                        title={T("S38")}
                         class={
                             currentPage == Setting.ui
                                 ? "nav-link pill-link active"
@@ -83,6 +85,11 @@ export const Selector = ({ currentPage }) => {
                         <Eye /> <span class="hide-low">{T("S17")}</span>
                     </li>
                     <li
+                        title={
+                            process.env.TARGET_ENV == "printer"
+                                ? T("S39")
+                                : T("40")
+                        }
                         class={
                             visible
                                 ? currentPage == Setting.machine
