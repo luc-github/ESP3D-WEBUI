@@ -321,13 +321,13 @@ export const AboutPage = ({ currentState }) => {
                     </div>
                     {dataStatus.Status
                         ? dataStatus.Status.map((entry, index) => {
-                              if (entry.id == "FW version") return null
+                              if (entry.id == "FW ver") return null
                               return (
                                   <div class="card-text">
                                       <span class="text-info">
-                                          {Translate(entry.id)}:{" "}
+                                          {T(entry.id)}:{" "}
                                       </span>
-                                      {Translate(entry.value)}
+                                      {T(entry.value)}
                                   </div>
                               )
                           })
@@ -367,7 +367,6 @@ function loadStatus() {
 function loadStatusSuccess(responseText) {
     try {
         dataStatus = JSON.parse(responseText)
-        console.log("status :" + dataStatus.Status[0].id)
         globaldispatch({
             type: Action.renderAll,
         })

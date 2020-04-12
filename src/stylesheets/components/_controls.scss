@@ -44,15 +44,31 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
 }
 
+.input-group-text.error {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+}
+.input-group-text.warning {
+    color: #212529;
+    background-color: #ffc107 !important;
+}
+.input-group-text.success {
+    color: #fff;
+    background-color: #28a745;
+}
+
 .form-control.is-changed {
+    padding-right: calc(1.5em + 0.75rem);
     border-color: #e0a800 !important;
     background-image: $warning-icon !important;
     background-repeat: no-repeat;
     background-position: right calc(0.375em + 0.1875rem) center;
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
+
 .custom-select.is-changed {
     border-color: #e0a800 !important;
+    padding-right: calc(1.5em + 0.75rem);
     background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
             no-repeat right 0.75rem center/8px 10px,
         $warning-icon #fff no-repeat center right 1.75rem /

@@ -72,7 +72,7 @@ function ping(start = false) {
     setTimeout(ping, pingDelay)
     if (pingPaused) return
     if (webSocketClient.readyState == 1) {
-        console.log("ping")
+        //console.log("ping")
         webSocketClient.send("ping")
     }
 }

@@ -57,10 +57,12 @@ function setLang(lang) {
  */
 function T(id) {
     let translatedText = currentLangRessource[id]
+    if (!isNaN(id) || !isNaN(id.charAt(0))) return id
     if (typeof translatedText === "undefined") {
         translatedText = enLangRessource[id]
         if (typeof translatedText === "undefined") {
-            translatedText = id + " is not defined!"
+            console.log("[Translation]" + id + " is not defined!")
+            translatedText = id
         }
     }
     return translatedText
