@@ -8,6 +8,12 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     background-color: #e9ecef;
     border-color: #ced4da;
 }
+.control-padding {
+    padding: 0.375rem 0.75rem !important;
+}
+.padding-low {
+    padding: 0.25rem !important;
+}
 
 .btn-default:hover {
     color: #212529;
@@ -93,5 +99,11 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 @include media-breakpoint-down(xs) {
     .hide-low {
         display: none;
+    }
+    .card-low {
+        padding: 0.25rem !important;
+    }
+    .card-noborder-low {
+        border: 1px solid transparent !important;
     }
 }

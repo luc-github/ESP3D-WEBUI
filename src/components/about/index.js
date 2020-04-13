@@ -255,7 +255,7 @@ export const AboutPage = ({ currentState }) => {
         }
     }
     return (
-        <div class="card-body">
+        <div class="card-body card-low">
             <h3 class="card-title">{T("S12")}</h3>
             <hr />
             <center>

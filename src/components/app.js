@@ -273,7 +273,7 @@ const reducerPage = (state, action) => {
 const Container = ({ currentState, top }) => {
     return (
         <div
-            class="espcontainer container-fluid row-fluid card"
+            class="espcontainer container-fluid row-fluid card card-low"
             style={{ top }}
         >
             <AboutPage currentState={currentState} />
