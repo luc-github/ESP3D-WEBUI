@@ -80,7 +80,13 @@ function checkValue(entry) {
 /*
  * Set control state
  */
-function setState(entry, state) {
+function setState(entry, state, index) {
+    let id
+    if (typeof index != "undefined") {
+        id = entry.P + "_" + Object.values(entry.O[index])[0]
+    } else {
+        id = entry
+    }
     let classSetting = "form-control"
     let classLabel = "input-group-text"
     let classButton = "btn"
@@ -104,24 +110,40 @@ function setState(entry, state) {
             classButton += " d-none"
             break
     }
-    document.getElementById("setting" + entry).className = classSetting
-    document.getElementById("button_setting" + entry).className = classButton
-    document.getElementById("label_setting" + entry).className = classLabel
+    document.getElementById("setting" + id).className = classSetting
+    document.getElementById("button_setting" + id).className = classButton
+    document.getElementById("label_setting" + id).className = classLabel
 }
 
 /*
  * Change state of control according context / check
  */
-function updateState(entry) {
-    let state
-    if (entry.currentValue != entry.V) {
-        if (checkValue(entry)) {
-            state = "modified"
-        } else {
-            state = "error"
+function updateState(entry, index) {
+    let state = "default"
+    if (typeof index == "undefined") {
+        if (entry.currentValue != entry.V) {
+            if (checkValue(entry)) {
+                state = "modified"
+            } else {
+                state = "error"
+            }
         }
+        setState(entry.P, state, index)
+    } else {
+        let original =
+            parseInt(Object.values(entry.O[index])[0]) &
+            parseInt(entry.V)
+                ? 1
+                : 0
+        if (original != entry.O[index]["current_value"]) {
+            if (checkValue(entry)) {
+                state = "modified"
+            } else {
+                state = "error"
+            }
+        }
+        setState(entry, state, index)
     }
-    setState(entry.P, state)
 }
 
 /*
@@ -137,16 +159,13 @@ const SelectEntry = ({ entry }) => {
         updateState(entry)
     }, [entry])
     for (let key in entry.O) {
-        for (let sub_key in entry.O[key]) {
-            let sub_val = entry.O[key][sub_key]
-            sub_val = sub_val.trim()
-            sub_key = sub_key.trim()
-            optionList.push(
-                <option value={sub_val}>
-                    {isNaN(sub_key) ? T(sub_key) : sub_key}
-                </option>
-            )
-        }
+        let sub_key = Object.keys(entry.O[key])[0].trim()
+        let sub_val = Object.values(entry.O[key])[0].trim()
+        optionList.push(
+            <option value={sub_val}>
+                {isNaN(sub_key) ? T(sub_key) : sub_key}
+            </option>
+        )
     }
     return (
         <select
@@ -190,62 +209,100 @@ const InputEntry = ({ entry }) => {
     )
 }
 
+const FlagSubEntry = ({ entry, label, val, index }) => {
+    const onChange = e => {
+        entry.O[index]["current_value"] = e.target.value
+        updateState(entry, index)
+    }
+    const onSet = e => {
+            let newval = parseInt(entry.V)
+            let flag = parseInt(Object.values(entry.O[index])[0]) 
+            if (entry.O[index]["current_value"] ==0){
+                 newval &= ~(flag)
+
+            } else {
+                newval|=flag
+            }
+                entry.currentValue = newval
+                entry.O[index].saving=true
+                saveSetting(entry)
+            }
+    useEffect(() => {
+        updateState(entry, index)
+    }, [entry])
+    let current = entry.O[index]["current_value"]
+    return (
+        <div class="card-text">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span
+                        class="input-group-text"
+                        id={"label_setting" + entry.P + "_" + val}
+                    >
+                        {T(label)}
+                    </span>
+                </div>
+                <select
+                    class="form-control"
+                    value={current}
+                    onChange={onChange}
+                    id={"setting" + entry.P + "_" + val}
+                >
+                    <option value="0">{T("OFF")}</option>
+                    <option value="1">{T("ON")}</option>
+                </select>
+                <div class="input-group-append">
+                    <button
+                        class="btn btn-default"
+                        type="button"
+                        id={"button_setting" + entry.P + "_" + val}
+                        title={T("S43")}
+                        onClick={onSet}
+                    >
+                        <Upload size="1.2em" />
+                        <span class="hide-low">{T("S43")}</span>
+                    </button>
+                </div>
+            </div>
+            <div style="height:3px" />
+        </div>
+    )
+}
+
 /*
  * Generate a flag control
  */
 const FlagEntry = ({ entry }) => {
-    return <div></div>
-}
-
-/*
- * Save setting query success
- */
-function saveSettingSuccess(responseText) {
-    try {
-        console.log("success " + responseText)
-        globaldispatch({
-            type: Action.renderAll,
-        })
-        let res = responseText.split(" ")
-        setState(res[1], "success")
-        for (let entry of esp3dFWSettings.Settings) {
-            if (entry.P == res[1]) {
-                entry.V = entry.currentValue
-            }
-        }
-    } catch (e) {
-        console.log(responseText)
-        console.error("Parsing error:", e)
-        globaldispatch({
-            type: Action.error,
-            errorcode: e,
-            msg: "S21",
-        })
+    const flagsettings = []
+    let index = 0
+    for (let key in entry.O) {
+        let sub_key
+        let sub_val
+        if (typeof entry.O[key]["current_value"] == "undefined")
+            entry.O[key]["current_value"] =
+                parseInt(Object.values(entry.O[key])[0]) & parseInt(entry.V)
+                    ? 1
+                    : 0
+        sub_key = Object.keys(entry.O[key])[0].trim()
+        sub_val = Object.values(entry.O[key])[0].trim()
+        flagsettings.push(
+            <FlagSubEntry
+                entry={entry}
+                label={sub_key}
+                val={sub_val}
+                index={index}
+            />
+        )
+        index++
     }
-}
-
-/*
- * Save setting query error
- */
-function saveSettingError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S44",
-    })
-}
-
-/*
- * Save setting
- */
-function saveSetting(entry) {
-    const cmd = encodeURIComponent(
-        "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
+    return (
+        <div>
+            <div class="card">
+                <div class="card-header control-padding">{T(entry.H)}</div>
+                <div class="card-body padding-low">{flagsettings}</div>
+            </div>
+        </div>
     )
-    globaldispatch({
-        type: Action.fetch_data,
-    })
-    SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
 
 /*
@@ -256,14 +313,14 @@ const Entry = ({ entry }) => {
         entry.V = entry.V.trim()
         entry.currentValue = entry.V
     }
-    let e
+    let setting
     const onSet = e => {
         //entry.currentValue = e.target.value
         saveSetting(entry)
     }
-    if (!entry.O) e = <InputEntry entry={entry} />
+    if (!entry.O) setting = <InputEntry entry={entry} />
     else {
-        if (entry.T != "F") e = <SelectEntry entry={entry} />
+        if (entry.T != "F") setting = <SelectEntry entry={entry} />
         else {
             return <FlagEntry entry={entry} />
         }
@@ -293,7 +350,7 @@ const Entry = ({ entry }) => {
                         {T(entry.H)}
                     </span>
                 </div>
-                {e}
+                {setting}
                 <div
                     class="invalid-feedback text-center"
                     style="text-align:center!important"
@@ -336,8 +393,8 @@ const ESPSectionSettings = ({ filter, filter2 }) => {
     }
     return (
         <div>
-            <div class="card">
-                <div class="card-body">
+            <div class="card card-noborder-low">
+                <div class="card-body card-low">
                     {title}
                     {section}
                 </div>
@@ -416,6 +473,70 @@ function loadSettingsError(errorCode, responseText) {
         errorcode: errorCode,
         msg: "S5",
     })
+}
+
+/*
+ * Save setting query success
+ */
+function saveSettingSuccess(responseText) {
+    try {
+        console.log("success " + responseText)
+        globaldispatch({
+            type: Action.renderAll,
+        })
+        let res = responseText.split(" ")
+        
+        for (let entry of esp3dFWSettings.Settings) {
+            if (entry.P == res[1]) {
+                entry.V = entry.currentValue
+                if (entry.T!="F"){
+                    setState(res[1], "success")
+                   
+                } else {
+                    for (let i=0; i < entry.O.length; i++) {
+                        if (entry.O[i].saving) {
+                             entry.O[i].saving=false
+                             setState(entry, "success", i)
+                        }
+                    }
+                } 
+            break;
+            }
+        }
+        
+    } catch (e) {
+        console.log(responseText)
+        console.error("Parsing error:", e)
+        globaldispatch({
+            type: Action.error,
+            errorcode: e,
+            msg: "S21",
+        })
+    }
+}
+
+/*
+ * Save setting query error
+ */
+function saveSettingError(errorCode, responseText) {
+    globaldispatch({
+        type: Action.error,
+        errorcode: errorCode,
+        msg: "S44",
+    })
+}
+
+/*
+ * Save setting
+ */
+function saveSetting(entry) {
+    const cmd = encodeURIComponent(
+        "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
+    )
+    globaldispatch({
+        type: Action.fetch_data,
+    })
+    SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
 
 /*

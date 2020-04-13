@@ -1,9 +1,10 @@
-Base code       	: 0.0.0.1 : 25KB
-Websocket       	: 0.0.0.2 : 27KB
-Setup           	: 0.0.0.3 : 29KB
-Logo            	: 0.0.0.3 : 31.3KB
-Basic Navbar    	: 0.0.0.4 : 32.4KB
-Basic About     	: 0.0.0.5 : 34.15KB
-UI update       	: 0.0.0.6 : 35.7KB
-Settings Page    	: 0.0.0.7 : 36.3KB
-Basic ESP3D Settings	: 0.0.0.8 : 36.9KB
+Base code               : 0.0.0.1 : 25KB
+Websocket               : 0.0.0.2 : 27KB
+Setup                   : 0.0.0.3 : 29KB
+Logo                    : 0.0.0.3 : 31.3KB
+Basic Navbar            : 0.0.0.4 : 32.4KB
+Basic About             : 0.0.0.5 : 34.15KB
+UI update               : 0.0.0.6 : 35.7KB
+Settings Page           : 0.0.0.7 : 36.3KB
+Basic ESP3D Settings    : 0.0.0.8 : 36.9KB
+ESP3D Settings V1       : 0.0.0.9 : 39.6KB
