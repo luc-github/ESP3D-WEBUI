@@ -134,7 +134,7 @@ app.get("/command", function(req, res) {
                     T: "B",
                     V: "1",
                     H: "ip mode",
-                    O: [{ dhcp: "0" }, { static: "1" }],
+                    O: [{ dhcp: "1" }, { static: "0" }],
                 },
                 {
                     F: "network",
@@ -395,7 +395,7 @@ app.get("/command", function(req, res) {
                     F2: "system",
                     P: "129",
                     T: "F",
-                    V: "0",
+                    V: "255",
                     H: "outputmsg",
                     O: [{ M117: "16" }, { serial: "1" }, { telnet: "2" }],
                 },
