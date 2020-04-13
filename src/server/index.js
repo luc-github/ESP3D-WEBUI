@@ -11,6 +11,7 @@ const fileUpload = require("express-fileupload")
 
 const machine = process.env.TARGET_ENV
 const targetFW = machine == "grbl" ? "grbl" : "repetier"
+const targetFWnb = machine == "grbl" ? "6" : "5"
 app.use(
     express.static("dist"),
     fileUpload({ preserveExtension: true, debug: true })
@@ -348,7 +349,7 @@ app.get("/command", function(req, res) {
                     F2: "system",
                     P: "461",
                     T: "B",
-                    V: "0",
+                    V: targetFWnb,
                     H: "targetfw",
                     O: [
                         { repetier: "5" },

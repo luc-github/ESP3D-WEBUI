@@ -20,6 +20,7 @@
 
 import { h } from "preact"
 import { Setting, esp3dSettings } from "../app"
+import { T } from "../translations"
 
 function firmwareName(shortname) {
     switch (shortname) {
@@ -35,8 +36,10 @@ function firmwareName(shortname) {
             return "Marlin Kimbra"
         case "smoothieware":
             return "Smoothieware"
+        case "grbl":
+            return "Grbl"
         default:
-            return "Unknow"
+            return "Unknown"
     }
 }
 
@@ -48,6 +51,13 @@ const MachineSettings = ({ currentPage }) => {
         esp3dSettings.FWTarget == "unknown"
     )
         return null
+    if (esp3dSettings.FWTarget == "grbl")
+        return (
+            <div>
+                <br />
+                <center>{T("S46")}</center>
+            </div>
+        )
     return (
         <div>
             <br />

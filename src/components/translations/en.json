@@ -45,6 +45,7 @@
     "S43" : "Set",
     "S44" : "Save data failed!",
     "S45" : "Scan available networks",
+    "S46" : "Sorry this UI is only for 3D printer, please use CNC one",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

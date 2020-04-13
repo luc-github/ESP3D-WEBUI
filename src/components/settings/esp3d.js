@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { RefreshCcw, RotateCcw, Upload, Search } from "preact-feather"
-import { Setting, globaldispatch, Action } from "../app"
+import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { preferences } from "../uisettings"
 import { SendCommand } from "../http"
@@ -131,8 +131,7 @@ function updateState(entry, index) {
         setState(entry.P, state, index)
     } else {
         let original =
-            parseInt(Object.values(entry.O[index])[0]) &
-            parseInt(entry.V)
+            parseInt(Object.values(entry.O[index])[0]) & parseInt(entry.V)
                 ? 1
                 : 0
         if (original != entry.O[index]["current_value"]) {
@@ -209,24 +208,26 @@ const InputEntry = ({ entry }) => {
     )
 }
 
+/*
+ * Generate a flag control
+ */
 const FlagSubEntry = ({ entry, label, val, index }) => {
     const onChange = e => {
         entry.O[index]["current_value"] = e.target.value
         updateState(entry, index)
     }
     const onSet = e => {
-            let newval = parseInt(entry.V)
-            let flag = parseInt(Object.values(entry.O[index])[0]) 
-            if (entry.O[index]["current_value"] ==0){
-                 newval &= ~(flag)
-
-            } else {
-                newval|=flag
-            }
-                entry.currentValue = newval
-                entry.O[index].saving=true
-                saveSetting(entry)
-            }
+        let newval = parseInt(entry.V)
+        let flag = parseInt(Object.values(entry.O[index])[0])
+        if (entry.O[index]["current_value"] == 0) {
+            newval &= ~flag
+        } else {
+            newval |= flag
+        }
+        entry.currentValue = newval
+        entry.O[index].saving = true
+        saveSetting(entry)
+    }
     useEffect(() => {
         updateState(entry, index)
     }, [entry])
@@ -270,7 +271,7 @@ const FlagSubEntry = ({ entry, label, val, index }) => {
 }
 
 /*
- * Generate a flag control
+ * Generate a flag list
  */
 const FlagEntry = ({ entry }) => {
     const flagsettings = []
@@ -431,6 +432,20 @@ const ESPSettings = ({ filter }) => {
 }
 
 /*
+ * Apply changeon UI
+ */
+function applyChangeOnUI(entry) {
+    if ((entry.F = "system") && (entry.H = "targetfw")) {
+        for (let val in entry.O) {
+            if (Object.values(entry.O[val])[0] == entry.V) {
+                esp3dSettings.FWTarget = Object.keys(entry.O[val])[0]
+                break
+            }
+        }
+    }
+}
+
+/*
  * Load Firmware Settings
  */
 function loadSettings() {
@@ -485,25 +500,24 @@ function saveSettingSuccess(responseText) {
             type: Action.renderAll,
         })
         let res = responseText.split(" ")
-        
+
         for (let entry of esp3dFWSettings.Settings) {
             if (entry.P == res[1]) {
                 entry.V = entry.currentValue
-                if (entry.T!="F"){
+                if (entry.T != "F") {
                     setState(res[1], "success")
-                   
                 } else {
-                    for (let i=0; i < entry.O.length; i++) {
+                    for (let i = 0; i < entry.O.length; i++) {
                         if (entry.O[i].saving) {
-                             entry.O[i].saving=false
-                             setState(entry, "success", i)
+                            entry.O[i].saving = false
+                            setState(entry, "success", i)
                         }
                     }
-                } 
-            break;
+                }
+                applyChangeOnUI(entry)
+                break
             }
         }
-        
     } catch (e) {
         console.log(responseText)
         console.error("Parsing error:", e)
