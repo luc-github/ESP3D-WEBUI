@@ -50,7 +50,7 @@ export const Selector = ({ currentPage }) => {
     if (
         !esp3dSettings ||
         !esp3dSettings.FWTarget ||
-        esp3dSettings.FWTarget == "???"
+        esp3dSettings.FWTarget == "unknown"
     ) {
         visible = false
     } else {

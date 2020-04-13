@@ -45,7 +45,7 @@ const MachineSettings = ({ currentPage }) => {
         currentPage != Setting.machine ||
         !esp3dSettings ||
         !esp3dSettings.FWTarget ||
-        esp3dSettings.FWTarget == "???"
+        esp3dSettings.FWTarget == "unknown"
     )
         return null
     return (
