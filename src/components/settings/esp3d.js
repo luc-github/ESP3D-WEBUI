@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { RefreshCcw, RotateCcw, Upload } from "preact-feather"
+import { RefreshCcw, RotateCcw, Upload, Search } from "preact-feather"
 import { Setting, globaldispatch, Action } from "../app"
 import { setSettingPage } from "./index"
 import { preferences } from "../uisettings"
@@ -268,6 +268,20 @@ const Entry = ({ entry }) => {
             return <FlagEntry entry={entry} />
         }
     }
+    let extra
+    //position may vary from FW location should not
+    if (entry.F == "network" && entry.F2 == "sta" && entry.H == "SSID") {
+        extra = (
+            <button
+                class="btn btn-default"
+                id={"button_setting_extra" + entry.P}
+                type="button"
+                title={T("S45")}
+            >
+                <Search size="1.2em" />
+            </button>
+        )
+    }
     return (
         <div>
             <div class="input-group">
@@ -292,10 +306,12 @@ const Entry = ({ entry }) => {
                         id={"button_setting" + entry.P}
                         type="button"
                         onClick={onSet}
+                        title={T("S43")}
                     >
                         <Upload size="1.2em" />
-                        {T("S43")}
+                        <span class="hide-low">{T("S43")}</span>
                     </button>
+                    {extra}
                 </div>
             </div>
             <div style="height:3px" />
