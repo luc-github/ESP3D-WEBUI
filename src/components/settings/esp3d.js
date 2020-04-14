@@ -555,7 +555,7 @@ function loadWiFiNetworksSuccess(responseText) {
         globaldispatch({
             type: Action.message,
             msg: message,
-            title: "S41",
+            title: "S45",
             buttontext: "S24",
             buttontext2: (
                 <div title={T("S23")}>
