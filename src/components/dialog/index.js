@@ -140,11 +140,7 @@ export const DialogPage = ({ currentState }) => {
                                         : "d-block"
                                 }
                             />
-                            <div
-                                dangerouslySetInnerHTML={{
-                                    __html: currentState.data.message,
-                                }}
-                            ></div>
+                            {currentState.data.message}
                         </div>
                         <div
                             class={

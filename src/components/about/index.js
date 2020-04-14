@@ -98,18 +98,24 @@ function PrepareUpload() {
     document.getElementById("uploadControl").onchange = () => {
         console.log("content changed")
         uploadFiles = document.getElementById("uploadControl").files
-        let fileList =
-            "<div style='text-align: left; overflow: hidden;text-overflow: ellipsis;'><ul>"
+        let fileList = []
+        let message = []
+        fileList.push(<div>{T("S30")}</div>)
+        fileList.push(<br />)
         for (let i = 0; i < uploadFiles.length; i++) {
-            fileList += "<li>"
-            fileList += uploadFiles[i].name
-            fileList += "</li>"
+            fileList.push(<li>{uploadFiles[i].name}</li>)
         }
-        fileList += "</ul></div>"
+        message.push(
+            <center>
+                <div style="text-align: left; display: inline-block; overflow: hidden;text-overflow: ellipsis;">
+                    <ul>{fileList}</ul>
+                </div>
+            </center>
+        )
         //todo open dialog to confirm
         globaldispatch({
             type: Action.confirm_upload,
-            msg: T("S30") + "<br/>" + fileList,
+            msg: message,
             nextaction: processUpload,
             nextaction2: cancelUpload,
         })
