@@ -339,7 +339,7 @@ app.get("/command", function(req, res) {
                     F2: "notification",
                     P: "855",
                     T: "S",
-                    V: "NONE",
+                    V: " ",
                     S: "127",
                     H: "ts",
                     M: "0",

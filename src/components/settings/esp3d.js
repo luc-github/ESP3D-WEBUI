@@ -435,7 +435,7 @@ const ESPSettings = ({ filter }) => {
  * Apply changeon UI
  */
 function applyChangeOnUI(entry) {
-    if ((entry.F = "system") && (entry.H = "targetfw")) {
+    if (entry.F == "system" && entry.H == "targetfw") {
         for (let val in entry.O) {
             if (Object.values(entry.O[val])[0] == entry.V) {
                 esp3dSettings.FWTarget = Object.keys(entry.O[val])[0]
@@ -500,7 +500,6 @@ function saveSettingSuccess(responseText) {
             type: Action.renderAll,
         })
         let res = responseText.split(" ")
-
         for (let entry of esp3dFWSettings.Settings) {
             if (entry.P == res[1]) {
                 entry.V = entry.currentValue
