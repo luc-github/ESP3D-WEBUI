@@ -533,7 +533,7 @@ function loadWiFiNetworksSuccess(responseText) {
         let entries = []
         let message = []
         header.push(
-            <thead class="hide-low">
+            <thead class="thide-low">
                 <tr>
                     <th>{T("SSID")}</th>
                     <th>{T("signal")}</th>
@@ -549,8 +549,15 @@ function loadWiFiNetworksSuccess(responseText) {
             entries.push(
                 <tr>
                     <td>{sub_val[0]}</td>
-                    <td>{sub_val[1]}%</td>
-                    <td>{sub_val[2] == 1 ? <Lock /> : null}</td>
+                    <td>
+                        {sub_val[1]}%
+                        <div class="tshow-low">
+                            {sub_val[2] == 1 ? <Lock /> : null}
+                        </div>
+                    </td>
+                    <td class="thide-low">
+                        {sub_val[2] == 1 ? <Lock /> : null}
+                    </td>
                     <td>
                         <JoinNetworkButton SSID={sub_val[0]} />
                     </td>
@@ -558,7 +565,11 @@ function loadWiFiNetworksSuccess(responseText) {
             )
         }
         header.push(<tbody>{entries}</tbody>)
-        message.push(<div><table class="table table-bordered ">{header}</table></div>)
+        message.push(
+            <div style="overflow: auto;">
+                <table class="table table-bordered ">{header}</table>
+            </div>
+        )
         globaldispatch({
             type: Action.message,
             msg: message,
@@ -669,7 +680,8 @@ function exportSettings() {
     data = "{Settings: [\n"
     for (let entry of esp3dFWSettings.Settings) {
         if (p != 0) data += ","
-        data += '{P:"' + entry.P + '",T:"' + entry.T + '",V:"' + entry.V + '"}\n'
+        data +=
+            '{P:"' + entry.P + '",T:"' + entry.T + '",V:"' + entry.V + '"}\n'
     }
     data += "]}"
     file = new Blob([data], { type: "application/json" })

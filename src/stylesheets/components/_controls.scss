@@ -95,10 +95,21 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .hide-low {
     display: inline-block;
 }
-
+@include media-breakpoint-up(xs) {
+    .tshow-low {
+        display: none;
+    }
+    .thide-low {
+        display: inline-row;
+    }
+}
 @include media-breakpoint-down(xs) {
+    .thide-low,
     .hide-low {
         display: none;
+    }
+    .tshow-low {
+        display: block;
     }
     .card-low {
         padding: 0.25rem !important;
