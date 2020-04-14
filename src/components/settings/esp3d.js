@@ -533,7 +533,7 @@ function loadWiFiNetworksSuccess(responseText) {
         let entries = []
         let message = []
         header.push(
-            <thead>
+            <thead class="hide-low">
                 <tr>
                     <th>{T("SSID")}</th>
                     <th>{T("signal")}</th>
@@ -558,7 +558,7 @@ function loadWiFiNetworksSuccess(responseText) {
             )
         }
         header.push(<tbody>{entries}</tbody>)
-        message.push(<table class="table table-bordered ">{header}</table>)
+        message.push(<div><table class="table table-bordered ">{header}</table></div>)
         globaldispatch({
             type: Action.message,
             msg: message,
