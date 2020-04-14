@@ -134,6 +134,7 @@
     "pushover" : "Pushover",
     "email" : "Email",
     "line" : "Line",
+    "telegram" : "Telegram",
     "t1" : "Token 1",
     "t2" : "Token 2",
     "ts" : "Setting",
