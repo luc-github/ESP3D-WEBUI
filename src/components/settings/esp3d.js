@@ -20,7 +20,14 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { RefreshCcw, Upload, Search, Lock, CheckCircle } from "preact-feather"
+import {
+    RefreshCcw,
+    Upload,
+    Search,
+    Lock,
+    CheckCircle,
+    ExternalLink,
+} from "preact-feather"
 import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { preferences } from "../uisettings"
@@ -649,6 +656,40 @@ function saveSetting(entry) {
     })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
+/*
+ * Export Settings
+ *
+ */
+function exportSettings() {
+    console.log("export")
+    let data, file
+    let p = 0
+    const filename = "export.json"
+
+    data = "{Settings: [\n"
+    for (let entry of esp3dFWSettings.Settings) {
+        if (p != 0) data += ","
+        data += '{P:"' + entry.P + '",T:"' + entry.T + '",V:"' + entry.V + '"}\n'
+    }
+    data += "]}"
+    file = new Blob([data], { type: "application/json" })
+    if (window.navigator.msSaveOrOpenBlob)
+        // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename)
+    else {
+        // Others
+        let a = document.createElement("a"),
+            url = URL.createObjectURL(file)
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function() {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
+}
 
 /*
  * Settings page
@@ -687,6 +728,17 @@ export const Esp3DSettings = ({ currentPage }) => {
                 >
                     <RefreshCcw />
                     <span class="hide-low">{" " + T("S50")}</span>
+                </button>{" "}
+                <button
+                    type="button"
+                    class={
+                        esp3dFWSettings.Settings ? "btn btn-primary" : " d-none"
+                    }
+                    title={T("S53")}
+                    onClick={exportSettings}
+                >
+                    <ExternalLink />
+                    <span class="hide-low">{" " + T("S52")}</span>
                 </button>
                 <br />
                 <br />

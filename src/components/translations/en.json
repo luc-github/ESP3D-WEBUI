@@ -51,6 +51,8 @@
     "S49" : "Protected",
     "S50" : "Refresh",
     "S51" : "Select this network",
+    "S52" : "Export",
+    "S53" : "Export settings in file",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",
