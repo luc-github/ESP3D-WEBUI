@@ -181,7 +181,10 @@ export const DialogPage = ({ currentState }) => {
                                 currentState.data.type == "error" ||
                                 currentState.data.type == "progress"
                                     ? "btn btn-danger d-block"
-                                    : currentState.data.type == "confirmation"
+                                    : currentState.data.type ==
+                                          "confirmation" ||
+                                      (currentState.data.type == "message" &&
+                                          currentState.data.button1text)
                                     ? "btn btn-secondary d-block"
                                     : "d-none"
                             }
@@ -204,6 +207,9 @@ export const DialogPage = ({ currentState }) => {
                             className={
                                 currentState.data.type == "confirmation"
                                     ? "btn btn-warning d-block"
+                                    : currentState.data.type == "message" &&
+                                      currentState.data.button2text
+                                    ? "btn btn-primary d-block"
                                     : "d-none"
                             }
                             onClick={() => {

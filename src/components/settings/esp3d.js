@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { RefreshCcw, RotateCcw, Upload, Search } from "preact-feather"
+import { RefreshCcw, Upload, Search, Lock, CheckCircle } from "preact-feather"
 import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { preferences } from "../uisettings"
@@ -335,6 +335,7 @@ const Entry = ({ entry }) => {
                 id={"button_setting_extra" + entry.P}
                 type="button"
                 title={T("S45")}
+                onclick={loadWiFiNetworks}
             >
                 <Search size="1.2em" />
             </button>
@@ -445,6 +446,30 @@ function applyChangeOnUI(entry) {
     }
 }
 
+const JoinNetworkButton = ({ SSID }) => {
+    const onJoin = e => {
+        for (let entry of esp3dFWSettings.Settings) {
+            if (
+                entry.F == "network" &&
+                entry.F2 == "sta" &&
+                entry.H == "SSID"
+            ) {
+                entry.currentValue = SSID
+                updateState(entry)
+                break
+            }
+        }
+        globaldispatch({
+            type: Action.renderAll,
+        })
+    }
+    return (
+        <button class="btn btn-primary" title={T("S51")} onClick={onJoin}>
+            <CheckCircle />
+        </button>
+    )
+}
+
 /*
  * Load Firmware Settings
  */
@@ -480,7 +505,80 @@ function loadSettingsSuccess(responseText) {
 }
 
 /*
- * Load Firmware Status query error
+ * Load Network list Settings
+ */
+function loadWiFiNetworks() {
+    const cmd = encodeURIComponent("[ESP410]")
+    globaldispatch({
+        type: Action.fetch_data,
+    })
+    console.log("load wifi networks")
+    SendCommand(cmd, loadWiFiNetworksSuccess, loadSettingsError)
+}
+
+/*
+ * Load WiFi Networks query success
+ */
+function loadWiFiNetworksSuccess(responseText) {
+    try {
+        let listnetworks = JSON.parse(responseText)
+        let header = []
+        let entries = []
+        let message = []
+        header.push(
+            <thead>
+                <tr>
+                    <th>{T("SSID")}</th>
+                    <th>{T("signal")}</th>
+                    <th>{T("S49")}</th>
+                    <th>{T("S48")}</th>
+                </tr>
+            </thead>
+        )
+        //console.log(listnetworks)
+        for (let key in listnetworks.AP_LIST) {
+            let sub_key = Object.keys(listnetworks.AP_LIST[key])
+            let sub_val = Object.values(listnetworks.AP_LIST[key])
+            entries.push(
+                <tr>
+                    <td>{sub_val[0]}</td>
+                    <td>{sub_val[1]}%</td>
+                    <td>{sub_val[2] == 1 ? <Lock /> : null}</td>
+                    <td>
+                        <JoinNetworkButton SSID={sub_val[0]} />
+                    </td>
+                </tr>
+            )
+        }
+        header.push(<tbody>{entries}</tbody>)
+        message.push(<table class="table table-bordered ">{header}</table>)
+        globaldispatch({
+            type: Action.message,
+            msg: message,
+            title: "S41",
+            buttontext: "S24",
+            buttontext2: (
+                <div title={T("S23")}>
+                    {" "}
+                    <RefreshCcw />
+                    <span class="hide-low">{" " + T("S50")}</span>
+                </div>
+            ),
+            nextaction2: loadWiFiNetworks,
+        })
+    } catch (e) {
+        console.log(responseText)
+        console.error("Parsing error:", e)
+        globaldispatch({
+            type: Action.error,
+            errorcode: e,
+            msg: "S21",
+        })
+    }
+}
+
+/*
+ * Load WiFi Networks query error
  */
 function loadSettingsError(errorCode, responseText) {
     globaldispatch({
@@ -588,6 +686,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                     onClick={loadSettings}
                 >
                     <RefreshCcw />
+                    <span class="hide-low">{" " + T("S50")}</span>
                 </button>
                 <br />
                 <br />

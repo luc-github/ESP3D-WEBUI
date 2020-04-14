@@ -8,3 +8,4 @@ UI update               : 0.0.0.6 : 35.7KB
 Settings Page           : 0.0.0.7 : 36.3KB
 Basic ESP3D Settings    : 0.0.0.8 : 36.9KB
 ESP3D Settings V1       : 0.0.0.9 : 39.6KB
+Scan network dialog     : 0.0.0.11: 40.3KB

@@ -349,6 +349,7 @@ export const AboutPage = ({ currentState }) => {
                     onClick={loadStatus}
                 >
                     <RefreshCcw />
+                    <span class="hide-low">{" " + T("S50")}</span>
                 </button>
             </center>
         </div>

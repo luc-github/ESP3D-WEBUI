@@ -85,6 +85,24 @@ app.get("/command", function(req, res) {
         })
         return
     }
+
+    if (url.indexOf("ESP410") != -1) {
+        res.json({
+            AP_LIST: [
+                {
+                    SSID: "HP-Setup>71-M277 LaserJet",
+                    SIGNAL: "92",
+                    IS_PROTECTED: "0",
+                },
+                { SSID: "WIFI_OFFICE_B2G", SIGNAL: "88", IS_PROTECTED: "1" },
+                { SSID: "NETGEAR70", SIGNAL: "66", IS_PROTECTED: "1" },
+                { SSID: "WIFI_OFFICE_A2G", SIGNAL: "48", IS_PROTECTED: "1" },
+                { SSID: "Livebox-EF01", SIGNAL: "20", IS_PROTECTED: "1" },
+                { SSID: "orange", SIGNAL: "20", IS_PROTECTED: "0" },
+            ],
+        })
+        return
+    }
     if (url.indexOf("ESP400") != -1) {
         res.json({
             Settings: [

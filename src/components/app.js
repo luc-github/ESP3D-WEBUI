@@ -235,8 +235,11 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {
                     type: "message",
-                    title: T(action.title),
                     message: T(action.msg),
+                    button1text: T(action.buttontext),
+                    button2text: T(action.buttontext2),
+                    next2: action.nextaction2,
+                    title: T(action.title),
                 },
             }
         case Action.upload_progress:

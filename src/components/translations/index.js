@@ -57,7 +57,8 @@ function setLang(lang) {
  */
 function T(id) {
     let translatedText = currentLangRessource[id]
-    if (!isNaN(id) || !isNaN(id.charAt(0))) return id
+    if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
+        return id
     if (typeof translatedText === "undefined") {
         translatedText = enLangRessource[id]
         if (typeof translatedText === "undefined") {
