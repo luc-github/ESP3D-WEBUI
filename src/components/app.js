@@ -51,7 +51,7 @@ const Action = {
     connection_lost: 12,
     disconnection: 13,
     fetch_data: 14,
-    confirm_upload: 15,
+    confirmation: 15,
     upload_progress: 16,
     message: 17,
 }
@@ -210,7 +210,7 @@ const reducerPage = (state, action) => {
                     button1text: T("S8"),
                 },
             }
-        case Action.confirm_upload:
+        case Action.confirmation:
             return {
                 showDialog: true,
                 showPage: true,
@@ -223,6 +223,7 @@ const reducerPage = (state, action) => {
                     button1text: action.buttontext
                         ? T(action.buttontext)
                         : T("S27"),
+                    button2text: action.buttontext2,
                     next: action.nextaction,
                     next2: action.nextaction2,
                 },

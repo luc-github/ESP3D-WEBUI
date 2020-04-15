@@ -22,24 +22,31 @@ import { h } from "preact"
 import { T } from "../translations"
 import {
     RefreshCcw,
+    RotateCcw,
     Upload,
     Search,
     Lock,
     CheckCircle,
     ExternalLink,
+    Download,
 } from "preact-feather"
 import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { preferences } from "../uisettings"
 import { SendCommand } from "../http"
 import { useEffect } from "preact/hooks"
-let isloaded = false
+import { initApp } from "../uisettings"
+import {disconnectWsServer} from "../websocket"
 
 /*
  * Local variables
  *
  */
+let isloaded = false
 let esp3dFWSettings = {} //full esp3d settings (ESP400)
+let esp3dFWimportSettings = {} //full esp3d settings to be imported
+let currentIndex
+let stopImport
 
 /*
  * Check value is valid
@@ -672,16 +679,24 @@ function saveSetting(entry) {
  *
  */
 function exportSettings() {
-    console.log("export")
     let data, file
     let p = 0
     const filename = "export.json"
 
-    data = "{Settings: [\n"
+    data = '{"Settings": [\n'
     for (let entry of esp3dFWSettings.Settings) {
-        if (p != 0) data += ","
+        if (p != 0) {
+            data += ","
+        }
+        p++
         data +=
-            '{P:"' + entry.P + '",T:"' + entry.T + '",V:"' + entry.V + '"}\n'
+            '{"P":"' +
+            entry.P +
+            '","T":"' +
+            entry.T +
+            '","V":"' +
+            entry.V +
+            '"}\n'
     }
     data += "]}"
     file = new Blob([data], { type: "application/json" })
@@ -700,6 +715,176 @@ function exportSettings() {
             document.body.removeChild(a)
             window.URL.revokeObjectURL(url)
         }, 0)
+    }
+}
+/*
+ * Confirm Restart ESP board
+ *
+ */
+function confirmRestart() {
+    globaldispatch({
+        type: Action.confirmation,
+        msg: T("S59"),
+        buttontext: "S27",
+        nextaction: restartEsp,
+    })
+}
+
+/*
+ * Restart ESP board
+ *
+ */
+function restartEsp() {
+    const cmd = encodeURIComponent("[ESP444]RESTART")
+    disconnectWsServer()
+    SendCommand(cmd, reloadPage)
+    globaldispatch({
+        type: Action.message,
+        title: "S60",
+        msg: "S35",
+    })
+}
+
+/*
+ * Reload web browser Page
+ *
+ */
+function reloadPage() {
+    setTimeout(function() {
+        window.location.reload(true)
+    }, 5000)
+}
+
+/*
+ * Import settings one by one
+ *
+ */
+function doImport() {
+    let listSettings = Object.values(esp3dFWimportSettings.Settings)
+    if (stopImport) {
+        return
+    }
+    let size_list = listSettings.length
+    currentIndex++
+    if (currentIndex < size_list) {
+        let percentComplete = (currentIndex / size_list) * 100
+        const cmd = encodeURIComponent(
+            "[ESP401]P=" +
+                listSettings[currentIndex].P +
+                " T=" +
+                listSettings[currentIndex].T +
+                " V=" +
+                listSettings[currentIndex].V
+        )
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: percentComplete.toFixed(0),
+            title: "S32",
+            nextaction: cancelImport,
+        })
+
+        if (listSettings[currentIndex].V != "********") {
+            SendCommand(cmd, doImport, saveSettingError)
+        } else {
+            doImport()
+        }
+    } else {
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: 100,
+            nextaction: cancelImport,
+        })
+        restartEsp()
+    }
+}
+/*
+ * Load Import File
+ *
+ */
+function loadImportFile() {
+    let importFile = document.getElementById("importControl").files
+    let reader = new FileReader()
+    reader.onload = function(e) {
+        var contents = e.target.result
+        console.log(contents)
+        try {
+            esp3dFWimportSettings = JSON.parse(contents)
+            currentIndex = -1
+            globaldispatch({
+                type: Action.upload_progress,
+                title: "S32",
+                msg: null,
+                progress: 0,
+                nextaction: cancelImport,
+            })
+            stopImport = false
+            doImport()
+        } catch (e) {
+            document.getElementById("importControl").value = ""
+            console.error("Parsing error:", e)
+            globaldispatch({
+                type: Action.error,
+                errorcode: e,
+                msg: "S21",
+            })
+        }
+    }
+    reader.readAsText(importFile[0])
+    closeImport()
+}
+
+/*
+ * Cancel import
+ *
+ */
+function cancelImport() {
+    stopImport = true
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    console.log("stopping import")
+}
+
+/*
+ * Close import
+ *
+ */
+function closeImport() {
+    document.getElementById("importControl").value = ""
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
+
+/*
+ * Prepare Settings Import
+ *
+ */
+function importSettings() {
+    document.getElementById("importControl").click()
+    document.getElementById("importControl").onchange = () => {
+        let importFile = document.getElementById("importControl").files
+        let fileList = []
+        let message = []
+        fileList.push(<div>{T("S56")}</div>)
+        fileList.push(<br />)
+        for (let i = 0; i < importFile.length; i++) {
+            fileList.push(<li>{importFile[i].name}</li>)
+        }
+        message.push(
+            <center>
+                <div style="text-align: left; display: inline-block; overflow: hidden;text-overflow: ellipsis;">
+                    <ul>{fileList}</ul>
+                </div>
+            </center>
+        )
+        //todo open dialog to confirm
+        globaldispatch({
+            type: Action.confirmation,
+            msg: message,
+            nextaction: loadImportFile,
+            nextaction2: closeImport,
+        })
     }
 }
 
@@ -740,18 +925,41 @@ export const Esp3DSettings = ({ currentPage }) => {
                 >
                     <RefreshCcw />
                     <span class="hide-low">{" " + T("S50")}</span>
-                </button>{" "}
+                </button>
+                <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
+                    {" "}
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S55")}
+                        onClick={importSettings}
+                    >
+                        <Download />
+                        <span class="hide-low">{" " + T("S54")}</span>
+                    </button>
+                </span>
+                <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
+                    {" "}
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S53")}
+                        onClick={exportSettings}
+                    >
+                        <ExternalLink />
+                        <span class="hide-low">{" " + T("S52")}</span>
+                    </button>
+                </span>{" "}
                 <button
                     type="button"
-                    class={
-                        esp3dFWSettings.Settings ? "btn btn-primary" : " d-none"
-                    }
-                    title={T("S53")}
-                    onClick={exportSettings}
+                    class="btn btn-danger"
+                    title={T("S59")}
+                    onClick={confirmRestart}
                 >
-                    <ExternalLink />
-                    <span class="hide-low">{" " + T("S52")}</span>
+                    <RotateCcw />
+                    <span class="hide-low">{" " + T("S58")}</span>
                 </button>
+                <input type="file" class="d-none" id="importControl" />
                 <br />
                 <br />
             </center>

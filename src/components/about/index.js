@@ -114,7 +114,7 @@ function PrepareUpload() {
         )
         //todo open dialog to confirm
         globaldispatch({
-            type: Action.confirm_upload,
+            type: Action.confirmation,
             msg: message,
             nextaction: processUpload,
             nextaction2: cancelUpload,
@@ -179,6 +179,7 @@ function successUpload(response) {
     globaldispatch({
         type: Action.upload_progress,
         progress: 100,
+        nextaction: cancelUpload,
     })
     console.log("success")
     clearUploadInformation()
@@ -226,6 +227,7 @@ function progressUpload(oEvent) {
             type: Action.upload_progress,
             progress: percentComplete.toFixed(0),
             title: "S32",
+            nextaction: cancelUpload,
         })
     } else {
         // Impossible because size is unknown

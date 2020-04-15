@@ -189,7 +189,6 @@ export const DialogPage = ({ currentState }) => {
                                     : "d-none"
                             }
                             onClick={() => {
-                                console.log("close")
                                 if (currentState.data.next)
                                     currentState.data.next()
                                 else
@@ -213,7 +212,6 @@ export const DialogPage = ({ currentState }) => {
                                     : "d-none"
                             }
                             onClick={() => {
-                                console.log("close")
                                 if (currentState.data.next2)
                                     currentState.data.next2()
                                 else
