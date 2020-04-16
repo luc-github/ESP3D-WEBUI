@@ -151,7 +151,7 @@ function startSocket() {
                 if ((bytes[i] == 10) || (bytes[i] == 13)) {
                     wsmsg += msg;
                     Monitor_output_Update(wsmsg);
-                    if ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) process_socket_response(msg);
+                    if ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) process_socket_response(wsmsg);
                     //msg = wsmsg.replace("\n", "");
                     //wsmsg = msg.replace("\r", "");
                     console.log(wsmsg);
