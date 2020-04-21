@@ -25,6 +25,7 @@ import { Setting, globaldispatch, Action } from "../app"
 import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
+import { useEffect } from "preact/hooks"
 
 /*
  * Local variables
@@ -298,12 +299,57 @@ function exportSettings() {
  */
 export const WebUISettings = ({ currentPage }) => {
     if (currentPage != Setting.ui) return null
-    const listSettings = []
+    let showBanner_checked = true
+    let autoLoad_checked = true
+    if (preferences && preferences.settings.banner) {
+        showBanner_checked =
+            preferences.settings.banner == "true" ? true : false
+    }
+    if (preferences && preferences.settings.autoload) {
+        autoLoad_checked =
+            preferences.settings.autoload == "true" ? true : false
+    }
+    const toggleCheckboxshowBanner = e => {
+        showBanner_checked = e.target.checked
+        preferences.settings.banner = e.target.checked ? "true" : "false"
+        globaldispatch({
+            type: Action.renderAll,
+        })
+    }
+    const toggleCheckboxautoLoad = e => {
+        autoLoad_checked = e.target.checked
+        preferences.settings.autoload = e.target.checked ? "true" : "false"
+        preferences.browserInformation = ""
+    }
     return (
         <div>
             <hr />
             <center>
-                <div class="list-left">{listSettings}</div>
+                <div class="list-left">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        checked={showBanner_checked}
+                        onChange={toggleCheckboxshowBanner}
+                        id="showbanner"
+                    />
+                    <label class="form-check-label" for="showbanner">
+                        {T("S63")}
+                    </label>
+                    <br />
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        checked={autoLoad_checked}
+                        onChange={toggleCheckboxautoLoad}
+                        id="autoload"
+                    />
+                    <label class="form-check-label" for="autoload">
+                        {T("S64")}
+                    </label>
+                </div>
             </center>
 
             <hr />

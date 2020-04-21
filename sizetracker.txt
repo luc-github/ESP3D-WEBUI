@@ -11,3 +11,4 @@ ESP3D Settings V1       : 0.0.0.9 : 39.6KB
 Scan network dialog     : 0.0.0.11: 40.3KB
 Export Settings         : 0.0.0.12: 40.6KB
 Import Settings         : 0.0.0.13: 41.2KB
+Basic UI settings       : 0.0.0.15: 41.8KB

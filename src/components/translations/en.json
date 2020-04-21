@@ -62,6 +62,8 @@
     "S60" : "Please wait",
     "S61" : "Save",
     "S62" : "Save and apply changes",
+    "S63" : "Show banner",
+    "S64" : "Auto load data",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

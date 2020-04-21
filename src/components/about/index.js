@@ -257,8 +257,11 @@ function clickGitUI() {
  */
 export const AboutPage = ({ currentState }) => {
     if (currentState.activePage != Page.about) return null
-    if (browserInformation == "") {
-        browserInformation = getBrowserInformation()
+    if (
+        preferences.browserInformation == "" ||
+        typeof preferences.browserInformation == "undefined"
+    ) {
+        preferences.browserInformation = getBrowserInformation()
         if (preferences && preferences.settings.autoload) {
             if (preferences.settings.autoload == "true") loadStatus()
         }
@@ -326,7 +329,7 @@ export const AboutPage = ({ currentState }) => {
                     <div style="height:2px" />
                     <div class="card-text" title={navigator.userAgent}>
                         <span class="text-info">{T("S18")}: </span>
-                        {browserInformation}
+                        {preferences.browserInformation}
                     </div>
                     {dataStatus.Status
                         ? dataStatus.Status.map((entry, index) => {
