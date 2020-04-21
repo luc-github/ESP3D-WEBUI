@@ -205,7 +205,7 @@ export const DialogPage = ({ currentState }) => {
                             id="but2"
                             className={
                                 currentState.data.type == "confirmation"
-                                    ? "btn btn-warning d-block"
+                                    ? "btn btn-primary d-block"
                                     : currentState.data.type == "message" &&
                                       currentState.data.button2text
                                     ? "btn btn-primary d-block"
