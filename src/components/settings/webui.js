@@ -19,24 +19,279 @@
 */
 
 import { h } from "preact"
-import { T } from "../translations"
+import { setLang, T } from "../translations"
 import { RefreshCcw, ExternalLink, Save, Download } from "preact-feather"
-import { Setting } from "../app"
-import { preferences } from "../uisettings"
+import { Setting, globaldispatch, Action } from "../app"
+import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
+import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 
 /*
  * Local variables
  *
  */
 
-function loadSettings() {}
+/*
+ * Apply Preferences
+ */
+function updateUI() {
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    console.log("Update UI")
+    setLang(preferences.settings.language)
+}
 
-function importSettings() {}
+/*
+ * Load Preferences query success
+ */
+function loadPreferencesSuccess(responseText) {
+    try {
+        let pref = JSON.parse(responseText)
+        if (setPreferences(pref)) {
+            savePreferences()
+            updateUI()
+        } else {
+            globaldispatch({
+                type: Action.error,
+                errorcode: e,
+                msg: "S21",
+            })
+        }
+    } catch (err) {
+        console.log("error")
+        globaldispatch({
+            type: Action.parsing_preferences_error,
+            errorcode: err,
+        })
+    }
+}
 
-function exportSettings() {}
+/*
+ * Load Preferences query error
+ */
+function loadPreferencesError(errorCode, responseText) {
+    console.log("no valid " + preferencesFileName + ", use default")
+    globaldispatch({
+        type: Action.error,
+        errorcode: err,
+    })
+}
 
-function saveAndApply() {}
+/*
+ * Load Preferences
+ */
+function loadPreferences() {
+    const url = "/preferences.json?" + +"?" + Date.now()
+    SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
+    console.log("load preferences")
+}
+
+/*
+ * Load Import File
+ *
+ */
+function loadImportFile() {
+    let importFile = document.getElementById("importPControl").files
+    let reader = new FileReader()
+    reader.onload = function(e) {
+        var contents = e.target.result
+        console.log(contents)
+        try {
+            let pref = JSON.parse(contents)
+            if (setPreferences(pref)) {
+                savePreferences()
+                updateUI()
+            } else {
+                globaldispatch({
+                    type: Action.error,
+                    msg: "S21",
+                })
+            }
+        } catch (e) {
+            document.getElementById("importPControl").value = ""
+            console.error("Parsing error:", e)
+            globaldispatch({
+                type: Action.error,
+                errorcode: e,
+                msg: "S21",
+            })
+        }
+    }
+    reader.readAsText(importFile[0])
+    closeImport()
+}
+
+/*
+ * Cancel import
+ *
+ */
+function cancelImport() {
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    console.log("stopping import")
+}
+
+/*
+ * Close import
+ *
+ */
+function closeImport() {
+    document.getElementById("importPControl").value = ""
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
+
+/*
+ * Prepare Settings Import
+ *
+ */
+function importSettings() {
+    document.getElementById("importPControl").click()
+    document.getElementById("importPControl").onchange = () => {
+        let importFile = document.getElementById("importPControl").files
+        let fileList = []
+        let message = []
+        fileList.push(<div>{T("S56")}</div>)
+        fileList.push(<br />)
+        for (let i = 0; i < importFile.length; i++) {
+            fileList.push(<li>{importFile[i].name}</li>)
+        }
+        message.push(
+            <center>
+                <div style="text-align: left; display: inline-block; overflow: hidden;text-overflow: ellipsis;">
+                    <ul>{fileList}</ul>
+                </div>
+            </center>
+        )
+        //todo open dialog to confirm
+        globaldispatch({
+            type: Action.confirmation,
+            msg: message,
+            nextaction: loadImportFile,
+            nextaction2: closeImport,
+        })
+    }
+}
+
+/*
+ * Saves Preferences
+ */
+function saveAndApply() {
+    savePreferences()
+}
+
+/*
+ * Upload sucess
+ *
+ */
+function successUpload(response) {
+    globaldispatch({
+        type: Action.upload_progress,
+        progress: 100,
+    })
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    console.log("success")
+}
+
+/*
+ * Cancel upload silently
+ * e.g: user pressed cancel before upload
+ */
+function cancelUpload() {
+    cancelCurrentUpload()
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
+
+/*
+ * Upload failed
+ *
+ */
+function errorUpload(errorCode, response) {
+    console.log("error upload code : " + lastError.code + " " + errorCode)
+    clearUploadInformation()
+    if (!lastError.code && errorCode == 0) {
+        cancelCurrentUpload(errorCode, response)
+    }
+}
+
+/*
+ * Upload progress
+ *
+ */
+function progressUpload(oEvent) {
+    if (oEvent.lengthComputable) {
+        var percentComplete = (oEvent.loaded / oEvent.total) * 100
+        console.log(percentComplete.toFixed(0) + "%")
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: percentComplete.toFixed(0),
+            title: "S32",
+            nextaction: cancelUpload,
+        })
+    } else {
+        // Impossible because size is unknown
+    }
+}
+
+/*
+ * Save Preferences query
+ */
+function savePreferences() {
+    // do some sanity check
+    var blob = new Blob([JSON.stringify(preferences, null, " ")], {
+        type: "application/json",
+    })
+    globaldispatch({
+        type: Action.upload_progress,
+        title: "S32",
+        msg: null,
+        progress: 0,
+        nextaction: cancelUpload,
+    })
+    var file = new File([blob], preferencesFileName)
+    var formData = new FormData()
+    var url = "/files"
+    formData.append("path", "/")
+    formData.append("myfile", file, preferencesFileName)
+    SendPostHttp(url, formData, successUpload, errorUpload, progressUpload)
+}
+
+/*
+ * Export Settings
+ *
+ */
+function exportSettings() {
+    let data, file
+    let p = 0
+    const filename = preferencesFileName
+    file = new Blob([JSON.stringify(preferences, null, " ")], {
+        type: "application/json",
+    })
+    if (window.navigator.msSaveOrOpenBlob)
+        // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename)
+    else {
+        // Others
+        let a = document.createElement("a"),
+            url = URL.createObjectURL(file)
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function() {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
+}
+
 /*
  * Settings page
  *
@@ -57,7 +312,7 @@ export const WebUISettings = ({ currentPage }) => {
                     type="button"
                     class="btn btn-primary"
                     title={T("S23")}
-                    onClick={loadSettings}
+                    onClick={loadPreferences}
                 >
                     <RefreshCcw />
                     <span class="hide-low">{" " + T("S50")}</span>
@@ -95,10 +350,11 @@ export const WebUISettings = ({ currentPage }) => {
                     <Save />
                     <span class="hide-low">{" " + T("S61")}</span>
                 </button>
-                <input type="file" class="d-none" id="importControl" />
+                <input type="file" class="d-none" id="importPControl" />
                 <br />
                 <br />
             </center>
+            <input type="file" class="d-none" id="importPControl" />
         </div>
     )
 }

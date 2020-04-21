@@ -33,7 +33,8 @@ let preferences
 /*
  * Some constants
  */
-const default_preferences = '{"settings":{"language":"en"}}'
+const default_preferences =
+    '{"settings":{"language":"en","banner": "true","autoload" : "true"}}'
 const preferencesFileName = "preferences.json"
 
 /*
@@ -43,6 +44,15 @@ function initApp() {
     preferences = JSON.parse(default_preferences)
     globaldispatch({ type: Action.init })
     loadPreferences()
+}
+
+/*
+ * To copy new preferences
+ */
+function setPreferences(data) {
+    if (!data.settings) return false
+    preferences = data
+    return true
 }
 
 /*
@@ -61,22 +71,6 @@ function loadPreferencesSuccess(responseText) {
             nextaction: loadConfig,
         })
     }
-}
-
-/*
- * Save Preferences query
- */
-function savePreferences() {
-    //
-    var blob = new Blob([JSON.stringify(preferences, null, " ")], {
-        type: "application/json",
-    })
-    var file = new File([blob], preferencesFileName)
-    var formData = new FormData()
-    var url = "/files"
-    formData.append("path", "/")
-    formData.append("myfile", file, preferencesFileName)
-    SendPostHttp(url, formData)
 }
 
 /*
@@ -155,4 +149,4 @@ function loadConfigError(errorCode, responseText) {
     })
 }
 
-export { initApp, preferences }
+export { initApp, preferences, preferencesFileName, setPreferences }

@@ -40,7 +40,7 @@ let currentSettingPage
  *
  */
 const SettingsPage = ({ currentState }) => {
-    ;[currentSettingPage, setSettingPage] = useState(Setting.esp3d)
+    ;[currentSettingPage, setSettingPage] = useState(Setting.ui)
     if (currentState.activePage != Page.settings) return null
     return (
         <div>

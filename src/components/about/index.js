@@ -195,6 +195,7 @@ function successUpload(response) {
         //so no need to reload
     }
 }
+
 /*
  * Refresh page without cache
  *
