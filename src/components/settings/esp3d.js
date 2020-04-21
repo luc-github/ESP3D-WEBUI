@@ -23,7 +23,7 @@ import { T } from "../translations"
 import {
     RefreshCcw,
     RotateCcw,
-    Upload,
+    Save,
     Search,
     Lock,
     CheckCircle,
@@ -36,7 +36,7 @@ import { preferences } from "../uisettings"
 import { SendCommand } from "../http"
 import { useEffect } from "preact/hooks"
 import { initApp } from "../uisettings"
-import {disconnectWsServer} from "../websocket"
+import { disconnectWsServer } from "../websocket"
 
 /*
  * Local variables
@@ -274,7 +274,7 @@ const FlagSubEntry = ({ entry, label, val, index }) => {
                         title={T("S43")}
                         onClick={onSet}
                     >
-                        <Upload size="1.2em" />
+                        <Save size="1.2em" />
                         <span class="hide-low">{T("S43")}</span>
                     </button>
                 </div>
@@ -381,7 +381,7 @@ const Entry = ({ entry }) => {
                         onClick={onSet}
                         title={T("S43")}
                     >
-                        <Upload size="1.2em" />
+                        <Save size="1.2em" />
                         <span class="hide-low">{T("S43")}</span>
                     </button>
                     {extra}

@@ -22,7 +22,6 @@ import { h } from "preact"
 import { useState } from "preact/hooks"
 import { T } from "../translations"
 import { Page, Setting } from "../app"
-import { RotateCcw, Upload } from "preact-feather"
 import { Selector } from "./selector"
 const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
 import { WebUISettings } from "./webui"

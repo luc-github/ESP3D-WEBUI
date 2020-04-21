@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { RotateCcw, Upload } from "preact-feather"
+import { RefreshCcw, ExternalLink, Save, Download } from "preact-feather"
 import { Setting } from "../app"
 import { preferences } from "../uisettings"
 import { setSettingPage } from "./index"
@@ -30,19 +30,75 @@ import { setSettingPage } from "./index"
  *
  */
 
+function loadSettings() {}
+
+function importSettings() {}
+
+function exportSettings() {}
+
+function saveAndApply() {}
 /*
  * Settings page
  *
  */
 export const WebUISettings = ({ currentPage }) => {
     if (currentPage != Setting.ui) return null
-
+    const listSettings = []
     return (
-        <center>
-            <br />
-            <div class="list-left">To be implemented!</div>
-            <br />
-            {preferences.settings.language}
-        </center>
+        <div>
+            <hr />
+            <center>
+                <div class="list-left">{listSettings}</div>
+            </center>
+
+            <hr />
+            <center>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    title={T("S23")}
+                    onClick={loadSettings}
+                >
+                    <RefreshCcw />
+                    <span class="hide-low">{" " + T("S50")}</span>
+                </button>
+                <span class={preferences.settings ? "" : " d-none"}>
+                    {" "}
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S55")}
+                        onClick={importSettings}
+                    >
+                        <Download />
+                        <span class="hide-low">{" " + T("S54")}</span>
+                    </button>
+                </span>
+                <span class={preferences.settings ? "" : " d-none"}>
+                    {" "}
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S53")}
+                        onClick={exportSettings}
+                    >
+                        <ExternalLink />
+                        <span class="hide-low">{" " + T("S52")}</span>
+                    </button>
+                </span>{" "}
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    title={T("S62")}
+                    onClick={saveAndApply}
+                >
+                    <Save />
+                    <span class="hide-low">{" " + T("S61")}</span>
+                </button>
+                <input type="file" class="d-none" id="importControl" />
+                <br />
+                <br />
+            </center>
+        </div>
     )
 }

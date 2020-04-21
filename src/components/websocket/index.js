@@ -213,9 +213,10 @@ function disconnectWsServer(disconnectWsServer) {
     isLogOff = true
     reconnectCounter = 0
     webSocketClient.close()
-    if(disconnectWsServer)globaldispatch({
-        type: Type,
-    })
+    if (disconnectWsServer)
+        globaldispatch({
+            type: Type,
+        })
 }
 
 export {
