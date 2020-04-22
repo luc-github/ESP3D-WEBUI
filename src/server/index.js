@@ -1,4 +1,6 @@
 const express = require("express")
+var path = require("path")
+const fs = require("fs")
 /*
  * Web Server for development
  * Web Socket server for development
@@ -12,10 +14,8 @@ const fileUpload = require("express-fileupload")
 const machine = process.env.TARGET_ENV
 const targetFW = machine == "grbl" ? "grbl" : "repetier"
 const targetFWnb = machine == "grbl" ? "6" : "5"
-app.use(
-    express.static("dist"),
-    fileUpload({ preserveExtension: true, debug: true })
-)
+const FSDir = "./public"
+app.use(fileUpload({ preserveExtension: true, debug: true }))
 
 app.get("/command", function(req, res) {
     var url = req.originalUrl
@@ -425,14 +425,82 @@ app.get("/command", function(req, res) {
     res.json({ custom: "unknown query" })
 })
 
-app.post("/files", function(req, res) {
+function fileSizeString(size) {
+    let s
+    if (size < 1024) return size + " B"
+    if (size < 1024 * 1024) return (size / 1024).toFixed(2) + " KB"
+    if (size < 1024 * 1024 * 1024)
+        return (size / (1024 * 1024)).toFixed(2) + " MB"
+    if (size < 1024 * 1024 * 1024 * 1024)
+        return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB"
+    return "X B"
+}
+
+function filesList(mypath) {
+    let res = '{"files":['
+    let totalused = getTotalSize(__dirname + "/public")
+    let total = 1.31 * 1024 * 1024
+    fs.readdirSync(__dirname + "/public" + mypath).forEach(fileelement => {
+        let fst = fs.statSync(__dirname + "/public" + mypath + fileelement)
+        let fsize = -1
+
+        if (fst.isFile()) {
+            fsize = fileSizeString(fst.size)
+        }
+        res += '{"name":"' + fileelement + '","size":"' + fsize + '"}'
+    })
+    res +=
+        '],"path":"' +
+        mypath +
+        '","occupation":"' +
+        (totalused / total).toFixed(0) +
+        '","status":"ok","total":"' +
+        fileSizeString(total) +
+        '","used":"' +
+        fileSizeString(totalused) +
+        '"}'
+    return res
+}
+
+const getAllFiles = function(dirPath, arrayOfFiles) {
+    let files = fs.readdirSync(dirPath)
+
+    arrayOfFiles = arrayOfFiles || []
+
+    files.forEach(function(file) {
+        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+            arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
+        } else {
+            arrayOfFiles.push(dirPath + "/" + file)
+        }
+    })
+
+    return arrayOfFiles
+}
+
+const getTotalSize = function(directoryPath) {
+    const arrayOfFiles = getAllFiles(directoryPath)
+
+    let totalSize = 0
+
+    arrayOfFiles.forEach(function(filePath) {
+        totalSize += fs.statSync(filePath).size
+    })
+
+    return totalSize
+}
+
+app.all("/files", function(req, res) {
+    let mypath = req.query.path
+    if (typeof mypath == "undefined") mypath = "/"
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send("No files were uploaded.")
+        return res.send(filesList(mypath))
     }
     let myFile = req.files.myfile
+
     if (typeof myFile.length == "undefined") {
         console.log("one files")
-        myFile.mv(__dirname + "/public/" + myFile.name, function(err) {
+        myFile.mv(__dirname + "/public" + mypath + myFile.name, function(err) {
             if (err) return res.status(500).send(err)
         })
     } else {
@@ -445,7 +513,7 @@ app.post("/files", function(req, res) {
             })
         }
     }
-    res.send("File uploaded!")
+    res.send(filesList(mypath))
 })
 
 app.listen(process.env.PORT || 8080, () =>

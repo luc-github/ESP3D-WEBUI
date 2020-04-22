@@ -20,8 +20,6 @@
 
 "use strict"
 import enLangRessource from "./en.json"
-import frLangRessource from "./fr.json"
-import zh_cnLangRessource from "./zh_cn.json"
 
 /*
  * Local variables

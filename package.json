@@ -13,7 +13,8 @@
     "server": "nodemon src/server/index.js",
     "dev-grbl": "concurrently \"npm run server\" \"npm run grbl\"",
     "dev-printer": "concurrently \"npm run server\" \"npm run printer\"",
-    "dev": "concurrently \"npm run server\" \"npm run printer\""
+    "dev": "concurrently \"npm run server\" \"npm run printer\"",
+    "build-lang": "node ./src/languages/build.js"
   },
   "keywords": [],
   "type": "git",
@@ -27,13 +28,19 @@
     "@babel/register": "^7.8.6",
     "babel-loader": "^8.0.6",
     "compression-webpack-plugin": "^3.1.0",
+    "concurrently": "^5.1.0",
     "cross-env": "^5.2.1",
     "css-loader": "^3.4.2",
+    "express": "^4.17.1",
+    "express-fileupload": "1.1.7-alpha.3",
+    "express-ws": "^4.0.0",
+    "gzipper": "^3.7.0",
     "html-minifier-webpack-plugin": "^2.2.3",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.13.1",
+    "nodemon": "^2.0.3",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-flexbugs-fixes": "^4.2.0",
     "postcss-import": "^12.0.1",
@@ -48,12 +55,7 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2",
-    "webpack-modules": "^1.0.0",
-    "express": "^4.17.1",
-    "nodemon": "^2.0.3",
-    "concurrently": "^5.1.0",
-    "express-ws": "^4.0.0",
-    "express-fileupload": "1.1.7-alpha.3"
+    "webpack-modules": "^1.0.0"
   },
   "dependencies": {
     "bootstrap": "^4.4.1",
