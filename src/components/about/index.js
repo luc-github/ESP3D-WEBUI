@@ -283,7 +283,7 @@ export const AboutPage = ({ currentState }) => {
                         >
                             <span class="badge badge-pill badge-dark">
                                 <Github />
-                                <span class="hide-low">{" " + T("S20")}</span>
+                                <span class="hide-low text-button-pill">{T("S20")}</span>
                             </span>
                         </button>
                         &nbsp;
@@ -294,7 +294,7 @@ export const AboutPage = ({ currentState }) => {
                             onClick={onClickUpdateFW}
                         >
                             <UploadCloud />
-                            <span class="hide-low">{" " + T("S25")}</span>
+                            <span class="hide-low text-button">{T("S25")}</span>
                         </button>
                     </div>
                     <div style="height:2px" />
@@ -311,7 +311,7 @@ export const AboutPage = ({ currentState }) => {
                             <span class="badge badge-pill badge-dark">
                                 <Github />
 
-                                <span class="hide-low">{" " + T("S20")}</span>
+                                <span class="hide-low text-button-pill">{T("S20")}</span>
                             </span>
                         </button>
                         &nbsp;
@@ -322,7 +322,7 @@ export const AboutPage = ({ currentState }) => {
                             onClick={onClickUpdateUI}
                         >
                             <UploadCloud />
-                            <span class="hide-low">{" " + T("S25")}</span>
+                            <span class="hide-low text-button">{T("S25")}</span>
                         </button>
                         <input type="file" class="d-none" id="uploadControl" />
                     </div>
@@ -355,7 +355,7 @@ export const AboutPage = ({ currentState }) => {
                     onClick={loadStatus}
                 >
                     <RefreshCcw />
-                    <span class="hide-low">{" " + T("S50")}</span>
+                    <span class="hide-low text-button">{T("S50")}</span>
                 </button>
             </center>
         </div>

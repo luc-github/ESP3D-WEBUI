@@ -64,6 +64,8 @@
     "S62" : "Save and apply changes",
     "S63" : "Show banner",
     "S64" : "Auto load data",
+    "S65" : "Show/hide banner",
+    "S66" : "Enable/disable auto load data",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

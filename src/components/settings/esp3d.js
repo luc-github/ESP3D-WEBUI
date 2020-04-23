@@ -586,7 +586,7 @@ function loadWiFiNetworksSuccess(responseText) {
                 <div title={T("S23")}>
                     {" "}
                     <RefreshCcw />
-                    <span class="hide-low">{" " + T("S50")}</span>
+                    <span class="hide-low text-button">{T("S50")}</span>
                 </div>
             ),
             nextaction2: loadWiFiNetworks,
@@ -925,7 +925,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                     onClick={loadSettings}
                 >
                     <RefreshCcw />
-                    <span class="hide-low">{" " + T("S50")}</span>
+                    <span class="hide-low text-button">{T("S50")}</span>
                 </button>
                 <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
                     {" "}
@@ -936,7 +936,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                         onClick={importSettings}
                     >
                         <Download />
-                        <span class="hide-low">{" " + T("S54")}</span>
+                        <span class="hide-low text-button">{T("S54")}</span>
                     </button>
                 </span>
                 <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
@@ -948,7 +948,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                         onClick={exportSettings}
                     >
                         <ExternalLink />
-                        <span class="hide-low">{" " + T("S52")}</span>
+                        <span class="hide-low text-button">{T("S52")}</span>
                     </button>
                 </span>{" "}
                 <button
@@ -958,7 +958,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                     onClick={confirmRestart}
                 >
                     <RotateCcw />
-                    <span class="hide-low">{" " + T("S58")}</span>
+                    <span class="hide-low text-button">{T("S58")}</span>
                 </button>
                 <input type="file" class="d-none" id="importControl" />
                 <br />

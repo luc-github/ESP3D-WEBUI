@@ -50,23 +50,126 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
 }
 
+/* Customize the label (the container) */
+.checkbox-control {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-control input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.5em;
+    width: 1.5em;
+    background-color: #eee;
+    border-radius: 0.25rem;
+    border: solid 1px #ced4da;
+}
+
+.checkbox-control.is-changed .checkmark {
+    background-color: #e0a800 !important;
+    border-color: #e0a800 !important;
+}
+.text-button {
+padding-left:10px;
+}
+
+.text-button-pill {
+padding-left:8px;
+padding-right:5px;
+}
+.checkbox-control.is-valid .checkmark {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox-control:hover input ~ .checkmark {
+    background-color: #ccc;
+    border-color: #aaaaaa;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox-control input:checked ~ .checkmark {
+    background-color: #2196f3;
+}
+
+.checkbox-control.is-changed input:checked ~ .checkmark {
+    background-color: #e0a800 !important;
+    border-color: #e0a800 !important;
+}
+
+.checkbox-control.is-valid input:checked ~ .checkmark {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-control input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-control .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
 .input-group-text.error {
     color: #fff !important;
     background-color: #dc3545 !important;
 }
-.input-group-text.warning {
-    color: #212529;
-    background-color: #ffc107 !important;
-}
+
 .input-group-text.success {
     color: #fff;
     background-color: #28a745;
 }
-
+.checkbox-control.is-changed,
 .form-control.is-changed {
     padding-right: calc(1.5em + 0.75rem);
     border-color: #e0a800 !important;
     background-image: $warning-icon !important;
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.checkbox-control.is-valid {
+    border-color: #28a745;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right calc(0.375em + 0.1875rem) center;
     background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);

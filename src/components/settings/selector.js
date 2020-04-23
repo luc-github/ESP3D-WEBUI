@@ -70,8 +70,8 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickesp3d}
                     >
-                        <ESP3DLogo height="1.2em" />{" "}
-                        <span class="hide-low">{T("S36")}</span>
+                        <ESP3DLogo height="1.2em" />
+                        <span class="hide-low text-button">{T("S36")}</span>
                     </li>
                     <li
                         title={T("S38")}
@@ -82,7 +82,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickui}
                     >
-                        <Eye /> <span class="hide-low">{T("S17")}</span>
+                        <Eye /> <span class="hide-low text-button">{T("S17")}</span>
                     </li>
                     <li
                         title={
@@ -100,7 +100,7 @@ export const Selector = ({ currentPage }) => {
                         onclick={onclickmachine}
                     >
                         <Tool />
-                        <span class="hide-low">{target}</span>
+                        <span class="hide-low text-button">{target}</span>
                     </li>
                 </ul>
             </div>

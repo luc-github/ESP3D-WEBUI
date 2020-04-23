@@ -31,16 +31,21 @@ import { useEffect } from "preact/hooks"
  * Local variables
  *
  */
+let prefs
 
 /*
  * Apply Preferences
  */
 function updateUI() {
+    setLang(preferences.settings.language)
+    let allkey = Object.keys(prefs)
+    for (let p = 0; p < allkey.length; p++) {
+        setState(allkey[p], "default")
+    }
     globaldispatch({
         type: Action.renderAll,
     })
     console.log("Update UI")
-    setLang(preferences.settings.language)
 }
 
 /*
@@ -50,7 +55,7 @@ function loadPreferencesSuccess(responseText) {
     try {
         let pref = JSON.parse(responseText)
         if (setPreferences(pref)) {
-            savePreferences()
+            prefs = JSON.parse(JSON.stringify(preferences.settings))
             updateUI()
         } else {
             globaldispatch({
@@ -189,6 +194,11 @@ function saveAndApply() {
  *
  */
 function successUpload(response) {
+    prefs = JSON.parse(JSON.stringify(preferences.settings))
+    let allkey = Object.keys(prefs)
+    for (let p = 0; p < allkey.length; p++) {
+        setState(allkey[p], "success")
+    }
     globaldispatch({
         type: Action.upload_progress,
         progress: 100,
@@ -293,62 +303,97 @@ function exportSettings() {
     }
 }
 
+function setState(entry, state) {
+    if (document.getElementById(entry + "-UI-checkbox")) {
+        document
+            .getElementById(entry + "-UI-checkbox")
+            .classList.remove("is-valid")
+        document
+            .getElementById(entry + "-UI-checkbox")
+            .classList.remove("is-changed")
+        switch (state) {
+            case "modified":
+                document
+                    .getElementById(entry + "-UI-checkbox")
+                    .classList.add("is-changed")
+                break
+            case "success":
+                document
+                    .getElementById(entry + "-UI-checkbox")
+                    .classList.add("is-valid")
+                break
+            default:
+                break
+        }
+    }
+}
+
+/*
+ * Change state of control according context / check
+ */
+function updateState(entry) {
+    let state = "default"
+
+    if (preferences.settings[entry] != prefs[entry]) {
+        state = "modified"
+    }
+    setState(entry, state)
+}
+
+const CheckboxControl = ({ entry, title, label }) => {
+    let ischecked = true
+    if (preferences && preferences.settings[entry]) {
+        ischecked = preferences.settings[entry] == "true" ? true : false
+    }
+    const toggleCheckbox = e => {
+        ischecked = e.target.checked
+        preferences.settings[entry] = e.target.checked ? "true" : "false"
+        globaldispatch({
+            type: Action.renderAll,
+        })
+    }
+    let id = entry + "-UI-checkbox"
+    useEffect(() => {
+        updateState(entry)
+    }, [preferences.settings[entry]])
+    return (
+        <label class="checkbox-control" id={id} title={title}>
+            {label}
+            <input
+                type="checkbox"
+                checked={ischecked}
+                onChange={toggleCheckbox}
+            />
+            <span class="checkmark"></span>
+        </label>
+    )
+}
+
 /*
  * Settings page
  *
  */
 export const WebUISettings = ({ currentPage }) => {
     if (currentPage != Setting.ui) return null
-    let showBanner_checked = true
-    let autoLoad_checked = true
-    if (preferences && preferences.settings.banner) {
-        showBanner_checked =
-            preferences.settings.banner == "true" ? true : false
-    }
-    if (preferences && preferences.settings.autoload) {
-        autoLoad_checked =
-            preferences.settings.autoload == "true" ? true : false
-    }
-    const toggleCheckboxshowBanner = e => {
-        showBanner_checked = e.target.checked
-        preferences.settings.banner = e.target.checked ? "true" : "false"
-        globaldispatch({
-            type: Action.renderAll,
-        })
-    }
-    const toggleCheckboxautoLoad = e => {
-        autoLoad_checked = e.target.checked
-        preferences.settings.autoload = e.target.checked ? "true" : "false"
-        preferences.browserInformation = ""
+    if (typeof prefs == "undefined") {
+        //lets make a copy
+        prefs = JSON.parse(JSON.stringify(preferences.settings))
     }
     return (
         <div>
             <hr />
             <center>
                 <div class="list-left">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        value=""
-                        checked={showBanner_checked}
-                        onChange={toggleCheckboxshowBanner}
-                        id="showbanner"
+                    <CheckboxControl
+                        entry="banner"
+                        title={T("S65")}
+                        label={T("S63")}
                     />
-                    <label class="form-check-label" for="showbanner">
-                        {T("S63")}
-                    </label>
-                    <br />
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        value=""
-                        checked={autoLoad_checked}
-                        onChange={toggleCheckboxautoLoad}
-                        id="autoload"
+                    <CheckboxControl
+                        entry="autoload"
+                        title={T("S66")}
+                        label={T("S64")}
                     />
-                    <label class="form-check-label" for="autoload">
-                        {T("S64")}
-                    </label>
                 </div>
             </center>
 
@@ -361,7 +406,7 @@ export const WebUISettings = ({ currentPage }) => {
                     onClick={loadPreferences}
                 >
                     <RefreshCcw />
-                    <span class="hide-low">{" " + T("S50")}</span>
+                    <span class="hide-low text-button">{T("S50")}</span>
                 </button>
                 <span class={preferences.settings ? "" : " d-none"}>
                     {" "}
@@ -372,7 +417,7 @@ export const WebUISettings = ({ currentPage }) => {
                         onClick={importSettings}
                     >
                         <Download />
-                        <span class="hide-low">{" " + T("S54")}</span>
+                        <span class="hide-low text-button">{T("S54")}</span>
                     </button>
                 </span>
                 <span class={preferences.settings ? "" : " d-none"}>
@@ -384,7 +429,7 @@ export const WebUISettings = ({ currentPage }) => {
                         onClick={exportSettings}
                     >
                         <ExternalLink />
-                        <span class="hide-low">{" " + T("S52")}</span>
+                        <span class="hide-low text-button">{T("S52")}</span>
                     </button>
                 </span>{" "}
                 <button
@@ -394,7 +439,7 @@ export const WebUISettings = ({ currentPage }) => {
                     onClick={saveAndApply}
                 >
                     <Save />
-                    <span class="hide-low">{" " + T("S61")}</span>
+                    <span class="hide-low text-button">{T("S61")}</span>
                 </button>
                 <input type="file" class="d-none" id="importPControl" />
                 <br />
