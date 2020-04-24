@@ -31,21 +31,14 @@ let currentLangRessource = enLangRessource
 /*
  * Set language
  */
-function setLang(lang) {
-    currentLang = lang
-    switch (currentLang) {
-        case "en":
-            currentLangRessource = enLangRessource
-            break
-        case "fr":
-            currentLangRessource = frLangRessource
-            break
-        case "zh_cn":
-            currentLangRessource = zh_cnLangRessource
-            break
-        default:
-            currentLang = "en"
-            currentLangRessource = enLangRessource
+function setLang(lang, langRessource) {
+    if ((typeof langRessource ==  'undefined') || (langRessource.length == 0)) {
+        currentLangRessource = enLangRessource
+        currentLang = "en"
+        console.log(currentLang + " is not available, use en instead")
+    } else {
+        currentLang = lang
+        currentLangRessource = langRessource
     }
 }
 
