@@ -64,6 +64,7 @@ function Monitor_output_Update(message) {
         }
         //position
         if (!isverbosefilter && Monitor_output[i].startsWith("X:")) continue;
+         if (!isverbosefilter && Monitor_output[i].startsWith("FR:")) continue;
         m = m.replace("&", "&amp;");
         m = m.replace("<", "&lt;");
         m = m.replace(">", "&gt;");
