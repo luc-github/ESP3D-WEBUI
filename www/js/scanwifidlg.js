@@ -66,9 +66,10 @@ function process_scanWifi_answer(response_text) {
 }
 
 function select_ap_ssid(ssid_name) {
+    var val = document.getElementById("setting_" + ssid_item_scanwifi + "_" + ssid_subitem_scanwifi).value;
     document.getElementById("setting_" + ssid_item_scanwifi + "_" + ssid_subitem_scanwifi).value = ssid_name;
     document.getElementById("setting_" + ssid_item_scanwifi + "_" + ssid_subitem_scanwifi).focus();
-    setsettingchanged(ssid_item_scanwifi, ssid_subitem_scanwifi);
+    if (val != ssid_name)setsettingchanged(ssid_item_scanwifi, ssid_subitem_scanwifi);
     closeModal("Ok");
 }
 
