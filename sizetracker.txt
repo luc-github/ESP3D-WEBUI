@@ -13,3 +13,4 @@ Export Settings         : 0.0.0.12: 40.6KB
 Import Settings         : 0.0.0.13: 41.2KB
 Basic UI settings       : 0.0.0.15: 41.8KB
 UI settings feedback    : 0.0.0.16: 42.0KB
+UI language pack        : 0.0.0.17: 42.6KB

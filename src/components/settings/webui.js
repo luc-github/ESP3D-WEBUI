@@ -20,12 +20,14 @@
 
 import { h } from "preact"
 import { setLang, T } from "../translations"
-import { RefreshCcw, ExternalLink, Save, Download } from "preact-feather"
+import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
 import { Setting, globaldispatch, Action } from "../app"
 import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 import { useEffect } from "preact/hooks"
+
+import LangListRessource from "../../languages/language-list.json"
 
 /*
  * Local variables
@@ -37,11 +39,12 @@ let prefs
  * Apply Preferences
  */
 function updateUI() {
-    setLang(preferences.settings.language)
+    console.log("Update UI " + preferences.settings.language)
     let allkey = Object.keys(prefs)
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "default")
     }
+    loadLanguage(preferences.settings.language)
     globaldispatch({
         type: Action.renderAll,
     })
@@ -54,6 +57,7 @@ function updateUI() {
 function loadPreferencesSuccess(responseText) {
     try {
         let pref = JSON.parse(responseText)
+        console.log(pref)
         if (setPreferences(pref)) {
             prefs = JSON.parse(JSON.stringify(preferences.settings))
             updateUI()
@@ -106,6 +110,7 @@ function loadImportFile() {
         try {
             let pref = JSON.parse(contents)
             if (setPreferences(pref)) {
+                prefs = JSON.parse(JSON.stringify(preferences.settings))
                 savePreferences()
                 updateUI()
             } else {
@@ -256,6 +261,7 @@ function progressUpload(oEvent) {
  */
 function savePreferences() {
     // do some sanity check
+    preferences.settings = prefs
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
@@ -303,24 +309,28 @@ function exportSettings() {
     }
 }
 
+/*
+ *Set state of control
+ */
 function setState(entry, state) {
-    if (document.getElementById(entry + "-UI-checkbox")) {
-        document
-            .getElementById(entry + "-UI-checkbox")
-            .classList.remove("is-valid")
-        document
-            .getElementById(entry + "-UI-checkbox")
-            .classList.remove("is-changed")
+    let controlId
+    if (document.getElementById(entry + "-UI-checkbox"))
+        controlId = document.getElementById(entry + "-UI-checkbox")
+    if (document.getElementById(entry + "-UI-select"))
+        controlId = document.getElementById(entry + "-UI-select")
+    if (controlId) {
+        controlId.classList.remove("is-valid")
+        controlId.classList.remove("is-changed")
+        controlId.classList.remove("is-invalid")
         switch (state) {
             case "modified":
-                document
-                    .getElementById(entry + "-UI-checkbox")
-                    .classList.add("is-changed")
+                controlId.classList.add("is-changed")
                 break
             case "success":
-                document
-                    .getElementById(entry + "-UI-checkbox")
-                    .classList.add("is-valid")
+                controlId.classList.add("is-valid")
+                break
+            case "error":
+                controlId.classList.add("is-invalid")
                 break
             default:
                 break
@@ -340,6 +350,9 @@ function updateState(entry) {
     setState(entry, state)
 }
 
+/*
+ * Check box control
+ */
 const CheckboxControl = ({ entry, title, label }) => {
     let ischecked = true
     if (preferences && preferences.settings[entry]) {
@@ -370,6 +383,103 @@ const CheckboxControl = ({ entry, title, label }) => {
 }
 
 /*
+ * Load Preferences
+ */
+function loadLanguage(lang) {
+    const url = "/" + lang + ".json" + "?" + Date.now()
+    if (lang == "en") {
+        setLang("en")
+        updateState("language")
+        globaldispatch({
+            type: Action.renderAll,
+        })
+        return
+    }
+    SendGetHttp(url, loadLanguageSuccess, loadLanguageError)
+    console.log("load language file " + "/" + lang + ".json")
+}
+
+/*
+ * Load Language query success
+ */
+function loadLanguageSuccess(responseText) {
+    try {
+        let langressource = JSON.parse(responseText)
+        setLang(prefs.language, langressource)
+        updateState("language")
+        globaldispatch({
+            type: Action.renderAll,
+        })
+    } catch (err) {
+        console.log("error")
+        console.error(responseText)
+        globaldispatch({
+            type: Action.parsing_preferences_error,
+            errorcode: err,
+        })
+        setState("language", "error")
+    }
+}
+
+/*
+ * Load Language query error
+ */
+function loadLanguageError(errorCode, responseText) {
+    console.log("no valid /" + prefs.language + ".json.gz file, use default")
+    setState("language", "error")
+    globaldispatch({
+        type: Action.error,
+        errorcode: errorCode,
+        msg: "S67",
+    })
+}
+
+/*
+ * Generate a select control
+ */
+const LanguageSelection = () => {
+    let optionList = []
+    const onChange = e => {
+        prefs.language = e.target.value
+        loadLanguage(prefs.language)
+    }
+    useEffect(() => {
+        updateState("language")
+    }, [prefs.language])
+    let key = Object.keys(LangListRessource)
+    let val = Object.values(LangListRessource)
+    for (let p = 0; p < key.length; p++) {
+        let st = null
+        optionList.push(
+            <option value={key[p]} style={st}>
+                {val[p]}
+            </option>
+        )
+    }
+    return (
+        <div style="margin-bottom: 15px" title={T("S69")}>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <Globe />
+                        <span class="hide-low text-button">{T("S68")}</span>
+                    </span>
+                </div>
+
+                <select
+                    id="language-UI-select"
+                    class="form-control"
+                    value={prefs.language}
+                    onChange={onChange}
+                >
+                    {optionList}
+                </select>
+            </div>
+        </div>
+    )
+}
+
+/*
  * Settings page
  *
  */
@@ -384,6 +494,7 @@ export const WebUISettings = ({ currentPage }) => {
             <hr />
             <center>
                 <div class="list-left">
+                    <LanguageSelection />
                     <CheckboxControl
                         entry="banner"
                         title={T("S65")}

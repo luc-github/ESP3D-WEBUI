@@ -283,7 +283,9 @@ export const AboutPage = ({ currentState }) => {
                         >
                             <span class="badge badge-pill badge-dark">
                                 <Github />
-                                <span class="hide-low text-button-pill">{T("S20")}</span>
+                                <span class="hide-low text-button-pill">
+                                    {T("S20")}
+                                </span>
                             </span>
                         </button>
                         &nbsp;
@@ -311,7 +313,9 @@ export const AboutPage = ({ currentState }) => {
                             <span class="badge badge-pill badge-dark">
                                 <Github />
 
-                                <span class="hide-low text-button-pill">{T("S20")}</span>
+                                <span class="hide-low text-button-pill">
+                                    {T("S20")}
+                                </span>
                             </span>
                         </button>
                         &nbsp;

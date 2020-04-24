@@ -92,6 +92,14 @@ const reducerPage = (state, action) => {
                 error: 0,
                 data: {},
             }
+        case Action.none:
+            return {
+                showDialog: false,
+                showPage: false,
+                activePage: globalstate.activePage,
+                error: 0,
+                data: {},
+            }
         case Action.renderAll:
             return {
                 showDialog: false,

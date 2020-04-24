@@ -26,7 +26,7 @@ function build() {
     deleteFolderRecursive(targetDir)
     fs.readdir(sourceDir, (err, files) => {
         files.forEach(file => {
-            if (file.endsWith(".json")) {
+            if (file.endsWith(".json") && file != "language-list.json") {
                 let gzipper = new Gzipper(sourceDir + file, targetDir, "")
                 gzipper
                     .compress()

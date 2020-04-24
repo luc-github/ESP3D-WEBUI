@@ -32,10 +32,16 @@ let currentLangRessource = enLangRessource
  * Set language
  */
 function setLang(lang, langRessource) {
-    if ((typeof langRessource ==  'undefined') || (langRessource.length == 0)) {
+    if (lang == "en") {
         currentLangRessource = enLangRessource
         currentLang = "en"
+    } else if (
+        typeof langRessource == "undefined" ||
+        typeof langRessource.lang == "undefined"
+    ) {
         console.log(currentLang + " is not available, use en instead")
+        currentLangRessource = enLangRessource
+        currentLang = "en"
     } else {
         currentLang = lang
         currentLangRessource = langRessource

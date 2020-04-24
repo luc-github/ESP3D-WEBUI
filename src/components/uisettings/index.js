@@ -56,15 +56,60 @@ function setPreferences(data) {
 }
 
 /*
+ * Load Language
+ */
+function loadLanguage(lang) {
+    const url = "/" + lang + ".json" + "?" + Date.now()
+    SendGetHttp(url, loadLanguageSuccess, loadLanguageError)
+    console.log("load language file " + "/" + lang + ".json")
+}
+
+/*
+ * Load Language query success
+ */
+function loadLanguageSuccess(responseText) {
+    try {
+        let langressource = JSON.parse(responseText)
+
+        setLang(preferences.settings.language, langressource)
+        loadConfig()
+    } catch (err) {
+        console.log("error")
+        console.error(responseText)
+        globaldispatch({
+            type: Action.parsing_preferences_error,
+            errorcode: err,
+            nextaction: loadConfig,
+        })
+    }
+}
+
+/*
+ * Load Language query error
+ */
+function loadLanguageError(errorCode, responseText) {
+    console.log(
+        "no valid /" +
+            preferences.settings.language +
+            ".json.gz file, use default"
+    )
+    loadConfig()
+}
+
+/*
  * Load Preferences query success
  */
 function loadPreferencesSuccess(responseText) {
     try {
+        console.log("Success prefs")
         preferences = JSON.parse(responseText)
-        setLang(preferences.settings.language)
-        loadConfig()
+        console.log(preferences.settings.language)
+        if (preferences.settings.language != "en")
+            loadLanguage(preferences.settings.language)
+        else loadConfig()
     } catch (err) {
         console.log("error")
+        console.error(responseText)
         globaldispatch({
             type: Action.parsing_preferences_error,
             errorcode: err,
@@ -85,7 +130,7 @@ function loadPreferencesError(errorCode, responseText) {
  * Load Preferences
  */
 function loadPreferences() {
-    const url = "/preferences.json?" + +"?" + Date.now()
+    const url = "/preferences.json?" + Date.now()
     SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
     console.log("load preferences")
 }
@@ -132,6 +177,7 @@ function loadConfigSuccess(responseText) {
         }
     } catch (e) {
         console.error("Parsing error:", e)
+        console.error(responseText)
         globaldispatch({
             type: Action.parsing_configuration_error,
             errorcode: e,
