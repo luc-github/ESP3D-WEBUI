@@ -68,7 +68,7 @@
             </li>
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-md-4"><span translate>Flow (50-300%)</span></div>
+                    <div class="col-md-4"><span translate>Flow (50-300%)</span>&nbsp;<span id="flowratecatched"></span></div>
                     <div class="col-md-8">
                         <div class="panel-flex-row">
                             <button onclick="flowInit_cmd()" class="btn btn-primary">
@@ -83,7 +83,7 @@
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <input class="form-control w5" type="number" min="50" max="300" id="flowSelectedValue" value=100 onkeyup="extruder_handleKeyUp(event, 'Flow')" />
+                                            <input class="form-control w5" type="number" min="50" max="300" id="flowSelectedValue" value="" onkeyup="extruder_handleKeyUp(event, 'Flow')" />
                                             <span class="input-group-addon hide_it"></span>
                                         </div>
                                     </td>
@@ -109,7 +109,7 @@
             </li>
             <li class="list-group-item">
                 <div class="row">
-                    <div class="col-md-4"><span translate>Feed (25-150%)</span></div>
+                    <div class="col-md-4"><span translate>Feed (25-150%)</span>&nbsp;<span id="feedratecatched"></span></div>
                     <div class="col-md-8">
                         <div class="panel-flex-row">
                             <button onclick="feedInit_cmd()" class="btn btn-primary">
@@ -124,7 +124,7 @@
                                 <tr>
                                     <td>
                                         <div class="input-group">
-                                            <input class="form-control w5" type="number" min="25" max="150" id="feedSelectedValue" value=100 onkeyup="extruder_handleKeyUp(event,'Feed')" />
+                                            <input class="form-control w5" type="number" min="25" max="150" id="feedSelectedValue" value="" onkeyup="extruder_handleKeyUp(event,'Feed')" />
                                             <span class="input-group-addon hide_it"></span>
                                         </div>
                                     </td>

@@ -151,7 +151,7 @@ function startSocket() {
                 if ((bytes[i] == 10) || (bytes[i] == 13)) {
                     wsmsg += msg;
                     Monitor_output_Update(wsmsg);
-                    if ((target_firmware == "grbl-embedded") || (target_firmware == "marlin-embedded")) process_socket_response(wsmsg);
+                    process_socket_response(wsmsg);
                     //msg = wsmsg.replace("\n", "");
                     //wsmsg = msg.replace("\r", "");
                     console.log(wsmsg);
@@ -678,22 +678,31 @@ function process_socket_response(msg) {
             }
 
         }
-    }
-    if (target_firmware == "marlin-embedded") {
-        if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response += msg+"\n";
-        if (!socket_is_settings && (msg.startsWith("  G21") || msg.startsWith("  G20") || msg.startsWith("echo:  G21") || msg.startsWith("echo:  G20"))) {
-            socket_is_settings = true;
-            socket_response = msg + "\n";
-            //to stop waiting for data
-            console.log("Got settings Start");
+    } else {
+        if (target_firmware == "marlin-embedded") {
+            if (socket_is_settings && !(msg.startsWith("echo:Unknown command:") || msg.startsWith("echo:enqueueing"))) socket_response += msg+"\n";
+            if (!socket_is_settings && (msg.startsWith("  G21") || msg.startsWith("  G20") || msg.startsWith("echo:  G21") || msg.startsWith("echo:  G20"))) {
+                socket_is_settings = true;
+                socket_response = msg + "\n";
+                //to stop waiting for data
+                console.log("Got settings Start");
+            }
         }
-        if (msg.startsWith("ok T:") || msg.startsWith(" T:")) {
+        if (msg.startsWith("ok T:") || msg.startsWith(" T:")|| msg.startsWith("T:")) {
             if (!graph_started)start_graph_output();
             process_Temperatures(msg);
         }
         if (msg.startsWith("X:")) {
             process_Position(msg);
         }
+        if (msg.startsWith("FR:")) {
+            process_feedRate(msg);
+        }
+        
+        if (msg.startsWith("echo:E") && (msg.indexOf("Flow:")!=-1)){
+            process_flowdRate(msg);
+        }
+        
         if (msg.startsWith("[esp3d]")) {
             process_Custom(msg); // handles custom messages sent via M118
         }

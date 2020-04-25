@@ -5,7 +5,7 @@
     "del": "latest",
     "deprecated": "latest",
     "fs": "latest",
-    "gulp": "^4.0.2",
+    "gulp": "latest",
     "gulp-bytediff": "latest",
     "gulp-cdnizer": "latest",
     "gulp-clean-css": "latest",
@@ -28,6 +28,6 @@
   "author": "Luc LEBOSSE",
   "license": "(ISC OR GPL-3.0)",
   "dependencies": {
-    "global": "^4.3.2"
+    "global": "latest"
   }
 }

@@ -119,7 +119,13 @@ function CustomCommand_OnKeyUp(event) {
 
 function SendCustomCommandSuccess(response) {
     if (response[response.length - 1] != '\n') Monitor_output_Update(response + "\n");
-    else Monitor_output_Update(response);
+    else {
+        Monitor_output_Update(response);
+    }
+    var tcmdres = response.split("\n");
+    for (var il = 0; il < tcmdres.length; il++){
+        process_socket_response(tcmdres[il]);
+    }
 }
 
 function SendCustomCommandFailed(error_code, response) {

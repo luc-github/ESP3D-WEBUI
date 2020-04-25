@@ -1,4 +1,6 @@
 var current_active_extruder = 'T0';
+var currentFR=""
+var currentFLR=""
 
 function Set_active_extruder() {
     current_active_extruder = "T" + document.getElementById('active_extruder').value;
@@ -6,7 +8,24 @@ function Set_active_extruder() {
 }
 
 function init_extruder_panel() {
+}
 
+function process_feedRate(msg){
+        var fr = msg.replace("FR:","")
+        document.getElementById('feedratecatched').innerHTML = fr;
+        if (currentFR==""){
+            document.getElementById('feedSelectedValue').value=parseInt(fr);
+            currentFR=fr;
+        }
+}
+
+function process_flowdRate(msg){
+        var flr = msg.substring(msg.indexOf("Flow:")+5)
+        document.getElementById('flowratecatched').innerHTML = flr;
+        if (currentFLR==""){
+            document.getElementById('flowSelectedValue').value=parseInt(flr);
+            currentFLR=flr
+        }
 }
 
 function on_extruder_length_Change() {
