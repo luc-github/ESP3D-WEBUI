@@ -381,7 +381,7 @@ function files_refreshFiles(path, usecache) {
             } else {
                 //Standard M20
                 current_source = "/";
-                document.getElementById('fileSource').innerHTML="SD";
+                document.getElementById('fileSource').innerHTML=translate_text_item("SD Files");
             }
             //to avoid to query when we already have the list
             if (usecache) {
