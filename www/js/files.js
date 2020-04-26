@@ -362,6 +362,7 @@ function files_refreshFiles(path, usecache) {
         } else {
             var command = "M20";
             if (current_source == "SD:") {
+                document.getElementById('fileSource').innerHTML="TFT SD";
                 if (path.endsWith("/")){
                     var newpath = path.substring(0, path.length - 1);
                     path= newpath;
@@ -370,6 +371,7 @@ function files_refreshFiles(path, usecache) {
                 
                 usecache = false;
             } else if (current_source == "U:") {
+                document.getElementById('fileSource').innerHTML="TFT USB";
                 if (path.endsWith("/")){
                     var newpath = path.substring(0, path.length - 1);
                     path= newpath;
@@ -378,7 +380,8 @@ function files_refreshFiles(path, usecache) {
                 usecache = false;
             } else {
                 //Standard M20
-                current_source = "/"
+                current_source = "/";
+                document.getElementById('fileSource').innerHTML="SD";
             }
             //to avoid to query when we already have the list
             if (usecache) {
