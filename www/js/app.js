@@ -154,7 +154,7 @@ function startSocket() {
                     process_socket_response(wsmsg);
                     //msg = wsmsg.replace("\n", "");
                     //wsmsg = msg.replace("\r", "");
-                    console.log(wsmsg);
+                    if (!((wsmsg.startsWith("ok T:") || wsmsg.startsWith("X:") || wsmsg.startsWith("FR:") ||wsmsg.startsWith("echo:E0 Flow"))))console.log(wsmsg);
                     wsmsg = "";
                     msg = "";
                 }
