@@ -209,11 +209,11 @@ function connectWsServer() {
 /*
  * Disconnect from WS server
  */
-function disconnectWsServer(disconnectWsServer) {
+function disconnectWsServer(Type) {
     isLogOff = true
     reconnectCounter = 0
     webSocketClient.close()
-    if (disconnectWsServer)
+    if (Type)
         globaldispatch({
             type: Type,
         })

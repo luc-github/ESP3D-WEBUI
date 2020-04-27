@@ -15,10 +15,46 @@ const machine = process.env.TARGET_ENV
 const targetFW = machine == "grbl" ? "grbl" : "repetier"
 const targetFWnb = machine == "grbl" ? "6" : "5"
 const FSDir = "./public"
+var WebSocketServer = require("ws").Server,
+wss = new WebSocketServer({ port: 81 })
+
 app.use(fileUpload({ preserveExtension: true, debug: true }))
+
+function SendBinary(text){
+    const array = new Float32Array(text.length);
+    for (var i = 0; i < array.length; ++i) {
+            array[i] = text[i];
+        }
+    wss.send(array);
+}
 
 app.get("/command", function(req, res) {
     var url = req.originalUrl
+    if (url.indexOf("M503") != -1) {
+        SendBinary(
+                "echo:  G21    ; Units in mm (mm)\n"
+                +"echo:; Filament settings: Disabled\n"
+                +"echo:  M200 D3.00\n"
+                +"echo:  M200 D0\n"
+                +"echo:; Steps per unit:\n"
+                +"echo: M92 X80.00 Y80.00 Z4000.00 E500.00\n"
+                +"echo:; Maximum feedrates (units/s):\n"
+                +"echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n"
+                +"echo:; Maximum Acceleration (units/s2):\n"
+                +"echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n"
+                +"echo:; Acceleration (units/s2): P<print_accel> R T\n"
+                +"echo:  M204 P3000.00 R3000.00 T3000.00\n"
+                +"echo:; Advanced: B S T J\n"
+                +"echo:  M205 B20000.00 S0.00 T0.00 J0.01\n"
+                +"echo:; Home offset:\n"
+                +"echo:  M206 X0.00 Y0.00 Z0.00\n"
+                +"echo:; PID settings:\n"
+                +"echo:  M301 P22.20 I1.08 D114.00\n"
+                +"ok\n")
+        res.send("")
+        return
+    }
+    
     if (url.indexOf("ESP800") != -1) {
         res.json({
             FWVersion: "3.0.0.a28",
@@ -520,8 +556,7 @@ app.listen(process.env.PORT || 8080, () =>
     console.log(`Listening on port ${process.env.PORT || 8080}!`)
 )
 
-var WebSocketServer = require("ws").Server,
-    wss = new WebSocketServer({ port: 81 })
+
 
 wss.on("connection", function(ws) {
     console.log("New connection")

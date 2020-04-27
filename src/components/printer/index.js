@@ -43,6 +43,19 @@ function firmwareName(shortname) {
     }
 }
 
+
+/*
+ * Load Firmware settings
+ */
+function loadConfig() {
+    const cmd = encodeURIComponent("M503")
+    globaldispatch({
+        type: Action.fetch_configuration,
+    })
+    console.log("load FW config")
+    SendCommand(cmd)
+}
+
 const MachineSettings = ({ currentPage }) => {
     if (
         currentPage != Setting.machine ||
