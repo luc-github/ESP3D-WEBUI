@@ -23,7 +23,7 @@ import { globaldispatch, Page, Action } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
-import { preferences } from "../uisettings"
+import { prefs } from "../settings"
 
 function showAbout() {
     globaldispatch({ type: Action.renderPage, activePage: Page.about })
@@ -43,8 +43,8 @@ function showSettings() {
  */
 export const Header = ({ currentState }) => {
     let showBanner = true
-    if (preferences && preferences.settings.banner) {
-        showBanner = preferences.settings.banner == "true" ? true : false
+    if (prefs && prefs.banner) {
+        showBanner = prefs.banner == "true" ? true : false
     }
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">

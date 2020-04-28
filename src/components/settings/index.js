@@ -24,7 +24,7 @@ import { T } from "../translations"
 import { Page, Setting } from "../app"
 import { Selector } from "./selector"
 const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
-import { WebUISettings } from "./webui"
+import { WebUISettings, prefs, setcurrentprefs } from "./webui"
 import { Esp3DSettings } from "./esp3d"
 
 /*
@@ -32,8 +32,8 @@ import { Esp3DSettings } from "./esp3d"
  *
  */
 
-let setSettingPage
 let currentSettingPage
+let setSettingPage
 
 /*
  * Settings page
@@ -41,7 +41,9 @@ let currentSettingPage
  */
 const SettingsPage = ({ currentState }) => {
     ;[currentSettingPage, setSettingPage] = useState(Setting.machine)
-    if (currentState.activePage != Page.settings) return null
+    if (currentState.activePage != Page.settings) {
+        return null
+    }
     return (
         <div>
             <br />
@@ -53,4 +55,4 @@ const SettingsPage = ({ currentState }) => {
     )
 }
 
-export { SettingsPage, setSettingPage }
+export { SettingsPage, prefs, setcurrentprefs, setSettingPage }

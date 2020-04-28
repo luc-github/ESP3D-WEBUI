@@ -22,6 +22,7 @@
 import { setLang } from "../translations"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 import { globaldispatch, applyConfig, Action } from "../app"
+import { setcurrentprefs } from "../settings"
 import { setupWebSocket } from "../websocket"
 
 /*
@@ -103,6 +104,7 @@ function loadPreferencesSuccess(responseText) {
     try {
         console.log("Success prefs")
         preferences = JSON.parse(responseText)
+        setcurrentprefs(preferences)
         console.log(preferences.settings.language)
         if (preferences.settings.language != "en")
             loadLanguage(preferences.settings.language)
@@ -123,6 +125,7 @@ function loadPreferencesSuccess(responseText) {
  */
 function loadPreferencesError(errorCode, responseText) {
     console.log("no valid " + preferencesFileName + ", use default")
+    setcurrentprefs(preferences)
     loadConfig()
 }
 

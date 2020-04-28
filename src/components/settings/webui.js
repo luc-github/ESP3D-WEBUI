@@ -44,7 +44,7 @@ function updateUI() {
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "default")
     }
-    loadLanguage(preferences.settings.language)
+    loadLanguage(prefs.language)
     globaldispatch({
         type: Action.renderAll,
     })
@@ -261,7 +261,7 @@ function progressUpload(oEvent) {
  */
 function savePreferences() {
     // do some sanity check
-    preferences.settings = prefs
+    preferences.settings = JSON.parse(JSON.stringify(prefs))
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
@@ -355,12 +355,12 @@ function updateState(entry) {
  */
 const CheckboxControl = ({ entry, title, label }) => {
     let ischecked = true
-    if (preferences && preferences.settings[entry]) {
-        ischecked = preferences.settings[entry] == "true" ? true : false
+    if (prefs && prefs[entry]) {
+        ischecked = prefs[entry] == "true" ? true : false
     }
     const toggleCheckbox = e => {
         ischecked = e.target.checked
-        preferences.settings[entry] = e.target.checked ? "true" : "false"
+        prefs[entry] = e.target.checked ? "true" : "false"
         globaldispatch({
             type: Action.renderAll,
         })
@@ -368,7 +368,7 @@ const CheckboxControl = ({ entry, title, label }) => {
     let id = entry + "-UI-checkbox"
     useEffect(() => {
         updateState(entry)
-    }, [preferences.settings[entry]])
+    }, [prefs[entry]])
     return (
         <label class="checkbox-control" id={id} title={title}>
             {label}
@@ -479,15 +479,19 @@ const LanguageSelection = () => {
     )
 }
 
+function setcurrentprefs(preferences) {
+    //lets make a copy
+    prefs = JSON.parse(JSON.stringify(preferences.settings))
+}
+
 /*
  * Settings page
  *
  */
-export const WebUISettings = ({ currentPage }) => {
+const WebUISettings = ({ currentPage }) => {
     if (currentPage != Setting.ui) return null
     if (typeof prefs == "undefined") {
-        //lets make a copy
-        prefs = JSON.parse(JSON.stringify(preferences.settings))
+        console.log("render")
     }
     return (
         <div>
@@ -569,3 +573,5 @@ export const WebUISettings = ({ currentPage }) => {
         </div>
     )
 }
+
+export { setcurrentprefs, prefs, WebUISettings }

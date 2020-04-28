@@ -32,7 +32,7 @@ import {
 } from "preact-feather"
 import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
-import { preferences } from "../uisettings"
+import { prefs } from "../settings"
 import { SendCommand } from "../http"
 import { useEffect } from "preact/hooks"
 import { initApp } from "../uisettings"
@@ -894,8 +894,8 @@ function importSettings() {
  */
 export const Esp3DSettings = ({ currentPage }) => {
     if (currentPage != Setting.esp3d) return null
-    if (preferences && preferences.settings.autoload) {
-        if (preferences.settings.autoload == "true" && !isloaded) loadSettings()
+    if (prefs && prefs.autoload) {
+        if (prefs.autoload == "true" && !isloaded) loadSettings()
     }
     const listSettings = []
     if (esp3dFWSettings.Settings) {

@@ -29,7 +29,7 @@ import {
     cancelCurrentUpload,
     lastError,
 } from "../http"
-import { preferences } from "../uisettings"
+import { prefs } from "../settings"
 
 /*
  * Local variables
@@ -40,6 +40,7 @@ let browserInformation = ""
 let dataStatus = {}
 let uploadFiles
 let pathUpload = "/files"
+let isloaded = false
 
 //from https://stackoverflow.com/questions/5916900/how-can-you-detect-the-version-of-a-browser
 function getBrowserInformation() {
@@ -257,14 +258,11 @@ function clickGitUI() {
  */
 export const AboutPage = ({ currentState }) => {
     if (currentState.activePage != Page.about) return null
-    if (
-        preferences.browserInformation == "" ||
-        typeof preferences.browserInformation == "undefined"
-    ) {
-        preferences.browserInformation = getBrowserInformation()
-        if (preferences && preferences.settings.autoload) {
-            if (preferences.settings.autoload == "true") loadStatus()
-        }
+    if (browserInformation == "" || typeof browserInformation == "undefined") {
+        browserInformation = getBrowserInformation()
+    }
+    if (prefs && prefs.autoload) {
+        if (prefs.autoload == "true" && !isloaded) loadStatus()
     }
     return (
         <div class="card-body card-low">
@@ -333,7 +331,7 @@ export const AboutPage = ({ currentState }) => {
                     <div style="height:2px" />
                     <div class="card-text" title={navigator.userAgent}>
                         <span class="text-info">{T("S18")}: </span>
-                        {preferences.browserInformation}
+                        {browserInformation}
                     </div>
                     {dataStatus.Status
                         ? dataStatus.Status.map((entry, index) => {
@@ -371,6 +369,7 @@ export const AboutPage = ({ currentState }) => {
  */
 function loadStatus() {
     const cmd = encodeURIComponent("[ESP420]")
+    isloaded = true
     globaldispatch({
         type: Action.fetch_data,
     })
