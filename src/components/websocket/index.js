@@ -187,7 +187,6 @@ function connectWsServer() {
     webSocketClient.onmessage = function(e) {
         //for binary messages used for terminal
         if (e.data instanceof ArrayBuffer) {
-            console.log("got binary")
             var bytes = new Uint8Array(e.data)
             for (var i = 0; i < bytes.length; i++) {
                 //process line by line
