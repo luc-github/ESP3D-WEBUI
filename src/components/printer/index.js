@@ -19,9 +19,27 @@
 */
 
 import { h } from "preact"
-import { Setting, esp3dSettings } from "../app"
+import { Setting, esp3dSettings, globaldispatch, Action } from "../app"
 import { T } from "../translations"
+import { SendCommand } from "../http"
+import {
+    RefreshCcw,
+    RotateCcw,
+    Save,
+    ExternalLink,
+    Download,
+} from "preact-feather"
 
+/*
+ * Local variables
+ *
+ */
+let listSettings = []
+
+/*
+ * Firmware full name
+ *
+ */
 function firmwareName(shortname) {
     switch (shortname) {
         case "repetier":
@@ -43,17 +61,52 @@ function firmwareName(shortname) {
     }
 }
 
+/*
+ * Give Configuration command and parameters
+ */
+function configurationCmd(id) {
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            return ["M205", "EPR", "ok", "error"]
+        case "marlin-embedded":
+        case "marlin":
+        case "marlinkimbra":
+            return ["M503", "echo:  G21", "ok", "error"]
+        case "smoothieware":
+            if (id == 0) return "cat /sd/config" //possible 1
+            if (id == 1) return "cat /sd/config.txt" //possible 2
+            return "M503" //over ride
+        default:
+            return "Unknown"
+    }
+}
+
+function importSettings() {}
+
+function exportSettings() {}
+
+function saveAndApply() {}
+
+/*
+ * Process WebSocket data
+ */
+function processWSData(buffer) {
+    if (buffer.startsWith("ok")) {
+        console.log("ok got :" + buffer)
+    }
+}
 
 /*
  * Load Firmware settings
  */
 function loadConfig() {
     const cmd = encodeURIComponent("M503")
-    globaldispatch({
+    /*globaldispatch({
         type: Action.fetch_configuration,
-    })
+    })*/
     console.log("load FW config")
-    SendCommand(cmd)
+    SendCommand(configurationCmd()[0])
 }
 
 const MachineSettings = ({ currentPage }) => {
@@ -73,14 +126,65 @@ const MachineSettings = ({ currentPage }) => {
         )
     return (
         <div>
-            <br />
+            <hr />
             <center>
-                3D Printer
+                <div class="list-left">{listSettings}</div>
+            </center>
+
+            <hr />
+            <center>
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S23")}
+                        onClick={loadConfig}
+                    >
+                        <RefreshCcw />
+                        <span class="hide-low text-button">{T("S50")}</span>
+                    </button>
+                </span>
+                <span class={listSettings ? "text-button-setting" : " d-none"}>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S55")}
+                        onClick={importSettings}
+                    >
+                        <Download />
+                        <span class="hide-low text-button">{T("S54")}</span>
+                    </button>
+                </span>
+                <span
+                    class={importSettings ? "text-button-setting" : " d-none"}
+                >
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S53")}
+                        onClick={exportSettings}
+                    >
+                        <ExternalLink />
+                        <span class="hide-low text-button">{T("S52")}</span>
+                    </button>
+                </span>
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        title={T("S62")}
+                        onClick={saveAndApply}
+                    >
+                        <Save />
+                        <span class="hide-low text-button">{T("S61")}</span>
+                    </button>
+                </span>
+                <input type="file" class="d-none" id="importControl" />
                 <br />
-                <div class="list-left">To be implemented!</div>
+                <br />
             </center>
         </div>
     )
 }
 
-export { MachineSettings, firmwareName }
+export { MachineSettings, firmwareName, processWSData }

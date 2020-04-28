@@ -82,7 +82,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         onclick={onclickui}
                     >
-                        <Eye />{" "}
+                        <Eye />
                         <span class="hide-low text-button">{T("S17")}</span>
                     </li>
                     <li

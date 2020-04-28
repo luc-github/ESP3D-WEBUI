@@ -32,6 +32,10 @@ function firmwareName(shortname) {
     }
 }
 
+function processWSData(buffer) {
+    //TODO = handle it
+}
+
 const MachineSettings = ({ currentPage }) => {
     if (
         currentPage != Setting.machine ||
@@ -52,4 +56,4 @@ const MachineSettings = ({ currentPage }) => {
     )
 }
 
-export { MachineSettings, firmwareName }
+export { MachineSettings, firmwareName, processWSData }

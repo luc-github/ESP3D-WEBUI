@@ -40,7 +40,7 @@ let currentSettingPage
  *
  */
 const SettingsPage = ({ currentState }) => {
-    ;[currentSettingPage, setSettingPage] = useState(Setting.ui)
+    ;[currentSettingPage, setSettingPage] = useState(Setting.machine)
     if (currentState.activePage != Page.settings) return null
     return (
         <div>

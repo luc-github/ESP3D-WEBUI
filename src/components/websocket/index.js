@@ -21,7 +21,7 @@
 "use strict"
 import { globaldispatch, Action } from "../app"
 import { cancelCurrentUpload } from "../http"
-
+const { processWSData } = require(`../${process.env.TARGET_ENV}`)
 /*
  * Local variables
  *
@@ -82,6 +82,7 @@ function ping(start = false) {
  */
 function processWebSocketBuffer(wsBuffer) {
     console.log(wsBuffer)
+    processWSData(wsBuffer)
 }
 
 /*
@@ -186,6 +187,7 @@ function connectWsServer() {
     webSocketClient.onmessage = function(e) {
         //for binary messages used for terminal
         if (e.data instanceof ArrayBuffer) {
+            console.log("got binary")
             var bytes = new Uint8Array(e.data)
             for (var i = 0; i < bytes.length; i++) {
                 //process line by line

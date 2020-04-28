@@ -510,17 +510,22 @@ export const WebUISettings = ({ currentPage }) => {
 
             <hr />
             <center>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    title={T("S23")}
-                    onClick={loadPreferences}
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S23")}
+                        onClick={loadPreferences}
+                    >
+                        <RefreshCcw />
+                        <span class="hide-low text-button">{T("S50")}</span>
+                    </button>
+                </span>
+                <span
+                    class={
+                        preferences.settings ? "text-button-setting" : " d-none"
+                    }
                 >
-                    <RefreshCcw />
-                    <span class="hide-low text-button">{T("S50")}</span>
-                </button>
-                <span class={preferences.settings ? "" : " d-none"}>
-                    {" "}
                     <button
                         type="button"
                         class="btn btn-primary"
@@ -531,8 +536,11 @@ export const WebUISettings = ({ currentPage }) => {
                         <span class="hide-low text-button">{T("S54")}</span>
                     </button>
                 </span>
-                <span class={preferences.settings ? "" : " d-none"}>
-                    {" "}
+                <span
+                    class={
+                        preferences.settings ? "text-button-setting" : " d-none"
+                    }
+                >
                     <button
                         type="button"
                         class="btn btn-primary"
@@ -542,17 +550,18 @@ export const WebUISettings = ({ currentPage }) => {
                         <ExternalLink />
                         <span class="hide-low text-button">{T("S52")}</span>
                     </button>
-                </span>{" "}
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    title={T("S62")}
-                    onClick={saveAndApply}
-                >
-                    <Save />
-                    <span class="hide-low text-button">{T("S61")}</span>
-                </button>
-                <input type="file" class="d-none" id="importPControl" />
+                </span>
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        title={T("S62")}
+                        onClick={saveAndApply}
+                    >
+                        <Save />
+                        <span class="hide-low text-button">{T("S61")}</span>
+                    </button>
+                </span>
                 <br />
                 <br />
             </center>

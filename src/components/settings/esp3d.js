@@ -584,7 +584,6 @@ function loadWiFiNetworksSuccess(responseText) {
             buttontext: "S24",
             buttontext2: (
                 <div title={T("S23")}>
-                    {" "}
                     <RefreshCcw />
                     <span class="hide-low text-button">{T("S50")}</span>
                 </div>
@@ -918,17 +917,24 @@ export const Esp3DSettings = ({ currentPage }) => {
 
             <hr />
             <center>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    title={T("S23")}
-                    onClick={loadSettings}
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S23")}
+                        onClick={loadSettings}
+                    >
+                        <RefreshCcw />
+                        <span class="hide-low text-button">{T("S50")}</span>
+                    </button>
+                </span>
+                <span
+                    class={
+                        esp3dFWSettings.Settings
+                            ? "text-button-setting"
+                            : " d-none"
+                    }
                 >
-                    <RefreshCcw />
-                    <span class="hide-low text-button">{T("S50")}</span>
-                </button>
-                <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
-                    {" "}
                     <button
                         type="button"
                         class="btn btn-primary"
@@ -939,8 +945,13 @@ export const Esp3DSettings = ({ currentPage }) => {
                         <span class="hide-low text-button">{T("S54")}</span>
                     </button>
                 </span>
-                <span class={esp3dFWSettings.Settings ? "" : " d-none"}>
-                    {" "}
+                <span
+                    class={
+                        esp3dFWSettings.Settings
+                            ? "text-button-setting"
+                            : " d-none"
+                    }
+                >
                     <button
                         type="button"
                         class="btn btn-primary"
@@ -950,16 +961,18 @@ export const Esp3DSettings = ({ currentPage }) => {
                         <ExternalLink />
                         <span class="hide-low text-button">{T("S52")}</span>
                     </button>
-                </span>{" "}
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    title={T("S59")}
-                    onClick={confirmRestart}
-                >
-                    <RotateCcw />
-                    <span class="hide-low text-button">{T("S58")}</span>
-                </button>
+                </span>
+                <span class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        title={T("S59")}
+                        onClick={confirmRestart}
+                    >
+                        <RotateCcw />
+                        <span class="hide-low text-button">{T("S58")}</span>
+                    </button>
+                </span>
                 <input type="file" class="d-none" id="importControl" />
                 <br />
                 <br />
