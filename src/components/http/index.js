@@ -69,7 +69,8 @@ function defaultHttpResultFn(response_text) {
     pausePing(false)
     if (
         httpCommandList.length > 0 &&
-        typeof httpCommandList[0].resultfn != "undefined"
+        typeof httpCommandList[0].resultfn != "undefined" &&
+        httpCommandList[0].resultfn
     ) {
         httpCommandList[0].resultfn(response_text)
     }
@@ -83,7 +84,8 @@ function defaultHttpResultFn(response_text) {
 function defaultHttpErrorFn(errorcode, response_text) {
     if (
         httpCommandList.length > 0 &&
-        typeof httpCommandList[0].errorfn != "undefined"
+        typeof httpCommandList[0].errorfn != "undefined" &&
+        httpCommandList[0].errorfn
     ) {
         var fn = httpCommandList[0].errorfn
         if (errorcode == 401) {
