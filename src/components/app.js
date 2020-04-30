@@ -29,6 +29,7 @@ import { Header } from "./header"
 import { Notification } from "./notification"
 import { T } from "./translations"
 import { initApp } from "./uisettings"
+import { prefs } from "./settings"
 
 /*
  * Some constants
@@ -350,4 +351,5 @@ export {
     Action,
     setNotificationBottom,
     esp3dSettings,
+    prefs,
 }

@@ -275,11 +275,13 @@ const FlagSubEntry = ({ entry, label, val, index }) => {
                         onClick={onSet}
                     >
                         <Save size="1.2em" />
-                        <span class="hide-low">{T("S43")}</span>
+                        <span class="hide-low text-button-setting">
+                            {T("S43")}
+                        </span>
                     </button>
                 </div>
             </div>
-            <div style="height:3px" />
+            <div class="controlSpacer" />
         </div>
     )
 }
@@ -382,12 +384,14 @@ const Entry = ({ entry }) => {
                         title={T("S43")}
                     >
                         <Save size="1.2em" />
-                        <span class="hide-low">{T("S43")}</span>
+                        <span class="hide-low text-button-setting">
+                            {T("S43")}
+                        </span>
                     </button>
                     {extra}
                 </div>
             </div>
-            <div style="height:3px" />
+            <div class="controlSpacer" />
         </div>
     )
 }
@@ -415,7 +419,7 @@ const ESPSectionSettings = ({ filter, filter2 }) => {
                     {section}
                 </div>
             </div>
-            <div style="height:3px" />
+            <div class="controlSpacer" />
         </div>
     )
 }

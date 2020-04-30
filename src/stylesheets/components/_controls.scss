@@ -195,6 +195,10 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     text-align: left;
 }
 
+.controlSpacer {
+    height: 0.3rem;
+}
+
 .link-text,
 .link-text:hover,
 .link-text:focus {
@@ -204,12 +208,19 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .hide-low {
     display: inline-block;
 }
+.W15 {
+    min-width: 4em !important;
+}
+
 @include media-breakpoint-up(xs) {
     .tshow-low {
         display: none;
     }
     .thide-low {
         display: inline-row;
+    }
+    .autoWidth {
+        width: 20em;
     }
 }
 @include media-breakpoint-down(xs) {
@@ -225,5 +236,11 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     }
     .card-noborder-low {
         border: 1px solid transparent !important;
+    }
+    .autoWidth {
+        width: auto;
+    }
+    .fontsetting {
+        font-size: 0.7rem !important;
     }
 }
