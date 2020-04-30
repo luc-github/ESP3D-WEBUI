@@ -97,7 +97,46 @@ function configurationCmd(override) {
 
 function importSettings() {}
 
-function exportSettings() {}
+function exportSettings() {
+    let data, file
+    let p = 0
+    const filename = "export_" + process.env.TARGET_ENV + ".json"
+
+    data = '{"' + process.env.TARGET_ENV + '": [\n'
+    for (let entry of listSettings) {
+        if (typeof entry.value != "undefined") {
+            if (p != 0) {
+                data += ","
+            }
+            p++
+            data +=
+                '{"label":"' + entry.label + '",' + '"V":"' + entry.value + '"'
+            if (typeof entry.P != "undefined") {
+                data += ',"P":"' + entry.P + '"' + ',"T":"' + entry.T + '"'
+            }
+            data += "}\n"
+        }
+    }
+    data += "]}"
+    console.log(data)
+    file = new Blob([data], { type: "application/json" })
+    if (window.navigator.msSaveOrOpenBlob)
+        // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename)
+    else {
+        // Others
+        let a = document.createElement("a"),
+            url = URL.createObjectURL(file)
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function() {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
+}
 
 function saveAndApply() {}
 
@@ -139,7 +178,7 @@ function processConfigData() {
                     })
             } else {
                 let pt = getPT(listrawSettings[i])
-                if (pt != null)
+                if (pt != null) {
                     listSettings.push({
                         id: i,
                         comment: getComment(listrawSettings[i]),
@@ -148,7 +187,8 @@ function processConfigData() {
                         P: pt[0],
                         T: pt[1],
                     })
-                else {
+                    console.log("push repetier")
+                } else {
                     if (
                         (esp3dSettings.FWTarget == "smoothieware" ||
                             esp3dSettings.FWTarget == "marlin" ||
@@ -486,7 +526,7 @@ const PrinterSetting = ({ entry }) => {
     if (typeof entry.value == "undefined") {
         return (
             <div class="card-text hide-low">
-                <div style="height:1rem" />
+                <div style="height:0.5rem" />
                 <label>{T(entry.comment)}</label>
             </div>
         )
@@ -525,6 +565,7 @@ const PrinterSetting = ({ entry }) => {
 
         return (
             <div class="card-text">
+                <div>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span
@@ -556,6 +597,7 @@ const PrinterSetting = ({ entry }) => {
                         </button>
                         <span class={helpclass}>{T(entry.comment)}</span>
                     </div>
+                </div>
                 </div>
                 <div class="controlSpacer" />
             </div>
