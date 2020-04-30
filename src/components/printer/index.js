@@ -61,6 +61,8 @@ function firmwareName(shortname) {
             return "Marlin Kimbra"
         case "smoothieware":
             return "Smoothieware"
+        case "grbl-embedded":
+            return "Grbl esp32"
         case "grbl":
             return "Grbl"
         default:
@@ -80,6 +82,9 @@ function configurationCmd(override) {
         case "marlin":
         case "marlinkimbra":
             return ["M503", "echo:  G21", "ok", "error"]
+        case "grbl-embedded":
+        case "grbl":
+            return ["$$", "$", "ok", "error"]
         case "smoothieware":
             //if (!override)
             return ["cat /sd/config.txt", "#", "ok", "error"]
@@ -153,6 +158,13 @@ function processConfigData() {
                         listSettings.push({
                             id: i,
                             comment: getComment(listrawSettings[i]),
+                        })
+                    if (
+                        (esp3dSettings.FWTarget == "grbl" ||
+                            esp3dSettings.FWTarget == "grbl-embedded"))
+                        listSettings.push({
+                            id: i,
+                            comment: getLabel(listrawSettings[i]),
                         })
                     listSettings.push({
                         id: i,
@@ -543,13 +555,13 @@ const MachineSettings = ({ currentPage }) => {
         esp3dSettings.FWTarget == "unknown"
     )
         return null
-    if (esp3dSettings.FWTarget == "grbl")
+  /*  if (esp3dSettings.FWTarget == "grbl")
         return (
             <div>
                 <br />
                 <center>{T("S46")}</center>
             </div>
-        )
+        )*/
     if (prefs && prefs.autoload) {
         if (prefs.autoload == "true" && !isloaded) loadConfig()
     }
