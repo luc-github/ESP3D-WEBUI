@@ -19,7 +19,8 @@
 */
 
 "use strict"
-import enLangRessource from "./en.json"
+import enLangRessourceBase from "./en.json"
+const { enLangRessourceExtra } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -27,11 +28,16 @@ import enLangRessource from "./en.json"
  */
 let currentLang = "en"
 let currentLangRessource = enLangRessource
+let isMachineRessourceloaded = false
+let enLangRessource = []
 
 /*
  * Set language
  */
 function setLang(lang, langRessource) {
+    if (enLangRessource.length == 0) {
+        enLangRessource = { ...enLangRessourceBase, ...enLangRessourceExtra }
+    }
     if (lang == "en") {
         currentLangRessource = enLangRessource
         currentLang = "en"

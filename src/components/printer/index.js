@@ -23,6 +23,7 @@ import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
+import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
     RotateCcw,
@@ -160,8 +161,9 @@ function processConfigData() {
                             comment: getComment(listrawSettings[i]),
                         })
                     if (
-                        (esp3dSettings.FWTarget == "grbl" ||
-                            esp3dSettings.FWTarget == "grbl-embedded"))
+                        esp3dSettings.FWTarget == "grbl" ||
+                        esp3dSettings.FWTarget == "grbl-embedded"
+                    )
                         listSettings.push({
                             id: i,
                             comment: getLabel(listrawSettings[i]),
@@ -485,11 +487,13 @@ const PrinterSetting = ({ entry }) => {
         return (
             <div class="card-text hide-low">
                 <div style="height:1rem" />
-                <label>{entry.comment}</label>
+                <label>{T(entry.comment)}</label>
             </div>
         )
     } else {
         let entryclass = "form-control"
+        let label = entry.label
+        let labelclass = "input-group-text fontsetting"
         let helpclass =
             entry.comment.length == 0 ? "d-none" : "input-group-text hide-low"
         if (
@@ -499,23 +503,35 @@ const PrinterSetting = ({ entry }) => {
         ) {
             entryclass += " autoWidth"
             helpclass = "d-none"
+            labelclass = "input-group-text"
         }
         if (
             esp3dSettings.FWTarget == "repetier" ||
             esp3dSettings.FWTarget == "repetier4davinci"
-        )
+        ) {
             entryclass += " W15"
-        if (esp3dSettings.FWTarget == "smoothieware") helpclass = "d-none"
+            label = T(entry.label)
+        }
+        if (esp3dSettings.FWTarget == "smoothieware") {
+            helpclass = "d-none"
+            label = T(entry.label)
+        }
+        if (
+            esp3dSettings.FWTarget == "grbl" ||
+            esp3dSettings.FWTarget == "grbl-embedded"
+        ) {
+            labelclass = "input-group-text"
+        }
 
         return (
             <div class="card-text">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span
-                            class="input-group-text fontsetting"
+                            class={labelclass}
                             id={"printer_setting" + entry.id}
                         >
-                            {T(entry.label)}
+                            {label}
                         </span>
                     </div>
                     <input
@@ -555,7 +571,7 @@ const MachineSettings = ({ currentPage }) => {
         esp3dSettings.FWTarget == "unknown"
     )
         return null
-  /*  if (esp3dSettings.FWTarget == "grbl")
+    /*  if (esp3dSettings.FWTarget == "grbl")
         return (
             <div>
                 <br />
@@ -643,4 +659,4 @@ const MachineSettings = ({ currentPage }) => {
     )
 }
 
-export { MachineSettings, firmwareName, processWSData }
+export { MachineSettings, firmwareName, processWSData, enLangRessourceExtra }

@@ -27,7 +27,7 @@ import { DashboardPage } from "./dashboard"
 import { SettingsPage } from "./settings"
 import { Header } from "./header"
 import { Notification } from "./notification"
-import { T } from "./translations"
+import { setLang, T } from "./translations"
 import { initApp } from "./uisettings"
 import { prefs } from "./settings"
 
@@ -332,6 +332,7 @@ function App() {
         initialStateEventData
     )
     useEffect(() => {
+        setLang("en")
         initApp()
     }, [])
     return (

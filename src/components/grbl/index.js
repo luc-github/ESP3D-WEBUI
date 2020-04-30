@@ -20,6 +20,7 @@
 
 import { h } from "preact"
 import { Setting, esp3dSettings } from "../app"
+import enLangRessourceExtra from "./en.json"
 
 function firmwareName(shortname) {
     switch (shortname) {
@@ -56,4 +57,4 @@ const MachineSettings = ({ currentPage }) => {
     )
 }
 
-export { MachineSettings, firmwareName, processWSData }
+export { MachineSettings, firmwareName, processWSData, enLangRessourceExtra }
