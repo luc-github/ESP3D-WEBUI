@@ -276,7 +276,6 @@ function processConfigData() {
             }
         }
     }
-    console.log(listSettings)
     globaldispatch({
         type: Action.renderAll,
     })
