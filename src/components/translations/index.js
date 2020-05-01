@@ -65,7 +65,7 @@ function T(id) {
     if (typeof translatedText === "undefined") {
         translatedText = enLangRessource[id]
         if (typeof translatedText === "undefined") {
-            console.log("[Translation]" + id + " is not defined!")
+            //console.log("[Translation]" + id + " is not defined!")
             translatedText = id
         }
     }

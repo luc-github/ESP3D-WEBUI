@@ -30,6 +30,7 @@ import {
     ExternalLink,
     Download,
 } from "preact-feather"
+const { clearData } = require(`../${process.env.TARGET_ENV}`)
 import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
 import { setSettingPage } from "./index"
 import { prefs } from "../settings"
@@ -112,7 +113,7 @@ function setState(entry, state, index) {
             break
         case "modified":
             classSetting += " is-changed"
-            classLabel += " warning"
+            classLabel += " bg-warning"
             classButton += " btn-warning"
             break
         case "success":
@@ -369,12 +370,7 @@ const Entry = ({ entry }) => {
                     </span>
                 </div>
                 {setting}
-                <div
-                    class="invalid-feedback text-center"
-                    style="text-align:center!important"
-                >
-                    {T("S42")}
-                </div>
+
                 <div class="input-group-append">
                     <button
                         class="btn btn-default"
@@ -389,6 +385,12 @@ const Entry = ({ entry }) => {
                         </span>
                     </button>
                     {extra}
+                </div>
+                <div
+                    class="invalid-feedback text-center"
+                    style="text-align:center!important"
+                >
+                    {T("S42")}
                 </div>
             </div>
             <div class="controlSpacer" />
@@ -455,6 +457,7 @@ const ESPSettings = ({ filter }) => {
  */
 function applyChangeOnUI(entry) {
     if (entry.F == "system" && entry.H == "targetfw") {
+        clearData()
         for (let val in entry.O) {
             if (Object.values(entry.O[val])[0] == entry.V) {
                 esp3dSettings.FWTarget = Object.keys(entry.O[val])[0]
@@ -677,6 +680,7 @@ function saveSetting(entry) {
     })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
+
 /*
  * Export Settings
  *

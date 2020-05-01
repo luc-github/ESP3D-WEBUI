@@ -65,6 +65,12 @@ function SendBinary(text) {
 app.get("/command", function(req, res) {
     var url = req.originalUrl
     console.log(url)
+    if (url.indexOf("config-set") != -1) {
+        SendBinary("ok\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M205") != -1) {
         if (targetFW == "repetier" || targetFW == "repetier4davinci")
             SendBinary(
@@ -1078,6 +1084,7 @@ app.get("/command", function(req, res) {
         })
         return
     }
+    SendBinary("ok\n")
     res.json({ custom: "unknown query" })
 })
 

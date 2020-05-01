@@ -314,10 +314,13 @@ function exportSettings() {
  */
 function setState(entry, state) {
     let controlId
+    let controlIdLabel
     if (document.getElementById(entry + "-UI-checkbox"))
         controlId = document.getElementById(entry + "-UI-checkbox")
-    if (document.getElementById(entry + "-UI-select"))
+    if (document.getElementById(entry + "-UI-select")) {
         controlId = document.getElementById(entry + "-UI-select")
+        controlIdLabel = document.getElementById(entry + "-UI-label")
+    }
     if (controlId) {
         controlId.classList.remove("is-valid")
         controlId.classList.remove("is-changed")
@@ -331,6 +334,24 @@ function setState(entry, state) {
                 break
             case "error":
                 controlId.classList.add("is-invalid")
+                break
+            default:
+                break
+        }
+    }
+    if (controlIdLabel) {
+        controlIdLabel.classList.remove("error")
+        controlIdLabel.classList.remove("success")
+        controlIdLabel.classList.remove("bg-warning")
+        switch (state) {
+            case "modified":
+                controlIdLabel.classList.add("bg-warning")
+                break
+            case "success":
+                controlIdLabel.classList.add("success")
+                break
+            case "error":
+                controlIdLabel.classList.add("error")
                 break
             default:
                 break
@@ -460,7 +481,7 @@ const LanguageSelection = () => {
         <div style="margin-bottom: 15px" title={T("S69")}>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">
+                    <span id="language-UI-label" class="input-group-text">
                         <Globe />
                         <span class="hide-low text-button">{T("S68")}</span>
                     </span>

@@ -37,12 +37,28 @@ import {
  *
  */
 let listSettings = []
+let listOverloadSettings = []
+let listNormalSettings = []
 let listrawSettings = []
 let isloaded = false
 let isConfigRequested = false
 let isConfigData = false
-let configlevel = 0
 let isoverloadedconfig = false
+let smoothiewareConfigFile = "/sd/config.txt"
+let saveOnGoing = false
+
+/*
+ * Clear all lists
+ *
+ */
+function clearData() {
+    listSettings = []
+    listOverloadSettings = []
+    listNormalSettings = []
+    listrawSettings = []
+    isloaded = false
+    isoverloadedconfig = false
+}
 
 /*
  * Firmware full name
@@ -87,16 +103,24 @@ function configurationCmd(override) {
         case "grbl":
             return ["$$", "$", "ok", "error"]
         case "smoothieware":
-            //if (!override)
-            return ["cat /sd/config.txt", "#", "ok", "error"]
+            if (!override)
+                return ["cat " + smoothiewareConfigFile, "#", "ok", "error"]
             return ["M503", ";", "ok", "error"]
         default:
             return "Unknown"
     }
 }
 
+/*
+ * Import Settings
+ *
+ */
 function importSettings() {}
 
+/*
+ * Export Settings
+ *
+ */
 function exportSettings() {
     let data, file
     let p = 0
@@ -138,40 +162,74 @@ function exportSettings() {
     }
 }
 
+/*
+ * Save and Apply
+ *
+ */
 function saveAndApply() {}
 
 /*
  * Process WebSocket data
  */
 function processWSData(buffer) {
-    if (
-        buffer.startsWith(configurationCmd(configlevel)[2]) ||
-        buffer.startsWith(configurationCmd(configlevel)[3])
-    ) {
-        isConfigData = false
-        isConfigRequested = false
-        if (buffer.startsWith(configurationCmd(configlevel)[2]))
-            processConfigData()
-        else loadConfigError(404, T("S5"))
-    }
     if (isConfigRequested) {
         if (
+            buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
+            buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
+        ) {
+            isConfigData = false
+            isConfigRequested = false
+            if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2]))
+                processConfigData()
+            else loadConfigError(404, T("S5"))
+        }
+        if (
             (!isConfigData &&
-                buffer.startsWith(configurationCmd(configlevel)[1])) ||
+                buffer.startsWith(configurationCmd(isoverloadedconfig)[1])) ||
             isConfigData
         ) {
             isConfigData = true
             listrawSettings.push(buffer)
         }
     }
+    if (saveOnGoing) {
+        if (buffer.startsWith("ok") || buffer.indexOf("error") != -1) {
+            saveOnGoing = false
+            if (buffer.indexOf("error") != -1) {
+                loadConfigError(404, T("S5"))
+            } else {
+                for (let entry of listSettings) {
+                    if (entry.saving == true) {
+                        entry.saving = false
+                        entry.value = entry.currentValue
+                        setState(entry, "success")
+                    }
+                }
+            }
+        }
+    }
 }
 
+/*
+ * Process Config data
+ */
 function processConfigData() {
-    listSettings = []
+    if (!isoverloadedconfig) {
+        listNormalSettings = []
+        listSettings = listNormalSettings
+    } else {
+        listOverloadSettings = []
+        listSettings = listOverloadSettings
+    }
     for (let i = 0; i < listrawSettings.length; i++) {
         if (isConfigEntry(listrawSettings[i])) {
             if (isComment(listrawSettings[i])) {
-                if (esp3dSettings.FWTarget != "smoothieware")
+                if (
+                    !(
+                        esp3dSettings.FWTarget == "smoothieware" &&
+                        !isoverloadedconfig
+                    )
+                )
                     listSettings.push({
                         id: i,
                         comment: getComment(listrawSettings[i]),
@@ -187,10 +245,10 @@ function processConfigData() {
                         P: pt[0],
                         T: pt[1],
                     })
-                    console.log("push repetier")
                 } else {
                     if (
-                        (esp3dSettings.FWTarget == "smoothieware" ||
+                        ((esp3dSettings.FWTarget == "smoothieware" &&
+                            !isoverloadedconfig) ||
                             esp3dSettings.FWTarget == "marlin" ||
                             esp3dSettings.FWTarget == "marlinkimbra" ||
                             esp3dSettings.FWTarget == "marlin-embedded") &&
@@ -237,7 +295,7 @@ function loadConfig() {
     globaldispatch({
         type: Action.fetch_data,
     })
-    SendCommand(configurationCmd()[0], null, loadConfigError)
+    SendCommand(configurationCmd(isoverloadedconfig)[0], null, loadConfigError)
 }
 
 /*
@@ -253,6 +311,9 @@ function loadConfigError(errorCode, responseText) {
     })
 }
 
+/*
+ * Check if is it a comment
+ */
 function isComment(sline) {
     var line = sline.trim()
     if (line.length == 0 || line.startsWith("ok")) return false
@@ -262,11 +323,12 @@ function isComment(sline) {
         esp3dSettings.FWTarget == "marlin-embedded"
     ) {
         if (sline.startsWith("echo:;")) return true
-        else return false
+        return false
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
-        if (sline.trim().startsWith("#")) return true
-        else return false
+        if (!isoverloadedconfig && sline.trim().startsWith("#")) return true
+        if (isoverloadedconfig && sline.trim().startsWith(";")) return true
+        return false
     }
     if (
         esp3dSettings.FWTarget == "grbl" ||
@@ -282,7 +344,9 @@ function isComment(sline) {
     }
     return false
 }
-
+/*
+ * Check if is it a valid setting
+ */
 function isConfigEntry(sline) {
     var line = sline.trim()
     if (line.length == 0 || line.startsWith("ok")) return false
@@ -297,10 +361,17 @@ function isConfigEntry(sline) {
             sline.startsWith("\t")
         )
             return true
-        else return false
+        return false
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
-        return true
+        if (!isoverloadedconfig) return true
+        if (
+            sline.trim().startsWith("M") ||
+            sline.trim().startsWith(";") ||
+            sline.trim().startsWith("G")
+        )
+            return true
+        return false
     }
     if (
         esp3dSettings.FWTarget == "grbl" ||
@@ -318,6 +389,9 @@ function isConfigEntry(sline) {
     }
 }
 
+/*
+ * Extract value from line
+ */
 function getValue(sline) {
     let line = sline
     if (
@@ -330,36 +404,45 @@ function getValue(sline) {
         let p = line.indexOf(" ")
         if (p != -1) {
             let p2 = line.indexOf(";")
-            line = line.substring(p, p2 == -1 ? line.length : p2)
+            line = line.substring(p, p2 == -1 ? line.length : p2).trim()
         } else {
             line = ""
         }
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
-        while (line.indexOf("  ") > -1) {
-            line = line.replace("  ", " ")
+        if (!isoverloadedconfig) {
+            while (line.indexOf("  ") > -1) {
+                line = line.replace("  ", " ")
+            }
+            line = line.trim()
+            let tlist = line.split(" ")
+            line = tlist[1].trim()
+        } else {
+            let tlist = line.split(";")
+            let p = tlist[0].indexOf(" ")
+            line = tlist[0].substring(p).trim()
         }
-        line = line.trim()
-        let tlist = line.split(" ")
-        line = tlist[1]
     }
     if (
         esp3dSettings.FWTarget == "grbl" ||
         esp3dSettings.FWTarget == "grbl-embedded"
     ) {
         let tlist = sline.trim().split("=")
-        line = tlist[1]
+        line = tlist[1].trim()
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
         esp3dSettings.FWTarget == "repetier4davinci"
     ) {
         let tlist = sline.split(" ")
-        line = tlist[2]
+        line = tlist[2].trim()
     }
     return line
 }
 
+/*
+ * Extract label from line
+ */
 function getLabel(sline) {
     let line = sline
     if (
@@ -403,6 +486,9 @@ function getLabel(sline) {
     return line
 }
 
+/*
+ * Extract comment from line
+ */
 function getComment(sline) {
     let line = sline
     if (
@@ -418,11 +504,17 @@ function getComment(sline) {
         }
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
-        let p = sline.indexOf("#")
-        line = sline.substring(p + 1)
-        line = line.trim()
-        while (line.indexOf("##") > -1) {
-            line = line.replace("##", "#")
+        if (isoverloadedconfig) {
+            let p = sline.indexOf(";")
+            line = sline.substring(p + 1)
+            line = line.trim()
+        } else {
+            let p = sline.indexOf("#")
+            line = sline.substring(p + 1)
+            line = line.trim()
+            while (line.indexOf("##") > -1) {
+                line = line.replace("##", "#")
+            }
         }
         if (line.length < 2) line = "" //no meaning so remove it
     }
@@ -446,6 +538,9 @@ function getComment(sline) {
     return line
 }
 
+/*
+ * Extract P and T values from line (for repetier only)
+ */
 function getPT(sline) {
     if (
         esp3dSettings.FWTarget == "repetier" ||
@@ -459,123 +554,249 @@ function getPT(sline) {
     return null
 }
 
-function getCommand(sline) {
-    let command
-
+/*
+ * Generate set command from entry
+ */
+function getCommand(entry) {
     if (
         esp3dSettings.FWTarget == "marlin" ||
         esp3dSettings.FWTarget == "marlinkimbra" ||
         esp3dSettings.FWTarget == "marlin-embedded"
     ) {
-        command = getLabel(sline) + " "
-        return command
+        return entry.label + " " + entry.currentValue
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
-        command = "config-set sd " + getLabel(sline) + " "
-        return command
+        if (!isoverloadedconfig) {
+            return "config-set sd " + entry.label + " " + entry.currentValue
+        } else {
+            return entry.label + " " + entry.currentValue
+        }
     }
     if (
         esp3dSettings.FWTarget == "grbl" ||
         esp3dSettings.FWTarget == "grbl-embedded"
     ) {
-        command = getLabel(sline) + "="
-        return command
+        return entry.label + "=" + entry.currentValue
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
         esp3dSettings.FWTarget == "repetier4davinci"
     ) {
-        let tline = sline.split(" ")
-        if (tline.length > 3) {
-            let stype = tline[0].split(":")
-            command = "M206 T" + stype[1]
-            command += " P" + tline[1]
-            if (stype[1] == "3") command += " X"
-            else command += " S"
-            return command
-        }
+        let cmd = "M206 T" + entry.T + " P" + entry.P //+ (entry.T == "3")?" X":" S" + entry.currentValue
+        if (entry.T == "3") cmd += " X"
+        else cmd += " S"
+        cmd += entry.currentValue
+        return cmd
     }
-    return "; "
+    return ";"
 }
 
-const PrinterSetting = ({ entry }) => {
-    const onInput = e => {
-        // entry.O[index]["current_value"] = e.target.value
-        // updateState(entry, index)
+/*
+ * check entry is valid
+ */
+function checkValue(entry) {
+    if (
+        esp3dSettings.FWTarget == "marlin" ||
+        esp3dSettings.FWTarget == "marlinkimbra" ||
+        esp3dSettings.FWTarget == "marlin-embedded"
+    ) {
+        return true
     }
-    const onChange = e => {
-        // entry.O[index]["current_value"] = e.target.value
-        // updateState(entry, index)
+    if (esp3dSettings.FWTarget == "smoothieware") {
+        if (!isoverloadedconfig) {
+            if (
+                entry.currentValue.trim()[0] == "-" ||
+                entry.currentValue.trim().length === 0 ||
+                entry.currentValue.indexOf("#") != -1
+            )
+                return false
+        } else {
+            if (
+                entry.currentValue.trim().length == 0 ||
+                entry.currentValue.indexOf(";") != -1
+            )
+                return false
+        }
     }
-    const onSet = e => {
-        // let newval = parseInt(entry.V)
-        //let flag = parseInt(Object.values(entry.O[index])[0])
-        // if (entry.O[index]["current_value"] == 0) {
-        //     newval &= ~flag
-        //  } else {
-        //      newval |= flag
-        //   }
-        // entry.currentValue = newval
-        // entry.O[index].saving = true
-        // saveSetting(entry)
+    if (
+        esp3dSettings.FWTarget == "grbl" ||
+        esp3dSettings.FWTarget == "grbl-embedded"
+    ) {
+        if (
+            entry.currentValue.trim()[0] == "-" ||
+            entry.currentValue.trim().length === 0 ||
+            entry.currentValue.indexOf("#") != -1
+        )
+            return false
     }
-    useEffect(() => {
-        //updateState(entry, index)
-    }, [entry])
+    if (
+        esp3dSettings.FWTarget == "repetier" ||
+        esp3dSettings.FWTarget == "repetier4davinci"
+    ) {
+        //only numbers
+        var regex = /^-?(\d+(\.\d+)?)+$/
+        return regex.test(entry.currentValue.trim())
+    }
+    return true
+}
 
+/*
+ * Set control state
+ */
+function setState(entry, state) {
+    let id
+    if (typeof entry.id != "undefined") id = entry.id
+    else id = entry
+    let label = document.getElementById("printer_label_" + id)
+    let input = document.getElementById("printer_input_" + id)
+    let button = document.getElementById("printer_button_" + id)
+    if (!label || !input || !button) {
+        console.log("not found" + entry.id)
+        return
+    }
+    input.classList.remove("is-valid")
+    input.classList.remove("is-changed")
+    input.classList.remove("is-invalid")
+    label.classList.remove("bg-warning")
+    label.classList.remove("error")
+    label.classList.remove("success")
+    switch (state) {
+        case "error":
+            button.classList.add("d-none")
+            input.classList.add("is-invalid")
+            label.classList.add("error")
+            break
+        case "modified":
+            button.classList.add("btn-warning")
+            button.classList.remove("d-none")
+            input.classList.add("is-changed")
+            label.classList.add("bg-warning")
+            break
+        case "success":
+            button.classList.add("d-none")
+            input.classList.add("is-valid")
+            label.classList.add("success")
+            break
+        default:
+            button.classList.add("d-none")
+            break
+    }
+}
+
+/*
+ * Change state of control according context / check
+ */
+function updateState(entry) {
+    let state = "default"
+
+    if (entry.currentValue != entry.value) {
+        if (checkValue(entry)) {
+            state = "modified"
+        } else {
+            state = "error"
+        }
+    }
+    setState(entry, state)
+}
+
+/*
+ * save config query error
+ */
+function saveConfigError(errorCode, responseText) {
+    globaldispatch({
+        type: Action.error,
+        errorcode: errorCode,
+        msg: "S5",
+    })
+}
+
+/*
+ * Save current setting
+ */
+function saveSetting(entry) {
+    entry.saving = true
+    saveOnGoing = true
+    let command = encodeURIComponent(getCommand(entry))
+    SendCommand(command, null, saveConfigError)
+}
+
+/*
+ * Create setting control according entry
+ */
+const PrinterSetting = ({ entry }) => {
     if (typeof entry.value == "undefined") {
         return (
-            <div class="card-text hide-low">
-                <div style="height:0.5rem" />
-                <label>{T(entry.comment)}</label>
-            </div>
+            <h4>
+                <div class="card-text hide-low">
+                    <div style="height:0.5rem" />
+                    <label>{T(entry.comment)}</label>
+                </div>
+            </h4>
         )
-    } else {
-        let entryclass = "form-control"
-        let label = entry.label
-        let labelclass = "input-group-text fontsetting"
-        let helpclass =
-            entry.comment.length == 0 ? "d-none" : "input-group-text hide-low"
-        if (
-            esp3dSettings.FWTarget == "marlin" ||
-            esp3dSettings.FWTarget == "marlinkimbra" ||
-            esp3dSettings.FWTarget == "marlin-embedded"
-        ) {
-            entryclass += " autoWidth"
-            helpclass = "d-none"
-            labelclass = "input-group-text"
-        }
-        if (
-            esp3dSettings.FWTarget == "repetier" ||
-            esp3dSettings.FWTarget == "repetier4davinci"
-        ) {
-            entryclass += " W15"
-            label = T(entry.label)
-        }
-        if (esp3dSettings.FWTarget == "smoothieware") {
-            helpclass = "d-none"
-            label = T(entry.label)
-        }
-        if (
-            esp3dSettings.FWTarget == "grbl" ||
-            esp3dSettings.FWTarget == "grbl-embedded"
-        ) {
-            labelclass = "input-group-text"
-        }
+    }
+    if (typeof entry.currentValue == "undefined")
+        entry.currentValue = entry.value
+    const onInput = e => {
+        entry.currentValue = e.target.value.trim()
+        updateState(entry)
+    }
+    const onChange = e => {
+        entry.currentValue = e.target.value.trim()
+        updateState(entry, index)
+    }
+    const onSet = e => {
+        saveSetting(entry)
+    }
+    useEffect(() => {
+        updateState(entry)
+    }, [entry])
 
-        return (
-            <div class="card-text">
-                <div>
+    let entryclass = "form-control"
+    let label = entry.label
+    let labelclass = "input-group-text fontsetting"
+    let helpclass =
+        entry.comment.length == 0 ? "d-none" : "input-group-text hide-low"
+    if (
+        esp3dSettings.FWTarget == "marlin" ||
+        esp3dSettings.FWTarget == "marlinkimbra" ||
+        esp3dSettings.FWTarget == "marlin-embedded"
+    ) {
+        entryclass += " autoWidth"
+        helpclass = "d-none"
+        labelclass = "input-group-text"
+    }
+    if (
+        esp3dSettings.FWTarget == "repetier" ||
+        esp3dSettings.FWTarget == "repetier4davinci"
+    ) {
+        entryclass += " W15"
+        label = T(entry.label)
+    }
+    if (esp3dSettings.FWTarget == "smoothieware") {
+        helpclass = "d-none"
+        label = T(entry.label)
+    }
+    if (
+        esp3dSettings.FWTarget == "grbl" ||
+        esp3dSettings.FWTarget == "grbl-embedded"
+    ) {
+        labelclass = "input-group-text"
+    }
+
+    return (
+        <div class="card-text">
+            <div>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span
                             class={labelclass}
-                            id={"printer_setting" + entry.id}
+                            id={"printer_label_" + entry.id}
                         >
                             {label}
                         </span>
                     </div>
                     <input
+                        id={"printer_input_" + entry.id}
                         type="text"
                         class={entryclass}
                         value={entry.value}
@@ -584,9 +805,9 @@ const PrinterSetting = ({ entry }) => {
                     />
                     <div class="input-group-append">
                         <button
-                            class="btn btn-default"
+                            class="btn d-none"
                             type="button"
-                            id={"button_printer_setting" + entry.id}
+                            id={"printer_button_" + entry.id}
                             title={T("S43")}
                             onClick={onSet}
                         >
@@ -597,14 +818,64 @@ const PrinterSetting = ({ entry }) => {
                         </button>
                         <span class={helpclass}>{T(entry.comment)}</span>
                     </div>
+                    <div
+                        class="invalid-feedback text-center"
+                        style="text-align:center!important"
+                    >
+                        {T("S42")}
+                    </div>
                 </div>
-                </div>
-                <div class="controlSpacer" />
             </div>
-        )
-    }
+            <div class="controlSpacer" />
+        </div>
+    )
 }
 
+/*
+ * Override configuration switch control (Smoothieware only)
+ * to select normal or override configuration file/command
+ */
+const OverrideSettingControl = () => {
+    if (esp3dSettings.FWTarget != "smoothieware") return null
+    const toggleCheckbox = e => {
+        isoverloadedconfig = e.target.checked
+        if (!isoverloadedconfig) {
+            listSettings = listNormalSettings
+            globaldispatch({
+                type: Action.renderAll,
+            })
+        } else {
+            listSettings = listOverloadSettings
+            if (listOverloadSettings.length == 0 && prefs.autoload == "true") {
+                loadConfig()
+            } else {
+                globaldispatch({
+                    type: Action.renderAll,
+                })
+            }
+        }
+    }
+    return (
+        <div class="custom-control custom-switch">
+            <input
+                checked={isoverloadedconfig}
+                type="checkbox"
+                onChange={toggleCheckbox}
+                class="custom-control-input"
+                id="switchoverride"
+            />
+            <label class="custom-control-label" for="switchoverride">
+                {T("P1")}
+            </label>
+            <br />
+            <br />
+        </div>
+    )
+}
+
+/*
+ * Display configuration settings
+ */
 const MachineSettings = ({ currentPage }) => {
     if (
         currentPage != Setting.machine ||
@@ -613,13 +884,13 @@ const MachineSettings = ({ currentPage }) => {
         esp3dSettings.FWTarget == "unknown"
     )
         return null
-    /*  if (esp3dSettings.FWTarget == "grbl")
+    if (esp3dSettings.FWTarget == "grbl")
         return (
             <div>
                 <br />
                 <center>{T("S46")}</center>
             </div>
-        )*/
+        )
     if (prefs && prefs.autoload) {
         if (prefs.autoload == "true" && !isloaded) loadConfig()
     }
@@ -628,11 +899,17 @@ const MachineSettings = ({ currentPage }) => {
     for (let pos = 0; pos < listSettings.length; pos++) {
         displaylist.push(<PrinterSetting entry={listSettings[pos]} />)
     }
+
     return (
         <div>
             <hr />
             <center>
-                <div class="list-left">{displaylist}</div>
+                <OverrideSettingControl />
+                <div class="list-left">
+                    <div class={displaylist.length > 0 ? "card" : " d-none"}>
+                        <div class="card-body">{displaylist}</div>
+                    </div>
+                </div>
             </center>
 
             <hr />
@@ -682,10 +959,16 @@ const MachineSettings = ({ currentPage }) => {
                         <span class="hide-low text-button">{T("S52")}</span>
                     </button>
                 </span>
-                <span class="text-button-setting">
+                <span
+                    class={
+                        displaylist.length > 0
+                            ? "text-button-setting"
+                            : " d-none"
+                    }
+                >
                     <button
                         type="button"
-                        class="btn btn-danger"
+                        class="btn btn-danger "
                         title={T("S62")}
                         onClick={saveAndApply}
                     >
@@ -701,4 +984,10 @@ const MachineSettings = ({ currentPage }) => {
     )
 }
 
-export { MachineSettings, firmwareName, processWSData, enLangRessourceExtra }
+export {
+    MachineSettings,
+    firmwareName,
+    processWSData,
+    enLangRessourceExtra,
+    clearData,
+}
