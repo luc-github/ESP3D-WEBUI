@@ -46,6 +46,9 @@ let isConfigData = false
 let isoverloadedconfig = false
 let smoothiewareConfigFile = "/sd/config.txt"
 let saveOnGoing = false
+let printerImportSettings = {} //full esp3d settings to be imported
+let currentIndex
+let stopImport
 
 /*
  * Clear all lists
@@ -56,8 +59,8 @@ function clearData() {
     listOverloadSettings = []
     listNormalSettings = []
     listrawSettings = []
-    isloaded = false
     isoverloadedconfig = false
+    isloaded = false
 }
 
 /*
@@ -99,9 +102,6 @@ function configurationCmd(override) {
         case "marlin":
         case "marlinkimbra":
             return ["M503", "echo:  G21", "ok", "error"]
-        case "grbl-embedded":
-        case "grbl":
-            return ["$$", "$", "ok", "error"]
         case "smoothieware":
             if (!override)
                 return ["cat " + smoothiewareConfigFile, "#", "ok", "error"]
@@ -122,13 +122,9 @@ function saveConfigurationCmd(override) {
         case "marlin-embedded":
         case "marlin":
         case "marlinkimbra":
-            return ["M500",  "ok", "error"]
-        case "grbl-embedded":
-        case "grbl":
-            return ["$$", "ok", "error"]
+            return ["M500", "ok", "error"]
         case "smoothieware":
-            if (!override)
-                return ["reset", "ok", "error"]
+            if (!override) return ["reset", "ok", "error"]
             return ["M500", "ok", "error"]
         default:
             return "Unknown"
@@ -136,10 +132,127 @@ function saveConfigurationCmd(override) {
 }
 
 /*
- * Import Settings
+ * Prepare Settings Import
  *
  */
-function importSettings() {}
+function importSettings() {
+    document.getElementById("importPControl").click()
+    document.getElementById("importPControl").onchange = () => {
+        let importFile = document.getElementById("importPControl").files
+        let fileList = []
+        let message = []
+        fileList.push(<div>{T("S56")}</div>)
+        fileList.push(<br />)
+        for (let i = 0; i < importFile.length; i++) {
+            fileList.push(<li>{importFile[i].name}</li>)
+        }
+        message.push(
+            <center>
+                <div style="text-align: left; display: inline-block; overflow: hidden;text-overflow: ellipsis;">
+                    <ul>{fileList}</ul>
+                </div>
+            </center>
+        )
+        //todo open dialog to confirm
+        globaldispatch({
+            type: Action.confirmation,
+            msg: message,
+            nextaction: loadImportFile,
+            nextaction2: closeImport,
+        })
+    }
+}
+
+/*
+ * Import settings one by one
+ *
+ */
+function doImport() {
+    let listImportedSettings = Object.values(printerImportSettings.printer)
+    if (stopImport) {
+        return
+    }
+    let size_list = listImportedSettings.length
+    currentIndex++
+    if (currentIndex < size_list) {
+        let percentComplete = (currentIndex / size_list) * 100
+        const cmd = encodeURIComponent(
+            getCommand(listImportedSettings[currentIndex])
+        )
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: percentComplete.toFixed(0),
+            title: "S32",
+            nextaction: cancelImport,
+        })
+        SendCommand(cmd, doImport, saveConfigError)
+    } else {
+        globaldispatch({
+            type: Action.upload_progress,
+            progress: 100,
+            nextaction: cancelImport,
+        })
+        loadConfig()
+    }
+}
+/*
+ * Load Import File
+ *
+ */
+function loadImportFile() {
+    let importFile = document.getElementById("importPControl").files
+    let reader = new FileReader()
+    reader.onload = function(e) {
+        var contents = e.target.result
+        console.log(contents)
+        try {
+            printerImportSettings = JSON.parse(contents)
+            currentIndex = -1
+            globaldispatch({
+                type: Action.upload_progress,
+                title: "S32",
+                msg: null,
+                progress: 0,
+                nextaction: cancelImport,
+            })
+            stopImport = false
+            doImport()
+        } catch (e) {
+            document.getElementById("importPControl").value = ""
+            console.error("Parsing error:", e)
+            globaldispatch({
+                type: Action.error,
+                errorcode: e,
+                msg: "S21",
+            })
+        }
+    }
+    reader.readAsText(importFile[0])
+    closeImport()
+}
+
+/*
+ * Cancel import
+ *
+ */
+function cancelImport() {
+    stopImport = true
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    console.log("stopping import")
+}
+
+/*
+ * Close import
+ *
+ */
+function closeImport() {
+    document.getElementById("importPControl").value = ""
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
 
 /*
  * Export Settings
@@ -187,25 +300,60 @@ function exportSettings() {
 }
 
 /*
+ * Process Save and Apply
+ *
+ */
+function processSaveConfig() {
+    const command = encodeURIComponent(
+        saveConfigurationCmd(isoverloadedconfig)[0]
+    )
+    globaldispatch({
+        type: Action.renderAll,
+    })
+    SendCommand(command, null, loadConfigError)
+}
+
+/*
  * Save and Apply
  *
  */
-function saveAndApply() {}
+function saveAndApply() {
+    //todo open dialog to confirm
+    globaldispatch({
+        type: Action.confirmation,
+        msg:
+            esp3dSettings.FWTarget == "smoothieware" && !isoverloadedconfig
+                ? T("P4")
+                : T("P3"),
+        nextaction: processSaveConfig,
+    })
+}
 
 /*
  * Process WebSocket data
  */
 function processWSData(buffer) {
     if (isConfigRequested) {
+        console.log("config requested, processing " + buffer)
+        console.log("setting size " + listrawSettings.length)
         if (
             buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
             buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
         ) {
+            if (
+                listrawSettings.length == 0 &&
+                buffer.startsWith(configurationCmd(isoverloadedconfig)[2])
+            ) {
+                console.log("we are done too soon, try again")
+                return
+            }
+
+            console.log("we are done")
             isConfigData = false
             isConfigRequested = false
-            if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2]))
+            if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2])) {
                 processConfigData()
-            else loadConfigError(404, T("S5"))
+            } else loadConfigError(404, T("S5"))
         }
         if (
             (!isConfigData &&
@@ -282,14 +430,6 @@ function processConfigData() {
                             id: i,
                             comment: getComment(listrawSettings[i]),
                         })
-                    if (
-                        esp3dSettings.FWTarget == "grbl" ||
-                        esp3dSettings.FWTarget == "grbl-embedded"
-                    )
-                        listSettings.push({
-                            id: i,
-                            comment: getLabel(listrawSettings[i]),
-                        })
                     listSettings.push({
                         id: i,
                         comment: getComment(listrawSettings[i]),
@@ -300,6 +440,7 @@ function processConfigData() {
             }
         }
     }
+    console.log(listSettings)
     globaldispatch({
         type: Action.renderAll,
     })
@@ -309,7 +450,7 @@ function processConfigData() {
  * Load Firmware settings
  */
 function loadConfig() {
-    const cmd = encodeURIComponent("M503")
+    const cmd = encodeURIComponent(configurationCmd(isoverloadedconfig)[0])
     isloaded = true
     isConfigRequested = true
     isConfigData = false
@@ -318,7 +459,7 @@ function loadConfig() {
     globaldispatch({
         type: Action.fetch_data,
     })
-    SendCommand(configurationCmd(isoverloadedconfig)[0], null, loadConfigError)
+    SendCommand(cmd, null, loadConfigError)
 }
 
 /*
@@ -351,12 +492,6 @@ function isComment(sline) {
     if (esp3dSettings.FWTarget == "smoothieware") {
         if (!isoverloadedconfig && sline.trim().startsWith("#")) return true
         if (isoverloadedconfig && sline.trim().startsWith(";")) return true
-        return false
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
         return false
     }
     if (
@@ -395,13 +530,6 @@ function isConfigEntry(sline) {
         )
             return true
         return false
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        if (line.startsWith("$") && line.indexOf("=") != -1) return true
-        else return false
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
@@ -447,13 +575,6 @@ function getValue(sline) {
         }
     }
     if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        let tlist = sline.trim().split("=")
-        line = tlist[1].trim()
-    }
-    if (
         esp3dSettings.FWTarget == "repetier" ||
         esp3dSettings.FWTarget == "repetier4davinci"
     ) {
@@ -485,13 +606,6 @@ function getLabel(sline) {
     if (esp3dSettings.FWTarget == "smoothieware") {
         line = sline.trim()
         let tlist = line.split(" ")
-        line = tlist[0]
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        let tlist = sline.trim().split("=")
         line = tlist[0]
     }
     if (
@@ -542,12 +656,6 @@ function getComment(sline) {
         if (line.length < 2) line = "" //no meaning so remove it
     }
     if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        line = ""
-    }
-    if (
         esp3dSettings.FWTarget == "repetier" ||
         esp3dSettings.FWTarget == "repetier4davinci"
     ) {
@@ -581,25 +689,22 @@ function getPT(sline) {
  * Generate set command from entry
  */
 function getCommand(entry) {
+    let value
+    if (typeof entry.currentValue == "undefined") value = entry.V
+    else value = entry.currentValue
     if (
         esp3dSettings.FWTarget == "marlin" ||
         esp3dSettings.FWTarget == "marlinkimbra" ||
         esp3dSettings.FWTarget == "marlin-embedded"
     ) {
-        return entry.label + " " + entry.currentValue
+        return entry.label + " " + value
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
         if (!isoverloadedconfig) {
-            return "config-set sd " + entry.label + " " + entry.currentValue
+            return "config-set sd " + entry.label + " " + value
         } else {
-            return entry.label + " " + entry.currentValue
+            return entry.label + " " + value
         }
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        return entry.label + "=" + entry.currentValue
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
@@ -608,7 +713,7 @@ function getCommand(entry) {
         let cmd = "M206 T" + entry.T + " P" + entry.P //+ (entry.T == "3")?" X":" S" + entry.currentValue
         if (entry.T == "3") cmd += " X"
         else cmd += " S"
-        cmd += entry.currentValue
+        cmd += value
         return cmd
     }
     return ";"
@@ -640,17 +745,6 @@ function checkValue(entry) {
             )
                 return false
         }
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        if (
-            entry.currentValue.trim()[0] == "-" ||
-            entry.currentValue.trim().length === 0 ||
-            entry.currentValue.indexOf("#") != -1
-        )
-            return false
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
@@ -793,18 +887,12 @@ const PrinterSetting = ({ entry }) => {
     ) {
         entryclass += " W15"
         label = T(entry.label)
-        labelclass+= " fontsetting"
+        labelclass += " fontsetting"
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
         helpclass = "d-none"
         label = T(entry.label)
-        if (!isoverloadedconfig)labelclass+= " fontsetting"
-    }
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        labelclass+= " fontsetting"
+        if (!isoverloadedconfig) labelclass += " fontsetting"
     }
 
     return (
@@ -908,11 +996,14 @@ const MachineSettings = ({ currentPage }) => {
         esp3dSettings.FWTarget == "unknown"
     )
         return null
-    if (esp3dSettings.FWTarget == "grbl")
+    if (
+        esp3dSettings.FWTarget == "grbl" ||
+        esp3dSettings.FWTarget == "grbl-embedded"
+    )
         return (
             <div>
                 <br />
-                <center>{T("S46")}</center>
+                <center>{T("P5")}</center>
             </div>
         )
     if (prefs && prefs.autoload) {
@@ -925,11 +1016,10 @@ const MachineSettings = ({ currentPage }) => {
     }
     let ApplyIcon
     let saveButtontext
-    if ((esp3dSettings.FWTarget == "smoothieware") && !isoverloadedconfig) {
+    if (esp3dSettings.FWTarget == "smoothieware" && !isoverloadedconfig) {
         ApplyIcon = <RotateCcw />
         saveButtontext = "P2"
-        }
-    else {
+    } else {
         ApplyIcon = <Save />
         saveButtontext = "S61"
     }
@@ -1006,10 +1096,12 @@ const MachineSettings = ({ currentPage }) => {
                         onClick={saveAndApply}
                     >
                         {ApplyIcon}
-                        <span class="hide-low text-button">{T(saveButtontext)}</span>
+                        <span class="hide-low text-button">
+                            {T(saveButtontext)}
+                        </span>
                     </button>
                 </span>
-                <input type="file" class="d-none" id="importControl" />
+                <input type="file" class="d-none" id="importPControl" />
                 <br />
                 <br />
             </center>

@@ -241,7 +241,7 @@ function progressUpload(oEvent) {
  *
  */
 function clickGitFW() {
-    window.open("https://www.github.com/luc-github/ESP3D", "_blank")
+    window.open("https://github.com/luc-github/ESP3D/tree/3.0", "_blank")
 }
 
 /*
@@ -249,7 +249,7 @@ function clickGitFW() {
  *
  */
 function clickGitUI() {
-    window.open("https://www.github.com/luc-github/ESP3D-WEBUI", "_blank")
+    window.open("https://github.com/luc-github/ESP3D-WEBUI/tree/3.0", "_blank")
 }
 
 /*

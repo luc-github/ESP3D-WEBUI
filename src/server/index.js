@@ -202,7 +202,7 @@ app.get("/command", function(req, res) {
         return
     }
 
-    if (url.indexOf("=$$") != -1) {
+    if (url.indexOf("=%24%24") != -1) {
         if (targetFW == "grbl")
             SendBinary(
                 "$0=3\n" +
