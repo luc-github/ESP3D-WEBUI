@@ -130,7 +130,7 @@ function importSettings() {
  *
  */
 function doImport() {
-    let listImportedSettings = Object.values(machineImportSettings.printer)
+    let listImportedSettings = Object.values(machineImportSettings.grbl)
     if (stopImport) {
         return
     }
