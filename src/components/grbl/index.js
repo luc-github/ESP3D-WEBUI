@@ -624,12 +624,6 @@ const PrinterSetting = ({ entry }) => {
     let labelclass = "input-group-text"
     let helpclass =
         entry.comment.length == 0 ? "d-none" : "input-group-text hide-low"
-    if (
-        esp3dSettings.FWTarget == "grbl" ||
-        esp3dSettings.FWTarget == "grbl-embedded"
-    ) {
-        labelclass += " fontsetting"
-    }
 
     return (
         <div class="card-text">

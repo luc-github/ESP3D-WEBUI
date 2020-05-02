@@ -728,7 +728,8 @@ function checkValue(entry) {
         esp3dSettings.FWTarget == "marlinkimbra" ||
         esp3dSettings.FWTarget == "marlin-embedded"
     ) {
-        return true
+        var regex = /^([A-Z]?-?(\d+(\.\d+)?)+\s?)+$/
+        return regex.test(entry.currentValue.trim())
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
         if (!isoverloadedconfig) {
@@ -744,6 +745,8 @@ function checkValue(entry) {
                 entry.currentValue.indexOf(";") != -1
             )
                 return false
+            var regex = /^([A-Z]?-?(\d+(\.\d+)?)+\s?)+$/
+            return regex.test(entry.currentValue.trim())
         }
     }
     if (
