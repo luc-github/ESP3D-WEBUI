@@ -112,6 +112,30 @@ function configurationCmd(override) {
 }
 
 /*
+ * Give Save/Apply configuration command and parameters
+ */
+function saveConfigurationCmd(override) {
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            return ["M500", "wait", "error"]
+        case "marlin-embedded":
+        case "marlin":
+        case "marlinkimbra":
+            return ["M500",  "ok", "error"]
+        case "grbl-embedded":
+        case "grbl":
+            return ["$$", "ok", "error"]
+        case "smoothieware":
+            if (!override)
+                return ["reset", "ok", "error"]
+            return ["M500", "ok", "error"]
+        default:
+            return "Unknown"
+    }
+}
+
+/*
  * Import Settings
  *
  */
@@ -415,7 +439,7 @@ function getValue(sline) {
             }
             line = line.trim()
             let tlist = line.split(" ")
-            line = tlist[1].trim()
+            line = tlist[1]
         } else {
             let tlist = line.split(";")
             let p = tlist[0].indexOf(" ")
@@ -752,7 +776,7 @@ const PrinterSetting = ({ entry }) => {
 
     let entryclass = "form-control"
     let label = entry.label
-    let labelclass = "input-group-text fontsetting"
+    let labelclass = "input-group-text"
     let helpclass =
         entry.comment.length == 0 ? "d-none" : "input-group-text hide-low"
     if (
@@ -762,7 +786,6 @@ const PrinterSetting = ({ entry }) => {
     ) {
         entryclass += " autoWidth"
         helpclass = "d-none"
-        labelclass = "input-group-text"
     }
     if (
         esp3dSettings.FWTarget == "repetier" ||
@@ -770,16 +793,18 @@ const PrinterSetting = ({ entry }) => {
     ) {
         entryclass += " W15"
         label = T(entry.label)
+        labelclass+= " fontsetting"
     }
     if (esp3dSettings.FWTarget == "smoothieware") {
         helpclass = "d-none"
         label = T(entry.label)
+        if (!isoverloadedconfig)labelclass+= " fontsetting"
     }
     if (
         esp3dSettings.FWTarget == "grbl" ||
         esp3dSettings.FWTarget == "grbl-embedded"
     ) {
-        labelclass = "input-group-text"
+        labelclass+= " fontsetting"
     }
 
     return (
@@ -898,7 +923,16 @@ const MachineSettings = ({ currentPage }) => {
     for (let pos = 0; pos < listSettings.length; pos++) {
         displaylist.push(<PrinterSetting entry={listSettings[pos]} />)
     }
-
+    let ApplyIcon
+    let saveButtontext
+    if ((esp3dSettings.FWTarget == "smoothieware") && !isoverloadedconfig) {
+        ApplyIcon = <RotateCcw />
+        saveButtontext = "P2"
+        }
+    else {
+        ApplyIcon = <Save />
+        saveButtontext = "S61"
+    }
     return (
         <div>
             <hr />
@@ -971,8 +1005,8 @@ const MachineSettings = ({ currentPage }) => {
                         title={T("S62")}
                         onClick={saveAndApply}
                     >
-                        <Save />
-                        <span class="hide-low text-button">{T("S61")}</span>
+                        {ApplyIcon}
+                        <span class="hide-low text-button">{T(saveButtontext)}</span>
                     </button>
                 </span>
                 <input type="file" class="d-none" id="importControl" />
