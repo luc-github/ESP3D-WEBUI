@@ -22,16 +22,18 @@ import { h } from "preact"
 import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
+import { TerminalPanel, updateTerminal } from "./terminal"
 //const { Machine } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Dashboard page
  *
  */
-export const DashboardPage = ({ currentState }) => {
+const DashboardPage = ({ currentState }) => {
     if (currentState.activePage != Page.dashboard) return null
     return (
         <div>
+            <TerminalPanel currentState={currentState} />
             <center>
                 <br />
                 Dashboard for {process.env.TARGET_ENV}
@@ -41,3 +43,5 @@ export const DashboardPage = ({ currentState }) => {
         </div>
     )
 }
+
+export { DashboardPage, updateTerminal }

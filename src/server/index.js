@@ -20,6 +20,8 @@ const machine = process.env.TARGET_ENV
  * unknown: "0"
  * */
 
+let tempInterval = null
+
 let targetFW = machine == "grbl" ? "grbl" : "marlin"
 let targetFWnb =
     machine == "grbl"
@@ -50,6 +52,19 @@ app.use(fileUpload({ preserveExtension: true, debug: true }))
     })
 }*/
 
+function sendTemperature() {
+    if (targetFW == "repetier" || targetFW == "repetier4davinci") {
+        SendBinary(
+            "T:21.89 / 0 B:26.70 / 0 B@:0 @:0 T0:21.89 / 0 @0:0 T1:15.28 / 0 @1:0\nok\n"
+        )
+    }
+    if (targetFW == "marlin" || targetFW == "marlinkimbra") {
+        SendBinary(
+            "ok T:21.89 / 0 B:26.70 / 0 B@:0 @:0 T0:21.89 / 0 @0:0 T1:15.28 / 0 @1:0\n"
+        )
+    }
+}
+
 function SendBinary(text) {
     const array = new Uint8Array(text.length)
     for (var i = 0; i < array.length; ++i) {
@@ -67,6 +82,22 @@ app.get("/command", function(req, res) {
     console.log(url)
     if (url.indexOf("config-set") != -1) {
         SendBinary("ok\n")
+        res.send("")
+        return
+    }
+    if (url.indexOf("M105") != -1) {
+        if (url.indexOf("M105%20ON") != -1) {
+            if (tempInterval == null) {
+                tempInterval = setInterval(function() {
+                    sendTemperature()
+                }, 3000)
+            }
+        }
+        if (url.indexOf("M105%20OFF") != -1) {
+            clearInterval(tempInterval)
+            tempInterval = null
+        }
+        sendTemperature()
         res.send("")
         return
     }

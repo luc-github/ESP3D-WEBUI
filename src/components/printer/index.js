@@ -204,7 +204,7 @@ function loadImportFile() {
     let reader = new FileReader()
     reader.onload = function(e) {
         var contents = e.target.result
-        console.log(contents)
+        //console.log(contents)
         try {
             printerImportSettings = JSON.parse(contents)
             currentIndex = -1
@@ -240,7 +240,7 @@ function cancelImport() {
     globaldispatch({
         type: Action.renderAll,
     })
-    console.log("stopping import")
+    //console.log("stopping import")
 }
 
 /*
@@ -279,7 +279,7 @@ function exportSettings() {
         }
     }
     data += "]}"
-    console.log(data)
+    //console.log(data)
     file = new Blob([data], { type: "application/json" })
     if (window.navigator.msSaveOrOpenBlob)
         // IE10+
@@ -334,8 +334,8 @@ function saveAndApply() {
  */
 function processWSData(buffer) {
     if (isConfigRequested) {
-        console.log("config requested, processing " + buffer)
-        console.log("setting size " + listrawSettings.length)
+        //console.log("config requested, processing " + buffer)
+        //console.log("setting size " + listrawSettings.length)
         if (
             buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
             buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
@@ -348,7 +348,7 @@ function processWSData(buffer) {
                 return
             }
 
-            console.log("we are done")
+            //console.log("we are done")
             isConfigData = false
             isConfigRequested = false
             if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2])) {
@@ -440,7 +440,7 @@ function processConfigData() {
             }
         }
     }
-    console.log(listSettings)
+    //console.log(listSettings)
     globaldispatch({
         type: Action.renderAll,
     })
@@ -771,7 +771,7 @@ function setState(entry, state) {
     let input = document.getElementById("printer_input_" + id)
     let button = document.getElementById("printer_button_" + id)
     if (!label || !input || !button) {
-        console.log("not found" + entry.id)
+        //console.log("not found" + entry.id)
         return
     }
     input.classList.remove("is-valid")

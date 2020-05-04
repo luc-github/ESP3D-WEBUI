@@ -19,7 +19,7 @@
 */
 
 "use strict"
-import { globaldispatch, Action } from "../app"
+import { globaldispatch, Action, updateTerminal } from "../app"
 import { cancelCurrentUpload } from "../http"
 const { processWSData } = require(`../${process.env.TARGET_ENV}`)
 /*
@@ -81,7 +81,8 @@ function ping(start = false) {
  * Process WS terminal line
  */
 function processWebSocketBuffer(wsBuffer) {
-    console.log(wsBuffer)
+    //console.log(wsBuffer)
+    updateTerminal(wsBuffer)
     processWSData(wsBuffer)
 }
 
@@ -155,7 +156,7 @@ function connectWsServer() {
     //On open WS
     webSocketClient.onopen = function(e) {
         reconnectCounter = 0
-        console.log("ws connection ok")
+        //console.log("ws connection ok")
         globaldispatch({
             type: Action.websocket_success,
         })

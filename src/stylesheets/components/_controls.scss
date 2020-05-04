@@ -54,13 +54,22 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .checkbox-control {
     display: block;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
+    padding: 0px 0px 0px 35px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    white-space: nowrap;
+}
+
+.control-like {
+    padding-top: 5px !important;
+    padding-bottom: 0px !important;
+}
+
+.no_wrap {
+    white-space: nowrap !important;
 }
 
 /* Hide the browser's default checkbox */

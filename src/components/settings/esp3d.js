@@ -510,7 +510,7 @@ function loadSettings() {
 function loadSettingsSuccess(responseText) {
     try {
         esp3dFWSettings = JSON.parse(responseText)
-        console.log(esp3dFWSettings)
+        //console.log(esp3dFWSettings)
         globaldispatch({
             type: Action.renderAll,
         })

@@ -23,13 +23,14 @@ import "../stylesheets/application.scss"
 import { useState, useEffect, useReducer } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"
-import { DashboardPage } from "./dashboard"
+import { DashboardPage, updateTerminal } from "./dashboard"
 import { SettingsPage } from "./settings"
 import { Header } from "./header"
 import { Notification } from "./notification"
 import { setLang, T } from "./translations"
 import { initApp } from "./uisettings"
 import { prefs } from "./settings"
+//import {updateTerminal}  from "./settings"
 
 /*
  * Some constants
@@ -319,7 +320,7 @@ const MainPage = ({ currentState }) => {
  * Apply necessary settings
  */
 function applyConfig(data) {
-    console.log("Apply settings")
+    //console.log("Apply settings")
     esp3dSettings = data
 }
 
@@ -353,4 +354,5 @@ export {
     setNotificationBottom,
     esp3dSettings,
     prefs,
+    updateTerminal,
 }

@@ -102,10 +102,10 @@ function loadLanguageError(errorCode, responseText) {
  */
 function loadPreferencesSuccess(responseText) {
     try {
-        console.log("Success prefs")
+        //console.log("Success prefs")
         preferences = JSON.parse(responseText)
         setcurrentprefs(preferences)
-        console.log(preferences.settings.language)
+        //console.log(preferences.settings.language)
         if (preferences.settings.language != "en")
             loadLanguage(preferences.settings.language)
         else loadConfig()
