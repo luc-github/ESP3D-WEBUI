@@ -40,7 +40,7 @@ let setSettingPage
  *
  */
 const SettingsPage = ({ currentState }) => {
-    ;[currentSettingPage, setSettingPage] = useState(Setting.machine)
+    ;[currentSettingPage, setSettingPage] = useState(Setting.esp3d)
     if (currentState.activePage != Page.settings) {
         return null
     }

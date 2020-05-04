@@ -56,7 +56,7 @@ const Action = {
     upload_progress: 16,
     message: 17,
 }
-const defaultPage = Page.settings
+const defaultPage = Page.dashboard
 /*
  * Hook variables for communication with UI
  */
