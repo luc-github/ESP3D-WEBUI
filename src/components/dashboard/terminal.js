@@ -54,11 +54,7 @@ const MAX_LINES_MONITOR = 300
 function updateTerminal(data) {
     updateQuietTerminal(data)
     updateVerboseTerminal(data)
-    if (verboseOutput) currentOutput = monitorDataVerbose
-    else currentOutput = monitorDataQuiet
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    updateContentType()
 }
 
 /*
@@ -132,9 +128,7 @@ const TerminalControls = ({ visible }) => {
         currentOutput = []
         monitorDataQuiet = []
         monitorDataVerbose = []
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        updateContentType()
     }
     return (
         <div class="d-flex flex-row">
@@ -273,7 +267,7 @@ const TerminalWindow = ({ visible }) => {
     }
     useEffect(() => {
         doAutoscroll()
-    })
+    },[currentOutput])
     return (
         <div>
             <div class="controlSpacer" />
