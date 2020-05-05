@@ -21,6 +21,7 @@ const machine = process.env.TARGET_ENV
  * */
 
 let tempInterval = null
+let waitInterval = null
 
 let targetFW = machine == "grbl" ? "grbl" : "marlin"
 let targetFWnb =
@@ -82,6 +83,22 @@ app.get("/command", function(req, res) {
     console.log(url)
     if (url.indexOf("config-set") != -1) {
         SendBinary("ok\n")
+        res.send("")
+        return
+    }
+    if (url.indexOf("AUTOWAIT") != -1) {
+        if (url.indexOf("ON") != -1) {
+            if (waitInterval == null) {
+                waitInterval = setInterval(function() {
+                    SendBinary("wait\n")
+                }, 1000)
+            }
+        }
+        if (url.indexOf("OFF") != -1) {
+            clearInterval(waitInterval)
+            waitInterval = null
+        }
+        sendTemperature()
         res.send("")
         return
     }

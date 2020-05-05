@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { useState } from "preact/hooks"
+import { useState, useEffect } from "preact/hooks"
 import { initApp } from "../uisettings"
 import { globaldispatch, Page, Action } from "../app"
 import { Terminal, XCircle, Send } from "preact-feather"
@@ -34,6 +34,8 @@ let monitorDataQuiet = []
 let monitorDataVerbose = []
 let currentOutput = []
 let verboseOutput = true
+let autoscrollOutput = true
+let pauseAutoscroll = false
 let visible = false
 var commandHistory = []
 var commandHistoryIndex = -1
@@ -43,14 +45,65 @@ var commandHistoryIndex = -1
  *
  */
 const MAX_HISTORY_SIZE = 40
+const MAX_LINES_MONITOR = 300
 
 /*
  * Update Terminal window
  *
  */
 function updateTerminal(data) {
-    console.log("[Terminal]" + data)
-    currentOutput.push(<div>{data}</div>)
+    updateQuietTerminal(data)
+    updateVerboseTerminal(data)
+    if (verboseOutput) currentOutput = monitorDataVerbose
+    else currentOutput = monitorDataQuiet
+    globaldispatch({
+        type: Action.renderAll,
+    })
+}
+
+/*
+ * Update quiet Terminal window
+ *
+ */
+function updateQuietTerminal(data) {
+    if (
+        !(
+            data.startsWith("wait") ||
+            data.startsWith("ok") ||
+            data.startsWith("T:")
+        )
+    ) {
+        monitorDataQuiet.push(<div>{data}</div>)
+        if (autoscrollOutput && pauseAutoscroll) {
+            if (monitorDataQuiet.length > 2 * MAX_LINES_MONITOR)
+                monitorDataQuiet = monitorDataQuiet.slice(-MAX_LINES_MONITOR)
+        } else {
+            monitorDataQuiet = monitorDataQuiet.slice(-MAX_LINES_MONITOR)
+        }
+    }
+}
+
+/*
+ * Update Verbose Terminal window
+ *
+ */
+function updateVerboseTerminal(data) {
+    monitorDataVerbose.push(<div>{data}</div>)
+    if (autoscrollOutput && pauseAutoscroll) {
+        if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
+            monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+    } else {
+        monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+    }
+}
+
+/*
+ * Update type of content of Terminal window
+ *
+ */
+function updateContentType() {
+    if (verboseOutput) currentOutput = monitorDataVerbose
+    else currentOutput = monitorDataQuiet
     globaldispatch({
         type: Action.renderAll,
     })
@@ -62,16 +115,23 @@ function updateTerminal(data) {
  */
 const TerminalControls = ({ visible }) => {
     if (!visible) return null
-    const [isVerbose, setVerbose] = useState(true)
+    const [isVerbose, setVerbose] = useState(verboseOutput)
     const toogleVerbose = e => {
+        verboseOutput = e.target.checked
         setVerbose(e.target.checked)
+        updateContentType()
     }
-    const [isAutoscroll, setAutoscroll] = useState(true)
+    const [isAutoscroll, setAutoscroll] = useState(autoscrollOutput)
     const toogleAutoscroll = e => {
         setAutoscroll(e.target.checked)
+        autoscrollOutput = e.target.checked
+        if (autoscrollOutput) pauseAutoscroll = false
+        doAutoscroll()
     }
     const clearterminal = e => {
         currentOutput = []
+        monitorDataQuiet = []
+        monitorDataVerbose = []
         globaldispatch({
             type: Action.renderAll,
         })
@@ -149,6 +209,21 @@ function sendCommand(cmd) {
 }
 
 /*
+ *Do autoscroll
+ *
+ *
+ */
+function doAutoscroll() {
+    if (autoscrollOutput && !pauseAutoscroll) {
+        document.getElementById(
+            "outputTerminalWindow"
+        ).scrollTop = document.getElementById(
+            "outputTerminalWindow"
+        ).scrollHeight
+    }
+}
+
+/*
  * Terminal Window
  *
  */
@@ -163,6 +238,11 @@ const TerminalWindow = ({ visible }) => {
     }
     const onInput = e => {
         setCommand(e.target.value.trim())
+    }
+    const onScroll = e => {
+        if (e.target.scrollTop + e.target.offsetHeight != e.target.scrollHeight)
+            pauseAutoscroll = true
+        else pauseAutoscroll = false
     }
     const onKeyUp = e => {
         if (e.keyCode == 13) {
@@ -191,6 +271,9 @@ const TerminalWindow = ({ visible }) => {
             }
         }
     }
+    useEffect(() => {
+        doAutoscroll()
+    })
     return (
         <div>
             <div class="controlSpacer" />
@@ -222,8 +305,10 @@ const TerminalWindow = ({ visible }) => {
                     <div class="controlSpacer" />
                     <div class="card">
                         <div
-                            class="card-body"
-                            style="max-height:200px; overflow-y: scroll;"
+                            id="outputTerminalWindow"
+                            class="card-body customscroll"
+                            style="min-height:200px;max-height:200px; overflow: auto;"
+                            onscroll={onScroll}
                         >
                             {currentOutput}
                         </div>
