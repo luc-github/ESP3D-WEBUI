@@ -351,9 +351,9 @@ function processTemperatures(buffer) {
                 parseFloat(result[5])
                     .toFixed(2)
                     .toString() + "°C"
-        if (tool == "T") {
+        if (tool == "T") { //TODO add tool as key 
             dispatch("temperatures/update", { key: "T", value: value })
-            console.log(tool + ":" + value + "/" + value2)
+            //console.log(tool + ":" + value + "/" + value2)
         }
     }
 }

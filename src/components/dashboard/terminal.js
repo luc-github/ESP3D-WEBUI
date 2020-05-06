@@ -25,6 +25,7 @@ import { initApp } from "../uisettings"
 import { globaldispatch, Page, Action } from "../app"
 import { Terminal, XCircle, Send } from "preact-feather"
 import { SendCommand } from "../http"
+import { useStoreon } from "storeon/preact"
 
 /*
  * Local variables
@@ -98,11 +99,13 @@ function updateVerboseTerminal(data) {
  *
  */
 function updateContentType() {
+    const { dispatch } = useStoreon()
     if (verboseOutput) currentOutput = monitorDataVerbose
     else currentOutput = monitorDataQuiet
-    globaldispatch({
+    dispatch("monitor/set", currentOutput)
+    /*globaldispatch({
         type: Action.renderAll,
-    })
+    })*/
 }
 
 /*
@@ -222,6 +225,7 @@ function doAutoscroll() {
  *
  */
 const TerminalWindow = ({ visible }) => {
+    const { content } = useStoreon("content")
     if (!visible) return null
     const [command, setCommand] = useState("")
     const onclick = e => {
@@ -267,7 +271,7 @@ const TerminalWindow = ({ visible }) => {
     }
     useEffect(() => {
         doAutoscroll()
-    }, [currentOutput])
+    }, [content])
     return (
         <div>
             <div class="controlSpacer" />
@@ -304,7 +308,7 @@ const TerminalWindow = ({ visible }) => {
                             style="min-height:200px;max-height:200px; overflow: auto;"
                             onscroll={onScroll}
                         >
-                            {currentOutput}
+                            {content}
                         </div>
                     </div>
                 </div>

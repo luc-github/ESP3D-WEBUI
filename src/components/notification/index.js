@@ -37,7 +37,6 @@ export const Notification = () => {
     let T
     if (typeof temperatures[2] != "undefined") {
         T = temperatures[2].value
-        console.log(temperatures[2].value)
     }
     useEffect(() => {
         setNotificationBottom(
