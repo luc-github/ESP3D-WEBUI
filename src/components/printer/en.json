@@ -3,5 +3,9 @@
     "P2" : "Reset board",
     "P3" : "Save current settings ?",
     "P4" : "Reset board to apply changes?",
-    "P5" : "Sorry this UI is only for 3D printer, please use CNC one"
+    "P5" : "Sorry this UI is only for 3D printer, please use CNC one",
+    "P6" : "Home all axis",
+    "P7" : "Home X axis",
+    "P8" : "Home Y axis",
+    "P9" : "Home Z axis"
 }

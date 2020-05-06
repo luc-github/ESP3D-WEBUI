@@ -20,6 +20,7 @@
 
 import { h } from "preact"
 import "../stylesheets/application.scss"
+require(`../stylesheets/components/${process.env.TARGET_ENV}/_${process.env.TARGET_ENV}.scss`)
 import { useState, useEffect, useReducer } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"

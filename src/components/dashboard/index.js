@@ -23,7 +23,7 @@ import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
-//const { Machine } = require(`../${process.env.TARGET_ENV}`)
+const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Dashboard page
@@ -35,10 +35,12 @@ const DashboardPage = ({ currentState }) => {
         <div>
             <TerminalPanel currentState={currentState} />
             <center>
-                <br />
-                Dashboard for {process.env.TARGET_ENV}
-                <br />
-                To be implemented!
+            <div class="controlSpacer" />
+            <div class="card">
+                <div class="card-body">
+                    <JogPanel />
+                </div>
+            </div>
             </center>
         </div>
     )

@@ -23,6 +23,7 @@ import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
+import {JogPanel} from "./jog"
 import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
@@ -1150,4 +1151,5 @@ export {
     processWSData,
     enLangRessourceExtra,
     clearData,
+    JogPanel,
 }
