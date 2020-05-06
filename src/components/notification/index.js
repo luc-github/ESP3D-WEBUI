@@ -23,6 +23,7 @@ import { useEffect, useRef } from "preact/hooks"
 import { globaldispatch, Action, setNotificationBottom } from "../app"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
+import { useStoreon } from "storeon/preact"
 
 /*
  * Notification component
@@ -30,6 +31,14 @@ import { T } from "../translations"
  */
 export const Notification = () => {
     const notificationRef = useRef(null)
+    const { temperatures } = useStoreon("temperatures")
+    const { x, y, z } = useStoreon("x", "y", "z")
+
+    let T
+    if (typeof temperatures[2] != "undefined") {
+        T = temperatures[2].value
+        console.log(temperatures[2].value)
+    }
     useEffect(() => {
         setNotificationBottom(
             notificationRef.current.clientHeight +
@@ -38,7 +47,7 @@ export const Notification = () => {
     })
     return (
         <div ref={notificationRef} id="notif" class="espnotification fixed-top">
-            Notification area...soon
+            {T}
         </div>
     )
 }

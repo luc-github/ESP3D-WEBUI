@@ -20,5 +20,12 @@
 
 import { h, render } from "preact"
 import { App } from "./components/app"
+const { store } = require(`./components/${process.env.TARGET_ENV}/store`)
+import { StoreContext } from "storeon/preact"
 
-render(<App />, document.body)
+render(
+    <StoreContext.Provider value={store}>
+        <App />
+    </StoreContext.Provider>,
+    document.body
+)

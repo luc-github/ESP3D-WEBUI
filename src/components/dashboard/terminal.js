@@ -267,7 +267,7 @@ const TerminalWindow = ({ visible }) => {
     }
     useEffect(() => {
         doAutoscroll()
-    },[currentOutput])
+    }, [currentOutput])
     return (
         <div>
             <div class="controlSpacer" />

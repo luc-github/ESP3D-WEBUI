@@ -54,14 +54,33 @@ app.use(fileUpload({ preserveExtension: true, debug: true }))
 }*/
 
 function sendTemperature() {
+    let T = Number(Math.floor(Math.random() * 215).toFixed(2))
+    let T1 = Number(Math.floor(Math.random() * 215).toFixed(2))
+    let B = Number(Math.floor(Math.random() * 45).toFixed(2))
     if (targetFW == "repetier" || targetFW == "repetier4davinci") {
         SendBinary(
-            "T:21.89 / 0 B:26.70 / 0 B@:0 @:0 T0:21.89 / 0 @0:0 T1:15.28 / 0 @1:0\nok\n"
+            "T:" +
+                T +
+                " / 0 B:" +
+                B +
+                " / 0 B@:0 @:0 T0:" +
+                T +
+                " / 0 @0:0 T1:" +
+                T1 +
+                " / 0 @1:0\nok\n"
         )
     }
     if (targetFW == "marlin" || targetFW == "marlinkimbra") {
         SendBinary(
-            "ok T:21.89 / 0 B:26.70 / 0 B@:0 @:0 T0:21.89 / 0 @0:0 T1:15.28 / 0 @1:0\n"
+            "ok T:" +
+                T +
+                " / 0 B:" +
+                B +
+                " / 0 B@:0 @:0 T0:" +
+                T +
+                " / 0 @0:0 T1:" +
+                T1 +
+                " / 0 @1:0\n"
         )
     }
 }

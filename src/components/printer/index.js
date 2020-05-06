@@ -31,6 +31,7 @@ import {
     ExternalLink,
     Download,
 } from "preact-feather"
+import { useStoreon } from "storeon/preact"
 
 /*
  * Local variables
@@ -330,6 +331,34 @@ function saveAndApply() {
 }
 
 /*
+ * Process Save and Apply
+ *
+ */
+function processTemperatures(buffer) {
+    const regexTemp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
+    let result
+    const { dispatch } = useStoreon()
+    while ((result = regexTemp.exec(buffer)) !== null) {
+        var tool = result[1]
+        var value =
+            parseFloat(result[3])
+                .toFixed(2)
+                .toString() + "°C"
+        var value2
+        if (isNaN(parseFloat(result[5]))) value2 = "0.00"
+        else
+            value2 =
+                parseFloat(result[5])
+                    .toFixed(2)
+                    .toString() + "°C"
+        if (tool == "T") {
+            dispatch("temperatures/update", { key: "T", value: value })
+            console.log(tool + ":" + value + "/" + value2)
+        }
+    }
+}
+
+/*
  * Process WebSocket data
  */
 function processWSData(buffer) {
@@ -379,6 +408,9 @@ function processWSData(buffer) {
                 }
             }
         }
+    }
+    if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
+        processTemperatures(buffer)
     }
 }
 
