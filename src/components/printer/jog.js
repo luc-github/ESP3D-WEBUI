@@ -574,27 +574,6 @@ const JogPanel = ({ currentState }) => {
                             +Z{" "}
                         </text>
                     </g>
-                    <g id="-Z" fill="#b0b0b0" style="pointer-events:none;">
-                        <path
-                            class="std"
-                            d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
-                        ></path>
-                        <path
-                            class="std"
-                            d="M20,238 l-17,-17 h10 v-11 h14 v11 h10 z"
-                            fill="DarkSeaGreen"
-                        ></path>
-                        <text
-                            class="jog"
-                            stroke="black"
-                            x="13"
-                            y="230"
-                            id="axisdown"
-                        >
-                            {" "}
-                            -Z{" "}
-                        </text>
-                    </g>
                     <g
                         id="Z+10"
                         fill="#d0d0d0"
@@ -641,6 +620,15 @@ const JogPanel = ({ currentState }) => {
                             </text>
                         </g>
                     </g>
+                    <g id="ZSpace" fill="#000000" style="pointer-events:none;">
+                        <rect
+                            class="std"
+                            x="0"
+                            y="112"
+                            width="40"
+                            height="16"
+                        ></rect>
+                    </g>
                     <g
                         id="Z+0_1"
                         fill="#f0f0f0"
@@ -670,19 +658,19 @@ const JogPanel = ({ currentState }) => {
                         </g>
                     </g>
                     <g
-                        id="Z-10"
-                        fill="#d0d0d0"
+                        id="Z-0_1"
+                        fill="#f0f0f0"
                         onmouseup={sendJogCommand}
                         onmouseover={onHoverJog}
                         onmousedown={onMouseDownJog}
                         onmouseout={onOutJog}
                     >
                         <rect
-                            class="std r10"
+                            class="std"
                             x="0"
-                            y="178"
+                            y="128"
                             width="40"
-                            height="30"
+                            height="24"
                         ></rect>
                     </g>
                     <g
@@ -702,29 +690,42 @@ const JogPanel = ({ currentState }) => {
                         ></rect>
                     </g>
                     <g
-                        id="Z-0_1"
-                        fill="#f0f0f0"
+                        id="Z-10"
+                        fill="#d0d0d0"
                         onmouseup={sendJogCommand}
                         onmouseover={onHoverJog}
                         onmousedown={onMouseDownJog}
                         onmouseout={onOutJog}
                     >
                         <rect
-                            class="std"
+                            class="std r10"
                             x="0"
-                            y="128"
+                            y="178"
                             width="40"
-                            height="24"
+                            height="30"
                         ></rect>
                     </g>
-                    <g id="ZSpace" fill="#000000" style="pointer-events:none;">
-                        <rect
+
+                    <g id="-Z" fill="#b0b0b0" style="pointer-events:none;">
+                        <path
                             class="std"
-                            x="0"
-                            y="112"
-                            width="40"
-                            height="16"
-                        ></rect>
+                            d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
+                        ></path>
+                        <path
+                            class="std"
+                            d="M20,238 l-17,-17 h10 v-11 h14 v11 h10 z"
+                            fill="DarkSeaGreen"
+                        ></path>
+                        <text
+                            class="jog"
+                            stroke="black"
+                            x="13"
+                            y="230"
+                            id="axisdown"
+                        >
+                            {" "}
+                            -Z{" "}
+                        </text>
                     </g>
                 </g>
             </svg>
