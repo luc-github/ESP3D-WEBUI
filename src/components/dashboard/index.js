@@ -35,12 +35,12 @@ const DashboardPage = ({ currentState }) => {
         <div>
             <TerminalPanel currentState={currentState} />
             <center>
-            <div class="controlSpacer" />
-            <div class="card">
-                <div class="card-body">
-                    <JogPanel />
+                <div class="controlSpacer" />
+                <div class="card">
+                    <div class="card-body">
+                        <JogPanel />
+                    </div>
                 </div>
-            </div>
             </center>
         </div>
     )

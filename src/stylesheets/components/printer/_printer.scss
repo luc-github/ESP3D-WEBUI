@@ -1,59 +1,68 @@
 text.jog {
-font-weight:900;
-font-size:11px;
-pointer-events:none;
--webkit-user-select: none;
+    font-weight: 900;
+    font-size: 11px;
+    pointer-events: none;
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 
 text.home {
-font-weight:600;
-font-size:16px;
-pointer-events:none;
--webkit-user-select: none;
+    font-weight: 600;
+    font-size: 16px;
+    pointer-events: none;
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 text.scl {
-stroke:white;
-fill:white;
-pointer-events:none;
--webkit-user-select: none;
+    stroke: white;
+    fill: white;
+    pointer-events: none;
+    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 circle.scl {
-fill:black;
-fill-opacity:0.5;
-stroke:red;
-stroke-width:3;
-filter:url(#f1);
-pointer-events:none;
+    fill: black;
+    fill-opacity: 0.5;
+    stroke: red;
+    stroke-width: 3;
+    filter: url(#f1);
+    pointer-events: none;
 }
 
 path.home {
-stroke:black;
+    stroke: black;
 }
 
 path.std {
-stroke:black;
-stroke-width:1;
-filter:url(#f1);
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
 }
 
-.pressedbutton{
-fill:#FF7C26;
-stroke:black;
-stroke-width:1;
-cursor:pointer;
+.pressedbutton {
+    fill: #ff7c26;
+    stroke: black;
+    stroke-width: 1;
+    cursor: pointer;
+}
+
+rect.std {
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+rect.std:hover {
+    fill: orange;
+    cursor: pointer;
 }
 
 path.std:hover {
-fill:orange;
-cursor:pointer;
+    fill: orange;
+    cursor: pointer;
 }
-

@@ -23,7 +23,7 @@ import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
-import {JogPanel} from "./jog"
+import { JogPanel } from "./jog"
 import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
@@ -352,7 +352,8 @@ function processTemperatures(buffer) {
                 parseFloat(result[5])
                     .toFixed(2)
                     .toString() + "°C"
-        if (tool == "T") { //TODO add tool as key 
+        if (tool == "T") {
+            //TODO add tool as key
             dispatch("temperatures/update", { key: "T", value: value })
             //console.log(tool + ":" + value + "/" + value2)
         }
