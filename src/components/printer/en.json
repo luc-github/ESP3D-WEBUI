@@ -7,5 +7,11 @@
     "P6" : "Home all axis",
     "P7" : "Home X axis",
     "P8" : "Home Y axis",
-    "P9" : "Home Z axis"
+    "P9" : "Home Z axis",
+    "P10" : "XY feedrate",
+    "P11" : "Z feedrate",
+    "P12" : "Speed",
+    "P13" : "Motors Off",
+    "P14" : "mm/min" ,
+    "P15" : "Emergency Stop" 
 }
