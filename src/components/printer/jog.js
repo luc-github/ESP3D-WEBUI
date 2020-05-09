@@ -20,14 +20,22 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { ZapOff, StopCircle, Activity, Send } from "preact-feather"
+import {
+    ZapOff,
+    AlertCircle,
+    Activity,
+    Send,
+    Home,
+    Crosshair,
+} from "preact-feather"
 
 /*
  * Local variables
  *
  */
 
- let currentSpeed = 100
+let lastSpeed = 100
+let currentSpeed = 100
 
 const JogPanel = ({ currentState }) => {
     const sendHomeCommand = e => {
@@ -48,6 +56,12 @@ const JogPanel = ({ currentState }) => {
 
     const sendJogCommand = e => {
         console.log("send" + e.target.parentElement.id)
+        e.target.classList.add("std")
+        e.target.classList.remove("pressedbutton")
+    }
+
+    const sendMoveCommand = e => {
+        console.log("send center" + e.target.parentElement.id)
         e.target.classList.add("std")
         e.target.classList.remove("pressedbutton")
     }
@@ -138,13 +152,31 @@ const JogPanel = ({ currentState }) => {
     const onMouseDownJog = e => {
         onMouseDown(e)
     }
+
     const onInputSpeedSlider = e => {
         console.log(e.target.value)
         document.getElementById("speedinput").value = e.target.value
+        currentSpeed = e.target.value
+        if (currentSpeed == lastSpeed) {
+            document.getElementById("speedinputbtn").classList.add("invisible")
+        } else {
+            document
+                .getElementById("speedinputbtn")
+                .classList.remove("invisible")
+        }
     }
+
     const onInputSpeedInput = e => {
         console.log(e.target.value)
         document.getElementById("speedslider").value = e.target.value
+        currentSpeed = e.target.value
+        if (currentSpeed == lastSpeed) {
+            document.getElementById("speedinputbtn").classList.add("invisible")
+        } else {
+            document
+                .getElementById("speedinputbtn")
+                .classList.remove("invisible")
+        }
     }
 
     const onSet = e => {
@@ -153,6 +185,144 @@ const JogPanel = ({ currentState }) => {
 
     return (
         <div>
+            <div class="show-low">
+                <div class="d-flex flex-row justify-content-center">
+                    <div class="d-flex flex-column justify-content-center border">
+                        <div class="p-2">
+                            <button class="btn btn-default">X+</button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">
+                                <Home />
+                            </button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">X-</button>
+                        </div>
+                    </div>
+                    <div class="p-1" />
+                    <div class="d-flex flex-column justify-content-center border">
+                        <div class="p-2">
+                            <button class="btn btn-default">Y+</button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">
+                                <Home />
+                            </button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">Y-</button>
+                        </div>
+                    </div>
+                    <div class="p-1" />
+                    <div class="d-flex flex-column justify-content-center border">
+                        <div class="p-2">
+                            <button class="btn btn-default">Z+</button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">
+                                <Home />
+                            </button>
+                        </div>
+                        <div class="p-2">
+                            <button class="btn btn-default">Z-</button>
+                        </div>
+                    </div>
+                    <div class="p-1" />
+                    <div class="d-flex flex-column justify-content-left border p-1">
+                        <span class="badge badge-secondary">mm</span>
+                        <div class="p-1">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="exampleRadios"
+                                    id="exampleRadios100"
+                                    value="option1"
+                                    checked="yes"
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="exampleRadios100"
+                                    style="width:2rem"
+                                >
+                                    100
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-1">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="exampleRadios"
+                                    id="exampleRadios10"
+                                    value="option1"
+                                    checked="yes"
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="exampleRadios10"
+                                    style="width:2rem"
+                                >
+                                    10
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-1">
+                            <div class="form-check justify-content-left">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="exampleRadios"
+                                    id="exampleRadios1"
+                                    value="option1"
+                                    checked="yes"
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="exampleRadios1"
+                                    style="width:2rem"
+                                >
+                                    1
+                                </label>
+                            </div>
+                        </div>
+                        <div class="p-1">
+                            <div class="form-check ">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="exampleRadios"
+                                    id="exampleRadios0_1"
+                                    value="option1"
+                                    checked="yes"
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="exampleRadios0_1"
+                                    style="width:2rem"
+                                >
+                                    0.1
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row justify-content-center">
+                    <div class="p-2">
+                        <button class="btn btn-default" style="width:12rem">
+                            <Home /> XYZ
+                        </button>
+                    </div>
+                    <div class="p-2">
+                        <button class="btn btn-default ">
+                            <Crosshair />
+                            <span class="text-button">XY </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="hide-low">
                 <svg
                     width="310"
@@ -248,8 +418,7 @@ const JogPanel = ({ currentState }) => {
                             xlinkHref="#HomeIcon"
                         ></use>
                         <text x="25" y="20" class="home">
-                            {" "}
-                            X{" "}
+                            X
                         </text>
                     </g>
                     <g
@@ -272,8 +441,7 @@ const JogPanel = ({ currentState }) => {
                             xlinkHref="#HomeIcon"
                         ></use>
                         <text x="202" y="20" class="home">
-                            {" "}
-                            Y{" "}
+                            Y
                         </text>
                     </g>
                     <g
@@ -296,8 +464,7 @@ const JogPanel = ({ currentState }) => {
                             xlinkHref="#HomeIcon"
                         ></use>
                         <text x="202" y="232" class="home" id="homeZlabel">
-                            {" "}
-                            Z{" "}
+                            Z
                         </text>
                     </g>
                     <g id="Jog100" fill="#c0c0c0" class="std">
@@ -519,8 +686,7 @@ const JogPanel = ({ currentState }) => {
                     <g id="xy0_1" style="opacity:0.2">
                         <circle class="scl" cx="144" cy="96" r="9.5"></circle>
                         <text class="scl" x="137" y="99" font-size="10">
-                            {" "}
-                            0.1{" "}
+                            0.1
                         </text>
                     </g>
                     <g id="xy1" style="opacity:0.2">
@@ -531,22 +697,19 @@ const JogPanel = ({ currentState }) => {
                             r="10.5"
                         ></circle>
                         <text class="scl" x="155" y="85" font-size="14">
-                            {" "}
-                            1{" "}
+                            1
                         </text>
                     </g>
                     <g id="xy10" style="opacity:0.2">
                         <circle class="scl" cx="175" cy="65" r="12"></circle>
                         <text class="scl" x="166" y="70" font-size="15">
-                            {" "}
-                            10{" "}
+                            10
                         </text>
                     </g>
                     <g id="xy100" style="opacity:0.2">
                         <circle class="scl" cx="195" cy="45" r="15"></circle>
                         <text class="scl" x="182" y="50" font-size="15">
-                            {" "}
-                            100{" "}
+                            100
                         </text>
                     </g>
                     <g id="Decoration" pointer-events="none" fill-opacity=".6">
@@ -571,20 +734,70 @@ const JogPanel = ({ currentState }) => {
                             fill="Khaki"
                         ></path>
                         <text class="jog" x="110" y="36">
-                            {" "}
-                            +Y{" "}
+                            +Y
                         </text>
                         <text class="jog" x="113" y="212">
-                            {" "}
-                            -Y{" "}
+                            -Y
                         </text>
                         <text class="jog" x="27" y="124">
-                            {" "}
-                            -X{" "}
+                            -X
                         </text>
                         <text class="jog" x="196" y="124">
-                            {" "}
-                            +X{" "}
+                            +X
+                        </text>
+                    </g>
+                    <g
+                        id="posxy"
+                        onmouseup={sendMoveCommand}
+                        onmouseover={onHoverJog}
+                        onmousedown={onMouseDownJog}
+                        onmouseout={onOutJog}
+                    >
+                        <circle
+                            class="std"
+                            cx="120.2"
+                            cy="120.3"
+                            r="15"
+                        ></circle>
+                        <circle
+                            class="cross"
+                            cx="116"
+                            cy="120.3"
+                            r="4"
+                        ></circle>
+                        <line
+                            x1="116"
+                            y1="125.3"
+                            x2="116"
+                            y2="129"
+                            style="stroke:black;stroke-width:1"
+                        />
+                        <line
+                            x1="116"
+                            y1="115.3"
+                            x2="116"
+                            y2="111.6"
+                            style="stroke:black;stroke-width:1"
+                        />
+                        <line
+                            x1="121"
+                            y1="120.3"
+                            x2="124.7"
+                            y2="120.3"
+                            style="stroke:black;stroke-width:1"
+                        />
+                        <line
+                            x1="111"
+                            y1="120.3"
+                            x2="107.3"
+                            y2="120.3"
+                            style="stroke:black;stroke-width:1"
+                        />
+                        <text class="posscl" x="125" y="118">
+                            X
+                        </text>
+                        <text class="posscl" x="125" y="130">
+                            Y
                         </text>
                     </g>
                     <g id="JogBar" transform="translate(250,0)">
@@ -598,15 +811,8 @@ const JogPanel = ({ currentState }) => {
                                 d="M20,2 l17,17 h-10 v11 h-14 v-11 h-10 z"
                                 fill="DarkSeaGreen"
                             ></path>
-                            <text
-                                class="jog"
-                                stroke="black"
-                                x="11"
-                                y="18"
-                                id="axisup"
-                            >
-                                {" "}
-                                +Z{" "}
+                            <text class="jog" x="11" y="18" id="axisup">
+                                +Z
                             </text>
                         </g>
                         <g
@@ -632,8 +838,7 @@ const JogPanel = ({ currentState }) => {
                                     r="13"
                                 ></circle>
                                 <text class="scl" x="9" y="53" font-size="18">
-                                    {" "}
-                                    10{" "}
+                                    10
                                 </text>
                             </g>
                         </g>
@@ -665,8 +870,7 @@ const JogPanel = ({ currentState }) => {
                                     y="81.5"
                                     font-size="18"
                                 >
-                                    {" "}
-                                    1{" "}
+                                    1
                                 </text>
                             </g>
                         </g>
@@ -711,8 +915,7 @@ const JogPanel = ({ currentState }) => {
                                     y="103.5"
                                     font-size="10"
                                 >
-                                    {" "}
-                                    0.1{" "}
+                                    0.1
                                 </text>
                             </g>
                         </g>
@@ -775,15 +978,8 @@ const JogPanel = ({ currentState }) => {
                                 d="M20,238 l-17,-17 h10 v-11 h14 v11 h10 z"
                                 fill="DarkSeaGreen"
                             ></path>
-                            <text
-                                class="jog"
-                                stroke="black"
-                                x="13"
-                                y="230"
-                                id="axisdown"
-                            >
-                                {" "}
-                                -Z{" "}
+                            <text class="jog" x="13" y="230" id="axisdown">
+                                -Z
                             </text>
                         </g>
                     </g>
@@ -802,7 +998,9 @@ const JogPanel = ({ currentState }) => {
                             placeholder={T("S41")}
                         />
                         <div class="input-group-append">
-                            <span class="input-group-text hide-low">{T("P14")}</span>
+                            <span class="input-group-text hide-low">
+                                {T("P14")}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -818,7 +1016,9 @@ const JogPanel = ({ currentState }) => {
                             placeholder={T("S41")}
                         />
                         <div class="input-group-append">
-                            <span class="input-group-text hide-low">{T("P14")}</span>
+                            <span class="input-group-text hide-low">
+                                {T("P14")}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -830,7 +1030,7 @@ const JogPanel = ({ currentState }) => {
                 </div>
                 <div class="p-2">
                     <button type="button" class="btn btn-danger">
-                        <StopCircle />
+                        <AlertCircle />
                         <span class="hide-low text-button">{T("P15")}</span>
                     </button>
                 </div>
@@ -842,34 +1042,35 @@ const JogPanel = ({ currentState }) => {
                         <span class="hide-low text-button">{T("P12")}</span>
                     </span>
                 </div>
-                <div class="slider-control">
+                <div class="slider-control hide-low">
                     <div class="slidecontainer">
                         <input
                             onInput={onInputSpeedSlider}
                             type="range"
                             min="1"
                             max="300"
-                            value="100"
+                            value={currentSpeed}
                             class="slider"
                             id="speedslider"
                         />
                     </div>
-                </div>{" "}
+                </div>
                 <div style="width:6rem;">
                     <input
                         onInput={onInputSpeedInput}
                         type="number"
                         min="1"
                         max="300"
-                        value="100"
-                        class="form-control"
+                        value={currentSpeed}
+                        class="form-control is-changed"
                         id="speedinput"
                     />
                 </div>
                 <div class="input-group-append">
-                <span class="input-group-text hide-low">%</span>
-                <button
-                        class="btn btn-default"
+                    <span class="input-group-text hide-low bg-warning">%</span>
+                    <button
+                        id="speedinputbtn"
+                        class="btn btn-warning invisible"
                         type="button"
                         onClick={onSet}
                         title={T("S43")}

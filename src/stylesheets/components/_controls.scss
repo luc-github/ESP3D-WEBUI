@@ -240,6 +240,10 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .hide-low {
     display: inline-block;
 }
+.show-low {
+    display: none;
+}
+
 .W15 {
     min-width: 4em !important;
 }
@@ -254,12 +258,16 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .autoWidth {
         width: 20em;
     }
+    .show-low {
+        display: none;
+    }
 }
 @include media-breakpoint-down(xs) {
     .thide-low,
     .hide-low {
         display: none;
     }
+    .show-low,
     .tshow-low {
         display: block;
     }

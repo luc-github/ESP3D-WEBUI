@@ -1,6 +1,7 @@
 text.jog {
     font-weight: 900;
     font-size: 11px;
+    fill: black;
     pointer-events: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -26,6 +27,43 @@ text.scl {
     -ms-user-select: none;
     user-select: none;
 }
+
+text.posscl {
+    font-weight: 200;
+    font-size: 8px;
+    stroke: black;
+    fill: black;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+circle.cross {
+    stroke: black;
+    fill-opacity: 0;
+    stroke-width: 2;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+circle.std {
+    fill: #f06565;
+    fill-opacity: 1;
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+
+circle.std:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
 circle.scl {
     fill: black;
     fill-opacity: 0.5;
