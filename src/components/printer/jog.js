@@ -1,5 +1,5 @@
 /*
- jog.js - ESP3D WebUI terminal file
+ jog.js - ESP3D WebUI job file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
