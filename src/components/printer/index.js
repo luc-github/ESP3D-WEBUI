@@ -24,6 +24,7 @@ import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel } from "./jog"
+import { MachineUIPreferences } from "./preferences"
 import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
@@ -1153,4 +1154,5 @@ export {
     enLangRessourceExtra,
     clearData,
     JogPanel,
+    MachineUIPreferences,
 }

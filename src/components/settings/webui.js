@@ -26,7 +26,7 @@ import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 import { useEffect } from "preact/hooks"
-
+const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 
 /*
@@ -531,6 +531,7 @@ const WebUISettings = ({ currentPage }) => {
                         label={T("S64")}
                     />
                 </div>
+                <MachineUIPreferences />
             </center>
 
             <hr />
