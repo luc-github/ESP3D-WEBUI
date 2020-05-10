@@ -195,6 +195,16 @@ function sendCommandError(errorCode, responseText) {
 }
 
 /*
+ *Send command query success
+ */
+function sendCommandSuccess( responseText) {
+    let tresponse = responseText.split("\n")
+    for (let n=0; n< tresponse.length;n++){
+        updateTerminal(tresponse[n])
+    }
+}
+
+/*
  *Send command
  *
  */
@@ -202,7 +212,7 @@ function sendCommand(cmd) {
     commandHistory.push(cmd)
     commandHistory.slice(-MAX_HISTORY_SIZE)
     commandHistoryIndex = commandHistory.length
-    SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+    SendCommand(encodeURIComponent(cmd), sendCommandSuccess, sendCommandError)
 }
 
 /*
