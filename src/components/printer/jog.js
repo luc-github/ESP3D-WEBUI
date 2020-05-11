@@ -38,6 +38,108 @@ import { defaultMachineValues } from "./preferences"
 let lastSpeed = 100
 let currentSpeed = 100
 
+const FeedRateSlider = ({ entry, label, id }) => {
+    const onInputSpeedSlider = e => {
+        console.log(e.target.value)
+        document.getElementById("speedinput").value = e.target.value
+        currentSpeed = e.target.value
+        if (currentSpeed == lastSpeed) {
+            document.getElementById("speedinputbtn").classList.add("invisible")
+        } else {
+            document
+                .getElementById("speedinputbtn")
+                .classList.remove("invisible")
+        }
+    }
+
+    const onInputSpeedInput = e => {
+        console.log(e.target.value)
+        document.getElementById("speedslider").value = e.target.value
+        currentSpeed = e.target.value
+        if (currentSpeed == lastSpeed) {
+            document.getElementById("speedinputbtn").classList.add("invisible")
+        } else {
+            document
+                .getElementById("speedinputbtn")
+                .classList.remove("invisible")
+        }
+    }
+
+    const onSet = e => {
+        console.log("send :" + document.getElementById("speedslider").value)
+    }
+    return (
+        <div class="input-group justify-content-center">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <Activity />
+                    <span class="hide-low text-button">{T("P12")}</span>
+                </span>
+            </div>
+            <div class="slider-control hide-low">
+                <div class="slidecontainer">
+                    <input
+                        onInput={onInputSpeedSlider}
+                        type="range"
+                        min="1"
+                        max="300"
+                        value={currentSpeed}
+                        class="slider"
+                        id="speedslider"
+                    />
+                </div>
+            </div>
+            <div style="width:6rem;">
+                <input
+                    onInput={onInputSpeedInput}
+                    type="number"
+                    min="1"
+                    max="300"
+                    value={currentSpeed}
+                    class="form-control"
+                    id="speedinput"
+                />
+            </div>
+            <div class="input-group-append">
+                <span class="input-group-text hide-low">%</span>
+                <button
+                    id="speedinputbtn"
+                    class="btn btn-warning invisible"
+                    type="button"
+                    onClick={onSet}
+                    title={T("S43")}
+                >
+                    <Send size="1.2em" />
+                    <span class="hide-low text-button-setting">{T("S43")}</span>
+                </button>
+            </div>
+        </div>
+    )
+}
+
+const FeedRateInput = ({ entry, label, id }) => {
+    return (
+        <div class="p-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">{label}</span>
+                </div>
+                <input
+                    type="number"
+                    min="1"
+                    style="max-width:10em"
+                    class="form-control"
+                    placeholder={T("S41")}
+                    value={entry}
+                />
+                <div class="input-group-append">
+                    <span class="input-group-text hide-low">{T("P14")}</span>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const JogPanel = ({ preferences }) => {
     const sendHomeCommand = e => {
         console.log("send" + e.target.parentElement.id)
@@ -154,35 +256,6 @@ const JogPanel = ({ preferences }) => {
         onMouseDown(e)
     }
 
-    const onInputSpeedSlider = e => {
-        console.log(e.target.value)
-        document.getElementById("speedinput").value = e.target.value
-        currentSpeed = e.target.value
-        if (currentSpeed == lastSpeed) {
-            document.getElementById("speedinputbtn").classList.add("invisible")
-        } else {
-            document
-                .getElementById("speedinputbtn")
-                .classList.remove("invisible")
-        }
-    }
-
-    const onInputSpeedInput = e => {
-        console.log(e.target.value)
-        document.getElementById("speedslider").value = e.target.value
-        currentSpeed = e.target.value
-        if (currentSpeed == lastSpeed) {
-            document.getElementById("speedinputbtn").classList.add("invisible")
-        } else {
-            document
-                .getElementById("speedinputbtn")
-                .classList.remove("invisible")
-        }
-    }
-
-    const onSet = e => {
-        console.log("send :" + document.getElementById("speedslider").value)
-    }
     if (typeof preferences.zfeedrate == "undefined")
         preferences.zfeedrate = defaultMachineValues("zfeedrate")
     if (typeof preferences.xyfeedrate == "undefined")
@@ -1000,44 +1073,17 @@ const JogPanel = ({ preferences }) => {
                 </svg>
             </div>
             <div class="d-flex flex-wrap justify-content-center">
-                <div class="p-2">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">{T("P10")}</span>
-                        </div>
-                        <input
-                            type="number"
-                            style="max-width:10em"
-                            class="form-control"
-                            placeholder={T("S41")}
-                            value={preferences.xyfeedrate}
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text hide-low">
-                                {T("P14")}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-2">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">{T("P11")}</span>
-                        </div>
-                        <input
-                            type="number"
-                            style="max-width:10em"
-                            class="form-control"
-                            placeholder={T("S41")}
-                            value={preferences.zfeedrate}
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text hide-low">
-                                {T("P14")}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <FeedRateInput
+                    entry={preferences.xyfeedrate}
+                    label={T("P10")}
+                    id="xyfeedrate"
+                />
+                <FeedRateInput
+                    entry={preferences.zfeedrate}
+                    label={T("P11")}
+                    id="zfeedrate"
+                />
+
                 <div class="p-2">
                     <button type="button" class="btn btn-primary">
                         <ZapOff />
@@ -1051,53 +1097,7 @@ const JogPanel = ({ preferences }) => {
                     </button>
                 </div>
             </div>
-            <div class="input-group justify-content-center">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">
-                        <Activity />
-                        <span class="hide-low text-button">{T("P12")}</span>
-                    </span>
-                </div>
-                <div class="slider-control hide-low">
-                    <div class="slidecontainer">
-                        <input
-                            onInput={onInputSpeedSlider}
-                            type="range"
-                            min="1"
-                            max="300"
-                            value={currentSpeed}
-                            class="slider"
-                            id="speedslider"
-                        />
-                    </div>
-                </div>
-                <div style="width:6rem;">
-                    <input
-                        onInput={onInputSpeedInput}
-                        type="number"
-                        min="1"
-                        max="300"
-                        value={currentSpeed}
-                        class="form-control"
-                        id="speedinput"
-                    />
-                </div>
-                <div class="input-group-append">
-                    <span class="input-group-text hide-low">%</span>
-                    <button
-                        id="speedinputbtn"
-                        class="btn btn-warning invisible"
-                        type="button"
-                        onClick={onSet}
-                        title={T("S43")}
-                    >
-                        <Send size="1.2em" />
-                        <span class="hide-low text-button-setting">
-                            {T("S43")}
-                        </span>
-                    </button>
-                </div>
-            </div>
+            <FeedRateSlider />
         </div>
     )
 }
