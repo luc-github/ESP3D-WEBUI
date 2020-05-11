@@ -31,7 +31,7 @@ import { Notification } from "./notification"
 import { setLang, T } from "./translations"
 import { initApp } from "./uisettings"
 import { prefs } from "./settings"
-//import {updateTerminal}  from "./settings"
+
 
 /*
  * Some constants

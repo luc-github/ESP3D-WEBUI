@@ -36,6 +36,11 @@ import {
 import { useStoreon } from "storeon/preact"
 
 /*
+ * Some constants
+ */
+const QUERY_TIMEOUT = 15000 //in ms
+
+/*
  * Local variables
  *
  */
@@ -52,6 +57,7 @@ let saveOnGoing = false
 let printerImportSettings = {} //full esp3d settings to be imported
 let currentIndex
 let stopImport
+let timeoutLoader = null
 
 /*
  * Clear all lists
@@ -379,8 +385,6 @@ function processWSData(buffer) {
                 console.log("we are done too soon, try again")
                 return
             }
-
-            //console.log("we are done")
             isConfigData = false
             isConfigRequested = false
             if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2])) {
@@ -475,10 +479,42 @@ function processConfigData() {
             }
         }
     }
+    
     //console.log(listSettings)
     globaldispatch({
         type: Action.renderAll,
     })
+    stopTimeout()
+}
+
+/*
+ * Raise error if timeout is reached
+ */
+function timeoutError(){
+    stopTimeout()
+    globaldispatch({
+        type: Action.error,
+        errorcode: 404,
+        msg: "P17",
+    })
+}
+
+/*
+ * Start query timeout
+ */
+function startTimeout(){
+    stopTimeout()
+    timeoutLoader = setInterval(timeoutError, QUERY_TIMEOUT)
+}
+
+/*
+ * Stop query timeout
+ */
+function stopTimeout(){
+    if (timeoutLoader!=null){
+        clearInterval(timeoutLoader)
+    }
+    timeoutLoader = null
 }
 
 /*
@@ -491,6 +527,7 @@ function loadConfig() {
     isConfigData = false
     listrawSettings = []
     console.log("load FW config")
+    startTimeout()
     globaldispatch({
         type: Action.fetch_data,
     })

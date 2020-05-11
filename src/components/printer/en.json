@@ -14,5 +14,6 @@
     "P13" : "Motors Off",
     "P14" : "mm/min" ,
     "P15" : "Emergency Stop" ,
-    "P16" : "mm"
+    "P16" : "mm",
+    "P17" : "Cannot get valid data"
 }
