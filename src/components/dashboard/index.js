@@ -34,7 +34,7 @@ const DashboardPage = ({ currentState }) => {
     if (currentState.activePage != Page.dashboard) return null
     return (
         <div>
-            <TerminalPanel currentState={preferences} />
+            <TerminalPanel currentState={currentState} />
             <center>
                 <div class="controlSpacer" />
                 <div class="card">
