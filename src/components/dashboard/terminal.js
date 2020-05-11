@@ -213,6 +213,8 @@ function sendCommand(cmd) {
     commandHistory.slice(-MAX_HISTORY_SIZE)
     commandHistoryIndex = commandHistory.length
     SendCommand(encodeURIComponent(cmd), sendCommandSuccess, sendCommandError)
+    pauseAutoscroll = false
+    updateTerminal(">"+cmd)
 }
 
 /*
