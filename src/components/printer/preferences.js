@@ -21,6 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { useEffect } from "preact/hooks"
+import { useStoreon } from "storeon/preact"
 //import {} from "preact-feather"
 
 /*
@@ -50,15 +51,17 @@ function hasSettingError() {
  * check entry is valid
  */
 function checkValue(entry, id) {
-    hasError[id] = true
-    if (entry[id].length == 0) return false
+    const { dispatch } = useStoreon()
+    let isvalid = true
+    if (entry[id].length == 0) isvalid = false
     if (id == "xyfeedrate" || id == "zfeedrate") {
-        if (entry[id] < 1) return false
+        if (entry[id] < 1) isvalid = false
     }
     if (id == "xpos" || id == "ypos") {
     }
-    hasError[id] = false
-    return true
+    hasError[id] = !isvalid
+    dispatch("error/set", hasSettingError())
+    return isvalid
 }
 
 /*
@@ -261,4 +264,4 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
     )
 }
 
-export { MachineUIPreferences, defaultMachineValues, hasSettingError }
+export { MachineUIPreferences, defaultMachineValues }

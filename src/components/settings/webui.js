@@ -25,11 +25,9 @@ import { Setting, globaldispatch, Action } from "../app"
 import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
+import { useStoreon } from "storeon/preact"
 import { useEffect } from "preact/hooks"
-const {
-    MachineUIPreferences,
-    hasSettingError,
-} = require(`../${process.env.TARGET_ENV}`)
+const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 
 /*
@@ -193,14 +191,7 @@ function importSettings() {
  * Saves Preferences
  */
 function saveAndApply() {
-    if (!hasSettingError()) savePreferences()
-    else {
-        globaldispatch({
-            type: Action.error,
-            errorcode: 500,
-            msg: "S83",
-        })
-    }
+    savePreferences()
 }
 
 /*
@@ -297,14 +288,6 @@ function exportSettings() {
     let data, file
     let p = 0
     const filename = preferencesFileName
-    if (hasSettingError()) {
-        globaldispatch({
-            type: Action.error,
-            errorcode: 500,
-            msg: "S83",
-        })
-        return
-    }
     file = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
@@ -551,6 +534,7 @@ function setcurrentprefs(preferences) {
  *
  */
 const WebUISettings = ({ currentPage }) => {
+    const { preferences_error } = useStoreon("preferences_error")
     if (currentPage != Setting.ui) return null
     if (typeof prefs == "undefined") {
         console.log("render")
@@ -608,7 +592,11 @@ const WebUISettings = ({ currentPage }) => {
                 </span>
                 <span
                     class={
-                        preferences.settings ? "text-button-setting" : " d-none"
+                        preferences.settings
+                            ? preferences_error
+                                ? "d-none"
+                                : "text-button-setting"
+                            : " d-none"
                     }
                 >
                     <button
@@ -621,7 +609,9 @@ const WebUISettings = ({ currentPage }) => {
                         <span class="hide-low text-button">{T("S52")}</span>
                     </button>
                 </span>
-                <span class="text-button-setting">
+                <span
+                    class={preferences_error ? "d-none" : "text-button-setting"}
+                >
                     <button
                         type="button"
                         class="btn btn-danger"
