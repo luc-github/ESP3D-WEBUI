@@ -24,6 +24,7 @@ import { initApp } from "../uisettings"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
 const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
+import { preferences } from "../uisettings"
 
 /*
  * Dashboard page
@@ -33,12 +34,12 @@ const DashboardPage = ({ currentState }) => {
     if (currentState.activePage != Page.dashboard) return null
     return (
         <div>
-            <TerminalPanel currentState={currentState} />
+            <TerminalPanel currentState={preferences} />
             <center>
                 <div class="controlSpacer" />
                 <div class="card">
                     <div class="card-body">
-                        <JogPanel />
+                        <JogPanel preferences={preferences.settings} />
                     </div>
                 </div>
             </center>

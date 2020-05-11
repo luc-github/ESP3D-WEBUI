@@ -15,5 +15,8 @@
     "P14" : "mm/min" ,
     "P15" : "Emergency Stop" ,
     "P16" : "mm",
-    "P17" : "Cannot get valid data"
+    "P17" : "Cannot get valid data",
+    "P18" : "X prefered position",
+    "P19" : "Y prefered position",
+    "P20" : "Move to: "
 }

@@ -24,7 +24,7 @@ import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel } from "./jog"
-import { MachineUIPreferences } from "./preferences"
+import { MachineUIPreferences, hasSettingError } from "./preferences"
 import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
@@ -479,7 +479,7 @@ function processConfigData() {
             }
         }
     }
-    
+
     //console.log(listSettings)
     globaldispatch({
         type: Action.renderAll,
@@ -490,7 +490,7 @@ function processConfigData() {
 /*
  * Raise error if timeout is reached
  */
-function timeoutError(){
+function timeoutError() {
     stopTimeout()
     globaldispatch({
         type: Action.error,
@@ -502,7 +502,7 @@ function timeoutError(){
 /*
  * Start query timeout
  */
-function startTimeout(){
+function startTimeout() {
     stopTimeout()
     timeoutLoader = setInterval(timeoutError, QUERY_TIMEOUT)
 }
@@ -510,8 +510,8 @@ function startTimeout(){
 /*
  * Stop query timeout
  */
-function stopTimeout(){
-    if (timeoutLoader!=null){
+function stopTimeout() {
+    if (timeoutLoader != null) {
         clearInterval(timeoutLoader)
     }
     timeoutLoader = null
@@ -1192,4 +1192,5 @@ export {
     clearData,
     JogPanel,
     MachineUIPreferences,
+    hasSettingError,
 }

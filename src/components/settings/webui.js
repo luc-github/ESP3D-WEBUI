@@ -26,7 +26,10 @@ import { preferences, preferencesFileName, setPreferences } from "../uisettings"
 import { setSettingPage } from "./index"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
 import { useEffect } from "preact/hooks"
-const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
+const {
+    MachineUIPreferences,
+    hasSettingError,
+} = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 
 /*
@@ -39,7 +42,6 @@ let prefs
  * Apply Preferences
  */
 function updateUI() {
-    console.log("Update UI " + preferences.settings.language)
     let allkey = Object.keys(prefs)
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "default")
@@ -191,7 +193,14 @@ function importSettings() {
  * Saves Preferences
  */
 function saveAndApply() {
-    savePreferences()
+    if (!hasSettingError()) savePreferences()
+    else {
+        globaldispatch({
+            type: Action.error,
+            errorcode: 500,
+            msg: "S83",
+        })
+    }
 }
 
 /*
@@ -288,6 +297,14 @@ function exportSettings() {
     let data, file
     let p = 0
     const filename = preferencesFileName
+    if (hasSettingError()) {
+        globaldispatch({
+            type: Action.error,
+            errorcode: 500,
+            msg: "S83",
+        })
+        return
+    }
     file = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
@@ -315,8 +332,14 @@ function exportSettings() {
 function setState(entry, state) {
     let controlId
     let controlIdLabel
+    let controlIdUnit
     if (document.getElementById(entry + "-UI-checkbox"))
         controlId = document.getElementById(entry + "-UI-checkbox")
+    if (document.getElementById(entry + "-UI-input")) {
+        controlId = document.getElementById(entry + "-UI-input")
+        controlIdLabel = document.getElementById(entry + "-UI-label")
+        controlIdUnit = document.getElementById(entry + "-UI-unit")
+    }
     if (document.getElementById(entry + "-UI-select")) {
         controlId = document.getElementById(entry + "-UI-select")
         controlIdLabel = document.getElementById(entry + "-UI-label")
@@ -352,6 +375,24 @@ function setState(entry, state) {
                 break
             case "error":
                 controlIdLabel.classList.add("error")
+                break
+            default:
+                break
+        }
+    }
+    if (controlIdUnit) {
+        controlIdUnit.classList.remove("error")
+        controlIdUnit.classList.remove("success")
+        controlIdUnit.classList.remove("bg-warning")
+        switch (state) {
+            case "modified":
+                controlIdUnit.classList.add("bg-warning")
+                break
+            case "success":
+                controlIdUnit.classList.add("success")
+                break
+            case "error":
+                controlIdUnit.classList.add("error")
                 break
             default:
                 break
@@ -530,8 +571,11 @@ const WebUISettings = ({ currentPage }) => {
                         title={T("S66")}
                         label={T("S64")}
                     />
+                    <MachineUIPreferences
+                        preferences={preferences.settings}
+                        prefs={prefs}
+                    />
                 </div>
-                <MachineUIPreferences />
             </center>
 
             <hr />

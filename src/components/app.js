@@ -32,7 +32,6 @@ import { setLang, T } from "./translations"
 import { initApp } from "./uisettings"
 import { prefs } from "./settings"
 
-
 /*
  * Some constants
  */

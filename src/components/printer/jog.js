@@ -28,6 +28,7 @@ import {
     Home,
     Crosshair,
 } from "preact-feather"
+import { defaultMachineValues } from "./preferences"
 
 /*
  * Local variables
@@ -37,7 +38,7 @@ import {
 let lastSpeed = 100
 let currentSpeed = 100
 
-const JogPanel = ({ currentState }) => {
+const JogPanel = ({ preferences }) => {
     const sendHomeCommand = e => {
         console.log("send" + e.target.parentElement.id)
         e.target.classList.add("std")
@@ -182,7 +183,14 @@ const JogPanel = ({ currentState }) => {
     const onSet = e => {
         console.log("send :" + document.getElementById("speedslider").value)
     }
-
+    if (typeof preferences.zfeedrate == "undefined")
+        preferences.zfeedrate = defaultMachineValues("zfeedrate")
+    if (typeof preferences.xyfeedrate == "undefined")
+        preferences.zfeedrate = defaultMachineValues("xyfeedrate")
+    if (typeof preferences.xpos == "undefined")
+        preferences.zfeedrate = defaultMachineValues("xpos")
+    if (typeof preferences.ypos == "undefined")
+        preferences.zfeedrate = defaultMachineValues("ypos")
     return (
         <div>
             <div class="show-low">
@@ -753,6 +761,12 @@ const JogPanel = ({ currentState }) => {
                         onmousedown={onMouseDownJog}
                         onmouseout={onOutJog}
                     >
+                        <title>
+                            {T("P20") +
+                                preferences.xpos +
+                                "," +
+                                preferences.ypos}
+                        </title>
                         <circle
                             class="std"
                             cx="120.2"
@@ -996,6 +1010,7 @@ const JogPanel = ({ currentState }) => {
                             style="max-width:10em"
                             class="form-control"
                             placeholder={T("S41")}
+                            value={preferences.xyfeedrate}
                         />
                         <div class="input-group-append">
                             <span class="input-group-text hide-low">
@@ -1014,6 +1029,7 @@ const JogPanel = ({ currentState }) => {
                             style="max-width:10em"
                             class="form-control"
                             placeholder={T("S41")}
+                            value={preferences.zfeedrate}
                         />
                         <div class="input-group-append">
                             <span class="input-group-text hide-low">
@@ -1062,12 +1078,12 @@ const JogPanel = ({ currentState }) => {
                         min="1"
                         max="300"
                         value={currentSpeed}
-                        class="form-control is-changed"
+                        class="form-control"
                         id="speedinput"
                     />
                 </div>
                 <div class="input-group-append">
-                    <span class="input-group-text hide-low bg-warning">%</span>
+                    <span class="input-group-text hide-low">%</span>
                     <button
                         id="speedinputbtn"
                         class="btn btn-warning invisible"

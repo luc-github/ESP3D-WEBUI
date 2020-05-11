@@ -74,7 +74,9 @@ function getBrowserInformation() {
 function onClickUpdateFW() {
     console.log("Update FW")
     pathUpload = "/updatefw"
-    document.getElementById("uploadControl").setAttribute("accept", ".bin, .bin.gz")
+    document
+        .getElementById("uploadControl")
+        .setAttribute("accept", ".bin, .bin.gz")
     PrepareUpload()
 }
 

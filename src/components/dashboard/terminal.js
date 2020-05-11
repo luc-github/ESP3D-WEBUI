@@ -197,9 +197,9 @@ function sendCommandError(errorCode, responseText) {
 /*
  *Send command query success
  */
-function sendCommandSuccess( responseText) {
+function sendCommandSuccess(responseText) {
     let tresponse = responseText.split("\n")
-    for (let n=0; n< tresponse.length;n++){
+    for (let n = 0; n < tresponse.length; n++) {
         updateTerminal(tresponse[n])
     }
 }
@@ -214,7 +214,7 @@ function sendCommand(cmd) {
     commandHistoryIndex = commandHistory.length
     SendCommand(encodeURIComponent(cmd), sendCommandSuccess, sendCommandError)
     pauseAutoscroll = false
-    updateTerminal(">"+cmd)
+    updateTerminal(">" + cmd)
 }
 
 /*

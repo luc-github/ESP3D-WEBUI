@@ -81,6 +81,7 @@
     "S80" : "Enter command",
     "S81" : "Send",
     "S82" : "Send command",
+    "S83" : "There is an error, fix problem first",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",
