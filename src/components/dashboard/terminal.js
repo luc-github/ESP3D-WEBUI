@@ -134,41 +134,40 @@ const TerminalControls = ({ visible }) => {
         updateContentType()
     }
     return (
-        <div class="d-flex flex-row">
-            <div style="width:2rem" />
-            <div class="control-like">
-                <label
-                    class="checkbox-control"
-                    id="checkverbose"
-                    title={T("S76")}
-                >
-                    {T("S76")}
-                    <input
-                        type="checkbox"
-                        checked={isVerbose}
-                        onChange={toogleVerbose}
-                    />
-                    <span class="checkmark"></span>
-                </label>
+        <div class="d-flex flex-wrap">
+            <div class="d-flex flex-column flex-md-row">
+                <div class="control-like p-2">
+                    <label
+                        class="checkbox-control"
+                        id="checkverbose"
+                        title={T("S76")}
+                    >
+                        {T("S76")}
+                        <input
+                            type="checkbox"
+                            checked={isVerbose}
+                            onChange={toogleVerbose}
+                        />
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="control-like p-2">
+                    <label
+                        class="checkbox-control"
+                        id="checkautoscroll"
+                        title={T("S77")}
+                    >
+                        {T("S77")}
+                        <input
+                            type="checkbox"
+                            checked={isAutoscroll}
+                            onChange={toogleAutoscroll}
+                        />
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
             </div>
-            <div style="width:2rem" />
-            <div class="control-like">
-                <label
-                    class="checkbox-control"
-                    id="checkautoscroll"
-                    title={T("S77")}
-                >
-                    {T("S77")}
-                    <input
-                        type="checkbox"
-                        checked={isAutoscroll}
-                        onChange={toogleAutoscroll}
-                    />
-                    <span class="checkmark"></span>
-                </label>
-            </div>
-            <div style="width:2rem" />
-            <span>
+            <span style="padding-left:0.4rem;">
                 <button
                     type="button"
                     class="btn btn-secondary"
@@ -350,15 +349,17 @@ const TerminalPanel = ({ currentState }) => {
         <div>
             <div class="controlSpacer" />
             <div class="d-flex flex-row no_wrap">
-                <button
-                    type="button"
-                    class="btn btn-dark"
-                    title={T("S74")}
-                    onClick={toogle}
-                >
-                    <Terminal />
-                    <span class="hide-low text-button">{title}</span>
-                </button>
+                <div>
+                    <button
+                        type="button"
+                        class="btn btn-dark"
+                        title={T("S74")}
+                        onClick={toogle}
+                    >
+                        <Terminal />
+                        <span class="hide-low text-button">{title}</span>
+                    </button>
+                </div>
                 <TerminalControls visible={show} />
             </div>
             <TerminalWindow visible={show} />

@@ -64,7 +64,12 @@ const FeedRateSlider = ({ entry, label, id }) => {
                 .classList.remove("invisible")
         }
     }
-
+    const onReset = e => {
+        console.log("send : 100")
+        document.getElementById("speedslider").value = 100
+        currentSpeed = 100
+        document.getElementById("speedinput").value = 100
+    }
     const onSet = e => {
         console.log("send :" + document.getElementById("speedslider").value)
     }
@@ -101,7 +106,15 @@ const FeedRateSlider = ({ entry, label, id }) => {
                 />
             </div>
             <div class="input-group-append">
-                <span class="input-group-text hide-low">%</span>
+                <button
+                    id="resetbtn"
+                    class="btn btn-default"
+                    type="button"
+                    onClick={onReset}
+                    title={T("100%")}
+                >
+                    %
+                </button>
                 <button
                     id="speedinputbtn"
                     class="btn btn-warning invisible"
