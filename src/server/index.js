@@ -22,6 +22,7 @@ const machine = process.env.TARGET_ENV
 
 let tempInterval = null
 let waitInterval = null
+let feedrate = 100
 
 let targetFW = machine == "grbl" ? "grbl" : "marlin"
 let targetFWnb =
@@ -323,7 +324,17 @@ app.get("/command", function(req, res) {
         res.send("")
         return
     }
-
+    if (url.indexOf("=M220") != -1) {
+        if (url.indexOf("=M220%20S") != -1) {
+            let p = url.indexOf("=M220%20S")
+            let f = url.substring(p + 9)
+            let t = f.split("&")
+            feedrate = parseInt(t[0])
+        }
+        SendBinary("FR:" + feedrate + "%\nok\n")
+        res.send("")
+        return
+    }
     if (url.indexOf("=M503") != -1) {
         if (targetFW == "marlin" || targetFW == "marlinkimbra")
             SendBinary(

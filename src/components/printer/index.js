@@ -23,7 +23,7 @@ import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
-import { JogPanel } from "./jog"
+import { JogPanel, processFeedRate } from "./jog"
 import { MachineUIPreferences } from "./preferences"
 import enLangRessourceExtra from "./en.json"
 import {
@@ -371,6 +371,7 @@ function processTemperatures(buffer) {
  * Process WebSocket data
  */
 function processWSData(buffer) {
+    processFeedRate(buffer)
     if (isConfigRequested) {
         //console.log("config requested, processing " + buffer)
         //console.log("setting size " + listrawSettings.length)

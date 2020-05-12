@@ -93,6 +93,14 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     border: solid 1px #ced4da;
 }
 
+.no-pointer {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .checkbox-control.is-changed .checkmark {
     background-color: #e0a800 !important;
     border-color: #e0a800 !important;

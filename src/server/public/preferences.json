@@ -3,7 +3,7 @@
   "language": "en",
   "banner": "true",
   "autoload": "true",
-  "xyfeedrate": "100",
+  "xyfeedrate": "200",
   "zfeedrate": "10",
   "xpos": 100,
   "ypos": 100

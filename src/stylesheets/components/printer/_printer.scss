@@ -147,6 +147,30 @@ path.std:hover {
     cursor: pointer;
 }
 
+.slider.is-changed::-webkit-slider-thumb {
+    background-color: #e0a800 !important;
+}
+
+.slider.is-changed::-moz-range-thumb {
+    background-color: #e0a800 !important;
+}
+
+.slider.is-changed::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 0.2rem rgba(255, 191, 0, 0.5) !important;
+}
+
+.slider.error::-webkit-slider-thumb {
+    background-color: #dc3545 !important;
+}
+
+.slider.error::-moz-range-thumb {
+    background-color: #dc3545 !important;
+}
+
+.slider.error::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 0.2rem rgba(255, 63, 82, 0.5) !important;
+}
+
 .slider::-moz-range-thumb {
     width: 25px;
     height: 25px;
