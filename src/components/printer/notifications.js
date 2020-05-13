@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI notification file
+ Notifications.js - ESP3D WebUI file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,29 +19,35 @@
 */
 
 import { h } from "preact"
-import { useEffect, useRef } from "preact/hooks"
-import { setNotificationBottom } from "../app"
-const { Notifications } = require(`../${process.env.TARGET_ENV}`)
+import { T } from "../translations"
+import { useEffect } from "preact/hooks"
+import { useStoreon } from "storeon/preact"
+//import {} from "preact-feather"
+
+/*
+ * Local variables
+ *
+ */
+
 
 
 /*
- * Notification component
+ * Printer specific notifications
  *
  */
-export const Notification = () => {
-    const notificationRef = useRef(null)
-    
-    useEffect(() => {
-        if (notificationRef.current.getClientRects()[0]) {
-            setNotificationBottom(
-                notificationRef.current.clientHeight +
-                    notificationRef.current.getClientRects()[0].top
-            )
-        }
-    })
+const Notifications = () => {
+    const { temperatures } = useStoreon("temperatures")
+    const { x, y, z } = useStoreon("x", "y", "z")
+
+    let T
+    if (typeof temperatures[2] != "undefined") {
+        T = temperatures[2].value
+    }
     return (
-        <div ref={notificationRef} id="notif" class="espnotification fixed-top">
-           <Notifications />
+        <div>
+        Notifications for {process.env.TARGET_ENV} {T}
         </div>
     )
 }
+
+export {Notifications }
