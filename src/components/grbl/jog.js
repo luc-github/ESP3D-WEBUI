@@ -21,9 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import {
-    ZapOff,
     AlertCircle,
-    Activity,
     Send,
     Home,
     Crosshair,
@@ -241,99 +239,6 @@ function updateState(entry, index) {
 }
 
 /*
- * FeedRate slider control
- *
- */
-const FeedRateSlider = () => {
-    const onInputSpeedSlider = e => {
-        document.getElementById("speed_input").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
-    }
-    const onInputSpeedInput = e => {
-        document.getElementById("speedslider").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
-    }
-    const onReset = e => {
-        document.getElementById("speedslider").value = 100
-        currentSpeed = 100
-        document.getElementById("speed_input").value = 100
-        updateState(100, "speed_input")
-    }
-    const onSet = e => {
-        let cmd = "M220 S" + currentSpeed
-        lastSpeed = currentSpeed
-        updateState(currentSpeed, "speed_input")
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
-    }
-    useEffect(() => {
-        updateState(currentSpeed, "speed_input")
-    }, [currentSpeed])
-    return (
-        <div class="input-group justify-content-center">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="speed_input_joglabel">
-                    <Activity />
-                    <span class="hide-low text-button">{T("P12")}</span>
-                </span>
-            </div>
-            <div class="slider-control hide-low">
-                <div class="slidecontainer">
-                    <input
-                        onInput={onInputSpeedSlider}
-                        type="range"
-                        min="1"
-                        max="300"
-                        value={currentSpeed}
-                        class="slider"
-                        id="speedslider"
-                    />
-                </div>
-            </div>
-            <input
-                style="max-width:6rem!important;"
-                onInput={onInputSpeedInput}
-                type="number"
-                min="1"
-                max="300"
-                value={currentSpeed}
-                class="form-control"
-                id="speed_input"
-            />
-
-            <div class="input-group-append">
-                <button
-                    id="speed_resetbtn"
-                    class="btn btn-default"
-                    type="button"
-                    onClick={onReset}
-                    title={T("100%")}
-                >
-                    %
-                </button>
-                <button
-                    id="speed_sendbtn"
-                    class="btn btn-warning invisible"
-                    type="button"
-                    onClick={onSet}
-                    title={T("S43")}
-                >
-                    <Send size="1.2em" />
-                    <span class="hide-low text-button-setting">{T("S43")}</span>
-                </button>
-            </div>
-            <div
-                class="invalid-feedback text-center"
-                style="text-align:center!important"
-            >
-                {T("S42")}
-            </div>
-        </div>
-    )
-}
-
-/*
  * FeedRate input control
  *
  */
@@ -392,11 +297,7 @@ const JogPanel = ({ preferences }) => {
         let id
         if (e.target.classList.contains("btn")) {
             id = e.target.id
-        } else {
-            id = e.target.parentElement.id
-            e.target.classList.add("std")
-            e.target.classList.remove("pressedbutton")
-        }
+        } 
         switch (id) {
             case "HomeX":
                 cmd = "G28 X0"
@@ -408,21 +309,14 @@ const JogPanel = ({ preferences }) => {
                 cmd = "G28 Z0"
                 break
             case "HomeAll":
-            default:
                 cmd = "G28"
+                break
+            default:
+                console.log("unknow id:" + id)
+                return
                 break
         }
         SendCommand(encodeURIComponent(cmd), null, sendCommandError)
-    }
-
-    const onMouseDown = e => {
-        e.target.classList.add("pressedbutton")
-        e.target.classList.remove("std")
-    }
-
-    const onOut = e => {
-        e.target.classList.add("std")
-        e.target.classList.remove("pressedbutton")
     }
 
     const sendJogCommand = e => {
@@ -432,11 +326,7 @@ const JogPanel = ({ preferences }) => {
         let feedrate
         if (e.target.classList.contains("btn")) {
             id = e.target.id
-        } else {
-            id = e.target.parentElement.id
-            e.target.classList.add("std")
-            e.target.classList.remove("pressedbutton")
-        }
+        } 
         if (
             (hasError["xyfeedrate"] &&
                 (id.startsWith("X") || id.startsWith("Y"))) ||
@@ -458,76 +348,12 @@ const JogPanel = ({ preferences }) => {
                 distance = "X-" + jogDistance
                 feedrate = currentFeedRate["xyfeedrate"]
                 break
-            case "X+100":
-                distance = "X100"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X-100":
-                distance = "X-100"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X+10":
-                distance = "X10"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X-10":
-                distance = "X-10"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X+1":
-                distance = "X1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X-1":
-                distance = "X-1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X+0_1":
-                distance = "X0.1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "X-0_1":
-                distance = "X-0.1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
             case "Yplus":
                 distance = "Y" + jogDistance
                 feedrate = currentFeedRate["xyfeedrate"]
                 break
             case "Yminus":
                 distance = "Y-" + jogDistance
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y+100":
-                distance = "Y100"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y-100":
-                distance = "Y-100"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y+10":
-                distance = "Y10"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y-10":
-                distance = "Y-10"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y+1":
-                distance = "Y1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y-1":
-                distance = "Y-1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y+0_1":
-                distance = "Y0.1"
-                feedrate = currentFeedRate["xyfeedrate"]
-                break
-            case "Y-0_1":
-                distance = "Y-0.1"
                 feedrate = currentFeedRate["xyfeedrate"]
                 break
             case "Zplus":
@@ -538,38 +364,7 @@ const JogPanel = ({ preferences }) => {
                 distance = "Z-" + jogDistance
                 feedrate = currentFeedRate["zfeedrate"]
                 break
-            case "Z+100":
-                distance = "Z100"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z-100":
-                distance = "Z-100"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z+10":
-                distance = "Z10"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z-10":
-                distance = "Z-10"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z+1":
-                distance = "Z1"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z-1":
-                distance = "Z-1"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z+0_1":
-                distance = "Z0.1"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
-            case "Z-0_1":
-                distance = "Z-0.1"
-                feedrate = currentFeedRate["zfeedrate"]
-                break
+            
             default:
                 console.log("unknow id:" + id)
                 return
@@ -579,117 +374,11 @@ const JogPanel = ({ preferences }) => {
         SendCommand(encodeURIComponent(cmd), null, sendCommandError)
     }
 
-    const sendMoveCommand = e => {
-        if (e.target.classList.contains("btn")) {
-            //nothing
-        } else {
-            e.target.classList.add("std")
-            e.target.classList.remove("pressedbutton")
-        }
-        if (hasError["xyfeedrate"] || hasError["zfeedrate"]) {
-            globaldispatch({
-                type: Action.error,
-                errorcode: 500,
-                msg: "S83",
-            })
-            return
-        }
-        let cmd =
-            "G1 X" +
-            preferences.xpos +
-            " Y" +
-            preferences.ypos +
-            " F" +
-            currentFeedRate["xyfeedrate"]
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+    const sendZeroCommand = e => {
+        console.log(e.target.id)
     }
 
-    const onHoverJog = e => {
-        switch (e.target.parentElement.id) {
-            case "X+100":
-            case "Y+100":
-            case "X-100":
-            case "Y-100":
-                document.getElementById("xy100").style.opacity = "1"
-                break
-            case "X+10":
-            case "Y+10":
-            case "X-10":
-            case "Y-10":
-                document.getElementById("xy10").style.opacity = "1"
-                break
-            case "X+1":
-            case "Y+1":
-            case "X-1":
-            case "Y-1":
-                document.getElementById("xy1").style.opacity = "1"
-                break
-            case "X+0_1":
-            case "Y+0_1":
-            case "X-0_1":
-            case "Y-0_1":
-                document.getElementById("xy0_1").style.opacity = "1"
-                break
-            case "Z+0_1":
-            case "Z-0_1":
-                document.getElementById("z0_1").style.opacity = "1"
-                break
-            case "Z+1":
-            case "Z-1":
-                document.getElementById("z1").style.opacity = "1"
-                break
-            case "Z+10":
-            case "Z-10":
-                document.getElementById("z10").style.opacity = "1"
-                break
-        }
-    }
-
-    const onOutJog = e => {
-        onOut(e)
-        switch (e.target.parentElement.id) {
-            case "X+100":
-            case "Y+100":
-            case "X-100":
-            case "Y-100":
-                document.getElementById("xy100").style.opacity = "0.2"
-                break
-            case "X+10":
-            case "Y+10":
-            case "X-10":
-            case "Y-10":
-                document.getElementById("xy10").style.opacity = "0.2"
-                break
-            case "X+1":
-            case "Y+1":
-            case "X-1":
-            case "Y-1":
-                document.getElementById("xy1").style.opacity = "0.2"
-                break
-            case "X+0_1":
-            case "Y+0_1":
-            case "X-0_1":
-            case "Y-0_1":
-                document.getElementById("xy0_1").style.opacity = "0.2"
-                break
-            case "Z+0_1":
-            case "Z-0_1":
-                document.getElementById("z0_1").style.opacity = "0.2"
-                break
-            case "Z+1":
-            case "Z-1":
-                document.getElementById("z1").style.opacity = "0.2"
-                break
-            case "Z+10":
-            case "Z-10":
-                document.getElementById("z10").style.opacity = "0.2"
-                break
-        }
-    }
-
-    const onMouseDownJog = e => {
-        onMouseDown(e)
-    }
+   
     const onCheck = e => {
         switch (e.target.id) {
             case "distanceRadio100":
@@ -728,6 +417,9 @@ const JogPanel = ({ preferences }) => {
         currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
+    let allAxis = "X"+(esp3dSettings.NbAxis > 1?"Y":"")+(esp3dSettings.NbAxis > 2?"Z":"")+(esp3dSettings.NbAxis > 3?"A":"")+(esp3dSettings.NbAxis > 4?"B":"")+(esp3dSettings.NbAxis > 5?"C":"")
+    
+    let axis = "Z"
     return (
         <div>
             Axis:{esp3dSettings.NbAxis}
@@ -735,7 +427,7 @@ const JogPanel = ({ preferences }) => {
                 <div class="d-flex flex-column justify-content-center border">
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
                             id="Xplus"
                             onclick={sendJogCommand}
                         >
@@ -744,7 +436,7 @@ const JogPanel = ({ preferences }) => {
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
                             id="HomeX"
                             onclick={sendHomeCommand}
                         >
@@ -756,7 +448,16 @@ const JogPanel = ({ preferences }) => {
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
+                            id="ZeroX"
+                            onclick={sendZeroCommand}
+                        >
+                            <span class="zeroLabel">&Oslash;</span>
+                        </button>
+                    </div>
+                    <div class="p-2">
+                        <button
+                            class="btn btn-default jogbtn"
                             id="Xminus"
                             onclick={sendJogCommand}
                         >
@@ -768,7 +469,7 @@ const JogPanel = ({ preferences }) => {
                 <div class="d-flex flex-column justify-content-center border">
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
                             id="Yplus"
                             onclick={sendJogCommand}
                         >
@@ -777,19 +478,27 @@ const JogPanel = ({ preferences }) => {
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
                             id="HomeY"
                             onclick={sendHomeCommand}
                         >
                             <div class="no-pointer">
-                                {" "}
-                                <Home />
+                                <Home/>
                             </div>
+                        </button>
+                    </div>
+                     <div class="p-2">
+                        <button
+                            class="btn btn-default jogbtn"
+                            id="ZeroY"
+                            onclick={sendZeroCommand}
+                        >
+                            <span class="zeroLabel">&Oslash;</span>
                         </button>
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
+                            class="btn btn-default jogbtn"
                             id="Yminus"
                             onclick={sendJogCommand}
                         >
@@ -801,32 +510,40 @@ const JogPanel = ({ preferences }) => {
                 <div class="d-flex flex-column justify-content-center border">
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
-                            id="Zplus"
+                            class="btn btn-default jogbtn"
+                            id="axisplus"
                             onclick={sendJogCommand}
                         >
-                            Z+
+                            {axis}+
                         </button>
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
-                            id="HomeZ"
+                            class="btn btn-default jogbtn"
+                            id="HomeAxis"
                             onclick={sendHomeCommand}
                         >
                             <div class="no-pointer">
-                                {" "}
                                 <Home />
                             </div>
                         </button>
                     </div>
                     <div class="p-2">
                         <button
-                            class="btn btn-default"
-                            id="Zminus"
+                            class="btn btn-default jogbtn"
+                            id="ZeroAxis"
+                            onclick={sendZeroCommand}
+                        >
+                            <span class="zeroLabel">&Oslash;</span>
+                        </button>
+                    </div>
+                    <div class="p-2">
+                        <button
+                            class="btn btn-default jogbtn"
+                            id="3minus"
                             onclick={sendJogCommand}
                         >
-                            Z-
+                            {axis}-
                         </button>
                     </div>
                 </div>
@@ -921,26 +638,21 @@ const JogPanel = ({ preferences }) => {
                         class="btn btn-default"
                         id="HomeAll"
                         onclick={sendHomeCommand}
-                        style="width:12rem"
                     >
                         <span class="no-pointer">
-                            {" "}
                             <Home />
                         </span>
-                        <span class="text-button">XYZ</span>
+                        <span class="text-button axisLabel">{allAxis}</span>
                     </button>
                 </div>
-                <div class="p-2">
+                 <div class="p-2">
                     <button
                         class="btn btn-default"
-                        id="posxy"
-                        onclick={sendMoveCommand}
+                        id="ZeroAll"
+                        onclick={sendZeroCommand}
                     >
-                        <span class="no-pointer">
-                            {" "}
-                            <Crosshair />
-                        </span>
-                        <span class="text-button">XY </span>
+                        <span class="zeroLabel">&Oslash;</span>
+                        <span class="text-button axisLabel">{allAxis}</span>
                     </button>
                 </div>
             </div>
@@ -957,16 +669,6 @@ const JogPanel = ({ preferences }) => {
                 />
 
                 <div class="p-2">
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        onclick={disableMotor}
-                    >
-                        <ZapOff size="1.4em" />
-                        <span class="hide-low text-button">{T("P13")}</span>
-                    </button>
-                </div>
-                <div class="p-2">
                     <div class="p-1 bg-warning">
                         <button
                             type="button"
@@ -979,7 +681,6 @@ const JogPanel = ({ preferences }) => {
                     </div>
                 </div>
             </div>
-            <FeedRateSlider />
         </div>
     )
 }
