@@ -26,6 +26,7 @@ import { globaldispatch, Page, Action } from "../app"
 import { Terminal, XCircle, Send } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
+const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -63,13 +64,7 @@ function updateTerminal(data) {
  *
  */
 function updateQuietTerminal(data) {
-    if (
-        !(
-            data.startsWith("wait") ||
-            data.startsWith("ok") ||
-            data.startsWith("T:")
-        )
-    ) {
+    if (!isVerboseData(data)) {
         monitorDataQuiet.push(<div>{data}</div>)
         if (autoscrollOutput && pauseAutoscroll) {
             if (monitorDataQuiet.length > 2 * MAX_LINES_MONITOR)

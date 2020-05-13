@@ -30,6 +30,7 @@ import {
     lastError,
 } from "../http"
 import { prefs } from "../settings"
+const { gitHubURL } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -243,7 +244,7 @@ function progressUpload(oEvent) {
  *
  */
 function clickGitFW() {
-    window.open("https://github.com/luc-github/ESP3D/tree/3.0", "_blank")
+    window.open(gitHubURL(), "_blank")
 }
 
 /*

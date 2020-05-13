@@ -31,22 +31,24 @@ import { useStoreon } from "storeon/preact"
  */
 export const Notification = () => {
     const notificationRef = useRef(null)
-    const { temperatures } = useStoreon("temperatures")
+    /* const { temperatures } = useStoreon("temperatures")
     const { x, y, z } = useStoreon("x", "y", "z")
 
     let T
     if (typeof temperatures[2] != "undefined") {
         T = temperatures[2].value
-    }
+    }*/
     useEffect(() => {
-        setNotificationBottom(
-            notificationRef.current.clientHeight +
-                notificationRef.current.getClientRects()[0].top
-        )
+        if (notificationRef.current.getClientRects()[0]) {
+            setNotificationBottom(
+                notificationRef.current.clientHeight +
+                    notificationRef.current.getClientRects()[0].top
+            )
+        }
     })
     return (
         <div ref={notificationRef} id="notif" class="espnotification fixed-top">
-            {T}
+            /*{T}*/
         </div>
     )
 }

@@ -1,6 +1,9 @@
 import { createStoreon } from "storeon"
 
 import positions from "./positions"
-import temperatures from "./temperatures"
+import monitor from "../../store/monitor"
+import error from "../../store/error"
 
-export default createStoreon([positions, temperatures])
+const store = createStoreon([positions, monitor, error])
+
+export { store }

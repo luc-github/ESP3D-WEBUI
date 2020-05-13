@@ -60,6 +60,31 @@ let stopImport
 let timeoutLoader = null
 
 /*
+ * Get GitHub URL
+ *
+ */
+function gitHubURL() {
+    if (esp3dSettings.FWTarget == "marlin-embedded")
+        return "https://github.com/luc-github/ESP3DLib"
+    else return "https://github.com/luc-github/ESP3D/tree/3.0"
+}
+
+/*
+ * Check if verbose data or not
+ *
+ */
+function isVerboseData(data) {
+    if (
+        data.startsWith("wait") ||
+        data.startsWith(">") ||
+        data.startsWith("ok") ||
+        data.startsWith("T:")
+    )
+        return true
+    else return false
+}
+
+/*
  * Clear all lists
  *
  */
@@ -339,7 +364,7 @@ function saveAndApply() {
 }
 
 /*
- * Process Save and Apply
+ * Process temperatures buffer
  *
  */
 function processTemperatures(buffer) {
@@ -1193,4 +1218,5 @@ export {
     clearData,
     JogPanel,
     MachineUIPreferences,
+    isVerboseData,
 }

@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI 3D grbl specific code / UI
+ index.js - ESP3D WebUI 3D printer specific code / UI
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -23,14 +23,22 @@ import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
+import { JogPanel, processFeedRate } from "./jog"
+import { MachineUIPreferences } from "./preferences"
 import enLangRessourceExtra from "./en.json"
 import {
     RefreshCcw,
     RotateCcw,
+    Save,
     ExternalLink,
     Download,
-    Save,
 } from "preact-feather"
+import { useStoreon } from "storeon/preact"
+
+/*
+ * Some constants
+ */
+const QUERY_TIMEOUT = 15000 //in ms
 
 /*
  * Local variables
@@ -42,9 +50,33 @@ let isloaded = false
 let isConfigRequested = false
 let isConfigData = false
 let saveOnGoing = false
-let machineImportSettings = {} //full esp3d settings to be imported
+let printerImportSettings = {} //full esp3d settings to be imported
 let currentIndex
 let stopImport
+let timeoutLoader = null
+
+/*
+ * Get GitHub URL
+ *
+ */
+function gitHubURL() {
+    return "https://github.com/bdring/Grbl_Esp32"
+}
+
+/*
+ * Check if verbose data or not
+ *
+ */
+function isVerboseData(data) {
+    if (
+        data.startsWith("<") ||
+        data.startsWith(">") ||
+        data.startsWith("ok") ||
+        data.startsWith("[")
+    )
+        return true
+    else return false
+}
 
 /*
  * Clear all lists
@@ -56,6 +88,10 @@ function clearData() {
     isloaded = false
 }
 
+/*
+ * Firmware full name
+ *
+ */
 function firmwareName(shortname) {
     switch (shortname) {
         case "grbl-embedded":
@@ -83,7 +119,7 @@ function configurationCmd() {
 /*
  * Give Save/Apply configuration command and parameters
  */
-function saveConfigurationCmd(override) {
+function saveConfigurationCmd() {
     switch (esp3dSettings.FWTarget) {
         case "grbl-embedded":
         case "grbl":
@@ -130,7 +166,7 @@ function importSettings() {
  *
  */
 function doImport() {
-    let listImportedSettings = Object.values(machineImportSettings.grbl)
+    let listImportedSettings = Object.values(printerImportSettings.printer)
     if (stopImport) {
         return
     }
@@ -166,9 +202,9 @@ function loadImportFile() {
     let reader = new FileReader()
     reader.onload = function(e) {
         var contents = e.target.result
-        console.log(contents)
+        //console.log(contents)
         try {
-            machineImportSettings = JSON.parse(contents)
+            printerImportSettings = JSON.parse(contents)
             currentIndex = -1
             globaldispatch({
                 type: Action.upload_progress,
@@ -202,7 +238,7 @@ function cancelImport() {
     globaldispatch({
         type: Action.renderAll,
     })
-    console.log("stopping import")
+    //console.log("stopping import")
 }
 
 /*
@@ -241,7 +277,7 @@ function exportSettings() {
         }
     }
     data += "]}"
-    console.log(data)
+    //console.log(data)
     file = new Blob([data], { type: "application/json" })
     if (window.navigator.msSaveOrOpenBlob)
         // IE10+
@@ -290,9 +326,10 @@ function saveAndApply() {
  * Process WebSocket data
  */
 function processWSData(buffer) {
+    processFeedRate(buffer)
     if (isConfigRequested) {
-        console.log("config requested, processing " + buffer)
-        console.log("setting size " + listrawSettings.length)
+        //console.log("config requested, processing " + buffer)
+        //console.log("setting size " + listrawSettings.length)
         if (
             buffer.startsWith(configurationCmd()[2]) ||
             buffer.startsWith(configurationCmd()[3])
@@ -304,8 +341,6 @@ function processWSData(buffer) {
                 console.log("we are done too soon, try again")
                 return
             }
-
-            console.log("we are done")
             isConfigData = false
             isConfigRequested = false
             if (buffer.startsWith(configurationCmd()[2])) {
@@ -335,6 +370,9 @@ function processWSData(buffer) {
                 }
             }
         }
+    }
+    if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
+        processTemperatures(buffer)
     }
 }
 
@@ -368,6 +406,37 @@ function processConfigData() {
     globaldispatch({
         type: Action.renderAll,
     })
+    stopTimeout()
+}
+
+/*
+ * Raise error if timeout is reached
+ */
+function timeoutError() {
+    stopTimeout()
+    globaldispatch({
+        type: Action.error,
+        errorcode: 404,
+        msg: "P17",
+    })
+}
+
+/*
+ * Start query timeout
+ */
+function startTimeout() {
+    stopTimeout()
+    timeoutLoader = setInterval(timeoutError, QUERY_TIMEOUT)
+}
+
+/*
+ * Stop query timeout
+ */
+function stopTimeout() {
+    if (timeoutLoader != null) {
+        clearInterval(timeoutLoader)
+    }
+    timeoutLoader = null
 }
 
 /*
@@ -380,6 +449,7 @@ function loadConfig() {
     isConfigData = false
     listrawSettings = []
     console.log("load FW config")
+    startTimeout()
     globaldispatch({
         type: Action.fetch_data,
     })
@@ -412,6 +482,7 @@ function isComment(sline) {
     }
     return false
 }
+
 /*
  * Check if is it a valid setting
  */
@@ -519,7 +590,7 @@ function setState(entry, state) {
     let input = document.getElementById("printer_input_" + id)
     let button = document.getElementById("printer_button_" + id)
     if (!label || !input || !button) {
-        console.log("not found" + entry.id)
+        //console.log("not found" + entry.id)
         return
     }
     input.classList.remove("is-valid")
@@ -672,6 +743,7 @@ const PrinterSetting = ({ entry }) => {
         </div>
     )
 }
+
 /*
  * Display configuration settings
  */
@@ -796,4 +868,8 @@ export {
     processWSData,
     enLangRessourceExtra,
     clearData,
+    JogPanel,
+    MachineUIPreferences,
+    isVerboseData,
+    gitHubURL,
 }

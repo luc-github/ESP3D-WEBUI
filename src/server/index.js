@@ -10,7 +10,6 @@ const WebSocket = require("ws")
 var currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
-const machine = process.env.TARGET_ENV
 /* repetier : "5"
  * repetier4davinci: "1"
  * marlin: "2"
@@ -24,9 +23,10 @@ let tempInterval = null
 let waitInterval = null
 let feedrate = 100
 
-let targetFW = machine == "grbl" ? "grbl" : "marlin"
+let targetFW = "marlin"
+
 let targetFWnb =
-    machine == "grbl"
+    targetFW == "grbl"
         ? "6"
         : targetFW == "repetier"
         ? "5"
@@ -727,6 +727,7 @@ app.get("/command", function(req, res) {
     }
 
     if (url.indexOf("ESP800") != -1) {
+        console.log(targetFW)
         res.json({
             FWVersion: "3.0.0.a28",
             FWTarget: targetFW,
