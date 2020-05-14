@@ -1,0 +1,12 @@
+{
+ "settings": {
+  "language": "en",
+  "banner": "true",
+  "autoload": "true",
+  "xyfeedrate": 100,
+  "zfeedrate": 10,
+  "afeedrate": 100,
+  "bfeedrate": 100,
+  "cfeedrate": 100
+ }
+}

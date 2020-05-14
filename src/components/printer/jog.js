@@ -691,21 +691,41 @@ const JogPanel = ({ preferences }) => {
         onMouseDown(e)
     }
     const onCheck = e => {
+        let id = "distance100"
+        switch (jogDistance) {
+            case 100:
+                id = "distance100"
+                break
+            case 10:
+                id = "distance10"
+                break
+            case 1:
+                id = "distance1"
+                break
+            case 0.1:
+            default:
+                id = "distance0_1"
+                break
+        }
+        document.getElementById(id).classList.remove("btn-primary")
+        document.getElementById(id).classList.add("btn-default")
         switch (e.target.id) {
-            case "distanceRadio100":
+            case "distance100":
                 jogDistance = 100
                 break
-            case "distanceRadio10":
+            case "distance10":
                 jogDistance = 10
                 break
-            case "distanceRadio1":
+            case "distance1":
                 jogDistance = 1
                 break
-            case "distanceRadio0_1":
+            case "distance0_1":
             default:
                 jogDistance = 0.1
                 break
         }
+        document.getElementById(e.target.id).classList.add("btn-primary")
+        document.getElementById(e.target.id).classList.remove("btn-default")
     }
 
     const emergencyStop = e => {
@@ -721,9 +741,9 @@ const JogPanel = ({ preferences }) => {
     if (typeof preferences.xyfeedrate == "undefined")
         preferences.xyfeedrate = defaultMachineValues("xyfeedrate")
     if (typeof preferences.xpos == "undefined")
-        preferences.zfeedrate = defaultMachineValues("xpos")
+        preferences.xpos = defaultMachineValues("xpos")
     if (typeof preferences.ypos == "undefined")
-        preferences.zfeedrate = defaultMachineValues("ypos")
+        preferences.ypos = defaultMachineValues("ypos")
     if (typeof currentFeedRate["xyfeedrate"] == "undefined")
         currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
@@ -739,7 +759,7 @@ const JogPanel = ({ preferences }) => {
                                 id="Xplus"
                                 onclick={sendJogCommand}
                             >
-                                X+
+                                +X
                             </button>
                         </div>
                         <div class="p-2">
@@ -760,7 +780,7 @@ const JogPanel = ({ preferences }) => {
                                 id="Xminus"
                                 onclick={sendJogCommand}
                             >
-                                X-
+                                -X
                             </button>
                         </div>
                     </div>
@@ -772,7 +792,7 @@ const JogPanel = ({ preferences }) => {
                                 id="Yplus"
                                 onclick={sendJogCommand}
                             >
-                                Y+
+                                +Y
                             </button>
                         </div>
                         <div class="p-2">
@@ -793,7 +813,7 @@ const JogPanel = ({ preferences }) => {
                                 id="Yminus"
                                 onclick={sendJogCommand}
                             >
-                                Y-
+                                -Y
                             </button>
                         </div>
                     </div>
@@ -805,7 +825,7 @@ const JogPanel = ({ preferences }) => {
                                 id="Zplus"
                                 onclick={sendJogCommand}
                             >
-                                Z+
+                                +Z
                             </button>
                         </div>
                         <div class="p-2">
@@ -826,91 +846,69 @@ const JogPanel = ({ preferences }) => {
                                 id="Zminus"
                                 onclick={sendJogCommand}
                             >
-                                Z-
+                                -Z
                             </button>
                         </div>
                     </div>
                     <div class="p-1" />
-                    <div class="d-flex flex-column justify-content-left border p-1">
+                    <div class="d-flex flex-column border" title={T("G4")}>
                         <span class="badge badge-secondary">mm</span>
-                        <div class="p-1">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="distanceRadio"
-                                    id="distanceRadio100"
-                                    value="option1"
-                                    checked={jogDistance == 100 ? true : false}
-                                    onChange={onCheck}
-                                />
-                                <label
-                                    class="form-check-label"
-                                    for="distanceRadio100"
-                                    style="width:2rem"
+                        <div class="d-flex flex-column justify-content-left  p-1">
+                            <div class="p-1">
+                                <button
+                                    style="width:4rem"
+                                    class={
+                                        jogDistance == 100
+                                            ? "btn btn-primary"
+                                            : "btn btn-default"
+                                    }
+                                    id="distance100"
+                                    onclick={onCheck}
                                 >
                                     100
-                                </label>
+                                </button>
                             </div>
-                        </div>
-                        <div class="p-1">
-                            <div class="form-check">
-                                <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="distanceRadio"
-                                    id="distanceRadio10"
-                                    value="option1"
-                                    checked={jogDistance == 10 ? true : false}
-                                    onChange={onCheck}
-                                />
-                                <label
-                                    class="form-check-label"
-                                    for="distanceRadio10"
-                                    style="width:2rem"
+                            <div class="p-1">
+                                <button
+                                    style="width:4rem"
+                                    class={
+                                        jogDistance == 10
+                                            ? "btn btn-primary"
+                                            : "btn btn-default"
+                                    }
+                                    id="distance10"
+                                    onclick={onCheck}
                                 >
                                     10
-                                </label>
+                                </button>
                             </div>
-                        </div>
-                        <div class="p-1">
-                            <div class="form-check justify-content-left">
-                                <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="distanceRadio"
-                                    id="distanceRadio1"
-                                    value="option1"
-                                    checked={jogDistance == 1 ? true : false}
-                                    onChange={onCheck}
-                                />
-                                <label
-                                    class="form-check-label"
-                                    for="distanceRadio1"
-                                    style="width:2rem"
+                            <div class="p-1">
+                                <button
+                                    style="width:4rem"
+                                    class={
+                                        jogDistance == 1
+                                            ? "btn btn-primary"
+                                            : "btn btn-default"
+                                    }
+                                    id="distance1"
+                                    onclick={onCheck}
                                 >
                                     1
-                                </label>
+                                </button>
                             </div>
-                        </div>
-                        <div class="p-1">
-                            <div class="form-check ">
-                                <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="distanceRadio"
-                                    id="distanceRadio0_1"
-                                    value="option1"
-                                    checked={jogDistance == 0.1 ? true : false}
-                                    onChange={onCheck}
-                                />
-                                <label
-                                    class="form-check-label"
-                                    for="distanceRadio0_1"
-                                    style="width:2rem"
+                            <div class="p-1">
+                                <button
+                                    style="width:4rem"
+                                    class={
+                                        jogDistance == 0.1
+                                            ? "btn btn-primary"
+                                            : "btn btn-default"
+                                    }
+                                    id="distance0_1"
+                                    onclick={onCheck}
                                 >
                                     0.1
-                                </label>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -22,6 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
+import { esp3dSettings } from "../app"
 //import {} from "preact-feather"
 
 /*
@@ -39,8 +40,9 @@ function hasSettingError() {
     if (
         hasError["xyfeedrate"] ||
         hasError["zfeedrate"] ||
-        hasError["xpos"] ||
-        hasError["ypos"]
+        hasError["afeedrate"] ||
+        hasError["bfeedrate"] ||
+        hasError["cfeedrate"]
     ) {
         return true
     }
@@ -54,11 +56,16 @@ function checkValue(entry, id) {
     const { dispatch } = useStoreon()
     let isvalid = true
     if (entry[id].length == 0) isvalid = false
-    if (id == "xyfeedrate" || id == "zfeedrate") {
+    if (
+        id == "xyfeedrate" ||
+        id == "zfeedrate" ||
+        id == "afeedrate" ||
+        id == "bfeedrate" ||
+        id == "cfeedrate"
+    ) {
         if (entry[id] < 1) isvalid = false
     }
-    if (id == "xpos" || id == "ypos") {
-    }
+
     hasError[id] = !isvalid
     dispatch("error/set", hasSettingError())
     return isvalid
@@ -207,9 +214,11 @@ function defaultMachineValues(id) {
             return 100
         case "zfeedrate":
             return 10
-        case "xpos":
+        case "afeedrate":
             return 100
-        case "ypos":
+        case "bfeedrate":
+            return 100
+        case "cfeedrate":
             return 100
         default:
             return 0
@@ -228,38 +237,58 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
     if (typeof prefs.zfeedrate == "undefined") {
         prefs.zfeedrate = defaultMachineValues("zfeedrate")
     }
-    if (typeof prefs.xpos == "undefined") {
-        prefs.xpos = defaultMachineValues("xpos")
+    if (typeof prefs.afeedrate == "undefined") {
+        prefs.afeedrate = defaultMachineValues("afeedrate")
     }
-    if (typeof prefs.ypos == "undefined") {
-        prefs.ypos = defaultMachineValues("ypos")
+    if (typeof prefs.bfeedrate == "undefined") {
+        prefs.bfeedrate = defaultMachineValues("bfeedrate")
+    }
+    if (typeof prefs.cfeedrate == "undefined") {
+        prefs.cfeedrate = defaultMachineValues("cfeedrate")
     }
     return (
         <div class="d-flex flex-column justify-content-center border p-2">
             <MachineUIEntry
                 entry={prefs}
                 id="xyfeedrate"
-                label={T("P10")}
-                help={T("P14")}
+                label={T("G5").replace(
+                    "{axis}",
+                    esp3dSettings.NbAxis > 1 ? "XY" : "X"
+                )}
+                help={T("G6")}
             />
-            <MachineUIEntry
-                entry={prefs}
-                id="zfeedrate"
-                label={T("P11")}
-                help={T("P14")}
-            />
-            <MachineUIEntry
-                entry={prefs}
-                id="xpos"
-                label={T("P18")}
-                help={T("P16")}
-            />
-            <MachineUIEntry
-                entry={prefs}
-                id="ypos"
-                label={T("P19")}
-                help={T("P16")}
-            />
+            <div class={esp3dSettings.NbAxis < 3 ? "d-none" : ""}>
+                <MachineUIEntry
+                    entry={prefs}
+                    id="zfeedrate"
+                    label={T("G5").replace("{axis}", "Z")}
+                    help={T("G6")}
+                />
+            </div>
+            <div class={esp3dSettings.NbAxis < 4 ? "d-none" : ""}>
+                <MachineUIEntry
+                    entry={prefs}
+                    id="afeedrate"
+                    label={T("G5").replace("{axis}", "A")}
+                    help={T("G6")}
+                />
+            </div>
+            <div class={esp3dSettings.NbAxis < 5 ? "d-none" : ""}>
+                <MachineUIEntry
+                    entry={prefs}
+                    id="bfeedrate"
+                    label={T("G5").replace("{axis}", "B")}
+                    help={T("G6")}
+                />
+            </div>
+            <div class={esp3dSettings.NbAxis < 6 ? "d-none" : ""}>
+                <MachineUIEntry
+                    entry={prefs}
+                    id="cfeedrate"
+                    label={T("G5").replace("{axis}", "C")}
+                    help={T("G6")}
+                />
+            </div>
         </div>
     )
 }

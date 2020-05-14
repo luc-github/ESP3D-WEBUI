@@ -48,7 +48,7 @@
     "G1" :  "Sorry this UI is only for CNC, please use printer one",
     "G2" : "Reset board",
     "G3" : "All",
-    "G4" : "XY feedrate",
+    "G4" : "Distance of movement",
     "G5" : "{axis} feedrate",
     "G6" : "mm/min" ,
     "G7" : "Emergency Stop" ,

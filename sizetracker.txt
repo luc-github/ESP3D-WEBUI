@@ -18,4 +18,5 @@ UI settings feedback    : 0.0.0.16: 42.0KB      |
 UI language pack        : 0.0.0.17: 42.6KB      |
 Machine settings        : 0.0.0.18: 46.3KB      | 45.6 KB
 Terminal panel          : 0.0.0.18: 47.4KB      | 46.7 KB
-Jog Panel		: 0.0.0.21: 56.5KB	| TBD
+Jog Panel               : 0.0.0.21: 56.5KB      | TBD
+Jog Panel GRBL/Printer  : 0.0.0.22: 56.7KB      | 52.6KB

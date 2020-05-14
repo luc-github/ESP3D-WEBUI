@@ -43,6 +43,8 @@ const DashboardPage = ({ currentState }) => {
                     </div>
                 </div>
             </center>
+            <br />
+            <br />
         </div>
     )
 }

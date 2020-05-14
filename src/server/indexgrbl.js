@@ -12,9 +12,9 @@ const app = express()
 const fileUpload = require("express-fileupload")
 const machine = "grbl"
 
-let tempInterval = null
-let waitInterval = null
+let queryInterval = null
 let feedrate = 100
+let nbAxis = 6
 
 let targetFW = machine
 
@@ -138,7 +138,7 @@ app.get("/command", function(req, res) {
             WebUpdate: "Enabled",
             Filesystem: "SPIFFS",
             Time: "none",
-            NbAxis: "6",
+            NbAxis: nbAxis,
         })
         return
     }
