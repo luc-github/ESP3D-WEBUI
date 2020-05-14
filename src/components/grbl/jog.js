@@ -273,7 +273,7 @@ const FeedRateInput = ({ entry, label, id }) => {
                         class="input-group-text hide-low"
                         id={id + "_jogunit"}
                     >
-                        {T("P14")}
+                        {T("G8")}
                     </span>
                 </div>
                 <div
@@ -417,9 +417,8 @@ const JogPanel = ({ preferences }) => {
         currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
-    let allAxis = "X"+(esp3dSettings.NbAxis > 1?"Y":"")+(esp3dSettings.NbAxis > 2?"Z":"")+(esp3dSettings.NbAxis > 3?"A":"")+(esp3dSettings.NbAxis > 4?"B":"")+(esp3dSettings.NbAxis > 5?"C":"")
-    
-    let axis = "Z"
+    let allAxis = T("G3");
+    let axis = "A"
     return (
         <div>
             Axis:{esp3dSettings.NbAxis}
@@ -640,7 +639,7 @@ const JogPanel = ({ preferences }) => {
                         onclick={sendHomeCommand}
                     >
                         <span class="no-pointer">
-                            <Home />
+                            <Home size="1.3rem"/>
                         </span>
                         <span class="text-button axisLabel">{allAxis}</span>
                     </button>
@@ -659,12 +658,12 @@ const JogPanel = ({ preferences }) => {
             <div class="d-flex flex-wrap justify-content-center">
                 <FeedRateInput
                     entry={currentFeedRate["xyfeedrate"]}
-                    label={T("P10")}
+                    label={T("G4")}
                     id="xyfeedrate"
                 />
                 <FeedRateInput
                     entry={currentFeedRate["zfeedrate"]}
-                    label={T("P11")}
+                    label={T("G5").replace("{axis}",axis)}
                     id="zfeedrate"
                 />
 
@@ -676,7 +675,7 @@ const JogPanel = ({ preferences }) => {
                             onclick={emergencyStop}
                         >
                             <AlertCircle size="1.4em" />
-                            <span class="hide-low text-button">{T("P15")}</span>
+                            <span class="hide-low text-button">{T("G6")}</span>
                         </button>
                     </div>
                 </div>

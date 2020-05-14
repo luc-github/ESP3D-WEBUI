@@ -46,5 +46,13 @@
     "$134": "B Max travel, mm",
     "$135": "C Max travel, mm",
     "G1" :  "Sorry this UI is only for CNC, please use printer one",
-    "G2" : "Reset board"
+    "G2" : "Reset board",
+    "G3" : "All",
+    "G4" : "XY feedrate",
+    "G5" : "{axis} feedrate",
+    "G6" : "mm/min" ,
+    "G7" : "Emergency Stop" ,
+    "G8" : "mm",
+    "G9" : "Home {axis} axis",
+    "G10" : "Zero {axis} position",
 }
