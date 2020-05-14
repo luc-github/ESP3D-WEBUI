@@ -20,16 +20,12 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import {
-    AlertCircle,
-    Send,
-    Home,
-    Crosshair,
-} from "preact-feather"
+import { AlertCircle, Send, Home, Crosshair } from "preact-feather"
 import { defaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { globaldispatch, Action, esp3dSettings } from "../app"
+import { useStoreon } from "storeon/preact"
 
 /*
  * Local variables
@@ -292,12 +288,13 @@ const FeedRateInput = ({ entry, label, id }) => {
  *
  */
 const JogPanel = ({ preferences }) => {
+    const { axis } = useStoreon("axis")
     const sendHomeCommand = e => {
         let cmd
         let id
         if (e.target.classList.contains("btn")) {
             id = e.target.id
-        } 
+        }
         switch (id) {
             case "HomeX":
                 cmd = "G28 X0"
@@ -326,7 +323,7 @@ const JogPanel = ({ preferences }) => {
         let feedrate
         if (e.target.classList.contains("btn")) {
             id = e.target.id
-        } 
+        }
         if (
             (hasError["xyfeedrate"] &&
                 (id.startsWith("X") || id.startsWith("Y"))) ||
@@ -364,7 +361,7 @@ const JogPanel = ({ preferences }) => {
                 distance = "Z-" + jogDistance
                 feedrate = currentFeedRate["zfeedrate"]
                 break
-            
+
             default:
                 console.log("unknow id:" + id)
                 return
@@ -378,7 +375,6 @@ const JogPanel = ({ preferences }) => {
         console.log(e.target.id)
     }
 
-   
     const onCheck = e => {
         switch (e.target.id) {
             case "distanceRadio100":
@@ -400,6 +396,11 @@ const JogPanel = ({ preferences }) => {
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
     }
+    const selectChange = e => {
+        const { dispatch } = useStoreon()
+        dispatch("axis/set", e.target.value)
+        console.log(e.target.value)
+    }
 
     if (typeof preferences.zfeedrate == "undefined")
         preferences.zfeedrate = defaultMachineValues("zfeedrate")
@@ -413,109 +414,153 @@ const JogPanel = ({ preferences }) => {
         currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
-    let allAxis = T("G3");
-    let axis = "A"
+    let allAxis = T("G3")
+
     return (
         <div>
             Axis:{esp3dSettings.NbAxis}
-            <div class="d-flex flex-row justify-content-center">
-                <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2" title={T("G11").replace("{axis}","X")} >
-                        <button
-                            class="btn btn-default jogbtn"
-                            id="Xplus"
-                            onclick={sendJogCommand}
+            <div class="d-flex flex-wrap justify-content-center">
+                <div class="d-flex flex-column justify-content-center">
+                    <div class="border">
+                        <div
+                            class="p-2"
+                            title={T("G11").replace("{axis}", "X")}
                         >
-                            X+
-                        </button>
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="Xplus"
+                                onclick={sendJogCommand}
+                            >
+                                X+
+                            </button>
+                        </div>
+                        <div class="p-2" title={T("G9").replace("{axis}", "X")}>
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="HomeX"
+                                onclick={sendHomeCommand}
+                            >
+                                <div class="no-pointer">
+                                    {" "}
+                                    <Home />
+                                </div>
+                            </button>
+                        </div>
+                        <div
+                            class="p-2"
+                            title={T("G10").replace("{axis}", "X")}
+                        >
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="ZeroX"
+                                onclick={sendZeroCommand}
+                            >
+                                <span class="zeroLabel">&Oslash;</span>
+                            </button>
+                        </div>
+                        <div
+                            class="p-2"
+                            title={T("G12").replace("{axis}", "X")}
+                        >
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="Xminus"
+                                onclick={sendJogCommand}
+                            >
+                                X-
+                            </button>
+                        </div>
                     </div>
-                    <div class="p-2" title={T("G9").replace("{axis}","X")}>
+                    <div class="p-2" title={T("G13")}>
                         <button
-                            class="btn btn-default jogbtn"
-                            id="HomeX"
+                            class="btn btn-default"
+                            id="HomeAll"
                             onclick={sendHomeCommand}
                         >
-                            <div class="no-pointer">
-                                {" "}
-                                <Home />
-                            </div>
+                            <span class="no-pointer">
+                                <Home size="1.3rem" />
+                            </span>
+                            <span class="text-button axisLabel">{allAxis}</span>
                         </button>
                     </div>
-                    <div class="p-2" title={T("G10").replace("{axis}","X")}>
+                </div>
+                <div class="p-1" />
+                <div class="d-flex flex-column justify-content-center">
+                    <div class="border">
+                        <div
+                            class="p-2"
+                            title={T("G11").replace("{axis}", "Y")}
+                        >
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="Yplus"
+                                onclick={sendJogCommand}
+                            >
+                                Y+
+                            </button>
+                        </div>
+                        <div class="p-2" title={T("G9").replace("{axis}", "Y")}>
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="HomeY"
+                                onclick={sendHomeCommand}
+                            >
+                                <div class="no-pointer">
+                                    <Home />
+                                </div>
+                            </button>
+                        </div>
+                        <div
+                            class="p-2"
+                            title={T("G10").replace("{axis}", "Y")}
+                        >
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="ZeroY"
+                                onclick={sendZeroCommand}
+                            >
+                                <span class="zeroLabel">&Oslash;</span>
+                            </button>
+                        </div>
+                        <div
+                            class="p-2"
+                            title={T("G12").replace("{axis}", "Y")}
+                        >
+                            <button
+                                class="btn btn-default jogbtn"
+                                id="Yminus"
+                                onclick={sendJogCommand}
+                            >
+                                Y-
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-2" title={T("G14")}>
                         <button
-                            class="btn btn-default jogbtn"
-                            id="ZeroX"
+                            class="btn btn-default"
+                            id="ZeroAll"
                             onclick={sendZeroCommand}
                         >
                             <span class="zeroLabel">&Oslash;</span>
-                        </button>
-                    </div>
-                    <div class="p-2" title={T("G12").replace("{axis}","X")}>
-                        <button
-                            class="btn btn-default jogbtn"
-                            id="Xminus"
-                            onclick={sendJogCommand}
-                        >
-                            X-
+                            <span class="text-button axisLabel">{allAxis}</span>
                         </button>
                     </div>
                 </div>
                 <div class="p-1" />
                 <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2" title={T("G11").replace("{axis}","Y")}>
+                    <div class="p-2" title={T("G11").replace("{axis}", axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id="Yplus"
-                            onclick={sendJogCommand}
-                        >
-                            Y+
-                        </button>
-                    </div>
-                    <div class="p-2" title={T("G9").replace("{axis}","Y")}>
-                        <button
-                            class="btn btn-default jogbtn"
-                            id="HomeY"
-                            onclick={sendHomeCommand}
-                        >
-                            <div class="no-pointer">
-                                <Home/>
-                            </div>
-                        </button>
-                    </div>
-                     <div class="p-2" title={T("G10").replace("{axis}","Y")}>
-                        <button
-                            class="btn btn-default jogbtn"
-                            id="ZeroY"
-                            onclick={sendZeroCommand}
-                        >
-                            <span class="zeroLabel">&Oslash;</span>
-                        </button>
-                    </div>
-                    <div class="p-2" title={T("G12").replace("{axis}","Y")}>
-                        <button
-                            class="btn btn-default jogbtn"
-                            id="Yminus"
-                            onclick={sendJogCommand}
-                        >
-                            Y-
-                        </button>
-                    </div>
-                </div>
-                <div class="p-1" />
-                <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2" title={T("G11").replace("{axis}",axis)}>
-                        <button
-                            class="btn btn-default jogbtn"
-                            id={axis+"plus"}
+                            id={axis + "plus"}
                             onclick={sendJogCommand}
                         >
                             {axis}+
                         </button>
                     </div>
-                    <div class="p-2" title={T("G9").replace("{axis}",axis)}>
+                    <div class="p-2" title={T("G9").replace("{axis}", axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id={"Home" +axis}
+                            id={"Home" + axis}
                             onclick={sendHomeCommand}
                         >
                             <div class="no-pointer">
@@ -523,7 +568,7 @@ const JogPanel = ({ preferences }) => {
                             </div>
                         </button>
                     </div>
-                    <div class="p-2" title={T("G10").replace("{axis}",axis)}>
+                    <div class="p-2" title={T("G10").replace("{axis}", axis)}>
                         <button
                             class="btn btn-default jogbtn"
                             id={"Zero" + axis}
@@ -532,150 +577,154 @@ const JogPanel = ({ preferences }) => {
                             <span class="zeroLabel">&Oslash;</span>
                         </button>
                     </div>
-                    <div class="p-2" title={T("G12").replace("{axis}",axis)}>
+                    <div class="p-2" title={T("G12").replace("{axis}", axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id={axis+"minus"}
+                            id={axis + "minus"}
                             onclick={sendJogCommand}
                         >
                             {axis}-
                         </button>
                     </div>
+                    <div class="p-2">
+                        <select
+                            onchange={selectChange}
+                            value={axis}
+                            class="form-control"
+                        >
+                            <option value="Z">Z</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="p-1" />
-                <div class="d-flex flex-column justify-content-left border p-1">
-                    <span class="badge badge-secondary">mm</span>
-                    <div class="p-1">
-                        <div class="form-check">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="distanceRadio"
-                                id="distanceRadio100"
-                                value="option1"
-                                checked={jogDistance == 100 ? true : false}
-                                onChange={onCheck}
-                            />
-                            <label
-                                class="form-check-label"
-                                for="distanceRadio100"
-                                style="width:2rem"
-                            >
-                                100
-                            </label>
+                <div>
+                    <div class="p-1 d-block d-sm-none" />
+                    <div class="d-flex flex-wrap justify-content-left">
+                        <div class="d-flex flex-wrap justify-content-left border p-1">
+                            <span class="badge badge-secondary">mm</span>
+                            <div class="p-1">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="distanceRadio"
+                                        id="distanceRadio100"
+                                        value="option1"
+                                        checked={
+                                            jogDistance == 100 ? true : false
+                                        }
+                                        onChange={onCheck}
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="distanceRadio100"
+                                        style="width:2rem"
+                                    >
+                                        100
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="p-1">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="distanceRadio"
+                                        id="distanceRadio10"
+                                        value="option1"
+                                        checked={
+                                            jogDistance == 10 ? true : false
+                                        }
+                                        onChange={onCheck}
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="distanceRadio10"
+                                        style="width:2rem"
+                                    >
+                                        10
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="p-1">
+                                <div class="form-check justify-content-left">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="distanceRadio"
+                                        id="distanceRadio1"
+                                        value="option1"
+                                        checked={
+                                            jogDistance == 1 ? true : false
+                                        }
+                                        onChange={onCheck}
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="distanceRadio1"
+                                        style="width:2rem"
+                                    >
+                                        1
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="p-1">
+                                <div class="form-check ">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="distanceRadio"
+                                        id="distanceRadio0_1"
+                                        value="option1"
+                                        checked={
+                                            jogDistance == 0.1 ? true : false
+                                        }
+                                        onChange={onCheck}
+                                    />
+                                    <label
+                                        class="form-check-label"
+                                        for="distanceRadio0_1"
+                                        style="width:2rem"
+                                    >
+                                        0.1
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-1">
-                        <div class="form-check">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="distanceRadio"
-                                id="distanceRadio10"
-                                value="option1"
-                                checked={jogDistance == 10 ? true : false}
-                                onChange={onCheck}
-                            />
-                            <label
-                                class="form-check-label"
-                                for="distanceRadio10"
-                                style="width:2rem"
-                            >
-                                10
-                            </label>
-                        </div>
-                    </div>
-                    <div class="p-1">
-                        <div class="form-check justify-content-left">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="distanceRadio"
-                                id="distanceRadio1"
-                                value="option1"
-                                checked={jogDistance == 1 ? true : false}
-                                onChange={onCheck}
-                            />
-                            <label
-                                class="form-check-label"
-                                for="distanceRadio1"
-                                style="width:2rem"
-                            >
-                                1
-                            </label>
-                        </div>
-                    </div>
-                    <div class="p-1">
-                        <div class="form-check ">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="distanceRadio"
-                                id="distanceRadio0_1"
-                                value="option1"
-                                checked={jogDistance == 0.1 ? true : false}
-                                onChange={onCheck}
-                            />
-                            <label
-                                class="form-check-label"
-                                for="distanceRadio0_1"
-                                style="width:2rem"
-                            >
-                                0.1
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex flex-row justify-content-center">
-                <div class="p-2" title={T("G13")}>
-                    <button
-                        class="btn btn-default"
-                        id="HomeAll"
-                        onclick={sendHomeCommand}
-                    >
-                        <span class="no-pointer">
-                            <Home size="1.3rem"/>
-                        </span>
-                        <span class="text-button axisLabel">{allAxis}</span>
-                    </button>
-                </div>
-                 <div class="p-2" title={T("G14")}>
-                    <button
-                        class="btn btn-default"
-                        id="ZeroAll"
-                        onclick={sendZeroCommand}
-                    >
-                        <span class="zeroLabel">&Oslash;</span>
-                        <span class="text-button axisLabel">{allAxis}</span>
-                    </button>
-                </div>
-            </div>
-            <div class="d-flex flex-wrap justify-content-center">
-                <FeedRateInput
-                    entry={currentFeedRate["xyfeedrate"]}
-                    label={T("G4")}
-                    id="xyfeedrate"
-                />
-                <FeedRateInput
-                    entry={currentFeedRate["zfeedrate"]}
-                    label={T("G5").replace("{axis}",axis)}
-                    id="zfeedrate"
-                />
+                    <FeedRateInput
+                        entry={currentFeedRate["xyfeedrate"]}
+                        label={T("G4")}
+                        id="xyfeedrate"
+                    />
+                    <FeedRateInput
+                        entry={currentFeedRate["zfeedrate"]}
+                        label={T("G5").replace("{axis}", axis)}
+                        id="zfeedrate"
+                    />
 
-                <div class="p-2">
-                    <div class="p-1 bg-warning">
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-danger"
-                            onclick={emergencyStop}
-                        >
-                            <AlertCircle size="1.4em" />
-                            <span class="hide-low text-button">{T("G7")}</span>
-                        </button>
+                    <div class="p-2">
+                        <div class="d-flex justify-content-center">
+                            <div class="p-1 bg-warning">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-danger"
+                                    onclick={emergencyStop}
+                                >
+                                    <AlertCircle size="1.4em" />
+                                    <span class="hide-low text-button">
+                                        {T("G7")}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="d-flex flex-wrap justify-content-center"></div>
         </div>
     )
 }

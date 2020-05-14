@@ -29,19 +29,12 @@ import { useStoreon } from "storeon/preact"
  *
  */
 
-
-
 /*
  * GRBL specific notifications
  *
  */
 const Notifications = () => {
-    
-    return (
-        <div>
-        Notifications for {process.env.TARGET_ENV}
-        </div>
-    )
+    return <div>Notifications for {process.env.TARGET_ENV}</div>
 }
 
-export {Notifications }
+export { Notifications }

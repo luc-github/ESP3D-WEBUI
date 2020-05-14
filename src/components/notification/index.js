@@ -23,14 +23,13 @@ import { useEffect, useRef } from "preact/hooks"
 import { setNotificationBottom } from "../app"
 const { Notifications } = require(`../${process.env.TARGET_ENV}`)
 
-
 /*
  * Notification component
  *
  */
 export const Notification = () => {
     const notificationRef = useRef(null)
-    
+
     useEffect(() => {
         if (notificationRef.current.getClientRects()[0]) {
             setNotificationBottom(
@@ -41,7 +40,7 @@ export const Notification = () => {
     })
     return (
         <div ref={notificationRef} id="notif" class="espnotification fixed-top">
-           <Notifications />
+            <Notifications />
         </div>
     )
 }

@@ -874,5 +874,5 @@ export {
     MachineUIPreferences,
     isVerboseData,
     gitHubURL,
-    Notifications
+    Notifications,
 }

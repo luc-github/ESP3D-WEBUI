@@ -29,8 +29,6 @@ import { useStoreon } from "storeon/preact"
  *
  */
 
-
-
 /*
  * Printer specific notifications
  *
@@ -45,9 +43,9 @@ const Notifications = () => {
     }
     return (
         <div>
-        Notifications for {process.env.TARGET_ENV} {T}
+            Notifications for {process.env.TARGET_ENV} {T}
         </div>
     )
 }
 
-export {Notifications }
+export { Notifications }

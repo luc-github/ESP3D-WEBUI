@@ -1220,5 +1220,5 @@ export {
     JogPanel,
     MachineUIPreferences,
     isVerboseData,
-    Notifications
+    Notifications,
 }
