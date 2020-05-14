@@ -401,10 +401,6 @@ const JogPanel = ({ preferences }) => {
         SendCommand("M112", null, sendCommandError)
     }
 
-    const disableMotor = e => {
-        SendCommand("M84", null, sendCommandError)
-    }
-
     if (typeof preferences.zfeedrate == "undefined")
         preferences.zfeedrate = defaultMachineValues("zfeedrate")
     if (typeof preferences.xyfeedrate == "undefined")
@@ -424,7 +420,7 @@ const JogPanel = ({ preferences }) => {
             Axis:{esp3dSettings.NbAxis}
             <div class="d-flex flex-row justify-content-center">
                 <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2">
+                    <div class="p-2" title={T("G11").replace("{axis}","X")} >
                         <button
                             class="btn btn-default jogbtn"
                             id="Xplus"
@@ -433,7 +429,7 @@ const JogPanel = ({ preferences }) => {
                             X+
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G9").replace("{axis}","X")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="HomeX"
@@ -445,7 +441,7 @@ const JogPanel = ({ preferences }) => {
                             </div>
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G10").replace("{axis}","X")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="ZeroX"
@@ -454,7 +450,7 @@ const JogPanel = ({ preferences }) => {
                             <span class="zeroLabel">&Oslash;</span>
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G12").replace("{axis}","X")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="Xminus"
@@ -466,7 +462,7 @@ const JogPanel = ({ preferences }) => {
                 </div>
                 <div class="p-1" />
                 <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2">
+                    <div class="p-2" title={T("G11").replace("{axis}","Y")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="Yplus"
@@ -475,7 +471,7 @@ const JogPanel = ({ preferences }) => {
                             Y+
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G9").replace("{axis}","Y")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="HomeY"
@@ -486,7 +482,7 @@ const JogPanel = ({ preferences }) => {
                             </div>
                         </button>
                     </div>
-                     <div class="p-2">
+                     <div class="p-2" title={T("G10").replace("{axis}","Y")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="ZeroY"
@@ -495,7 +491,7 @@ const JogPanel = ({ preferences }) => {
                             <span class="zeroLabel">&Oslash;</span>
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G12").replace("{axis}","Y")}>
                         <button
                             class="btn btn-default jogbtn"
                             id="Yminus"
@@ -507,19 +503,19 @@ const JogPanel = ({ preferences }) => {
                 </div>
                 <div class="p-1" />
                 <div class="d-flex flex-column justify-content-center border">
-                    <div class="p-2">
+                    <div class="p-2" title={T("G11").replace("{axis}",axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id="axisplus"
+                            id={axis+"plus"}
                             onclick={sendJogCommand}
                         >
                             {axis}+
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G9").replace("{axis}",axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id="HomeAxis"
+                            id={"Home" +axis}
                             onclick={sendHomeCommand}
                         >
                             <div class="no-pointer">
@@ -527,19 +523,19 @@ const JogPanel = ({ preferences }) => {
                             </div>
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G10").replace("{axis}",axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id="ZeroAxis"
+                            id={"Zero" + axis}
                             onclick={sendZeroCommand}
                         >
                             <span class="zeroLabel">&Oslash;</span>
                         </button>
                     </div>
-                    <div class="p-2">
+                    <div class="p-2" title={T("G12").replace("{axis}",axis)}>
                         <button
                             class="btn btn-default jogbtn"
-                            id="3minus"
+                            id={axis+"minus"}
                             onclick={sendJogCommand}
                         >
                             {axis}-
@@ -632,7 +628,7 @@ const JogPanel = ({ preferences }) => {
                 </div>
             </div>
             <div class="d-flex flex-row justify-content-center">
-                <div class="p-2">
+                <div class="p-2" title={T("G13")}>
                     <button
                         class="btn btn-default"
                         id="HomeAll"
@@ -644,7 +640,7 @@ const JogPanel = ({ preferences }) => {
                         <span class="text-button axisLabel">{allAxis}</span>
                     </button>
                 </div>
-                 <div class="p-2">
+                 <div class="p-2" title={T("G14")}>
                     <button
                         class="btn btn-default"
                         id="ZeroAll"
@@ -675,7 +671,7 @@ const JogPanel = ({ preferences }) => {
                             onclick={emergencyStop}
                         >
                             <AlertCircle size="1.4em" />
-                            <span class="hide-low text-button">{T("G6")}</span>
+                            <span class="hide-low text-button">{T("G7")}</span>
                         </button>
                     </div>
                 </div>

@@ -55,4 +55,8 @@
     "G8" : "mm",
     "G9" : "Home {axis} axis",
     "G10" : "Zero {axis} position",
+    "G11" : "Move {axis} up",
+    "G12" : "Move {axis} down",
+    "G13" : "Home all axis",
+    "G14" : "Zero all position"
 }
