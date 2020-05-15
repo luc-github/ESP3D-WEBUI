@@ -23,7 +23,7 @@ import { T } from "../translations"
 import { useState, useEffect } from "preact/hooks"
 import { initApp } from "../uisettings"
 import { globaldispatch, Page, Action } from "../app"
-import { Terminal, XCircle, Send } from "preact-feather"
+import { X, XCircle, Send } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
@@ -38,7 +38,6 @@ let currentOutput = []
 let verboseOutput = true
 let autoscrollOutput = true
 let pauseAutoscroll = false
-let visible = false
 var commandHistory = []
 var commandHistoryIndex = -1
 
@@ -107,8 +106,7 @@ function updateContentType() {
  * Terminal Controls
  *
  */
-const TerminalControls = ({ visible }) => {
-    if (!visible) return null
+const TerminalControls = () => {
     const [isVerbose, setVerbose] = useState(verboseOutput)
     const toogleVerbose = e => {
         verboseOutput = e.target.checked
@@ -128,8 +126,12 @@ const TerminalControls = ({ visible }) => {
         monitorDataVerbose = []
         updateContentType()
     }
+    const toogle = e => {
+        const { dispatch } = useStoreon()
+        dispatch("monitor/showterminal", false)
+    }
     return (
-        <div class="d-flex flex-wrap">
+        <div class="d-flex flex-wrap p-1">
             <div class="d-flex flex-column flex-md-row">
                 <div class="control-like p-2">
                     <label
@@ -173,6 +175,17 @@ const TerminalControls = ({ visible }) => {
                     <span class="hide-low text-button nowrap">{T("S78")}</span>
                 </button>
             </span>
+            <div class="ml-auto">
+                {" "}
+                <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    title={T("S86")}
+                    onClick={toogle}
+                >
+                    <X />
+                </button>
+            </div>
         </div>
     )
 }
@@ -230,9 +243,10 @@ function doAutoscroll() {
  * Terminal Window
  *
  */
-const TerminalWindow = ({ visible }) => {
+const TerminalPanel = () => {
     const { content } = useStoreon("content")
-    if (!visible) return null
+    const { showTerminal } = useStoreon("showTerminal")
+    if (!showTerminal) return null
     const [command, setCommand] = useState("")
     const onclick = e => {
         if (command.length > 0) {
@@ -280,10 +294,10 @@ const TerminalWindow = ({ visible }) => {
     }, [content])
     return (
         <div>
-            <div class="controlSpacer" />
-            <div class="controlSpacer" />
-            <div class="card">
-                <div class="card-body">
+            <div class="p-1">
+                <div class="border p-2">
+                    <TerminalControls />
+
                     <div class="input-group">
                         <input
                             type="text"
@@ -306,58 +320,17 @@ const TerminalWindow = ({ visible }) => {
                             </button>
                         </div>
                     </div>
-                    <div class="controlSpacer" />
-                    <div class="card">
-                        <div
-                            id="outputTerminalWindow"
-                            class="card-body customscroll"
-                            style="min-height:200px;max-height:200px; overflow: auto;"
-                            onscroll={onScroll}
-                        >
-                            {content}
-                        </div>
+                    <div class="p-1" />
+                    <div
+                        id="outputTerminalWindow"
+                        class="border customscroll"
+                        style="min-height:200px;max-height:200px; overflow: auto;"
+                        onscroll={onScroll}
+                    >
+                        {content}
                     </div>
                 </div>
             </div>
-        </div>
-    )
-}
-
-/*
- * Terminal panel
- *
- */
-const TerminalPanel = ({ currentState }) => {
-    if (currentState.activePage != Page.dashboard) return null
-    const [show, showIt] = useState(visible)
-    const toogle = e => {
-        visible = !show
-        showIt(!show)
-    }
-    let title
-    if (show) {
-        title = T("S73")
-    } else {
-        title = T("S75")
-    }
-    return (
-        <div>
-            <div class="controlSpacer" />
-            <div class="d-flex flex-row no_wrap">
-                <div>
-                    <button
-                        type="button"
-                        class="btn btn-dark"
-                        title={T("S74")}
-                        onClick={toogle}
-                    >
-                        <Terminal />
-                        <span class="hide-low text-button">{title}</span>
-                    </button>
-                </div>
-                <TerminalControls visible={show} />
-            </div>
-            <TerminalWindow visible={show} />
         </div>
     )
 }

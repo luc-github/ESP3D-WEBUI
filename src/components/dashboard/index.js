@@ -23,8 +23,54 @@ import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
+import { FilesPanel } from "./files"
 const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../uisettings"
+import { useStoreon } from "storeon/preact"
+import { Terminal, Folder, X } from "preact-feather"
+
+const DashboardToolBar = () => {
+    const { showTerminal } = useStoreon("showTerminal")
+    const { showFiles } = useStoreon("showFiles")
+    const toogleTerminal = e => {
+        const { dispatch } = useStoreon()
+        dispatch("monitor/showterminal", !showTerminal)
+    }
+    const toogleFiles = e => {
+        const { dispatch } = useStoreon()
+        dispatch("monitor/showfiles", !showFiles)
+    }
+    return (
+        <div class="d-flex flex-row no_wrap">
+            <div class="p-1">
+                <button
+                    type="button"
+                    class="btn btn-dark"
+                    title={T("S74")}
+                    onClick={toogleTerminal}
+                >
+                    <Terminal />
+                    <span class="hide-low text-button">
+                        {showTerminal ? T("S73") : T("S75")}
+                    </span>
+                </button>
+            </div>
+            <div class="p-1">
+                <button
+                    type="button"
+                    class="btn btn-info"
+                    title={T("S87")}
+                    onClick={toogleFiles}
+                >
+                    <Folder />
+                    <span class="hide-low text-button">
+                        {showFiles ? T("S85") : T("S84")}
+                    </span>
+                </button>
+            </div>
+        </div>
+    )
+}
 
 /*
  * Dashboard page
@@ -32,17 +78,14 @@ import { preferences } from "../uisettings"
  */
 const DashboardPage = ({ currentState }) => {
     if (currentState.activePage != Page.dashboard) return null
+
     return (
-        <div>
-            <TerminalPanel currentState={currentState} />
-            <center>
-                <div class="controlSpacer" />
-                <div class="card">
-                    <div class="card-body">
-                        <JogPanel preferences={preferences.settings} />
-                    </div>
-                </div>
-            </center>
+        <div style="max-width:50rem">
+            <DashboardToolBar />
+            <TerminalPanel />
+            <FilesPanel />
+            <div class="p-1" />
+            <JogPanel preferences={preferences.settings} />
             <br />
             <br />
         </div>

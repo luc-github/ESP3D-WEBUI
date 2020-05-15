@@ -751,7 +751,7 @@ const JogPanel = ({ preferences }) => {
     return (
         <div>
             <div class="show-low">
-                <div class="d-flex flex-row justify-content-center">
+                <div class="d-flex flex-row justify-content-center p-2 border">
                     <div class="d-flex flex-column justify-content-center border">
                         <div class="p-2">
                             <button
