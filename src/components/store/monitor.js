@@ -8,10 +8,10 @@ export default store => {
     store.on("monitor/set", ({ content }, newcontent) => {
         return { content: newcontent }
     })
-    store.on("monitor/showterminal", ({ showTerminal }, newstate) => {
+    store.on("panel/showterminal", ({ showTerminal }, newstate) => {
         return { showTerminal: newstate }
     })
-    store.on("monitor/showfiles", ({ showFiles }, newstate) => {
+    store.on("panel/showfiles", ({ showFiles }, newstate) => {
         return { showFiles: newstate }
     })
 }

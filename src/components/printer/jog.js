@@ -749,7 +749,7 @@ const JogPanel = ({ preferences }) => {
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
     return (
-        <div>
+        <div class="p-2 border">
             <div class="show-low">
                 <div class="d-flex flex-row justify-content-center p-2 border">
                     <div class="d-flex flex-column justify-content-center border">
@@ -913,6 +913,7 @@ const JogPanel = ({ preferences }) => {
                         </div>
                     </div>
                 </div>
+                
                 <div class="d-flex flex-row justify-content-center">
                     <div class="p-2">
                         <button
@@ -943,7 +944,7 @@ const JogPanel = ({ preferences }) => {
                     </div>
                 </div>
             </div>
-            <div class="hide-low">
+            <div class="hide-low d-flex flex-wrap justify-content-center">
                 <svg
                     width="310"
                     viewBox="0 -5 310 255"

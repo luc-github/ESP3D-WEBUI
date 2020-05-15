@@ -43,7 +43,7 @@ import { useStoreon } from "storeon/preact"
 const FilesControls = () => {
     const { dispatch } = useStoreon()
     const toogleFiles = e => {
-        dispatch("monitor/showfiles", false)
+        dispatch("panel/showfiles", false)
     }
     return (
         <div class="d-flex flex-wrap p-1">

@@ -128,7 +128,7 @@ const TerminalControls = () => {
     }
     const toogle = e => {
         const { dispatch } = useStoreon()
-        dispatch("monitor/showterminal", false)
+        dispatch("panel/showterminal", false)
     }
     return (
         <div class="d-flex flex-wrap p-1">

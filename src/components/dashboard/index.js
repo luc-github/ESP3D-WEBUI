@@ -34,11 +34,11 @@ const DashboardToolBar = () => {
     const { showFiles } = useStoreon("showFiles")
     const toogleTerminal = e => {
         const { dispatch } = useStoreon()
-        dispatch("monitor/showterminal", !showTerminal)
+        dispatch("panel/showterminal", !showTerminal)
     }
     const toogleFiles = e => {
         const { dispatch } = useStoreon()
-        dispatch("monitor/showfiles", !showFiles)
+        dispatch("panel/showfiles", !showFiles)
     }
     return (
         <div class="d-flex flex-row no_wrap">
