@@ -81,8 +81,7 @@ const FilesPanel = () => {
     if (!showFiles) return null
 
     return (
-        <div>
-            <div class="p-1" />
+        <div class="p-2">
             <div class="border p-2">
                 <FilesControls />
                 <div class="p-2 border">List files here</div>

@@ -286,7 +286,7 @@ const TerminalPanel = () => {
     }, [content])
     return (
         <div>
-            <div class="p-1">
+            <div class="p-2">
                 <div class="border p-2">
                     <TerminalControls />
 
@@ -314,9 +314,9 @@ const TerminalPanel = () => {
                     </div>
                     <div class="p-1" />
                     <div
+                        style="max-width=200px!important"
                         id="outputTerminalWindow"
-                        class="border customscroll"
-                        style="min-height:200px;max-height:200px; overflow: auto;"
+                        class="border customscroll terminalWindow"
                         onscroll={onScroll}
                     >
                         {content}

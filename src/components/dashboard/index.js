@@ -81,12 +81,14 @@ const DashboardPage = () => {
     if (activePage != Page.dashboard) return null
 
     return (
-        <div style="max-width:50rem">
+        <div>
             <DashboardToolBar />
-            <TerminalPanel />
-            <FilesPanel />
-            <div class="p-1" />
-            <JogPanel preferences={preferences.settings} />
+            <div class="d-flex flex-wrap">
+                <TerminalPanel />
+                <FilesPanel />
+
+                <JogPanel preferences={preferences.settings} />
+            </div>
             <br />
             <br />
         </div>

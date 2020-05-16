@@ -256,6 +256,12 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     min-width: 4em !important;
 }
 
+.terminalWindow {
+    overflow: auto;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
 @include media-breakpoint-up(xs) {
     .tshow-low {
         display: none;
@@ -268,6 +274,11 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     }
     .show-low {
         display: none;
+    }
+    .terminalWindow {
+        max-height: 360px;
+        min-height: 360px;
+        max-width: 50rem;
     }
 }
 @include media-breakpoint-down(xs) {
@@ -290,5 +301,9 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     }
     .fontsetting {
         font-size: 0.7rem !important;
+    }
+    .terminalWindow {
+        max-height: 200px;
+        min-height: 200px;
     }
 }
