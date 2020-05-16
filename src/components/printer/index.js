@@ -19,7 +19,7 @@
 */
 
 import { h } from "preact"
-import { Setting, esp3dSettings, globaldispatch, Action, prefs } from "../app"
+import { Setting, esp3dSettings, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
@@ -35,6 +35,7 @@ import {
     Download,
 } from "preact-feather"
 import { useStoreon } from "storeon/preact"
+import { showDialog, updateProgress } from "../dialog"
 
 /*
  * Some constants
@@ -188,12 +189,13 @@ function importSettings() {
                 </div>
             </center>
         )
-        //todo open dialog to confirm
-        globaldispatch({
-            type: Action.confirmation,
-            msg: message,
-            nextaction: loadImportFile,
-            nextaction2: closeImport,
+        showDialog({
+            type: "confirmation",
+            message: message,
+            title: T("S26"),
+            button1text: T("S27"),
+            next: loadImportFile,
+            next2: closeImport,
         })
     }
 }
@@ -214,19 +216,10 @@ function doImport() {
         const cmd = encodeURIComponent(
             getCommand(listImportedSettings[currentIndex])
         )
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: percentComplete.toFixed(0),
-            title: "S32",
-            nextaction: cancelImport,
-        })
+        updateProgress({ progress: percentComplete.toFixed(0) })
         SendCommand(cmd, doImport, saveConfigError)
     } else {
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: 100,
-            nextaction: cancelImport,
-        })
+        updateProgress({ progress: 100 })
         loadConfig()
     }
 }
@@ -243,23 +236,19 @@ function loadImportFile() {
         try {
             printerImportSettings = JSON.parse(contents)
             currentIndex = -1
-            globaldispatch({
-                type: Action.upload_progress,
-                title: "S32",
-                msg: null,
+            showDialog({
+                type: "progress",
                 progress: 0,
-                nextaction: cancelImport,
+                title: T("S32"),
+                button1text: T("S28"),
+                next: cancelImport,
             })
             stopImport = false
             doImport()
         } catch (e) {
             document.getElementById("importPControl").value = ""
             console.error("Parsing error:", e)
-            globaldispatch({
-                type: Action.error,
-                errorcode: e,
-                msg: "S21",
-            })
+            showDialog({ type: "error", numError: e, message: T("S21") })
         }
     }
     reader.readAsText(importFile[0])
@@ -272,9 +261,7 @@ function loadImportFile() {
  */
 function cancelImport() {
     stopImport = true
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
     //console.log("stopping import")
 }
 
@@ -284,9 +271,7 @@ function cancelImport() {
  */
 function closeImport() {
     document.getElementById("importPControl").value = ""
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
 }
 
 /*
@@ -342,9 +327,7 @@ function processSaveConfig() {
     const command = encodeURIComponent(
         saveConfigurationCmd(isoverloadedconfig)[0]
     )
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
     SendCommand(command, null, loadConfigError)
 }
 
@@ -354,13 +337,15 @@ function processSaveConfig() {
  */
 function saveAndApply() {
     //todo open dialog to confirm
-    globaldispatch({
-        type: Action.confirmation,
-        msg:
+    showDialog({
+        type: "confirmation",
+        message:
             esp3dSettings.FWTarget == "smoothieware" && !isoverloadedconfig
                 ? T("P4")
                 : T("P3"),
-        nextaction: processSaveConfig,
+        title: T("S26"),
+        button1text: T("S27"),
+        next: processSaveConfig,
     })
 }
 
@@ -508,9 +493,7 @@ function processConfigData() {
     }
 
     //console.log(listSettings)
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false, refreshPage: true })
     stopTimeout()
 }
 
@@ -519,11 +502,7 @@ function processConfigData() {
  */
 function timeoutError() {
     stopTimeout()
-    globaldispatch({
-        type: Action.error,
-        errorcode: 404,
-        msg: "P17",
-    })
+    showDialog({ type: "error", numError: 404, message: T("p17") })
 }
 
 /*
@@ -555,9 +534,7 @@ function loadConfig() {
     listrawSettings = []
     console.log("load FW config")
     startTimeout()
-    globaldispatch({
-        type: Action.fetch_data,
-    })
+    showDialog({ type: "loader", message: T("S1") })
     SendCommand(cmd, null, loadConfigError)
 }
 
@@ -567,11 +544,7 @@ function loadConfig() {
 function loadConfigError(errorCode, responseText) {
     isConfigRequested = false
     isConfigData = false
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -922,11 +895,7 @@ function updateState(entry) {
  * save config query error
  */
 function saveConfigError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -1055,17 +1024,13 @@ const OverrideSettingControl = () => {
         isoverloadedconfig = e.target.checked
         if (!isoverloadedconfig) {
             listSettings = listNormalSettings
-            globaldispatch({
-                type: Action.renderAll,
-            })
+            showDialog({ displayDialog: false, refreshPage: true })
         } else {
             listSettings = listOverloadSettings
             if (listOverloadSettings.length == 0 && prefs.autoload == "true") {
                 loadConfig()
             } else {
-                globaldispatch({
-                    type: Action.renderAll,
-                })
+                showDialog({ displayDialog: false, refreshPage: true })
             }
         }
     }

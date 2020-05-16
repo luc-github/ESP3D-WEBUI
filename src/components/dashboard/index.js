@@ -76,8 +76,9 @@ const DashboardToolBar = () => {
  * Dashboard page
  *
  */
-const DashboardPage = ({ currentState }) => {
-    if (currentState.activePage != Page.dashboard) return null
+const DashboardPage = () => {
+    const { activePage } = useStoreon("activePage")
+    if (activePage != Page.dashboard) return null
 
     return (
         <div style="max-width:50rem">

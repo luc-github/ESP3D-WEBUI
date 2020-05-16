@@ -20,7 +20,8 @@
 
 "use strict"
 import { getPageId, pausePing } from "../websocket"
-import { globaldispatch, Action } from "../app"
+import { showDialog } from "../dialog"
+import { T } from "../translations"
 
 /*
  * Local variables
@@ -53,11 +54,7 @@ function cancelCurrentUpload(code, message) {
     currentHttpCommand.abort()
     lastError.code = code
     lastError.message = message
-    globaldispatch({
-        type: Action.error,
-        errorcode: lastError.code,
-        msg: "S33",
-    })
+    showDialog({ type: "error", numError: lastError.code, message: T("S33") })
     console.log("Abort Upload :" + code + " " + message)
 }
 

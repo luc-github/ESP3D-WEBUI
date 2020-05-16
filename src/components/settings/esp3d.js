@@ -31,13 +31,13 @@ import {
     Download,
 } from "preact-feather"
 const { clearData } = require(`../${process.env.TARGET_ENV}`)
-import { Setting, globaldispatch, Action, esp3dSettings } from "../app"
-import { setSettingPage } from "./index"
+import { Setting, esp3dSettings } from "../app"
 import { prefs } from "../settings"
 import { SendCommand } from "../http"
 import { useEffect } from "preact/hooks"
-import { initApp } from "../uisettings"
 import { disconnectWsServer } from "../websocket"
+import { useStoreon } from "storeon/preact"
+import { showDialog, updateProgress } from "../dialog"
 
 /*
  * Local variables
@@ -480,9 +480,7 @@ const JoinNetworkButton = ({ SSID }) => {
                 break
             }
         }
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
     }
     return (
         <button class="btn btn-primary" title={T("S51")} onClick={onJoin}>
@@ -496,9 +494,7 @@ const JoinNetworkButton = ({ SSID }) => {
  */
 function loadSettings() {
     const cmd = encodeURIComponent("[ESP400]")
-    globaldispatch({
-        type: Action.fetch_data,
-    })
+    showDialog({ type: "loader", message: T("S1") })
     console.log("load FW Settings")
     SendCommand(cmd, loadSettingsSuccess, loadSettingsError)
     isloaded = true
@@ -511,17 +507,11 @@ function loadSettingsSuccess(responseText) {
     try {
         esp3dFWSettings = JSON.parse(responseText)
         //console.log(esp3dFWSettings)
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
     } catch (e) {
         console.log(responseText)
         console.error("Parsing error:", e)
-        globaldispatch({
-            type: Action.error,
-            errorcode: e,
-            msg: "S21",
-        })
+        showDialog({ type: "error", numError: e, message: T("S21") })
     }
 }
 
@@ -530,9 +520,7 @@ function loadSettingsSuccess(responseText) {
  */
 function loadWiFiNetworks() {
     const cmd = encodeURIComponent("[ESP410]")
-    globaldispatch({
-        type: Action.fetch_data,
-    })
+    showDialog({ type: "loader", message: T("S1") })
     console.log("load wifi networks")
     SendCommand(cmd, loadWiFiNetworksSuccess, loadSettingsError)
 }
@@ -584,27 +572,23 @@ function loadWiFiNetworksSuccess(responseText) {
                 <table class="table table-bordered ">{header}</table>
             </div>
         )
-        globaldispatch({
-            type: Action.message,
-            msg: message,
-            title: "S45",
-            buttontext: "S24",
-            buttontext2: (
+        showDialog({
+            type: "message",
+            message: message,
+            title: T("S45"),
+            button1text: T("S24"),
+            button2text: (
                 <div title={T("S23")}>
                     <RefreshCcw />
                     <span class="hide-low text-button">{T("S50")}</span>
                 </div>
             ),
-            nextaction2: loadWiFiNetworks,
+            next2: loadWiFiNetworks,
         })
     } catch (e) {
         console.log(responseText)
         console.error("Parsing error:", e)
-        globaldispatch({
-            type: Action.error,
-            errorcode: e,
-            msg: "S21",
-        })
+        showDialog({ type: "error", numError: e, message: T("S21") })
     }
 }
 
@@ -612,11 +596,7 @@ function loadWiFiNetworksSuccess(responseText) {
  * Load WiFi Networks query error
  */
 function loadSettingsError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -625,9 +605,7 @@ function loadSettingsError(errorCode, responseText) {
 function saveSettingSuccess(responseText) {
     try {
         console.log("success " + responseText)
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false })
         let res = responseText.split(" ")
         for (let entry of esp3dFWSettings.Settings) {
             if (entry.P == res[1]) {
@@ -649,11 +627,7 @@ function saveSettingSuccess(responseText) {
     } catch (e) {
         console.log(responseText)
         console.error("Parsing error:", e)
-        globaldispatch({
-            type: Action.error,
-            errorcode: e,
-            msg: "S21",
-        })
+        showDialog({ type: "error", numError: e, message: T("S21") })
     }
 }
 
@@ -661,11 +635,7 @@ function saveSettingSuccess(responseText) {
  * Save setting query error
  */
 function saveSettingError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S44",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S44") })
 }
 
 /*
@@ -675,9 +645,7 @@ function saveSetting(entry) {
     const cmd = encodeURIComponent(
         "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
     )
-    globaldispatch({
-        type: Action.fetch_data,
-    })
+    showDialog({ type: "loader", message: T("S4") })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
 
@@ -730,11 +698,12 @@ function exportSettings() {
  *
  */
 function confirmRestart() {
-    globaldispatch({
-        type: Action.confirmation,
-        msg: T("S59"),
-        buttontext: "S27",
-        nextaction: restartEsp,
+    showDialog({
+        type: "confirmation",
+        message: T("S59"),
+        title: T("S26"),
+        button1text: T("S27"),
+        next: restartEsp,
     })
 }
 
@@ -746,11 +715,7 @@ function restartEsp() {
     const cmd = encodeURIComponent("[ESP444]RESTART")
     disconnectWsServer()
     SendCommand(cmd, reloadPage)
-    globaldispatch({
-        type: Action.message,
-        title: "S60",
-        msg: "S35",
-    })
+    showDialog({ type: "message", title: T("S60"), message: T("S35") })
 }
 
 /*
@@ -784,24 +749,14 @@ function doImport() {
                 " V=" +
                 listSettings[currentIndex].V
         )
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: percentComplete.toFixed(0),
-            title: "S32",
-            nextaction: cancelImport,
-        })
-
+        updateProgress({ progress: percentComplete.toFixed(0) })
         if (listSettings[currentIndex].V != "********") {
             SendCommand(cmd, doImport, saveSettingError)
         } else {
             doImport()
         }
     } else {
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: 100,
-            nextaction: cancelImport,
-        })
+        updateProgress({ progress: 100 })
         restartEsp()
     }
 }
@@ -818,23 +773,19 @@ function loadImportFile() {
         try {
             esp3dFWimportSettings = JSON.parse(contents)
             currentIndex = -1
-            globaldispatch({
-                type: Action.upload_progress,
-                title: "S32",
-                msg: null,
+            showDialog({
+                type: "progress",
                 progress: 0,
-                nextaction: cancelImport,
+                title: T("S32"),
+                button1text: T("S28"),
+                next: cancelImport,
             })
             stopImport = false
             doImport()
         } catch (e) {
             document.getElementById("importControl").value = ""
             console.error("Parsing error:", e)
-            globaldispatch({
-                type: Action.error,
-                errorcode: e,
-                msg: "S21",
-            })
+            showDialog({ type: "error", numError: e, message: T("S21") })
         }
     }
     reader.readAsText(importFile[0])
@@ -847,9 +798,7 @@ function loadImportFile() {
  */
 function cancelImport() {
     stopImport = true
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
     console.log("stopping import")
 }
 
@@ -859,9 +808,7 @@ function cancelImport() {
  */
 function closeImport() {
     document.getElementById("importControl").value = ""
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
 }
 
 /*
@@ -886,12 +833,13 @@ function importSettings() {
                 </div>
             </center>
         )
-        //todo open dialog to confirm
-        globaldispatch({
-            type: Action.confirmation,
-            msg: message,
-            nextaction: loadImportFile,
-            nextaction2: closeImport,
+        showDialog({
+            type: "confirmation",
+            message: message,
+            title: T("S26"),
+            button1text: T("S27"),
+            next: loadImportFile,
+            next2: closeImport,
         })
     }
 }

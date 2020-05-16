@@ -20,9 +20,11 @@
 
 import { h } from "preact"
 import { T, Translate } from "../translations"
-import { Page, esp3dSettings, globaldispatch, Action } from "../app"
+import { Page, esp3dSettings } from "../app"
 import { Esp3dVersion } from "../version"
 import { RefreshCcw, Github, UploadCloud } from "preact-feather"
+import { showDialog, updateProgress } from "../dialog"
+import { useStoreon } from "storeon/preact"
 import {
     SendCommand,
     SendPostHttp,
@@ -117,11 +119,13 @@ function PrepareUpload() {
             </center>
         )
         //todo open dialog to confirm
-        globaldispatch({
-            type: Action.confirmation,
-            msg: message,
-            nextaction: processUpload,
-            nextaction2: cancelUpload,
+        showDialog({
+            type: "confirmation",
+            message: message,
+            title: T("S26"),
+            button1text: T("S27"),
+            next: processUpload,
+            next2: cancelUpload,
         })
     }
 }
@@ -144,9 +148,7 @@ function clearUploadInformation() {
 function cancelUpload() {
     clearUploadInformation()
     cancelCurrentUpload()
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false, refreshPage: true })
 }
 
 /*
@@ -158,12 +160,12 @@ function processUpload() {
     var formData = new FormData()
     var url = pathUpload
     formData.append("path", "/")
-    globaldispatch({
-        type: Action.upload_progress,
-        title: "S32",
-        msg: null,
+    showDialog({
+        type: "progress",
         progress: 0,
-        nextaction: cancelUpload,
+        title: T("S32"),
+        button1text: T("S28"),
+        next: cancelUpload,
     })
     for (var i = 0; i < uploadFiles.length; i++) {
         var file = uploadFiles[i]
@@ -180,18 +182,10 @@ function processUpload() {
  *
  */
 function successUpload(response) {
-    globaldispatch({
-        type: Action.upload_progress,
-        progress: 100,
-        nextaction: cancelUpload,
-    })
+    updateProgress({ progress: 100 })
     console.log("success")
     clearUploadInformation()
-    globaldispatch({
-        type: Action.message,
-        title: "S34",
-        msg: "S35",
-    })
+    showDialog({ type: "message", message: T("S34"), title: T("S35") })
     if (pathUpload == "/files") {
         setTimeout(refreshPage, 3000)
     } else {
@@ -228,12 +222,7 @@ function progressUpload(oEvent) {
     if (oEvent.lengthComputable) {
         var percentComplete = (oEvent.loaded / oEvent.total) * 100
         console.log(percentComplete.toFixed(0) + "%")
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: percentComplete.toFixed(0),
-            title: "S32",
-            nextaction: cancelUpload,
-        })
+        updateProgress({ progress: percentComplete.toFixed(0) })
     } else {
         // Impossible because size is unknown
     }
@@ -260,7 +249,8 @@ function clickGitUI() {
  *
  */
 export const AboutPage = ({ currentState }) => {
-    if (currentState.activePage != Page.about) return null
+    const { activePage } = useStoreon("activePage")
+    if (activePage != Page.about) return null
     if (browserInformation == "" || typeof browserInformation == "undefined") {
         browserInformation = getBrowserInformation()
     }
@@ -373,9 +363,7 @@ export const AboutPage = ({ currentState }) => {
 function loadStatus() {
     const cmd = encodeURIComponent("[ESP420]")
     isloaded = true
-    globaldispatch({
-        type: Action.fetch_data,
-    })
+    showDialog({ type: "loader", message: T("S1") })
     console.log("load FW status")
     SendCommand(cmd, loadStatusSuccess, loadStatusError)
 }
@@ -386,17 +374,11 @@ function loadStatus() {
 function loadStatusSuccess(responseText) {
     try {
         dataStatus = JSON.parse(responseText)
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
     } catch (e) {
         console.log(responseText)
         console.error("Parsing error:", e)
-        globaldispatch({
-            type: Action.error,
-            errorcode: e,
-            msg: "S21",
-        })
+        showDialog({ type: "error", numError: e, message: T("S21") })
     }
 }
 
@@ -404,9 +386,5 @@ function loadStatusSuccess(responseText) {
  * Load Firmware Status query error
  */
 function loadStatusError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }

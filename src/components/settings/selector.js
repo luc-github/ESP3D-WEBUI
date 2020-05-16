@@ -22,8 +22,8 @@ import { h } from "preact"
 import { T } from "../translations"
 import { Tool, Eye } from "preact-feather"
 import { Setting, esp3dSettings } from "../app"
-import { setSettingPage } from "./index"
 import { ESP3DLogo } from "../images"
+import { useStoreon } from "storeon/preact"
 const { firmwareName } = require(`../${process.env.TARGET_ENV}`)
 /*
  * Local variables
@@ -35,17 +35,19 @@ let esp3dFWSettings //full esp3d settings (ESP400)
  * Settings page
  *
  */
-export const Selector = ({ currentPage }) => {
+export const Selector = ({ currentSetting }) => {
+    console.log("selector" + currentSetting)
     let visible = false
     let target = ""
+    const { dispatch } = useStoreon()
     function onclickesp3d() {
-        setSettingPage(Setting.esp3d)
+        dispatch("setSettingTab", Setting.esp3d)
     }
     function onclickui() {
-        setSettingPage(Setting.ui)
+        dispatch("setSettingTab", Setting.ui)
     }
     function onclickmachine() {
-        setSettingPage(Setting.machine)
+        dispatch("setSettingTab", Setting.machine)
     }
     if (
         !esp3dSettings ||
@@ -64,7 +66,7 @@ export const Selector = ({ currentPage }) => {
                     <li
                         title={T("S37")}
                         class={
-                            currentPage == Setting.esp3d
+                            currentSetting == Setting.esp3d
                                 ? "nav-link pill-link active"
                                 : "nav-link pill-link"
                         }
@@ -76,7 +78,7 @@ export const Selector = ({ currentPage }) => {
                     <li
                         title={T("S38")}
                         class={
-                            currentPage == Setting.ui
+                            currentSetting == Setting.ui
                                 ? "nav-link pill-link active"
                                 : "nav-link pill-link"
                         }
@@ -93,7 +95,7 @@ export const Selector = ({ currentPage }) => {
                         }
                         class={
                             visible
-                                ? currentPage == Setting.machine
+                                ? currentSetting == Setting.machine
                                     ? "nav-link pill-link active"
                                     : "nav-link pill-link"
                                 : "d-none"

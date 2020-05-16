@@ -23,7 +23,9 @@ import { useEffect } from "preact/hooks"
 import { AlertTriangle, Info } from "preact-feather"
 import { T } from "../translations"
 import { initApp } from "../uisettings"
-import { globaldispatch, Action } from "../app"
+import { useStoreon } from "storeon/preact"
+import { Page } from "../app"
+
 /*
  *Spin loader
  *
@@ -61,60 +63,93 @@ function disableNode(node, state) {
     else node.removeAttribute("disabled")
 }
 
+function showDialog(data) {
+    const { dispatch } = useStoreon()
+    if (typeof data.displayPage != "undefined") {
+        if (data.displayPage) {
+            const { activePage } = useStoreon("activePage")
+            if (activePage == Page.none) dispatch("setPage", Page.dashboard)
+        }
+        dispatch("displayPage", data.displayPage)
+    }
+    if (typeof data.refreshPage != "undefined") {
+        if (data.refreshPage) {
+            dispatch("displayPage", false)
+            dispatch("displayPage", true)
+        }
+    }
+    dispatch("setDialog", data)
+    if (typeof data.displayDialog != "undefined") {
+        dispatch("displayDialog", data.showDialog)
+    } else dispatch("displayDialog", true)
+}
+
+function updateProgress(data) {
+    const { dispatch } = useStoreon()
+    let { dialogData } = useStoreon("dialogData")
+    //todo merge data
+    dialogData.progress = data.progress
+    dialogData.next = data.nextaction
+    dispatch("setDialog", data)
+}
+
+function hideDialog() {
+    const { dispatch } = useStoreon()
+    dispatch("displayDialog", false)
+}
+
 /*
  * Dialog page
  *
  */
-export const DialogPage = ({ currentState }) => {
-    if (!currentState.showDialog) {
+const DialogPage = () => {
+    const { showDialog } = useStoreon("showDialog")
+    const { dialogData } = useStoreon("dialogData")
+    if (!showDialog) {
         disableNode(document.getElementById("mainwindow"), false)
         return null
     }
-
     useEffect(() => {
-        if (currentState.data.type == "confirmation")
-            document.getElementById("but2").focus()
         disableNode(document.getElementById("mainwindow"), true)
     })
+    //console.log(dialogData)
     let classname = "modal d-block"
     let iconTitle, iconMsg
     let progressbar
-    let title = currentState.data.title
+    let title = dialogData.title
     if (
-        currentState.data.type == "error" ||
-        currentState.data.type == "error-blocking" ||
-        (currentState.data.type == "disconnect" && currentState.error)
+        dialogData.type == "error" ||
+        (dialogData.type == "disconnect" && dialogData.numError)
     ) {
         iconTitle = <AlertTriangle color="red" />
-        if (!currentState.data.title) {
+        if (!dialogData.title) {
             title = T("S22")
         }
-        if (!currentState.data.button1text) {
-            currentState.data.button1text = T("S24")
+        if (!dialogData.button1text) {
+            dialogData.button1text = T("S24")
         }
-        if (currentState.error) {
-            title += " (" + currentState.error + ")"
+        if (dialogData.numError) {
+            title += " (" + dialogData.numError + ")"
         }
     }
-    if (currentState.data.type == "loader") {
+    if (dialogData.type == "loader") {
         iconMsg = <SpinLoader color="lightblue" />
     }
-    if (currentState.data.type == "progress") {
-        progressbar = "width:" + currentState.data.progress + "%"
+    if (dialogData.type == "progress") {
+        progressbar = "width:" + dialogData.progress + "%"
     }
     if (
-        currentState.data.type == "message" ||
-        (currentState.data.type == "disconnect" && !currentState.error)
+        dialogData.type == "message" ||
+        (dialogData.type == "disconnect" && !dialogData.numError)
     ) {
         iconTitle = <Info color="blue" />
     }
-    if (currentState.data.type == "confirmation") {
+    if (dialogData.type == "confirmation") {
         iconTitle = <Info color="blue" />
-        if (!currentState.data.button2text)
-            currentState.data.button2text = T("S28")
+        if (!dialogData.button2text) dialogData.button2text = T("S28")
         classname += " greybg"
     }
-    if (currentState.data.type == "disconnect") classname += " greybg"
+    if (dialogData.type == "disconnect") classname += " greybg"
     return (
         <modal tabindex="-1" className={classname}>
             <div class="modal-dialog modal-dialog-centered ">
@@ -127,7 +162,7 @@ export const DialogPage = ({ currentState }) => {
                     <div class="modal-body">
                         <div
                             class={
-                                currentState.data.type == "confirmation"
+                                dialogData.type == "confirmation"
                                     ? "text-left"
                                     : "text-center"
                             }
@@ -135,16 +170,16 @@ export const DialogPage = ({ currentState }) => {
                             {iconMsg}
                             <div
                                 className={
-                                    currentState.data.type == "error"
+                                    dialogData.type == "error"
                                         ? "d-none"
                                         : "d-block"
                                 }
                             />
-                            {currentState.data.message}
+                            {dialogData.message}
                         </div>
                         <div
                             class={
-                                currentState.data.type == "progress"
+                                dialogData.type == "progress"
                                     ? "progress d-block"
                                     : "d-none"
                             }
@@ -153,74 +188,65 @@ export const DialogPage = ({ currentState }) => {
                                 class="progress-bar"
                                 role="progressbar"
                                 style={progressbar}
-                                aria-valuenow={currentState.data.progress}
+                                aria-valuenow={dialogData.progress}
                                 aria-valuemin="0"
                                 aria-valuemax="100"
                             >
-                                {currentState.data.progress}%
+                                {dialogData.progress}%
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        {currentState.data.footer}
+                        {dialogData.footer}
                         <button
                             type="button"
                             className={
-                                currentState.data.type == "disconnect"
+                                dialogData.type == "disconnect"
                                     ? "btn btn-primary d-block"
                                     : "d-none"
                             }
                             onClick={initApp}
                         >
-                            {currentState.data.button1text}
+                            {dialogData.button1text}
                         </button>
                         <button
                             type="button"
                             id="but1"
                             className={
-                                currentState.data.type == "error" ||
-                                currentState.data.type == "progress"
+                                dialogData.type == "error" ||
+                                dialogData.type == "progress"
                                     ? "btn btn-danger d-block"
-                                    : currentState.data.type ==
-                                          "confirmation" ||
-                                      (currentState.data.type == "message" &&
-                                          currentState.data.button1text)
+                                    : dialogData.type == "confirmation" ||
+                                      (dialogData.type == "message" &&
+                                          dialogData.button1text)
                                     ? "btn btn-secondary d-block"
                                     : "d-none"
                             }
                             onClick={() => {
-                                if (currentState.data.next)
-                                    currentState.data.next()
-                                else
-                                    globaldispatch({
-                                        type: Action.renderAll,
-                                    })
+                                if (dialogData.next) dialogData.next()
+                                else hideDialog()
                             }}
                             focus
                         >
-                            {currentState.data.button1text}
+                            {dialogData.button1text}
                         </button>
                         <button
                             type="button"
                             id="but2"
                             className={
-                                currentState.data.type == "confirmation"
+                                dialogData.type == "confirmation"
                                     ? "btn btn-primary d-block"
-                                    : currentState.data.type == "message" &&
-                                      currentState.data.button2text
+                                    : dialogData.type == "message" &&
+                                      dialogData.button2text
                                     ? "btn btn-primary d-block"
                                     : "d-none"
                             }
                             onClick={() => {
-                                if (currentState.data.next2)
-                                    currentState.data.next2()
-                                else
-                                    globaldispatch({
-                                        type: Action.renderAll,
-                                    })
+                                if (dialogData.next2) dialogData.next2()
+                                else hideDialog()
                             }}
                         >
-                            {currentState.data.button2text}
+                            {dialogData.button2text}
                         </button>
                     </div>
                 </div>
@@ -228,3 +254,5 @@ export const DialogPage = ({ currentState }) => {
         </modal>
     )
 }
+
+export { showDialog, updateProgress, DialogPage }

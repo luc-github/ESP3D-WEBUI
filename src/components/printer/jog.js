@@ -31,7 +31,7 @@ import {
 import { defaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
-import { globaldispatch, Action } from "../app"
+import { showDialog } from "../dialog"
 
 /*
  * Local variables
@@ -69,11 +69,7 @@ function processFeedRate(msg) {
  * Send command query error
  */
 function sendCommandError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -442,11 +438,7 @@ const JogPanel = ({ preferences }) => {
                 (id.startsWith("X") || id.startsWith("Y"))) ||
             (hasError["zfeedrate"] && id.startsWith("Z"))
         ) {
-            globaldispatch({
-                type: Action.error,
-                errorcode: 500,
-                msg: "S83",
-            })
+            showDialog({ type: "error", numError: 500, message: T("S83") })
             return
         }
         switch (id) {
@@ -587,11 +579,7 @@ const JogPanel = ({ preferences }) => {
             e.target.classList.remove("pressedbutton")
         }
         if (hasError["xyfeedrate"] || hasError["zfeedrate"]) {
-            globaldispatch({
-                type: Action.error,
-                errorcode: 500,
-                msg: "S83",
-            })
+            showDialog({ type: "error", numError: 500, message: T("S83") })
             return
         }
         let cmd =
@@ -913,7 +901,7 @@ const JogPanel = ({ preferences }) => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="d-flex flex-row justify-content-center">
                     <div class="p-2">
                         <button

@@ -19,8 +19,10 @@
 */
 
 "use strict"
-import { globaldispatch, Action, updateTerminal } from "../app"
+import { updateTerminal } from "../app"
 import { cancelCurrentUpload } from "../http"
+import { setLang, T } from "../translations"
+import { showDialog } from "../dialog"
 const { processWSData } = require(`../${process.env.TARGET_ENV}`)
 /*
  * Local variables
@@ -102,7 +104,11 @@ function processWebSocketText(wsBuffer) {
                 break
             case "activeID":
                 if (getPageId() != tdata[1]) {
-                    disconnectWsServer(Action.disconnection)
+                    disconnectWsServer({
+                        type: "disconnect",
+                        message: T("S3"),
+                        button1text: T("S8"),
+                    })
                 }
                 break
             case "DHT":
@@ -134,10 +140,7 @@ function setupWebSocket(wstype, wsIp, wsPort) {
  */
 function connectWsServer() {
     console.log("connect websocket")
-    if (!pingPaused)
-        globaldispatch({
-            type: Action.connect_websocket,
-        })
+    if (!pingPaused) showDialog({ type: "loader", message: T("S2") })
     isLogOff = false
     try {
         webSocketClient = new WebSocket(
@@ -145,9 +148,7 @@ function connectWsServer() {
             ["arduino"]
         )
     } catch (exception) {
-        globaldispatch({
-            type: Action.websocket_error,
-        })
+        showDialog({ type: "error", numError: exception, message: T("S6") })
         console.error(exception)
         return
     }
@@ -157,9 +158,7 @@ function connectWsServer() {
     webSocketClient.onopen = function(e) {
         reconnectCounter = 0
         //console.log("ws connection ok")
-        globaldispatch({
-            type: Action.websocket_success,
-        })
+        showDialog({ displayPage: true, displayDialog: false })
         ping(true)
     }
     //On close ws
@@ -170,7 +169,12 @@ function connectWsServer() {
         if (!isLogOff) {
             if (!pingPaused) reconnectCounter++
             if (reconnectCounter >= maxReconnection) {
-                disconnectWsServer(Action.connection_lost)
+                disconnectWsServer({
+                    type: "disconnect",
+                    numError: 1,
+                    message: T("S10"),
+                    button1text: T("S8"),
+                })
             } else {
                 console.log("retry : " + reconnectCounter)
                 setTimeout(connectWsServer, 3000)
@@ -179,9 +183,7 @@ function connectWsServer() {
     }
     //On ws error
     webSocketClient.onerror = function(e) {
-        globaldispatch({
-            type: Action.websocket_error,
-        })
+        //showDialog({type:"error", numError:e, message:T("S4")})
         console.log("ws error", e)
     }
     //Handle msg of ws
@@ -211,14 +213,12 @@ function connectWsServer() {
 /*
  * Disconnect from WS server
  */
-function disconnectWsServer(Type) {
+function disconnectWsServer(data) {
     isLogOff = true
     reconnectCounter = 0
     webSocketClient.close()
-    if (Type)
-        globaldispatch({
-            type: Type,
-        })
+    document.title = document.title + "(" + T("S9") + ")"
+    if (data) showDialog(data)
 }
 
 export {

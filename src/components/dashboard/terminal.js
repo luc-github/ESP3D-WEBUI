@@ -21,12 +21,11 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { useState, useEffect } from "preact/hooks"
-import { initApp } from "../uisettings"
-import { globaldispatch, Page, Action } from "../app"
 import { X, XCircle, Send } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
+import { showDialog } from "../dialog"
 
 /*
  * Local variables
@@ -97,9 +96,6 @@ function updateContentType() {
     if (verboseOutput) currentOutput = monitorDataVerbose
     else currentOutput = monitorDataQuiet
     dispatch("monitor/set", currentOutput)
-    /*globaldispatch({
-        type: Action.renderAll,
-    })*/
 }
 
 /*
@@ -194,11 +190,7 @@ const TerminalControls = () => {
  *Send command query error
  */
 function sendCommandError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*

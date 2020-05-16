@@ -26,33 +26,32 @@ import { Selector } from "./selector"
 const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
 import { WebUISettings, prefs, setcurrentprefs } from "./webui"
 import { Esp3DSettings } from "./esp3d"
+import { useStoreon } from "storeon/preact"
 
 /*
  * Local variables
  *
  */
 
-let currentSettingPage
-let setSettingPage
-
 /*
  * Settings page
  *
  */
-const SettingsPage = ({ currentState }) => {
-    ;[currentSettingPage, setSettingPage] = useState(Setting.esp3d)
-    if (currentState.activePage != Page.settings) {
+const SettingsPage = () => {
+    const { activeSetting } = useStoreon("activeSetting")
+    const { activePage } = useStoreon("activePage")
+    if (activePage != Page.settings) {
         return null
     }
     return (
         <div>
             <br />
-            <Selector currentPage={currentSettingPage} />
-            <Esp3DSettings currentPage={currentSettingPage} />
-            <WebUISettings currentPage={currentSettingPage} />
-            <MachineSettings currentPage={currentSettingPage} />
+            <Selector currentSetting={activeSetting} />
+            <Esp3DSettings currentPage={activeSetting} />
+            <WebUISettings currentPage={activeSetting} />
+            <MachineSettings currentPage={activeSetting} />
         </div>
     )
 }
 
-export { SettingsPage, prefs, setcurrentprefs, setSettingPage }
+export { SettingsPage, prefs, setcurrentprefs }

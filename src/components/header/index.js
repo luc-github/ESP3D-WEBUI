@@ -19,40 +19,43 @@
 */
 
 import { h } from "preact"
-import { globaldispatch, Page, Action } from "../app"
+import { Page } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
 import { prefs } from "../settings"
+import { useStoreon } from "storeon/preact"
 
 function showAbout() {
-    globaldispatch({ type: Action.renderPage, activePage: Page.about })
+    const { dispatch } = useStoreon()
+    dispatch("setPage", Page.about)
 }
 
 function showDashboard() {
-    globaldispatch({ type: Action.renderPage, activePage: Page.dashboard })
+    const { dispatch } = useStoreon()
+    dispatch("setPage", Page.dashboard)
 }
 
 function showSettings() {
-    globaldispatch({ type: Action.renderPage, activePage: Page.settings })
+    const { dispatch } = useStoreon()
+    dispatch("setPage", Page.settings)
 }
 
 /*
  * Header component
  *
  */
-export const Header = ({ currentState }) => {
+export const Header = () => {
     let showBanner = true
     if (prefs && prefs.banner) {
         showBanner = prefs.banner == "true" ? true : false
     }
+    const { activePage } = useStoreon("activePage")
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
             <div
                 class={
-                    currentState.activePage == Page.about
-                        ? "nav-item active"
-                        : "nav-item"
+                    activePage == Page.about ? "nav-item active" : "nav-item"
                 }
                 title={T("S12")}
                 onClick={showAbout}
@@ -61,7 +64,7 @@ export const Header = ({ currentState }) => {
             </div>
             <div
                 class={
-                    currentState.activePage == Page.dashboard
+                    activePage == Page.dashboard
                         ? "nav-item active"
                         : "nav-item"
                 }
@@ -73,9 +76,7 @@ export const Header = ({ currentState }) => {
             </div>
             <div
                 class={
-                    currentState.activePage == Page.settings
-                        ? "nav-item active"
-                        : "nav-item"
+                    activePage == Page.settings ? "nav-item active" : "nav-item"
                 }
                 title={T("S14")}
                 onClick={showSettings}

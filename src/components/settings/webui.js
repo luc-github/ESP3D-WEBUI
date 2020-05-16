@@ -21,14 +21,19 @@
 import { h } from "preact"
 import { setLang, T } from "../translations"
 import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
-import { Setting, globaldispatch, Action } from "../app"
+import { Setting } from "../app"
 import { preferences, preferencesFileName, setPreferences } from "../uisettings"
-import { setSettingPage } from "./index"
-import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
+import {
+    SendCommand,
+    cancelCurrentUpload,
+    SendGetHttp,
+    SendPostHttp,
+} from "../http"
 import { useStoreon } from "storeon/preact"
 import { useEffect } from "preact/hooks"
 const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
+import { showDialog, updateProgress } from "../dialog"
 
 /*
  * Local variables
@@ -45,9 +50,7 @@ function updateUI() {
         setState(allkey[p], "default")
     }
     loadLanguage(prefs.language)
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false, refreshPage: true })
     console.log("Update UI")
 }
 
@@ -62,18 +65,11 @@ function loadPreferencesSuccess(responseText) {
             prefs = JSON.parse(JSON.stringify(preferences.settings))
             updateUI()
         } else {
-            globaldispatch({
-                type: Action.error,
-                errorcode: e,
-                msg: "S21",
-            })
+            showDialog({ type: "error", numError: 500, message: T("S21") })
         }
     } catch (err) {
         console.log("error")
-        globaldispatch({
-            type: Action.parsing_preferences_error,
-            errorcode: err,
-        })
+        showDialog({ type: "error", numError: err, message: T("S7") })
     }
 }
 
@@ -82,10 +78,7 @@ function loadPreferencesSuccess(responseText) {
  */
 function loadPreferencesError(errorCode, responseText) {
     console.log("no valid " + preferencesFileName + ", use default")
-    globaldispatch({
-        type: Action.error,
-        errorcode: err,
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S4") })
 }
 
 /*
@@ -114,19 +107,12 @@ function loadImportFile() {
                 savePreferences()
                 updateUI()
             } else {
-                globaldispatch({
-                    type: Action.error,
-                    msg: "S21",
-                })
+                showDialog({ type: "error", message: T("S21") })
             }
         } catch (e) {
             document.getElementById("importPControl").value = ""
             console.error("Parsing error:", e)
-            globaldispatch({
-                type: Action.error,
-                errorcode: e,
-                msg: "S21",
-            })
+            showDialog({ type: "error", numError: e, message: T("S21") })
         }
     }
     reader.readAsText(importFile[0])
@@ -138,9 +124,7 @@ function loadImportFile() {
  *
  */
 function cancelImport() {
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
     console.log("stopping import")
 }
 
@@ -150,9 +134,7 @@ function cancelImport() {
  */
 function closeImport() {
     document.getElementById("importPControl").value = ""
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
 }
 
 /*
@@ -177,12 +159,13 @@ function importSettings() {
                 </div>
             </center>
         )
-        //todo open dialog to confirm
-        globaldispatch({
-            type: Action.confirmation,
-            msg: message,
-            nextaction: loadImportFile,
-            nextaction2: closeImport,
+        showDialog({
+            type: "confirmation",
+            message: message,
+            title: T("S26"),
+            button1text: T("S27"),
+            next: loadImportFile,
+            next2: closeImport,
         })
     }
 }
@@ -204,13 +187,8 @@ function successUpload(response) {
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "success")
     }
-    globaldispatch({
-        type: Action.upload_progress,
-        progress: 100,
-    })
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    updateProgress({ progress: 100 })
+    showDialog({ displayDialog: false })
     console.log("success")
 }
 
@@ -220,9 +198,7 @@ function successUpload(response) {
  */
 function cancelUpload() {
     cancelCurrentUpload()
-    globaldispatch({
-        type: Action.renderAll,
-    })
+    showDialog({ displayDialog: false })
 }
 
 /*
@@ -245,12 +221,7 @@ function progressUpload(oEvent) {
     if (oEvent.lengthComputable) {
         var percentComplete = (oEvent.loaded / oEvent.total) * 100
         console.log(percentComplete.toFixed(0) + "%")
-        globaldispatch({
-            type: Action.upload_progress,
-            progress: percentComplete.toFixed(0),
-            title: "S32",
-            nextaction: cancelUpload,
-        })
+        updateProgress({ progress: percentComplete.toFixed(0) })
     } else {
         // Impossible because size is unknown
     }
@@ -265,12 +236,13 @@ function savePreferences() {
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
-    globaldispatch({
-        type: Action.upload_progress,
-        title: "S32",
-        msg: null,
+    showDialog({
+        type: "progress",
+        title: T("S32"),
+        button1text: T("S28"),
+        button1text: T("S28"),
+        next: cancelUpload,
         progress: 0,
-        nextaction: cancelUpload,
     })
     var file = new File([blob], preferencesFileName)
     var formData = new FormData()
@@ -406,9 +378,7 @@ const CheckboxControl = ({ entry, title, label }) => {
     const toggleCheckbox = e => {
         ischecked = e.target.checked
         prefs[entry] = e.target.checked ? "true" : "false"
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
     }
     let id = entry + "-UI-checkbox"
     useEffect(() => {
@@ -435,9 +405,7 @@ function loadLanguage(lang) {
     if (lang == "en") {
         setLang("en")
         updateState("language")
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
         return
     }
     SendGetHttp(url, loadLanguageSuccess, loadLanguageError)
@@ -452,16 +420,11 @@ function loadLanguageSuccess(responseText) {
         let langressource = JSON.parse(responseText)
         setLang(prefs.language, langressource)
         updateState("language")
-        globaldispatch({
-            type: Action.renderAll,
-        })
+        showDialog({ displayDialog: false, refreshPage: true })
     } catch (err) {
         console.log("error")
         console.error(responseText)
-        globaldispatch({
-            type: Action.parsing_preferences_error,
-            errorcode: err,
-        })
+        showDialog({ type: "error", numError: err, message: T("S7") })
         setState("language", "error")
     }
 }
@@ -472,11 +435,7 @@ function loadLanguageSuccess(responseText) {
 function loadLanguageError(errorCode, responseText) {
     console.log("no valid /" + prefs.language + ".json.gz file, use default")
     setState("language", "error")
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S67",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S67") })
 }
 
 /*

@@ -24,6 +24,7 @@ import { useState, useEffect } from "preact/hooks"
 import { X } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
+import { showDialog } from "../dialog"
 //const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 
 /*
@@ -68,11 +69,7 @@ const FilesControls = () => {
  *Send command query error
  */
 function sendCommandError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*

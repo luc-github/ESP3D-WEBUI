@@ -21,9 +21,11 @@
 "use strict"
 import { setLang } from "../translations"
 import { SendCommand, SendGetHttp, SendPostHttp } from "../http"
-import { globaldispatch, applyConfig, Action } from "../app"
+import { T } from "../translations"
+import { applyConfig } from "../app"
 import { setcurrentprefs } from "../settings"
 import { setupWebSocket } from "../websocket"
+import { showDialog } from "../dialog"
 
 /*
  * Local variables
@@ -43,7 +45,8 @@ const preferencesFileName = "preferences.json"
  */
 function initApp() {
     preferences = JSON.parse(default_preferences)
-    globaldispatch({ type: Action.init })
+    document.title = document.location.host
+    showDialog({ type: "loader" })
     loadPreferences()
 }
 
@@ -71,16 +74,16 @@ function loadLanguage(lang) {
 function loadLanguageSuccess(responseText) {
     try {
         let langressource = JSON.parse(responseText)
-
         setLang(preferences.settings.language, langressource)
         loadConfig()
     } catch (err) {
         console.log("error")
-        console.error(responseText)
-        globaldispatch({
-            type: Action.parsing_preferences_error,
-            errorcode: err,
-            nextaction: loadConfig,
+        console.log(responseText)
+        showDialog({
+            type: "error",
+            numError: err,
+            message: T("S7"),
+            next: loadConfig,
         })
     }
 }
@@ -102,20 +105,19 @@ function loadLanguageError(errorCode, responseText) {
  */
 function loadPreferencesSuccess(responseText) {
     try {
-        //console.log("Success prefs")
         preferences = JSON.parse(responseText)
         setcurrentprefs(preferences)
-        //console.log(preferences.settings.language)
         if (preferences.settings.language != "en")
             loadLanguage(preferences.settings.language)
         else loadConfig()
     } catch (err) {
         console.log("error")
-        console.error(responseText)
-        globaldispatch({
-            type: Action.parsing_preferences_error,
-            errorcode: err,
-            nextaction: loadConfig,
+        console.log(responseText)
+        showDialog({
+            type: "error",
+            numError: err,
+            message: T("S7"),
+            next: loadConfig,
         })
     }
 }
@@ -156,9 +158,7 @@ function loadConfig() {
         "-" +
         String(d.getSeconds()).padStart(2, "0")
     const cmd = encodeURIComponent("[ESP800]" + "time=" + PCtime)
-    globaldispatch({
-        type: Action.fetch_configuration,
-    })
+    showDialog({ type: "loader", message: T("S1") })
     console.log("load FW config")
     SendCommand(cmd, loadConfigSuccess, loadConfigError)
 }
@@ -179,12 +179,9 @@ function loadConfigSuccess(responseText) {
             )
         }
     } catch (e) {
-        console.error("Parsing error:", e)
-        console.error(responseText)
-        globaldispatch({
-            type: Action.parsing_configuration_error,
-            errorcode: e,
-        })
+        console.log("Parsing error:", e)
+        console.log(responseText)
+        showDialog({ type: "error", numError: e, message: T("S4") })
     }
 }
 
@@ -192,10 +189,7 @@ function loadConfigSuccess(responseText) {
  * Load Firmware settings query error
  */
 function loadConfigError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.fetch_configuration_error,
-        errorcode: errorCode,
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 export { initApp, preferences, preferencesFileName, setPreferences }

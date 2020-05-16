@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { useEffect, useRef } from "preact/hooks"
-import { setNotificationBottom } from "../app"
+import { useStoreon } from "storeon/preact"
 const { Notifications } = require(`../${process.env.TARGET_ENV}`)
 
 /*
@@ -32,7 +32,9 @@ export const Notification = () => {
 
     useEffect(() => {
         if (notificationRef.current.getClientRects()[0]) {
-            setNotificationBottom(
+            const { dispatch } = useStoreon()
+            dispatch(
+                "setNotificationBottom",
                 notificationRef.current.clientHeight +
                     notificationRef.current.getClientRects()[0].top
             )

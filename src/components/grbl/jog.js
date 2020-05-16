@@ -24,8 +24,9 @@ import { AlertCircle, Send, Home, Crosshair } from "preact-feather"
 import { defaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
-import { globaldispatch, Action, esp3dSettings } from "../app"
+import { esp3dSettings } from "../app"
 import { useStoreon } from "storeon/preact"
+import { showDialog } from "../dialog"
 
 /*
  * Local variables
@@ -48,11 +49,7 @@ function processFeedRate(msg) {
  * Send command query error
  */
 function sendCommandError(errorCode, responseText) {
-    globaldispatch({
-        type: Action.error,
-        errorcode: errorCode,
-        msg: "S5",
-    })
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -236,11 +233,7 @@ const JogPanel = ({ preferences }) => {
             (hasError["bfeedrate"] && id.startsWith("B")) ||
             (hasError["cfeedrate"] && id.startsWith("C"))
         ) {
-            globaldispatch({
-                type: Action.error,
-                errorcode: 500,
-                msg: "S83",
-            })
+            showDialog({ type: "error", numError: 500, message: T("S83") })
             return
         }
         switch (id) {
