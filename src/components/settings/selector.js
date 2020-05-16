@@ -36,7 +36,6 @@ let esp3dFWSettings //full esp3d settings (ESP400)
  *
  */
 export const Selector = ({ currentSetting }) => {
-    console.log("selector" + currentSetting)
     let visible = false
     let target = ""
     const { dispatch } = useStoreon()

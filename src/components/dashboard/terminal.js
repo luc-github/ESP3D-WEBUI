@@ -37,8 +37,10 @@ let currentOutput = []
 let verboseOutput = true
 let autoscrollOutput = true
 let pauseAutoscroll = false
-var commandHistory = []
-var commandHistoryIndex = -1
+let commandHistory = []
+let commandHistoryIndex = -1
+let currentCommand = ""
+let lastscroll = 0
 
 /*
  * Local constants
@@ -238,26 +240,37 @@ function doAutoscroll() {
 const TerminalPanel = () => {
     const { content } = useStoreon("content")
     const { showTerminal } = useStoreon("showTerminal")
-    if (!showTerminal) return null
-    const [command, setCommand] = useState("")
+    if (!showTerminal) {
+        lastscroll = -1
+        return null
+    }
+    const [command, setCommand] = useState(currentCommand)
     const onclick = e => {
         if (command.length > 0) {
             sendCommand(command)
             setCommand("")
+            currentCommand = ""
         }
     }
     const onInput = e => {
-        setCommand(e.target.value.trim())
+        setCommand(e.target.value)
+        currentCommand = e.target.value
     }
     const onScroll = e => {
-        if (e.target.scrollTop + e.target.offsetHeight != e.target.scrollHeight)
+        lastscroll = e.target.scrollHeight
+        if (
+            Math.abs(
+                e.target.scrollTop +
+                    e.target.offsetHeight -
+                    e.target.scrollHeight
+            ) > 20
+        ) {
             pauseAutoscroll = true
-        else pauseAutoscroll = false
+        } else pauseAutoscroll = false
     }
     const onKeyUp = e => {
         if (e.keyCode == 13) {
-            sendCommand(command)
-            setCommand("")
+            onclick(e)
         }
 
         if (e.keyCode == 38 || e.keyCode == 40) {
@@ -278,14 +291,22 @@ const TerminalPanel = () => {
                 commandHistoryIndex < commandHistory.length
             ) {
                 setCommand(commandHistory[commandHistoryIndex])
+                currentCommand = commandHistory[commandHistoryIndex]
             }
         }
     }
     useEffect(() => {
+        if (lastscroll == -1) {
+            pauseAutoscroll = false
+            doAutoscroll()
+        }
+    })
+
+    useEffect(() => {
         doAutoscroll()
-    }, [content])
+    }, [content.length])
     return (
-        <div>
+        <div class="w-100" style="max-width:40rem">
             <div class="p-2">
                 <div class="border p-2">
                     <TerminalControls />
