@@ -261,6 +261,8 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     word-wrap: break-word;
     word-break: break-all;
 }
+transform: rotate(0.25turn);
+}
 
 @include media-breakpoint-up(xs) {
     .tshow-low {

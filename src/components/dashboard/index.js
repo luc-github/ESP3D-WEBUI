@@ -45,7 +45,7 @@ const DashboardToolBar = () => {
             <div class="p-1">
                 <button
                     type="button"
-                    class="btn btn-dark"
+                    class={showTerminal?"btn btn-dark reduce-90": "btn btn-dark"}
                     title={T("S74")}
                     onClick={toogleTerminal}
                 >
@@ -58,7 +58,7 @@ const DashboardToolBar = () => {
             <div class="p-1">
                 <button
                     type="button"
-                    class="btn btn-info"
+                    class={showFiles?"btn btn-info reduce-90": "btn btn-info"}
                     title={T("S87")}
                     onClick={toogleFiles}
                 >
