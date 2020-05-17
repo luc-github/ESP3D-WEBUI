@@ -177,7 +177,7 @@ const TerminalControls = () => {
                 {" "}
                 <button
                     type="button"
-                    class="btn btn-light btn-sm"
+                    class="btn btn-light btn-sm closeicon"
                     title={T("S86")}
                     onClick={toogle}
                 >
