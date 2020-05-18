@@ -80,6 +80,12 @@ function isVerboseData(data) {
         data.startsWith("wait") ||
         data.startsWith(">") ||
         data.startsWith("ok") ||
+        data.startsWith("echo:") ||
+        data.startsWith(";") ||
+        data.startsWith("#") ||
+        data.startsWith("FR:") ||
+        data.startsWith("SpeedMultiply:") ||
+        data.startsWith("FlowMultiply:") ||
         data.startsWith("T:")
     )
         return true
