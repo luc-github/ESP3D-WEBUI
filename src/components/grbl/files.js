@@ -25,7 +25,6 @@ import { X } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
-//const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -54,7 +53,7 @@ const FilesControls = () => {
                 {" "}
                 <button
                     type="button"
-                    class="btn btn-light btn-sm closeicon"
+                    class="btn btn-light btn-sm red-hover"
                     title={T("S86")}
                     onClick={toogleFiles}
                 >

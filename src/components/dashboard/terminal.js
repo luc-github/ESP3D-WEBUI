@@ -177,7 +177,7 @@ const TerminalControls = () => {
                 {" "}
                 <button
                     type="button"
-                    class="btn btn-light btn-sm closeicon"
+                    class="btn btn-light btn-sm red-hover"
                     title={T("S86")}
                     onClick={toogle}
                 >
@@ -337,7 +337,7 @@ const TerminalPanel = () => {
                     <div
                         style="max-width=200px!important"
                         id="outputTerminalWindow"
-                        class="border customscroll terminalWindow"
+                        class="border customscroll terminalWindow p-1"
                         onscroll={onScroll}
                     >
                         {content}

@@ -23,11 +23,11 @@ import { T } from "../translations"
 import { initApp } from "../uisettings"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
-import { FilesPanel } from "./files"
 const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
+const { FilesPanel } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../uisettings"
 import { useStoreon } from "storeon/preact"
-import { Terminal, Folder, X } from "preact-feather"
+import { Terminal, Folder } from "preact-feather"
 
 const DashboardToolBar = () => {
     const { showTerminal } = useStoreon("showTerminal")
@@ -45,7 +45,9 @@ const DashboardToolBar = () => {
             <div class="p-1">
                 <button
                     type="button"
-                    class={showTerminal?"btn btn-dark reduce-90": "btn btn-dark"}
+                    class={
+                        showTerminal ? "btn btn-dark reduce-90" : "btn btn-dark"
+                    }
                     title={T("S74")}
                     onClick={toogleTerminal}
                 >
@@ -58,7 +60,9 @@ const DashboardToolBar = () => {
             <div class="p-1">
                 <button
                     type="button"
-                    class={showFiles?"btn btn-info reduce-90": "btn btn-info"}
+                    class={
+                        showFiles ? "btn btn-info reduce-90" : "btn btn-info"
+                    }
                     title={T("S87")}
                     onClick={toogleFiles}
                 >

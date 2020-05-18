@@ -24,6 +24,7 @@ import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel, processFeedRate } from "./jog"
+import { FilesPanel } from "./files"
 import { MachineUIPreferences } from "./preferences"
 import { Notifications } from "./notifications"
 import { showDialog, updateProgress } from "../dialog"
@@ -843,4 +844,5 @@ export {
     isVerboseData,
     gitHubURL,
     Notifications,
+    FilesPanel,
 }
