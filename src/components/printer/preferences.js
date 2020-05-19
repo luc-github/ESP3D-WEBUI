@@ -178,13 +178,13 @@ const MachineUIEntry = ({ entry, id, label, help }) => {
                     onInput={onInput}
                     type="number"
                     style="max-width:10em"
-                    class="form-control"
+                    class="form-control rounded-right"
                     placeholder={T("S41")}
                     value={entry[id]}
                 />
                 <div class="input-group-append">
                     <span
-                        class="input-group-text hide-low"
+                        class="input-group-text hide-low rounded-right"
                         id={id + "-UI-unit"}
                     >
                         {help}
@@ -235,7 +235,7 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
         prefs.ypos = defaultMachineValues("ypos")
     }
     return (
-        <div class="d-flex flex-column justify-content-center border p-2">
+        <div class="d-flex flex-column justify-content-center border rounded p-2">
             <MachineUIEntry
                 entry={prefs}
                 id="xyfeedrate"

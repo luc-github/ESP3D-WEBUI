@@ -81,7 +81,7 @@ const FilesPanel = () => {
 
     return (
         <div class="p-2">
-            <div class="border p-2">
+            <div class="border  rounded p-2">
                 <FilesControls />
                 <div class="p-2 border">List files here</div>
             </div>

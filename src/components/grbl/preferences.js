@@ -191,7 +191,7 @@ const MachineUIEntry = ({ entry, id, label, help }) => {
                 />
                 <div class="input-group-append">
                     <span
-                        class="input-group-text hide-low"
+                        class="input-group-text hide-low rounded-right"
                         id={id + "-UI-unit"}
                     >
                         {help}

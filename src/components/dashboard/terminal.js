@@ -308,7 +308,7 @@ const TerminalPanel = () => {
     return (
         <div class="w-100" style="max-width:40rem">
             <div class="p-2">
-                <div class="border p-2">
+                <div class="border rounded p-2">
                     <TerminalControls />
 
                     <div class="input-group">
@@ -337,7 +337,7 @@ const TerminalPanel = () => {
                     <div
                         style="max-width=200px!important"
                         id="outputTerminalWindow"
-                        class="border customscroll terminalWindow p-1"
+                        class="border customscroll terminalWindow rounded p-1"
                         onscroll={onScroll}
                     >
                         {content}

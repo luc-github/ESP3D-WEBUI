@@ -102,32 +102,60 @@ function setState(entry, state, index) {
     } else {
         id = entry
     }
-    let classSetting = "form-control"
-    let classLabel = "input-group-text"
-    let classButton = "btn"
-    switch (state) {
-        case "error":
-            classSetting += " is-invalid"
-            classLabel += " error"
-            classButton += " d-none"
-            break
-        case "modified":
-            classSetting += " is-changed"
-            classLabel += " bg-warning"
-            classButton += " btn-warning"
-            break
-        case "success":
-            classSetting += " is-valid"
-            classLabel += " success"
-            classButton += " d-none"
-            break
-        default:
-            classButton += " d-none"
-            break
+    let controlID = document.getElementById("setting" + id)
+    let buttonID = document.getElementById("button_setting" + id)
+    let labelID = document.getElementById("label_setting" + id)
+    if (controlID) {
+        controlID.classList.remove("is-invalid")
+        controlID.classList.remove("is-valid")
+        controlID.classList.remove("is-changed")
+        switch (state) {
+            case "error":
+                controlID.classList.add("is-invalid")
+                break
+            case "modified":
+                controlID.classList.add("is-changed")
+                break
+            case "success":
+                controlID.classList.add("is-valid")
+                break
+            default:
+                break
+        }
     }
-    document.getElementById("setting" + id).className = classSetting
-    document.getElementById("button_setting" + id).className = classButton
-    document.getElementById("label_setting" + id).className = classLabel
+    if (buttonID) {
+        switch (state) {
+            case "error":
+                buttonID.classList.add("d-none")
+                break
+            case "modified":
+                buttonID.classList.remove("d-none")
+                break
+            case "success":
+                buttonID.classList.add("d-none")
+                break
+            default:
+                break
+        }
+    }
+    if (labelID) {
+        labelID.classList.remove("error")
+        labelID.classList.remove("success")
+        labelID.classList.remove("bg-warning")
+        switch (state) {
+            case "error":
+                labelID.classList.add("error")
+                break
+            case "modified":
+                labelID.classList.add("bg-warning")
+                break
+            case "success":
+                labelID.classList.add("success")
+                break
+            default:
+                break
+        }
+    }
 }
 
 /*
@@ -184,7 +212,7 @@ const SelectEntry = ({ entry }) => {
     return (
         <select
             id={"setting" + entry.P}
-            class="form-control"
+            class="form-control rounded-right"
             value={entry.currentValue}
             onChange={onChange}
         >
@@ -215,7 +243,7 @@ const InputEntry = ({ entry }) => {
             min={minboundary}
             max={maxboundary}
             id={"setting" + entry.P}
-            class="form-control"
+            class="form-control rounded-right"
             value={entry.currentValue}
             onInput={onInput}
             placeholder={T("S41")}
@@ -269,7 +297,7 @@ const FlagSubEntry = ({ entry, label, val, index }) => {
                 </select>
                 <div class="input-group-append">
                     <button
-                        class="btn btn-default"
+                        class="btn btn-warning d-none rounded-right"
                         type="button"
                         id={"button_setting" + entry.P + "_" + val}
                         title={T("S43")}
@@ -348,7 +376,7 @@ const Entry = ({ entry }) => {
     if (entry.F == "network" && entry.F2 == "sta" && entry.H == "SSID") {
         extra = (
             <button
-                class="btn btn-default"
+                class="btn btn-default rounded-right"
                 id={"button_setting_extra" + entry.P}
                 type="button"
                 title={T("S45")}
@@ -373,7 +401,7 @@ const Entry = ({ entry }) => {
 
                 <div class="input-group-append">
                     <button
-                        class="btn btn-default"
+                        class="btn btn-warning d-none rounded-right"
                         id={"button_setting" + entry.P}
                         type="button"
                         onClick={onSet}
@@ -569,7 +597,7 @@ function loadWiFiNetworksSuccess(responseText) {
         header.push(<tbody>{entries}</tbody>)
         message.push(
             <div style="overflow: auto;">
-                <table class="table table-bordered ">{header}</table>
+                <table class="table table-bordered">{header}</table>
             </div>
         )
         showDialog({

@@ -180,7 +180,7 @@ const FeedRateInput = ({ entry, label, id }) => {
                 />
                 <div class="input-group-append">
                     <span
-                        class="input-group-text hide-low"
+                        class="input-group-text hide-low rounded-right"
                         id={id + "_jogunit"}
                     >
                         {T("G8")}
@@ -385,59 +385,64 @@ const JogPanel = ({ preferences }) => {
     if (esp3dSettings.NbAxis > 5) axisList.push(<option value="C">C</option>)
     return (
         <div class="p-2">
-            <div class="d-flex flex-wrap justify-content-center p-2 border">
+            <div class="d-flex flex-wrap justify-content-center p-2 border rounded">
                 <div class="d-flex flex-column justify-content-center">
-                    <div class="border">
-                        <div
-                            class="p-2"
-                            title={T("G11").replace("{axis}", "X")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="Xplus"
-                                onclick={sendJogCommand}
+                    <div class="border rounded">
+                        <center>
+                            <div
+                                class="p-2"
+                                title={T("G11").replace("{axis}", "X")}
                             >
-                                +X
-                            </button>
-                        </div>
-                        <div class="p-2" title={T("G9").replace("{axis}", "X")}>
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="HomeX"
-                                onclick={sendHomeCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="Xplus"
+                                    onclick={sendJogCommand}
+                                >
+                                    +X
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G9").replace("{axis}", "X")}
                             >
-                                <div class="no-pointer">
-                                    {" "}
-                                    <Home />
-                                </div>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G10").replace("{axis}", "X")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="ZeroX"
-                                onclick={sendZeroCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="HomeX"
+                                    onclick={sendHomeCommand}
+                                >
+                                    <div class="no-pointer">
+                                        {" "}
+                                        <Home />
+                                    </div>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G10").replace("{axis}", "X")}
                             >
-                                <span class="zeroLabel no-pointer">
-                                    &Oslash;
-                                </span>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G12").replace("{axis}", "X")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="Xminus"
-                                onclick={sendJogCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="ZeroX"
+                                    onclick={sendZeroCommand}
+                                >
+                                    <span class="zeroLabel no-pointer">
+                                        &Oslash;
+                                    </span>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G12").replace("{axis}", "X")}
                             >
-                                -X
-                            </button>
-                        </div>
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="Xminus"
+                                    onclick={sendJogCommand}
+                                >
+                                    -X
+                                </button>
+                            </div>
+                        </center>
                     </div>
                     <div
                         class={esp3dSettings.NbAxis > 1 ? "p-2" : "d-none"}
@@ -466,56 +471,61 @@ const JogPanel = ({ preferences }) => {
                             : "d-none"
                     }
                 >
-                    <div class="border">
-                        <div
-                            class="p-2"
-                            title={T("G11").replace("{axis}", "Y")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="Yplus"
-                                onclick={sendJogCommand}
+                    <div class="border rounded">
+                        <center>
+                            <div
+                                class="p-2"
+                                title={T("G11").replace("{axis}", "Y")}
                             >
-                                +Y
-                            </button>
-                        </div>
-                        <div class="p-2" title={T("G9").replace("{axis}", "Y")}>
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="HomeY"
-                                onclick={sendHomeCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="Yplus"
+                                    onclick={sendJogCommand}
+                                >
+                                    +Y
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G9").replace("{axis}", "Y")}
                             >
-                                <div class="no-pointer">
-                                    <Home />
-                                </div>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G10").replace("{axis}", "Y")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="ZeroY"
-                                onclick={sendZeroCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="HomeY"
+                                    onclick={sendHomeCommand}
+                                >
+                                    <div class="no-pointer">
+                                        <Home />
+                                    </div>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G10").replace("{axis}", "Y")}
                             >
-                                <span class="zeroLabel no-pointer">
-                                    &Oslash;
-                                </span>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G12").replace("{axis}", "Y")}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id="Yminus"
-                                onclick={sendJogCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="ZeroY"
+                                    onclick={sendZeroCommand}
+                                >
+                                    <span class="zeroLabel no-pointer">
+                                        &Oslash;
+                                    </span>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G12").replace("{axis}", "Y")}
                             >
-                                -Y
-                            </button>
-                        </div>
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id="Yminus"
+                                    onclick={sendJogCommand}
+                                >
+                                    -Y
+                                </button>
+                            </div>
+                        </center>
                     </div>
                     <div class="p-2" title={T("G14")}>
                         <button
@@ -536,77 +546,84 @@ const JogPanel = ({ preferences }) => {
                             : "d-none"
                     }
                 >
-                    <div class="d-flex flex-column justify-content-center border">
-                        <div
-                            class="p-2"
-                            title={T("G11").replace("{axis}", axis)}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id={axis + "plus"}
-                                onclick={sendJogCommand}
+                    <div class="d-flex flex-column justify-content-center border rounded">
+                        <center>
+                            <div
+                                class="p-2"
+                                title={T("G11").replace("{axis}", axis)}
                             >
-                                +{axis}
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G9").replace("{axis}", axis)}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id={"Home" + axis}
-                                onclick={sendHomeCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id={axis + "plus"}
+                                    onclick={sendJogCommand}
+                                >
+                                    +{axis}
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G9").replace("{axis}", axis)}
                             >
-                                <div class="no-pointer">
-                                    <Home />
-                                </div>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G10").replace("{axis}", axis)}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id={"Zero" + axis}
-                                onclick={sendZeroCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id={"Home" + axis}
+                                    onclick={sendHomeCommand}
+                                >
+                                    <div class="no-pointer">
+                                        <Home />
+                                    </div>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G10").replace("{axis}", axis)}
                             >
-                                <span class="zeroLabel no-pointer">
-                                    &Oslash;
-                                </span>
-                            </button>
-                        </div>
-                        <div
-                            class="p-2"
-                            title={T("G12").replace("{axis}", axis)}
-                        >
-                            <button
-                                class="btn btn-default jogbtn"
-                                id={axis + "minus"}
-                                onclick={sendJogCommand}
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id={"Zero" + axis}
+                                    onclick={sendZeroCommand}
+                                >
+                                    <span class="zeroLabel no-pointer">
+                                        &Oslash;
+                                    </span>
+                                </button>
+                            </div>
+                            <div
+                                class="p-2"
+                                title={T("G12").replace("{axis}", axis)}
                             >
-                                -{axis}
-                            </button>
-                        </div>
-                        <div
-                            class={esp3dSettings.NbAxis > 3 ? "p-2" : "d-none"}
-                        >
-                            <select
-                                onchange={selectChange}
-                                value={axis}
-                                class="form-control"
+                                <button
+                                    class="btn btn-default jogbtn"
+                                    id={axis + "minus"}
+                                    onclick={sendJogCommand}
+                                >
+                                    -{axis}
+                                </button>
+                            </div>
+                            <div
+                                class={
+                                    esp3dSettings.NbAxis > 3 ? "p-2" : "d-none"
+                                }
                             >
-                                {axisList}
-                            </select>
-                        </div>
+                                <select
+                                    onchange={selectChange}
+                                    value={axis}
+                                    class="form-control"
+                                >
+                                    {axisList}
+                                </select>
+                            </div>
+                        </center>
                     </div>
                 </div>
                 <div class="p-1" />
                 <div>
                     <div class="p-1 d-block d-sm-none" />
                     <div class="d-flex flex-row">
-                        <div class="d-flex flex-column border" title={T("G4")}>
+                        <div
+                            class="d-flex flex-column border rounded"
+                            title={T("G4")}
+                        >
                             <span class="badge badge-secondary">mm</span>
                             <div class="d-flex flex-row justify-content-left  p-1">
                                 <div class="p-1">
@@ -687,7 +704,7 @@ const JogPanel = ({ preferences }) => {
                     </div>
                     <div class="p-2">
                         <div class="d-flex justify-content-center">
-                            <div class="p-1 bg-warning">
+                            <div class="p-1 bg-warning rounded">
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-danger"

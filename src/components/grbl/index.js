@@ -661,7 +661,7 @@ const PrinterSetting = ({ entry }) => {
         updateState(entry)
     }, [entry])
 
-    let entryclass = "form-control"
+    let entryclass = "form-control rounded-right"
     let label = entry.label
     let labelclass = "input-group-text"
     let helpclass =

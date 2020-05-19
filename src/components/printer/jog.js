@@ -267,7 +267,7 @@ const FeedRateSlider = () => {
         updateState(currentSpeed, "speed_input")
     }, [currentSpeed])
     return (
-        <div class="input-group justify-content-center">
+        <div class="input-group justify-content-center rounded">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="speed_input_joglabel">
                     <Activity />
@@ -301,7 +301,7 @@ const FeedRateSlider = () => {
             <div class="input-group-append">
                 <button
                     id="speed_resetbtn"
-                    class="btn btn-default"
+                    class="btn btn-default rounded-right"
                     type="button"
                     onClick={onReset}
                     title={T("100%")}
@@ -310,7 +310,7 @@ const FeedRateSlider = () => {
                 </button>
                 <button
                     id="speed_sendbtn"
-                    class="btn btn-warning invisible"
+                    class="btn btn-warning invisible rounded-right"
                     type="button"
                     onClick={onSet}
                     title={T("S43")}
@@ -353,15 +353,15 @@ const FeedRateInput = ({ entry, label, id }) => {
                     type="number"
                     min="1"
                     style="max-width:10em"
-                    class="form-control"
+                    class="form-control rounded-right"
                     placeholder={T("S41")}
                     value={entry}
                     oninput={onInput}
                     id={id + "_jogfeedrate"}
                 />
-                <div class="input-group-append">
+                <div class="input-group-append ">
                     <span
-                        class="input-group-text hide-low"
+                        class="input-group-text hide-low rounded-right"
                         id={id + "_jogunit"}
                     >
                         {T("P14")}
@@ -738,109 +738,118 @@ const JogPanel = ({ preferences }) => {
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
     return (
         <div class="p-2">
-            <div class="p-2 border">
+            <div class="p-2 border rounded">
                 <div class="show-low">
                     <div class="d-flex flex-row justify-content-center p-2">
-                        <div class="d-flex flex-column justify-content-center border">
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Xplus"
-                                    onclick={sendJogCommand}
-                                >
-                                    +X
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="HomeX"
-                                    onclick={sendHomeCommand}
-                                >
-                                    <div class="no-pointer">
-                                        {" "}
-                                        <Home />
-                                    </div>
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Xminus"
-                                    onclick={sendJogCommand}
-                                >
-                                    -X
-                                </button>
-                            </div>
+                        <div class="d-flex flex-column justify-content-center border rounded">
+                            <center>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Xplus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        +X
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="HomeX"
+                                        onclick={sendHomeCommand}
+                                    >
+                                        <div class="no-pointer">
+                                            {" "}
+                                            <Home />
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Xminus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        -X
+                                    </button>
+                                </div>
+                            </center>
                         </div>
                         <div class="p-1" />
-                        <div class="d-flex flex-column justify-content-center border">
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Yplus"
-                                    onclick={sendJogCommand}
-                                >
-                                    +Y
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="HomeY"
-                                    onclick={sendHomeCommand}
-                                >
-                                    <div class="no-pointer">
-                                        {" "}
-                                        <Home />
-                                    </div>
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Yminus"
-                                    onclick={sendJogCommand}
-                                >
-                                    -Y
-                                </button>
-                            </div>
+                        <div class="d-flex flex-column justify-content-center border rounded">
+                            <center>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Yplus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        +Y
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="HomeY"
+                                        onclick={sendHomeCommand}
+                                    >
+                                        <div class="no-pointer">
+                                            {" "}
+                                            <Home />
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Yminus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        -Y
+                                    </button>
+                                </div>
+                            </center>
                         </div>
                         <div class="p-1" />
-                        <div class="d-flex flex-column justify-content-center border">
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Zplus"
-                                    onclick={sendJogCommand}
-                                >
-                                    +Z
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="HomeZ"
-                                    onclick={sendHomeCommand}
-                                >
-                                    <div class="no-pointer">
-                                        {" "}
-                                        <Home />
-                                    </div>
-                                </button>
-                            </div>
-                            <div class="p-2">
-                                <button
-                                    class="btn btn-default"
-                                    id="Zminus"
-                                    onclick={sendJogCommand}
-                                >
-                                    -Z
-                                </button>
-                            </div>
+                        <div class="d-flex flex-column justify-content-center border rounded">
+                            <center>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Zplus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        +Z
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="HomeZ"
+                                        onclick={sendHomeCommand}
+                                    >
+                                        <div class="no-pointer">
+                                            {" "}
+                                            <Home />
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="btn btn-default"
+                                        id="Zminus"
+                                        onclick={sendJogCommand}
+                                    >
+                                        -Z
+                                    </button>
+                                </div>
+                            </center>
                         </div>
                         <div class="p-1" />
-                        <div class="d-flex flex-column border" title={T("G4")}>
+                        <div
+                            class="d-flex flex-column border rounded"
+                            title={T("G4")}
+                        >
                             <span class="badge badge-secondary">mm</span>
                             <div class="d-flex flex-column justify-content-left  p-1">
                                 <div class="p-1">
@@ -1664,7 +1673,7 @@ const JogPanel = ({ preferences }) => {
                         </button>
                     </div>
                     <div class="p-2" style="display:inline-block">
-                        <div class="p-1 bg-warning">
+                        <div class="p-1 bg-warning rounded">
                             <button
                                 type="button"
                                 class="btn btn-sm btn-danger"
