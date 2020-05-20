@@ -89,8 +89,7 @@ function updateProgress(data) {
     let { dialogData } = useStoreon("dialogData")
     //todo merge data
     dialogData.progress = data.progress
-    dialogData.next = data.nextaction
-    dispatch("setDialog", data)
+    dispatch("setDialog", dialogData)
 }
 
 function hideDialog() {

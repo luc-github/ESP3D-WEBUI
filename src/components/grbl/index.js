@@ -76,6 +76,7 @@ function isVerboseData(data) {
         data.startsWith(">") ||
         data.startsWith("ok") ||
         data.startsWith("$") ||
+        data.startsWith("{") ||
         data.startsWith("[")
     )
         return true

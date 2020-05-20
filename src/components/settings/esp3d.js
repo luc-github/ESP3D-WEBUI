@@ -435,7 +435,7 @@ const ESPSectionSettings = ({ filter, filter2 }) => {
     if (filter != filter2) title = <h4 class="card-title">{T(filter2)}</h4>
     for (let entry of esp3dFWSettings.Settings) {
         let tfilter = entry.F.split("/")
-        if ( tfilter.length > 1) {
+        if (tfilter.length > 1) {
             if (tfilter[0] == filter && tfilter[1] == filter2) {
                 section.push(
                     <div class="card-text">
@@ -468,11 +468,14 @@ const ESPSettings = ({ filter }) => {
         for (let entry of esp3dFWSettings.Settings) {
             let tfilter = entry.F.split("/")
             if (tfilter[0] == filter) {
-                if ( tfilter.length > 1) {
+                if (tfilter.length > 1) {
                     if (tfilter[1] != section) {
                         section = tfilter[1]
                         response.push(
-                            <ESPSectionSettings filter={filter} filter2={section} />
+                            <ESPSectionSettings
+                                filter={filter}
+                                filter2={section}
+                            />
                         )
                     }
                 }
@@ -496,6 +499,7 @@ function applyChangeOnUI(entry) {
         for (let val in entry.O) {
             if (Object.values(entry.O[val])[0] == entry.V) {
                 esp3dSettings.FWTarget = Object.keys(entry.O[val])[0]
+                showDialog({ displayDialog: false, refreshPage: true })
                 break
             }
         }
@@ -505,10 +509,7 @@ function applyChangeOnUI(entry) {
 const JoinNetworkButton = ({ SSID }) => {
     const onJoin = e => {
         for (let entry of esp3dFWSettings.Settings) {
-            if (
-                entry.F == "network/sta" &&
-                entry.H == "SSID"
-            ) {
+            if (entry.F == "network/sta" && entry.H == "SSID") {
                 entry.currentValue = SSID
                 updateState(entry)
                 break

@@ -87,6 +87,7 @@ function isVerboseData(data) {
         data.startsWith("FR:") ||
         data.startsWith("SpeedMultiply:") ||
         data.startsWith("FlowMultiply:") ||
+        data.startsWith("{") ||
         data.startsWith("T:")
     )
         return true
@@ -509,7 +510,7 @@ function processConfigData() {
  */
 function timeoutError() {
     stopTimeout()
-    showDialog({ type: "error", numError: 404, message: T("p17") })
+    showDialog({ type: "error", numError: 404, message: T("P17") })
 }
 
 /*

@@ -178,12 +178,10 @@ function processUpload() {
 }
 
 /*
- * Upload sucess
+ * Restart sucess
  *
  */
-function successUpload(response) {
-    updateProgress({ progress: 100 })
-    console.log("success")
+function restart() {
     clearUploadInformation()
     showDialog({ type: "message", message: T("S34"), title: T("S35") })
     if (pathUpload == "/files") {
@@ -192,6 +190,16 @@ function successUpload(response) {
         //wait for restart due to websocket disconnection
         //so no need to reload
     }
+}
+
+/*
+ * Upload success
+ *
+ */
+function successUpload(response) {
+    updateProgress({ progress: 100 })
+    console.log("success wait 1s")
+    setTimeout(restart, 1000)
 }
 
 /*

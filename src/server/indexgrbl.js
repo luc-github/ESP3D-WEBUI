@@ -528,6 +528,10 @@ const getTotalSize = function(directoryPath) {
     return totalSize
 }
 
+app.all("/updatefw", function(req, res) {
+    res.send("ok")
+})
+
 app.all("/files", function(req, res) {
     let mypath = req.query.path
     if (typeof mypath == "undefined") mypath = "/"

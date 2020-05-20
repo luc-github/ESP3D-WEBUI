@@ -11,6 +11,7 @@ module.exports = merge(environment, {
         proxy: {
             "/command": "http://localhost:8080",
             "/files": "http://localhost:8080",
+            "/updatefw": "http://localhost:8080",
         },
     },
 })
