@@ -374,7 +374,7 @@ const Entry = ({ entry }) => {
     }
     let extra
     //position may vary from FW location should not
-    if (entry.F == "network" && entry.F2 == "sta" && entry.H == "SSID") {
+    if (entry.F == "network/sta" && entry.H == "SSID") {
         extra = (
             <button
                 class="btn btn-default rounded-right"
@@ -434,12 +434,15 @@ const ESPSectionSettings = ({ filter, filter2 }) => {
     let title = null
     if (filter != filter2) title = <h4 class="card-title">{T(filter2)}</h4>
     for (let entry of esp3dFWSettings.Settings) {
-        if (entry.F == filter && entry.F2 == filter2) {
-            section.push(
-                <div class="card-text">
-                    <Entry entry={entry} />
-                </div>
-            )
+        let tfilter = entry.F.split("/")
+        if ( tfilter.length > 1) {
+            if (tfilter[0] == filter && tfilter[1] == filter2) {
+                section.push(
+                    <div class="card-text">
+                        <Entry entry={entry} />
+                    </div>
+                )
+            }
         }
     }
     return (
@@ -463,12 +466,15 @@ const ESPSettings = ({ filter }) => {
         const response = []
         let section = ""
         for (let entry of esp3dFWSettings.Settings) {
-            if (entry.F == filter) {
-                if (entry.F2 != section) {
-                    section = entry.F2
-                    response.push(
-                        <ESPSectionSettings filter={filter} filter2={section} />
-                    )
+            let tfilter = entry.F.split("/")
+            if (tfilter[0] == filter) {
+                if ( tfilter.length > 1) {
+                    if (tfilter[1] != section) {
+                        section = tfilter[1]
+                        response.push(
+                            <ESPSectionSettings filter={filter} filter2={section} />
+                        )
+                    }
                 }
             }
         }
@@ -485,7 +491,7 @@ const ESPSettings = ({ filter }) => {
  * Apply changeon UI
  */
 function applyChangeOnUI(entry) {
-    if (entry.F == "system" && entry.H == "targetfw") {
+    if (entry.F == "system/system" && entry.H == "targetfw") {
         clearData()
         for (let val in entry.O) {
             if (Object.values(entry.O[val])[0] == entry.V) {
@@ -500,8 +506,7 @@ const JoinNetworkButton = ({ SSID }) => {
     const onJoin = e => {
         for (let entry of esp3dFWSettings.Settings) {
             if (
-                entry.F == "network" &&
-                entry.F2 == "sta" &&
+                entry.F == "network/sta" &&
                 entry.H == "SSID"
             ) {
                 entry.currentValue = SSID
@@ -886,8 +891,9 @@ export const Esp3DSettings = ({ currentPage }) => {
     if (esp3dFWSettings.Settings) {
         let currentfilter = ""
         for (let entry of esp3dFWSettings.Settings) {
-            if (entry.F != currentfilter) {
-                currentfilter = entry.F
+            let tfilter = entry.F.split("/")
+            if (tfilter[0] != currentfilter) {
+                currentfilter = tfilter[0]
                 if (listSettings.length > 0) listSettings.push(<hr />)
                 listSettings.push(<ESPSettings filter={currentfilter} />)
             }
