@@ -135,6 +135,7 @@ function setState(entry, state, index) {
                 buttonID.classList.add("d-none")
                 break
             default:
+                buttonID.classList.add("d-none")
                 break
         }
     }
@@ -287,7 +288,7 @@ const FlagSubEntry = ({ entry, label, val, index }) => {
                     </span>
                 </div>
                 <select
-                    class="form-control"
+                    class="form-control rounded-right"
                     value={current}
                     onChange={onChange}
                     id={"setting" + entry.P + "_" + val}
