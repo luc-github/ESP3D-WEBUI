@@ -78,7 +78,12 @@ function loadPreferencesSuccess(responseText) {
  */
 function loadPreferencesError(errorCode, responseText) {
     console.log("no valid " + preferencesFileName + ", use default")
-    showDialog({ type: "error", numError: errorCode, message: T("S4") })
+    if(errorCode == 404) {
+            prefs = JSON.parse(JSON.stringify(preferences.settings))
+            updateUI()
+    }else {
+        showDialog({ type: "error", numError: errorCode, message: T("S7") })
+    }
 }
 
 /*
