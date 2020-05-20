@@ -217,8 +217,7 @@ app.get("/command", function(req, res) {
         res.json({
             Settings: [
                 {
-                    F: "network",
-                    F2: "network",
+                    F: "network/network",
                     P: "130",
                     T: "S",
                     V: "esp3d",
@@ -227,8 +226,7 @@ app.get("/command", function(req, res) {
                     M: "1",
                 },
                 {
-                    F: "network",
-                    F2: "network",
+                    F: "network/network",
                     P: "0",
                     T: "B",
                     V: "1",
@@ -236,8 +234,7 @@ app.get("/command", function(req, res) {
                     O: [{ none: "0" }, { sta: "1" }, { ap: "2" }],
                 },
                 {
-                    F: "network",
-                    F2: "sta",
+                    F: "network/sta",
                     P: "1",
                     T: "S",
                     V: "WIFI_OFFICE_B2G",
