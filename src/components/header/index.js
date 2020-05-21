@@ -24,6 +24,7 @@ import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
 import { prefs } from "../settings"
+import { esp3dSettings } from "../app"
 import { useStoreon } from "storeon/preact"
 
 function showAbout() {
@@ -64,7 +65,9 @@ export const Header = () => {
             </div>
             <div
                 class={
-                    activePage == Page.dashboard
+                    esp3dSettings.FWTarget == "unknown"
+                        ? "d-none"
+                        : activePage == Page.dashboard
                         ? "nav-item active"
                         : "nav-item"
                 }

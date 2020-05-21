@@ -86,6 +86,10 @@ function applyConfig(data) {
     //console.log("Apply settings")
     esp3dSettings = data
     document.title = esp3dSettings.Hostname
+    if (esp3dSettings.FWTarget == "unknown") {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.settings)
+    }
 }
 
 /*

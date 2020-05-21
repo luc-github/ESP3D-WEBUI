@@ -21,20 +21,84 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { useState, useEffect } from "preact/hooks"
-import { X } from "preact-feather"
+import { X, RefreshCcw, UploadCloud, FolderPlus } from "preact-feather"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
+import { esp3dSettings, prefs } from "../app"
 
 /*
  * Local variables
  *
  */
 
+let currentFilesType = "FS"
+
 /*
  * Local constants
  *
  */
+
+/*
+ * Give Configuration command and parameters
+ */
+function listFilesCmd(type = 0) {
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            return ["M205", "EPR", "wait", "error"]
+        case "marlin-embedded":
+        case "marlin":
+        case "marlinkimbra":
+            return ["M503", "echo:  G21", "ok", "error"]
+        case "smoothieware":
+            if (!override)
+                return ["cat " + smoothiewareConfigFile, "#", "ok", "error"]
+            return ["M503", ";", "ok", "error"]
+        default:
+            return "Unknown"
+    }
+}
+
+function refreshFileList() {
+    console.log("refresh " + currentFilesType)
+}
+
+const FilesTypeSelector = () => {
+    let optionsList = []
+    const selectChange = e => {
+        currentFilesType = e.target.value
+        refreshFileList()
+    }
+    optionsList.push(<option value="FS">ESP</option>)
+    optionsList.push(<option value="SD">SD</option>)
+    optionsList.push(<option value="SD2">SD2</option>)
+    optionsList.push(<option value="TFTSD">TFT SD</option>)
+    optionsList.push(<option value="TFTUSB">TFT USB</option>)
+    return (
+        <div>
+            <select
+                onchange={selectChange}
+                value={currentFilesType}
+                class="form-control"
+            >
+                {optionsList}
+            </select>
+        </div>
+    )
+}
+
+function canCreateDirectory() {
+    if (
+        currentFilesType == "TFTSD" ||
+        currentFilesType == "TFTUSB" ||
+        esp3dSettings.FWTarget == "marlin"
+    ) {
+        return false
+    }
+
+    return true
+}
 
 /*
  * Files Controls
@@ -46,19 +110,59 @@ const FilesControls = () => {
         dispatch("panel/showfiles", false)
     }
     return (
-        <div class="d-flex flex-wrap p-1">
-            <span>Nav Bar</span>
-
-            <div class="ml-auto">
-                {" "}
-                <button
-                    type="button"
-                    class="btn btn-light btn-sm red-hover"
-                    title={T("S86")}
-                    onClick={toogleFiles}
-                >
-                    <X />
-                </button>
+        <div>
+            <div class="d-flex flex-wrap p-1">
+                <div class="p-1">
+                    <FilesTypeSelector />
+                </div>
+                <div class="p-1">
+                    <button
+                        type="button"
+                        title={T("S23")}
+                        class="btn btn-primary"
+                        onClick={refreshFileList}
+                    >
+                        <RefreshCcw />
+                        <span class="hide-low text-button">{T("S50")}</span>
+                    </button>
+                </div>
+                <div class="p-1">
+                    <button
+                        type="button"
+                        title={T("S89")}
+                        class="btn btn-secondary"
+                        onClick={refreshFileList}
+                    >
+                        <UploadCloud />
+                        <span class="hide-low text-button">{T("S88")}</span>
+                    </button>
+                </div>
+                <div class="ml-auto">
+                    <button
+                        type="button"
+                        class="btn btn-light btn-sm red-hover"
+                        title={T("S86")}
+                        onClick={toogleFiles}
+                    >
+                        <X />
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap p-1">
+                <div class="p-1">
+                    <button
+                        type="button"
+                        title={T("S90")}
+                        class={canCreateDirectory() ? "btn btn-info" : "d-none"}
+                        onClick={refreshFileList}
+                    >
+                        <FolderPlus />
+                        <span class="hide-low text-button">{T("S90")}</span>
+                    </button>
+                </div>
+                <div class="p-1">
+                    <span> /full path/to file</span>
+                </div>
             </div>
         </div>
     )
@@ -78,12 +182,20 @@ function sendCommandError(errorCode, responseText) {
 const FilesPanel = () => {
     const { showFiles } = useStoreon("showFiles")
     if (!showFiles) return null
-
+    const { filesStatus } = useStoreon("filesStatus")
+    const { filesList } = useStoreon("filesList")
     return (
-        <div class="p-2">
-            <div class="border  rounded p-2">
-                <FilesControls />
-                <div class="p-2 border">List files here</div>
+        <div class="w-100 panelCard">
+            <div class="p-2 ">
+                <div class="border rounded p-2 panelCard">
+                    <div class="w-100">
+                        <FilesControls />
+                        <div class="card h-100">
+                            <div class="card-body">{filesList}</div>
+                            <div class="card-footer">{filesStatus}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )

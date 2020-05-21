@@ -78,10 +78,10 @@ function loadPreferencesSuccess(responseText) {
  */
 function loadPreferencesError(errorCode, responseText) {
     console.log("no valid " + preferencesFileName + ", use default")
-    if(errorCode == 404) {
-            prefs = JSON.parse(JSON.stringify(preferences.settings))
-            updateUI()
-    }else {
+    if (errorCode == 404) {
+        prefs = JSON.parse(JSON.stringify(preferences.settings))
+        updateUI()
+    } else {
         showDialog({ type: "error", numError: errorCode, message: T("S7") })
     }
 }
@@ -183,6 +183,14 @@ function saveAndApply() {
 }
 
 /*
+ * Close dialog
+ *
+ */
+function closeDialog() {
+    showDialog({ displayDialog: false })
+}
+
+/*
  * Upload sucess
  *
  */
@@ -193,8 +201,7 @@ function successUpload(response) {
         setState(allkey[p], "success")
     }
     updateProgress({ progress: 100 })
-    showDialog({ displayDialog: false })
-    console.log("success")
+    setTimeout(closeDialog, 1000)
 }
 
 /*

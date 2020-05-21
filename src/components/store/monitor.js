@@ -9,6 +9,8 @@ export default store => {
         showPage: false,
         showDialog: false,
         notifificationBottom: "50px",
+        filesList: [],
+        filesStatus: "",
     }))
 
     store.on("monitor/set", ({ content }, newcontent) => {
@@ -37,5 +39,11 @@ export default store => {
     })
     store.on("setNotificationBottom", ({ notifificationBottom }, newvalue) => {
         return { notifificationBottom: newvalue }
+    })
+    store.on("setFilesList", ({ filesList }, newcontent) => {
+        return { filesList: newcontent }
+    })
+    store.on("setFilesStatus", ({ filesStatus }, newcontent) => {
+        return { filesStatus: newcontent }
     })
 }

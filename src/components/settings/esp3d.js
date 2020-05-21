@@ -680,7 +680,7 @@ function saveSetting(entry) {
     const cmd = encodeURIComponent(
         "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
     )
-    showDialog({ type: "loader", message: T("S4") })
+    showDialog({ type: "loader", message: T("S91") })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
 

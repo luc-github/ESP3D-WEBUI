@@ -737,7 +737,7 @@ const JogPanel = ({ preferences }) => {
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
     return (
-        <div class="p-2">
+        <div class="p-2 panelCard">
             <div class="p-2 border rounded">
                 <div class="show-low">
                     <div class="d-flex flex-row justify-content-center p-2">

@@ -284,31 +284,34 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 
 @include media-breakpoint-up(xs) {
     .tshow-low {
-        display: none;
+        display: none !important;
     }
     .thide-low {
-        display: inline-row;
+        display: inline-row !important;
     }
     .autoWidth {
         width: 20em;
     }
     .show-low {
-        display: none;
+        display: none !important;
     }
     .terminalWindow {
         max-height: 360px;
         min-height: 360px;
         max-width: 50rem;
     }
+    .panelCard {
+        max-width: 34rem;
+    }
 }
 @include media-breakpoint-down(xs) {
     .thide-low,
     .hide-low {
-        display: none;
+        display: none !important;
     }
     .show-low,
     .tshow-low {
-        display: block;
+        display: block !important;
     }
     .card-low {
         padding: 0.25rem !important;
@@ -325,5 +328,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .terminalWindow {
         max-height: 200px;
         min-height: 200px;
+    }
+    .panelCard {
     }
 }

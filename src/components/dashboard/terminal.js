@@ -306,7 +306,7 @@ const TerminalPanel = () => {
         doAutoscroll()
     }, [content.length])
     return (
-        <div class="w-100" style="max-width:40rem">
+        <div class="w-100 panelCard">
             <div class="p-2">
                 <div class="border rounded p-2">
                     <TerminalControls />
