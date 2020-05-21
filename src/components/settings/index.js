@@ -24,7 +24,13 @@ import { T } from "../translations"
 import { Page, Setting } from "../app"
 import { Selector } from "./selector"
 const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
-import { WebUISettings, prefs, setcurrentprefs } from "./webui"
+import {
+    WebUISettings,
+    preferences,
+    prefs,
+    setcurrentprefs,
+    initApp,
+} from "./webui"
 import { Esp3DSettings } from "./esp3d"
 import { useStoreon } from "storeon/preact"
 
@@ -54,4 +60,4 @@ const SettingsPage = () => {
     )
 }
 
-export { SettingsPage, prefs, setcurrentprefs }
+export { SettingsPage, preferences, prefs, setcurrentprefs, initApp }

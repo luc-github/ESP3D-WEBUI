@@ -20,12 +20,11 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { initApp } from "../uisettings"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
 const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
 const { FilesPanel } = require(`../${process.env.TARGET_ENV}`)
-import { preferences } from "../uisettings"
+import { preferences } from "../settings"
 import { useStoreon } from "storeon/preact"
 import { Terminal, Folder } from "preact-feather"
 
@@ -83,7 +82,7 @@ const DashboardToolBar = () => {
 const DashboardPage = () => {
     const { activePage } = useStoreon("activePage")
     if (activePage != Page.dashboard) return null
-
+    if (typeof preferences == "undefined") return
     return (
         <div>
             <DashboardToolBar />

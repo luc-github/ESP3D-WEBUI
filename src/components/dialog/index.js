@@ -22,7 +22,7 @@ import { h } from "preact"
 import { useEffect } from "preact/hooks"
 import { AlertTriangle, Info } from "preact-feather"
 import { T } from "../translations"
-import { initApp } from "../uisettings"
+import { initApp } from "../settings"
 import { useStoreon } from "storeon/preact"
 import { Page } from "../app"
 

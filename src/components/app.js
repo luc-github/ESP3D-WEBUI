@@ -25,11 +25,10 @@ import { useState, useEffect } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
-import { SettingsPage } from "./settings"
+import { SettingsPage, initApp } from "./settings"
 import { Header } from "./header"
 import { Notification } from "./notification"
 import { setLang, T } from "./translations"
-import { initApp } from "./uisettings"
 import { prefs } from "./settings"
 import { useStoreon } from "storeon/preact"
 
@@ -43,7 +42,7 @@ const Page = { none: 0, about: 1, dashboard: 2, settings: 3 }
  * Local variables
  *
  */
-let esp3dSettings //light esp3d settings (ESP800)
+let esp3dSettings = [] //light esp3d settings (ESP800)
 
 /*
  * Main page

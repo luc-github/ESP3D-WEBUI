@@ -52,6 +52,7 @@ export const Header = () => {
         showBanner = prefs.banner == "true" ? true : false
     }
     const { activePage } = useStoreon("activePage")
+    if (typeof esp3dSettings == "undefined") return
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
             <div

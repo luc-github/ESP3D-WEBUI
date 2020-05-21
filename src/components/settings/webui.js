@@ -21,8 +21,7 @@
 import { h } from "preact"
 import { setLang, T } from "../translations"
 import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
-import { Setting } from "../app"
-import { preferences, preferencesFileName, setPreferences } from "../uisettings"
+import { Setting, applyConfig } from "../app"
 import {
     SendCommand,
     cancelCurrentUpload,
@@ -34,12 +33,22 @@ import { useEffect } from "preact/hooks"
 const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
+import { setupWebSocket } from "../websocket"
 
 /*
  * Local variables
  *
  */
+let preferences
 let prefs
+let initdone = false
+
+/*
+ * Some constants
+ */
+const default_preferences =
+    '{"settings":{"language":"en","banner": "true","autoload" : "true"}}'
+const preferencesFileName = "preferences.json"
 
 /*
  * Apply Preferences
@@ -52,6 +61,34 @@ function updateUI() {
     loadLanguage(prefs.language)
     showDialog({ displayDialog: false, refreshPage: true })
     console.log("Update UI")
+}
+
+/*
+ * Function starting initialization
+ */
+function initApp() {
+    preferences = JSON.parse(default_preferences)
+    document.title = document.location.host
+    showDialog({ type: "loader" })
+    loadPreferences()
+}
+
+/*
+ * To copy new preferences
+ */
+function setPreferences(data) {
+    if (!data.settings) return false
+    preferences = data
+    return true
+}
+
+/*
+ * Load Preferences
+ */
+function loadPreferences() {
+    const url = "/preferences.json?" + Date.now()
+    SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
+    console.log("load preferences")
 }
 
 /*
@@ -87,12 +124,123 @@ function loadPreferencesError(errorCode, responseText) {
 }
 
 /*
- * Load Preferences
+ * Load language pack
  */
-function loadPreferences() {
-    const url = "/preferences.json?" + +"?" + Date.now()
-    SendGetHttp(url, loadPreferencesSuccess, loadPreferencesError)
-    console.log("load preferences")
+function loadLanguage(lang = "en") {
+    const url = "/" + lang + ".json" + "?" + Date.now()
+    if (lang == "en") {
+        loadLanguageSuccess("en")
+        return
+    }
+    SendGetHttp(url, loadLanguageSuccess, loadLanguageError)
+    console.log("load language file " + "/" + lang + ".json")
+}
+
+/*
+ * Load Language query success
+ */
+function loadLanguageSuccess(responseText) {
+    try {
+        if (responseText == "en") {
+            setLang("en")
+        } else {
+            let langressource = JSON.parse(responseText)
+            setLang(prefs.language, langressource)
+        }
+        if (initdone) {
+            updateState("language")
+            showDialog({ displayDialog: false, refreshPage: true })
+        } else {
+            initdone = true
+            loadConfig()
+        }
+    } catch (err) {
+        console.log("error")
+        console.error(responseText)
+        if (initdone) {
+            showDialog({ type: "error", numError: err, message: T("S7") })
+            setState("language", "error")
+        } else {
+            initdone = true
+            showDialog({
+                type: "error",
+                numError: err,
+                message: T("S7"),
+                next: loadConfig,
+            })
+        }
+    }
+}
+
+/*
+ * Load Language query error
+ */
+function loadLanguageError(errorCode, responseText) {
+    console.log("no valid /" + prefs.language + ".json.gz file, use default")
+    if (initdone) {
+        setState("language", "error")
+        showDialog({ type: "error", numError: errorCode, message: T("S67") })
+    } else {
+        initdone = true
+        showDialog({
+            type: "error",
+            numError: err,
+            message: T("S7"),
+            next: loadConfig,
+        })
+    }
+}
+
+/*
+ * Load Firmware settings
+ */
+function loadConfig() {
+    var d = new Date()
+    var PCtime =
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(d.getDate()).padStart(2, "0") +
+        "-" +
+        String(d.getHours()).padStart(2, "0") +
+        "-" +
+        String(d.getMinutes()).padStart(2, "0") +
+        "-" +
+        String(d.getSeconds()).padStart(2, "0")
+    const cmd = encodeURIComponent("[ESP800]" + "time=" + PCtime)
+    showDialog({ type: "loader", message: T("S1") })
+    console.log("load FW config")
+    SendCommand(cmd, loadConfigSuccess, loadConfigError)
+}
+
+/*
+ * Load Firmware settings query success
+ */
+function loadConfigSuccess(responseText) {
+    var data = {}
+    try {
+        data = JSON.parse(responseText)
+        applyConfig(data)
+        if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
+            setupWebSocket(
+                data.WebCommunication,
+                data.WebSocketIP,
+                data.WebSocketport
+            )
+        }
+    } catch (e) {
+        console.log("Parsing error:", e)
+        console.log(responseText)
+        showDialog({ type: "error", numError: e, message: T("S4") })
+    }
+}
+
+/*
+ * Load Firmware settings query error
+ */
+function loadConfigError(errorCode, responseText) {
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
 /*
@@ -410,47 +558,6 @@ const CheckboxControl = ({ entry, title, label }) => {
 }
 
 /*
- * Load Preferences
- */
-function loadLanguage(lang) {
-    const url = "/" + lang + ".json" + "?" + Date.now()
-    if (lang == "en") {
-        setLang("en")
-        updateState("language")
-        showDialog({ displayDialog: false, refreshPage: true })
-        return
-    }
-    SendGetHttp(url, loadLanguageSuccess, loadLanguageError)
-    console.log("load language file " + "/" + lang + ".json")
-}
-
-/*
- * Load Language query success
- */
-function loadLanguageSuccess(responseText) {
-    try {
-        let langressource = JSON.parse(responseText)
-        setLang(prefs.language, langressource)
-        updateState("language")
-        showDialog({ displayDialog: false, refreshPage: true })
-    } catch (err) {
-        console.log("error")
-        console.error(responseText)
-        showDialog({ type: "error", numError: err, message: T("S7") })
-        setState("language", "error")
-    }
-}
-
-/*
- * Load Language query error
- */
-function loadLanguageError(errorCode, responseText) {
-    console.log("no valid /" + prefs.language + ".json.gz file, use default")
-    setState("language", "error")
-    showDialog({ type: "error", numError: errorCode, message: T("S67") })
-}
-
-/*
  * Generate a select control
  */
 const LanguageSelection = () => {
@@ -601,4 +708,4 @@ const WebUISettings = ({ currentPage }) => {
     )
 }
 
-export { setcurrentprefs, prefs, WebUISettings }
+export { initApp, preferences, setcurrentprefs, prefs, WebUISettings }
