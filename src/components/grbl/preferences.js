@@ -23,6 +23,8 @@ import { T } from "../translations"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
 import { esp3dSettings } from "../app"
+import { showDialog } from "../dialog"
+
 //import {} from "preact-feather"
 
 /*
@@ -230,6 +232,33 @@ function defaultMachineValues(id) {
  *
  */
 const MachineUIPreferences = ({ preferences, prefs }) => {
+    const CheckboxControl = ({ entry, title, label }) => {
+        let ischecked = true
+        if (prefs && prefs[entry]) {
+            ischecked = prefs[entry] == "true" ? true : false
+        }
+        const toggleCheckbox = e => {
+            ischecked = e.target.checked
+            prefs[entry] = e.target.checked ? "true" : "false"
+            console.log(prefs)
+            showDialog({ displayDialog: false, refreshPage: true })
+        }
+        let id = entry + "-UI-checkbox"
+        useEffect(() => {
+            updateState(entry)
+        }, [prefs[entry]])
+        return (
+            <label class="checkbox-control" id={id} title={title}>
+                {label}
+                <input
+                    type="checkbox"
+                    checked={ischecked}
+                    onChange={toggleCheckbox}
+                />
+                <span class="checkmark"></span>
+            </label>
+        )
+    }
     preferencesSettings = preferences
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = defaultMachineValues("xyfeedrate")
@@ -247,47 +276,58 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
         prefs.cfeedrate = defaultMachineValues("cfeedrate")
     }
     return (
-        <div class="d-flex flex-column justify-content-center border p-2">
-            <MachineUIEntry
-                entry={prefs}
-                id="xyfeedrate"
-                label={T("G5").replace(
-                    "{axis}",
-                    esp3dSettings.NbAxis > 1 ? "XY" : "X"
-                )}
-                help={T("G6")}
-            />
-            <div class={esp3dSettings.NbAxis < 3 ? "d-none" : ""}>
-                <MachineUIEntry
-                    entry={prefs}
-                    id="zfeedrate"
-                    label={T("G5").replace("{axis}", "Z")}
-                    help={T("G6")}
+        <div class="card">
+            <div class="card-header">
+                <CheckboxControl
+                    entry="showjogpanel"
+                    title={T("S94")}
+                    label={T("S94")}
                 />
             </div>
-            <div class={esp3dSettings.NbAxis < 4 ? "d-none" : ""}>
+            <div
+                class={prefs["showjogpanel"] == "true" ? "card-body" : "d-none"}
+            >
                 <MachineUIEntry
                     entry={prefs}
-                    id="afeedrate"
-                    label={T("G5").replace("{axis}", "A")}
+                    id="xyfeedrate"
+                    label={T("G5").replace(
+                        "{axis}",
+                        esp3dSettings.NbAxis > 1 ? "XY" : "X"
+                    )}
                     help={T("G6")}
                 />
-            </div>
-            <div class={esp3dSettings.NbAxis < 5 ? "d-none" : ""}>
-                <MachineUIEntry
-                    entry={prefs}
-                    id="bfeedrate"
-                    label={T("G5").replace("{axis}", "B")}
-                    help={T("G6")}
-                />
-            </div>
-            <div class={esp3dSettings.NbAxis < 6 ? "d-none" : ""}>
-                <MachineUIEntry
-                    entry={prefs}
-                    id="cfeedrate"
-                    label={T("G5").replace("{axis}", "C")}
-                    help={T("G6")}
-                />
+                <div class={esp3dSettings.NbAxis < 3 ? "d-none" : ""}>
+                    <MachineUIEntry
+                        entry={prefs}
+                        id="zfeedrate"
+                        label={T("G5").replace("{axis}", "Z")}
+                        help={T("G6")}
+                    />
+                </div>
+                <div class={esp3dSettings.NbAxis < 4 ? "d-none" : ""}>
+                    <MachineUIEntry
+                        entry={prefs}
+                        id="afeedrate"
+                        label={T("G5").replace("{axis}", "A")}
+                        help={T("G6")}
+                    />
+                </div>
+                <div class={esp3dSettings.NbAxis < 5 ? "d-none" : ""}>
+                    <MachineUIEntry
+                        entry={prefs}
+                        id="bfeedrate"
+                        label={T("G5").replace("{axis}", "B")}
+                        help={T("G6")}
+                    />
+                </div>
+                <div class={esp3dSettings.NbAxis < 6 ? "d-none" : ""}>
+                    <MachineUIEntry
+                        entry={prefs}
+                        id="cfeedrate"
+                        label={T("G5").replace("{axis}", "C")}
+                        help={T("G6")}
+                    />
+                </div>
             </div>
         </div>
     )

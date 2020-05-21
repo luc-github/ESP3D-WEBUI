@@ -22,6 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
+import { showDialog } from "../dialog"
 //import {} from "preact-feather"
 
 /*
@@ -221,6 +222,33 @@ function defaultMachineValues(id) {
  *
  */
 const MachineUIPreferences = ({ preferences, prefs }) => {
+    const CheckboxControl = ({ entry, title, label }) => {
+        let ischecked = true
+        if (prefs && prefs[entry]) {
+            ischecked = prefs[entry] == "true" ? true : false
+        }
+        const toggleCheckbox = e => {
+            ischecked = e.target.checked
+            prefs[entry] = e.target.checked ? "true" : "false"
+            console.log(prefs)
+            showDialog({ displayDialog: false, refreshPage: true })
+        }
+        let id = entry + "-UI-checkbox"
+        useEffect(() => {
+            updateState(entry)
+        }, [prefs[entry]])
+        return (
+            <label class="checkbox-control" id={id} title={title}>
+                {label}
+                <input
+                    type="checkbox"
+                    checked={ischecked}
+                    onChange={toggleCheckbox}
+                />
+                <span class="checkmark"></span>
+            </label>
+        )
+    }
     preferencesSettings = preferences
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = defaultMachineValues("xyfeedrate")
@@ -235,31 +263,42 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
         prefs.ypos = defaultMachineValues("ypos")
     }
     return (
-        <div class="d-flex flex-column justify-content-center border rounded p-2">
-            <MachineUIEntry
-                entry={prefs}
-                id="xyfeedrate"
-                label={T("P10")}
-                help={T("P14")}
-            />
-            <MachineUIEntry
-                entry={prefs}
-                id="zfeedrate"
-                label={T("P11")}
-                help={T("P14")}
-            />
-            <MachineUIEntry
-                entry={prefs}
-                id="xpos"
-                label={T("P18")}
-                help={T("P16")}
-            />
-            <MachineUIEntry
-                entry={prefs}
-                id="ypos"
-                label={T("P19")}
-                help={T("P16")}
-            />
+        <div class="card">
+            <div class="card-header">
+                <CheckboxControl
+                    entry="showjogpanel"
+                    title={T("S94")}
+                    label={T("S94")}
+                />
+            </div>
+            <div
+                class={prefs["showjogpanel"] == "true" ? "card-body" : "d-none"}
+            >
+                <MachineUIEntry
+                    entry={prefs}
+                    id="xyfeedrate"
+                    label={T("P10")}
+                    help={T("P14")}
+                />
+                <MachineUIEntry
+                    entry={prefs}
+                    id="zfeedrate"
+                    label={T("P11")}
+                    help={T("P14")}
+                />
+                <MachineUIEntry
+                    entry={prefs}
+                    id="xpos"
+                    label={T("P18")}
+                    help={T("P16")}
+                />
+                <MachineUIEntry
+                    entry={prefs}
+                    id="ypos"
+                    label={T("P19")}
+                    help={T("P16")}
+                />
+            </div>
         </div>
     )
 }

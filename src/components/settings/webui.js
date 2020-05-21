@@ -47,18 +47,45 @@ let initdone = false
  * Some constants
  */
 const default_preferences =
-    '{"settings":{"language":"en","banner": "true","autoload" : "true"}}'
+    '{"settings":{"language":"en","banner": "true","autoload" : "true", "showterminalpanel":"true","openterminalonstart":"false","verbose":"true","autoscroll":"true","showfilespanel":"true", "showjogpanel":"true"}}'
 const preferencesFileName = "preferences.json"
 
 /*
  * Apply Preferences
  */
 function updateUI() {
+    const { dispatch } = useStoreon()
     let allkey = Object.keys(prefs)
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "default")
     }
+    if (typeof prefs.showterminalpanel == "undefined") {
+        prefs.showterminalpanel = "true"
+    }
+    if (typeof prefs.showjogpanel == "undefined") {
+        prefs.showjogpanel = "true"
+    }
+    if (typeof prefs.openterminalonstart == "undefined") {
+        prefs.openterminalonstart = "false"
+    }
+    if (typeof prefs.autoscroll == "undefined") {
+        prefs.autoscroll = "false"
+    }
+    if (typeof prefs.verbose == "undefined") {
+        prefs.verbose = "false"
+    }
+    if (typeof prefs.showfilespanel == "undefined") {
+        prefs.showfilespanel = "true"
+    }
     loadLanguage(prefs.language)
+    if (prefs.showterminalpanel == "true") {
+        dispatch(
+            "panel/showterminal",
+            prefs.openterminalonstart == "true" ? true : false
+        )
+    } else dispatch("panel/showterminal", false)
+    dispatch("setVerbose", prefs.verbose == "true" ? true : false)
+    dispatch("setAutoscroll", prefs.autoscroll == "true" ? true : false)
     showDialog({ displayDialog: false, refreshPage: true })
     console.log("Update UI")
 }
@@ -538,6 +565,7 @@ const CheckboxControl = ({ entry, title, label }) => {
     const toggleCheckbox = e => {
         ischecked = e.target.checked
         prefs[entry] = e.target.checked ? "true" : "false"
+        console.log(prefs)
         showDialog({ displayDialog: false, refreshPage: true })
     }
     let id = entry + "-UI-checkbox"
@@ -602,6 +630,8 @@ const LanguageSelection = () => {
     )
 }
 
+function initPreferences() {}
+
 function setcurrentprefs(preferences) {
     //lets make a copy
     prefs = JSON.parse(JSON.stringify(preferences.settings))
@@ -633,6 +663,59 @@ const WebUISettings = ({ currentPage }) => {
                         title={T("S66")}
                         label={T("S64")}
                     />
+                    <div class="p-2" />
+                    <div class="card">
+                        <div class="card-header">
+                            <CheckboxControl
+                                entry="showterminalpanel"
+                                title={T("S92")}
+                                label={T("S92")}
+                            />
+                        </div>
+                        <div
+                            class={
+                                prefs["showterminalpanel"] == "true"
+                                    ? "card-body"
+                                    : "d-none"
+                            }
+                        >
+                            <CheckboxControl
+                                entry="openterminalonstart"
+                                title={T("S93")}
+                                label={T("S93")}
+                            />
+                            <div class="p-1" />
+                            <CheckboxControl
+                                entry="verbose"
+                                title={T("S76")}
+                                label={T("S76")}
+                            />
+                            <CheckboxControl
+                                entry="autoscroll"
+                                title={T("S77")}
+                                label={T("S77")}
+                            />
+                            <div class="p-1" />
+                        </div>
+                    </div>
+                    <div class="p-2" />
+                    <div class="card">
+                        <div class="card-header">
+                            <CheckboxControl
+                                entry="showfilespanel"
+                                title={T("S95")}
+                                label={T("S95")}
+                            />
+                        </div>
+                        <div
+                            class={
+                                prefs["showfilespanel"] == "true"
+                                    ? "card-body"
+                                    : "d-none"
+                            }
+                        ></div>
+                    </div>
+                    <div class="p-2" />
                     <MachineUIPreferences
                         preferences={preferences.settings}
                         prefs={prefs}
@@ -708,4 +791,11 @@ const WebUISettings = ({ currentPage }) => {
     )
 }
 
-export { initApp, preferences, setcurrentprefs, prefs, WebUISettings }
+export {
+    initApp,
+    preferences,
+    CheckboxControl,
+    setcurrentprefs,
+    prefs,
+    WebUISettings,
+}

@@ -34,8 +34,8 @@ import { showDialog } from "../dialog"
 let monitorDataQuiet = []
 let monitorDataVerbose = []
 let currentOutput = []
-let verboseOutput = true
-let autoscrollOutput = true
+//let verboseOutput = true
+//let autoscrollOutput = true
 let pauseAutoscroll = false
 let commandHistory = []
 let commandHistoryIndex = -1
@@ -66,6 +66,7 @@ function updateTerminal(data) {
 function updateQuietTerminal(data) {
     if (!isVerboseData(data)) {
         monitorDataQuiet.push(<div>{data}</div>)
+        const { autoscrollOutput } = useStoreon("autoscrollOutput")
         if (autoscrollOutput && pauseAutoscroll) {
             if (monitorDataQuiet.length > 2 * MAX_LINES_MONITOR)
                 monitorDataQuiet = monitorDataQuiet.slice(-MAX_LINES_MONITOR)
@@ -81,6 +82,7 @@ function updateQuietTerminal(data) {
  */
 function updateVerboseTerminal(data) {
     monitorDataVerbose.push(<div>{data}</div>)
+    const { autoscrollOutput } = useStoreon("autoscrollOutput")
     if (autoscrollOutput && pauseAutoscroll) {
         if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
             monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
@@ -95,6 +97,7 @@ function updateVerboseTerminal(data) {
  */
 function updateContentType() {
     const { dispatch } = useStoreon()
+    const { verboseOutput } = useStoreon("verboseOutput")
     if (verboseOutput) currentOutput = monitorDataVerbose
     else currentOutput = monitorDataQuiet
     dispatch("monitor/set", currentOutput)
@@ -105,17 +108,17 @@ function updateContentType() {
  *
  */
 const TerminalControls = () => {
-    const [isVerbose, setVerbose] = useState(verboseOutput)
+    const { verboseOutput } = useStoreon("verboseOutput")
+    const { autoscrollOutput } = useStoreon("autoscrollOutput")
+    const { dispatch } = useStoreon()
     const toogleVerbose = e => {
-        verboseOutput = e.target.checked
-        setVerbose(e.target.checked)
+        dispatch("setVerbose", e.target.checked)
         updateContentType()
     }
     const [isAutoscroll, setAutoscroll] = useState(autoscrollOutput)
     const toogleAutoscroll = e => {
-        setAutoscroll(e.target.checked)
-        autoscrollOutput = e.target.checked
-        if (autoscrollOutput) pauseAutoscroll = false
+        dispatch("setAutoscroll", e.target.checked)
+        if (e.target.checked) pauseAutoscroll = false
         doAutoscroll()
     }
     const clearterminal = e => {
@@ -140,7 +143,7 @@ const TerminalControls = () => {
                         {T("S76")}
                         <input
                             type="checkbox"
-                            checked={isVerbose}
+                            checked={verboseOutput}
                             onChange={toogleVerbose}
                         />
                         <span class="checkmark"></span>
@@ -155,7 +158,7 @@ const TerminalControls = () => {
                         {T("S77")}
                         <input
                             type="checkbox"
-                            checked={isAutoscroll}
+                            checked={autoscrollOutput}
                             onChange={toogleAutoscroll}
                         />
                         <span class="checkmark"></span>
@@ -224,6 +227,7 @@ function sendCommand(cmd) {
  *
  */
 function doAutoscroll() {
+    const { autoscrollOutput } = useStoreon("autoscrollOutput")
     if (autoscrollOutput && !pauseAutoscroll) {
         document.getElementById(
             "outputTerminalWindow"

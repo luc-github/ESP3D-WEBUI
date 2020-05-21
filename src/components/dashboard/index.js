@@ -41,7 +41,13 @@ const DashboardToolBar = () => {
     }
     return (
         <div class="d-flex flex-row no_wrap">
-            <div class="p-1">
+            <div
+                class={
+                    preferences.settings.showterminalpanel == "true"
+                        ? "p-1"
+                        : "d-none"
+                }
+            >
                 <button
                     type="button"
                     class={
@@ -56,7 +62,13 @@ const DashboardToolBar = () => {
                     </span>
                 </button>
             </div>
-            <div class="p-1">
+            <div
+                class={
+                    preferences.settings.showfilespanel == "true"
+                        ? "p-1"
+                        : "d-none"
+                }
+            >
                 <button
                     type="button"
                     class={
