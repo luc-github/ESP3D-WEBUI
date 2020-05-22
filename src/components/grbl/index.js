@@ -740,7 +740,7 @@ const MachineSettings = ({ currentPage }) => {
             </div>
         )
     if (prefs && prefs.autoload) {
-        if (prefs.autoload == "true" && !isloaded) loadConfig()
+        if (prefs.autoload && !isloaded) loadConfig()
     }
     let displaylist = []
 

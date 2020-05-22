@@ -1,10 +1,18 @@
 {
  "settings": {
   "language": "en",
-  "banner": "true",
-  "autoload": "true",
+  "banner": true,
+  "autoload": true,
+  "showterminalpanel": true,
+  "openterminalonstart": false,
+  "verbose": true,
+  "autoscroll": true,
+  "showfilespanel": true,
+  "showjogpanel": true,
   "xyfeedrate": 100,
   "zfeedrate": 10,
+  "xpos": 100,
+  "ypos": 100,
   "afeedrate": 100,
   "bfeedrate": 100,
   "cfeedrate": 100

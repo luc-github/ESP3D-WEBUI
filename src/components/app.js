@@ -25,7 +25,7 @@ import { useState, useEffect } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
-import { SettingsPage, initApp } from "./settings"
+import { SettingsPage, initApp, preferences } from "./settings"
 import { Header } from "./header"
 import { Notification } from "./notification"
 import { setLang, T } from "./translations"
@@ -51,10 +51,7 @@ const Container = () => {
     const { notifificationBottom } = useStoreon("notifificationBottom")
     let style = "top:" + notifificationBottom + "px"
     return (
-        <div
-            class="espcontainer container-fluid row-fluid card card-low"
-            style={style}
-        >
+        <div class="espcontainer container-fluid row-fluid" style={style}>
             <AboutPage />
             <DashboardPage />
             <SettingsPage />
@@ -100,11 +97,20 @@ function App() {
         initApp()
     }, [])
     return (
-        <div class="full-height">
+        <div class="full-height bg-white">
             <DialogPage />
             <MainPage />
         </div>
     )
 }
 
-export { Setting, App, applyConfig, Page, esp3dSettings, prefs, updateTerminal }
+export {
+    Setting,
+    App,
+    applyConfig,
+    Page,
+    esp3dSettings,
+    prefs,
+    updateTerminal,
+    preferences,
+}

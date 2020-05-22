@@ -1037,7 +1037,7 @@ const OverrideSettingControl = () => {
             showDialog({ displayDialog: false, refreshPage: true })
         } else {
             listSettings = listOverloadSettings
-            if (listOverloadSettings.length == 0 && prefs.autoload == "true") {
+            if (listOverloadSettings.length == 0 && prefs.autoload) {
                 loadConfig()
             } else {
                 showDialog({ displayDialog: false, refreshPage: true })
@@ -1084,7 +1084,7 @@ const MachineSettings = ({ currentPage }) => {
             </div>
         )
     if (prefs && prefs.autoload) {
-        if (prefs.autoload == "true" && !isloaded) loadConfig()
+        if (prefs.autoload && !isloaded) loadConfig()
     }
     let displaylist = []
 

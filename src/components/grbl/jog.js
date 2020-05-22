@@ -32,8 +32,6 @@ import { showDialog } from "../dialog"
  * Local variables
  *
  */
-let lastSpeed = 100
-let currentSpeed = 100
 let currentFeedRate = []
 let hasError = []
 let jogDistance = 100
@@ -384,11 +382,7 @@ const JogPanel = ({ preferences }) => {
     if (esp3dSettings.NbAxis > 4) axisList.push(<option value="B">B</option>)
     if (esp3dSettings.NbAxis > 5) axisList.push(<option value="C">C</option>)
     return (
-        <div
-            class={
-                preferences.showjogpanel == "true" ? "p-2 panelCard" : "d-none"
-            }
-        >
+        <div class={preferences.showjogpanel ? "p-2 panelCard" : "d-none"}>
             <div class="d-flex flex-wrap justify-content-center p-2 border rounded">
                 <div class="d-flex flex-column justify-content-center">
                     <div class="border rounded">

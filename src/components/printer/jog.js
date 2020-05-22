@@ -383,7 +383,6 @@ const FeedRateInput = ({ entry, label, id }) => {
  *
  */
 const JogPanel = ({ preferences }) => {
-    //class={preferences.settings.showterminalpanel=="true"?"p-1":"d-none"
     const sendHomeCommand = e => {
         let cmd
         let id
@@ -738,11 +737,7 @@ const JogPanel = ({ preferences }) => {
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.zfeedrate
     return (
-        <div
-            class={
-                preferences.showjogpanel == "true" ? "p-2 panelCard" : "d-none"
-            }
-        >
+        <div class={preferences.showjogpanel ? "p-2 panelCard" : "d-none"}>
             <div class="p-2 border rounded">
                 <div class="show-low">
                     <div class="d-flex flex-row justify-content-center p-2">

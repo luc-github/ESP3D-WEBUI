@@ -263,7 +263,7 @@ export const AboutPage = ({ currentState }) => {
         browserInformation = getBrowserInformation()
     }
     if (prefs && prefs.autoload) {
-        if (prefs.autoload == "true" && !isloaded) loadStatus()
+        if (prefs.autoload && !isloaded) loadStatus()
     }
     return (
         <div class="card-body card-low">

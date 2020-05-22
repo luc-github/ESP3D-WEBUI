@@ -43,9 +43,7 @@ const DashboardToolBar = () => {
         <div class="d-flex flex-row no_wrap">
             <div
                 class={
-                    preferences.settings.showterminalpanel == "true"
-                        ? "p-1"
-                        : "d-none"
+                    preferences.settings.showterminalpanel ? "p-1" : "d-none"
                 }
             >
                 <button
@@ -62,13 +60,7 @@ const DashboardToolBar = () => {
                     </span>
                 </button>
             </div>
-            <div
-                class={
-                    preferences.settings.showfilespanel == "true"
-                        ? "p-1"
-                        : "d-none"
-                }
-            >
+            <div class={preferences.settings.showfilespanel ? "p-1" : "d-none"}>
                 <button
                     type="button"
                     class={
@@ -104,8 +96,6 @@ const DashboardPage = () => {
 
                 <JogPanel preferences={preferences.settings} />
             </div>
-            <br />
-            <br />
         </div>
     )
 }

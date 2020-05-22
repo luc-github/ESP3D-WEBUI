@@ -886,7 +886,7 @@ function importSettings() {
 export const Esp3DSettings = ({ currentPage }) => {
     if (currentPage != Setting.esp3d) return null
     if (prefs && prefs.autoload) {
-        if (prefs.autoload == "true" && !isloaded) loadSettings()
+        if (prefs.autoload && !isloaded) loadSettings()
     }
     const listSettings = []
     if (esp3dFWSettings.Settings) {

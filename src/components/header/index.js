@@ -47,10 +47,6 @@ function showSettings() {
  *
  */
 export const Header = () => {
-    let showBanner = true
-    if (prefs && prefs.banner) {
-        showBanner = prefs.banner == "true" ? true : false
-    }
     const { activePage } = useStoreon("activePage")
     if (typeof esp3dSettings == "undefined") return
     return (
@@ -89,7 +85,7 @@ export const Header = () => {
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
             </div>
             <ESP3DBanner
-                visible={showBanner}
+                visible={prefs.banner}
                 title={T("S15")}
                 text={T("S11")}
             />

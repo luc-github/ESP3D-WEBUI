@@ -23,14 +23,13 @@ import { T } from "../translations"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
-//import {} from "preact-feather"
+import { preferences, prefs } from "../app"
 
 /*
  * Local variables
  *
  */
 
-let preferencesSettings
 let hasError = []
 
 /*
@@ -51,12 +50,14 @@ function hasSettingError() {
 /*
  * check entry is valid
  */
-function checkValue(entry, id) {
+function checkValue(id) {
     const { dispatch } = useStoreon()
     let isvalid = true
-    if (entry[id].length == 0) isvalid = false
+    if (prefs[id] == null || isNaN(prefs[id])) {
+        isvalid = false
+    }
     if (id == "xyfeedrate" || id == "zfeedrate") {
-        if (entry[id] < 1) isvalid = false
+        if (prefs[id] < 1) isvalid = false
     }
     if (id == "xpos" || id == "ypos") {
     }
@@ -142,11 +143,11 @@ function setState(entry, state) {
 /*
  * Change state of control according context / check
  */
-function updateState(entry, index) {
+function updateState(index) {
     let state = "default"
     hasError[index] = false
-    if (entry[index] != preferencesSettings[index]) {
-        if (checkValue(entry, index)) {
+    if (prefs[index] != preferences.settings[index]) {
+        if (checkValue(index)) {
             state = "modified"
         } else {
             state = "error"
@@ -158,14 +159,14 @@ function updateState(entry, index) {
 /*
  * MachineUIEntry
  */
-const MachineUIEntry = ({ entry, id, label, help }) => {
+const MachineUIEntry = ({ id, label, help }) => {
     const onInput = e => {
-        entry[id] = e.target.value.trim()
-        updateState(entry, id)
+        prefs[id] = parseInt(e.target.value)
+        updateState(id)
     }
     useEffect(() => {
-        updateState(entry, id)
-    }, [entry[id]])
+        updateState(id)
+    }, [prefs[id]])
     return (
         <div class="p-2">
             <div class="input-group">
@@ -181,7 +182,7 @@ const MachineUIEntry = ({ entry, id, label, help }) => {
                     style="max-width:10em"
                     class="form-control rounded-right"
                     placeholder={T("S41")}
-                    value={entry[id]}
+                    value={prefs[id]}
                 />
                 <div class="input-group-append">
                     <span
@@ -202,6 +203,9 @@ const MachineUIEntry = ({ entry, id, label, help }) => {
     )
 }
 
+/*
+ * Default values for control
+ */
 function defaultMachineValues(id) {
     switch (id) {
         case "xyfeedrate":
@@ -218,38 +222,35 @@ function defaultMachineValues(id) {
 }
 
 /*
+ * CheckboxControl
+ */
+const CheckboxControl = ({ id, title, label }) => {
+    const toggleCheckbox = e => {
+        prefs[id] = e.target.checked
+        updateState(id)
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
+    useEffect(() => {
+        updateState(id)
+    }, [prefs[id]])
+    return (
+        <label class="checkbox-control" id={id + "-UI-checkbox"} title={title}>
+            {label}
+            <input
+                type="checkbox"
+                checked={prefs[id]}
+                onChange={toggleCheckbox}
+            />
+            <span class="checkmark"></span>
+        </label>
+    )
+}
+
+/*
  * Printer specific settings
  *
  */
-const MachineUIPreferences = ({ preferences, prefs }) => {
-    const CheckboxControl = ({ entry, title, label }) => {
-        let ischecked = true
-        if (prefs && prefs[entry]) {
-            ischecked = prefs[entry] == "true" ? true : false
-        }
-        const toggleCheckbox = e => {
-            ischecked = e.target.checked
-            prefs[entry] = e.target.checked ? "true" : "false"
-            console.log(prefs)
-            showDialog({ displayDialog: false, refreshPage: true })
-        }
-        let id = entry + "-UI-checkbox"
-        useEffect(() => {
-            updateState(entry)
-        }, [prefs[entry]])
-        return (
-            <label class="checkbox-control" id={id} title={title}>
-                {label}
-                <input
-                    type="checkbox"
-                    checked={ischecked}
-                    onChange={toggleCheckbox}
-                />
-                <span class="checkmark"></span>
-            </label>
-        )
-    }
-    preferencesSettings = preferences
+const MachineUIPreferences = () => {
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = defaultMachineValues("xyfeedrate")
     }
@@ -266,38 +267,24 @@ const MachineUIPreferences = ({ preferences, prefs }) => {
         <div class="card">
             <div class="card-header">
                 <CheckboxControl
-                    entry="showjogpanel"
+                    id="showjogpanel"
                     title={T("S94")}
                     label={T("S94")}
                 />
             </div>
-            <div
-                class={prefs["showjogpanel"] == "true" ? "card-body" : "d-none"}
-            >
+            <div class={prefs["showjogpanel"] ? "card-body" : "d-none"}>
                 <MachineUIEntry
-                    entry={prefs}
                     id="xyfeedrate"
                     label={T("P10")}
                     help={T("P14")}
                 />
                 <MachineUIEntry
-                    entry={prefs}
                     id="zfeedrate"
                     label={T("P11")}
                     help={T("P14")}
                 />
-                <MachineUIEntry
-                    entry={prefs}
-                    id="xpos"
-                    label={T("P18")}
-                    help={T("P16")}
-                />
-                <MachineUIEntry
-                    entry={prefs}
-                    id="ypos"
-                    label={T("P19")}
-                    help={T("P16")}
-                />
+                <MachineUIEntry id="xpos" label={T("P18")} help={T("P16")} />
+                <MachineUIEntry id="ypos" label={T("P19")} help={T("P16")} />
             </div>
         </div>
     )
