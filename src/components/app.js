@@ -66,7 +66,7 @@ const MainPage = () => {
     const { showPage } = useStoreon("showPage")
     if (showPage) {
         return (
-            <div class="full-height" id="mainwindow">
+            <div id="mainwindow">
                 <Header />
                 <Notification />
                 <Container />
