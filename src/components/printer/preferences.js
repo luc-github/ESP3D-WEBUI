@@ -40,6 +40,7 @@ function hasSettingError() {
         hasError["xyfeedrate"] ||
         hasError["zfeedrate"] ||
         hasError["xpos"] ||
+        hasError["filesfilter"] ||
         hasError["ypos"]
     ) {
         return true
@@ -53,13 +54,16 @@ function hasSettingError() {
 function checkValue(id) {
     const { dispatch } = useStoreon()
     let isvalid = true
-    if (prefs[id] == null || isNaN(prefs[id])) {
-        isvalid = false
-    }
-    if (id == "xyfeedrate" || id == "zfeedrate") {
-        if (prefs[id] < 1) isvalid = false
-    }
-    if (id == "xpos" || id == "ypos") {
+    if (id == "filesfilter" || id == "tftusb" || id == "tftsd") {
+    } else {
+        if (prefs[id] == null || isNaN(prefs[id])) {
+            isvalid = false
+        }
+        if (id == "xyfeedrate" || id == "zfeedrate") {
+            if (prefs[id] < 1) isvalid = false
+        }
+        if (id == "xpos" || id == "ypos") {
+        }
     }
     hasError[id] = !isvalid
     dispatch("error/set", hasSettingError())
@@ -159,9 +163,13 @@ function updateState(index) {
 /*
  * MachineUIEntry
  */
-const MachineUIEntry = ({ id, label, help }) => {
+const MachineUIEntry = ({ id, label, help, type }) => {
     const onInput = e => {
-        prefs[id] = parseInt(e.target.value)
+        if (type == "text") {
+            prefs[id] = e.target.value
+        } else {
+            prefs[id] = parseInt(e.target.value)
+        }
         updateState(id)
     }
     useEffect(() => {
@@ -178,7 +186,7 @@ const MachineUIEntry = ({ id, label, help }) => {
                 <input
                     id={id + "-UI-input"}
                     onInput={onInput}
-                    type="number"
+                    type={type}
                     style="max-width:10em"
                     class="form-control rounded-right"
                     placeholder={T("S41")}
@@ -204,20 +212,38 @@ const MachineUIEntry = ({ id, label, help }) => {
 }
 
 /*
- * Default values for control
+ * Init Default Machine Values
  */
-function defaultMachineValues(id) {
-    switch (id) {
-        case "xyfeedrate":
-            return 100
-        case "zfeedrate":
-            return 10
-        case "xpos":
-            return 100
-        case "ypos":
-            return 100
-        default:
-            return 0
+function initDefaultMachineValues() {
+    if (typeof preferences.settings.xyfeedrate == "undefined") {
+        preferences.settings.xyfeedrate = 1000
+    }
+    if (typeof preferences.settings.zfeedrate == "undefined") {
+        preferences.settings.zfeedrate = 100
+    }
+    if (typeof preferences.settings.filesfilter == "undefined") {
+        preferences.settings.filesfilter = "g;G;gco;GCO;gcode;GCODE"
+    }
+    if (typeof preferences.settings.tftsd == "undefined") {
+        preferences.settings.tftsd = false
+    }
+    if (typeof preferences.settings.tftusb == "undefined") {
+        preferences.settings.tftusb = false
+    }
+    if (typeof prefs.xyfeedrate == "undefined") {
+        prefs.xyfeedrate = preferences.settings.xyfeedrate
+    }
+    if (typeof prefs.zfeedrate == "undefined") {
+        prefs.zfeedrate = preferences.settings.zfeedrate
+    }
+    if (typeof prefs.filesfilter == "undefined") {
+        prefs.filesfilter = preferences.settings.filesfilter
+    }
+    if (typeof prefs.tftsd == "undefined") {
+        prefs.tftsd = preferences.settings.tftsd
+    }
+    if (typeof prefs.tftusb == "undefined") {
+        prefs.tftusb = preferences.settings.tftusb
     }
 }
 
@@ -247,22 +273,31 @@ const CheckboxControl = ({ id, title, label }) => {
 }
 
 /*
+ * Printer specific files settings
+ *
+ */
+const MachineFilesPreferences = () => {
+    return (
+        <div>
+            <MachineUIEntry
+                id="filesfilter"
+                label={T("S96")}
+                help={T("S97")}
+                type="text"
+            />
+            <div class="p-1" />
+            <CheckboxControl id="tftsd" title={T("P23")} label={T("P21")} />
+            <div class="p-1" />
+            <CheckboxControl id="tftusb" title={T("P24")} label={T("P22")} />
+        </div>
+    )
+}
+
+/*
  * Printer specific settings
  *
  */
 const MachineUIPreferences = () => {
-    if (typeof prefs.xyfeedrate == "undefined") {
-        prefs.xyfeedrate = defaultMachineValues("xyfeedrate")
-    }
-    if (typeof prefs.zfeedrate == "undefined") {
-        prefs.zfeedrate = defaultMachineValues("zfeedrate")
-    }
-    if (typeof prefs.xpos == "undefined") {
-        prefs.xpos = defaultMachineValues("xpos")
-    }
-    if (typeof prefs.ypos == "undefined") {
-        prefs.ypos = defaultMachineValues("ypos")
-    }
     return (
         <div class="card">
             <div class="card-header">
@@ -277,17 +312,33 @@ const MachineUIPreferences = () => {
                     id="xyfeedrate"
                     label={T("P10")}
                     help={T("P14")}
+                    type="number"
                 />
                 <MachineUIEntry
                     id="zfeedrate"
                     label={T("P11")}
                     help={T("P14")}
+                    type="number"
                 />
-                <MachineUIEntry id="xpos" label={T("P18")} help={T("P16")} />
-                <MachineUIEntry id="ypos" label={T("P19")} help={T("P16")} />
+                <MachineUIEntry
+                    id="xpos"
+                    label={T("P18")}
+                    help={T("P16")}
+                    type="number"
+                />
+                <MachineUIEntry
+                    id="ypos"
+                    label={T("P19")}
+                    help={T("P16")}
+                    type="number"
+                />
             </div>
         </div>
     )
 }
 
-export { MachineUIPreferences, defaultMachineValues }
+export {
+    MachineUIPreferences,
+    MachineFilesPreferences,
+    initDefaultMachineValues,
+}

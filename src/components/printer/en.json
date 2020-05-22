@@ -18,5 +18,9 @@
     "P17" : "Cannot get valid data",
     "P18" : "X prefered position",
     "P19" : "Y prefered position",
-    "P20" : "Move to: "
+    "P20" : "Move to: ",
+    "P21" : "TFT SD",
+    "P22" : "TFT USB",
+    "P23" : "TFT SD support",
+    "P24" : "TFT USB support"
 }

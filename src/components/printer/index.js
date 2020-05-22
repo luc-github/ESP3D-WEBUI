@@ -25,7 +25,11 @@ import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel, processFeedRate } from "./jog"
 import { FilesPanel } from "./files"
-import { MachineUIPreferences } from "./preferences"
+import {
+    MachineUIPreferences,
+    MachineFilesPreferences,
+    initDefaultMachineValues,
+} from "./preferences"
 import { Notifications } from "./notifications"
 import enLangRessourceExtra from "./en.json"
 import {
@@ -1194,6 +1198,8 @@ export {
     clearData,
     JogPanel,
     MachineUIPreferences,
+    MachineFilesPreferences,
+    initDefaultMachineValues,
     isVerboseData,
     Notifications,
     FilesPanel,

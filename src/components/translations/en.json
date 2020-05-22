@@ -94,6 +94,8 @@
     "S93" : "Show when starting",
     "S94" : "Show jog panel",
     "S95" : "Show files panel",
+    "S96" : "Extensions",
+    "S97" : "use ; to separate",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

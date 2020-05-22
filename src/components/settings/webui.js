@@ -30,7 +30,11 @@ import {
 } from "../http"
 import { useStoreon } from "storeon/preact"
 import { useEffect } from "preact/hooks"
-const { MachineUIPreferences } = require(`../${process.env.TARGET_ENV}`)
+const {
+    MachineUIPreferences,
+    MachineFilesPreferences,
+    initDefaultMachineValues,
+} = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
 import { setupWebSocket } from "../websocket"
@@ -55,6 +59,7 @@ const default_preferences =
     "verbose":true,\
     "autoscroll":true,\
     "showfilespanel":true,\
+    "openfilesonstart":false,\
     "showjogpanel":true}}'
 const preferencesFileName = "preferences.json"
 
@@ -85,10 +90,17 @@ function updateUI() {
     if (typeof prefs.showfilespanel == "undefined") {
         prefs.showfilespanel = true
     }
+    if (typeof prefs.openfilesonstart == "undefined") {
+        prefs.openterminalonstart = false
+    }
+    initDefaultMachineValues()
     loadLanguage(prefs.language)
     if (prefs.showterminalpanel == true) {
         dispatch("panel/showterminal", prefs.openterminalonstart)
     } else dispatch("panel/showterminal", false)
+    if (prefs.showfilespanel == true) {
+        dispatch("panel/showfiles", prefs.openfilesonstart)
+    } else dispatch("panel/showfiles", false)
     dispatch("setVerbose", prefs.verbose)
     dispatch("setAutoscroll", prefs.autoscroll)
     showDialog({ displayDialog: false, refreshPage: true })
@@ -711,13 +723,18 @@ const WebUISettings = ({ currentPage }) => {
                             class={
                                 prefs["showfilespanel"] ? "card-body" : "d-none"
                             }
-                        ></div>
+                        >
+                            <CheckboxControl
+                                entry="openfilesonstart"
+                                title={T("S93")}
+                                label={T("S93")}
+                            />
+                            <div class="p-1" />
+                            <MachineFilesPreferences />
+                        </div>
                     </div>
                     <div class="p-2" />
-                    <MachineUIPreferences
-                        preferences={preferences.settings}
-                        prefs={prefs}
-                    />
+                    <MachineUIPreferences />
                 </div>
             </center>
 

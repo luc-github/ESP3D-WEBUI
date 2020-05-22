@@ -94,7 +94,7 @@ const DashboardPage = () => {
                 <TerminalPanel />
                 <FilesPanel />
 
-                <JogPanel preferences={preferences.settings} />
+                <JogPanel />
             </div>
         </div>
     )

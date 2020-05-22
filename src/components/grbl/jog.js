@@ -21,12 +21,12 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { AlertCircle, Send, Home, Crosshair } from "preact-feather"
-import { defaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
-import { esp3dSettings } from "../app"
+import { esp3dSettings, preferences } from "../app"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
+import { initDefaultMachineValues } from "./preferences"
 
 /*
  * Local variables
@@ -127,7 +127,7 @@ function setState(index, state) {
  *
  */
 function checkValue(entry) {
-    if (entry.length == 0 || entry < 1) return false
+    if (isNaN(entry) || entry < 1) return false
     return true
 }
 
@@ -199,7 +199,7 @@ const FeedRateInput = ({ entry, label, id }) => {
  * Jog panel
  *
  */
-const JogPanel = ({ preferences }) => {
+const JogPanel = () => {
     const { axis } = useStoreon("axis")
     const sendHomeCommand = e => {
         let cmd
@@ -354,27 +354,18 @@ const JogPanel = ({ preferences }) => {
         const { dispatch } = useStoreon()
         dispatch("axis/set", e.target.value)
     }
+    initDefaultMachineValues()
 
-    if (typeof preferences.zfeedrate == "undefined")
-        preferences.zfeedrate = defaultMachineValues("zfeedrate")
-    if (typeof preferences.xyfeedrate == "undefined")
-        preferences.xyfeedrate = defaultMachineValues("xyfeedrate")
-    if (typeof preferences.afeedrate == "undefined")
-        preferences.afeedrate = defaultMachineValues("afeedrate")
-    if (typeof preferences.bfeedrate == "undefined")
-        preferences.bfeedrate = defaultMachineValues("bfeedrate")
-    if (typeof preferences.cfeedrate == "undefined")
-        preferences.cfeedrate = defaultMachineValues("cfeedrate")
     if (typeof currentFeedRate["xyfeedrate"] == "undefined")
-        currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
+        currentFeedRate["xyfeedrate"] = preferences.settings.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
-        currentFeedRate["zfeedrate"] = preferences.zfeedrate
+        currentFeedRate["zfeedrate"] = preferences.settings.zfeedrate
     if (typeof currentFeedRate["afeedrate"] == "undefined")
-        currentFeedRate["afeedrate"] = preferences.afeedrate
+        currentFeedRate["afeedrate"] = preferences.settings.afeedrate
     if (typeof currentFeedRate["bfeedrate"] == "undefined")
-        currentFeedRate["bfeedrate"] = preferences.bfeedrate
+        currentFeedRate["bfeedrate"] = preferences.settings.bfeedrate
     if (typeof currentFeedRate["cfeedrate"] == "undefined")
-        currentFeedRate["cfeedrate"] = preferences.cfeedrate
+        currentFeedRate["cfeedrate"] = preferences.settings.cfeedrate
     let allAxis = T("G3")
     let axisList = []
     if (esp3dSettings.NbAxis > 2) axisList.push(<option value="Z">Z</option>)
@@ -382,7 +373,11 @@ const JogPanel = ({ preferences }) => {
     if (esp3dSettings.NbAxis > 4) axisList.push(<option value="B">B</option>)
     if (esp3dSettings.NbAxis > 5) axisList.push(<option value="C">C</option>)
     return (
-        <div class={preferences.showjogpanel ? "p-2 panelCard" : "d-none"}>
+        <div
+            class={
+                preferences.settings.showjogpanel ? "p-2 panelCard" : "d-none"
+            }
+        >
             <div class="d-flex flex-wrap justify-content-center p-2 border rounded">
                 <div class="d-flex flex-column justify-content-center">
                     <div class="border rounded">

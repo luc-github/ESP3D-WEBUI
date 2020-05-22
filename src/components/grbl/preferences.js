@@ -43,7 +43,8 @@ function hasSettingError() {
         hasError["zfeedrate"] ||
         hasError["afeedrate"] ||
         hasError["bfeedrate"] ||
-        hasError["cfeedrate"]
+        hasError["cfeedrate"] ||
+        hasError["filesfilter"]
     ) {
         return true
     }
@@ -56,19 +57,21 @@ function hasSettingError() {
 function checkValue(id) {
     const { dispatch } = useStoreon()
     let isvalid = true
-    if (prefs[id] == null || isNaN(prefs[id])) {
-        isvalid = false
+    if (id == "filesfilter") {
+    } else {
+        if (prefs[id] == null || isNaN(prefs[id])) {
+            isvalid = false
+        }
+        if (
+            id == "xyfeedrate" ||
+            id == "zfeedrate" ||
+            id == "afeedrate" ||
+            id == "bfeedrate" ||
+            id == "cfeedrate"
+        ) {
+            if (prefs[id] < 1) isvalid = false
+        }
     }
-    if (
-        id == "xyfeedrate" ||
-        id == "zfeedrate" ||
-        id == "afeedrate" ||
-        id == "bfeedrate" ||
-        id == "cfeedrate"
-    ) {
-        if (prefs[id] < 1) isvalid = false
-    }
-
     hasError[id] = !isvalid
     dispatch("error/set", hasSettingError())
     return isvalid
@@ -154,6 +157,8 @@ function setState(entry, state) {
 function updateState(index) {
     let state = "default"
     hasError[index] = false
+    console.log(prefs[index])
+    console.log(preferences.settings[index])
     if (prefs[index] != preferences.settings[index]) {
         if (checkValue(index)) {
             state = "modified"
@@ -167,9 +172,13 @@ function updateState(index) {
 /*
  * MachineUIEntry
  */
-const MachineUIEntry = ({ id, label, help }) => {
+const MachineUIEntry = ({ id, label, help, type }) => {
     const onInput = e => {
-        prefs[id] = parseInt(e.target.value)
+        if (type == "text") {
+            prefs[id] = e.target.value
+        } else {
+            prefs[id] = parseInt(e.target.value)
+        }
         updateState(id)
     }
     useEffect(() => {
@@ -186,7 +195,7 @@ const MachineUIEntry = ({ id, label, help }) => {
                 <input
                     id={id + "-UI-input"}
                     onInput={onInput}
-                    type="number"
+                    type={type}
                     style="max-width:10em"
                     class="form-control"
                     placeholder={T("S41")}
@@ -211,20 +220,47 @@ const MachineUIEntry = ({ id, label, help }) => {
     )
 }
 
-function defaultMachineValues(id) {
-    switch (id) {
-        case "xyfeedrate":
-            return 100
-        case "zfeedrate":
-            return 10
-        case "afeedrate":
-            return 100
-        case "bfeedrate":
-            return 100
-        case "cfeedrate":
-            return 100
-        default:
-            return 0
+/*
+ * Init Default Machine Values
+ */
+function initDefaultMachineValues() {
+    if (typeof preferences.settings.xyfeedrate == "undefined") {
+        preferences.settings.xyfeedrate = 1000
+    }
+    if (typeof preferences.settings.zfeedrate == "undefined") {
+        preferences.settings.zfeedrate = 100
+    }
+    if (typeof preferences.settings.afeedrate == "undefined") {
+        preferences.settings.afeedrate = 1000
+    }
+    if (typeof preferences.settings.bfeedrate == "undefined") {
+        preferences.settings.bfeedrate = 1000
+    }
+    if (typeof preferences.settings.cfeedrate == "undefined") {
+        preferences.settings.cfeedrate = 1000
+    }
+    if (typeof preferences.settings.filesfilter == "undefined") {
+        preferences.settings.filesfilter =
+            "g;G;gco;GCO;gcode;GCODE;nc;NC;ngc;NCG;tap;TAP;txt;TXT"
+    }
+
+    if (typeof prefs.xyfeedrate == "undefined") {
+        prefs.xyfeedrate = preferences.settings.xyfeedrate
+    }
+    if (typeof prefs.zfeedrate == "undefined") {
+        prefs.zfeedrate = preferences.settings.zfeedrate
+    }
+    if (typeof prefs.afeedrate == "undefined") {
+        prefs.afeedrate = preferences.settings.afeedrate
+    }
+    if (typeof prefs.bfeedrate == "undefined") {
+        prefs.bfeedrate = preferences.settings.bfeedrate
+    }
+    if (typeof prefs.cfeedrate == "undefined") {
+        prefs.cfeedrate = preferences.settings.cfeedrate
+    }
+    if (typeof prefs.filesfilter == "undefined") {
+        prefs.filesfilter = preferences.settings.filesfilter
     }
 }
 
@@ -254,25 +290,27 @@ const CheckboxControl = ({ id, title, label }) => {
 }
 
 /*
+ * Printer specific files settings
+ *
+ */
+const MachineFilesPreferences = () => {
+    return (
+        <div>
+            <MachineUIEntry
+                id="filesfilter"
+                label={T("S96")}
+                help={T("S97")}
+                type="text"
+            />
+        </div>
+    )
+}
+
+/*
  * Printer specific settings
  *
  */
 const MachineUIPreferences = () => {
-    if (typeof prefs.xyfeedrate == "undefined") {
-        prefs.xyfeedrate = defaultMachineValues("xyfeedrate")
-    }
-    if (typeof prefs.zfeedrate == "undefined") {
-        prefs.zfeedrate = defaultMachineValues("zfeedrate")
-    }
-    if (typeof prefs.afeedrate == "undefined") {
-        prefs.afeedrate = defaultMachineValues("afeedrate")
-    }
-    if (typeof prefs.bfeedrate == "undefined") {
-        prefs.bfeedrate = defaultMachineValues("bfeedrate")
-    }
-    if (typeof prefs.cfeedrate == "undefined") {
-        prefs.cfeedrate = defaultMachineValues("cfeedrate")
-    }
     return (
         <div class="card">
             <div class="card-header">
@@ -290,12 +328,14 @@ const MachineUIPreferences = () => {
                         esp3dSettings.NbAxis > 1 ? "XY" : "X"
                     )}
                     help={T("G6")}
+                    type="number"
                 />
                 <div class={esp3dSettings.NbAxis < 3 ? "d-none" : ""}>
                     <MachineUIEntry
                         id="zfeedrate"
                         label={T("G5").replace("{axis}", "Z")}
                         help={T("G6")}
+                        type="number"
                     />
                 </div>
                 <div class={esp3dSettings.NbAxis < 4 ? "d-none" : ""}>
@@ -303,6 +343,7 @@ const MachineUIPreferences = () => {
                         id="afeedrate"
                         label={T("G5").replace("{axis}", "A")}
                         help={T("G6")}
+                        type="number"
                     />
                 </div>
                 <div class={esp3dSettings.NbAxis < 5 ? "d-none" : ""}>
@@ -310,6 +351,7 @@ const MachineUIPreferences = () => {
                         id="bfeedrate"
                         label={T("G5").replace("{axis}", "B")}
                         help={T("G6")}
+                        type="number"
                     />
                 </div>
                 <div class={esp3dSettings.NbAxis < 6 ? "d-none" : ""}>
@@ -317,6 +359,7 @@ const MachineUIPreferences = () => {
                         id="cfeedrate"
                         label={T("G5").replace("{axis}", "C")}
                         help={T("G6")}
+                        type="number"
                     />
                 </div>
             </div>
@@ -324,4 +367,8 @@ const MachineUIPreferences = () => {
     )
 }
 
-export { MachineUIPreferences, defaultMachineValues }
+export {
+    MachineUIPreferences,
+    MachineFilesPreferences,
+    initDefaultMachineValues,
+}

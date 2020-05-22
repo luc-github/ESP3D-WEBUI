@@ -28,7 +28,8 @@ import {
     Home,
     Crosshair,
 } from "preact-feather"
-import { defaultMachineValues } from "./preferences"
+import { preferences } from "../app"
+import { initDefaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -382,7 +383,7 @@ const FeedRateInput = ({ entry, label, id }) => {
  * Jog panel
  *
  */
-const JogPanel = ({ preferences }) => {
+const JogPanel = () => {
     const sendHomeCommand = e => {
         let cmd
         let id
@@ -584,9 +585,9 @@ const JogPanel = ({ preferences }) => {
         }
         let cmd =
             "G1 X" +
-            preferences.xpos +
+            preferences.settings.xpos +
             " Y" +
-            preferences.ypos +
+            preferences.settings.ypos +
             " F" +
             currentFeedRate["xyfeedrate"]
         SendCommand(encodeURIComponent(cmd), null, sendCommandError)
@@ -723,21 +724,18 @@ const JogPanel = ({ preferences }) => {
     const disableMotor = e => {
         SendCommand("M84", null, sendCommandError)
     }
+    initDefaultMachineValues()
 
-    if (typeof preferences.zfeedrate == "undefined")
-        preferences.zfeedrate = defaultMachineValues("zfeedrate")
-    if (typeof preferences.xyfeedrate == "undefined")
-        preferences.xyfeedrate = defaultMachineValues("xyfeedrate")
-    if (typeof preferences.xpos == "undefined")
-        preferences.xpos = defaultMachineValues("xpos")
-    if (typeof preferences.ypos == "undefined")
-        preferences.ypos = defaultMachineValues("ypos")
     if (typeof currentFeedRate["xyfeedrate"] == "undefined")
-        currentFeedRate["xyfeedrate"] = preferences.xyfeedrate
+        currentFeedRate["xyfeedrate"] = preferences.settings.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
-        currentFeedRate["zfeedrate"] = preferences.zfeedrate
+        currentFeedRate["zfeedrate"] = preferences.settings.zfeedrate
     return (
-        <div class={preferences.showjogpanel ? "p-2 panelCard" : "d-none"}>
+        <div
+            class={
+                preferences.settings.showjogpanel ? "p-2 panelCard" : "d-none"
+            }
+        >
             <div class="p-2 border rounded">
                 <div class="show-low">
                     <div class="d-flex flex-row justify-content-center p-2">
@@ -1393,9 +1391,9 @@ const JogPanel = ({ preferences }) => {
                         >
                             <title>
                                 {T("P20") +
-                                    preferences.xpos +
+                                    preferences.settings.xpos +
                                     "," +
-                                    preferences.ypos}
+                                    preferences.settings.ypos}
                             </title>
                             <circle
                                 class="std"
