@@ -141,7 +141,6 @@ function loadPreferences() {
 function loadPreferencesSuccess(responseText) {
     try {
         let pref = JSON.parse(responseText)
-        console.log(pref)
         if (setPreferences(pref)) {
             prefs = JSON.parse(JSON.stringify(preferences.settings))
             updateUI()
@@ -577,7 +576,6 @@ function updateState(entry) {
 const CheckboxControl = ({ entry, title, label }) => {
     const toggleCheckbox = e => {
         prefs[entry] = e.target.checked
-        console.log(prefs)
         showDialog({ displayDialog: false, refreshPage: true })
     }
     let id = entry + "-UI-checkbox"
