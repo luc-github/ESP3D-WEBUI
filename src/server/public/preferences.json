@@ -6,7 +6,7 @@
   "showterminalpanel": true,
   "openterminalonstart": false,
   "verbose": true,
-  "autoscroll": false,
+  "autoscroll": true,
   "showfilespanel": true,
   "showjogpanel": true,
   "xyfeedrate": 100,

@@ -17,7 +17,12 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
+// Must be the first import
+if (process.env.NODE_ENV === "development") {
+    // Must use require here as import statements are only allowed
+    // to exist at the top of a file.
+    require("preact/debug")
+}
 import { h, render } from "preact"
 import { App } from "./components/app"
 const { store } = require(`./components/${process.env.TARGET_ENV}/store`)
