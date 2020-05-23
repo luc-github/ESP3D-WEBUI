@@ -733,7 +733,9 @@ const JogPanel = () => {
     return (
         <div
             class={
-                preferences.settings.showjogpanel ? "p-2 panelCard w-100" : "d-none"
+                preferences.settings.showjogpanel
+                    ? "p-2 panelCard w-100"
+                    : "d-none"
             }
         >
             <div class="p-2 border rounded card-noborder-low">

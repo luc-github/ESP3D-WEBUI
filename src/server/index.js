@@ -123,6 +123,7 @@ app.get("/command", function(req, res) {
         return
     }
     if (url.indexOf("M105") != -1) {
+        console.info("M105 detected")
         if (url.indexOf("M105%20ON") != -1) {
             if (tempInterval == null) {
                 tempInterval = setInterval(function() {

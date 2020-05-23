@@ -75,8 +75,8 @@ const FilesTypeSelector = () => {
     optionsList.push(<option value="SD">SD</option>)
     //secondary serial or direct ext can be direct or serial TBD
     //optionsList.push(<option value="SDext">SD2</option>)
-    if (prefs.tftsd)optionsList.push(<option value="TFTSD">TFT SD</option>)
-    if (prefs.tftusb)optionsList.push(<option value="TFTUSB">TFT USB</option>)
+    if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
+    if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)
     return (
         <div>
             <select
