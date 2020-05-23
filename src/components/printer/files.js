@@ -71,10 +71,12 @@ const FilesTypeSelector = () => {
         refreshFileList()
     }
     optionsList.push(<option value="FS">ESP</option>)
+    //direct or serial (sd is serial on smoothieware
     optionsList.push(<option value="SD">SD</option>)
-    optionsList.push(<option value="SD2">SD2</option>)
-    optionsList.push(<option value="TFTSD">TFT SD</option>)
-    optionsList.push(<option value="TFTUSB">TFT USB</option>)
+    //secondary serial or direct ext can be direct or serial TBD
+    //optionsList.push(<option value="SDext">SD2</option>)
+    if (prefs.tftsd)optionsList.push(<option value="TFTSD">TFT SD</option>)
+    if (prefs.tftusb)optionsList.push(<option value="TFTUSB">TFT USB</option>)
     return (
         <div>
             <select
@@ -190,7 +192,7 @@ const FilesPanel = () => {
                 <div class="border rounded p-2 panelCard">
                     <div class="w-100">
                         <FilesControls />
-                        <div class="card h-100">
+                        <div class="card filespanel">
                             <div class="card-body">{filesList}</div>
                             <div class="card-footer">{filesStatus}</div>
                         </div>

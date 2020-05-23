@@ -282,6 +282,12 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     transform: rotate(0.25turn);
 }
 
+.filespanel{
+
+}
+.panelCard {
+    }
+
 @include media-breakpoint-up(xs) {
     .tshow-low {
         display: none !important;
@@ -303,6 +309,10 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .panelCard {
         max-width: 34rem;
     }
+    .filespanel{
+    min-height:21.4rem;
+    max-height:21.4rem;
+}
 }
 @include media-breakpoint-down(xs) {
     .thide-low,
@@ -329,6 +339,9 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
         max-height: 200px;
         min-height: 200px;
     }
-    .panelCard {
-    }
+    .filespanel{
+    min-height:15rem;
+    max-height:154rem;
+}
+    
 }

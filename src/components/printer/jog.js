@@ -733,10 +733,10 @@ const JogPanel = () => {
     return (
         <div
             class={
-                preferences.settings.showjogpanel ? "p-2 panelCard" : "d-none"
+                preferences.settings.showjogpanel ? "p-2 panelCard w-100" : "d-none"
             }
         >
-            <div class="p-2 border rounded">
+            <div class="p-2 border rounded card-noborder-low">
                 <div class="show-low">
                     <div class="d-flex flex-row justify-content-center p-2">
                         <div class="d-flex flex-column justify-content-center border rounded">
@@ -910,13 +910,12 @@ const JogPanel = () => {
                         </div>
                     </div>
 
-                    <div class="d-flex flex-row justify-content-center">
+                    <div class="d-flex flex-row justify-content-around">
                         <div class="p-2">
                             <button
                                 class="btn btn-default"
                                 id="HomeAll"
                                 onclick={sendHomeCommand}
-                                style="width:12rem"
                             >
                                 <span class="no-pointer">
                                     {" "}
