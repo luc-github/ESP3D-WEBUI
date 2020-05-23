@@ -11,8 +11,6 @@ export default store => {
         notifificationBottom: "50px",
         filesList: [],
         filesStatus: "",
-        verboseOutput: true,
-        autoscrollOutput: true,
     }))
 
     store.on("monitor/set", ({ content }, newcontent) => {
@@ -47,11 +45,5 @@ export default store => {
     })
     store.on("setFilesStatus", ({ filesStatus }, newcontent) => {
         return { filesStatus: newcontent }
-    })
-    store.on("setVerbose", ({ verboseOutput }, newstate) => {
-        return { verboseOutput: newstate }
-    })
-    store.on("setAutoscroll", ({ autoscrollOutput }, newstate) => {
-        return { autoscrollOutput: newstate }
     })
 }

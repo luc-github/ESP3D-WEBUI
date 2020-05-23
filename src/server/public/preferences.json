@@ -6,7 +6,7 @@
   "showterminalpanel": true,
   "openterminalonstart": false,
   "verbose": true,
-  "autoscroll": true,
+  "autoscroll": false,
   "showfilespanel": true,
   "showjogpanel": true,
   "xyfeedrate": 100,
@@ -15,6 +15,9 @@
   "ypos": 100,
   "afeedrate": 100,
   "bfeedrate": 100,
-  "cfeedrate": 100
+  "cfeedrate": 100,
+  "filesfilter": "g;G;gco;GCO;gcode;GCODE",
+  "tftsd": false,
+  "tftusb": false
  }
 }

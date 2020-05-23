@@ -101,8 +101,6 @@ function updateUI() {
     if (prefs.showfilespanel == true) {
         dispatch("panel/showfiles", prefs.openfilesonstart)
     } else dispatch("panel/showfiles", false)
-    dispatch("setVerbose", prefs.verbose)
-    dispatch("setAutoscroll", prefs.autoscroll)
     showDialog({ displayDialog: false, refreshPage: true })
     console.log("Update UI")
 }
