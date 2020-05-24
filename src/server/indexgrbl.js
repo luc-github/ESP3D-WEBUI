@@ -476,6 +476,7 @@ function fileSizeString(size) {
 
 function filesList(mypath) {
     let res = '{"files":['
+    let nb = 0
     let totalused = getTotalSize(__dirname + "/public")
     let total = 1.31 * 1024 * 1024
     fs.readdirSync(__dirname + "/public" + mypath).forEach(fileelement => {
@@ -485,7 +486,9 @@ function filesList(mypath) {
         if (fst.isFile()) {
             fsize = fileSizeString(fst.size)
         }
+        if (nb > 0) res += ","
         res += '{"name":"' + fileelement + '","size":"' + fsize + '"}'
+        nb++
     })
     res +=
         '],"path":"' +

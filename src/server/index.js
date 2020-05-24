@@ -1152,22 +1152,31 @@ function fileSizeString(size) {
 
 function filesList(mypath) {
     let res = '{"files":['
+    let nb = 0
     let totalused = getTotalSize(__dirname + "/public")
     let total = 1.31 * 1024 * 1024
     fs.readdirSync(__dirname + "/public" + mypath).forEach(fileelement => {
-        let fst = fs.statSync(__dirname + "/public" + mypath + fileelement)
+        let fst = fs.statSync(
+            __dirname +
+                "/public" +
+                mypath +
+                (mypath.length > 0 ? "/" : "") +
+                fileelement
+        )
         let fsize = -1
 
         if (fst.isFile()) {
             fsize = fileSizeString(fst.size)
         }
+        if (nb > 0) res += ","
         res += '{"name":"' + fileelement + '","size":"' + fsize + '"}'
+        nb++
     })
     res +=
         '],"path":"' +
         mypath +
         '","occupation":"' +
-        (totalused / total).toFixed(0) +
+        ((100 * totalused) / total).toFixed(0) +
         '","status":"ok","total":"' +
         fileSizeString(total) +
         '","used":"' +
@@ -1204,18 +1213,79 @@ const getTotalSize = function(directoryPath) {
     return totalSize
 }
 
+function deleteFolderRecursive(path) {
+    if (fs.existsSync(path) && fs.lstatSync(path).isDirectory()) {
+        fs.readdirSync(path).forEach(function(file, index) {
+            var curPath = path + "/" + file
+
+            if (fs.lstatSync(curPath).isDirectory()) {
+                // recurse
+                deleteFolderRecursive(curPath)
+            } else {
+                // delete file
+                fs.unlinkSync(curPath)
+            }
+        })
+
+        console.log(`Deleting directory "${path}"...`)
+        if (fs.existsSync(path)) fs.rmdirSync(path)
+    } else console.log(`No directory "${path}"...`)
+}
+
 app.all("/updatefw", function(req, res) {
     res.send("ok")
 })
 
 app.all("/files", function(req, res) {
     let mypath = req.query.path
-    if (typeof mypath == "undefined") mypath = "/"
+    var url = req.originalUrl
+
+    if (url.indexOf("action=deletedir") != -1) {
+        let filename = req.query.filename
+        let filepath =
+            __dirname +
+            "/public" +
+            mypath +
+            (mypath == "/" ? "" : "/") +
+            filename
+        console.log("delete directory " + filepath)
+        deleteFolderRecursive(filepath)
+        fs.readdirSync(mypath)
+    } else if (url.indexOf("action=delete") != -1) {
+        let filename = req.query.filename
+        let filepath =
+            __dirname +
+            "/public" +
+            mypath +
+            (mypath == "/" ? "" : "/") +
+            filename
+        fs.unlinkSync(filepath)
+        console.log("delete file " + filepath)
+    }
+    if (url.indexOf("action=createdir") != -1) {
+        let filename = req.query.filename
+        let filepath =
+            __dirname +
+            "/public" +
+            mypath +
+            (mypath == "/" ? "" : "/") +
+            filename
+        fs.mkdirSync(filepath)
+        console.log("new directory " + filepath)
+    }
+    if (typeof mypath == "undefined") {
+        if (typeof req.body.path == "undefined") {
+            console.log("path is not defined")
+            mypath = "/"
+        } else {
+            mypath = req.body.path + "/"
+        }
+    }
+    console.log("path is " + mypath)
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.send(filesList(mypath))
     }
     let myFile = req.files.myfile
-
     if (typeof myFile.length == "undefined") {
         console.log("one files")
         myFile.mv(__dirname + "/public" + mypath + myFile.name, function(err) {
@@ -1224,11 +1294,13 @@ app.all("/files", function(req, res) {
     } else {
         console.log(myFile.length + " files")
         for (let i = 0; i < myFile.length; i++) {
-            myFile[i].mv(__dirname + "/public/" + myFile[i].name, function(
-                err
-            ) {
-                if (err) return res.status(500).send(err)
-            })
+            console.log(__dirname + "/public/" + mypath + myFile[i].name)
+            myFile[i].mv(
+                __dirname + "/public/" + mypath + myFile[i].name,
+                function(err) {
+                    if (err) return res.status(500).send(err)
+                }
+            )
         }
     }
     res.send(filesList(mypath))

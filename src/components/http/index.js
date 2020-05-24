@@ -130,7 +130,7 @@ function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
     if (typeof id != "undefined") {
         cmd_id = id
         if (typeof max_id != "undefined") cmd_max_id = max_id
-        for (p = 0; p < httpCommandList.length; p++) {
+        for (let p = 0; p < httpCommandList.length; p++) {
             if (httpCommandList[p].id == cmd_id) {
                 cmd_max_id--
             }
@@ -175,7 +175,7 @@ function SendPostHttp(
     if (typeof id != "undefined") {
         cmd_id = id
         if (typeof max_id != "undefined") cmd_max_id = max_id
-        for (p = 0; p < httpCommandList.length; p++) {
+        for (let p = 0; p < httpCommandList.length; p++) {
             if (httpCommandList[p].id == cmd_id) {
                 cmd_max_id--
             }

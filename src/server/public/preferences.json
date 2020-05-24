@@ -17,7 +17,8 @@
   "bfeedrate": 100,
   "cfeedrate": 100,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
-  "tftsd": false,
-  "tftusb": false
+  "tftsd": true,
+  "tftusb": true,
+  "openfilesonstart": true
  }
 }
