@@ -106,6 +106,7 @@
     "S105" : "Type directory name",
     "S106" : "Create",
     "S107" : "Destination",
+    "S108" : "Downloading...",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

@@ -441,7 +441,6 @@ function savePreferences() {
         type: "progress",
         title: T("S32"),
         button1text: T("S28"),
-        button1text: T("S28"),
         next: cancelUpload,
         progress: 0,
     })

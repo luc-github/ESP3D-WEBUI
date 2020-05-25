@@ -172,6 +172,63 @@ function processDelete() {
 }
 
 /*
+ * Close dialog
+ *
+ */
+function closeDialog() {
+    showDialog({ displayDialog: false })
+}
+
+/*
+ * Upload sucess
+ *
+ */
+function successDownload(response) {
+    updateProgress({ progress: 100 })
+
+    var file = new Blob([response], { type: "application/octet-stream" })
+    if (window.navigator.msSaveOrOpenBlob)
+        // IE10+
+        window.navigator.msSaveOrOpenBlob(file, processingEntry.name)
+    else {
+        // Others
+        let a = document.createElement("a"),
+            url = URL.createObjectURL(file)
+        a.href = url
+        a.download = processingEntry.name
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function() {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
+    setTimeout(closeDialog, 1000)
+}
+
+/*
+ * Cancel upload silently
+ * e.g: user pressed cancel before upload
+ */
+function cancelDownload() {
+    cancelCurrentUpload()
+    showDialog({ displayDialog: false })
+}
+
+/*
+ * Download failed
+ *
+ */
+function errorDownload(errorCode, response) {
+    console.log("error upload code : " + lastError.code + " " + errorCode)
+    clearUploadInformation()
+    if (!lastError.code && errorCode == 0) {
+        cancelCurrentUpload(errorCode, response)
+    }
+    showDialog({ type: "error", numError: errorCode, message: T("S103") })
+}
+
+/*
  * File List item for file or directory
  */
 const FileEntry = ({ entry, pos }) => {
@@ -219,6 +276,23 @@ const FileEntry = ({ entry, pos }) => {
             (currentPath[currentFilesType] == "/" ? "" : "/") +
             entry.name
         console.log("download " + filename)
+        processingEntry = entry
+        showDialog({
+            type: "progress",
+            title: T("S108"),
+            message: <div class="p-1">{entry.name}</div>,
+            button1text: T("S28"),
+            next: cancelUpload,
+            progress: 0,
+        })
+        SendGetHttp(
+            filename,
+            successDownload,
+            errorDownload,
+            progressAction,
+            "download",
+            1
+        )
     }
 
     if (entry.size != -1)
@@ -279,7 +353,6 @@ function buildFilesList(data) {
         let newpath = currentPath[currentFilesType].substring(0, pos)
         if (newpath.length == 0) newpath = "/"
         currentPath[currentFilesType] = newpath
-        console.log(currentPath[currentFilesType])
         refreshFilesList()
     }
     //add up directory command
@@ -373,7 +446,6 @@ function buildStatus(data) {
  * Handle query success
  */
 function refreshFilesListSuccess(responseText) {
-    console.log(responseText)
     try {
         switch (currentFilesType) {
             case "FS":
@@ -426,7 +498,6 @@ function refreshFilesList() {
             dispatch("setFilesStatus", [])
             showDialog({ displayDialog: false })
     }
-    console.log("refresh " + currentFilesType)
 }
 
 /*
@@ -434,7 +505,6 @@ function refreshFilesList() {
  */
 function processCreateDir() {
     if (processingEntry.length > 0) {
-        console.log("Create dir " + processingEntry)
         let cmd
         showDialog({ type: "loader", message: T("S1") })
         switch (currentFilesType) {
@@ -557,10 +627,8 @@ function clickUpload() {
  *
  */
 function PrepareUpload() {
-    console.log("Now uploading to " + currentPath[currentFilesType])
     document.getElementById("uploadFilesControl").click()
     document.getElementById("uploadFilesControl").onchange = () => {
-        console.log("content changed")
         uploadFiles = document.getElementById("uploadFilesControl").files
         let fileList = []
         let message = []
@@ -580,7 +648,6 @@ function PrepareUpload() {
                 </div>
             </center>
         )
-        //todo open dialog to confirm
         showDialog({
             type: "confirmation",
             message: message,
@@ -598,7 +665,6 @@ function PrepareUpload() {
  */
 function clearUploadInformation() {
     if (document.getElementById("uploadFilesControl")) {
-        console.log("clear upload info")
         document.getElementById("uploadFilesControl").value = ""
     }
 }
@@ -618,7 +684,6 @@ function cancelUpload() {
  *
  */
 function processUpload() {
-    console.log("Now uploading to " + currentPath[currentFilesType])
     var formData = new FormData()
     var url = pathUpload
     formData.append("path", currentPath[currentFilesType])
@@ -646,7 +711,7 @@ function processUpload() {
                 file.name
         )
     }
-    SendPostHttp(url, formData, successUpload, errorUpload, progressUpload)
+    SendPostHttp(url, formData, successUpload, errorUpload, progressAction)
 }
 
 /*
@@ -664,7 +729,6 @@ function finalizeUpload() {
  */
 function successUpload(response) {
     updateProgress({ progress: 100 })
-    console.log("success wait 1s")
     setTimeout(finalizeUpload, 2000)
 }
 
@@ -684,7 +748,7 @@ function errorUpload(errorCode, response) {
  * Upload progress
  *
  */
-function progressUpload(oEvent) {
+function progressAction(oEvent) {
     if (oEvent.lengthComputable) {
         var percentComplete = (oEvent.loaded / oEvent.total) * 100
         console.log(percentComplete.toFixed(0) + "%")
