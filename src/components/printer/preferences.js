@@ -221,6 +221,12 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.zfeedrate == "undefined") {
         preferences.settings.zfeedrate = 100
     }
+    if (typeof preferences.settings.xpos == "undefined") {
+        preferences.settings.xpos = 100
+    }
+    if (typeof preferences.settings.ypos == "undefined") {
+        preferences.settings.ypos = 100
+    }
     if (typeof preferences.settings.filesfilter == "undefined") {
         preferences.settings.filesfilter = "g;G;gco;GCO;gcode;GCODE"
     }
@@ -232,6 +238,12 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = preferences.settings.xyfeedrate
+    }
+    if (typeof prefs.xpos == "undefined") {
+        prefs.xpos = preferences.settings.xpos
+    }
+    if (typeof prefs.ypos == "undefined") {
+        prefs.ypos = preferences.settings.ypos
     }
     if (typeof prefs.zfeedrate == "undefined") {
         prefs.zfeedrate = preferences.settings.zfeedrate
