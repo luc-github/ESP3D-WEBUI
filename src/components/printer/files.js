@@ -552,7 +552,10 @@ function PrepareUpload() {
                 <div style="text-align: left; display: inline-block; overflow: hidden;text-overflow: ellipsis;">
                     <ul>{fileList}</ul>
                 </div>
-                <div>{T("S107")}:<span class="p-1"/>{currentPath[currentFilesType]}</div>
+                <div>
+                    {T("S107")}:<span class="p-1" />
+                    {currentPath[currentFilesType]}
+                </div>
             </center>
         )
         //todo open dialog to confirm
@@ -606,13 +609,19 @@ function processUpload() {
     })
     for (var i = 0; i < uploadFiles.length; i++) {
         var file = uploadFiles[i]
-        var arg = currentPath[currentFilesType] +(currentPath[currentFilesType] == "/" ? "" : "/") + file.name + "S"
+        var arg =
+            currentPath[currentFilesType] +
+            (currentPath[currentFilesType] == "/" ? "" : "/") +
+            file.name +
+            "S"
         //append file size first to check updload is complete
         formData.append(arg, file.size)
         formData.append(
             "myfile",
             file,
-            currentPath[currentFilesType] + (currentPath[currentFilesType] == "/" ? "" : "/") + file.name
+            currentPath[currentFilesType] +
+                (currentPath[currentFilesType] == "/" ? "" : "/") +
+                file.name
         )
     }
     SendPostHttp(url, formData, successUpload, errorUpload, progressUpload)

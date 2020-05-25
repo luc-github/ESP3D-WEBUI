@@ -24,18 +24,18 @@ import { h } from "preact"
  *ESP3D banner
  *
  */
-
-const ESP3DBanner = ({ visible = true, title, text }) => (
-    <div class={visible ? "d-block" : "d-none"}>
-        <a
-            href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
-            target="_blank"
-        >
-            <div title={title} class="espbanner">
-                <span>{text}</span>
+const ESP3DBanner = ({ visible = true, title, text }) => {
+    const onclick = e => {
+        window.open(
+            "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
+        )
+    }
+    return (
+        <div class={visible ? "d-block" : "d-none"}>
+            <div class="espbanner" onclick={onclick}>
+                <span title={title}>{text}</span>
             </div>
-        </a>
-    </div>
-)
-
+        </div>
+    )
+}
 export { ESP3DBanner }
