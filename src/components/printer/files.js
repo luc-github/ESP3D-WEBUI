@@ -98,18 +98,25 @@ function canDelete(entry) {
 }
 
 /*
- * Check is can print file
+ * Check if can print file
  */
 function canPrint(entry) {
     if (currentFilesType == "FS" || entry.size == -1) {
         return false
     }
-    //TODO add extension check support
+    let filefilter = prefs.filesfilter.trim()
+    if (filefilter != "*" && filefilter.length > 0) {
+        let tfilters = filefilter.split(";")
+        for (let p of tfilters) {
+            if (entry.name.endsWith("." + p)) return true
+        }
+        return false
+    }
     return true
 }
 
 /*
- * Check is can create directory
+ * Check if can create directory
  */
 function canCreateDirectory() {
     if (
@@ -124,7 +131,7 @@ function canCreateDirectory() {
 }
 
 /*
- * Check is can upload
+ * Check if can upload
  */
 function canUpload() {
     if (currentFilesType == "TFTSD" || currentFilesType == "TFTUSB") {
@@ -199,6 +206,13 @@ const FileEntry = ({ entry, pos }) => {
             next: processDelete,
         })
     }
+    const printFile = e => {
+        let filename =
+            currentPath[currentFilesType] +
+            (currentPath[currentFilesType] == "/" ? "" : "/") +
+            entry.name
+        console.log("print " + filename)
+    }
     const downloadFile = e => {
         let filename =
             currentPath[currentFilesType] +
@@ -218,8 +232,14 @@ const FileEntry = ({ entry, pos }) => {
                 </div>
                 <div class="hide-low p-1">{entry.size}</div>
                 <div class="p-1 hide-low">{timestamp}</div>
-                <div class={canDelete(entry) ? "" : "d-none"}>
-                    <button class="btn btn-danger" onclick={deleteFile}>
+                <div class={canPrint(entry) ? "" : "invisible"}>
+                    <button class="btn btn-outline-dark" onclick={printFile}>
+                        <Printer size="1.2em" />
+                    </button>
+                </div>
+                <div class="p-1"></div>
+                <div class={canDelete(entry) ? "" : "invisible"}>
+                    <button class="btn btn-outline-danger" onclick={deleteFile}>
                         <Trash2 size="1.2em" />
                     </button>
                 </div>
@@ -239,7 +259,7 @@ const FileEntry = ({ entry, pos }) => {
                     </div>
                 </div>
                 <div class={canDelete(entry) ? "" : "d-none"}>
-                    <button class="btn btn-danger" onclick={deleteFile}>
+                    <button class="btn btn-outline-danger" onclick={deleteFile}>
                         <Trash2 size="1.2em" />
                     </button>
                 </div>
@@ -518,10 +538,12 @@ function clickUpload() {
             .setAttribute("multiple", "true")
         pathUpload = "/files"
     } else {
-        //TODO set extensions
-        document
-            .getElementById("uploadFilesControl")
-            .setAttribute("accept", "*")
+        let f = prefs.filesfilter.trim()
+        if (f.length > 0 && f != "*") {
+            f = "." + f.replace(/;/g, ",.")
+        } else f = "*"
+
+        document.getElementById("uploadFilesControl").setAttribute("accept", f)
         document
             .getElementById("uploadFilesControl")
             .setAttribute("multiple", "false")
