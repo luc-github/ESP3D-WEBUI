@@ -38,7 +38,6 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
 Please look at screenshots:
 Main tab and menu:   
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full1.PNG'/>   
-<img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/Full2.PNG'/>   
 Control panel:  
 <img src='https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/master/images/controls.PNG'/>  
 Macro dialog:   
