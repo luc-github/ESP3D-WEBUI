@@ -234,6 +234,7 @@ function errorDownload(errorCode, response) {
 const FileEntry = ({ entry, pos }) => {
     if (entry.name == ".") return //ignore flag tag for spiffs
     let timestamp
+    if (typeof entry.time != "undefined")timestamp = entry.time
     let topclass = "d-flex flex-row justify-content-around p-1 hotspot rounded"
     if (pos > 0) topclass += " border-top"
     const openDir = e => {
@@ -304,8 +305,8 @@ const FileEntry = ({ entry, pos }) => {
                     </div>
                     <div class="p-1 text-break">{entry.name}</div>
                 </div>
-                <div class="hide-low p-1">{entry.size}</div>
                 <div class="p-1 hide-low">{timestamp}</div>
+                <div class="hide-low p-1">{entry.size}</div>
                 <div class={canPrint(entry) ? "" : "invisible"}>
                     <button class="btn btn-outline-dark" onclick={printFile}>
                         <Printer size="1.2em" />
