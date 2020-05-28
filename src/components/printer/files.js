@@ -51,6 +51,7 @@ import { esp3dSettings, prefs } from "../app"
 let currentFilesType = "FS"
 let currentPath = []
 let currentFileList = []
+let fileSystemLoaded = []
 let isloaded = false
 let processingEntry
 let uploadFiles
@@ -467,6 +468,7 @@ function refreshFilesListSuccess(responseText) {
                 let responsejson = JSON.parse(responseText)
                 buildFilesList(responsejson.files)
                 buildStatus(responsejson)
+                fileSystemLoaded[currentFilesType] = true
                 break
             default:
                 console.log(currentFilesType + " is not a valid file system")
@@ -480,6 +482,7 @@ function refreshFilesListSuccess(responseText) {
  * Handle query error
  */
 function refreshFilesListError(errorCode, responseText) {
+    fileSystemLoaded[currentFilesType] = false
     showDialog({ type: "error", numError: errorCode, message: T("S103") })
 }
 
@@ -799,7 +802,7 @@ const FilesControls = () => {
                         <span class="hide-low text-button">{T("S50")}</span>
                     </button>
                 </div>
-                <div class={canUpload() ? "p-1" : "d-none"}>
+                <div class={(fileSystemLoaded[currentFilesType] && canUpload()) ? "p-1" : "d-none"}>
                     <button
                         type="button"
                         title={T("S89")}
@@ -826,7 +829,7 @@ const FilesControls = () => {
                     <button
                         type="button"
                         title={T("S90")}
-                        class={canCreateDirectory() ? "btn btn-info" : "d-none"}
+                        class={(fileSystemLoaded[currentFilesType] && canCreateDirectory()) ? "btn btn-info" : "d-none"}
                         onClick={clickCreateDirectory}
                     >
                         <FolderPlus />
@@ -860,8 +863,8 @@ const FilesPanel = () => {
     if (!showFiles) return null
     const { filesStatus } = useStoreon("filesStatus")
     const { filesList } = useStoreon("filesList")
-    if (isloaded == false && prefs.autoload) refreshFilesList()
-    isloaded = true
+    if (typeof fileSystemLoaded[currentFilesType] == "undefined")fileSystemLoaded[currentFilesType] = false
+    if (fileSystemLoaded[currentFilesType] == false && prefs.autoload) refreshFilesList()
     return (
         <div class="w-100 panelCard">
             <div class="p-2 ">
