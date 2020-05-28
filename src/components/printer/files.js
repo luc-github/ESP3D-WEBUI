@@ -232,9 +232,8 @@ function errorDownload(errorCode, response) {
  * File List item for file or directory
  */
 const FileEntry = ({ entry, pos }) => {
-    if (entry.name == ".") return //ignore flag tag for spiffs
     let timestamp
-    if (typeof entry.time != "undefined")timestamp = entry.time
+    if (typeof entry.time != "undefined") timestamp = entry.time
     let topclass = "d-flex flex-row justify-content-around p-1 hotspot rounded"
     if (pos > 0) topclass += " border-top"
     const openDir = e => {
@@ -303,11 +302,26 @@ const FileEntry = ({ entry, pos }) => {
                     <div class="p-1 hide-low">
                         <File />
                     </div>
-                    <div class="p-1 text-break">{entry.name}</div>
+                    <div
+                        class="p-1 text-truncate flex-grow-1"
+                        title={entry.name}
+                    >
+                        {entry.name}
+                    </div>
+                    <div class="p-1 hide-low text-right">{timestamp}</div>
+                    <div class="hide-low p-1 text-right" style="width:6rem;">
+                        {entry.size}
+                    </div>
                 </div>
-                <div class="p-1 hide-low">{timestamp}</div>
-                <div class="hide-low p-1">{entry.size}</div>
-                <div class={canPrint(entry) ? "" : "invisible"}>
+                <div
+                    class={
+                        canPrint(entry)
+                            ? ""
+                            : currentFilesType == "FS"
+                            ? "d-none"
+                            : "invisible"
+                    }
+                >
                     <button class="btn btn-outline-dark" onclick={printFile}>
                         <Printer size="1.2em" />
                     </button>
@@ -855,7 +869,10 @@ const FilesPanel = () => {
                     <div class="w-100">
                         <FilesControls />
                         <div class="card filespanel">
-                            <div class="card-body" style="overflow:auto">
+                            <div
+                                class="card-body"
+                                style="overflow:auto; padding:0 0;"
+                            >
                                 <div class="d-flex flex-column">
                                     {filesList}
                                 </div>
