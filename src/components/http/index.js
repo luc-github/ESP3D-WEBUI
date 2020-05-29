@@ -219,20 +219,26 @@ function processCommands() {
             pausePing(true)
             currentHttpCommand = new XMLHttpRequest()
             let isdownload = false
-            if (typeof httpCommandList[0].id !="undefined"){
-                if (httpCommandList[0].id=="download")isdownload=true
+            if (typeof httpCommandList[0].id != "undefined") {
+                if (httpCommandList[0].id == "download") isdownload = true
             }
-            if (isdownload) currentHttpCommand.responseType="blob"
+            if (isdownload) currentHttpCommand.responseType = "blob"
             currentHttpCommand.onreadystatechange = function() {
                 if (currentHttpCommand.readyState == 4) {
                     if (currentHttpCommand.status == 200) {
-                        defaultHttpResultFn(isdownload?currentHttpCommand.response:currentHttpCommand.responseText)
+                        defaultHttpResultFn(
+                            isdownload
+                                ? currentHttpCommand.response
+                                : currentHttpCommand.responseText
+                        )
                     } else {
                         if (currentHttpCommand.status == 401)
                             requestAuthentication()
                         defaultHttpErrorFn(
                             currentHttpCommand.status,
-                            isdownload?currentHttpCommand.response:currentHttpCommand.responseText
+                            isdownload
+                                ? currentHttpCommand.response
+                                : currentHttpCommand.responseText
                         )
                     }
                 }

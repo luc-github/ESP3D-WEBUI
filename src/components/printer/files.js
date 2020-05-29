@@ -802,7 +802,13 @@ const FilesControls = () => {
                         <span class="hide-low text-button">{T("S50")}</span>
                     </button>
                 </div>
-                <div class={(fileSystemLoaded[currentFilesType] && canUpload()) ? "p-1" : "d-none"}>
+                <div
+                    class={
+                        fileSystemLoaded[currentFilesType] && canUpload()
+                            ? "p-1"
+                            : "d-none"
+                    }
+                >
                     <button
                         type="button"
                         title={T("S89")}
@@ -829,7 +835,12 @@ const FilesControls = () => {
                     <button
                         type="button"
                         title={T("S90")}
-                        class={(fileSystemLoaded[currentFilesType] && canCreateDirectory()) ? "btn btn-info" : "d-none"}
+                        class={
+                            fileSystemLoaded[currentFilesType] &&
+                            canCreateDirectory()
+                                ? "btn btn-info"
+                                : "d-none"
+                        }
                         onClick={clickCreateDirectory}
                     >
                         <FolderPlus />
@@ -863,8 +874,10 @@ const FilesPanel = () => {
     if (!showFiles) return null
     const { filesStatus } = useStoreon("filesStatus")
     const { filesList } = useStoreon("filesList")
-    if (typeof fileSystemLoaded[currentFilesType] == "undefined")fileSystemLoaded[currentFilesType] = false
-    if (fileSystemLoaded[currentFilesType] == false && prefs.autoload) refreshFilesList()
+    if (typeof fileSystemLoaded[currentFilesType] == "undefined")
+        fileSystemLoaded[currentFilesType] = false
+    if (fileSystemLoaded[currentFilesType] == false && prefs.autoload)
+        refreshFilesList()
     return (
         <div class="w-100 panelCard">
             <div class="p-2 ">

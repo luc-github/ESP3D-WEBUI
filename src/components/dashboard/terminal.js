@@ -26,7 +26,7 @@ import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 import { showDialog } from "../dialog"
-import { preferences } from "../app"
+import { Page, preferences } from "../app"
 
 /*
  * Local variables
@@ -98,7 +98,10 @@ function updateContentType() {
     const { dispatch } = useStoreon()
     if (verboseOutput) currentOutput = monitorDataVerbose
     else currentOutput = monitorDataQuiet
-    dispatch("monitor/set", currentOutput)
+    const { showTerminal } = useStoreon("showTerminal")
+    const { activePage } = useStoreon("activePage")
+    if (showTerminal && activePage == Page.dashboard)
+        dispatch("monitor/set", currentOutput)
 }
 
 /*
