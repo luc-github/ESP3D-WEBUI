@@ -54,7 +54,7 @@ function showError() {
 /*
  * Cancel the current upload
  */
-function cancelCurrentUpload(code, message) {
+function cancelCurrentQuery(code, message) {
     return
     currentHttpCommand.abort()
     lastError.code = typeof code == "undefined" ? 205 : code
@@ -288,6 +288,6 @@ export {
     SendCommand,
     SendGetHttp,
     SendPostHttp,
-    cancelCurrentUpload,
+    cancelCurrentQuery,
     lastError,
 }

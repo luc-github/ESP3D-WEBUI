@@ -20,7 +20,7 @@
 
 "use strict"
 import { updateTerminal } from "../app"
-import { cancelCurrentUpload } from "../http"
+import { cancelCurrentQuery } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
 const { processWSData } = require(`../${process.env.TARGET_ENV}`)
@@ -115,7 +115,7 @@ function processWebSocketText(wsBuffer) {
                 //TODO
                 break
             case "ERROR":
-                cancelCurrentUpload(tdata[1], tdata[2])
+                cancelCurrentQuery(tdata[1], tdata[2])
                 break
             default:
                 console.log("Unknow event")

@@ -28,7 +28,7 @@ import { useStoreon } from "storeon/preact"
 import {
     SendCommand,
     SendPostHttp,
-    cancelCurrentUpload,
+    cancelCurrentQuery,
     lastError,
 } from "../http"
 import { prefs } from "../settings"
@@ -147,7 +147,7 @@ function clearUploadInformation() {
  */
 function cancelUpload() {
     clearUploadInformation()
-    cancelCurrentUpload()
+    cancelCurrentQuery()
     showDialog({ displayDialog: false, refreshPage: true })
 }
 
@@ -218,7 +218,7 @@ function errorUpload(errorCode, response) {
     console.log("error upload code : " + lastError.code + " " + errorCode)
     clearUploadInformation()
     if (!lastError.code && errorCode == 0) {
-        cancelCurrentUpload(errorCode, response)
+        cancelCurrentQuery(errorCode, response)
     }
 }
 

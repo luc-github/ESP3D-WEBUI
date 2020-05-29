@@ -24,7 +24,7 @@ import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
 import { Setting, applyConfig } from "../app"
 import {
     SendCommand,
-    cancelCurrentUpload,
+    cancelCurrentQuery,
     SendGetHttp,
     SendPostHttp,
 } from "../http"
@@ -398,7 +398,7 @@ function successUpload(response) {
  * e.g: user pressed cancel before upload
  */
 function cancelUpload() {
-    cancelCurrentUpload()
+    cancelCurrentQuery()
     showDialog({ displayDialog: false })
 }
 
@@ -410,7 +410,7 @@ function errorUpload(errorCode, response) {
     console.log("error upload code : " + lastError.code + " " + errorCode)
     clearUploadInformation()
     if (!lastError.code && errorCode == 0) {
-        cancelCurrentUpload(errorCode, response)
+        cancelCurrentQuery(errorCode, response)
     }
 }
 

@@ -65,6 +65,7 @@ let printerImportSettings = {} //full esp3d settings to be imported
 let currentIndex
 let stopImport
 let timeoutLoader = null
+let configDataSize
 
 /*
  * Get GitHub URL
@@ -397,8 +398,11 @@ function processTemperatures(buffer) {
 function processWSData(buffer) {
     processFeedRate(buffer)
     if (isConfigRequested) {
-        //console.log("config requested, processing " + buffer)
-        //console.log("setting size " + listrawSettings.length)
+        configDataSize += buffer.length
+        showDialog({
+            type: "loader",
+            message: T("S1") + " " + configDataSize + "B",
+        })
         if (
             buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
             buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
@@ -544,6 +548,7 @@ function loadConfig() {
     isloaded = true
     isConfigRequested = true
     isConfigData = false
+    configDataSize = 0
     listrawSettings = []
     console.log("load FW config")
     startTimeout()

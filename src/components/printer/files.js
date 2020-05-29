@@ -36,7 +36,7 @@ import {
     SendCommand,
     SendGetHttp,
     SendPostHttp,
-    cancelCurrentUpload,
+    cancelCurrentQuery,
     lastError,
 } from "../http"
 import { useStoreon } from "storeon/preact"
@@ -211,7 +211,7 @@ function successDownload(response) {
  * e.g: user pressed cancel before upload
  */
 function cancelDownload() {
-    cancelCurrentUpload()
+    cancelCurrentQuery()
     showDialog({ displayDialog: false })
 }
 
@@ -223,7 +223,7 @@ function errorDownload(errorCode, response) {
     console.log("error upload code : " + lastError.code + " " + errorCode)
     clearUploadInformation()
     if (!lastError.code && errorCode == 0) {
-        cancelCurrentUpload(errorCode, response)
+        cancelCurrentQuery(errorCode, response)
     }
     showDialog({ type: "error", numError: errorCode, message: T("S103") })
 }
@@ -692,7 +692,7 @@ function clearUploadInformation() {
  */
 function cancelUpload() {
     clearUploadInformation()
-    cancelCurrentUpload()
+    cancelCurrentQuery()
     showDialog({ displayDialog: false, refreshPage: true })
 }
 
@@ -757,7 +757,7 @@ function errorUpload(errorCode, response) {
     console.log("error upload code : " + lastError.code + " " + errorCode)
     clearUploadInformation()
     if (!lastError.code && errorCode == 0) {
-        cancelCurrentUpload(errorCode, response)
+        cancelCurrentQuery(errorCode, response)
     }
 }
 
