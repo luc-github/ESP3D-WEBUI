@@ -65,6 +65,10 @@ function disableNode(node, state) {
 
 function showDialog(data) {
     const { dispatch } = useStoreon()
+    if (typeof dispatch == "undefined") {
+        console.log("Dispatch is not found")
+        return
+    }
     if (typeof data.displayPage != "undefined") {
         if (data.displayPage) {
             const { activePage } = useStoreon("activePage")
@@ -87,9 +91,12 @@ function showDialog(data) {
 function updateProgress(data) {
     const { dispatch } = useStoreon()
     let { dialogData } = useStoreon("dialogData")
-    //todo merge data
-    dialogData.progress = data.progress
-    dispatch("setDialog", dialogData)
+    if (typeof data != "undefined" && typeof dialogData != "undefined") {
+        dialogData.progress = data.progress
+        dispatch("setDialog", dialogData)
+    } else {
+        console.log("updateProgress failed")
+    }
 }
 
 function hideDialog() {

@@ -199,7 +199,7 @@ function restart() {
 function successUpload(response) {
     updateProgress({ progress: 100 })
     console.log("success wait 1s")
-    setTimeout(restart, 1000)
+    setTimeout(restart, 2000)
 }
 
 /*

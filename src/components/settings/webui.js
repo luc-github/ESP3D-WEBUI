@@ -390,7 +390,7 @@ function successUpload(response) {
         setState(allkey[p], "success")
     }
     updateProgress({ progress: 100 })
-    setTimeout(closeDialog, 1000)
+    setTimeout(closeDialog, 2000)
 }
 
 /*

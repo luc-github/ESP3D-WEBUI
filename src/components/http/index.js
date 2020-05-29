@@ -47,15 +47,21 @@ function clearCommandList() {
     isProcessingHttpCommand = false
 }
 
+function showError() {
+    showDialog({ type: "error", numError: lastError.code, message: T("S33") })
+}
+
 /*
  * Cancel the current upload
  */
 function cancelCurrentUpload(code, message) {
+    return
     currentHttpCommand.abort()
-    lastError.code = code
-    lastError.message = message
-    showDialog({ type: "error", numError: lastError.code, message: T("S33") })
-    console.log("Abort Upload :" + code + " " + message)
+    lastError.code = typeof code == "undefined" ? 205 : code
+    lastError.message =
+        typeof message == "undefined" ? " Reset Content" : message
+    console.log("Abort Upload :" + lastError.code + " " + lastError.message)
+    setTimeout(showError, 2000)
 }
 
 /*

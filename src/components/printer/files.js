@@ -177,7 +177,7 @@ function processDelete() {
  *
  */
 function closeDialog() {
-    showDialog({ displayDialog: false })
+    showDialog({ displayDialog: false, refreshPage: true })
 }
 
 /*
@@ -186,7 +186,6 @@ function closeDialog() {
  */
 function successDownload(response) {
     updateProgress({ progress: 100 })
-
     var file = new Blob([response], { type: "application/octet-stream" })
     if (window.navigator.msSaveOrOpenBlob)
         // IE10+
@@ -204,7 +203,7 @@ function successDownload(response) {
             window.URL.revokeObjectURL(url)
         }, 0)
     }
-    setTimeout(closeDialog, 1000)
+    setTimeout(closeDialog, 2000)
 }
 
 /*
