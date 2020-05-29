@@ -1209,4 +1209,5 @@ export {
     isVerboseData,
     Notifications,
     FilesPanel,
+    gitHubURL,
 }
