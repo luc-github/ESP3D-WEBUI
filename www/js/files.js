@@ -308,6 +308,18 @@ function files_showdeletebutton(index) {
     return true;
 }
 
+function cleanpath(path){
+    var p = path;
+    p.trim();
+    if (p[0]!='/')p="/"+p;
+    if (p!="/"){
+        if (p.endsWith("/")){
+            p = p .substr(0, p.length - 1);
+        }
+    }
+    return p;
+}
+
 function files_refreshFiles(path, usecache) {
     //console.log("refresh requested " + path);
     var cmdpath = path;
@@ -333,7 +345,7 @@ function files_refreshFiles(path, usecache) {
         //use ls or M20
         if (target_firmware == "smoothieware") {
             //workaround as ls do not like dirname ending with /
-            var command = "ls -s " + files_currentPath.substr(0, files_currentPath.length - 1);
+            var command = "ls -s " + cleanpath(files_currentPath);
             SendPrinterCommand(command, false, files_serial_ls_list_success, files_serial_ls_list_failed);
             //
         } else {
@@ -477,7 +489,7 @@ function files_serial_ls_list_success(response_text) {
         var file_name = "";
         var fsize = "";
         var d = ""
-        var command = "ls -s " + files_currentPath.substr(0, files_currentPath.length - 1);
+        var command = "ls -s " +  cleanpath(files_currentPath);
         if (line == command) continue;
         if (line.length != 0) {
             if (line.endsWith("/")) {
@@ -505,7 +517,7 @@ function files_serial_ls_list_success(response_text) {
 }
 
 function files_directSD_list_success(response_text) {
-	var error = false;
+    var error = false;
     var response;
     document.getElementById('files_navigation_buttons').style.display = "block";
     try {
@@ -702,7 +714,7 @@ function files_check_if_upload() {
     } else {
         //try ls
         if (target_firmware == "smoothieware") {
-            var cmd = "ls " + files_currentPath;
+            var cmd = "ls " + cleanpath(files_currentPath);
             SendPrinterCommand(cmd, false, process_check_sd_presence);
         } else { //no reliable way to know SD is present or not so let's upload
             files_start_upload();
