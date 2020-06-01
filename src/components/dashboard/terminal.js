@@ -202,7 +202,11 @@ const TerminalControls = () => {
  *Send command query error
  */
 function sendCommandError(errorCode, responseText) {
-    showDialog({ type: "error", numError: errorCode, message: T("S5") })
+    showDialog({ type: "error", numError: errorCode, message: errorCode==0?T("S5"):T("S109") })
+    let tresponse = responseText.split("\n")
+    for (let n = 0; n < tresponse.length; n++) {
+        updateTerminal(T(tresponse[n]))
+    }
 }
 
 /*
