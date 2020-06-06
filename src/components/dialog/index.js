@@ -22,9 +22,8 @@ import { h } from "preact"
 import { useEffect } from "preact/hooks"
 import { AlertTriangle, Info } from "preact-feather"
 import { T } from "../translations"
-import { initApp } from "../settings"
 import { useStoreon } from "storeon/preact"
-import { Page } from "../app"
+import { Page, reloadPage } from "../app"
 
 /*
  *Spin loader
@@ -213,7 +212,7 @@ const DialogPage = () => {
                                     ? "btn btn-primary d-block"
                                     : "d-none"
                             }
-                            onClick={initApp}
+                            onClick={reloadPage}
                         >
                             {dialogData.button1text}
                         </button>

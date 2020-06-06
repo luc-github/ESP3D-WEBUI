@@ -104,6 +104,14 @@ function App() {
     )
 }
 
+/*
+ * Reload web browser Page
+ *
+ */
+function reloadPage() {
+    window.location.reload(true);
+}
+
 export {
     Setting,
     App,
@@ -113,4 +121,5 @@ export {
     prefs,
     updateTerminal,
     preferences,
+    reloadPage,
 }
