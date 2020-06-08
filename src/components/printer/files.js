@@ -869,10 +869,10 @@ function sendCommandError(errorCode, responseText) {
  *
  */
 const FilesPanel = () => {
-    const { showFiles } = useStoreon("showFiles")
-    if (!showFiles) return null
+    const { showFiles } = useStoreon("showFiles")    
     const { filesStatus } = useStoreon("filesStatus")
     const { filesList } = useStoreon("filesList")
+    if (!showFiles) return null
     if (typeof fileSystemLoaded[currentFilesType] == "undefined")
         fileSystemLoaded[currentFilesType] = false
     if (fileSystemLoaded[currentFilesType] == false && prefs.autoload)

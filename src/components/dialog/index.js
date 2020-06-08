@@ -110,7 +110,7 @@ function hideDialog() {
 const DialogPage = () => {
     const { showDialog } = useStoreon("showDialog")
     const { dialogData } = useStoreon("dialogData")
-    if (!dialogData) return
+    if (!dialogData) return null
     //console.log(dialogData)
     if (!showDialog) {
         disableNode(document.getElementById("mainwindow"), false)

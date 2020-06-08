@@ -86,7 +86,7 @@ const DashboardToolBar = () => {
 const DashboardPage = () => {
     const { activePage } = useStoreon("activePage")
     if (activePage != Page.dashboard) return null
-    if (typeof preferences == "undefined") return
+    if (typeof preferences == "undefined") return null
     return (
         <div>
             <DashboardToolBar />

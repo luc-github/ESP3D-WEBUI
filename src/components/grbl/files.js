@@ -78,7 +78,6 @@ function sendCommandError(errorCode, responseText) {
 const FilesPanel = () => {
     const { showFiles } = useStoreon("showFiles")
     if (!showFiles) return null
-
     return (
         <div class="p-2">
             <div class="border rounded p-2">

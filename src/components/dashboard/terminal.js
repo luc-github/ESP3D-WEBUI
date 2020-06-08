@@ -254,21 +254,21 @@ function doAutoscroll() {
 const TerminalPanel = () => {
     const { content } = useStoreon("content")
     const { showTerminal } = useStoreon("showTerminal")
+    const [command, setCommand] = useState(currentCommand)
     if (!showTerminal) {
         lastscroll = -1
         return null
     }
-    const [command, setCommand] = useState(currentCommand)
     const onclick = e => {
         if (command.length > 0) {
             sendCommand(command)
-            setCommand("")
             currentCommand = ""
+            setCommand("")
         }
     }
     const onInput = e => {
-        setCommand(e.target.value)
         currentCommand = e.target.value
+        setCommand(e.target.value)
     }
     const onScroll = e => {
         lastscroll = e.target.scrollHeight
@@ -304,8 +304,8 @@ const TerminalPanel = () => {
                 commandHistoryIndex >= 0 &&
                 commandHistoryIndex < commandHistory.length
             ) {
-                setCommand(commandHistory[commandHistoryIndex])
                 currentCommand = commandHistory[commandHistoryIndex]
+                setCommand(commandHistory[commandHistoryIndex])
             }
         }
     }
