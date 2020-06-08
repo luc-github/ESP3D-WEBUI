@@ -25,6 +25,23 @@ So I came with a full rewrite using pure javascript and resized resources:
 
 and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
 
+## Become a sponsor or a supporter
+ * A sponsor is a recurent donator [<img src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/sponsor.PNG" />](https://github.com/sponsors/luc-github)   
+ The github sponsors are automaticaly displayed by github, if your tier is `A big hug` or more, to thank you for your support, your logo / avatar will be also added to the readme page with eventually with a link to your site.    
+
+ * A supporter is per time donator [<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG_global.gif" border="0" alt="PayPal – The safer, easier way to pay online.">](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ)    
+ If your donation is over a per year sponsor tier `A big hug`, to thank you for your support, your logo / avatar will be added to the readme page with eventually with a link to your site    
+
+ Every support is welcome, giving support/ developing new features need time and devices, donations contribute a lot to make things happen, thank you.
+
+## Sponsors 
+[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/FYSETC/LOGO.png">](https://www.fysetc.com/)  
+
+## Supporters
+[<img src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/PanucattDevices/Panucatt.jpg" />](http://www.panucatt.com/)
+
+
+
 ## Features
 - It supports several firmwares based on Repetier, Marlin and Smoothieware.
 - It allows to fully configure ESP wifi
