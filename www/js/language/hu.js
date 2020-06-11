@@ -169,6 +169,7 @@ var hungariantrans = {
 "Time Server 2":"Idő Szerver 2",
 "Time Server 3":"Idő Szerver 3",
 "TargetFW":"Cél FW",
+"Target FW":"Cél FW",
 "Direct SD access":"Közvetlen SD hozzáférés",
 "Direct SD Boot Check":"Közvetlen SD indítási ellenőrzés",
 "Primary SD":"Elsődleges SD",
@@ -414,6 +415,7 @@ var hungariantrans = {
 "X Max travel, mm":"X Max utazás, mm",
 "Y Max travel, mm":"Y Max utazás, mm",
 "Z Max travel, mm":"Z Max utazás, mm",
-"File extensions (use ; to separate):":"Fájl kiterjesztések (használja; szétválasztáshoz):"
+"File extensions (use ; to separate)":"Fájl kiterjesztések (használja; szétválasztáshoz)",
+"Web Socket":"Web modulon"
 };
 //endRemoveIf(hu_lang_disabled)

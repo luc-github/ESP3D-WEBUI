@@ -413,5 +413,6 @@ var langtrans = {
 "X Max travel, mm":"X Max travel, mm",
 "Y Max travel, mm":"Y Max travel, mm",
 "Z Max travel, mm":"Z Max travel, mm",
-"File extensions (use ; to separate):":"File extensions (use ; to separate):"
+"File extensions (use ; to separate)":"File extensions (use ; to separate)",
+"Web Socket":"Web Socket"
 };
