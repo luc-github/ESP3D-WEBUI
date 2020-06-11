@@ -24,7 +24,7 @@ import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel, processFeedRate } from "./jog"
-import { FilesPanel } from "./files"
+import { FilesPanel, processFiles } from "./files"
 import {
     MachineUIPreferences,
     MachineFilesPreferences,
@@ -448,6 +448,7 @@ function processWSData(buffer) {
     if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
         processTemperatures(buffer)
     }
+    processFiles(buffer)
 }
 
 /*

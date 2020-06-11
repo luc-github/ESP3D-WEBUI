@@ -108,6 +108,7 @@
     "S107" : "Destination",
     "S108" : "Downloading...",
     "S109" : "Command error...",
+    "S110" : "No SD card",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

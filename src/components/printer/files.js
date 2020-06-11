@@ -1,5 +1,5 @@
 /*
- terminal.js - ESP3D WebUI terminal file
+ files.js - ESP3D WebUI files management file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -52,10 +52,16 @@ let currentFilesType = "FS"
 let currentPath = []
 let currentFileList = []
 let fileSystemLoaded = []
+let fileSystemCache = []
+let filesListCache = []
 let isloaded = false
 let processingEntry
 let uploadFiles
 let pathUpload = "/files"
+let isSDCheckRequested = false
+let isSDListRequested = false
+let isSDListDetected = false
+let listDataSize
 
 /*
  * Local constants
@@ -65,21 +71,189 @@ let pathUpload = "/files"
 /*
  * Give Configuration command and parameters
  */
-function listFilesCmd(type = 0) {
+function listSDSerialFilesCmd() {
     switch (esp3dSettings.FWTarget) {
         case "repetier":
         case "repetier4davinci":
-            return ["M205", "EPR", "wait", "error"]
+            return ["M20", "Begin file list", "End file list", "error"]
         case "marlin-embedded":
         case "marlin":
         case "marlinkimbra":
-            return ["M503", "echo:  G21", "ok", "error"]
+            return ["M20", "Begin file list", "End file list", "error"]
         case "smoothieware":
-            if (!override)
-                return ["cat " + smoothiewareConfigFile, "#", "ok", "error"]
-            return ["M503", ";", "ok", "error"]
+            return ["ls -s", "", "ok", "error"]
         default:
             return "Unknown"
+    }
+}
+
+/*
+ * Give Check SD Serial command and parameters
+ */
+function checkSerialSDCmd() {
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            return ["M21", "ok", "error"]
+        case "marlin-embedded":
+        case "marlin":
+        case "marlinkimbra":
+            return ["M21", "SD card ok", "SD init fail"]
+        case "smoothieware":
+            return ["ls /sd", "SD card ok", "Could not open"]
+        default:
+            return "Unknown"
+    }
+}
+
+/*
+ * Handle query success
+ */
+function sdSerialListSuccess(responseText) {}
+
+/*
+ * Handle query error
+ */
+function sdSerialListError(errorCode, responseText) {
+    isSDListRequested = false
+    fileSystemLoaded[currentFilesType] = false
+    showDialog({ type: "error", numError: errorCode, message: T("S103") })
+}
+
+function ListSDSerialFiles() {
+    let cmd = listSDSerialFilesCmd()
+    SendCommand(cmd[0], sdCheckSuccess, sdCheckError, null, "sdlist", 1)
+    isSDListRequested = true
+    listDataSize = 0
+}
+
+/*
+ * Convert Byte Size to Readable output
+ */
+function formatFileSize(size) {
+    var lsize = parseInt(size)
+    var value = 0.0
+    var tsize = ""
+    if (lsize < 1024) {
+        tsize = lsize + " B"
+    } else if (lsize < 1024 * 1024) {
+        value = lsize / 1024.0
+        tsize = value.toFixed(2) + " KB"
+    } else if (lsize < 1024 * 1024 * 1024) {
+        value = lsize / 1024.0 / 1024.0
+        tsize = value.toFixed(2) + " MB"
+    } else {
+        value = lsize / 1024.0 / 1024.0 / 1024.0
+        tsize = value.toFixed(2) + " GB"
+    }
+    return tsize
+}
+/*
+ * Convert raw String generic File descriptor
+ */
+function consvertStringToFileDescriptor(data) {
+    let entry = data.replace("\r", "").replace("\n", "")
+    let tentry
+    let name
+    entry.trim()
+    if (entry.length == 0) return null
+    let pos = entry.lastIndexOf(" ")
+    let size = parseInt(entry.substring(pos))
+    if (isNaN(size)) {
+        size = -1
+    } else {
+        size = formatFileSize(size)
+    }
+    if (pos != -1) {
+        name = entry.substring(0, pos)
+    } else {
+        name = entry
+    }
+    if (name.endsWith("/")) {
+        name = name.substring(0, name.length - 1)
+    }
+    if (name.startsWith("/")) {
+        name = name.substring(1)
+    }
+    if (currentPath[currentFilesType] == "/") {
+        if (name.indexOf("/") == -1) {
+            return { name: name, size: size }
+        }
+    } else {
+        let root = currentPath[currentFilesType].substring(1) + "/"
+        if (name.startsWith(root)) {
+            name = name.substring(root.length)
+            if (name.indexOf("/") == -1) {
+                return { name: name, size: size }
+            }
+        }
+        return null
+    }
+}
+
+function generateSDList(list) {
+    let result = []
+    for (let data of list) {
+        let entry = consvertStringToFileDescriptor(data)
+        if (entry) result.push(entry)
+    }
+    return result
+}
+
+/*
+ * process Files queries
+ */
+function processFiles(rawdata) {
+    let data = rawdata.replace("\n", "").replace("\r", "")
+    data.trim()
+    if (data.length == 0) return
+    if (isSDCheckRequested) {
+        let response = checkSerialSDCmd()
+        if (data.indexOf(response[1]) != -1) {
+            isSDCheckRequested = false
+            ListSDSerialFiles()
+        } else if (data.indexOf(response[2]) != -1) {
+            //Set status no SD
+            let data = []
+            data.status = T("S110")
+            buildStatus(data)
+            isSDCheckRequested = false
+            showDialog({ displayDialog: false })
+        }
+    }
+    if (isSDListRequested) {
+        listDataSize += rawdata.length
+        showDialog({
+            type: "loader",
+            message: T("S1") + " " + listDataSize + "B",
+        })
+        let response = listSDSerialFilesCmd()
+        if (data.indexOf(response[2]) != -1) {
+            isSDListRequested = false
+            isSDListDetected = false
+            fileSystemCache[currentFilesType] = []
+            fileSystemCache[currentFilesType].files = generateSDList(
+                filesListCache[currentFilesType]
+            )
+            buildFilesList(fileSystemCache[currentFilesType].files)
+            fileSystemLoaded[currentFilesType] = true
+        } else if (data.indexOf(response[1]) != -1) {
+            filesListCache[currentFilesType] = []
+            isSDListDetected = true
+        } else if (data.indexOf(response[3]) != -1) {
+            //Set status no SD
+            let data = []
+            data.status = T("S110")
+            buildStatus(data)
+            isSDListRequested = false
+            isSDListDetected = false
+            showDialog({ displayDialog: false })
+        } else {
+            //Todo ADD size limit in case of problem
+            if (isSDListDetected) {
+                filesListCache[currentFilesType].push(data)
+            }
+        }
     }
 }
 
@@ -87,15 +261,18 @@ function listFilesCmd(type = 0) {
  * Check is can create directory
  */
 function canDelete(entry) {
-    if (
-        currentFilesType == "TFTSD" ||
-        currentFilesType == "TFTUSB" ||
-        (esp3dSettings.FWTarget == "marlin" && currentFilesType != "FS")
-    ) {
-        return false
+    if (currentFilesType == "FS") {
+        return true
     }
-
-    return true
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            if (entry.size != -1) return true
+            else return false
+        default:
+            return false
+    }
+    return false
 }
 
 /*
@@ -120,26 +297,39 @@ function canPrint(entry) {
  * Check if can create directory
  */
 function canCreateDirectory() {
-    if (
-        currentFilesType == "TFTSD" ||
-        currentFilesType == "TFTUSB" ||
-        (esp3dSettings.FWTarget == "marlin" && currentFilesType != "FS")
-    ) {
-        return false
+    if (currentFilesType == "FS") {
+        return true
     }
-
-    return true
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+            return true
+        default:
+            return false
+    }
+    return false
 }
 
 /*
  * Check if can upload
  */
 function canUpload() {
-    if (currentFilesType == "TFTSD" || currentFilesType == "TFTUSB") {
-        return false
+    if (currentFilesType == "FS") {
+        return true
     }
 
-    return true
+    return false
+}
+
+/*
+ * Check if can download
+ */
+function canDownload() {
+    if (currentFilesType == "FS") {
+        return true
+    }
+
+    return false
 }
 
 /*
@@ -234,12 +424,12 @@ function errorDownload(errorCode, response) {
 const FileEntry = ({ entry, pos }) => {
     let timestamp
     if (typeof entry.time != "undefined") timestamp = entry.time
-    let topclass = "d-flex flex-row justify-content-around p-1 hotspot rounded"
+    let topclass = "d-flex flex-row justify-content-around p-1 rounded hotspot"
     if (pos > 0) topclass += " border-top"
     const openDir = e => {
         currentPath[currentFilesType] +=
             (currentPath[currentFilesType] == "/" ? "" : "/") + entry.name
-        refreshFilesList()
+        refreshFilesList(true)
     }
     const deleteFile = e => {
         processingEntry = entry
@@ -298,7 +488,10 @@ const FileEntry = ({ entry, pos }) => {
     if (entry.size != -1)
         return (
             <div class={topclass}>
-                <div class="d-flex flex-row flex-grow-1" onclick={downloadFile}>
+                <div
+                    class="d-flex flex-row flex-grow-1"
+                    onclick={canDownload(entry) ? downloadFile : null}
+                >
                     <div class="p-1 hide-low">
                         <File />
                     </div>
@@ -368,7 +561,7 @@ function buildFilesList(data) {
         let newpath = currentPath[currentFilesType].substring(0, pos)
         if (newpath.length == 0) newpath = "/"
         currentPath[currentFilesType] = newpath
-        refreshFilesList()
+        refreshFilesList(true)
     }
     //add up directory command
     if (currentPath[currentFilesType] != "/") {
@@ -468,8 +661,10 @@ function refreshFilesListSuccess(responseText) {
                 buildFilesList(responsejson.files)
                 buildStatus(responsejson)
                 fileSystemLoaded[currentFilesType] = true
+                fileSystemCache[currentFilesType] = responsejson
                 break
             default:
+                fileSystemLoaded[currentFilesType] = true
                 console.log(currentFilesType + " is not a valid file system")
         }
     } catch (errorcode) {
@@ -486,9 +681,23 @@ function refreshFilesListError(errorCode, responseText) {
 }
 
 /*
+ * Handle query success
+ */
+function sdCheckSuccess(responseText) {}
+
+/*
+ * Handle query error
+ */
+function sdCheckError(errorCode, responseText) {
+    isSDCheckRequested = false
+    fileSystemLoaded[currentFilesType] = false
+    showDialog({ type: "error", numError: errorCode, message: T("S103") })
+}
+
+/*
  * Refresh files list primary command
  */
-function refreshFilesList() {
+function refreshFilesList(isopendir = false) {
     if (typeof currentPath[currentFilesType] == "undefined")
         currentPath[currentFilesType] = "/"
     let cmd
@@ -508,12 +717,33 @@ function refreshFilesList() {
                 1
             )
             break
+        case "SDSerial":
+            if (isopendir) {
+                fileSystemCache[currentFilesType].files = generateSDList(
+                    filesListCache[currentFilesType]
+                )
+                buildFilesList(fileSystemCache[currentFilesType].files)
+                fileSystemLoaded[currentFilesType] = true
+            } else {
+                cmd = checkSerialSDCmd()
+                SendCommand(
+                    cmd[0],
+                    sdCheckSuccess,
+                    sdCheckError,
+                    null,
+                    "sdcheck",
+                    1
+                )
+                isSDCheckRequested = true
+            }
+            break
         default:
             const { dispatch } = useStoreon()
             console.log(currentFilesType + " is not a valid file system")
             dispatch("setFilesList", [])
             dispatch("setFilesStatus", [])
             showDialog({ displayDialog: false })
+            fileSystemLoaded[currentFilesType] = true
     }
 }
 
@@ -587,11 +817,26 @@ function clickCreateDirectory() {
 const FilesTypeSelector = () => {
     let optionsList = []
     const selectChange = e => {
+        const { dispatch } = useStoreon()
         currentFilesType = e.target.value
+        dispatch("setFilesList", "")
+        dispatch("setFilesStatus", "")
         showDialog({ displayDialog: false, refreshPage: true })
-        refreshFilesList()
+        if (typeof fileSystemLoaded[currentFilesType] == "undefined")
+            fileSystemLoaded[currentFilesType] = false
+        if (
+            fileSystemLoaded[currentFilesType] == false ||
+            typeof fileSystemCache[currentFilesType] == "undefined"
+        ) {
+            refreshFilesList()
+        } else {
+            buildFilesList(fileSystemCache[currentFilesType].files)
+            buildStatus(fileSystemCache[currentFilesType])
+        }
     }
     optionsList.push(<option value="FS">ESP</option>)
+    if (esp3dSettings.SDConnection == "none")
+        optionsList.push(<option value="SDSerial">SD</option>)
     //TODO
     //direct or serial (sd is serial on smoothieware
     //optionsList.push(<option value="SD">SD</option>)
@@ -784,6 +1029,9 @@ const FilesControls = () => {
     const toogleFiles = e => {
         dispatch("panel/showfiles", false)
     }
+    const refreshFiles = e => {
+        refreshFilesList()
+    }
     return (
         <div>
             <div class="d-flex flex-wrap p-1">
@@ -795,7 +1043,7 @@ const FilesControls = () => {
                         type="button"
                         title={T("S23")}
                         class="btn btn-primary"
-                        onClick={refreshFilesList}
+                        onClick={refreshFiles}
                     >
                         <RefreshCcw />
                         <span class="hide-low text-button">{T("S50")}</span>
@@ -869,14 +1117,13 @@ function sendCommandError(errorCode, responseText) {
  *
  */
 const FilesPanel = () => {
-    const { showFiles } = useStoreon("showFiles")    
+    const { showFiles } = useStoreon("showFiles")
     const { filesStatus } = useStoreon("filesStatus")
     const { filesList } = useStoreon("filesList")
     if (!showFiles) return null
     if (typeof fileSystemLoaded[currentFilesType] == "undefined")
         fileSystemLoaded[currentFilesType] = false
-    if (fileSystemLoaded[currentFilesType] == false && prefs.autoload)
-        refreshFilesList()
+    if (fileSystemLoaded["FS"] == false && prefs.autoload) refreshFilesList()
     return (
         <div class="w-100 panelCard">
             <div class="p-2 ">
@@ -902,4 +1149,4 @@ const FilesPanel = () => {
     )
 }
 
-export { FilesPanel }
+export { FilesPanel, processFiles }

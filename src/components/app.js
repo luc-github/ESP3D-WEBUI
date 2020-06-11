@@ -109,7 +109,7 @@ function App() {
  *
  */
 function reloadPage() {
-    window.location.reload(true);
+    window.location.reload(true)
 }
 
 export {

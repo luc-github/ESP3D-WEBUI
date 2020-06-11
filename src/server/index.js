@@ -23,7 +23,7 @@ let tempInterval = null
 let waitInterval = null
 let feedrate = 100
 
-let targetFW = "marlin"
+let targetFW = "repetier"
 
 let targetFWnb =
     targetFW == "grbl"
@@ -267,6 +267,44 @@ app.get("/command", function(req, res) {
                     "EPR:3 346 0.000 Extr.2 advance L [0=off]\n" +
                     "wait\n"
             )
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("M20") != -1) {
+        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+            SendBinary(
+                "ok 0\n" +
+                    "Begin file list\n" +
+                    "TEST.ZIP 66622272\n" +
+                    "ad_check_0001 2400\n" +
+                    "Machine_Life.dat 0\n" +
+                    "SOUND8.G 992\n" +
+                    "eeprom.bin 4096\n" +
+                    "FW_upgrade.dat 0\n" +
+                    "MYFOLDER/\n" +
+                    "MYFOLDER/sound.g 1040\n" +
+                    "MYFOLDER/Lucdir/\n" +
+                    "M33.G 90\n" +
+                    "M3.G 90\n" +
+                    "SUPPOR~1.GCO 1226740\n" +
+                    "TEST1~1.GCO 113\n" +
+                    "T1.G 21\n" +
+                    "smal.gco 81\n" +
+                    "testgcode.gco 14\n" +
+                    "fr.json 0\n" +
+                    "End file list\n" +
+                    "wait\n"
+            )
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("M21") != -1) {
+        console.info("M21 detected")
+        if (targetFW == "repetier" || targetFW == "repetier4davinci") {
+            SendBinary("ok\n")
+        }
         res.send("")
         return
     }
