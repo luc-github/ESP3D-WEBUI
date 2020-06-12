@@ -22,5 +22,9 @@
     "P21" : "TFT SD",
     "P22" : "TFT USB",
     "P23" : "TFT SD support",
-    "P24" : "TFT USB support"
+    "P24" : "TFT USB support",
+    "File deleted": "File/Directory deleted",
+    "Directory created": "Directory created",
+    "Deletion failed": "Deletion failed",
+    "Creation failed":"Creation failed"
 }

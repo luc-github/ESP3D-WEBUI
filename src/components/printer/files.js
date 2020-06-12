@@ -62,6 +62,7 @@ let isSDCheckRequested = false
 let isSDListRequested = false
 let isSDListDetected = false
 let listDataSize
+let queryOngoing = false
 
 /*
  * Local constants
@@ -104,6 +105,18 @@ function checkSerialSDCmd() {
         default:
             return "Unknown"
     }
+}
+
+/*
+ * Handle query success
+ */
+function querySuccess(responseText) {}
+
+/*
+ * Handle query error
+ */
+function queryError(errorCode, responseText) {
+    showDialog({ type: "error", numError: errorCode, message: T("S103") })
 }
 
 /*
@@ -255,6 +268,25 @@ function processFiles(rawdata) {
             }
         }
     }
+    if (queryOngoing) {
+        if (
+            rawdata.startsWith("Deletion ") ||
+            rawdata.startsWith("Creation ") ||
+            rawdata.startsWith("File ") ||
+            rawdata.startsWith("Directory ")
+        ) {
+            queryOngoing = false
+            let data = []
+            data.status = rawdata
+            buildStatus(T(data))
+            if (
+                rawdata.startsWith("File deleted") ||
+                rawdata.startsWith("Directory created")
+            )
+                refreshFilesList()
+            else showDialog({ displayDialog: false })
+        }
+    }
 }
 
 /*
@@ -267,8 +299,7 @@ function canDelete(entry) {
     switch (esp3dSettings.FWTarget) {
         case "repetier":
         case "repetier4davinci":
-            if (entry.size != -1) return true
-            else return false
+            return true
         default:
             return false
     }
@@ -356,10 +387,100 @@ function processDelete() {
                 1
             )
             break
+        case "SDSerial":
+            let path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += processingEntry.name
+            switch (esp3dSettings.FWTarget) {
+                case "repetier":
+                case "repetier4davinci":
+                    cmd = "M30 " + path
+                    break
+                default:
+                    console.log(
+                        esp3dSettings.FWTarget + " is not supported for delete"
+                    )
+                    showDialog({ displayDialog: false })
+                    return
+            }
+            queryOngoing = true
+            SendCommand(
+                encodeURIComponent(cmd),
+                querySuccess,
+                queryError,
+                null,
+                "deletedir",
+                1
+            )
+            break
         default:
             console.log(currentFilesType + " is not a valid file system")
             showDialog({ displayDialog: false })
     }
+}
+
+/*
+ * Create directory on target FS
+ */
+function processCreateDir() {
+    if (processingEntry.length > 0) {
+        let cmd
+        showDialog({ type: "loader", message: T("S1") })
+        switch (currentFilesType) {
+            case "FS":
+                cmd =
+                    "files?path=" +
+                    encodeURIComponent(currentPath[currentFilesType]) +
+                    "&action=createdir&filename=" +
+                    encodeURIComponent(processingEntry)
+                SendGetHttp(
+                    cmd,
+                    refreshFilesListSuccess,
+                    refreshFilesListError,
+                    null,
+                    "fslist",
+                    1
+                )
+                break
+            case "SDSerial":
+                let path = currentPath[currentFilesType]
+                if (!path.endsWith("/")) path += "/"
+                path += processingEntry
+                switch (esp3dSettings.FWTarget) {
+                    case "repetier":
+                    case "repetier4davinci":
+                        cmd = "M32 " + path
+                        break
+                    default:
+                        console.log(
+                            esp3dSettings.FWTarget +
+                                " is not supported for delete"
+                        )
+                        showDialog({ displayDialog: false })
+                        return
+                }
+                queryOngoing = true
+                SendCommand(
+                    encodeURIComponent(cmd),
+                    querySuccess,
+                    queryError,
+                    null,
+                    "createdir",
+                    1
+                )
+                break
+            default:
+                console.log(currentFilesType + " is not a valid file system")
+                showDialog({ displayDialog: false })
+        }
+    }
+}
+
+/*
+ * Send print command
+ */
+function processPrint() {
+    console.log("print " + processingEntry)
 }
 
 /*
@@ -458,7 +579,7 @@ const FileEntry = ({ entry, pos }) => {
             currentPath[currentFilesType] +
             (currentPath[currentFilesType] == "/" ? "" : "/") +
             entry.name
-        console.log("print " + filename)
+        processingEntry = entry
     }
     const downloadFile = e => {
         let filename =
@@ -748,36 +869,6 @@ function refreshFilesList(isopendir = false) {
 }
 
 /*
- * Create directory on target FS
- */
-function processCreateDir() {
-    if (processingEntry.length > 0) {
-        let cmd
-        showDialog({ type: "loader", message: T("S1") })
-        switch (currentFilesType) {
-            case "FS":
-                cmd =
-                    "files?path=" +
-                    encodeURIComponent(currentPath[currentFilesType]) +
-                    "&action=createdir&filename=" +
-                    encodeURIComponent(processingEntry)
-                SendGetHttp(
-                    cmd,
-                    refreshFilesListSuccess,
-                    refreshFilesListError,
-                    null,
-                    "fslist",
-                    1
-                )
-                break
-            default:
-                console.log(currentFilesType + " is not a valid file system")
-                showDialog({ displayDialog: false })
-        }
-    }
-}
-
-/*
  * Create directory requested by click
  */
 function clickCreateDirectory() {
@@ -1030,6 +1121,8 @@ const FilesControls = () => {
         dispatch("panel/showfiles", false)
     }
     const refreshFiles = e => {
+        dispatch("setFilesList", "")
+        dispatch("setFilesStatus", "")
         refreshFilesList()
     }
     return (
