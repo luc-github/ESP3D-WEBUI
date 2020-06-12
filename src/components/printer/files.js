@@ -479,8 +479,40 @@ function processCreateDir() {
 /*
  * Send print command
  */
-function processPrint() {
-    console.log("print " + processingEntry)
+function processPrint(entry) {
+    console.log("print " + entry.name)
+    let cmd
+    switch (currentFilesType) {
+        case "SDSerial":
+            let path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += entry.name
+            switch (esp3dSettings.FWTarget) {
+                case "repetier":
+                case "repetier4davinci":
+                    cmd = "M23 " + path + "\nM24"
+                    break
+                default:
+                    console.log(
+                        esp3dSettings.FWTarget +
+                            " is not supported for printing"
+                    )
+                    showDialog({ displayDialog: false })
+                    return
+            }
+            SendCommand(
+                encodeURIComponent(cmd),
+                querySuccess,
+                queryError,
+                null,
+                "print",
+                1
+            )
+            break
+        default:
+            console.log(currentFilesType + " is not a valid file system")
+            showDialog({ displayDialog: false })
+    }
 }
 
 /*
@@ -575,11 +607,7 @@ const FileEntry = ({ entry, pos }) => {
         })
     }
     const printFile = e => {
-        let filename =
-            currentPath[currentFilesType] +
-            (currentPath[currentFilesType] == "/" ? "" : "/") +
-            entry.name
-        processingEntry = entry
+        processPrint(entry)
     }
     const downloadFile = e => {
         let filename =
