@@ -164,7 +164,7 @@ function formatFileSize(size) {
 /*
  * Convert raw String generic File descriptor
  */
-function consvertStringToFileDescriptor(data) {
+function consvertStringToFileDescriptor(data, list) {
     let entry = data.replace("\r", "").replace("\n", "")
     let tentry
     let name
@@ -191,6 +191,18 @@ function consvertStringToFileDescriptor(data) {
     if (currentPath[currentFilesType] == "/") {
         if (name.indexOf("/") == -1) {
             return { name: name, size: size }
+        } else {
+            if (
+                esp3dSettings.FWTarget == "marlin-embedded" ||
+                esp3dSettings.FWTarget == "marlin" ||
+                esp3dSettings.FWTarget == "marlinkimbra"
+            ) {
+                let subdir = name.substring(0, name.indexOf("/"))
+                for (let item of list) {
+                    if (item.name == subdir) return null
+                    return { name: subdir, size: -1 }
+                }
+            }
         }
     } else {
         let root = currentPath[currentFilesType].substring(1) + "/"
@@ -198,6 +210,18 @@ function consvertStringToFileDescriptor(data) {
             name = name.substring(root.length)
             if (name.indexOf("/") == -1) {
                 return { name: name, size: size }
+            } else {
+                if (
+                    esp3dSettings.FWTarget == "marlin-embedded" ||
+                    esp3dSettings.FWTarget == "marlin" ||
+                    esp3dSettings.FWTarget == "marlinkimbra"
+                ) {
+                    let subdir = name.substring(0, name.indexOf("/"))
+                    for (let item of list) {
+                        if (item.name == subdir) return null
+                        return { name: subdir, size: -1 }
+                    }
+                }
             }
         }
         return null
@@ -207,7 +231,7 @@ function consvertStringToFileDescriptor(data) {
 function generateSDList(list) {
     let result = []
     for (let data of list) {
-        let entry = consvertStringToFileDescriptor(data)
+        let entry = consvertStringToFileDescriptor(data, result)
         if (entry) result.push(entry)
     }
     return result
@@ -264,6 +288,7 @@ function processFiles(rawdata) {
         } else {
             //Todo ADD size limit in case of problem
             if (isSDListDetected) {
+                //console.log(data)
                 filesListCache[currentFilesType].push(data)
             }
         }
@@ -302,7 +327,7 @@ function canDelete(entry) {
             return true
         case "marlin":
         case "marlinkimbra":
-            if (entry.size!=-1) return true
+            if (entry.size != -1) return true
         default:
             return false
     }

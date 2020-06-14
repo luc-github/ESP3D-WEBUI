@@ -94,6 +94,7 @@ function isVerboseData(data) {
         data.startsWith("FlowMultiply:") ||
         data.startsWith("{") ||
         data.startsWith("EPR:") ||
+        data.startsWith("X:") ||
         data.startsWith("T:")
     )
         return true
