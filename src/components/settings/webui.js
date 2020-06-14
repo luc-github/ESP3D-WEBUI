@@ -376,7 +376,7 @@ function saveAndApply() {
  *
  */
 function closeDialog() {
-    showDialog({ displayDialog: false })
+    showDialog({ refreshPage: true, displayDialog: false })
 }
 
 /*

@@ -27,27 +27,13 @@ import { prefs } from "../settings"
 import { esp3dSettings } from "../app"
 import { useStoreon } from "storeon/preact"
 
-function showAbout() {
-    const { dispatch } = useStoreon()
-    dispatch("setPage", Page.about)
-}
-
-function showDashboard() {
-    const { dispatch } = useStoreon()
-    dispatch("setPage", Page.dashboard)
-}
-
-function showSettings() {
-    const { dispatch } = useStoreon()
-    dispatch("setPage", Page.settings)
-}
-
 /*
  * Header component
  *
  */
 export const Header = () => {
     const { activePage } = useStoreon("activePage")
+    const { dispatch } = useStoreon()
     if (typeof esp3dSettings == "undefined") return
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
@@ -56,7 +42,7 @@ export const Header = () => {
                     activePage == Page.about ? "nav-item active" : "nav-item"
                 }
                 title={T("S12")}
-                onClick={showAbout}
+                onClick={() => dispatch("setPage", Page.about)}
             >
                 <ESP3DLogo />
             </div>
@@ -69,7 +55,7 @@ export const Header = () => {
                         : "nav-item"
                 }
                 title={T("S13")}
-                onClick={showDashboard}
+                onClick={() => dispatch("setPage", Page.dashboard)}
             >
                 <Server />
                 <span class="disable-select hide-low">&nbsp;{T("S13")}</span>
@@ -79,7 +65,7 @@ export const Header = () => {
                     activePage == Page.settings ? "nav-item active" : "nav-item"
                 }
                 title={T("S14")}
-                onClick={showSettings}
+                onClick={() => dispatch("setPage", Page.settings)}
             >
                 <Settings />
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>

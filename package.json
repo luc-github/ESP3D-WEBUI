@@ -64,6 +64,6 @@
     "preact": "^10.4.4",
     "preact-feather": "4.1.0",
     "preact-router": "^3.2.1",
-    "storeon": "^3.0.0"
+    "storeon": "^3.0.2"
   }
 }

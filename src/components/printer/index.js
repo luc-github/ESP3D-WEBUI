@@ -371,7 +371,6 @@ function saveAndApply() {
 function processTemperatures(buffer) {
     const regexTemp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
-    const { dispatch } = useStoreon()
     while ((result = regexTemp.exec(buffer)) !== null) {
         var tool = result[1]
         var value =
@@ -387,7 +386,12 @@ function processTemperatures(buffer) {
                     .toString() + "°C"
         if (tool == "T") {
             //TODO add tool as key
-            dispatch("temperatures/update", { key: "T", value: value })
+            const { dispatch } = useStoreon()
+            if (dispatch) {
+                dispatch("temperatures/update", { key: "T", value: value })
+            } else {
+                console.log("no dispatch")
+            }
             //console.log(tool + ":" + value + "/" + value2)
         }
     }
