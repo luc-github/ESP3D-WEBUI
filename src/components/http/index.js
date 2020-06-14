@@ -55,7 +55,6 @@ function showError() {
  * Cancel the current upload
  */
 function cancelCurrentQuery(code, message) {
-    return
     currentHttpCommand.abort()
     lastError.code = typeof code == "undefined" ? 205 : code
     lastError.message =

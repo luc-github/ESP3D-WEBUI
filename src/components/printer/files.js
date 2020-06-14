@@ -300,6 +300,9 @@ function canDelete(entry) {
         case "repetier":
         case "repetier4davinci":
             return true
+        case "marlin":
+        case "marlinkimbra":
+            if (entry.size!=-1) return true
         default:
             return false
     }
@@ -394,6 +397,8 @@ function processDelete() {
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "repetier4davinci":
+                case "marlin":
+                case "marlinkimbra":
                     cmd = "M30 " + path
                     break
                 default:

@@ -52,7 +52,6 @@ function processFeedRate(msg) {
         let f = msg
         f = f.replace("FR:", "")
         f = parseInt(f)
-        console.log(f)
         if (lastSpeed == currentSpeed) {
             if (currentSpeed != f) {
                 currentSpeed = f

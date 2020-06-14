@@ -140,7 +140,8 @@ function setupWebSocket(wstype, wsIp, wsPort) {
  */
 function connectWsServer() {
     console.log("connect websocket")
-    if (!pingPaused) showDialog({ type: "loader", message: T("S2") })
+    //TODO move this to notification instead of Dialog
+    //if (!pingPaused) showDialog({ type: "loader", message: T("S2") })
     isLogOff = false
     try {
         webSocketClient = new WebSocket(
@@ -158,7 +159,6 @@ function connectWsServer() {
     webSocketClient.onopen = function(e) {
         reconnectCounter = 0
         //console.log("ws connection ok")
-        showDialog({ displayPage: true, displayDialog: false })
         ping(true)
     }
     //On close ws
@@ -183,6 +183,7 @@ function connectWsServer() {
     }
     //On ws error
     webSocketClient.onerror = function(e) {
+        //TODO move this to notification
         //showDialog({type:"error", numError:e, message:T("S4")})
         console.log("ws error", e)
     }
