@@ -749,7 +749,7 @@ function confirmRestart() {
 function restartEsp() {
     const cmd = encodeURIComponent("[ESP444]RESTART")
     disconnectWsServer()
-    SendCommand(cmd, reloadPage)
+    SendCommand(cmd, reloadPageFn,reloadPageFn)
     showDialog({ type: "message", title: T("S60"), message: T("S35") })
 }
 
@@ -757,8 +757,8 @@ function restartEsp() {
  * Reload web browser Page
  *
  */
-function reloadPage() {
-    setTimeout(function() {
+function reloadPageFn() {
+    setTimeout(() => {
         window.location.reload(true)
     }, 5000)
 }

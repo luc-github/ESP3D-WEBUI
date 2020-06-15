@@ -187,8 +187,7 @@ function restart() {
     if (pathUpload == "/files") {
         setTimeout(refreshPage, 3000)
     } else {
-        //wait for restart due to websocket disconnection
-        //so no need to reload
+        setTimeout(refreshPage, 5000)
     }
 }
 
