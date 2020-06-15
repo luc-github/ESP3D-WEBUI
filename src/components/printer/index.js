@@ -155,7 +155,7 @@ function configurationCmd(override) {
             return ["M503", "echo:  G21", "ok", "error"]
         case "smoothieware":
             if (!override)
-                return ["cat " + smoothiewareConfigFile, "#", "ok", "error"]
+                return ["cat " + smoothiewareConfigFile + "\necho done", "#", "echo: done", "error"]
             return ["M503", ";", "ok", "error"]
         default:
             return "Unknown"
