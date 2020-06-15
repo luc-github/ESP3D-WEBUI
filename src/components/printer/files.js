@@ -73,18 +73,49 @@ let queryOngoing = false
  * Give Configuration command and parameters
  */
 function listSDSerialFilesCmd() {
-    switch (esp3dSettings.FWTarget) {
-        case "repetier":
-        case "repetier4davinci":
-            return ["M20", "Begin file list", "End file list", "error"]
-        case "marlin-embedded":
-        case "marlin":
-        case "marlinkimbra":
-            return ["M20", "Begin file list", "End file list", "error"]
-        case "smoothieware":
-            return ["ls -s", "", "ok", "error"]
+    switch (currentFilesType) {
+        case "TFTSD":
+            return [
+                "M20 SD:" + currentPath[currentFilesType],
+                "Begin file list",
+                "End file list",
+                "error",
+            ]
+        case "TFTUSB":
+            return [
+                "M20 U:" + currentPath[currentFilesType],
+                "Begin file list",
+                "End file list",
+                "error",
+            ]
+        case "SDSerial":
+            switch (esp3dSettings.FWTarget) {
+                case "repetier":
+                case "repetier4davinci":
+                    return ["M20", "Begin file list", "End file list", "error"]
+                case "marlin-embedded":
+                case "marlin":
+                case "marlinkimbra":
+                    return ["M20", "Begin file list", "End file list", "error"]
+                case "smoothieware":
+                    return ["ls -s", "", "ok", "error"]
+                default:
+                    console.log(
+                        currentFilesType +
+                            " " +
+                            esp3dSettings.FWTarget +
+                            " is not supported"
+                    )
+                    return null
+            }
         default:
-            return "Unknown"
+            console.log(
+                currentFilesType +
+                    " " +
+                    esp3dSettings.FWTarget +
+                    " is not supported"
+            )
+            return null
     }
 }
 
@@ -92,18 +123,38 @@ function listSDSerialFilesCmd() {
  * Give Check SD Serial command and parameters
  */
 function checkSerialSDCmd() {
-    switch (esp3dSettings.FWTarget) {
-        case "repetier":
-        case "repetier4davinci":
-            return ["M21", "ok", "error"]
-        case "marlin-embedded":
-        case "marlin":
-        case "marlinkimbra":
-            return ["M21", "SD card ok", "SD init fail"]
-        case "smoothieware":
-            return ["ls /sd", "SD card ok", "Could not open"]
+    switch (currentFilesType) {
+        case "TFTSD":
+        case "TFTUSB":
+            return null
+        case "SDSerial":
+            switch (esp3dSettings.FWTarget) {
+                case "repetier":
+                case "repetier4davinci":
+                    return ["M21", "ok", "error"]
+                case "marlin-embedded":
+                case "marlin":
+                case "marlinkimbra":
+                    return ["M21", "SD card ok", "SD init fail"]
+                case "smoothieware":
+                    return ["ls /sd", "SD card ok", "Could not open"]
+                default:
+                    console.log(
+                        currentFilesType +
+                            " " +
+                            esp3dSettings.FWTarget +
+                            " is not supported"
+                    )
+                    return null
+            }
         default:
-            return "Unknown"
+            console.log(
+                currentFilesType +
+                    " " +
+                    esp3dSettings.FWTarget +
+                    " is not supported"
+            )
+            return null
     }
 }
 
@@ -135,9 +186,18 @@ function sdSerialListError(errorCode, responseText) {
 
 function ListSDSerialFiles() {
     let cmd = listSDSerialFilesCmd()
-    SendCommand(cmd[0], sdCheckSuccess, sdCheckError, null, "sdlist", 1)
-    isSDListRequested = true
-    listDataSize = 0
+    if (cmd) {
+        SendCommand(
+            encodeURIComponent(cmd[0]),
+            sdCheckSuccess,
+            sdCheckError,
+            null,
+            "sdlist",
+            1
+        )
+        isSDListRequested = true
+        listDataSize = 0
+    }
 }
 
 /*
@@ -170,17 +230,35 @@ function consvertStringToFileDescriptor(data, list) {
     let name
     entry.trim()
     if (entry.length == 0) return null
-    let pos = entry.lastIndexOf(" ")
-    let size = parseInt(entry.substring(pos))
-    if (isNaN(size)) {
-        size = -1
-    } else {
-        size = formatFileSize(size)
-    }
-    if (pos != -1) {
-        name = entry.substring(0, pos)
-    } else {
+    let pos
+    let size
+    if (currentFilesType == "TFTSD" || currentFilesType == "TFTUSB") {
         name = entry
+        if (name.endsWith("/")) {
+            size = -1
+        } else {
+            size = ""
+        }
+        if (name.endsWith("/")) {
+            name = name.substring(0, name.length - 1)
+        }
+        if (name.startsWith("/")) {
+            name = name.substring(1)
+        }
+        return { name: name, size: size }
+    } else {
+        pos = entry.lastIndexOf(" ")
+        size = parseInt(entry.substring(pos))
+        if (isNaN(size)) {
+            size = -1
+        } else {
+            size = formatFileSize(size)
+        }
+        if (pos != -1) {
+            name = entry.substring(0, pos)
+        } else {
+            name = entry
+        }
     }
     if (name.endsWith("/")) {
         name = name.substring(0, name.length - 1)
@@ -232,7 +310,10 @@ function generateSDList(list) {
     let result = []
     for (let data of list) {
         let entry = consvertStringToFileDescriptor(data, result)
-        if (entry) result.push(entry)
+        if (entry) {
+            //console.log(entry)
+            result.push(entry)
+        }
     }
     return result
 }
@@ -265,31 +346,33 @@ function processFiles(rawdata) {
             message: T("S1") + " " + listDataSize + "B",
         })
         let response = listSDSerialFilesCmd()
-        if (data.indexOf(response[2]) != -1) {
-            isSDListRequested = false
-            isSDListDetected = false
-            fileSystemCache[currentFilesType] = []
-            fileSystemCache[currentFilesType].files = generateSDList(
-                filesListCache[currentFilesType]
-            )
-            buildFilesList(fileSystemCache[currentFilesType].files)
-            fileSystemLoaded[currentFilesType] = true
-        } else if (data.indexOf(response[1]) != -1) {
-            filesListCache[currentFilesType] = []
-            isSDListDetected = true
-        } else if (data.indexOf(response[3]) != -1) {
-            //Set status no SD
-            let data = []
-            data.status = T("S110")
-            buildStatus(data)
-            isSDListRequested = false
-            isSDListDetected = false
-            showDialog({ displayDialog: false })
-        } else {
-            //Todo ADD size limit in case of problem
-            if (isSDListDetected) {
-                //console.log(data)
-                filesListCache[currentFilesType].push(data)
+        if (response) {
+            if (data.indexOf(response[2]) != -1) {
+                isSDListRequested = false
+                isSDListDetected = false
+                fileSystemCache[currentFilesType] = []
+                fileSystemCache[currentFilesType].files = generateSDList(
+                    filesListCache[currentFilesType]
+                )
+                buildFilesList(fileSystemCache[currentFilesType].files)
+                fileSystemLoaded[currentFilesType] = true
+            } else if (data.indexOf(response[1]) != -1) {
+                filesListCache[currentFilesType] = []
+                isSDListDetected = true
+            } else if (data.indexOf(response[3]) != -1) {
+                //Set status no SD
+                let data = []
+                data.status = T("S110")
+                buildStatus(data)
+                isSDListRequested = false
+                isSDListDetected = false
+                showDialog({ displayDialog: false })
+            } else {
+                //Todo ADD size limit in case of problem
+                if (isSDListDetected) {
+                    //console.log(data)
+                    filesListCache[currentFilesType].push(data)
+                }
             }
         }
     }
@@ -318,7 +401,11 @@ function processFiles(rawdata) {
  * Check is can create directory
  */
 function canDelete(entry) {
-    if (currentFilesType == "FS") {
+    if (
+        currentFilesType == "FS" ||
+        currentFilesType == "TFTSD" ||
+        currentFilesType == "TFTUSB"
+    ) {
         return true
     }
     switch (esp3dSettings.FWTarget) {
@@ -396,6 +483,7 @@ function canDownload() {
  */
 function processDelete() {
     let cmd
+    let path
     showDialog({ type: "loader", message: T("S102") })
     switch (currentFilesType) {
         case "FS":
@@ -415,8 +503,38 @@ function processDelete() {
                 1
             )
             break
+        case "TFTSD":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += processingEntry.name
+            cmd = "M30 SD:" + path
+            queryOngoing = true
+            SendCommand(
+                encodeURIComponent(cmd),
+                querySuccess,
+                queryError,
+                null,
+                "deletedir",
+                1
+            )
+            break
+        case "TFTUSB":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += processingEntry.name
+            cmd = "M30 U:" + path
+            queryOngoing = true
+            SendCommand(
+                encodeURIComponent(cmd),
+                querySuccess,
+                queryError,
+                null,
+                "deletedir",
+                1
+            )
+            break
         case "SDSerial":
-            let path = currentPath[currentFilesType]
+            path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
             path += processingEntry.name
             switch (esp3dSettings.FWTarget) {
@@ -512,9 +630,22 @@ function processCreateDir() {
 function processPrint(entry) {
     console.log("print " + entry.name)
     let cmd
+    let path
     switch (currentFilesType) {
+        case "TFTSD":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += entry.name
+            cmd = "M23 SD:" + path + "\nM24"
+            break
+        case "TFTUSB":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += entry.name
+            cmd = "M23 U:" + path + "\nM24"
+            break
         case "SDSerial":
-            let path = currentPath[currentFilesType]
+            path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
             path += entry.name
             switch (esp3dSettings.FWTarget) {
@@ -530,19 +661,20 @@ function processPrint(entry) {
                     showDialog({ displayDialog: false })
                     return
             }
-            SendCommand(
-                encodeURIComponent(cmd),
-                querySuccess,
-                queryError,
-                null,
-                "print",
-                1
-            )
             break
         default:
             console.log(currentFilesType + " is not a valid file system")
             showDialog({ displayDialog: false })
+            return
     }
+    SendCommand(
+        encodeURIComponent(cmd),
+        querySuccess,
+        queryError,
+        null,
+        "print",
+        1
+    )
 }
 
 /*
@@ -881,6 +1013,7 @@ function refreshFilesList(isopendir = false) {
         currentPath[currentFilesType] = "/"
     let cmd
     showDialog({ type: "loader", message: T("S1") })
+    //console.log("refresh " + currentPath[currentFilesType]  +" of " +  currentFilesType + " opendir:" + isopendir)
     switch (currentFilesType) {
         case "FS":
             cmd =
@@ -895,6 +1028,11 @@ function refreshFilesList(isopendir = false) {
                 "fslist",
                 1
             )
+            break
+        case "TFTSD":
+        case "TFTUSB":
+            //only one level at once
+            ListSDSerialFiles()
             break
         case "SDSerial":
             if (isopendir) {
@@ -986,13 +1124,14 @@ const FilesTypeSelector = () => {
     optionsList.push(<option value="FS">ESP</option>)
     if (esp3dSettings.SDConnection == "none")
         optionsList.push(<option value="SDSerial">SD</option>)
+    if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
+    if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)
     //TODO
     //direct or serial (sd is serial on smoothieware
     //optionsList.push(<option value="SD">SD</option>)
     //secondary serial or direct ext can be direct or serial TBD
     //optionsList.push(<option value="SDext">SD2</option>)
-    //if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
-    //if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)
+
     return (
         <div>
             <select

@@ -270,7 +270,35 @@ app.get("/command", function(req, res) {
         res.send("")
         return
     }
-
+    if (url.indexOf("M20%20SD%3A") != -1) {
+        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+            SendBinary(
+                "Begin file list\n" +
+                    "mcodeL.gco\n" +
+                    "mycode4.gco\n" +
+                    "mycode5.gco\n" +
+                    "/Mydir/\n" +
+                    "/Mydir2/\n" +
+                    "End file list\n" +
+                    "ok\n"
+            )
+        res.send("")
+        return
+    }
+    if (url.indexOf("M20%20U%3A") != -1) {
+        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+            SendBinary(
+                "Begin file list\n" +
+                    "mycodeL.gco\n" +
+                    "mycode3.gco\n" +
+                    "/Mysubdir/\n" +
+                    "/Zaerd 2018 SP0.1 Full Premium Multilanguage Integrated x64/\n" +
+                    "End file list\n" +
+                    "ok\n"
+            )
+        res.send("")
+        return
+    }
     if (url.indexOf("M20") != -1) {
         if (targetFW == "repetier" || targetFW == "repetier4davinci")
             SendBinary(
