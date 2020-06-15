@@ -291,7 +291,7 @@ export const AboutPage = ({ currentState }) => {
                         <button
                             type="button"
                             title={T("S25")}
-                            class="btn btn-primary btn-sm"
+                            class={esp3dSettings.WebUpdate == "Enabled"?"btn btn-primary btn-sm":"d-none"}
                             onClick={onClickUpdateFW}
                         >
                             <UploadCloud />
