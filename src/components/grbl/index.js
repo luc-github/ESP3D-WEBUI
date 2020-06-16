@@ -184,9 +184,7 @@ function doImport() {
     currentIndex++
     if (currentIndex < size_list) {
         let percentComplete = (currentIndex / size_list) * 100
-        const cmd = encodeURIComponent(
-            getCommand(listImportedSettings[currentIndex])
-        )
+        const cmd = getCommand(listImportedSettings[currentIndex])
         updateProgress({ progress: percentComplete.toFixed(0) })
         SendCommand(cmd, doImport, saveConfigError)
     } else {
@@ -295,7 +293,7 @@ function exportSettings() {
  *
  */
 function processSaveConfig() {
-    const command = encodeURIComponent(saveConfigurationCmd()[0])
+    const command = saveConfigurationCmd()[0]
     showDialog({ displayDialog: false })
     SendCommand(command, null, loadConfigError)
 }
@@ -429,7 +427,7 @@ function stopTimeout() {
  * Load Firmware settings
  */
 function loadConfig() {
-    const cmd = encodeURIComponent(configurationCmd()[0])
+    const cmd = configurationCmd()[0]
     isloaded = true
     isConfigRequested = true
     isConfigData = false
@@ -631,7 +629,7 @@ function saveConfigError(errorCode, responseText) {
 function saveSetting(entry) {
     entry.saving = true
     saveOnGoing = true
-    let command = encodeURIComponent(getCommand(entry))
+    let command = getCommand(entry)
     SendCommand(command, null, saveConfigError)
 }
 

@@ -249,7 +249,7 @@ function loadConfig() {
         String(d.getMinutes()).padStart(2, "0") +
         "-" +
         String(d.getSeconds()).padStart(2, "0")
-    const cmd = encodeURIComponent("[ESP800]" + "time=" + PCtime)
+    const cmd = "[ESP800]" + "time=" + PCtime
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW config")
     SendCommand(cmd, loadConfigSuccess, loadConfigError)

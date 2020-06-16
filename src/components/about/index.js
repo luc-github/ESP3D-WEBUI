@@ -183,7 +183,7 @@ function processUpload() {
  */
 function restart() {
     clearUploadInformation()
-    showDialog({ type: "message", message: T("S34"), title: T("S35") })
+    showDialog({ type: "loader", message: T("S34"), title: T("S35") })
     if (pathUpload == "/files") {
         setTimeout(refreshPage, 3000)
     } else {
@@ -290,7 +290,11 @@ export const AboutPage = ({ currentState }) => {
                         <button
                             type="button"
                             title={T("S25")}
-                            class={esp3dSettings.WebUpdate == "Enabled"?"btn btn-primary btn-sm":"d-none"}
+                            class={
+                                esp3dSettings.WebUpdate == "Enabled"
+                                    ? "btn btn-primary btn-sm"
+                                    : "d-none"
+                            }
                             onClick={onClickUpdateFW}
                         >
                             <UploadCloud />
@@ -368,7 +372,7 @@ export const AboutPage = ({ currentState }) => {
  * Load Firmware Status
  */
 function loadStatus() {
-    const cmd = encodeURIComponent("[ESP420]")
+    const cmd = "[ESP420]"
     isloaded = true
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW status")

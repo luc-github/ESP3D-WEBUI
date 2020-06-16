@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { Page } from "../app"
-import { TerminalPanel, updateTerminal } from "./terminal"
+import { TerminalPanel, updateTerminal, updateContentType } from "./terminal"
 const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
 const { FilesPanel } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../settings"
@@ -34,6 +34,7 @@ const DashboardToolBar = () => {
     const toogleTerminal = e => {
         const { dispatch } = useStoreon()
         dispatch("panel/showterminal", !showTerminal)
+        updateContentType()
     }
     const toogleFiles = e => {
         const { dispatch } = useStoreon()

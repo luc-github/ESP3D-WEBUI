@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { useEffect } from "preact/hooks"
-import { AlertTriangle, Info } from "preact-feather"
+import { AlertTriangle, Info, HelpCircle } from "preact-feather"
 import { T } from "../translations"
 import { useStoreon } from "storeon/preact"
 import { Page, reloadPage } from "../app"
@@ -124,6 +124,7 @@ const DialogPage = () => {
     let iconTitle, iconMsg
     let progressbar
     let title = dialogData.title
+    if (typeof title !="undefined")iconTitle = <Info color="blue" />
     if (
         dialogData.type == "error" ||
         (dialogData.type == "disconnect" && dialogData.numError)
@@ -152,7 +153,7 @@ const DialogPage = () => {
         iconTitle = <Info color="blue" />
     }
     if (dialogData.type == "confirmation") {
-        iconTitle = <Info color="blue" />
+        iconTitle = <HelpCircle color="blue" />
         if (!dialogData.button2text) dialogData.button2text = T("S28")
         classname += " greybg"
     }

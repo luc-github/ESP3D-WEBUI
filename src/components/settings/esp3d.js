@@ -528,7 +528,7 @@ const JoinNetworkButton = ({ SSID }) => {
  * Load Firmware Settings
  */
 function loadSettings() {
-    const cmd = encodeURIComponent("[ESP400]")
+    const cmd = "[ESP400]"
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW Settings")
     SendCommand(cmd, loadSettingsSuccess, loadSettingsError)
@@ -554,7 +554,7 @@ function loadSettingsSuccess(responseText) {
  * Load Network list Settings
  */
 function loadWiFiNetworks() {
-    const cmd = encodeURIComponent("[ESP410]")
+    const cmd = "[ESP410]"
     showDialog({ type: "loader", message: T("S1") })
     console.log("load wifi networks")
     SendCommand(cmd, loadWiFiNetworksSuccess, loadSettingsError)
@@ -677,9 +677,8 @@ function saveSettingError(errorCode, responseText) {
  * Save setting
  */
 function saveSetting(entry) {
-    const cmd = encodeURIComponent(
+    const cmd =
         "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
-    )
     showDialog({ type: "loader", message: T("S91") })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
@@ -747,10 +746,10 @@ function confirmRestart() {
  *
  */
 function restartEsp() {
-    const cmd = encodeURIComponent("[ESP444]RESTART")
+    const cmd = "[ESP444]RESTART"
     disconnectWsServer()
-    SendCommand(cmd, reloadPageFn,reloadPageFn)
-    showDialog({ type: "message", title: T("S60"), message: T("S35") })
+    SendCommand(cmd, reloadPageFn, reloadPageFn)
+    showDialog({ type: "loader", title: T("S60"), message: T("S35") })
 }
 
 /*
@@ -776,14 +775,13 @@ function doImport() {
     currentIndex++
     if (currentIndex < size_list) {
         let percentComplete = (currentIndex / size_list) * 100
-        const cmd = encodeURIComponent(
+        const cmd =
             "[ESP401]P=" +
-                listSettings[currentIndex].P +
-                " T=" +
-                listSettings[currentIndex].T +
-                " V=" +
-                listSettings[currentIndex].V
-        )
+            listSettings[currentIndex].P +
+            " T=" +
+            listSettings[currentIndex].T +
+            " V=" +
+            listSettings[currentIndex].V
         updateProgress({ progress: percentComplete.toFixed(0) })
         if (listSettings[currentIndex].V != "********") {
             SendCommand(cmd, doImport, saveSettingError)

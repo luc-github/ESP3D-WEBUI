@@ -109,6 +109,7 @@
     "S108" : "Downloading...",
     "S109" : "Command error...",
     "S110" : "No SD card",
+    "S111" : "Could not open directory",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

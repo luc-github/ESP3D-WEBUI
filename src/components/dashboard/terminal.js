@@ -231,7 +231,7 @@ function sendCommand(cmd) {
     commandHistory.push(cmd)
     commandHistory.slice(-MAX_HISTORY_SIZE)
     commandHistoryIndex = commandHistory.length
-    SendCommand(encodeURIComponent(cmd), sendCommandSuccess, sendCommandError)
+    SendCommand(cmd, sendCommandSuccess, sendCommandError)
     pauseAutoscroll = false
     updateTerminal(">" + cmd)
 }
@@ -366,4 +366,4 @@ const TerminalPanel = () => {
     )
 }
 
-export { TerminalPanel, updateTerminal }
+export { TerminalPanel, updateTerminal, updateContentType }

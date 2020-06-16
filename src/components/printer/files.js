@@ -98,7 +98,14 @@ function listSDSerialFilesCmd() {
                 case "marlinkimbra":
                     return ["M20", "Begin file list", "End file list", "error"]
                 case "smoothieware":
-                    return ["ls -s", "", "ok", "error"]
+                    return [
+                        "ls -s /sd" +
+                            currentPath[currentFilesType] +
+                            "\necho endlist",
+                        "ok",
+                        ": endlist",
+                        "Could not open",
+                    ]
                 default:
                     console.log(
                         currentFilesType +
@@ -137,7 +144,7 @@ function checkSerialSDCmd() {
                 case "marlinkimbra":
                     return ["M21", "SD card ok", "SD init fail"]
                 case "smoothieware":
-                    return ["ls /sd", "SD card ok", "Could not open"]
+                    return ["M21", "SD card ok", "Could not open"]
                 default:
                     console.log(
                         currentFilesType +
@@ -187,14 +194,8 @@ function sdSerialListError(errorCode, responseText) {
 function ListSDSerialFiles() {
     let cmd = listSDSerialFilesCmd()
     if (cmd) {
-        SendCommand(
-            encodeURIComponent(cmd[0]),
-            sdCheckSuccess,
-            sdCheckError,
-            null,
-            "sdlist",
-            1
-        )
+        console.log(cmd[0])
+        SendCommand(cmd[0], sdCheckSuccess, sdCheckError, null, "sdlist", 1)
         isSDListRequested = true
         listDataSize = 0
     }
@@ -266,7 +267,10 @@ function consvertStringToFileDescriptor(data, list) {
     if (name.startsWith("/")) {
         name = name.substring(1)
     }
-    if (currentPath[currentFilesType] == "/") {
+    if (
+        currentPath[currentFilesType] == "/" ||
+        esp3dSettings.FWTarget == "smoothieware"
+    ) {
         if (name.indexOf("/") == -1) {
             return { name: name, size: size }
         } else {
@@ -309,9 +313,9 @@ function consvertStringToFileDescriptor(data, list) {
 function generateSDList(list) {
     let result = []
     for (let data of list) {
+        console.log(data)
         let entry = consvertStringToFileDescriptor(data, result)
         if (entry) {
-            //console.log(entry)
             result.push(entry)
         }
     }
@@ -322,9 +326,10 @@ function generateSDList(list) {
  * process Files queries
  */
 function processFiles(rawdata) {
-    let data = rawdata.replace("\n", "").replace("\r", "")
+    let data = rawdata
     data.trim()
     if (data.length == 0) return
+    //console.log(rawdata)
     if (isSDCheckRequested) {
         let response = checkSerialSDCmd()
         if (data.indexOf(response[1]) != -1) {
@@ -360,24 +365,31 @@ function processFiles(rawdata) {
                 filesListCache[currentFilesType] = []
                 isSDListDetected = true
             } else if (data.indexOf(response[3]) != -1) {
-                //Set status no SD
+                //Set status error
                 let data = []
-                data.status = T("S110")
+                data.status = T("S111")
                 buildStatus(data)
                 isSDListRequested = false
                 isSDListDetected = false
+                //revert path to allow refresh
+                let pos = currentPath[currentFilesType].lastIndexOf("/")
+                let newpath = currentPath[currentFilesType].substring(0, pos)
+                if (newpath.length == 0) newpath = "/"
+                currentPath[currentFilesType] = newpath
                 showDialog({ displayDialog: false })
             } else {
                 //Todo ADD size limit in case of problem
                 if (isSDListDetected) {
-                    //console.log(data)
+                    console.log("pushing: " + data)
                     filesListCache[currentFilesType].push(data)
                 }
             }
         }
     }
     if (queryOngoing) {
+        console.log("[OG]" + rawdata)
         if (
+            rawdata.startsWith("ok") ||
             rawdata.startsWith("Deletion ") ||
             rawdata.startsWith("Creation ") ||
             rawdata.startsWith("File ") ||
@@ -388,6 +400,7 @@ function processFiles(rawdata) {
             data.status = rawdata
             buildStatus(T(data))
             if (
+                rawdata.startsWith("ok") ||
                 rawdata.startsWith("File deleted") ||
                 rawdata.startsWith("Directory created")
             )
@@ -408,15 +421,18 @@ function canDelete(entry) {
     ) {
         return true
     }
-    switch (esp3dSettings.FWTarget) {
-        case "repetier":
-        case "repetier4davinci":
-            return true
-        case "marlin":
-        case "marlinkimbra":
-            if (entry.size != -1) return true
-        default:
-            return false
+    if (currentFilesType == "SDSerial") {
+        switch (esp3dSettings.FWTarget) {
+            case "repetier":
+            case "repetier4davinci":
+                return true
+            case "smoothieware":
+            case "marlin":
+            case "marlinkimbra":
+                if (entry.size != -1) return true
+            default:
+                return false
+        }
     }
     return false
 }
@@ -509,14 +525,7 @@ function processDelete() {
             path += processingEntry.name
             cmd = "M30 SD:" + path
             queryOngoing = true
-            SendCommand(
-                encodeURIComponent(cmd),
-                querySuccess,
-                queryError,
-                null,
-                "deletedir",
-                1
-            )
+            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
             break
         case "TFTUSB":
             path = currentPath[currentFilesType]
@@ -524,14 +533,7 @@ function processDelete() {
             path += processingEntry.name
             cmd = "M30 U:" + path
             queryOngoing = true
-            SendCommand(
-                encodeURIComponent(cmd),
-                querySuccess,
-                queryError,
-                null,
-                "deletedir",
-                1
-            )
+            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
             break
         case "SDSerial":
             path = currentPath[currentFilesType]
@@ -542,6 +544,7 @@ function processDelete() {
                 case "repetier4davinci":
                 case "marlin":
                 case "marlinkimbra":
+                case "smoothieware":
                     cmd = "M30 " + path
                     break
                 default:
@@ -552,14 +555,8 @@ function processDelete() {
                     return
             }
             queryOngoing = true
-            SendCommand(
-                encodeURIComponent(cmd),
-                querySuccess,
-                queryError,
-                null,
-                "deletedir",
-                1
-            )
+            console.log(cmd)
+            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
             break
         default:
             console.log(currentFilesType + " is not a valid file system")
@@ -608,14 +605,7 @@ function processCreateDir() {
                         return
                 }
                 queryOngoing = true
-                SendCommand(
-                    encodeURIComponent(cmd),
-                    querySuccess,
-                    queryError,
-                    null,
-                    "createdir",
-                    1
-                )
+                SendCommand(cmd, querySuccess, queryError, null, "createdir", 1)
                 break
             default:
                 console.log(currentFilesType + " is not a valid file system")
@@ -651,7 +641,12 @@ function processPrint(entry) {
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "repetier4davinci":
+                case "marlin":
+                case "marlinkimbra":
                     cmd = "M23 " + path + "\nM24"
+                    break
+                case "smoothieware":
+                    cmd = "play /sd" + path
                     break
                 default:
                     console.log(
@@ -667,14 +662,8 @@ function processPrint(entry) {
             showDialog({ displayDialog: false })
             return
     }
-    SendCommand(
-        encodeURIComponent(cmd),
-        querySuccess,
-        queryError,
-        null,
-        "print",
-        1
-    )
+    console.log(cmd)
+    SendCommand(cmd, querySuccess, queryError, null, "print", 1)
 }
 
 /*
@@ -1013,7 +1002,14 @@ function refreshFilesList(isopendir = false) {
         currentPath[currentFilesType] = "/"
     let cmd
     showDialog({ type: "loader", message: T("S1") })
-    //console.log("refresh " + currentPath[currentFilesType]  +" of " +  currentFilesType + " opendir:" + isopendir)
+    console.log(
+        "refresh " +
+            currentPath[currentFilesType] +
+            " of " +
+            currentFilesType +
+            " opendir:" +
+            isopendir
+    )
     switch (currentFilesType) {
         case "FS":
             cmd =
@@ -1035,7 +1031,7 @@ function refreshFilesList(isopendir = false) {
             ListSDSerialFiles()
             break
         case "SDSerial":
-            if (isopendir) {
+            if (isopendir && esp3dSettings.FWTarget != "smoothieware") {
                 fileSystemCache[currentFilesType].files = generateSDList(
                     filesListCache[currentFilesType]
                 )
@@ -1043,6 +1039,7 @@ function refreshFilesList(isopendir = false) {
                 fileSystemLoaded[currentFilesType] = true
             } else {
                 cmd = checkSerialSDCmd()
+                filesListCache[currentFilesType] = []
                 SendCommand(
                     cmd[0],
                     sdCheckSuccess,

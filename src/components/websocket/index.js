@@ -195,7 +195,9 @@ function connectWsServer() {
             for (var i = 0; i < bytes.length; i++) {
                 //process line by line
                 if (bytes[i] == 10 || bytes[i] == 13) {
-                    processWebSocketBuffer(webSocketBuffer)
+                    if (webSocketBuffer.length > 0) {
+                        processWebSocketBuffer(webSocketBuffer)
+                    }
                     webSocketBuffer = ""
                 } else {
                     webSocketBuffer += String.fromCharCode(bytes[i])

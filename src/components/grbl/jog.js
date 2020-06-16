@@ -212,7 +212,7 @@ const JogPanel = () => {
             cmd += id[4]
         }
         console.log(cmd)
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const sendJogCommand = e => {
@@ -290,7 +290,7 @@ const JogPanel = () => {
         }
         cmd = "$J=G91 G21 F" + feedrate + " " + distance
         console.log(cmd)
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const sendZeroCommand = e => {
@@ -306,7 +306,7 @@ const JogPanel = () => {
         } else {
             cmd += id[4] + "0"
         }
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const onCheck = e => {

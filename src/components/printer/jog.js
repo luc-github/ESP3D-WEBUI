@@ -261,7 +261,7 @@ const FeedRateSlider = () => {
         let cmd = "M220 S" + currentSpeed
         lastSpeed = currentSpeed
         updateState(currentSpeed, "speed_input")
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
     useEffect(() => {
         updateState(currentSpeed, "speed_input")
@@ -408,7 +408,7 @@ const JogPanel = () => {
                 cmd = "G28"
                 break
         }
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const onMouseDown = e => {
@@ -568,7 +568,7 @@ const JogPanel = () => {
                 break
         }
         cmd = "G91\nG1 " + distance + " F" + feedrate + "\nG90"
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const sendMoveCommand = e => {
@@ -589,7 +589,7 @@ const JogPanel = () => {
             preferences.settings.ypos +
             " F" +
             currentFeedRate["xyfeedrate"]
-        SendCommand(encodeURIComponent(cmd), null, sendCommandError)
+        SendCommand(cmd, null, sendCommandError)
     }
 
     const onHoverJog = e => {

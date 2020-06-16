@@ -278,7 +278,7 @@ function processCommands() {
 }
 
 function SendCommand(cmd, result_fn, error_fn, progress_fn, id, max_id) {
-    const url = "/command?cmd=" + cmd
+    const url = "/command?cmd=" + encodeURIComponent(cmd)
     return SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id)
 }
 
