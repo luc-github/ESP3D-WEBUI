@@ -43,6 +43,14 @@ const Page = { none: 0, about: 1, dashboard: 2, settings: 3 }
  *
  */
 let esp3dSettings = [] //light esp3d settings (ESP800)
+let customdata = [] //custom data
+
+/*
+ * Set custom data
+ */
+function setCustomdata(data) {
+    customdata = data
+}
 
 /*
  * Main page
@@ -122,4 +130,6 @@ export {
     updateTerminal,
     preferences,
     reloadPage,
+    customdata,
+    setCustomdata,
 }

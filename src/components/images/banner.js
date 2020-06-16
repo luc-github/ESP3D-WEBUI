@@ -24,11 +24,9 @@ import { h } from "preact"
  *ESP3D banner
  *
  */
-const ESP3DBanner = ({ visible = true, title, text }) => {
+const ESP3DBanner = ({ visible = true, title, text, link }) => {
     const onclick = e => {
-        window.open(
-            "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
-        )
+        window.open(link)
     }
     return (
         <div class={visible ? "d-block" : "d-none"}>

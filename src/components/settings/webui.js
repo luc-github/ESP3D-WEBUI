@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { setLang, T } from "../translations"
 import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
-import { Setting, applyConfig } from "../app"
+import { Setting, applyConfig, setCustomdata } from "../app"
 import {
     SendCommand,
     cancelCurrentQuery,
@@ -106,12 +106,38 @@ function updateUI() {
 }
 
 /*
+ * Got custom file
+ */
+function loadOEMSuccess(responseText) {
+    try {
+        let oemdata = JSON.parse(responseText)
+        setCustomdata(oemdata)
+    } catch (err) {
+        console.log("invalid oem file")
+    }
+}
+
+/*
+ * Did nit get custom file so ignore it
+ */
+function loadOEMError(errorCode, responseText) {}
+
+/*
+ * Customize UI out of index
+ */
+function loadOEMfile() {
+    const url = "/oem.json"
+    SendGetHttp(url, loadOEMSuccess, loadOEMError)
+}
+
+/*
  * Function starting initialization
  */
 function initApp() {
     preferences = JSON.parse(default_preferences)
     document.title = document.location.host
     showDialog({ type: "loader" })
+    loadOEMfile()
     loadPreferences()
 }
 

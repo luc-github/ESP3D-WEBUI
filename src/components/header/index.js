@@ -19,7 +19,7 @@
 */
 
 import { h } from "preact"
-import { Page } from "../app"
+import { Page, customdata } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings } from "preact-feather"
 import { T } from "../translations"
@@ -35,6 +35,31 @@ export const Header = () => {
     const { activePage } = useStoreon("activePage")
     const { dispatch } = useStoreon()
     if (typeof esp3dSettings == "undefined") return
+    let titlebanner = T("S15")
+    let textbanner = T("S11")
+    let linkbanner =
+        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
+    let logo = <ESP3DLogo />
+    console.log(customdata)
+    if (customdata.text) {
+        textbanner = customdata.text
+    }
+    if (customdata.title) {
+        titlebanner = customdata.title
+    }
+    if (customdata.link) {
+        linkbanner = customdata.link
+    }
+    if (customdata.logo) {
+        let data = customdata.logo.replace("{height}", "'50px'")
+        logo = (
+            <div
+                dangerouslySetInnerHTML={{
+                    __html: data,
+                }}
+            ></div>
+        )
+    }
     return (
         <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
             <div
@@ -44,7 +69,7 @@ export const Header = () => {
                 title={T("S12")}
                 onClick={() => dispatch("setPage", Page.about)}
             >
-                <ESP3DLogo />
+                {logo}
             </div>
             <div
                 class={
@@ -72,8 +97,9 @@ export const Header = () => {
             </div>
             <ESP3DBanner
                 visible={prefs.banner}
-                title={T("S15")}
-                text={T("S11")}
+                title={titlebanner}
+                text={textbanner}
+                link={linkbanner}
             />
         </nav>
     )

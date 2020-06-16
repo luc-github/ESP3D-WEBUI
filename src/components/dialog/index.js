@@ -124,7 +124,7 @@ const DialogPage = () => {
     let iconTitle, iconMsg
     let progressbar
     let title = dialogData.title
-    if (typeof title !="undefined")iconTitle = <Info color="blue" />
+    if (typeof title != "undefined") iconTitle = <Info color="blue" />
     if (
         dialogData.type == "error" ||
         (dialogData.type == "disconnect" && dialogData.numError)

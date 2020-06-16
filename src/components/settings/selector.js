@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { Tool, Eye } from "preact-feather"
-import { Setting, esp3dSettings } from "../app"
+import { Setting, esp3dSettings, customdata } from "../app"
 import { ESP3DLogo } from "../images"
 import { useStoreon } from "storeon/preact"
 const { firmwareName } = require(`../${process.env.TARGET_ENV}`)
@@ -39,6 +39,17 @@ export const Selector = ({ currentSetting }) => {
     let visible = false
     let target = ""
     const { dispatch } = useStoreon()
+    let logo = <ESP3DLogo height="1.2em" />
+    if (customdata.logo) {
+        let data = customdata.logo.replace("{height}", "'1.2em'")
+        logo = (
+            <span
+                dangerouslySetInnerHTML={{
+                    __html: data,
+                }}
+            ></span>
+        )
+    }
     function onclickesp3d() {
         dispatch("setSettingTab", Setting.esp3d)
     }
@@ -71,7 +82,7 @@ export const Selector = ({ currentSetting }) => {
                         }
                         onclick={onclickesp3d}
                     >
-                        <ESP3DLogo height="1.2em" />
+                        {logo}
                         <span class="hide-low text-button">{T("S36")}</span>
                     </li>
                     <li
