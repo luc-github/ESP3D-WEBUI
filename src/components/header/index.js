@@ -40,7 +40,6 @@ export const Header = () => {
     let linkbanner =
         "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8FFE7NA4LJWQ"
     let logo = <ESP3DLogo />
-    console.log(customdata)
     if (customdata.text) {
         textbanner = customdata.text
     }
