@@ -1361,6 +1361,7 @@ function progressAction(oEvent) {
         updateProgress({ progress: percentComplete.toFixed(0) })
     } else {
         // Impossible because size is unknown
+        console.log("Progress impossible because size is unknown")
     }
 }
 

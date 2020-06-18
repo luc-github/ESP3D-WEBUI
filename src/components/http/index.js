@@ -255,11 +255,19 @@ function processCommands() {
                 typeof httpCommandList[0].progressfn != "undefined" &&
                 httpCommandList[0].progressfn != null
             )
+            if(isdownload){
+                currentHttpCommand.addEventListener(
+                    "progress",
+                    httpCommandList[0].progressfn,
+                    false
+                )
+            } else {
                 currentHttpCommand.upload.addEventListener(
                     "progress",
                     httpCommandList[0].progressfn,
                     false
                 )
+            }
             if (httpCommandList[0].type == "POST") {
                 //console.log("Post query")
                 console.log(httpCommandList[0].data)
