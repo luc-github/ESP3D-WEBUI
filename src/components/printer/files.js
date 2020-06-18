@@ -191,6 +191,9 @@ function sdSerialListError(errorCode, responseText) {
     showDialog({ type: "error", numError: errorCode, message: T("S103") })
 }
 
+/*
+ * List SD files using Serial command
+ */
 function ListSDSerialFiles() {
     let cmd = listSDSerialFilesCmd()
     if (cmd) {
@@ -310,6 +313,9 @@ function consvertStringToFileDescriptor(data, list) {
     }
 }
 
+/*
+ * Convert text list to generic format
+ */
 function generateSDList(list) {
     let result = []
     for (let data of list) {
@@ -415,6 +421,7 @@ function processFiles(rawdata) {
  */
 function canDelete(entry) {
     if (
+        currentFilesType == "SDDirect" ||
         currentFilesType == "FS" ||
         currentFilesType == "TFTSD" ||
         currentFilesType == "TFTUSB"
@@ -459,7 +466,7 @@ function canPrint(entry) {
  * Check if can create directory
  */
 function canCreateDirectory() {
-    if (currentFilesType == "FS") {
+    if (currentFilesType == "FS" || currentFilesType == "SDDirect") {
         return true
     }
     switch (esp3dSettings.FWTarget) {
@@ -476,7 +483,7 @@ function canCreateDirectory() {
  * Check if can upload
  */
 function canUpload() {
-    if (currentFilesType == "FS") {
+    if (currentFilesType == "FS" || currentFilesType == "SDDirect") {
         return true
     }
 
@@ -487,7 +494,7 @@ function canUpload() {
  * Check if can download
  */
 function canDownload() {
-    if (currentFilesType == "FS") {
+    if (currentFilesType == "FS" || currentFilesType == "SDDirect") {
         return true
     }
 
@@ -505,6 +512,23 @@ function processDelete() {
         case "FS":
             cmd =
                 "files?path=" +
+                encodeURIComponent(currentPath[currentFilesType]) +
+                "&action=" +
+                (processingEntry.size == -1 ? "deletedir" : "delete") +
+                "&filename=" +
+                encodeURIComponent(processingEntry.name)
+            SendGetHttp(
+                cmd,
+                refreshFilesListSuccess,
+                refreshFilesListError,
+                null,
+                "fslist",
+                1
+            )
+            break
+        case "SDDirect":
+            cmd =
+                "sdfiles?path=" +
                 encodeURIComponent(currentPath[currentFilesType]) +
                 "&action=" +
                 (processingEntry.size == -1 ? "deletedir" : "delete") +
@@ -575,6 +599,21 @@ function processCreateDir() {
             case "FS":
                 cmd =
                     "files?path=" +
+                    encodeURIComponent(currentPath[currentFilesType]) +
+                    "&action=createdir&filename=" +
+                    encodeURIComponent(processingEntry)
+                SendGetHttp(
+                    cmd,
+                    refreshFilesListSuccess,
+                    refreshFilesListError,
+                    null,
+                    "fslist",
+                    1
+                )
+                break
+            case "SDDirect":
+                cmd =
+                    "sdfiles?path=" +
                     encodeURIComponent(currentPath[currentFilesType]) +
                     "&action=createdir&filename=" +
                     encodeURIComponent(processingEntry)
@@ -812,6 +851,8 @@ const FileEntry = ({ entry, pos }) => {
                             ? ""
                             : currentFilesType == "FS"
                             ? "d-none"
+                            : currentFilesType == "SDDirect"
+                            ? "d-none"
                             : "invisible"
                     }
                 >
@@ -956,6 +997,7 @@ function buildStatus(data) {
 function refreshFilesListSuccess(responseText) {
     try {
         switch (currentFilesType) {
+            case "SDDirect":
             case "FS":
                 let responsejson = JSON.parse(responseText)
                 buildFilesList(responsejson.files)
@@ -1014,6 +1056,20 @@ function refreshFilesList(isopendir = false) {
         case "FS":
             cmd =
                 "files?path=" +
+                encodeURIComponent(currentPath[currentFilesType]) +
+                "&action=list"
+            SendGetHttp(
+                cmd,
+                refreshFilesListSuccess,
+                refreshFilesListError,
+                null,
+                "fslist",
+                1
+            )
+            break
+        case "SDDirect":
+            cmd =
+                "sdfiles?path=" +
                 encodeURIComponent(currentPath[currentFilesType]) +
                 "&action=list"
             SendGetHttp(
@@ -1121,6 +1177,8 @@ const FilesTypeSelector = () => {
     optionsList.push(<option value="FS">ESP</option>)
     if (esp3dSettings.SDConnection == "none")
         optionsList.push(<option value="SDSerial">SD</option>)
+    if (esp3dSettings.SDConnection == "direct")
+        optionsList.push(<option value="SDDirect">SD</option>)
     if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
     if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)
     //TODO
