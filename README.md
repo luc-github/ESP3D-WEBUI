@@ -25,9 +25,11 @@ So I came with a full rewrite using pure javascript and resized resources:
 
 and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
 
-
 ## Sponsors 
 [<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/FYSETC/LOGO.png">](https://www.fysetc.com/)  
+<hr/>
+<a href="/bdring" style="border: solid 4px red" ><div class="CircleBadge CircleBadge--medium bg-gray-dark">
+  <img height="50" width="50" alt="@bdring" class="CircleBadge-icon" src="https://avatars3.githubusercontent.com/u/189677?s=88&amp;u=f0320a14bef0e8ea650031faaec067f0e9dc9a2c&amp;v=4"></div></a>
 
 ## Supporters
 [<img src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/PanucattDevices/Panucatt.jpg" />](http://www.panucatt.com/)
