@@ -800,6 +800,7 @@ const FileEntry = ({ entry, pos }) => {
         processPrint(entry)
     }
     const downloadFile = e => {
+        return
         let filename =
             currentPath[currentFilesType] +
             (currentPath[currentFilesType] == "/" ? "" : "/") +
@@ -835,12 +836,12 @@ const FileEntry = ({ entry, pos }) => {
                     <div class="p-1 hide-low">
                         <File />
                     </div>
-                    <div
-                        class="p-1 text-truncate flex-grow-1"
+                    <div class="p-1"
                         title={entry.name}
                     >
                         {entry.name}
                     </div>
+                    <div class="flex-grow-1"></div>
                     <div class="p-1 hide-low text-right">{timestamp}</div>
                     <div class="hide-low p-1 text-right" style="width:6rem;">
                         {entry.size}
@@ -1482,7 +1483,7 @@ const FilesPanel = () => {
                                 class="card-body"
                                 style="overflow:auto; padding:0 0;"
                             >
-                                <div class="d-flex flex-column">
+                                <div class="d-flex flex-column" style="overflow:auto;">
                                     {filesList}
                                 </div>
                             </div>
