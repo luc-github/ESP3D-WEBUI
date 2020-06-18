@@ -814,6 +814,7 @@ const FileEntry = ({ entry, pos }) => {
             next: cancelUpload,
             progress: 0,
         })
+        if (currentFilesType == "SDDirect")filename="/sd"+filename
         SendGetHttp(
             filename,
             successDownload,
