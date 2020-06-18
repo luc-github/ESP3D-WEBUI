@@ -815,7 +815,7 @@ const FileEntry = ({ entry, pos }) => {
             next: cancelUpload,
             progress: 0,
         })
-        if (currentFilesType == "SDDirect")filename="/sd"+filename
+        if (currentFilesType == "SDDirect") filename = "/sd" + filename
         SendGetHttp(
             filename,
             successDownload,
@@ -836,9 +836,7 @@ const FileEntry = ({ entry, pos }) => {
                     <div class="p-1 hide-low">
                         <File />
                     </div>
-                    <div class="p-1"
-                        title={entry.name}
-                    >
+                    <div class="p-1" title={entry.name}>
                         {entry.name}
                     </div>
                     <div class="flex-grow-1"></div>
@@ -918,7 +916,6 @@ function buildFilesList(data) {
         )
         nb++
     }
-
     //files first
     for (let entry of data) {
         if (entry.size != -1) {
@@ -1002,6 +999,8 @@ function refreshFilesListSuccess(responseText) {
             case "SDDirect":
             case "FS":
                 let responsejson = JSON.parse(responseText)
+                if (typeof responsejson.files == "undefined")
+                    responsejson.files = []
                 buildFilesList(responsejson.files)
                 buildStatus(responsejson)
                 fileSystemLoaded[currentFilesType] = true
@@ -1483,7 +1482,10 @@ const FilesPanel = () => {
                                 class="card-body"
                                 style="overflow:auto; padding:0 0;"
                             >
-                                <div class="d-flex flex-column" style="overflow:auto;">
+                                <div
+                                    class="d-flex flex-column"
+                                    style="overflow:auto;"
+                                >
                                     {filesList}
                                 </div>
                             </div>
