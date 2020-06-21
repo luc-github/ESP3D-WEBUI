@@ -392,6 +392,8 @@ function processFiles(rawdata) {
             }
         }
     }
+    //TODO need to improve to not just display raw 
+    //e.g: ok 0 which has no meaning
     if (queryOngoing) {
         console.log("[OG]" + rawdata)
         if (
@@ -1176,17 +1178,13 @@ const FilesTypeSelector = () => {
         }
     }
     optionsList.push(<option value="FS">ESP</option>)
-    if (esp3dSettings.SDConnection == "none")
-        optionsList.push(<option value="SDSerial">SD</option>)
+    if (prefs.printersd) optionsList.push(<option value="SDSerial">SD</option>)
     if (esp3dSettings.SDConnection == "direct")
         optionsList.push(<option value="SDDirect">SD</option>)
     if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
     if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)
     //TODO
-    //direct or serial (sd is serial on smoothieware
-    //optionsList.push(<option value="SD">SD</option>)
-    //secondary serial or direct ext can be direct or serial TBD
-    //optionsList.push(<option value="SDext">SD2</option>)
+    //on smoothieware sd can be /sd or /ext when serial connection
 
     return (
         <div>

@@ -23,7 +23,7 @@ import { T } from "../translations"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
-import { preferences, prefs } from "../app"
+import { esp3dSettings, preferences, prefs } from "../app"
 
 /*
  * Local variables
@@ -54,7 +54,12 @@ function hasSettingError() {
 function checkValue(id) {
     const { dispatch } = useStoreon()
     let isvalid = true
-    if (id == "filesfilter" || id == "tftusb" || id == "tftsd") {
+    if (
+        id == "filesfilter" ||
+        id == "tftusb" ||
+        id == "tftsd" ||
+        id == "printersd"
+    ) {
     } else {
         if (prefs[id] == null || isNaN(prefs[id])) {
             isvalid = false
@@ -215,6 +220,7 @@ const MachineUIEntry = ({ id, label, help, type }) => {
  * Init Default Machine Values
  */
 function initDefaultMachineValues() {
+    //defaults values in preferences
     if (typeof preferences.settings.xyfeedrate == "undefined") {
         preferences.settings.xyfeedrate = 1000
     }
@@ -236,6 +242,13 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.tftusb == "undefined") {
         preferences.settings.tftusb = false
     }
+    if (typeof preferences.settings.printersd == "undefined") {
+        if (esp3dSettings.SDConnection == "none")
+            preferences.settings.printersd = true
+        else preferences.settings.printersd = false
+    }
+
+    //Copy values to current settings
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = preferences.settings.xyfeedrate
     }
@@ -256,6 +269,9 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.tftusb == "undefined") {
         prefs.tftusb = preferences.settings.tftusb
+    }
+    if (typeof prefs.printersd == "undefined") {
+        prefs.tftusb = preferences.settings.printersd
     }
 }
 
@@ -297,6 +313,8 @@ const MachineFilesPreferences = () => {
                 help={T("S97")}
                 type="text"
             />
+            <div class="p-1" />
+            <CheckboxControl id="printersd" title={T("P26")} label={T("P25")} />
             <div class="p-1" />
             <CheckboxControl id="tftsd" title={T("P23")} label={T("P21")} />
             <div class="p-1" />

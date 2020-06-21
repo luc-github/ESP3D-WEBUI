@@ -16,6 +16,7 @@
   "zfeedrate": 100,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
   "tftsd": true,
-  "tftusb": true
+  "tftusb": true,
+  "printersd": false
  }
 }
