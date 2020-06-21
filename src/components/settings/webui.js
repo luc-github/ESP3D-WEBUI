@@ -34,6 +34,7 @@ const {
     MachineUIPreferences,
     MachineFilesPreferences,
     initDefaultMachineValues,
+    MachinePollingPreferences,
 } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
@@ -46,6 +47,7 @@ import { setupWebSocket } from "../websocket"
 let preferences
 let prefs
 let initdone = false
+let pollingInterval = null
 
 /*
  * Some constants
@@ -62,6 +64,44 @@ const default_preferences =
     "openfilesonstart":false,\
     "showjogpanel":true}}'
 const preferencesFileName = "preferences.json"
+
+/*
+ * Polling commands
+ */
+function pollingFunction() {
+    console.log(prefs.pollingcommands)
+    if (prefs.pollingcommands.length > 0) {
+        let tcmd = prefs.pollingcommands.split(";")
+        for (let cmd of tcmd) {
+            cmd = cmd.trim()
+            if (cmd.length > 0) SendCommand(cmd)
+        }
+    }
+}
+
+/*
+ * Start polling query
+ */
+function startPolling() {
+    stopPolling()
+    if (prefs.enablepolling) {
+        console.log("start polling")
+        pollingInterval = setInterval(
+            pollingFunction,
+            prefs.pollingrefresh * 1000
+        )
+    }
+}
+
+/*
+ * Stop polling query
+ */
+function stopPolling() {
+    if (pollingInterval != null) {
+        clearInterval(pollingInterval)
+    }
+    pollingInterval = null
+}
 
 /*
  * Apply Preferences
@@ -102,6 +142,7 @@ function updateUI() {
         dispatch("panel/showfiles", prefs.openfilesonstart)
     } else dispatch("panel/showfiles", false)
     showDialog({ displayDialog: false, refreshPage: true })
+    startPolling()
     console.log("Update UI")
 }
 
@@ -415,6 +456,7 @@ function successUpload(response) {
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "success")
     }
+    startPolling()
     updateProgress({ progress: 100 })
     setTimeout(closeDialog, 2000)
 }
@@ -696,6 +738,8 @@ const WebUISettings = ({ currentPage }) => {
                         title={T("S66")}
                         label={T("S64")}
                     />
+                    <div class="p-2" />
+                    <MachinePollingPreferences />
                     <div class="p-2" />
                     <div class="card">
                         <div class="card-header">

@@ -392,7 +392,7 @@ function processFiles(rawdata) {
             }
         }
     }
-    //TODO need to improve to not just display raw 
+    //TODO need to improve to not just display raw
     //e.g: ok 0 which has no meaning
     if (queryOngoing) {
         console.log("[OG]" + rawdata)

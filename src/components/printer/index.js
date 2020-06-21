@@ -29,6 +29,7 @@ import {
     MachineUIPreferences,
     MachineFilesPreferences,
     initDefaultMachineValues,
+    MachinePollingPreferences,
 } from "./preferences"
 import { Notifications } from "./notifications"
 import enLangRessourceExtra from "./en.json"
@@ -1213,6 +1214,7 @@ export {
     MachineUIPreferences,
     MachineFilesPreferences,
     initDefaultMachineValues,
+    MachinePollingPreferences,
     isVerboseData,
     Notifications,
     FilesPanel,

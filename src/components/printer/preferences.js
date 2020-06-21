@@ -62,12 +62,17 @@ function checkValue(id) {
     ) {
     } else {
         if (prefs[id] == null || isNaN(prefs[id])) {
+            prefs[id] = ""
             isvalid = false
-        }
-        if (id == "xyfeedrate" || id == "zfeedrate") {
-            if (prefs[id] < 1) isvalid = false
-        }
-        if (id == "xpos" || id == "ypos") {
+        } else {
+            if (id == "xyfeedrate" || id == "zfeedrate") {
+                if (prefs[id] < 1) isvalid = false
+            }
+            if (id == "xpos" || id == "ypos") {
+            }
+            if (id == "pollingrefresh") {
+                if (prefs[id] < 1) isvalid = false
+            }
         }
     }
     hasError[id] = !isvalid
@@ -247,6 +252,15 @@ function initDefaultMachineValues() {
             preferences.settings.printersd = true
         else preferences.settings.printersd = false
     }
+    if (typeof preferences.settings.enablepolling == "undefined") {
+        preferences.settings.enablepolling = false
+    }
+    if (typeof preferences.settings.pollingrefresh == "undefined") {
+        preferences.settings.pollingrefresh = 3
+    }
+    if (typeof preferences.settings.pollingcommands == "undefined") {
+        preferences.settings.pollingcommands = "M105;M114;M27"
+    }
 
     //Copy values to current settings
     if (typeof prefs.xyfeedrate == "undefined") {
@@ -272,6 +286,15 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.printersd == "undefined") {
         prefs.tftusb = preferences.settings.printersd
+    }
+    if (typeof prefs.enablepolling == "undefined") {
+        prefs.enablepolling = preferences.settings.enablepolling
+    }
+    if (typeof prefs.pollingrefresh == "undefined") {
+        prefs.pollingrefresh = preferences.settings.pollingrefresh
+    }
+    if (typeof prefs.pollingcommands == "undefined") {
+        prefs.pollingcommands = preferences.settings.pollingcommands
     }
 }
 
@@ -323,6 +346,35 @@ const MachineFilesPreferences = () => {
     )
 }
 
+const MachinePollingPreferences = () => {
+    return (
+        <div class="card">
+            <div class="card-header">
+                <CheckboxControl
+                    id="enablepolling"
+                    title={T("S112")}
+                    label={T("S112")}
+                />
+            </div>
+            <div class={prefs["enablepolling"] ? "card-body" : "d-none"}>
+                <MachineUIEntry
+                    id="pollingrefresh"
+                    label={T("S113")}
+                    help={T("S114")}
+                    type="number"
+                />
+                <div class="p-1" />
+                <MachineUIEntry
+                    id="pollingcommands"
+                    label={T("S115")}
+                    help={T("S97")}
+                    type="text"
+                />
+            </div>
+        </div>
+    )
+}
+
 /*
  * Printer specific settings
  *
@@ -353,18 +405,18 @@ const MachineUIPreferences = () => {
                 <div class="card">
                     <div class="card-header control-padding">{T("P18")}</div>
                     <div class="card-body padding-low">
-                    <MachineUIEntry
-                        id="xpos"
-                        label="X"
-                        help={T("P16")}
-                        type="number"
-                    />
-                    <MachineUIEntry
-                        id="ypos"
-                        label="Y"
-                        help={T("P16")}
-                        type="number"
-                    />
+                        <MachineUIEntry
+                            id="xpos"
+                            label="X"
+                            help={T("P16")}
+                            type="number"
+                        />
+                        <MachineUIEntry
+                            id="ypos"
+                            label="Y"
+                            help={T("P16")}
+                            type="number"
+                        />
                     </div>
                 </div>
             </div>
@@ -376,4 +428,5 @@ export {
     MachineUIPreferences,
     MachineFilesPreferences,
     initDefaultMachineValues,
+    MachinePollingPreferences,
 }

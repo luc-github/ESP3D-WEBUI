@@ -17,6 +17,9 @@
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
   "tftsd": true,
   "tftusb": true,
-  "printersd": false
+  "printersd": false,
+  "enablepolling": true,
+  "pollingrefresh": 3,
+  "pollingcommands": ""
  }
 }

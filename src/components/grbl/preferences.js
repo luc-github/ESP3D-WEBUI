@@ -60,6 +60,7 @@ function checkValue(id) {
     if (id == "filesfilter") {
     } else {
         if (prefs[id] == null || isNaN(prefs[id])) {
+            prefs[id] = ""
             isvalid = false
         }
         if (
