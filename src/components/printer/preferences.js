@@ -350,18 +350,23 @@ const MachineUIPreferences = () => {
                     help={T("P14")}
                     type="number"
                 />
-                <MachineUIEntry
-                    id="xpos"
-                    label={T("P18")}
-                    help={T("P16")}
-                    type="number"
-                />
-                <MachineUIEntry
-                    id="ypos"
-                    label={T("P19")}
-                    help={T("P16")}
-                    type="number"
-                />
+                <div class="card">
+                    <div class="card-header control-padding">{T("P18")}</div>
+                    <div class="card-body padding-low">
+                    <MachineUIEntry
+                        id="xpos"
+                        label="X"
+                        help={T("P16")}
+                        type="number"
+                    />
+                    <MachineUIEntry
+                        id="ypos"
+                        label="Y"
+                        help={T("P16")}
+                        type="number"
+                    />
+                    </div>
+                </div>
             </div>
         </div>
     )
