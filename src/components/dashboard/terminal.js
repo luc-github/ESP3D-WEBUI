@@ -42,6 +42,8 @@ let commandHistory = []
 let commandHistoryIndex = -1
 let currentCommand = ""
 let lastscroll = 0
+let lastverbosecommand = ""
+let lastverbosecommandNb = 0
 
 /*
  * Local constants
@@ -81,12 +83,19 @@ function updateQuietTerminal(data) {
  *
  */
 function updateVerboseTerminal(data) {
-    monitorDataVerbose.push(<div>{data}</div>)
-    if (autoscrollOutput && pauseAutoscroll) {
-        if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
-            monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+    if (lastverbosecommand == data) {
+        lastverbosecommandNb++
+        monitorDataVerbose[monitorDataVerbose.length-1] = <div> {data} <span class="badge badge-pill badge-secondary">{lastverbosecommandNb}</span></div>
     } else {
-        monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+        lastverbosecommand = data
+        lastverbosecommandNb = 1
+        monitorDataVerbose.push(<div>{data}</div>)
+        if (autoscrollOutput && pauseAutoscroll) {
+            if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
+                monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+        } else {
+            monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+        }
     }
 }
 
@@ -129,6 +138,7 @@ const TerminalControls = () => {
         doAutoscroll()
     }
     const clearterminal = e => {
+        lastverbosecommand = ""
         currentOutput = []
         monitorDataQuiet = []
         monitorDataVerbose = []
