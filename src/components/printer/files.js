@@ -44,6 +44,14 @@ import { showDialog, updateProgress } from "../dialog"
 import { esp3dSettings, prefs } from "../app"
 
 /*
+ * Local constants
+ *
+ */
+const QUERY_NONE = 0
+const QUERY_FILE_DELETE = 1
+const QUERY_DIR_CREATE = 2
+
+/*
  * Local variables
  *
  */
@@ -62,12 +70,7 @@ let isSDCheckRequested = false
 let isSDListRequested = false
 let isSDListDetected = false
 let listDataSize
-let queryOngoing = false
-
-/*
- * Local constants
- *
- */
+let queryOngoing = QUERY_NONE
 
 /*
  * Give Configuration command and parameters
@@ -394,26 +397,47 @@ function processFiles(rawdata) {
     }
     //TODO need to improve to not just display raw
     //e.g: ok 0 which has no meaning
-    if (queryOngoing) {
+    if (queryOngoing != QUERY_NONE) {
         console.log("[OG]" + rawdata)
-        if (
-            rawdata.startsWith("ok") ||
-            rawdata.startsWith("Deletion ") ||
-            rawdata.startsWith("Creation ") ||
-            rawdata.startsWith("File ") ||
-            rawdata.startsWith("Directory ")
-        ) {
-            queryOngoing = false
+        let querySuccess = false
+        if (queryOngoing == QUERY_DIR_CREATE) {
+            if (esp3dSettings.FWTarget == "smoothieware") {
+                //Not supported
+            } else {
+                if (rawdata.startsWith("Creation failed")) {
+                    queryOngoing = QUERY_NONE
+                } else if (rawdata.startsWith("Directory created")) {
+                    queryOngoing = QUERY_NONE
+                    querySuccess = true
+                }
+            }
+        } else {
+            if (esp3dSettings.FWTarget == "smoothieware") {
+                if (rawdata.startsWith("Could not delete")) {
+                    queryOngoing = QUERY_NONE
+                } else if (rawdata.startsWith("ok")) {
+                    queryOngoing = QUERY_NONE
+                    querySuccess = true
+                }
+            } else {
+                if (rawdata.startsWith("Deletion failed")) {
+                    queryOngoing = QUERY_NONE
+                } else if (rawdata.startsWith("File deleted")) {
+                    queryOngoing = QUERY_NONE
+                    querySuccess = true
+                }
+            }
+        }
+        if (queryOngoing == QUERY_NONE) {
             let data = []
-            data.status = rawdata
-            buildStatus(T(data))
-            if (
-                rawdata.startsWith("ok") ||
-                rawdata.startsWith("File deleted") ||
-                rawdata.startsWith("Directory created")
-            )
+            if (querySuccess) {
+                data.status = T("P27")
                 refreshFilesList()
-            else showDialog({ displayDialog: false })
+            } else {
+                data.status = T("P28")
+                showDialog({ displayDialog: false })
+            }
+            buildStatus(data)
         }
     }
 }
@@ -550,16 +574,16 @@ function processDelete() {
             if (!path.endsWith("/")) path += "/"
             path += processingEntry.name
             cmd = "M30 SD:" + path
-            queryOngoing = true
-            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
+            queryOngoing = QUERY_FILE_DELETE
+            SendCommand(cmd, querySuccess, queryError, null, "deletefile", 1)
             break
         case "TFTUSB":
             path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
             path += processingEntry.name
             cmd = "M30 U:" + path
-            queryOngoing = true
-            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
+            queryOngoing = QUERY_FILE_DELETE
+            SendCommand(cmd, querySuccess, queryError, null, "deletefile", 1)
             break
         case "SDSerial":
             path = currentPath[currentFilesType]
@@ -580,9 +604,9 @@ function processDelete() {
                     showDialog({ displayDialog: false })
                     return
             }
-            queryOngoing = true
+            queryOngoing = QUERY_FILE_DELETE
             console.log(cmd)
-            SendCommand(cmd, querySuccess, queryError, null, "deletedir", 1)
+            SendCommand(cmd, querySuccess, queryError, null, "deletefile", 1)
             break
         default:
             console.log(currentFilesType + " is not a valid file system")
@@ -645,7 +669,7 @@ function processCreateDir() {
                         showDialog({ displayDialog: false })
                         return
                 }
-                queryOngoing = true
+                queryOngoing = QUERY_DIR_CREATE
                 SendCommand(cmd, querySuccess, queryError, null, "createdir", 1)
                 break
             default:

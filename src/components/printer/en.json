@@ -25,8 +25,6 @@
     "P24" : "TFT USB support",
     "P25" : "Printer SD",
     "P26" : "Printer SD support",
-    "File deleted": "File/Directory deleted",
-    "Directory created": "Directory created",
-    "Deletion failed": "Deletion failed",
-    "Creation failed":"Creation failed"
+    "P27": "Operation successful",
+    "P28": "Operation failed"
 }
