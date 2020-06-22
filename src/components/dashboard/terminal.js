@@ -85,14 +85,24 @@ function updateQuietTerminal(data) {
 function updateVerboseTerminal(data) {
     if (lastverbosecommand == data) {
         lastverbosecommandNb++
-        monitorDataVerbose[monitorDataVerbose.length-1] = <div> {data} <span class="badge badge-pill badge-secondary">{lastverbosecommandNb}</span></div>
+        monitorDataVerbose[monitorDataVerbose.length - 1] = (
+            <div>
+                {" "}
+                {data}{" "}
+                <span class="badge badge-pill badge-secondary">
+                    {lastverbosecommandNb}
+                </span>
+            </div>
+        )
     } else {
         lastverbosecommand = data
         lastverbosecommandNb = 1
         monitorDataVerbose.push(<div>{data}</div>)
         if (autoscrollOutput && pauseAutoscroll) {
             if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
-                monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
+                monitorDataVerbose = monitorDataVerbose.slice(
+                    -MAX_LINES_MONITOR
+                )
         } else {
             monitorDataVerbose = monitorDataVerbose.slice(-MAX_LINES_MONITOR)
         }

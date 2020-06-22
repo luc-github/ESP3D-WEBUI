@@ -96,7 +96,8 @@ function isVerboseData(data) {
         data.startsWith("{") ||
         data.startsWith("EPR:") ||
         data.startsWith("X:") ||
-        data.startsWith("T:")
+        data.startsWith("T:") ||
+        data.startsWith("SD printing byte")
     )
         return true
     else return false
@@ -375,26 +376,23 @@ function processTemperatures(buffer) {
     let result
     while ((result = regexTemp.exec(buffer)) !== null) {
         var tool = result[1]
-        var value =
-            parseFloat(result[3])
-                .toFixed(2)
-                .toString() + "°C"
+        var value = parseFloat(result[3])
+            .toFixed(2)
+            .toString()
         var value2
         if (isNaN(parseFloat(result[5]))) value2 = "0.00"
         else
-            value2 =
-                parseFloat(result[5])
-                    .toFixed(2)
-                    .toString() + "°C"
-        if (tool == "T") {
-            //TODO add tool as key
+            value2 = parseFloat(result[5])
+                .toFixed(2)
+                .toString()
+        if (tool == "T" || tool == "T1" || tool == "B") {
             const { dispatch } = useStoreon()
             if (dispatch) {
-                dispatch("temperatures/update", { key: "T", value: value })
+                dispatch("temperatures/update" + tool, value)
+                dispatch("temperatures/update" + tool + "t", value2)
             } else {
                 console.log("no dispatch")
             }
-            //console.log(tool + ":" + value + "/" + value2)
         }
     }
 }

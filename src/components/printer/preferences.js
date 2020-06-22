@@ -58,7 +58,8 @@ function checkValue(id) {
         id == "filesfilter" ||
         id == "tftusb" ||
         id == "tftsd" ||
-        id == "printersd"
+        id == "printersd" ||
+        id == "pollingcommands"
     ) {
     } else {
         if (prefs[id] == null || isNaN(prefs[id])) {

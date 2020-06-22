@@ -19,29 +19,30 @@
 */
 
 import { h } from "preact"
-import { useEffect, useRef } from "preact/hooks"
+import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
 const { Notifications } = require(`../${process.env.TARGET_ENV}`)
+
+function onResize() {
+    if (document.getElementById("notif")) {
+        const { dispatch } = useStoreon()
+        let currentpos =
+            document.getElementById("notif").clientHeight +
+            document.getElementById("notif").getClientRects()[0].top
+        dispatch("setNotificationBottom", currentpos)
+    }
+}
 
 /*
  * Notification component
  *
  */
 export const Notification = () => {
-    const notificationRef = useRef(null)
-
     useEffect(() => {
-        if (notificationRef.current.getClientRects()[0]) {
-            const { dispatch } = useStoreon()
-            dispatch(
-                "setNotificationBottom",
-                notificationRef.current.clientHeight +
-                    notificationRef.current.getClientRects()[0].top
-            )
-        }
+        new ResizeObserver(onResize).observe(document.getElementById("notif"))
     })
     return (
-        <div ref={notificationRef} id="notif" class="espnotification fixed-top">
+        <div id="notif" class="espnotification fixed-top">
             <Notifications />
         </div>
     )

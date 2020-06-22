@@ -60,7 +60,10 @@ export const Header = () => {
         )
     }
     return (
-        <nav class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader">
+        <nav
+            class="navbar navbar-light navbar-expand fixed-top justify-content-left espheader"
+            id="headerbar"
+        >
             <div
                 class={
                     activePage == Page.about ? "nav-item active" : "nav-item"

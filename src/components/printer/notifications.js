@@ -20,9 +20,9 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
-//import {} from "preact-feather"
+import { Bed, Fan } from "./icon"
+import { Thermometer } from "preact-feather"
 
 /*
  * Local variables
@@ -34,16 +34,67 @@ import { useStoreon } from "storeon/preact"
  *
  */
 const Notifications = () => {
-    const { temperatures } = useStoreon("temperatures")
+    const { T, Tt, T1, T1t, B, Bt } = useStoreon(
+        "T",
+        "Tt",
+        "T1",
+        "T1t",
+        "B",
+        "Bt"
+    )
     const { x, y, z } = useStoreon("x", "y", "z")
 
-    let T
-    if (typeof temperatures[2] != "undefined") {
-        T = temperatures[2].value
-    }
     return (
         <div>
-            Notifications for {process.env.TARGET_ENV} {T}
+            <div class="d-flex flex-wrap">
+                <div class={T == "none" ? "d-none" : "p-2"}>
+                    {" "}
+                    <span
+                        class={
+                            Tt == "0.00"
+                                ? "badge badge-pill badge-info"
+                                : "badge badge-pill badge-danger"
+                        }
+                    >
+                        <Thermometer />
+                        <span>1</span>
+                    </span>
+                    {T}
+                    <span class={Tt == "0.00" ? "d-none" : ""}>/{Tt}</span>
+                    &deg;C
+                </div>
+                <div class={T1 == "none" ? "d-none" : "p-2"}>
+                    {" "}
+                    <span
+                        class={
+                            T1t == "0.00"
+                                ? "badge badge-pill badge-info"
+                                : "badge badge-pill badge-danger"
+                        }
+                    >
+                        <Thermometer />
+                        <span>2</span>
+                    </span>
+                    {T1}
+                    <span class={T1t == "0.00" ? "d-none" : ""}>/{T1t}</span>
+                    &deg;C
+                </div>
+                <div class={B == "none" ? "d-none" : "p-2"}>
+                    {" "}
+                    <span
+                        class={
+                            Bt == "0.00"
+                                ? "badge badge-pill badge-info"
+                                : "badge badge-pill badge-danger"
+                        }
+                    >
+                        <Bed />
+                    </span>
+                    {B}
+                    <span class={Bt == "0.00" ? "d-none" : ""}>/{Bt}</span>
+                    &deg;C
+                </div>
+            </div>
         </div>
     )
 }

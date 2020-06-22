@@ -59,7 +59,11 @@ const Container = () => {
     const { notifificationBottom } = useStoreon("notifificationBottom")
     let style = "top:" + notifificationBottom + "px"
     return (
-        <div class="espcontainer container-fluid row-fluid" style={style}>
+        <div
+            class="espcontainer container-fluid row-fluid"
+            id="mainpage"
+            style={style}
+        >
             <AboutPage />
             <DashboardPage />
             <SettingsPage />
