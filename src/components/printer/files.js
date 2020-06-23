@@ -389,7 +389,6 @@ function processFiles(rawdata) {
             } else {
                 //Todo ADD size limit in case of problem
                 if (isSDListDetected) {
-                    console.log("pushing: " + data)
                     filesListCache[currentFilesType].push(data)
                 }
             }
@@ -1071,14 +1070,6 @@ function refreshFilesList(isopendir = false) {
         currentPath[currentFilesType] = "/"
     let cmd
     showDialog({ type: "loader", message: T("S1") })
-    console.log(
-        "refresh " +
-            currentPath[currentFilesType] +
-            " of " +
-            currentFilesType +
-            " opendir:" +
-            isopendir
-    )
     switch (currentFilesType) {
         case "FS":
             cmd =
@@ -1492,7 +1483,10 @@ const FilesPanel = () => {
     if (!showFiles) return null
     if (typeof fileSystemLoaded[currentFilesType] == "undefined")
         fileSystemLoaded[currentFilesType] = false
-    if (fileSystemLoaded["FS"] == false && prefs.autoload) refreshFilesList()
+    if (fileSystemLoaded["FS"] == false && prefs.autoload) {
+        fileSystemLoaded["FS"] = true
+        refreshFilesList()
+    }
     return (
         <div class="w-100 panelCard">
             <div class="p-2 ">

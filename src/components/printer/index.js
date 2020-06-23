@@ -39,6 +39,7 @@ import {
     Save,
     ExternalLink,
     Download,
+    AlertTriangle,
 } from "preact-feather"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
@@ -372,14 +373,18 @@ function saveAndApply() {
  *
  */
 function processTemperatures(buffer) {
-    const regexTemp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
+    const regexTemp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
     while ((result = regexTemp.exec(buffer)) !== null) {
         var tool = result[1]
-        var value = parseFloat(result[3])
-            .toFixed(2)
-            .toString()
+        var value
         var value2
+        if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 10)
+            value = <AlertTriangle />
+        else
+            value = parseFloat(result[3])
+                .toFixed(2)
+                .toString()
         if (isNaN(parseFloat(result[5]))) value2 = "0.00"
         else
             value2 = parseFloat(result[5])
@@ -390,6 +395,33 @@ function processTemperatures(buffer) {
             if (dispatch) {
                 dispatch("temperatures/update" + tool, value)
                 dispatch("temperatures/update" + tool + "t", value2)
+            } else {
+                console.log("no dispatch")
+            }
+        }
+    }
+}
+
+/*
+ * Process positions buffer
+ *
+ */
+function processPositions(buffer) {
+    const regexTemp = /(X|Y|Z|E(\d*)):\s*([+]?[0-9]*\.?[0-9]*)?/gi
+    let result
+    while ((result = regexTemp.exec(buffer)) !== null) {
+        var axis = result[1]
+        var value
+
+        if (isNaN(parseFloat(result[3]))) value = <AlertTriangle />
+        else
+            value = parseFloat(result[3])
+                .toFixed(2)
+                .toString()
+        if (axis == "X" || axis == "Y" || axis == "Z") {
+            const { dispatch } = useStoreon()
+            if (dispatch) {
+                dispatch("positions/update" + axis, value)
             } else {
                 console.log("no dispatch")
             }
@@ -452,6 +484,10 @@ function processWSData(buffer) {
     }
     if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
         processTemperatures(buffer)
+    }
+
+    if (buffer.startsWith("X:") || buffer.startsWith("ok C:")) {
+        processPositions(buffer)
     }
     processFiles(buffer)
 }

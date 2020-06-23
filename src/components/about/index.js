@@ -88,7 +88,6 @@ function onClickUpdateFW() {
  *
  */
 function onClickUpdateUI() {
-    console.log("Update UI")
     pathUpload = "/files"
     document.getElementById("uploadControl").setAttribute("accept", "*")
     document.getElementById("uploadControl").setAttribute("multiple", "true")

@@ -45,54 +45,161 @@ const Notifications = () => {
     const { x, y, z } = useStoreon("x", "y", "z")
 
     return (
-        <div>
+        <div class="p-1">
             <div class="d-flex flex-wrap">
-                <div class={T == "none" ? "d-none" : "p-2"}>
-                    {" "}
-                    <span
-                        class={
-                            Tt == "0.00"
-                                ? "badge badge-pill badge-info"
-                                : "badge badge-pill badge-danger"
-                        }
-                    >
-                        <Thermometer />
-                        <span>1</span>
-                    </span>
-                    {T}
-                    <span class={Tt == "0.00" ? "d-none" : ""}>/{Tt}</span>
-                    &deg;C
+                <div class="p-1">
+                    <div class={T == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span
+                                class={
+                                    Tt == "0.00"
+                                        ? "input-group-text"
+                                        : "input-group-text error"
+                                }
+                            >
+                                <Thermometer />
+                                <span>1</span>
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {T}
+                        </span>
+                        <div class="input-group-append">
+                            <span
+                                class={
+                                    Tt == "0.00"
+                                        ? "d-none"
+                                        : "input-group-text textNotification bg-light"
+                                }
+                            >
+                                {Tt}
+                            </span>
+                            <span class="input-group-text textNotification bg-light">
+                                &deg;C
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class={T1 == "none" ? "d-none" : "p-2"}>
-                    {" "}
-                    <span
-                        class={
-                            T1t == "0.00"
-                                ? "badge badge-pill badge-info"
-                                : "badge badge-pill badge-danger"
-                        }
-                    >
-                        <Thermometer />
-                        <span>2</span>
-                    </span>
-                    {T1}
-                    <span class={T1t == "0.00" ? "d-none" : ""}>/{T1t}</span>
-                    &deg;C
+                <div class="p-1">
+                    <div class={T == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span
+                                class={
+                                    T1t == "0.00"
+                                        ? "input-group-text"
+                                        : "input-group-text error"
+                                }
+                            >
+                                <Thermometer />
+                                <span>2</span>
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {T1}
+                        </span>
+                        <div class="input-group-append">
+                            <span
+                                class={
+                                    T1t == "0.00"
+                                        ? "d-none"
+                                        : "input-group-text textNotification bg-light"
+                                }
+                            >
+                                {T1t}
+                            </span>
+                            <span class="input-group-text textNotification bg-light">
+                                &deg;C
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div class={B == "none" ? "d-none" : "p-2"}>
-                    {" "}
-                    <span
-                        class={
-                            Bt == "0.00"
-                                ? "badge badge-pill badge-info"
-                                : "badge badge-pill badge-danger"
-                        }
-                    >
-                        <Bed />
-                    </span>
-                    {B}
-                    <span class={Bt == "0.00" ? "d-none" : ""}>/{Bt}</span>
-                    &deg;C
+                <div class="p-1">
+                    <div class={B == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span
+                                class={
+                                    Bt == "0.00"
+                                        ? "input-group-text"
+                                        : "input-group-text error"
+                                }
+                            >
+                                <Bed />
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {B}
+                        </span>
+                        <div class="input-group-append">
+                            <span
+                                class={
+                                    Bt == "0.00"
+                                        ? "d-none"
+                                        : "input-group-text textNotification bg-light"
+                                }
+                            >
+                                {Bt}
+                            </span>
+                            <span class="input-group-text textNotification bg-light">
+                                &deg;C
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap p-1">
+                <div class="p-1">
+                    <div class={x == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text textNotification">
+                                X
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {x}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <div class={y == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text textNotification">
+                                Y
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {y}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <div class={z == "none" ? "d-none" : "input-group"}>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text textNotification">
+                                Z
+                            </span>
+                        </div>
+                        <span
+                            class="input-group-text textNotification bg-white"
+                            style="width:5em"
+                        >
+                            {z}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

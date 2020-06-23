@@ -8,7 +8,7 @@
   "verbose": true,
   "autoscroll": true,
   "showfilespanel": true,
-  "openfilesonstart": false,
+  "openfilesonstart": true,
   "showjogpanel": true,
   "xyfeedrate": 1000,
   "xpos": 100,
@@ -20,6 +20,6 @@
   "printersd": false,
   "enablepolling": true,
   "pollingrefresh": 3,
-  "pollingcommands": "M105"
+  "pollingcommands": "M105;M114"
  }
 }

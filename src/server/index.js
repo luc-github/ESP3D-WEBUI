@@ -62,7 +62,7 @@ function sendTemperature() {
         SendBinary(
             "T:" +
                 T +
-                " / 0 B:" +
+                " /200 B:" +
                 B +
                 " / 0 B@:0 @:0 T0:" +
                 T +
@@ -75,7 +75,7 @@ function sendTemperature() {
         SendBinary(
             "ok T:" +
                 T +
-                " / 0 B:" +
+                " /200 B:" +
                 B +
                 " / 0 B@:0 @:0 T0:" +
                 T +
@@ -119,6 +119,11 @@ app.get("/command", function(req, res) {
             waitInterval = null
         }
         sendTemperature()
+        res.send("")
+        return
+    }
+    if (url.indexOf("M114") != -1) {
+        SendBinary("X:100.0 Y:200.0 Z:0.00\nok\n")
         res.send("")
         return
     }

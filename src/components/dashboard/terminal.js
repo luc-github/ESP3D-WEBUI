@@ -44,7 +44,7 @@ let currentCommand = ""
 let lastscroll = 0
 let lastverbosecommand = ""
 let lastverbosecommandNb = 0
-
+let laststate = 0
 /*
  * Local constants
  *
@@ -57,6 +57,12 @@ const MAX_LINES_MONITOR = 300
  *
  */
 function updateTerminal(data) {
+    if (typeof verboseOutput == "undefined") {
+        verboseOutput = preferences.settings.verbose
+    }
+    if (typeof autoscrollOutput == "undefined") {
+        autoscrollOutput = preferences.settings.autoscroll
+    }
     updateQuietTerminal(data)
     updateVerboseTerminal(data)
     updateContentType()
@@ -119,8 +125,9 @@ function updateContentType() {
     else currentOutput = monitorDataQuiet
     const { showTerminal } = useStoreon("showTerminal")
     const { activePage } = useStoreon("activePage")
-    if (showTerminal && activePage == Page.dashboard)
+    if (showTerminal && activePage == Page.dashboard) {
         dispatch("monitor/set", currentOutput)
+    }
 }
 
 /*
@@ -128,12 +135,6 @@ function updateContentType() {
  *
  */
 const TerminalControls = () => {
-    if (typeof verboseOutput == "undefined") {
-        verboseOutput = preferences.settings.verbose
-    }
-    if (typeof autoscrollOutput == "undefined") {
-        autoscrollOutput = preferences.settings.autoscroll
-    }
     const [isVerbose, setVerbose] = useState(verboseOutput)
     const toogleVerbose = e => {
         verboseOutput = e.target.checked
@@ -279,6 +280,13 @@ const TerminalPanel = () => {
     const { content } = useStoreon("content")
     const { showTerminal } = useStoreon("showTerminal")
     const [command, setCommand] = useState(currentCommand)
+    if (laststate != showTerminal) {
+        laststate = showTerminal
+        if (showTerminal) {
+            updateContentType()
+            showDialog({ displayDialog: false, refreshPage: true })
+        }
+    }
     if (!showTerminal) {
         lastscroll = -1
         return null
@@ -339,7 +347,6 @@ const TerminalPanel = () => {
             doAutoscroll()
         }
     })
-
     useEffect(() => {
         doAutoscroll()
     }, [content.length])
@@ -386,4 +393,4 @@ const TerminalPanel = () => {
     )
 }
 
-export { TerminalPanel, updateTerminal, updateContentType }
+export { TerminalPanel, updateTerminal }

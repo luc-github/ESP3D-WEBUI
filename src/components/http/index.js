@@ -140,7 +140,12 @@ function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
                 cmd_max_id--
             }
             if (cmd_max_id <= 0) {
-                console.log("[HTTP]Command rejected: invalid ID")
+                console.log(
+                    "[HTTP]Command rejected: invalid ID: " +
+                        id +
+                        " max id:" +
+                        cmd_max_id
+                )
                 if (typeof error_fn != "undefined") error_fn(errorInvalidId)
                 return
             }
@@ -185,7 +190,12 @@ function SendPostHttp(
                 cmd_max_id--
             }
             if (cmd_max_id <= 0) {
-                console.log("[HTTP]Command rejected: invalid ID")
+                console.log(
+                    "[HTTP]Command rejected: invalid ID: " +
+                        id +
+                        " max id:" +
+                        cmd_max_id
+                )
                 if (typeof error_fn != "undefined") error_fn(errorInvalidId)
                 return
             }

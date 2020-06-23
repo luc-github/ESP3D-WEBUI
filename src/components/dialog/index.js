@@ -94,7 +94,12 @@ function updateProgress(data) {
         dialogData.progress = data.progress
         dispatch("setDialog", dialogData)
     } else {
-        console.log("updateProgress failed")
+        console.log(
+            "updateProgress failed: data:" +
+                typeof data +
+                " dialogdata:" +
+                typeof dialogData
+        )
     }
 }
 

@@ -69,7 +69,6 @@ const preferencesFileName = "preferences.json"
  * Polling commands
  */
 function pollingFunction() {
-    console.log(prefs.pollingcommands)
     if (prefs.pollingcommands.length > 0) {
         let tcmd = prefs.pollingcommands.split(";")
         for (let cmd of tcmd) {
@@ -85,7 +84,6 @@ function pollingFunction() {
 function startPolling() {
     stopPolling()
     if (prefs.enablepolling) {
-        console.log("start polling")
         pollingInterval = setInterval(
             pollingFunction,
             prefs.pollingrefresh * 1000
@@ -143,7 +141,6 @@ function updateUI() {
     } else dispatch("panel/showfiles", false)
     showDialog({ displayDialog: false, refreshPage: true })
     startPolling()
-    console.log("Update UI")
 }
 
 /*
