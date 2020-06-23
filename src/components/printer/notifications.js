@@ -156,9 +156,10 @@ const Notifications = () => {
                 </div>
             </div>
             <div class="d-flex flex-wrap p-1">
-                <div class="p-1">
-                    <div class={x == "none" ? "d-none" : "input-group"}>
-                        <div class="input-group-prepend">
+                <div class={x == "none" ? "d-none" :"p-1 d-flex flex-column"}>
+                    <div class="bg-default rounded text-center textNotification p-1 show-low">X</div>
+                    <div class="input-group">
+                        <div class="input-group-prepend hide-low">
                             <span class="input-group-text textNotification">
                                 X
                             </span>
@@ -171,9 +172,10 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div class="p-1">
-                    <div class={y == "none" ? "d-none" : "input-group"}>
-                        <div class="input-group-prepend">
+                <div class={y == "none" ? "d-none" :"p-1 d-flex flex-column"}>
+                    <div class="bg-default rounded text-center textNotification p-1 show-low">Y</div>
+                    <div class="input-group">
+                        <div class="input-group-prepend hide-low">
                             <span class="input-group-text textNotification">
                                 Y
                             </span>
@@ -186,9 +188,10 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div class="p-1">
-                    <div class={z == "none" ? "d-none" : "input-group"}>
-                        <div class="input-group-prepend">
+                <div class={z == "none" ? "d-none" :"p-1 d-flex flex-column"}>
+                    <div class="bg-default rounded text-center textNotification p-1 show-low">Z</div>
+                    <div class="input-group">
+                        <div class="input-group-prepend hide-low">
                             <span class="input-group-text textNotification">
                                 Z
                             </span>
