@@ -22,9 +22,9 @@ import { h } from "preact"
 
 /*
  *fan icon
- * default height is 1.4em
+ * default height is 1.2m
  */
-const Fan = ({ height = "1.4em" }) => (
+const Fan = ({ height = "1.2em" }) => (
     <svg height={height} viewBox="0 0 32 32">
         <g>
             <path
@@ -43,7 +43,7 @@ const Fan = ({ height = "1.4em" }) => (
  *bed icon
  * default height is 1.4em
  */
-const Bed = ({ height = "1.4em" }) => (
+const Bed = ({ height = "1.2em" }) => (
     <svg height={height} viewBox="0 0 165 140">
         <g>
             <path

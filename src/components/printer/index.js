@@ -39,7 +39,6 @@ import {
     Save,
     ExternalLink,
     Download,
-    AlertTriangle,
 } from "preact-feather"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
@@ -379,8 +378,8 @@ function processTemperatures(buffer) {
         var tool = result[1]
         var value
         var value2
-        if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 10)
-            value = <AlertTriangle />
+        if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 5)
+            value = "error"
         else
             value = parseFloat(result[3])
                 .toFixed(2)
@@ -413,7 +412,7 @@ function processPositions(buffer) {
         var axis = result[1]
         var value
 
-        if (isNaN(parseFloat(result[3]))) value = <AlertTriangle />
+        if (isNaN(parseFloat(result[3]))) value = "error"
         else
             value = parseFloat(result[3])
                 .toFixed(2)
