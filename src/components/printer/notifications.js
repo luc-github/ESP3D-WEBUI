@@ -25,6 +25,7 @@ import { Bed, Fan } from "./icon"
 import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
+import { Page } from "../app"
 
 /*
  * Local variables
@@ -55,7 +56,9 @@ const Notifications = () => {
     const { showJog } = useStoreon("showJog")
     const toggleShowJog = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showjog", !showJog)
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showjog", false)
+        dispatch("panel/showjog", true)
     }
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
@@ -181,59 +184,65 @@ const Notifications = () => {
                         </span>
                     </button>
                 </div>
-                <div
-                    class={
-                        x == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleShowJog}
-                >
-                    <span class="bg-default input-group-text text-center textNotification justify-content-center">
-                        X
-                    </span>
-                    <span
-                        class="bg-white input-group-text  text-center textNotification justify-content-center"
-                        style="width:5em"
+                <div>
+                    <div
+                        class={
+                            x == "none"
+                                ? "d-none"
+                                : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                        }
+                        onclick={toggleShowJog}
                     >
-                        {x == "error" ? <AlertTriangle size="1.0em" /> : x}
-                    </span>
+                        <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                            X
+                        </span>
+                        <span
+                            class="bg-white input-group-text  text-center textNotification justify-content-center"
+                            style="width:5em"
+                        >
+                            {x == "error" ? <AlertTriangle size="1.0em" /> : x}
+                        </span>
+                    </div>
                 </div>
-                <div
-                    class={
-                        y == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleShowJog}
-                >
-                    <span class="bg-default input-group-text text-center textNotification justify-content-center">
-                        Y
-                    </span>
-                    <span
-                        class="bg-white input-group-text  text-center textNotification justify-content-center"
-                        style="width:5em"
+                <div>
+                    <div
+                        class={
+                            y == "none"
+                                ? "d-none"
+                                : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                        }
+                        onclick={toggleShowJog}
                     >
-                        {y == "error" ? <AlertTriangle size="1.0em" /> : y}
-                    </span>
+                        <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                            Y
+                        </span>
+                        <span
+                            class="bg-white input-group-text  text-center textNotification justify-content-center"
+                            style="width:5em"
+                        >
+                            {y == "error" ? <AlertTriangle size="1.0em" /> : y}
+                        </span>
+                    </div>
                 </div>
-                <div
-                    class={
-                        z == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleShowJog}
-                >
-                    <span class="bg-default input-group-text text-center textNotification justify-content-center">
-                        Z
-                    </span>
-                    <span
-                        class="bg-white input-group-text  text-center textNotification justify-content-center"
-                        style="width:5em"
+                <div>
+                    <div
+                        class={
+                            z == "none"
+                                ? "d-none"
+                                : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                        }
+                        onclick={toggleShowJog}
                     >
-                        {z == "error" ? <AlertTriangle size="1.0em" /> : z}
-                    </span>
+                        <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                            Z
+                        </span>
+                        <span
+                            class="bg-white input-group-text  text-center textNotification justify-content-center"
+                            style="width:5em"
+                        >
+                            {z == "error" ? <AlertTriangle size="1.0em" /> : z}
+                        </span>
+                    </div>
                 </div>
                 <div class="ml-auto align-self-center hotspotNotification p-1">
                     <div class="p-1 bg-warning rounded">
@@ -242,7 +251,7 @@ const Notifications = () => {
                             class="btn btn-sm btn-danger"
                             onclick={emergencyStop}
                         >
-                            <AlertCircle size="1.4em" />
+                            <AlertCircle />
                             <span class="hide-low text-button">
                                 {Trans("P15")}
                             </span>

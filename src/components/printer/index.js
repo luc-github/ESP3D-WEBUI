@@ -373,7 +373,7 @@ function saveAndApply() {
  *
  */
 function processTemperatures(buffer) {
-    const regexTemp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
+    const regexTemp = /(B|T(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
     while ((result = regexTemp.exec(buffer)) !== null) {
         var tool = result[1]

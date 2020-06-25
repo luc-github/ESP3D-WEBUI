@@ -37,11 +37,13 @@ const DashboardToolBar = () => {
     const { showFiles } = useStoreon("showFiles")
     const toogleTerminal = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showterminal", !showTerminal)
+        dispatch("panel/showterminal", false)
+        dispatch("panel/showterminal", true)
     }
     const toogleFiles = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showfiles", !showFiles)
+        dispatch("panel/showfiles", false)
+        dispatch("panel/showfiles", true)
     }
     return (
         <div class="d-flex flex-row no_wrap">
@@ -52,31 +54,23 @@ const DashboardToolBar = () => {
             >
                 <button
                     type="button"
-                    class={
-                        showTerminal ? "btn btn-dark reduce-90" : "btn btn-dark"
-                    }
+                    class="btn btn-dark"
                     title={T("S74")}
                     onClick={toogleTerminal}
                 >
                     <Terminal />
-                    <span class="hide-low text-button">
-                        {showTerminal ? T("S73") : T("S75")}
-                    </span>
+                    <span class="hide-low text-button">{T("S75")}</span>
                 </button>
             </div>
             <div class={preferences.settings.showfilespanel ? "p-1" : "d-none"}>
                 <button
                     type="button"
-                    class={
-                        showFiles ? "btn btn-info reduce-90" : "btn btn-info"
-                    }
+                    class="btn btn-info"
                     title={T("S87")}
                     onClick={toogleFiles}
                 >
                     <Folder />
-                    <span class="hide-low text-button">
-                        {showFiles ? T("S85") : T("S84")}
-                    </span>
+                    <span class="hide-low text-button">{T("S84")}</span>
                 </button>
             </div>
         </div>

@@ -132,7 +132,6 @@ function getPanelIndex(orderlist, item) {
     let index = 0
     for (let element of orderlist) {
         if (element == item) {
-            console.log(item + " is " + index)
             return index
         }
         index++
