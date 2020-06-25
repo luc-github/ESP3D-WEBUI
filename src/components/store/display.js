@@ -2,6 +2,7 @@ export default store => {
     store.on("@init", () => ({
         showTerminal: false,
         showFiles: false,
+        showJog: false,
         activePage: 2,
         activeSetting: 1,
         showPage: false,
@@ -12,6 +13,9 @@ export default store => {
     })
     store.on("panel/showfiles", ({ showFiles }, newstate) => {
         return { showFiles: newstate }
+    })
+    store.on("panel/showjog", ({ showJog }, newstate) => {
+        return { showJog: newstate }
     })
     store.on("displayPage", ({ showPage }, newstate) => {
         return { showPage: newstate }

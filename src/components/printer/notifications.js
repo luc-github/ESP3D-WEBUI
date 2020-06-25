@@ -19,10 +19,10 @@
 */
 
 import { h } from "preact"
-import { T } from "../translations"
+import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
 import { Bed, Fan } from "./icon"
-import { Thermometer, AlertTriangle } from "preact-feather"
+import { Thermometer, AlertTriangle, Home } from "preact-feather"
 
 /*
  * Local variables
@@ -43,15 +43,24 @@ const Notifications = () => {
         "Bt"
     )
     const { x, y, z } = useStoreon("x", "y", "z")
-
+    const showJog = e => {
+        const { dispatch } = useStoreon()
+        dispatch("panel/showjog", true)
+    }
     return (
         <div class="p-1">
             <div class="d-flex flex-wrap p-1">
+                <div class={T == "none" ? "" : "d-none"}>
+                    <button class="btn btn-info">
+                        <Thermometer size="1.2em" />
+                        <span class="hide-low text-button">{Trans("P29")}</span>
+                    </button>
+                </div>
                 <div
                     class={
                         T == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
                 >
                     <span
@@ -86,7 +95,7 @@ const Notifications = () => {
                     class={
                         T1 == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
                 >
                     <span
@@ -120,7 +129,7 @@ const Notifications = () => {
                     class={
                         B == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
                 >
                     <span
@@ -151,12 +160,21 @@ const Notifications = () => {
                 </div>
             </div>
             <div class="d-flex flex-wrap p-1">
+                <div class={x == "none" ? "" : "d-none"}>
+                    <button class="btn btn-default" onclick={showJog}>
+                        <Home size="1.2em" />
+                        <span class="hide-low text-button">
+                            {Trans("S116")}
+                        </span>
+                    </button>
+                </div>
                 <div
                     class={
                         x == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={showJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         X
@@ -172,8 +190,9 @@ const Notifications = () => {
                     class={
                         y == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={showJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         Y
@@ -189,8 +208,9 @@ const Notifications = () => {
                     class={
                         z == "none"
                             ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={showJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         Z

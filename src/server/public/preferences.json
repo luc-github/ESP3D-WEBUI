@@ -8,7 +8,7 @@
   "verbose": true,
   "autoscroll": true,
   "showfilespanel": true,
-  "openfilesonstart": true,
+  "openfilesonstart": false,
   "showjogpanel": true,
   "xyfeedrate": 1000,
   "xpos": 100,

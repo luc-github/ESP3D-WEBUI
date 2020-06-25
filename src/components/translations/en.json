@@ -114,6 +114,7 @@
     "S113" : "Refresh time",
     "S114" : "sec",
     "S115" : "Commands",
+    "S116" : "Positions",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

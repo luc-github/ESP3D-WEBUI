@@ -26,5 +26,6 @@
     "P25" : "Printer SD",
     "P26" : "Printer SD support",
     "P27": "Operation successful",
-    "P28": "Operation failed"
+    "P28": "Operation failed",
+    "P29": "Temperatures"
 }
