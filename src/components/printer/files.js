@@ -41,8 +41,7 @@ import {
 } from "../http"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
-import { esp3dSettings, prefs } from "../app"
-
+import { esp3dSettings, prefs, getPanelIndex } from "../app"
 /*
  * Local constants
  *
@@ -1480,6 +1479,8 @@ const FilesPanel = () => {
     const { showFiles } = useStoreon("showFiles")
     const { filesStatus } = useStoreon("filesStatus")
     const { filesList } = useStoreon("filesList")
+    const { panelsOrder } = useStoreon("panelsOrder")
+    let index = getPanelIndex(panelsOrder, "files")
     if (!showFiles) return null
     if (typeof fileSystemLoaded[currentFilesType] == "undefined")
         fileSystemLoaded[currentFilesType] = false
@@ -1487,8 +1488,9 @@ const FilesPanel = () => {
         fileSystemLoaded["FS"] = true
         refreshFilesList()
     }
+    let panelClass = "order-" + index + " w-100 panelCard"
     return (
-        <div class="w-100 panelCard">
+        <div class={panelClass}>
             <div class="p-2 ">
                 <div class="border rounded p-2 panelCard">
                     <div class="w-100">

@@ -23,7 +23,8 @@ import { Setting, esp3dSettings, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
-import { JogPanel, processFeedRate } from "./jog"
+import { JogPanel } from "./jog"
+import { processFeedRate } from "./speed"
 import { FilesPanel, processFiles } from "./files"
 import {
     MachineUIPreferences,

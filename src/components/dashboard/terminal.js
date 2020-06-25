@@ -26,7 +26,7 @@ import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 import { showDialog } from "../dialog"
-import { Page, preferences } from "../app"
+import { Page, preferences, getPanelIndex } from "../app"
 
 /*
  * Local variables
@@ -279,6 +279,8 @@ function doAutoscroll() {
 const TerminalPanel = () => {
     const { content } = useStoreon("content")
     const { showTerminal } = useStoreon("showTerminal")
+    const { panelsOrder } = useStoreon("panelsOrder")
+    let index = getPanelIndex(panelsOrder, "terminal")
     const [command, setCommand] = useState(currentCommand)
     if (laststate != showTerminal) {
         laststate = showTerminal
@@ -350,8 +352,9 @@ const TerminalPanel = () => {
     useEffect(() => {
         doAutoscroll()
     }, [content.length])
+    let panelClass = "order-" + index + " w-100 panelCard"
     return (
-        <div class="w-100 panelCard">
+        <div class={panelClass}>
             <div class="p-2">
                 <div class="border rounded p-2">
                     <TerminalControls />

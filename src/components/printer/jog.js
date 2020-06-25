@@ -20,17 +20,9 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import {
-    X,
-    ZapOff,
-    AlertCircle,
-    Activity,
-    Send,
-    Home,
-    Crosshair,
-} from "preact-feather"
+import { X, ZapOff, Activity, Send, Home, Crosshair } from "preact-feather"
 import { useStoreon } from "storeon/preact"
-import { preferences } from "../app"
+import { preferences, getPanelIndex } from "../app"
 import { initDefaultMachineValues } from "./preferences"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
@@ -40,32 +32,9 @@ import { showDialog } from "../dialog"
  * Local variables
  *
  */
-let lastSpeed = 100
-let currentSpeed = 100
 let currentFeedRate = []
 let hasError = []
 let jogDistance = 100
-
-/*
- * sync feedrate with printer output
- */
-function processFeedRate(msg) {
-    if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
-        let f = msg
-        f = f.replace("FR:", "")
-        f = parseInt(f)
-        if (lastSpeed == currentSpeed) {
-            if (currentSpeed != f) {
-                currentSpeed = f
-                lastSpeed = f
-                document.getElementById("speed_input").value = f
-                document.getElementById("speedslider").value = f
-            }
-        } else {
-            lastSpeed = f
-        }
-    }
-}
 
 /*
  * Send command query error
@@ -85,9 +54,6 @@ function setState(index, state) {
     if (document.getElementById(index + "_jogfeedrate")) {
         controlId = document.getElementById(index + "_jogfeedrate")
     }
-    if (index == "speed_input") {
-        controlId = document.getElementById(index)
-    }
     if (document.getElementById(index + "_joglabel")) {
         controlLabel = document.getElementById(index + "_joglabel")
     }
@@ -100,74 +66,14 @@ function setState(index, state) {
         switch (state) {
             case "modified":
                 controlId.classList.add("is-changed")
-                if (index == "speed_input") {
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-danger")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-warning")
-                    document
-                        .getElementById("speed_sendbtn")
-                        .classList.remove("invisible")
-                    document
-                        .getElementById("speedslider")
-                        .classList.remove("error")
-                    document
-                        .getElementById("speedslider")
-                        .classList.add("is-changed")
-                }
                 break
             case "success":
                 controlId.classList.add("is-valid")
                 break
             case "error":
                 controlId.classList.add("is-invalid")
-                if (index == "speed_input") {
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-danger")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-warning")
-                    document
-                        .getElementById("speed_sendbtn")
-                        .classList.add("invisible")
-                    document
-                        .getElementById("speedslider")
-                        .classList.add("error")
-                    document
-                        .getElementById("speedslider")
-                        .classList.remove("is-changed")
-                }
                 break
             default:
-                if (index == "speed_input") {
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-danger")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-warning")
-                    document
-                        .getElementById("speed_sendbtn")
-                        .classList.add("invisible")
-                    document
-                        .getElementById("speedslider")
-                        .classList.remove("error")
-                    document
-                        .getElementById("speedslider")
-                        .classList.remove("is-changed")
-                }
                 break
         }
     }
@@ -229,106 +135,8 @@ function updateState(entry, index) {
         hasError[index] = true
     } else {
         hasError[index] = false
-        if (index == "speed_input") {
-            if (entry != lastSpeed) {
-                state = "modified"
-            }
-        }
     }
     setState(index, state)
-}
-
-/*
- * FeedRate slider control
- *
- */
-const FeedRateSlider = () => {
-    const onInputSpeedSlider = e => {
-        document.getElementById("speed_input").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
-    }
-    const onInputSpeedInput = e => {
-        document.getElementById("speedslider").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
-    }
-    const onReset = e => {
-        document.getElementById("speedslider").value = 100
-        currentSpeed = 100
-        document.getElementById("speed_input").value = 100
-        updateState(100, "speed_input")
-    }
-    const onSet = e => {
-        let cmd = "M220 S" + currentSpeed
-        lastSpeed = currentSpeed
-        updateState(currentSpeed, "speed_input")
-        SendCommand(cmd, null, sendCommandError)
-    }
-    useEffect(() => {
-        updateState(currentSpeed, "speed_input")
-    }, [currentSpeed])
-    return (
-        <div class="input-group justify-content-center rounded">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="speed_input_joglabel">
-                    <Activity />
-                    <span class="hide-low text-button">{T("P12")}</span>
-                </span>
-            </div>
-            <div class="slider-control hide-low">
-                <div class="slidecontainer">
-                    <input
-                        onInput={onInputSpeedSlider}
-                        type="range"
-                        min="1"
-                        max="300"
-                        value={currentSpeed}
-                        class="slider"
-                        id="speedslider"
-                    />
-                </div>
-            </div>
-            <input
-                style="max-width:6rem!important;"
-                onInput={onInputSpeedInput}
-                type="number"
-                min="1"
-                max="300"
-                value={currentSpeed}
-                class="form-control"
-                id="speed_input"
-            />
-
-            <div class="input-group-append">
-                <button
-                    id="speed_resetbtn"
-                    class="btn btn-default rounded-right"
-                    type="button"
-                    onClick={onReset}
-                    title={T("100%")}
-                >
-                    %
-                </button>
-                <button
-                    id="speed_sendbtn"
-                    class="btn btn-warning invisible rounded-right"
-                    type="button"
-                    onClick={onSet}
-                    title={T("S43")}
-                >
-                    <Send size="1.2em" />
-                    <span class="hide-low text-button-setting">{T("S43")}</span>
-                </button>
-            </div>
-            <div
-                class="invalid-feedback text-center"
-                style="text-align:center!important"
-            >
-                {T("S42")}
-            </div>
-        </div>
-    )
 }
 
 /*
@@ -386,6 +194,11 @@ const FeedRateInput = ({ entry, label, id }) => {
  */
 const JogPanel = () => {
     const { showJog } = useStoreon("showJog")
+    const { panelsOrder } = useStoreon("panelsOrder")
+    let index = getPanelIndex(panelsOrder, "jog")
+    if (!showJog) {
+        return null
+    }
     const sendHomeCommand = e => {
         let cmd
         let id
@@ -719,10 +532,6 @@ const JogPanel = () => {
         document.getElementById(e.target.id).classList.remove("btn-default")
     }
 
-    const emergencyStop = e => {
-        SendCommand("M112", null, sendCommandError)
-    }
-
     const disableMotor = e => {
         SendCommand("M84", null, sendCommandError)
     }
@@ -737,29 +546,37 @@ const JogPanel = () => {
         currentFeedRate["xyfeedrate"] = preferences.settings.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.settings.zfeedrate
-    if (!showJog) {
-        return null
-    }
+
+    let panelClass = "order-" + index + " p-2  w-100 panelCard"
     return (
-        <div
-            class={
-                preferences.settings.showjogpanel
-                    ? "p-2 panelCard w-100"
-                    : "d-none"
-            }
-        >
-            <div class="p-2 border rounded card-noborder-low">
+        <div class={panelClass}>
+            <div class="p-2 border rounded">
                 <div class="d-flex flex-column">
-                    <div class="ml-auto">
-                        <button
-                            type="button"
-                            class="btn btn-light btn-sm red-hover"
-                            title={T("S86")}
-                            onClick={toogle}
-                        >
-                            <X />
-                        </button>
+                    <div class="d-flex flex-row">
+                        <div class="mr-auto">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                onclick={disableMotor}
+                            >
+                                <ZapOff size="1.4em" />
+                                <span class="hide-low text-button">
+                                    {T("P13")}
+                                </span>
+                            </button>
+                        </div>
+                        <div class="ml-auto">
+                            <button
+                                type="button"
+                                class="btn btn-light btn-sm red-hover"
+                                title={T("S86")}
+                                onClick={toogle}
+                            >
+                                <X />
+                            </button>
+                        </div>
                     </div>
+                    <div class="p-1" />
                     <div>
                         <div class="show-low">
                             <div class="d-flex flex-row justify-content-center p-2">
@@ -1719,35 +1536,6 @@ const JogPanel = () => {
                                 />
                             </div>
                         </center>
-                        <div class="d-flex flex-wrap justify-content-center">
-                            <div class="p-2">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    onclick={disableMotor}
-                                >
-                                    <ZapOff size="1.4em" />
-                                    <span class="hide-low text-button">
-                                        {T("P13")}
-                                    </span>
-                                </button>
-                            </div>
-                            <div class="p-2" style="display:inline-block">
-                                <div class="p-1 bg-warning rounded">
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm btn-danger"
-                                        onclick={emergencyStop}
-                                    >
-                                        <AlertCircle size="1.4em" />
-                                        <span class="hide-low text-button">
-                                            {T("P15")}
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <FeedRateSlider />
                     </div>
                 </div>
             </div>
@@ -1755,4 +1543,4 @@ const JogPanel = () => {
     )
 }
 
-export { JogPanel, processFeedRate }
+export { JogPanel }

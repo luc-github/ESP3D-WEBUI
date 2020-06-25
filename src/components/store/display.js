@@ -1,3 +1,5 @@
+import { useStoreon } from "storeon/preact"
+
 export default store => {
     store.on("@init", () => ({
         showTerminal: false,
@@ -7,14 +9,35 @@ export default store => {
         activeSetting: 1,
         showPage: false,
         showDialog: false,
+        panelsOrder: [],
     }))
+
+    store.on("panel/add", ({ panelsOrder }, element) => {
+        return {
+            panelsOrder: [element, ...panelsOrder.filter(e => e !== element)],
+        }
+    })
+
+    store.on("panel/remove", ({ panelsOrder }, element) => {
+        return { panelsOrder: [...panelsOrder.filter(e => e !== element)] }
+    })
+
     store.on("panel/showterminal", ({ showTerminal }, newstate) => {
+        const { dispatch } = useStoreon()
+        if (newstate) dispatch("panel/add", "terminal")
+        else dispatch("panel/remove", "terminal")
         return { showTerminal: newstate }
     })
     store.on("panel/showfiles", ({ showFiles }, newstate) => {
+        const { dispatch } = useStoreon()
+        if (newstate) dispatch("panel/add", "files")
+        else dispatch("panel/remove", "files")
         return { showFiles: newstate }
     })
     store.on("panel/showjog", ({ showJog }, newstate) => {
+        const { dispatch } = useStoreon()
+        if (newstate) dispatch("panel/add", "jog")
+        else dispatch("panel/remove", "jog")
         return { showJog: newstate }
     })
     store.on("displayPage", ({ showPage }, newstate) => {

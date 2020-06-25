@@ -22,12 +22,21 @@ import { h } from "preact"
 import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
 import { Bed, Fan } from "./icon"
-import { Thermometer, AlertTriangle, Home } from "preact-feather"
+import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
+import { SendCommand } from "../http"
+import { showDialog } from "../dialog"
 
 /*
  * Local variables
  *
  */
+
+/*
+ * Send command query error
+ */
+function sendCommandError(errorCode, responseText) {
+    showDialog({ type: "error", numError: errorCode, message: T("S5") })
+}
 
 /*
  * Printer specific notifications
@@ -43,9 +52,13 @@ const Notifications = () => {
         "Bt"
     )
     const { x, y, z } = useStoreon("x", "y", "z")
-    const showJog = e => {
+    const { showJog } = useStoreon("showJog")
+    const toggleShowJog = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showjog", true)
+        dispatch("panel/showjog", !showJog)
+    }
+    const emergencyStop = e => {
+        SendCommand("M112", null, sendCommandError)
     }
     return (
         <div class="p-1">
@@ -161,7 +174,7 @@ const Notifications = () => {
             </div>
             <div class="d-flex flex-wrap p-1">
                 <div class={x == "none" ? "" : "d-none"}>
-                    <button class="btn btn-default" onclick={showJog}>
+                    <button class="btn btn-default" onclick={toggleShowJog}>
                         <Home size="1.2em" />
                         <span class="hide-low text-button">
                             {Trans("S116")}
@@ -174,7 +187,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
-                    onclick={showJog}
+                    onclick={toggleShowJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         X
@@ -192,7 +205,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
-                    onclick={showJog}
+                    onclick={toggleShowJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         Y
@@ -210,7 +223,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
-                    onclick={showJog}
+                    onclick={toggleShowJog}
                 >
                     <span class="bg-default input-group-text text-center textNotification justify-content-center">
                         Z
@@ -221,6 +234,20 @@ const Notifications = () => {
                     >
                         {z == "error" ? <AlertTriangle size="1.0em" /> : z}
                     </span>
+                </div>
+                <div class="ml-auto align-self-center hotspotNotification p-1">
+                    <div class="p-1 bg-warning rounded">
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-danger"
+                            onclick={emergencyStop}
+                        >
+                            <AlertCircle size="1.4em" />
+                            <span class="hide-low text-button">
+                                {Trans("P15")}
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
