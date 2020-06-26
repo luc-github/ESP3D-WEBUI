@@ -17,11 +17,9 @@ export default store => {
             panelsOrder: [element, ...panelsOrder.filter(e => e !== element)],
         }
     })
-
     store.on("panel/remove", ({ panelsOrder }, element) => {
         return { panelsOrder: [...panelsOrder.filter(e => e !== element)] }
     })
-
     store.on("panel/showterminal", ({ showTerminal }, newstate) => {
         const { dispatch } = useStoreon()
         if (newstate) dispatch("panel/add", "terminal")

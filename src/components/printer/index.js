@@ -18,12 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact"
+import { h, Fragment } from "preact"
 import { Setting, esp3dSettings, prefs } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
-import { JogPanel } from "./jog"
+import { JogPanel, processPositions } from "./jog"
+import { TemperaturesPanel, processTemperatures } from "./temperatures"
 import { processFeedRate } from "./speed"
 import { FilesPanel, processFiles } from "./files"
 import {
@@ -366,67 +367,6 @@ function saveAndApply() {
         button1text: T("S27"),
         next: processSaveConfig,
     })
-}
-
-/*
- * Process temperatures buffer
- *
- */
-function processTemperatures(buffer) {
-    const regexTemp = /(B|T(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
-    let result
-    while ((result = regexTemp.exec(buffer)) !== null) {
-        var tool = result[1]
-        var value
-        var value2
-        if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 5)
-            value = "error"
-        else
-            value = parseFloat(result[3])
-                .toFixed(2)
-                .toString()
-        if (isNaN(parseFloat(result[5]))) value2 = "0.00"
-        else
-            value2 = parseFloat(result[5])
-                .toFixed(2)
-                .toString()
-        if (tool == "T" || tool == "T1" || tool == "B") {
-            const { dispatch } = useStoreon()
-            if (dispatch) {
-                dispatch("temperatures/update" + tool, value)
-                dispatch("temperatures/update" + tool + "t", value2)
-            } else {
-                console.log("no dispatch")
-            }
-        }
-    }
-}
-
-/*
- * Process positions buffer
- *
- */
-function processPositions(buffer) {
-    const regexTemp = /(X|Y|Z|E(\d*)):\s*([+|-]?[0-9]*\.?[0-9]*)?/gi
-    let result
-    while ((result = regexTemp.exec(buffer)) !== null) {
-        var axis = result[1]
-        var value
-
-        if (isNaN(parseFloat(result[3]))) value = "error"
-        else
-            value = parseFloat(result[3])
-                .toFixed(2)
-                .toString()
-        if (axis == "X" || axis == "Y" || axis == "Z") {
-            const { dispatch } = useStoreon()
-            if (dispatch) {
-                dispatch("positions/update" + axis, value)
-            } else {
-                console.log("no dispatch")
-            }
-        }
-    }
 }
 
 /*
@@ -1238,19 +1178,34 @@ const MachineSettings = ({ currentPage }) => {
     )
 }
 
+/*
+ * Display Machine  Panels
+ */
+const MachinePanels = () => {
+    return (
+        <Fragment>
+            <JogPanel />
+            <FilesPanel />
+            <TemperaturesPanel />
+        </Fragment>
+    )
+}
+function initMachine() {
+    initDefaultMachineValues()
+}
+
 export {
     MachineSettings,
     firmwareName,
     processWSData,
     enLangRessourceExtra,
     clearData,
-    JogPanel,
     MachineUIPreferences,
     MachineFilesPreferences,
-    initDefaultMachineValues,
+    initMachine,
     MachinePollingPreferences,
     isVerboseData,
     Notifications,
-    FilesPanel,
     gitHubURL,
+    MachinePanels,
 }

@@ -546,8 +546,7 @@ const JogPanel = () => {
         currentFeedRate["xyfeedrate"] = preferences.settings.xyfeedrate
     if (typeof currentFeedRate["zfeedrate"] == "undefined")
         currentFeedRate["zfeedrate"] = preferences.settings.zfeedrate
-
-    let panelClass = "order-" + index + " p-2  w-100 panelCard"
+    let panelClass = "order-" + index + " p-2 w-100 panelCard"
     return (
         <div class={panelClass}>
             <div class="p-2 border rounded">
@@ -1543,4 +1542,31 @@ const JogPanel = () => {
     )
 }
 
-export { JogPanel }
+/*
+ * Process positions buffer
+ *
+ */
+function processPositions(buffer) {
+    const regexTemp = /(X|Y|Z|E(\d*)):\s*([+|-]?[0-9]*\.?[0-9]*)?/gi
+    let result
+    while ((result = regexTemp.exec(buffer)) !== null) {
+        var axis = result[1]
+        var value
+
+        if (isNaN(parseFloat(result[3]))) value = "error"
+        else
+            value = parseFloat(result[3])
+                .toFixed(2)
+                .toString()
+        if (axis == "X" || axis == "Y" || axis == "Z") {
+            const { dispatch } = useStoreon()
+            if (dispatch) {
+                dispatch("positions/update" + axis, value)
+            } else {
+                console.log("no dispatch")
+            }
+        }
+    }
+}
+
+export { JogPanel, processPositions }

@@ -54,11 +54,18 @@ const Notifications = () => {
     )
     const { x, y, z } = useStoreon("x", "y", "z")
     const { showJog } = useStoreon("showJog")
+    const { showTemperatures } = useStoreon("showTemperatures")
     const toggleShowJog = e => {
         const { dispatch } = useStoreon()
         dispatch("setPage", Page.dashboard)
         dispatch("panel/showjog", false)
         dispatch("panel/showjog", true)
+    }
+    const toggleshowTemperatures = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showtemperatures", false)
+        dispatch("panel/showtemperatures", true)
     }
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
@@ -67,7 +74,10 @@ const Notifications = () => {
         <div class="p-1">
             <div class="d-flex flex-wrap p-1">
                 <div class={T == "none" ? "" : "d-none"}>
-                    <button class="btn btn-info">
+                    <button
+                        class="btn btn-info"
+                        onclick={toggleshowTemperatures}
+                    >
                         <Thermometer size="1.2em" />
                         <span class="hide-low text-button">{Trans("P29")}</span>
                     </button>
@@ -78,6 +88,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={toggleshowTemperatures}
                 >
                     <span
                         class={
@@ -113,6 +124,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={toggleshowTemperatures}
                 >
                     <span
                         class={
@@ -147,6 +159,7 @@ const Notifications = () => {
                             ? "d-none"
                             : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
                     }
+                    onclick={toggleshowTemperatures}
                 >
                     <span
                         class={

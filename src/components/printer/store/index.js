@@ -1,5 +1,6 @@
 import { createStoreon } from "storeon"
 
+import display4printer from "./display"
 import positions from "./positions"
 import temperatures from "./temperatures"
 import monitor from "../../store/monitor"
@@ -10,6 +11,7 @@ import filespanel from "../../store/filespanel"
 import dialogcontent from "../../store/dialogcontent"
 
 const store = createStoreon([
+    display4printer,
     positions,
     temperatures,
     monitor,

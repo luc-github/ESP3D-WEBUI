@@ -33,7 +33,7 @@ import { useEffect } from "preact/hooks"
 const {
     MachineUIPreferences,
     MachineFilesPreferences,
-    initDefaultMachineValues,
+    initMachine,
     MachinePollingPreferences,
 } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
@@ -131,7 +131,7 @@ function updateUI() {
     if (typeof prefs.openfilesonstart == "undefined") {
         prefs.openterminalonstart = false
     }
-    initDefaultMachineValues()
+    initMachine()
     loadLanguage(prefs.language)
     if (prefs.showterminalpanel == true) {
         dispatch("panel/showterminal", prefs.openterminalonstart)

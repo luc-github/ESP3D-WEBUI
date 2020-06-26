@@ -22,8 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
-const { JogPanel } = require(`../${process.env.TARGET_ENV}`)
-const { FilesPanel } = require(`../${process.env.TARGET_ENV}`)
+const { MachinePanels } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../settings"
 import { useStoreon } from "storeon/preact"
 import { Terminal, Folder } from "preact-feather"
@@ -90,8 +89,7 @@ const DashboardPage = () => {
             <DashboardToolBar />
             <div class="d-flex flex-wrap">
                 <TerminalPanel />
-                <FilesPanel />
-                <JogPanel />
+                <MachinePanels />
             </div>
         </div>
     )
