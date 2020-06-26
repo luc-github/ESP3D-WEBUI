@@ -407,7 +407,7 @@ function processTemperatures(buffer) {
  *
  */
 function processPositions(buffer) {
-    const regexTemp = /(X|Y|Z|E(\d*)):\s*([+]?[0-9]*\.?[0-9]*)?/gi
+    const regexTemp = /(X|Y|Z|E(\d*)):\s*([+|-]?[0-9]*\.?[0-9]*)?/gi
     let result
     while ((result = regexTemp.exec(buffer)) !== null) {
         var axis = result[1]
