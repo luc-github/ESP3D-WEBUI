@@ -1566,7 +1566,7 @@ function processPositions(buffer) {
                 console.log("no dispatch")
             }
             //no need to parse more
-            if(axis == "Z") return
+            if (axis == "Z") return
         }
     }
 }

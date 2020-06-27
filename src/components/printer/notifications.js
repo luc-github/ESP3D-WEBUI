@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
-import { Bed, Fan } from "./icon"
+import { Bed, Fan, FeedRate } from "./icon"
 import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -53,8 +53,7 @@ const Notifications = () => {
         "Bt"
     )
     const { x, y, z } = useStoreon("x", "y", "z")
-    const { showJog } = useStoreon("showJog")
-    const { showTemperatures } = useStoreon("showTemperatures")
+    const { feedrate } = useStoreon("feedrate")
     const toggleShowJog = e => {
         const { dispatch } = useStoreon()
         dispatch("setPage", Page.dashboard)
@@ -66,6 +65,12 @@ const Notifications = () => {
         dispatch("setPage", Page.dashboard)
         dispatch("panel/showtemperatures", false)
         dispatch("panel/showtemperatures", true)
+    }
+    const toggleShowFeedRate = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showfeedrate", false)
+        dispatch("panel/showfeedrate", true)
     }
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
@@ -257,19 +262,55 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div class="ml-auto align-self-center hotspotNotification p-1">
+                <div class="ml-auto align-self-center hotspotNotification">
                     <div class="p-1 bg-warning rounded">
                         <button
                             type="button"
                             class="btn btn-sm btn-danger"
                             onclick={emergencyStop}
                         >
-                            <AlertCircle />
+                            <AlertCircle size="1.2em" />
                             <span class="hide-low text-button">
                                 {Trans("P15")}
                             </span>
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap p-1">
+                <div class={feedrate == "none" ? "" : "d-none"}>
+                    <button
+                        class="btn btn-default"
+                        onclick={toggleShowFeedRate}
+                    >
+                        <FeedRate />
+                        <span class="hide-low text-button">{Trans("P12")}</span>
+                    </button>
+                </div>
+                <div
+                    class={
+                        feedrate == "none"
+                            ? "d-none"
+                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                    }
+                    onclick={toggleShowFeedRate}
+                >
+                    <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                        <FeedRate height="1.2em" />
+                    </span>
+                    <span
+                        class="bg-white input-group-text  text-center textNotification justify-content-center"
+                        style="width:4em"
+                    >
+                        {feedrate == "error" ? (
+                            <AlertTriangle size="1.0em" />
+                        ) : (
+                            feedrate
+                        )}
+                    </span>
+                    <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                        <span>%</span>
+                    </span>
                 </div>
             </div>
         </div>

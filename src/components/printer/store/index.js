@@ -3,6 +3,7 @@ import { createStoreon } from "storeon"
 import display4printer from "./display"
 import positions from "./positions"
 import temperatures from "./temperatures"
+import feedrate from "./feedrate"
 import monitor from "../../store/monitor"
 import error from "../../store/error"
 import display from "../../store/display"
@@ -14,6 +15,7 @@ const store = createStoreon([
     display4printer,
     positions,
     temperatures,
+    feedrate,
     monitor,
     error,
     display,

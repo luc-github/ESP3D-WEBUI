@@ -1,5 +1,5 @@
 /*
- speed.js - ESP3D WebUI speed control file
+ speed.js - ESP3D WebUI feedrate (spped) control file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -20,9 +20,10 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { Activity } from "preact-feather"
+import { X, Send, RotateCcw } from "preact-feather"
+import { FeedRate } from "./icon"
 import { useStoreon } from "storeon/preact"
-import { preferences } from "../app"
+import { esp3dSettings, preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -31,26 +32,64 @@ import { showDialog } from "../dialog"
  * Local variables
  *
  */
-let lastSpeed = 100
-let currentSpeed = 100
+let currentSpeed = "none"
+let lastfeedrate = "none"
 
 /*
  * sync feedrate with printer output
  */
 function processFeedRate(msg) {
-    if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
-        let f = msg
-        f = f.replace("FR:", "")
-        f = parseInt(f)
-        if (lastSpeed == currentSpeed) {
-            if (currentSpeed != f) {
-                currentSpeed = f
-                lastSpeed = f
-                document.getElementById("speed_input").value = f
-                document.getElementById("speedslider").value = f
+    let f
+    let found = false
+    switch (esp3dSettings.FWTarget) {
+        case "repetier":
+        case "repetier4davinci":
+        if (msg.startsWith("SpeedMultiply:")) {
+                f = msg
+                f = f.replace("SpeedMultiply:", "")
+                f = parseInt(f)
+                if (isNaN(f)) {
+                    f = "error"
+                }
+                found = true
             }
+        break
+        case "marlin-embedded":
+        case "marlin":
+        case "marlinkimbra":
+            if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
+                f = msg
+                f = f.replace("FR:", "")
+                f = parseInt(f)
+                if (isNaN(f)) {
+                    f = "error"
+                }
+                found = true
+            }
+            break
+        case "smoothieware":
+            if (msg.startsWith("Speed factor at ") && msg.indexOf("%") != -1) {
+                f = msg
+                f = f.replace("Speed factor at ", "")
+                f = parseInt(f)
+                if (isNaN(f)) {
+                    f = "error"
+                }
+                found = true
+            }
+            break
+        default:
+            console.log(esp3dSettings.FWTarget + " is not supported")
+            return
+    }
+    if (found) {
+        const { dispatch } = useStoreon()
+        if (dispatch) {
+            dispatch("updateFeedRate", f)
+            lastfeedrate = f
+            updateState(currentSpeed, "speed_input")
         } else {
-            lastSpeed = f
+            console.log("no dispatch")
         }
     }
 }
@@ -68,19 +107,9 @@ function sendCommandError(errorCode, responseText) {
  */
 function setState(index, state) {
     let controlId
-    let controlLabel
     let controlUnit
-    if (document.getElementById(index + "_jogfeedrate")) {
-        controlId = document.getElementById(index + "_jogfeedrate")
-    }
     if (index == "speed_input") {
         controlId = document.getElementById(index)
-    }
-    if (document.getElementById(index + "_joglabel")) {
-        controlLabel = document.getElementById(index + "_joglabel")
-    }
-    if (document.getElementById(index + "_jogunit")) {
-        controlUnit = document.getElementById(index + "_jogunit")
     }
     if (controlId) {
         controlId.classList.remove("is-invalid")
@@ -90,14 +119,11 @@ function setState(index, state) {
                 controlId.classList.add("is-changed")
                 if (index == "speed_input") {
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-danger")
+                        .getElementById("speed_unit")
+                        .classList.remove("error")
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-warning")
+                        .getElementById("speed_unit")
+                        .classList.add("bg-warning")
                     document
                         .getElementById("speed_sendbtn")
                         .classList.remove("invisible")
@@ -116,14 +142,11 @@ function setState(index, state) {
                 controlId.classList.add("is-invalid")
                 if (index == "speed_input") {
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-danger")
+                        .getElementById("speed_unit")
+                        .classList.add("error")
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-warning")
+                        .getElementById("speed_unit")
+                        .classList.remove("bg-warning")
                     document
                         .getElementById("speed_sendbtn")
                         .classList.add("invisible")
@@ -138,14 +161,12 @@ function setState(index, state) {
             default:
                 if (index == "speed_input") {
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-danger")
+                        .getElementById("speed_unit")
+                        .classList.remove("error")
+                    
                     document
-                        .getElementById("speed_resetbtn")
-                        .classList.add("btn-default")
-                    document
-                        .getElementById("speed_resetbtn")
-                        .classList.remove("btn-warning")
+                        .getElementById("speed_unit")
+                        .classList.remove("bg-warning")
                     document
                         .getElementById("speed_sendbtn")
                         .classList.add("invisible")
@@ -156,24 +177,6 @@ function setState(index, state) {
                         .getElementById("speedslider")
                         .classList.remove("is-changed")
                 }
-                break
-        }
-    }
-    if (controlLabel) {
-        controlLabel.classList.remove("error")
-        controlLabel.classList.remove("success")
-        controlLabel.classList.remove("bg-warning")
-        switch (state) {
-            case "modified":
-                controlLabel.classList.add("bg-warning")
-                break
-            case "success":
-                controlLabel.classList.add("success")
-                break
-            case "error":
-                controlLabel.classList.add("error")
-                break
-            default:
                 break
         }
     }
@@ -214,11 +217,9 @@ function updateState(entry, index) {
     let state = "default"
     if (!checkValue(entry)) {
         state = "error"
-        hasError[index] = true
     } else {
-        hasError[index] = false
         if (index == "speed_input") {
-            if (entry != lastSpeed) {
+            if (entry != lastfeedrate) {
                 state = "modified"
             }
         }
@@ -231,6 +232,9 @@ function updateState(entry, index) {
  *
  */
 const FeedRateSlider = () => {
+    if (currentSpeed == "none") {
+        currentSpeed = lastfeedrate
+    }
     const onInputSpeedSlider = e => {
         document.getElementById("speed_input").value = e.target.value
         currentSpeed = e.target.value
@@ -241,16 +245,8 @@ const FeedRateSlider = () => {
         currentSpeed = e.target.value
         updateState(e.target.value, "speed_input")
     }
-    const onReset = e => {
-        document.getElementById("speedslider").value = 100
-        currentSpeed = 100
-        document.getElementById("speed_input").value = 100
-        updateState(100, "speed_input")
-    }
     const onSet = e => {
         let cmd = "M220 S" + currentSpeed
-        lastSpeed = currentSpeed
-        updateState(currentSpeed, "speed_input")
         SendCommand(cmd, null, sendCommandError)
     }
     useEffect(() => {
@@ -258,12 +254,6 @@ const FeedRateSlider = () => {
     }, [currentSpeed])
     return (
         <div class="input-group justify-content-center rounded">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="speed_input_joglabel">
-                    <Activity />
-                    <span class="hide-low text-button">{T("P12")}</span>
-                </span>
-            </div>
             <div class="slider-control hide-low">
                 <div class="slidecontainer">
                     <input
@@ -289,15 +279,11 @@ const FeedRateSlider = () => {
             />
 
             <div class="input-group-append">
-                <button
-                    id="speed_resetbtn"
-                    class="btn btn-default rounded-right"
-                    type="button"
-                    onClick={onReset}
-                    title={T("100%")}
+                <span class="input-group-text"
+                    id="speed_unit"
                 >
                     %
-                </button>
+                </span>
                 <button
                     id="speed_sendbtn"
                     class="btn btn-warning invisible rounded-right"
@@ -319,4 +305,83 @@ const FeedRateSlider = () => {
     )
 }
 
-export { processFeedRate }
+/*
+ * Feedrate panel control
+ *
+ */
+const FeedratePanel = () => {
+    const { showFeedRate } = useStoreon("showFeedRate")
+    const { panelsOrder } = useStoreon("panelsOrder")
+    let index = getPanelIndex(panelsOrder, "feedrate")
+    if (!showFeedRate) {
+        return null
+    }
+    const toogle = e => {
+        const { dispatch } = useStoreon()
+        dispatch("panel/showfeedrate", false)
+    }
+    const onSet100 = e => {
+        document.getElementById("speedslider").value = 100
+        currentSpeed = 100
+        document.getElementById("speed_input").value = 100
+        updateState(100, "speed_input")
+    }
+    const onReset = e => {
+        document.getElementById("speedslider").value = lastfeedrate
+        currentSpeed = lastfeedrate
+        document.getElementById("speed_input").value = lastfeedrate
+        updateState(lastfeedrate, "speed_input")
+    }
+    let panelClass = "order-" + index + " w-100 panelCard"
+    return (
+        <div class={panelClass}>
+            <div class="p-2 ">
+                <div class="border rounded p-2 panelCard">
+                    <div class="w-100">
+                        <div class="d-flex flex-wrap">
+                        <div class="p-1">
+                        <FeedRate />
+                        <span class="hide-low control-like text-button">{T("P12")}</span>
+                        </div>
+                        <div class="p-1" />
+                        <div class="p-1">
+                        <button
+                                type="button"
+                                class="btn btn-default"
+                                title="100%"
+                                onClick={onSet100}
+                            >
+                        100%
+                        </button>
+                        </div>
+                        <div class="p-1">
+                        <button
+                                type="button"
+                                class="btn btn-default"
+                                title={T("P19")}
+                                onClick={onReset}
+                            >
+                        <RotateCcw size="1.2em"/>
+                        <span class="hide-low text-button">{T("P19")}</span>
+                        </button>
+                        </div>
+                        <div class="ml-auto text-right">
+                            <button
+                                type="button"
+                                class="btn btn-light btn-sm red-hover"
+                                title={T("S86")}
+                                onClick={toogle}
+                            >
+                                <X />
+                            </button>
+                        </div> 
+                        </div><div class="p-1" />
+                            <FeedRateSlider />
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { FeedratePanel, processFeedRate }

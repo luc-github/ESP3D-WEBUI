@@ -66,4 +66,29 @@ const Bed = ({ height = "1.2em" }) => (
     </svg>
 )
 
-export { Fan, Bed }
+/*
+ *feedrate icon
+ * default height is 1.2m
+ */
+const FeedRate = ({ height = "1.2em" }) => (
+    <svg height={height} viewBox="2 4 90 90">
+        <path
+            style="stroke:currentColor;stroke-width:12;fill:none"
+            d="M84.78 48.08C84.88 62.28 74.58 75.08 61.48 79.78C46.08 85.78 26.88 81.68 16.38 68.48C7.98 58.58 6.58 43.48 13.18 32.28C20.38 18.98 36.08 11.58 50.98 13.24"
+        />
+        <path
+            style="stroke:currentColor;stroke-width:12;fill:none"
+            d="M59.18 14.76C64.38 16.38 69.28 18.88 73.48 22.38"
+        />
+        <path
+            style="stroke:currentColor;stroke-width:12;fill:none"
+            d="M79.18 27.48C82.08 31.38 84.08 35.98 84.88 40.78"
+        />
+        <path
+            style="stroke:currentColor;fill:currentColor"
+            d="M37.58 45.28C45.28 41.38 52.98 37.58 60.68 33.68C57.68 41.48 54.68 49.38 51.68 57.18C46.98 53.18 42.28 49.28 37.58 45.28C37.58 45.28 37.58 45.28 37.58 45.28"
+        />
+    </svg>
+)
+
+export { Fan, Bed, FeedRate }

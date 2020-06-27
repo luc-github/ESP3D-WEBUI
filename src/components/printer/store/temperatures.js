@@ -16,7 +16,6 @@ export default store => {
     store.on("temperatures/add", ({ temperatures }, temperature) => {
         return { temperatures: temperatures.concat([temperature]) }
     })
-
     store.on("temperatures/updateT", ({ T }, newvalue) => {
         return { T: newvalue }
     })

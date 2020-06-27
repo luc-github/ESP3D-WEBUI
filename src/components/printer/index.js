@@ -25,7 +25,7 @@ import { T } from "../translations"
 import { SendCommand } from "../http"
 import { JogPanel, processPositions } from "./jog"
 import { TemperaturesPanel, processTemperatures } from "./temperatures"
-import { processFeedRate } from "./speed"
+import { FeedratePanel, processFeedRate } from "./feedrate"
 import { FilesPanel, processFiles } from "./files"
 import {
     MachineUIPreferences,
@@ -1187,6 +1187,7 @@ const MachinePanels = () => {
             <JogPanel />
             <FilesPanel />
             <TemperaturesPanel />
+            <FeedratePanel />
         </Fragment>
     )
 }
