@@ -364,7 +364,7 @@ const FanPanel = () => {
                             <div class="p-1">
                                 <Fan />
                                 <span class="hide-low control-like text-button">
-                                    {T("P12")}
+                                    {T("P31")}
                                 </span>
                             </div>
                             <div class="p-1" />
