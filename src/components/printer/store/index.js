@@ -5,6 +5,7 @@ import positions from "./positions"
 import temperatures from "./temperatures"
 import feedrate from "./feedrate"
 import flowrate from "./flowrate"
+import fan from "./fan"
 import monitor from "../../store/monitor"
 import error from "../../store/error"
 import display from "../../store/display"
@@ -18,6 +19,7 @@ const store = createStoreon([
     temperatures,
     feedrate,
     flowrate,
+    fan,
     monitor,
     error,
     display,

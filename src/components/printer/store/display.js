@@ -5,8 +5,8 @@ export default store => {
         showTemperatures: false,
         showFlowRate: false,
         showFeedRate: false,
-        showFans: false,
-        showExtruders: false,
+        showFan: false,
+        showExtrusion: false,
     }))
     store.on("panel/showtemperatures", ({ showTemperatures }, newstate) => {
         const { dispatch } = useStoreon()
@@ -32,10 +32,10 @@ export default store => {
         else dispatch("panel/remove", "fan")
         return { showFan: newstate }
     })
-    store.on("panel/showextruders", ({ showExtruders }, newstate) => {
+    store.on("panel/showextrusion", ({ showExtrusion }, newstate) => {
         const { dispatch } = useStoreon()
-        if (newstate) dispatch("panel/add", "extruders")
-        else dispatch("panel/remove", "extruders")
-        return { showExtruders: newstate }
+        if (newstate) dispatch("panel/add", "extrusion")
+        else dispatch("panel/remove", "extrusion")
+        return { showExtrusion: newstate }
     })
 }

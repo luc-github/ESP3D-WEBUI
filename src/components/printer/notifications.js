@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
-import { Bed, Fan, FeedRate, FlowRate } from "./icon"
+import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
 import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -55,6 +55,7 @@ const Notifications = () => {
     const { x, y, z } = useStoreon("x", "y", "z")
     const { feedrate } = useStoreon("feedrate")
     const { flowrate } = useStoreon("flowrate")
+    const { fanpercent } = useStoreon("fanpercent")
     const toggleShowJog = e => {
         const { dispatch } = useStoreon()
         dispatch("setPage", Page.dashboard)
@@ -79,15 +80,27 @@ const Notifications = () => {
         dispatch("panel/showflowrate", false)
         dispatch("panel/showflowrate", true)
     }
+    const toggleShowFan = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showfan", false)
+        dispatch("panel/showfan", true)
+    }
+    const toggleShowExtrusion = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showextrusion", false)
+        dispatch("panel/showextrusion", true)
+    }
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
     }
     return (
         <div class="p-1">
             <div class="d-flex flex-wrap p-1">
-                <div class={T == "none" ? "" : "d-none"}>
+                <div class={T == "none" ? "p-1 hotspotNotification" : "d-none"}>
                     <button
-                        class="btn btn-info"
+                        class="btn btn-default"
                         onclick={toggleshowTemperatures}
                     >
                         <Thermometer size="1.2em" />
@@ -201,7 +214,7 @@ const Notifications = () => {
                 </div>
             </div>
             <div class="d-flex flex-wrap p-1">
-                <div class={x == "none" ? "" : "d-none"}>
+                <div class={x == "none" ? "p-1 hotspotNotification" : "d-none"}>
                     <button class="btn btn-default" onclick={toggleShowJog}>
                         <Home size="1.2em" />
                         <span class="hide-low text-button">
@@ -286,7 +299,13 @@ const Notifications = () => {
             </div>
             <div class="d-flex flex-wrap">
                 <div class="p-1">
-                    <div class={feedrate == "none" ? "" : "d-none"}>
+                    <div
+                        class={
+                            feedrate == "none"
+                                ? "p-1 hotspotNotification"
+                                : "d-none"
+                        }
+                    >
                         <button
                             class="btn btn-default"
                             onclick={toggleShowFeedRate}
@@ -324,7 +343,13 @@ const Notifications = () => {
                     </div>
                 </div>
                 <div class="p-1">
-                    <div class={flowrate == "none" ? "" : "d-none"}>
+                    <div
+                        class={
+                            flowrate == "none"
+                                ? "p-1 hotspotNotification"
+                                : "d-none"
+                        }
+                    >
                         <button
                             class="btn btn-default"
                             onclick={toggleShowFlowRate}
@@ -359,6 +384,62 @@ const Notifications = () => {
                         <span class="bg-default input-group-text text-center textNotification justify-content-center">
                             <span>%</span>
                         </span>
+                    </div>
+                </div>
+
+                <div class="p-1">
+                    <div
+                        class={
+                            fanpercent == "none"
+                                ? "p-1 hotspotNotification"
+                                : "d-none"
+                        }
+                    >
+                        <button class="btn btn-default" onclick={toggleShowFan}>
+                            <Fan />
+                            <span class="hide-low text-button">
+                                {Trans("P31")}
+                            </span>
+                        </button>
+                    </div>
+                    <div
+                        class={
+                            fanpercent == "none"
+                                ? "d-none"
+                                : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                        }
+                        onclick={toggleShowFan}
+                    >
+                        <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                            <Fan height="1.2em" />
+                        </span>
+                        <span
+                            class="bg-white input-group-text  text-center textNotification justify-content-center"
+                            style="width:4em"
+                        >
+                            {fanpercent == "error" ? (
+                                <AlertTriangle size="1.0em" />
+                            ) : (
+                                fanpercent
+                            )}
+                        </span>
+                        <span class="bg-default input-group-text text-center textNotification justify-content-center">
+                            <span>%</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-1">
+                    <div class="p-1 hotspotNotification">
+                        <button
+                            class="btn btn-default"
+                            onclick={toggleShowExtrusion}
+                        >
+                            <Extruder />
+                            <span class="hide-low text-button">
+                                {Trans("P32")}
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

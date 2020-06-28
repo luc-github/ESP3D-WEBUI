@@ -28,6 +28,8 @@ import { TemperaturesPanel, processTemperatures } from "./temperatures"
 import { FeedratePanel, processFeedRate } from "./feedrate"
 import { FlowratePanel, processFlowRate } from "./flowrate"
 import { FilesPanel, processFiles } from "./files"
+import { ExtrusionPanel } from "./extrusion"
+import { FanPanel, processFanPercent } from "./fan"
 import {
     MachineUIPreferences,
     MachineFilesPreferences,
@@ -86,7 +88,9 @@ function gitHubURL() {
  *
  */
 function isVerboseData(data) {
+    //TODO split by FW possibilities
     if (
+        data.startsWith("Fanspeed:") ||
         data.startsWith("wait") ||
         data.startsWith(">") ||
         data.startsWith("ok") ||
@@ -376,18 +380,23 @@ function saveAndApply() {
 function processWSData(buffer) {
     if (buffer.startsWith("{")) {
         try {
-        let response = JSON.parse(buffer)
-        if (typeof response.heaters != "undefined")
-            processTemperatures(response)
-        if (typeof response.pos != "undefined") processPositions(response)
-        if (typeof response.sfactor != "undefined") processFeedRate(response)
-        if (typeof response.efactor != "undefined") processFlowRate(response)
-         } catch (e){
-            console.log("Not valid JSON")
-         }
+            let response = JSON.parse(buffer)
+            if (typeof response.heaters != "undefined")
+                processTemperatures(response)
+            if (typeof response.pos != "undefined") processPositions(response)
+            if (typeof response.sfactor != "undefined")
+                processFeedRate(response)
+            if (typeof response.efactor != "undefined")
+                processFlowRate(response)
+            if (typeof response.fanPercent != "undefined")
+                processFanPercent(response)
+        } catch (e) {
+            console.log("Error processing JSON")
+        }
     } else {
         processFeedRate(buffer)
         processFlowRate(buffer)
+        processFanPercent(buffer)
         if (isConfigRequested) {
             configDataSize += buffer.length
             showDialog({
@@ -1208,6 +1217,8 @@ const MachinePanels = () => {
             <TemperaturesPanel />
             <FeedratePanel />
             <FlowratePanel />
+            <FanPanel />
+            <ExtrusionPanel />
         </Fragment>
     )
 }

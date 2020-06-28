@@ -121,7 +121,6 @@ const TemperaturesPanel = () => {
     if (!showTemperatures) {
         return null
     }
-    console.log(panelsOrder)
     const toogle = e => {
         const { dispatch } = useStoreon()
         dispatch("panel/showtemperatures", false)
