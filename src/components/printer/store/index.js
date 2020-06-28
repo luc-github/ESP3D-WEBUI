@@ -4,6 +4,7 @@ import display4printer from "./display"
 import positions from "./positions"
 import temperatures from "./temperatures"
 import feedrate from "./feedrate"
+import flowrate from "./flowrate"
 import monitor from "../../store/monitor"
 import error from "../../store/error"
 import display from "../../store/display"
@@ -16,6 +17,7 @@ const store = createStoreon([
     positions,
     temperatures,
     feedrate,
+    flowrate,
     monitor,
     error,
     display,

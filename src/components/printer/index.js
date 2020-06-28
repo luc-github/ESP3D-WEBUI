@@ -26,6 +26,7 @@ import { SendCommand } from "../http"
 import { JogPanel, processPositions } from "./jog"
 import { TemperaturesPanel, processTemperatures } from "./temperatures"
 import { FeedratePanel, processFeedRate } from "./feedrate"
+import { FlowratePanel, processFlowRate } from "./flowrate"
 import { FilesPanel, processFiles } from "./files"
 import {
     MachineUIPreferences,
@@ -374,6 +375,7 @@ function saveAndApply() {
  */
 function processWSData(buffer) {
     processFeedRate(buffer)
+    processFlowRate(buffer)
     if (isConfigRequested) {
         configDataSize += buffer.length
         showDialog({
@@ -1188,6 +1190,7 @@ const MachinePanels = () => {
             <FilesPanel />
             <TemperaturesPanel />
             <FeedratePanel />
+            <FlowratePanel />
         </Fragment>
     )
 }

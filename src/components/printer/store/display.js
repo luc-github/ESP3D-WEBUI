@@ -3,7 +3,7 @@ import { useStoreon } from "storeon/preact"
 export default store => {
     store.on("@init", () => ({
         showTemperatures: false,
-        showFlow: false,
+        showFlowRate: false,
         showFeedRate: false,
         showFans: false,
         showExtruders: false,
@@ -14,11 +14,11 @@ export default store => {
         else dispatch("panel/remove", "temperatures")
         return { showTemperatures: newstate }
     })
-    store.on("panel/showflow", ({ showFlow }, newstate) => {
+    store.on("panel/showflowrate", ({ showFlowRate }, newstate) => {
         const { dispatch } = useStoreon()
-        if (newstate) dispatch("panel/add", "flow")
-        else dispatch("panel/remove", "flow")
-        return { showFlow: newstate }
+        if (newstate) dispatch("panel/add", "flowrate")
+        else dispatch("panel/remove", "flowrate")
+        return { showFlowRate: newstate }
     })
     store.on("panel/showfeedrate", ({ showFeedRate }, newstate) => {
         const { dispatch } = useStoreon()

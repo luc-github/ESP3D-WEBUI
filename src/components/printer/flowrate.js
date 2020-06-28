@@ -1,5 +1,5 @@
 /*
- speed.js - ESP3D WebUI feedrate (spped) control file
+flowrate.js - ESP3D WebUI flowrate control file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { T } from "../translations"
 import { X, Send, RotateCcw } from "preact-feather"
-import { FeedRate } from "./icon"
+import { FlowRate } from "./icon"
 import { useStoreon } from "storeon/preact"
 import { esp3dSettings, preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
@@ -32,21 +32,21 @@ import { showDialog } from "../dialog"
  * Local variables
  *
  */
-let currentSpeed = "none"
-let lastfeedrate = "none"
+let currentFlow = "none"
+let lastflowrate = "none"
 
 /*
- * sync feedrate with printer output
+ * sync flowrate with printer output
  */
-function processFeedRate(msg) {
+function processFlowRate(msg) {
     let f
     let found = false
     switch (esp3dSettings.FWTarget) {
         case "repetier":
         case "repetier4davinci":
-            if (msg.startsWith("SpeedMultiply:")) {
+            if (msg.startsWith("FlowMultiply:")) {
                 f = msg
-                f = f.replace("SpeedMultiply:", "")
+                f = f.replace("FlowMultiply:", "")
                 f = parseInt(f)
                 if (isNaN(f)) {
                     f = "error"
@@ -57,9 +57,13 @@ function processFeedRate(msg) {
         case "marlin-embedded":
         case "marlin":
         case "marlinkimbra":
-            if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
+            if (
+                msg.startsWith("echo:") &&
+                msg.indexOf("Flow:") &&
+                msg.indexOf("%") != -1
+            ) {
                 f = msg
-                f = f.replace("FR:", "")
+                f = f.substring(f.indexOf("Flow:") + 5)
                 f = parseInt(f)
                 if (isNaN(f)) {
                     f = "error"
@@ -68,9 +72,9 @@ function processFeedRate(msg) {
             }
             break
         case "smoothieware":
-            if (msg.startsWith("Speed factor at ") && msg.indexOf("%") != -1) {
+            if (msg.startsWith("Flow rate at ") && msg.indexOf("%") != -1) {
                 f = msg
-                f = f.replace("Speed factor at ", "")
+                f = f.replace("Flow rate at ", "")
                 f = parseInt(f)
                 if (isNaN(f)) {
                     f = "error"
@@ -85,9 +89,9 @@ function processFeedRate(msg) {
     if (found) {
         const { dispatch } = useStoreon()
         if (dispatch) {
-            dispatch("updateFeedRate", f)
-            lastfeedrate = f
-            updateState(currentSpeed, "speed_input")
+            dispatch("updateFlowRate", f)
+            lastflowrate = f
+            updateState(currentFlow, "flow_input")
         } else {
             console.log("no dispatch")
         }
@@ -108,7 +112,7 @@ function sendCommandError(errorCode, responseText) {
 function setState(index, state) {
     let controlId
     let controlUnit
-    if (index == "speed_input") {
+    if (index == "flow_input") {
         controlId = document.getElementById(index)
     }
     if (controlId) {
@@ -117,21 +121,21 @@ function setState(index, state) {
         switch (state) {
             case "modified":
                 controlId.classList.add("is-changed")
-                if (index == "speed_input") {
+                if (index == "flow_input") {
                     document
-                        .getElementById("speed_unit")
+                        .getElementById("flow_unit")
                         .classList.remove("error")
                     document
-                        .getElementById("speed_unit")
+                        .getElementById("flow_unit")
                         .classList.add("bg-warning")
                     document
-                        .getElementById("speed_sendbtn")
+                        .getElementById("flow_sendbtn")
                         .classList.remove("invisible")
                     document
-                        .getElementById("speedslider")
+                        .getElementById("flowslider")
                         .classList.remove("error")
                     document
-                        .getElementById("speedslider")
+                        .getElementById("flowslider")
                         .classList.add("is-changed")
                 }
                 break
@@ -140,39 +144,37 @@ function setState(index, state) {
                 break
             case "error":
                 controlId.classList.add("is-invalid")
-                if (index == "speed_input") {
-                    document.getElementById("speed_unit").classList.add("error")
+                if (index == "flow_input") {
+                    document.getElementById("flow_unit").classList.add("error")
                     document
-                        .getElementById("speed_unit")
+                        .getElementById("flow_unit")
                         .classList.remove("bg-warning")
                     document
-                        .getElementById("speed_sendbtn")
+                        .getElementById("flow_sendbtn")
                         .classList.add("invisible")
+                    document.getElementById("flowslider").classList.add("error")
                     document
-                        .getElementById("speedslider")
-                        .classList.add("error")
-                    document
-                        .getElementById("speedslider")
+                        .getElementById("flowslider")
                         .classList.remove("is-changed")
                 }
                 break
             default:
-                if (index == "speed_input") {
+                if (index == "flow_input") {
                     document
-                        .getElementById("speed_unit")
+                        .getElementById("flow_unit")
                         .classList.remove("error")
 
                     document
-                        .getElementById("speed_unit")
+                        .getElementById("flow_unit")
                         .classList.remove("bg-warning")
                     document
-                        .getElementById("speed_sendbtn")
+                        .getElementById("flow_sendbtn")
                         .classList.add("invisible")
                     document
-                        .getElementById("speedslider")
+                        .getElementById("flowslider")
                         .classList.remove("error")
                     document
-                        .getElementById("speedslider")
+                        .getElementById("flowslider")
                         .classList.remove("is-changed")
                 }
                 break
@@ -216,8 +218,8 @@ function updateState(entry, index) {
     if (!checkValue(entry)) {
         state = "error"
     } else {
-        if (index == "speed_input") {
-            if (entry != lastfeedrate) {
+        if (index == "flow_input") {
+            if (entry != lastflowrate) {
                 state = "modified"
             }
         }
@@ -226,62 +228,62 @@ function updateState(entry, index) {
 }
 
 /*
- * FeedRate slider control
+ * FlowRate slider control
  *
  */
-const FeedRateSlider = () => {
-    if (currentSpeed == "none") {
-        currentSpeed = lastfeedrate
+const FlowRateSlider = () => {
+    if (currentFlow == "none") {
+        currentFlow = lastflowrate
     }
-    const onInputSpeedSlider = e => {
-        document.getElementById("speed_input").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
+    const onInputFlowSlider = e => {
+        document.getElementById("flow_input").value = e.target.value
+        currentFlow = e.target.value
+        updateState(e.target.value, "flow_input")
     }
-    const onInputSpeedInput = e => {
-        document.getElementById("speedslider").value = e.target.value
-        currentSpeed = e.target.value
-        updateState(e.target.value, "speed_input")
+    const onInputFlowInput = e => {
+        document.getElementById("flowslider").value = e.target.value
+        currentFlow = e.target.value
+        updateState(e.target.value, "flow_input")
     }
     const onSet = e => {
-        let cmd = "M220 S" + currentSpeed
+        let cmd = "M221 S" + currentFlow
         SendCommand(cmd, null, sendCommandError)
     }
     useEffect(() => {
-        updateState(currentSpeed, "speed_input")
-    }, [currentSpeed])
+        updateState(currentFlow, "flow_input")
+    }, [currentFlow])
     return (
         <div class="input-group justify-content-center rounded">
             <div class="slider-control hide-low">
                 <div class="slidecontainer">
                     <input
-                        onInput={onInputSpeedSlider}
+                        onInput={onInputFlowSlider}
                         type="range"
                         min="1"
                         max="300"
-                        value={currentSpeed}
+                        value={currentFlow}
                         class="slider"
-                        id="speedslider"
+                        id="flowslider"
                     />
                 </div>
             </div>
             <input
                 style="max-width:6rem!important;"
-                onInput={onInputSpeedInput}
+                onInput={onInputFlowInput}
                 type="number"
                 min="1"
                 max="300"
-                value={currentSpeed}
+                value={currentFlow}
                 class="form-control"
-                id="speed_input"
+                id="flow_input"
             />
 
             <div class="input-group-append">
-                <span class="input-group-text" id="speed_unit">
+                <span class="input-group-text" id="flow_unit">
                     %
                 </span>
                 <button
-                    id="speed_sendbtn"
+                    id="flow_sendbtn"
                     class="btn btn-warning invisible rounded-right"
                     type="button"
                     onClick={onSet}
@@ -302,31 +304,31 @@ const FeedRateSlider = () => {
 }
 
 /*
- * Feedrate panel control
+ * Flowrate panel control
  *
  */
-const FeedratePanel = () => {
-    const { showFeedRate } = useStoreon("showFeedRate")
+const FlowratePanel = () => {
+    const { showFlowRate } = useStoreon("showFlowRate")
     const { panelsOrder } = useStoreon("panelsOrder")
-    let index = getPanelIndex(panelsOrder, "feedrate")
-    if (!showFeedRate) {
+    let index = getPanelIndex(panelsOrder, "flowrate")
+    if (!showFlowRate) {
         return null
     }
     const toogle = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showfeedrate", false)
+        dispatch("panel/showflowrate", false)
     }
     const onSet100 = e => {
-        document.getElementById("speedslider").value = 100
-        currentSpeed = 100
-        document.getElementById("speed_input").value = 100
-        updateState(100, "speed_input")
+        document.getElementById("flowslider").value = 100
+        currentFlow = 100
+        document.getElementById("flow_input").value = 100
+        updateState(100, "flow_input")
     }
     const onReset = e => {
-        document.getElementById("speedslider").value = lastfeedrate
-        currentSpeed = lastfeedrate
-        document.getElementById("speed_input").value = lastfeedrate
-        updateState(lastfeedrate, "speed_input")
+        document.getElementById("flowslider").value = lastflowrate
+        currentFlow = lastflowrate
+        document.getElementById("flow_input").value = lastflowrate
+        updateState(lastflowrate, "flow_input")
     }
     let panelClass = "order-" + index + " w-100 panelCard"
     return (
@@ -336,9 +338,9 @@ const FeedratePanel = () => {
                     <div class="w-100">
                         <div class="d-flex flex-wrap">
                             <div class="p-1">
-                                <FeedRate />
+                                <FlowRate />
                                 <span class="hide-low control-like text-button">
-                                    {T("P12")}
+                                    {T("P30")}
                                 </span>
                             </div>
                             <div class="p-1" />
@@ -377,7 +379,7 @@ const FeedratePanel = () => {
                             </div>
                         </div>
                         <div class="p-1" />
-                        <FeedRateSlider />
+                        <FlowRateSlider />
                     </div>
                 </div>
             </div>
@@ -385,4 +387,4 @@ const FeedratePanel = () => {
     )
 }
 
-export { FeedratePanel, processFeedRate }
+export { FlowratePanel, processFlowRate }
