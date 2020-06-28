@@ -40,60 +40,74 @@ let lastflowrate = "none"
  */
 function processFlowRate(msg) {
     let f
-    let found = false
-    switch (esp3dSettings.FWTarget) {
-        case "repetier":
-        case "repetier4davinci":
-            if (msg.startsWith("FlowMultiply:")) {
-                f = msg
-                f = f.replace("FlowMultiply:", "")
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        case "marlin-embedded":
-        case "marlin":
-        case "marlinkimbra":
-            if (
-                msg.startsWith("echo:") &&
-                msg.indexOf("Flow:") &&
-                msg.indexOf("%") != -1
-            ) {
-                f = msg
-                f = f.substring(f.indexOf("Flow:") + 5)
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        case "smoothieware":
-            if (msg.startsWith("Flow rate at ") && msg.indexOf("%") != -1) {
-                f = msg
-                f = f.replace("Flow rate at ", "")
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        default:
-            console.log(esp3dSettings.FWTarget + " is not supported")
-            return
-    }
-    if (found) {
-        const { dispatch } = useStoreon()
+    const { dispatch } = useStoreon()
+    if (typeof msg == "object") {
+        f = parseInt(msg.efactor[0])
+        if (isNaN(f)) {
+            f = "error"
+        }
         if (dispatch) {
             dispatch("updateFlowRate", f)
             lastflowrate = f
             updateState(currentFlow, "flow_input")
         } else {
             console.log("no dispatch")
+        }
+    } else {
+        let found = false
+        switch (esp3dSettings.FWTarget) {
+            case "repetier":
+            case "repetier4davinci":
+                if (msg.startsWith("FlowMultiply:")) {
+                    f = msg
+                    f = f.replace("FlowMultiply:", "")
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            case "marlin-embedded":
+            case "marlin":
+            case "marlinkimbra":
+                if (
+                    msg.startsWith("echo:") &&
+                    msg.indexOf("Flow:") &&
+                    msg.indexOf("%") != -1
+                ) {
+                    f = msg
+                    f = f.substring(f.indexOf("Flow:") + 5)
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            case "smoothieware":
+                if (msg.startsWith("Flow rate at ") && msg.indexOf("%") != -1) {
+                    f = msg
+                    f = f.replace("Flow rate at ", "")
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            default:
+                console.log(esp3dSettings.FWTarget + " is not supported")
+                return
+        }
+        if (found) {
+            if (dispatch) {
+                dispatch("updateFlowRate", f)
+                lastflowrate = f
+                updateState(currentFlow, "flow_input")
+            } else {
+                console.log("no dispatch")
+            }
         }
     }
 }

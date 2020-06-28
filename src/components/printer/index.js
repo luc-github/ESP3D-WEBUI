@@ -374,64 +374,81 @@ function saveAndApply() {
  * Process WebSocket data
  */
 function processWSData(buffer) {
-    processFeedRate(buffer)
-    processFlowRate(buffer)
-    if (isConfigRequested) {
-        configDataSize += buffer.length
-        showDialog({
-            type: "loader",
-            message: T("S1") + " " + configDataSize + "B",
-        })
-        if (
-            buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
-            buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
-        ) {
+    if (buffer.startsWith("{")) {
+        try {
+        let response = JSON.parse(buffer)
+        if (typeof response.heaters != "undefined")
+            processTemperatures(response)
+        if (typeof response.pos != "undefined") processPositions(response)
+        if (typeof response.sfactor != "undefined") processFeedRate(response)
+        if (typeof response.efactor != "undefined") processFlowRate(response)
+         } catch (e){
+            console.log("Not valid JSON")
+         }
+    } else {
+        processFeedRate(buffer)
+        processFlowRate(buffer)
+        if (isConfigRequested) {
+            configDataSize += buffer.length
+            showDialog({
+                type: "loader",
+                message: T("S1") + " " + configDataSize + "B",
+            })
             if (
-                listrawSettings.length == 0 &&
-                buffer.startsWith(configurationCmd(isoverloadedconfig)[2])
+                buffer.startsWith(configurationCmd(isoverloadedconfig)[2]) ||
+                buffer.startsWith(configurationCmd(isoverloadedconfig)[3])
             ) {
-                console.log("we are done too soon, try again")
-                return
+                if (
+                    listrawSettings.length == 0 &&
+                    buffer.startsWith(configurationCmd(isoverloadedconfig)[2])
+                ) {
+                    console.log("we are done too soon, try again")
+                    return
+                }
+                isConfigData = false
+                isConfigRequested = false
+                if (
+                    buffer.startsWith(configurationCmd(isoverloadedconfig)[2])
+                ) {
+                    processConfigData()
+                } else loadConfigError(404, T("S5"))
             }
-            isConfigData = false
-            isConfigRequested = false
-            if (buffer.startsWith(configurationCmd(isoverloadedconfig)[2])) {
-                processConfigData()
-            } else loadConfigError(404, T("S5"))
+            if (
+                (!isConfigData &&
+                    buffer.startsWith(
+                        configurationCmd(isoverloadedconfig)[1]
+                    )) ||
+                isConfigData
+            ) {
+                isConfigData = true
+                listrawSettings.push(buffer)
+            }
         }
-        if (
-            (!isConfigData &&
-                buffer.startsWith(configurationCmd(isoverloadedconfig)[1])) ||
-            isConfigData
-        ) {
-            isConfigData = true
-            listrawSettings.push(buffer)
-        }
-    }
-    if (saveOnGoing) {
-        if (buffer.startsWith("ok") || buffer.indexOf("error") != -1) {
-            saveOnGoing = false
-            if (buffer.indexOf("error") != -1) {
-                loadConfigError(404, T("S5"))
-            } else {
-                for (let entry of listSettings) {
-                    if (entry.saving == true) {
-                        entry.saving = false
-                        entry.value = entry.currentValue
-                        setState(entry, "success")
+        if (saveOnGoing) {
+            if (buffer.startsWith("ok") || buffer.indexOf("error") != -1) {
+                saveOnGoing = false
+                if (buffer.indexOf("error") != -1) {
+                    loadConfigError(404, T("S5"))
+                } else {
+                    for (let entry of listSettings) {
+                        if (entry.saving == true) {
+                            entry.saving = false
+                            entry.value = entry.currentValue
+                            setState(entry, "success")
+                        }
                     }
                 }
             }
         }
-    }
-    if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
-        processTemperatures(buffer)
-    }
+        if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
+            processTemperatures(buffer)
+        }
 
-    if (buffer.startsWith("X:") || buffer.startsWith("ok C:")) {
-        processPositions(buffer)
+        if (buffer.startsWith("X:") || buffer.startsWith("ok C:")) {
+            processPositions(buffer)
+        }
+        processFiles(buffer)
     }
-    processFiles(buffer)
 }
 
 /*

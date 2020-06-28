@@ -39,28 +39,65 @@ import { showDialog } from "../dialog"
 function processTemperatures(buffer) {
     const regexTemp = /(B|T(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
-    while ((result = regexTemp.exec(buffer)) !== null) {
-        var tool = result[1]
-        var value
-        var value2
-        if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 5)
-            value = "error"
-        else
-            value = parseFloat(result[3])
-                .toFixed(2)
-                .toString()
-        if (isNaN(parseFloat(result[5]))) value2 = "0.00"
-        else
-            value2 = parseFloat(result[5])
-                .toFixed(2)
-                .toString()
-        if (tool == "T" || tool == "T1" || tool == "B") {
-            const { dispatch } = useStoreon()
-            if (dispatch) {
-                dispatch("temperatures/update" + tool, value)
-                dispatch("temperatures/update" + tool + "t", value2)
-            } else {
-                console.log("no dispatch")
+    if (typeof buffer == "object") {
+        const { dispatch } = useStoreon()
+        let size = buffer.heaters.length
+
+        for (let index = 0; index < size; index++) {
+            let value, value2, tool
+            if (typeof buffer.temps.bed != "undefined" && index == 0) {
+                tool = "B"
+            } else if (index != 0) {
+                tool = "T"
+                if (index > 1) tool += index + 1
+            }
+            if (
+                isNaN(parseFloat(buffer.heaters[index])) ||
+                parseFloat(buffer.heaters[index]) < 5
+            )
+                value = "error"
+            else
+                value = parseFloat(buffer.heaters[index])
+                    .toFixed(2)
+                    .toString()
+            if (isNaN(parseFloat(buffer.active[index]))) value2 = "0.00"
+            else
+                value2 = parseFloat(buffer.active[index])
+                    .toFixed(2)
+                    .toString()
+            if (tool == "T" || tool == "T1" || tool == "B") {
+                if (dispatch) {
+                    dispatch("temperatures/update" + tool, value)
+                    dispatch("temperatures/update" + tool + "t", value2)
+                } else {
+                    console.log("no dispatch")
+                }
+            }
+        }
+    } else {
+        while ((result = regexTemp.exec(buffer)) !== null) {
+            var tool = result[1]
+            var value
+            var value2
+            if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 5)
+                value = "error"
+            else
+                value = parseFloat(result[3])
+                    .toFixed(2)
+                    .toString()
+            if (isNaN(parseFloat(result[5]))) value2 = "0.00"
+            else
+                value2 = parseFloat(result[5])
+                    .toFixed(2)
+                    .toString()
+            if (tool == "T" || tool == "T1" || tool == "B") {
+                const { dispatch } = useStoreon()
+                if (dispatch) {
+                    dispatch("temperatures/update" + tool, value)
+                    dispatch("temperatures/update" + tool + "t", value2)
+                } else {
+                    console.log("no dispatch")
+                }
             }
         }
     }

@@ -1549,24 +1549,42 @@ const JogPanel = () => {
 function processPositions(buffer) {
     const regexTemp = /(X|Y|Z|E(\d*)):\s*([+|-]?[0-9]*\.?[0-9]*)?/gi
     let result
-    while ((result = regexTemp.exec(buffer)) !== null) {
-        var axis = result[1]
-        var value
-
-        if (isNaN(parseFloat(result[3]))) value = "error"
-        else
-            value = parseFloat(result[3])
-                .toFixed(2)
-                .toString()
-        if (axis == "X" || axis == "Y" || axis == "Z") {
-            const { dispatch } = useStoreon()
+    var axis
+    var value
+    const { dispatch } = useStoreon()
+    if (typeof buffer == "object") {
+        axis = ["X", "Y", "Z"]
+        let size = buffer.pos.length
+        for (let index = 0; index < size && index < 3; index++) {
+            if (isNaN(parseFloat(buffer.pos[index]))) value = "error"
+            else
+                value = parseFloat(buffer.pos[index])
+                    .toFixed(2)
+                    .toString()
             if (dispatch) {
-                dispatch("positions/update" + axis, value)
+                dispatch("positions/update" + axis[index], value)
             } else {
                 console.log("no dispatch")
             }
-            //no need to parse more
-            if (axis == "Z") return
+        }
+    } else {
+        while ((result = regexTemp.exec(buffer)) !== null) {
+            axis = result[1]
+
+            if (isNaN(parseFloat(result[3]))) value = "error"
+            else
+                value = parseFloat(result[3])
+                    .toFixed(2)
+                    .toString()
+            if (axis == "X" || axis == "Y" || axis == "Z") {
+                if (dispatch) {
+                    dispatch("positions/update" + axis, value)
+                } else {
+                    console.log("no dispatch")
+                }
+                //no need to parse more
+                if (axis == "Z") return
+            }
         }
     }
 }

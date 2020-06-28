@@ -40,56 +40,74 @@ let lastfeedrate = "none"
  */
 function processFeedRate(msg) {
     let f
-    let found = false
-    switch (esp3dSettings.FWTarget) {
-        case "repetier":
-        case "repetier4davinci":
-            if (msg.startsWith("SpeedMultiply:")) {
-                f = msg
-                f = f.replace("SpeedMultiply:", "")
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        case "marlin-embedded":
-        case "marlin":
-        case "marlinkimbra":
-            if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
-                f = msg
-                f = f.replace("FR:", "")
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        case "smoothieware":
-            if (msg.startsWith("Speed factor at ") && msg.indexOf("%") != -1) {
-                f = msg
-                f = f.replace("Speed factor at ", "")
-                f = parseInt(f)
-                if (isNaN(f)) {
-                    f = "error"
-                }
-                found = true
-            }
-            break
-        default:
-            console.log(esp3dSettings.FWTarget + " is not supported")
-            return
-    }
-    if (found) {
-        const { dispatch } = useStoreon()
+    const { dispatch } = useStoreon()
+    if (typeof msg == "object") {
+        f = parseInt(msg.sfactor)
+        if (isNaN(f)) {
+            f = "error"
+        }
         if (dispatch) {
             dispatch("updateFeedRate", f)
             lastfeedrate = f
             updateState(currentSpeed, "speed_input")
         } else {
             console.log("no dispatch")
+        }
+    } else {
+        let found = false
+        switch (esp3dSettings.FWTarget) {
+            case "repetier":
+            case "repetier4davinci":
+                if (msg.startsWith("SpeedMultiply:")) {
+                    f = msg
+                    f = f.replace("SpeedMultiply:", "")
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            case "marlin-embedded":
+            case "marlin":
+            case "marlinkimbra":
+                if (msg.startsWith("FR:") && msg.indexOf("%") != -1) {
+                    f = msg
+                    f = f.replace("FR:", "")
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            case "smoothieware":
+                if (
+                    msg.startsWith("Speed factor at ") &&
+                    msg.indexOf("%") != -1
+                ) {
+                    f = msg
+                    f = f.replace("Speed factor at ", "")
+                    f = parseInt(f)
+                    if (isNaN(f)) {
+                        f = "error"
+                    }
+                    found = true
+                }
+                break
+            default:
+                console.log(esp3dSettings.FWTarget + " is not supported")
+                return
+        }
+        if (found) {
+            const { dispatch } = useStoreon()
+            if (dispatch) {
+                dispatch("updateFeedRate", f)
+                lastfeedrate = f
+                updateState(currentSpeed, "speed_input")
+            } else {
+                console.log("no dispatch")
+            }
         }
     }
 }
