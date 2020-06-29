@@ -26,7 +26,7 @@ import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { isVerboseData } = require(`../${process.env.TARGET_ENV}`)
 import { showDialog } from "../dialog"
-import { Page, preferences, getPanelIndex } from "../app"
+import { Page, preferences, getPanelIndex, beepError } from "../app"
 
 /*
  * Local variables
@@ -65,7 +65,25 @@ function updateTerminal(data) {
     }
     updateQuietTerminal(data)
     updateVerboseTerminal(data)
+    if (isErrorData(data)) beepError()
     updateContentType()
+}
+
+/*
+ * Check if data is error message
+ *
+ */
+function isErrorData(data) {
+    if (typeof data == "object") {
+    } else {
+        if (
+            data.indexOf("Unknown command:") != -1 ||
+            data.indexOf("error:") != -1
+        ) {
+            return true
+        }
+    }
+    return false
 }
 
 /*
@@ -74,7 +92,9 @@ function updateTerminal(data) {
  */
 function updateQuietTerminal(data) {
     if (!isVerboseData(data)) {
-        monitorDataQuiet.push(<div>{data}</div>)
+        monitorDataQuiet.push(
+            <div class={isErrorData(data) ? "text-danger" : ""}>{data}</div>
+        )
         if (autoscrollOutput && pauseAutoscroll) {
             if (monitorDataQuiet.length > 2 * MAX_LINES_MONITOR)
                 monitorDataQuiet = monitorDataQuiet.slice(-MAX_LINES_MONITOR)
@@ -84,17 +104,38 @@ function updateQuietTerminal(data) {
     }
 }
 
+function isSame(data1, data2) {
+    if (typeof data1 != typeof data2) return false
+    if (typeof data1 == "object") {
+        if (!data1.props.children || !data2.props.children) return false
+        if (data1.props.children.length != data2.props.children.length)
+            return false
+        for (let index = 0; index < data1.props.children.length; index++) {
+            if (data1.props.children[index] != data2.props.children[index])
+                return false
+        }
+        return true
+    } else {
+        return data1 == data2
+    }
+}
+
 /*
  * Update Verbose Terminal window
  *
  */
 function updateVerboseTerminal(data) {
-    if (lastverbosecommand == data) {
+    if (isSame(lastverbosecommand, data)) {
         lastverbosecommandNb++
         monitorDataVerbose[monitorDataVerbose.length - 1] = (
-            <div>
-                {" "}
-                {data}{" "}
+            <div
+                class={
+                    isErrorData(data)
+                        ? "text-danger d-flex flex-wrap  align-items-center"
+                        : "d-flex flex-wrap  align-items-center"
+                }
+            >
+                {data}
                 <span class="badge badge-pill badge-secondary">
                     {lastverbosecommandNb}
                 </span>
@@ -103,7 +144,9 @@ function updateVerboseTerminal(data) {
     } else {
         lastverbosecommand = data
         lastverbosecommandNb = 1
-        monitorDataVerbose.push(<div>{data}</div>)
+        monitorDataVerbose.push(
+            <div class={isErrorData(data) ? "text-danger" : ""}>{data}</div>
+        )
         if (autoscrollOutput && pauseAutoscroll) {
             if (monitorDataVerbose.length > 2 * MAX_LINES_MONITOR)
                 monitorDataVerbose = monitorDataVerbose.slice(

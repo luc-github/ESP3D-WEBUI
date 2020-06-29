@@ -30,6 +30,7 @@ import {
     prefs,
     setcurrentprefs,
     initApp,
+    stopPolling,
 } from "./webui"
 import { Esp3DSettings } from "./esp3d"
 import { useStoreon } from "storeon/preact"
@@ -60,4 +61,11 @@ const SettingsPage = () => {
     )
 }
 
-export { SettingsPage, preferences, prefs, setcurrentprefs, initApp }
+export {
+    SettingsPage,
+    preferences,
+    prefs,
+    setcurrentprefs,
+    initApp,
+    stopPolling,
+}

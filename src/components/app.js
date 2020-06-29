@@ -25,11 +25,12 @@ import { useState, useEffect } from "preact/hooks"
 import { DialogPage } from "./dialog"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
-import { SettingsPage, initApp, preferences } from "./settings"
+import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
 import { Header } from "./header"
 import { Notification } from "./notification"
 import { setLang, T } from "./translations"
 import { prefs } from "./settings"
+import { beep, beepError, initAudio } from "./audio"
 import { useStoreon } from "storeon/preact"
 
 /*
@@ -107,6 +108,7 @@ function App() {
     useEffect(() => {
         setLang("en")
         initApp()
+        initAudio()
     }, [])
     return (
         <div class="full-height bg-white">
@@ -152,4 +154,7 @@ export {
     customdata,
     setCustomdata,
     getPanelIndex,
+    beepError,
+    beep,
+    stopPolling,
 }

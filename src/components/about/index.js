@@ -101,7 +101,6 @@ function onClickUpdateUI() {
 function PrepareUpload() {
     document.getElementById("uploadControl").click()
     document.getElementById("uploadControl").onchange = () => {
-        console.log("content changed")
         uploadFiles = document.getElementById("uploadControl").files
         let fileList = []
         let message = []

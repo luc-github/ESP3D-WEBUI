@@ -875,4 +875,5 @@ export {
     setcurrentprefs,
     prefs,
     WebUISettings,
+    stopPolling,
 }

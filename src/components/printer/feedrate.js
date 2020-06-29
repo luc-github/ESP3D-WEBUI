@@ -96,7 +96,6 @@ function processFeedRate(msg) {
                 }
                 break
             default:
-                console.log(esp3dSettings.FWTarget + " is not supported")
                 return
         }
         if (found) {

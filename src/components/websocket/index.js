@@ -19,7 +19,7 @@
 */
 
 "use strict"
-import { updateTerminal } from "../app"
+import { updateTerminal, stopPolling } from "../app"
 import { cancelCurrentQuery } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
@@ -220,6 +220,7 @@ function disconnectWsServer(data) {
     isLogOff = true
     reconnectCounter = 0
     webSocketClient.close()
+    stopPolling()
     document.title = document.title + "(" + T("S9") + ")"
     if (data) showDialog(data)
 }
