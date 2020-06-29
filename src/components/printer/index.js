@@ -19,7 +19,7 @@
 */
 
 import { h, Fragment } from "preact"
-import { Setting, esp3dSettings, prefs } from "../app"
+import { Setting, esp3dSettings, prefs, beep } from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
 import { SendCommand } from "../http"
@@ -378,6 +378,34 @@ function saveAndApply() {
         next: processSaveConfig,
     })
 }
+/*
+ * Handles custom messages sent via M118
+ */
+function process_Esp3d(buffer) {
+    if (buffer.indexOf("[esp3d]") != -1) {
+        let cmd = buffer.substring(buffer.indexOf("]") + 1)
+        console.log(cmd)
+        if (cmd.startsWith("eop")) {
+            // Example 1
+            // Sound to play on end of print
+            // Triggered by message on serial terminal
+            // [esp3d]eop
+            beep(400, 100)
+            beep(100, 200)
+        } else if (cmd.startsWith("beep(")) {
+            // Example 2
+            // Call a function within webUI, in this case beep()
+            // Triggered by message on serial terminal
+            // [esp3d]beep(100, 261)
+            cmd = cmd.replace("beep(", "")
+            cmd = cmd.replace(")", "")
+            let tcmd = cmd.split(",")
+            if (tcmd.length == 2) {
+                beep(parseInt(tcmd[0]), parseInt(tcmd[1]))
+            }
+        }
+    }
+}
 
 /*
  * Process WebSocket data
@@ -399,6 +427,7 @@ function processWSData(buffer) {
             console.log("Error processing JSON")
         }
     } else {
+        process_Esp3d(buffer)
         processFeedRate(buffer)
         processFlowRate(buffer)
         processFanPercent(buffer)

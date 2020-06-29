@@ -23,7 +23,7 @@ import { useEffect } from "preact/hooks"
 import { AlertTriangle, Info, HelpCircle } from "preact-feather"
 import { T } from "../translations"
 import { useStoreon } from "storeon/preact"
-import { Page, reloadPage } from "../app"
+import { Page, reloadPage, beepError } from "../app"
 
 /*
  *Spin loader
@@ -135,6 +135,7 @@ const DialogPage = () => {
         (dialogData.type == "disconnect" && dialogData.numError)
     ) {
         iconTitle = <AlertTriangle color="red" />
+        beepError()
         if (!dialogData.title) {
             title = T("S22")
         }
