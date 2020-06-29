@@ -89,6 +89,11 @@ function gitHubURL() {
  */
 function isVerboseData(data) {
     //TODO split by FW possibilities
+    if (typeof data == "object") {
+        //TODO What about error message ?
+        //console.log(data)
+        return true
+    }
     if (
         data.startsWith("Fanspeed:") ||
         data.startsWith("wait") ||

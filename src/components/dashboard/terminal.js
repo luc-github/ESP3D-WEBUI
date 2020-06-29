@@ -254,7 +254,6 @@ function sendCommand(cmd) {
     commandHistoryIndex = commandHistory.length
     SendCommand(cmd, sendCommandSuccess, sendCommandError)
     pauseAutoscroll = false
-    updateTerminal(">" + cmd)
 }
 
 /*

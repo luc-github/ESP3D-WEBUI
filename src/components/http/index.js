@@ -18,10 +18,11 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-"use strict"
+import { h } from "preact"
 import { getPageId, pausePing } from "../websocket"
 import { showDialog } from "../dialog"
 import { T } from "../translations"
+import { updateTerminal } from "../app"
 
 /*
  * Local variables
@@ -297,6 +298,7 @@ function processCommands() {
 
 function SendCommand(cmd, result_fn, error_fn, progress_fn, id, max_id) {
     const url = "/command?cmd=" + encodeURIComponent(cmd)
+    updateTerminal(<div class="text-primary">&gt; {cmd}</div>)
     return SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id)
 }
 

@@ -66,13 +66,6 @@ function processFanPercent(msg) {
                         f = "error"
                     } else {
                         //M106 does not use % but 0 to 255
-                        console.log(
-                            f +
-                                " = " +
-                                (100 * f) / 255 +
-                                " = " +
-                                Math.round((100 * f) / 255)
-                        )
                         f = Math.round((100 * f) / 255)
                     }
                     found = true
@@ -207,11 +200,11 @@ function setState(index, state) {
  */
 function checkValue(entry) {
     if (
-        entry.length == 0 ||
-        entry < 0 ||
-        entry > 100 ||
-        entry.indexOf(".") != -1 ||
-        entry.indexOf("+") != -1
+        String(entry).length == 0 ||
+        parseFloat(entry) < 0 ||
+        parseFloat(entry) > 100 ||
+        String(entry).indexOf(".") != -1 ||
+        String(entry).indexOf("+") != -1
     )
         return false
     return true
@@ -255,16 +248,8 @@ const FanSlider = () => {
     }
     const onSet = e => {
         //M106 does not use % but 0 to 255
-        console.log(
-            currentPercent +
-                " = " +
-                (parseFloat(currentPercent) * 255) / 100 +
-                " = " +
-                Math.round((parseFloat(currentPercent) * 255) / 100)
-        )
         let cmd =
             "M106 S" + Math.round((parseFloat(currentPercent) * 255) / 100)
-        console.log(cmd)
         SendCommand(cmd, null, sendCommandError)
     }
     useEffect(() => {
@@ -278,7 +263,7 @@ const FanSlider = () => {
                         onInput={onInputSpeedSlider}
                         type="range"
                         min="1"
-                        max="300"
+                        max="100"
                         value={currentPercent}
                         class="slider"
                         id="fanslider"
@@ -289,8 +274,8 @@ const FanSlider = () => {
                 style="max-width:6rem!important;"
                 onInput={onInputSpeedInput}
                 type="number"
-                min="1"
-                max="300"
+                min="0"
+                max="100"
                 value={currentPercent}
                 class="form-control"
                 id="fan_input"
