@@ -348,12 +348,10 @@ const TerminalPanel = () => {
     }
     const onScroll = e => {
         lastscroll = e.target.scrollHeight
+        let area = 20
+        if (e.target.scrollTop < e.target.offsetHeight *2) area = 40
         if (
-            Math.abs(
-                e.target.scrollTop +
-                    e.target.offsetHeight -
-                    e.target.scrollHeight
-            ) > 20
+            Math.abs((((e.target.scrollTop+e.target.offsetHeight)/e.target.scrollHeight)* e.target.offsetHeight) - e.target.offsetHeight) > area
         ) {
             pauseAutoscroll = true
         } else pauseAutoscroll = false
