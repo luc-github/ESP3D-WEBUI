@@ -42,7 +42,7 @@ function processTemperatures(buffer) {
     if (typeof buffer == "object") {
         const { dispatch } = useStoreon()
         let size = buffer.heaters.length
-
+        let timestamp = Date.now()
         for (let index = 0; index < size; index++) {
             let value, value2, tool
             if (typeof buffer.temps.bed != "undefined" && index == 0) {
@@ -67,6 +67,8 @@ function processTemperatures(buffer) {
                     .toString()
             if (tool == "T" || tool == "T1" || tool == "B") {
                 if (dispatch) {
+                    let data = {timestamp,value}
+                    dispatch("temperatures/add" + tool, data)
                     dispatch("temperatures/update" + tool, value)
                     dispatch("temperatures/update" + tool + "t", value2)
                 } else {

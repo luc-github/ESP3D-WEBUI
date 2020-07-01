@@ -1,3 +1,5 @@
+const DATAMAX = 400
+
 export default store => {
     store.on("@init", () => ({
         T: "none",
@@ -6,15 +8,25 @@ export default store => {
         T1t: 0,
         B: "none",
         Bt: 0,
-        temperatures: [
-            { key: "T", value: "0" },
-            { key: "T1", value: "0" },
-            { key: "B", value: "0" },
+        TList: [
+        ],
+        T1List: [
+        ],
+        BList: [
         ],
     }))
 
-    store.on("temperatures/add", ({ temperatures }, temperature) => {
-        return { temperatures: temperatures.concat([temperature]) }
+    store.on("temperatures/addT", ({ TList }, temperature) => {
+        TList = TList.slice(-DATAMAX)
+        return { TList: TList.concat([temperature]) }
+    })
+    store.on("temperatures/addT1", ({ T1List }, temperature) => {
+        T1List = T1List.slice(-DATAMAX)
+        return { T1List: T1List.concat([temperature]) }
+    })
+    store.on("temperatures/addB", ({ BList }, temperature) => {
+        BList = BList.slice(-DATAMAX)
+        return { BList: BList.concat([temperature]) }
     })
     store.on("temperatures/updateT", ({ T }, newvalue) => {
         return { T: newvalue }
