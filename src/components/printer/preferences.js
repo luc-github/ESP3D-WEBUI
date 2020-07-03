@@ -61,22 +61,23 @@ function checkValue(id) {
         id == "printersd" ||
         id == "pollingcommands"
     ) {
-    } else if ((id == "extruderpreheat") || (id == "bedpreheat")) {
-            if (( prefs[id] == null) || (prefs[id].length==0))isvalid = false
-            else {
-                let tvals = prefs[id].split(";")
-                for(let val of tvals){
-                    if (isNaN(val) || isNaN( parseFloat(val))  || parseFloat(val) < 1) isvalid = false
-                }
+    } else if (id == "extruderpreheat" || id == "bedpreheat") {
+        if (prefs[id] == null || prefs[id].length == 0) isvalid = false
+        else {
+            let tvals = prefs[id].split(";")
+            for (let val of tvals) {
+                if (isNaN(val) || isNaN(parseFloat(val)) || parseFloat(val) < 1)
+                    isvalid = false
             }
-        } else{
+        }
+    } else {
         if (prefs[id] == null || isNaN(prefs[id])) {
             prefs[id] = ""
             isvalid = false
         } else {
             if (id == "xyfeedrate" || id == "zfeedrate") {
                 if (prefs[id] < 1) isvalid = false
-            } 
+            }
             if (id == "xpos" || id == "ypos") {
             }
             if (id == "extrudermax" || id == "bedmax") {
@@ -446,7 +447,9 @@ const MachineUIPreferences = () => {
                         type="number"
                     />
                     <div class="card">
-                        <div class="card-header control-padding">{T("P18")}</div>
+                        <div class="card-header control-padding">
+                            {T("P18")}
+                        </div>
                         <div class="card-body padding-low">
                             <MachineUIEntry
                                 id="xpos"
@@ -474,9 +477,15 @@ const MachineUIPreferences = () => {
                     />
                 </div>
 
-                <div class={prefs["showtemperaturespanel"] ? "card-body" : "d-none"}>
+                <div
+                    class={
+                        prefs["showtemperaturespanel"] ? "card-body" : "d-none"
+                    }
+                >
                     <div class="card">
-                        <div class="card-header control-padding">{T("P36")}</div>
+                        <div class="card-header control-padding">
+                            {T("P36")}
+                        </div>
                         <div class="card-body padding-low">
                             <MachineUIEntry
                                 id="extrudermax"
@@ -494,7 +503,9 @@ const MachineUIPreferences = () => {
                     </div>
                     <div class="p-1" />
                     <div class="card">
-                        <div class="card-header control-padding">{T("P37")}</div>
+                        <div class="card-header control-padding">
+                            {T("P37")}
+                        </div>
                         <div class="card-body padding-low">
                             <MachineUIEntry
                                 id="bedmax"

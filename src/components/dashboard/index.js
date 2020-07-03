@@ -25,7 +25,7 @@ import { TerminalPanel, updateTerminal } from "./terminal"
 const { MachinePanels } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../settings"
 import { useStoreon } from "storeon/preact"
-import {X, Terminal, Folder } from "preact-feather"
+import { X, Terminal, Folder } from "preact-feather"
 
 /*
  * Dashboard toolbar
@@ -47,8 +47,12 @@ const DashboardToolBar = () => {
     }
     const toogle = e => {
         const { dispatch } = useStoreon()
-        for(let panelIndex = 0; panelIndex < panelsOrder.length;panelIndex++){
-            dispatch("panel/show"+panelsOrder[panelIndex], false)
+        for (
+            let panelIndex = 0;
+            panelIndex < panelsOrder.length;
+            panelIndex++
+        ) {
+            dispatch("panel/show" + panelsOrder[panelIndex], false)
         }
     }
     return (
@@ -79,7 +83,7 @@ const DashboardToolBar = () => {
                     <span class="hide-low text-button">{T("S84")}</span>
                 </button>
             </div>
-             <div class={panelsOrder.length>0?"p-1 ml-auto":"d-none"}>
+            <div class={panelsOrder.length > 0 ? "p-1 ml-auto" : "d-none"}>
                 <button
                     type="button"
                     class="btn btn-light btn-sm red-hover"

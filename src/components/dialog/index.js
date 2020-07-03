@@ -186,7 +186,7 @@ const DialogPage = () => {
                                 className={
                                     dialogData.type == "error"
                                         ? "d-none"
-                                        : "d-block"
+                                        : ""
                                 }
                             />
                             {dialogData.message}
@@ -194,7 +194,7 @@ const DialogPage = () => {
                         <div
                             class={
                                 dialogData.type == "progress"
-                                    ? "progress d-block"
+                                    ? "progress"
                                     : "d-none"
                             }
                         >
@@ -216,7 +216,7 @@ const DialogPage = () => {
                             type="button"
                             className={
                                 dialogData.type == "disconnect"
-                                    ? "btn btn-primary d-block"
+                                    ? "btn btn-primary"
                                     : "d-none"
                             }
                             onClick={reloadPage}
@@ -229,11 +229,11 @@ const DialogPage = () => {
                             className={
                                 dialogData.type == "error" ||
                                 dialogData.type == "progress"
-                                    ? "btn btn-danger d-block"
+                                    ? "btn btn-danger"
                                     : dialogData.type == "confirmation" ||
                                       (dialogData.type == "message" &&
                                           dialogData.button1text)
-                                    ? "btn btn-secondary d-block"
+                                    ? "btn btn-secondary"
                                     : "d-none"
                             }
                             onClick={() => {
@@ -249,10 +249,10 @@ const DialogPage = () => {
                             id="but2"
                             className={
                                 dialogData.type == "confirmation"
-                                    ? "btn btn-primary d-block"
+                                    ? "btn btn-primary"
                                     : dialogData.type == "message" &&
                                       dialogData.button2text
-                                    ? "btn btn-primary d-block"
+                                    ? "btn btn-primary"
                                     : "d-none"
                             }
                             onClick={() => {

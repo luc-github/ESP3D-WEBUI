@@ -39,10 +39,12 @@ import { showDialog } from "../dialog"
 function processTemperatures(buffer) {
     const regexTemp = /(B|T(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
+    let timestamp = Date.now()
+    let extruders = []
+    let beds = []
+    const { dispatch } = useStoreon()
     if (typeof buffer == "object") {
-        const { dispatch } = useStoreon()
         let size = buffer.heaters.length
-        let timestamp = Date.now()
         for (let index = 0; index < size; index++) {
             let value, value2, tool
             if (typeof buffer.temps.bed != "undefined" && index == 0) {
@@ -65,12 +67,18 @@ function processTemperatures(buffer) {
                 value2 = parseFloat(buffer.active[index])
                     .toFixed(2)
                     .toString()
-            if (tool == "T" || tool == "T1" || tool == "B") {
+            if (tool.startsWith("T") || tool.startsWith("B")) {
+                if (tool == "T") tool = "T0"
+                if (tool == "B") tool = "B0"
+                let index = parseInt(tool.substring(1))
                 if (dispatch) {
-                    let data = {timestamp,value}
-                    dispatch("temperatures/add" + tool, data)
-                    dispatch("temperatures/update" + tool, value)
-                    dispatch("temperatures/update" + tool + "t", value2)
+                    if (tool[0] == "T") extruders[index] = value
+                    else beds[index] = value
+                    dispatch("temperatures/updateT" + tool[0], {
+                        index: index,
+                        value: value,
+                        target: value2,
+                    })
                 } else {
                     console.log("no dispatch")
                 }
@@ -92,16 +100,30 @@ function processTemperatures(buffer) {
                 value2 = parseFloat(result[5])
                     .toFixed(2)
                     .toString()
-            if (tool == "T" || tool == "T1" || tool == "B") {
-                const { dispatch } = useStoreon()
+            if (tool.startsWith("T") || tool.startsWith("B")) {
+                if (tool == "T") tool = "T0"
+                if (tool == "B") tool = "B0"
+                let index = parseInt(tool.substring(1))
                 if (dispatch) {
-                    dispatch("temperatures/update" + tool, value)
-                    dispatch("temperatures/update" + tool + "t", value2)
+                    if (tool[0] == "T") extruders[index] = value
+                    else beds[index] = value
+                    dispatch("temperatures/updateT" + tool[0], {
+                        index: index,
+                        value: value,
+                        target: value2,
+                    })
                 } else {
                     console.log("no dispatch")
                 }
             }
         }
+    }
+    if (extruders.length > 0 || beds.length > 0) {
+        dispatch("temperatures/addT", {
+            timestamp: timestamp,
+            extruders: extruders,
+            beds: beds,
+        })
     }
 }
 

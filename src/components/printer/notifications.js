@@ -44,14 +44,7 @@ function sendCommandError(errorCode, responseText) {
  *
  */
 const Notifications = () => {
-    const { T, Tt, T1, T1t, B, Bt } = useStoreon(
-        "T",
-        "Tt",
-        "T1",
-        "T1t",
-        "B",
-        "Bt"
-    )
+    const { TT, TB } = useStoreon("TT", "TB")
     const { x, y, z } = useStoreon("x", "y", "z")
     const { feedrate } = useStoreon("feedrate")
     const { flowrate } = useStoreon("flowrate")
@@ -95,124 +88,107 @@ const Notifications = () => {
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
     }
+    let temperatures = []
+    for (let index = 0; index < TT.length; index++) {
+        temperatures.push(
+            <div
+                class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                onclick={toggleshowTemperatures}
+            >
+                <span
+                    class={
+                        TT[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    <Thermometer size="1.0em" />
+                    <span>{TT.length > 1 ? index + 1 : ""}</span>
+                </span>
+                <span
+                    class="bg-white input-group-text text-center textNotification justify-content-center"
+                    style="min-width:5em"
+                >
+                    {TT[index].value == "error" ? (
+                        <AlertTriangle size="1.0em" />
+                    ) : (
+                        TT[index].value
+                    )}
+                </span>
+                <span
+                    class={
+                        TT[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    <span class={TT[index].target == "0.00" ? "d-none" : ""}>
+                        {TT[index].target}
+                    </span>
+                    <span>&deg;C</span>
+                </span>
+            </div>
+        )
+    }
+    for (let index = 0; index < TB.length; index++) {
+        temperatures.push(
+            <div
+                class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                onclick={toggleshowTemperatures}
+            >
+                <span
+                    class={
+                        TB[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    <Bed size="1.0em" />
+                    <span>{TB.length > 1 ? index + 1 : ""}</span>
+                </span>
+                <span
+                    class="bg-white input-group-text text-center textNotification justify-content-center"
+                    style="min-width:5em"
+                >
+                    {TB[index].value == "error" ? (
+                        <AlertTriangle size="1.0em" />
+                    ) : (
+                        TB[index].value
+                    )}
+                </span>
+                <span
+                    class={
+                        TB[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    <span class={TB[index].target == "0.00" ? "d-none" : ""}>
+                        {TB[index].target}
+                    </span>
+                    <span>&deg;C</span>
+                </span>
+            </div>
+        )
+    }
+
+    if (temperatures.length == 0) {
+        temperatures = (
+            <div class="p-1 hotspotNotification">
+                <button
+                    class="btn btn-default"
+                    onclick={toggleshowTemperatures}
+                >
+                    <Thermometer size="1.2em" />
+                    <span class="hide-low text-button">{Trans("P29")}</span>
+                </button>
+            </div>
+        )
+    }
+
     return (
         <div class="p-1">
-            <div class="d-flex flex-wrap p-1">
-                <div class={T == "none" ? "p-1 hotspotNotification" : "d-none"}>
-                    <button
-                        class="btn btn-default"
-                        onclick={toggleshowTemperatures}
-                    >
-                        <Thermometer size="1.2em" />
-                        <span class="hide-low text-button">{Trans("P29")}</span>
-                    </button>
-                </div>
-                <div
-                    class={
-                        T == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleshowTemperatures}
-                >
-                    <span
-                        class={
-                            Tt == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <Thermometer size="1.0em" />
-                        <span>1</span>
-                    </span>
-                    <span
-                        class="bg-white input-group-text text-center textNotification justify-content-center"
-                        style="min-width:5em"
-                    >
-                        {T == "error" ? <AlertTriangle size="1.0em" /> : T}
-                    </span>
-                    <span
-                        class={
-                            Tt == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <span class={Tt == "0.00" ? "d-none" : ""}>{Tt}</span>
-                        <span>&deg;C</span>
-                    </span>
-                </div>
-
-                <div
-                    class={
-                        T1 == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleshowTemperatures}
-                >
-                    <span
-                        class={
-                            T1t == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <Thermometer size="1.0em" />
-                        <span>2</span>
-                    </span>
-                    <span
-                        class="bg-white input-group-text text-center textNotification justify-content-center"
-                        style="min-width:5em"
-                    >
-                        {T1 == "error" ? <AlertTriangle size="1.0em" /> : T1}
-                    </span>
-                    <span
-                        class={
-                            T1t == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <span class={T1t == "0.00" ? "d-none" : ""}>{T1t}</span>
-                        <span>&deg;C</span>
-                    </span>
-                </div>
-                <div
-                    class={
-                        B == "none"
-                            ? "d-none"
-                            : "p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    }
-                    onclick={toggleshowTemperatures}
-                >
-                    <span
-                        class={
-                            Bt == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <Bed height="1.0em" />
-                    </span>
-                    <span
-                        class="bg-white input-group-text text-center textNotification justify-content-center"
-                        style="min-width:5em"
-                    >
-                        {B == "error" ? <AlertTriangle size="1.0em" /> : B}
-                    </span>
-                    <span
-                        class={
-                            Bt == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <span class={Bt == "0.00" ? "d-none" : ""}>{Bt}</span>
-                        <span>&deg;C</span>
-                    </span>
-                </div>
-            </div>
+            <div class="d-flex flex-wrap p-1">{temperatures}</div>
             <div class="d-flex flex-wrap p-1">
                 <div class={x == "none" ? "p-1 hotspotNotification" : "d-none"}>
                     <button class="btn btn-default" onclick={toggleShowJog}>
