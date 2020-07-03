@@ -61,15 +61,26 @@ function checkValue(id) {
         id == "printersd" ||
         id == "pollingcommands"
     ) {
-    } else {
+    } else if ((id == "extruderpreheat") || (id == "bedpreheat")) {
+            if (( prefs[id] == null) || (prefs[id].length==0))isvalid = false
+            else {
+                let tvals = prefs[id].split(";")
+                for(let val of tvals){
+                    if (isNaN(val) || isNaN( parseFloat(val))  || parseFloat(val) < 1) isvalid = false
+                }
+            }
+        } else{
         if (prefs[id] == null || isNaN(prefs[id])) {
             prefs[id] = ""
             isvalid = false
         } else {
             if (id == "xyfeedrate" || id == "zfeedrate") {
                 if (prefs[id] < 1) isvalid = false
-            }
+            } 
             if (id == "xpos" || id == "ypos") {
+            }
+            if (id == "extrudermax" || id == "bedmax") {
+                if (prefs[id] < 1) isvalid = false
             }
             if (id == "pollingrefresh") {
                 if (prefs[id] < 1) isvalid = false
@@ -262,6 +273,21 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.pollingcommands == "undefined") {
         preferences.settings.pollingcommands = "M105;M114;M27"
     }
+    if (typeof preferences.settings.showtemperaturespanel == "undefined") {
+        preferences.settings.showtemperaturespanel = true
+    }
+    if (typeof preferences.settings.extrudermax == "undefined") {
+        preferences.settings.extrudermax = 300
+    }
+    if (typeof preferences.settings.bedmax == "undefined") {
+        preferences.settings.bedmax = 140
+    }
+    if (typeof preferences.settings.extruderpreheat == "undefined") {
+        preferences.settings.extruderpreheat = "190;220;230"
+    }
+    if (typeof preferences.settings.bedpreheat == "undefined") {
+        preferences.settings.bedpreheat = "50;90;110"
+    }
 
     //Copy values to current settings
     if (typeof prefs.xyfeedrate == "undefined") {
@@ -286,7 +312,7 @@ function initDefaultMachineValues() {
         prefs.tftusb = preferences.settings.tftusb
     }
     if (typeof prefs.printersd == "undefined") {
-        prefs.tftusb = preferences.settings.printersd
+        prefs.printersd = preferences.settings.printersd
     }
     if (typeof prefs.enablepolling == "undefined") {
         prefs.enablepolling = preferences.settings.enablepolling
@@ -296,6 +322,21 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.pollingcommands == "undefined") {
         prefs.pollingcommands = preferences.settings.pollingcommands
+    }
+    if (typeof prefs.showtemperaturespanel == "undefined") {
+        prefs.showtemperaturespanel = preferences.settings.showtemperaturespanel
+    }
+    if (typeof prefs.extrudermax == "undefined") {
+        prefs.extrudermax = preferences.settings.extrudermax
+    }
+    if (typeof prefs.bedmax == "undefined") {
+        prefs.bedmax = preferences.settings.bedmax
+    }
+    if (typeof prefs.extruderpreheat == "undefined") {
+        prefs.extruderpreheat = preferences.settings.extruderpreheat
+    }
+    if (typeof prefs.bedpreheat == "undefined") {
+        prefs.bedpreheat = preferences.settings.bedpreheat
     }
 }
 
@@ -382,42 +423,92 @@ const MachinePollingPreferences = () => {
  */
 const MachineUIPreferences = () => {
     return (
-        <div class="card">
-            <div class="card-header">
-                <CheckboxControl
-                    id="showjogpanel"
-                    title={T("S94")}
-                    label={T("S94")}
-                />
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showjogpanel"
+                        title={T("S94")}
+                        label={T("S94")}
+                    />
+                </div>
+                <div class={prefs["showjogpanel"] ? "card-body" : "d-none"}>
+                    <MachineUIEntry
+                        id="xyfeedrate"
+                        label={T("P10")}
+                        help={T("P14")}
+                        type="number"
+                    />
+                    <MachineUIEntry
+                        id="zfeedrate"
+                        label={T("P11")}
+                        help={T("P14")}
+                        type="number"
+                    />
+                    <div class="card">
+                        <div class="card-header control-padding">{T("P18")}</div>
+                        <div class="card-body padding-low">
+                            <MachineUIEntry
+                                id="xpos"
+                                label="X"
+                                help={T("P16")}
+                                type="number"
+                            />
+                            <MachineUIEntry
+                                id="ypos"
+                                label="Y"
+                                help={T("P16")}
+                                type="number"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class={prefs["showjogpanel"] ? "card-body" : "d-none"}>
-                <MachineUIEntry
-                    id="xyfeedrate"
-                    label={T("P10")}
-                    help={T("P14")}
-                    type="number"
-                />
-                <MachineUIEntry
-                    id="zfeedrate"
-                    label={T("P11")}
-                    help={T("P14")}
-                    type="number"
-                />
-                <div class="card">
-                    <div class="card-header control-padding">{T("P18")}</div>
-                    <div class="card-body padding-low">
-                        <MachineUIEntry
-                            id="xpos"
-                            label="X"
-                            help={T("P16")}
-                            type="number"
-                        />
-                        <MachineUIEntry
-                            id="ypos"
-                            label="Y"
-                            help={T("P16")}
-                            type="number"
-                        />
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showtemperaturespanel"
+                        title={T("P33")}
+                        label={T("P33")}
+                    />
+                </div>
+
+                <div class={prefs["showtemperaturespanel"] ? "card-body" : "d-none"}>
+                    <div class="card">
+                        <div class="card-header control-padding">{T("P36")}</div>
+                        <div class="card-body padding-low">
+                            <MachineUIEntry
+                                id="extrudermax"
+                                label={T("P34")}
+                                help={T("C")}
+                                type="number"
+                            />
+                            <MachineUIEntry
+                                id="extruderpreheat"
+                                label={T("P35")}
+                                help={T("S97")}
+                                type="text"
+                            />
+                        </div>
+                    </div>
+                    <div class="p-1" />
+                    <div class="card">
+                        <div class="card-header control-padding">{T("P37")}</div>
+                        <div class="card-body padding-low">
+                            <MachineUIEntry
+                                id="bedmax"
+                                label={T("P34")}
+                                help={T("C")}
+                                type="number"
+                            />
+                            <MachineUIEntry
+                                id="bedpreheat"
+                                label={T("P35")}
+                                help={T("S97")}
+                                type="text"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

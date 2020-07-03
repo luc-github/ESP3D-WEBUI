@@ -30,5 +30,10 @@
     "P29": "Temperatures",
     "P30": "Flow rate",
     "P31": "Fan",
-    "P32": "Extrusion"
+    "P32": "Extrusion",
+    "P33": "Show temperatures panel",
+    "P34": "Maximum ",
+    "P35": "Preheat",
+    "P36": "Extruders",
+    "P37": "Bed"
 }

@@ -20,6 +20,11 @@
   "printersd": false,
   "enablepolling": true,
   "pollingrefresh": 3,
-  "pollingcommands": "M408"
+  "pollingcommands": "M408",
+  "showtemperaturespanel": true,
+  "extrudermax": 300,
+  "bedmax": 140,
+  "extruderpreheat": "190;220;230",
+  "bedpreheat": "50;90;110"
  }
 }
