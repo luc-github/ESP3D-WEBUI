@@ -26,11 +26,15 @@ import { preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
+import { Bed } from "./icon"
+import { Thermometer, XCircle, Send } from "preact-feather"
 
 /*
  * Local variables
  *
  */
+let currentTemperature = []
+let currentTargetTemperature = []
 
 /*
  * Process temperatures buffer
@@ -135,12 +139,339 @@ function sendCommandError(errorCode, responseText) {
 }
 
 /*
+ * Send command to set temperature
+ */
+function setTemperature(temperature, type, index) {
+    let cmd = ""
+    if (type == "extruder") {
+        if (currentTemperature["extruder"].length > 1) {
+            cmd = "T" + index 
+            SendCommand(cmd, null, sendCommandError)
+        }
+        cmd = "M104 S"
+    } else {
+        //TODO add syntax for multi bed
+        //reprap use P and H
+        //MK4DUO use T
+        //Marlin/Marlin no support so need to use extruder
+        //Smoothieware mo support but can define custom tool
+        if (currentTemperature["bed"].length > 1) {
+            cmd = "T" + index 
+            SendCommand(cmd, null, sendCommandError)
+        }
+        cmd = "M140 S"
+    }
+    cmd += temperature
+    SendCommand(cmd, null, sendCommandError)
+    //currently there is not check the command is success
+    //but if the value is not applied the control will go back to modified
+    currentTargetTemperature[type][index]=currentTemperature[type][index]
+    updateState(currentTargetTemperature[type][index], type+"_"+index)
+}
+
+/*
+ * Set control UI according state
+ *
+ */
+function setState(id, state) {
+    let controlId
+    let controlUnit
+    controlId = document.getElementById(id + "_input")
+    if (controlId) {
+        controlId.classList.remove("is-invalid")
+        controlId.classList.remove("is-changed")
+        switch (state) {
+            case "modified":
+                controlId.classList.add("is-changed")
+                document.getElementById(id + "_unit").classList.remove("error")
+                document
+                    .getElementById(id + "_unit")
+                    .classList.add("bg-warning")
+                document
+                    .getElementById(id + "_sendbtn")
+                    .classList.remove("invisible")
+                document.getElementById(id + "slider").classList.remove("error")
+                document
+                    .getElementById(id + "slider")
+                    .classList.add("is-changed")
+                break
+            case "success":
+                controlId.classList.add("is-valid")
+                break
+            case "error":
+                controlId.classList.add("is-invalid")
+
+                document.getElementById(id + "_unit").classList.add("error")
+                document
+                    .getElementById(id + "_unit")
+                    .classList.remove("bg-warning")
+                document
+                    .getElementById(id + "_sendbtn")
+                    .classList.add("invisible")
+                document.getElementById(id + "slider").classList.add("error")
+                document
+                    .getElementById(id + "slider")
+                    .classList.remove("is-changed")
+                break
+            default:
+                document.getElementById(id + "_unit").classList.remove("error")
+                document
+                    .getElementById(id + "_unit")
+                    .classList.remove("bg-warning")
+                document
+                    .getElementById(id + "_sendbtn")
+                    .classList.add("invisible")
+                document.getElementById(id + "slider").classList.remove("error")
+                document
+                    .getElementById(id + "slider")
+                    .classList.remove("is-changed")
+                break
+        }
+    }
+    if (controlUnit) {
+        controlUnit.classList.remove("error")
+        controlUnit.classList.remove("success")
+        controlUnit.classList.remove("bg-warning")
+        switch (state) {
+            case "modified":
+                controlUnit.classList.add("bg-warning")
+                break
+            case "success":
+                controlUnit.classList.add("success")
+                break
+            case "error":
+                controlUnit.classList.add("error")
+                break
+            default:
+                break
+        }
+    }
+}
+
+/*
+ * Check control value
+ *
+ */
+function checkValue(entry) {
+    if (entry.length == 0 || entry < 0) return false
+    return true
+}
+
+/*
+ * Update control state
+ *
+ */
+function updateState(entry, id) {
+    if (typeof entry == "undefined") {
+        console.log("undefined state")
+        return
+    }
+    let type = id.split("_")[0]
+    let index = parseInt(id.split("_")[1])
+    let state = "default"
+    if (!checkValue(entry)) {
+        state = "error"
+    } else {
+        if (parseFloat(entry) != parseFloat(currentTargetTemperature[type][index])) {
+            state = "modified"
+        }
+    }
+    setState(id, state)
+}
+
+/*
+ * Temperature slider control
+ *
+ */
+const TemperatureSlider = ({ id, type, index }) => {
+    const { TT, TB } = useStoreon("TT", "TB")
+    if (typeof currentTemperature[type] == "undefined") {
+        currentTemperature[type] = []
+    }
+    if (typeof currentTargetTemperature[type] == "undefined") {
+        currentTargetTemperature[type] = []
+    }
+    if (typeof currentTemperature[type][index] == "undefined") {
+        if (type == "extruder") {
+            if (TT.length > 0)
+                currentTemperature[type][index] = TT[index].target
+        } else {
+            currentTemperature[type][index] = TB[index].target
+        }
+    }
+
+    if (type == "extruder") {
+        if (TT.length > 0)
+            currentTargetTemperature[type][index] =
+                typeof TT[index].target != "undefined"
+                    ? TT[index].target
+                    : "0.00"
+    } else {
+        currentTargetTemperature[type][index] =
+            typeof TB[index].target != "undefined" ? TB[index].target : "0.00"
+    }
+
+    const onInputTemperatureSlider = e => {
+        document.getElementById(id + "_input").value = e.target.value
+        currentTemperature[type][index] = e.target.value
+        updateState(e.target.value, id)
+    }
+    const onInputTemperatureInput = e => {
+        document.getElementById(id + "slider").value = e.target.value
+        currentTemperature[type][index] = e.target.value
+        updateState(e.target.value, id)
+    }
+    const onSet = e => {
+        setTemperature(currentTemperature[type][index], type, index)
+    }
+
+    const onStop = e => {
+        setTemperature(0, type, index)
+    }
+
+    const onChange = e => {
+        if (e.target.value.length > 0) {
+            document.getElementById(id + "_input").value = e.target.value
+            currentTemperature[type][index] = e.target.value
+            document.getElementById(id + "slider").value = e.target.value
+            updateState(e.target.value, id)
+        } else {
+            document.getElementById(id + "_input").value =
+                currentTargetTemperature[type][index]
+            currentTemperature[type][index] =
+                currentTargetTemperature[type][index]
+            document.getElementById(id + "slider").value =
+                currentTargetTemperature[type][index]
+            updateState(currentTargetTemperature[type][index], id)
+        }
+    }
+    let optionsList = []
+    let tvalues
+    if (type == "extruder") {
+        tvalues = preferences.settings.extruderpreheat.split(";")
+    } else {
+        tvalues = preferences.settings.bedpreheat.split(";")
+    }
+    optionsList.push(<option></option>)
+    for (let i = 0; i < tvalues.length; i++) {
+        optionsList.push(<option value={tvalues[i]}>{tvalues[i]}</option>)
+    }
+    useEffect(() => {
+        updateState(currentTemperature[type][index], id)
+    })
+    return (
+        <div>
+            <div class="d-flex flex-column border p-1 rounded">
+                <div class="d-flex flex-wrap p-1">
+                    <div class="control-like p-1">
+                        {type == "extruder" ? <Thermometer /> : <Bed />}
+                        {type == "extruder"
+                            ? TT.length > 1
+                                ? index + 1
+                                : ""
+                            : TB.length > 1
+                            ? index + 1
+                            : ""}
+                    </div>
+                    <div class="p-1">
+                        <button
+                            class="btn btn-danger"
+                            type="button"
+                            onClick={onStop}
+                            title={T("P38")}
+                        >
+                            <XCircle />
+                            <span class="hide-low text-button-setting">
+                                {T("P39")}
+                            </span>
+                        </button>
+                    </div>
+                    <div>
+                        <div class="input-group p-1">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">{T("P35")}</span>
+                            </div>
+                            <select
+                                class="form-control"
+                                value={currentTemperature[type][index]}
+                                onchange={onChange}
+                            >
+                                {optionsList}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group justify-content-center rounded">
+                    <div class="slider-control hide-low">
+                        <div class="slidecontainer">
+                            <input
+                                onInput={onInputTemperatureSlider}
+                                type="range"
+                                min="0"
+                                max={
+                                    type == "extruder"
+                                        ? preferences.settings.extrudermax
+                                        : preferences.settings.bedmax
+                                }
+                                value={currentTemperature[type][index]}
+                                class="slider"
+                                id={id + "slider"}
+                            />
+                        </div>
+                    </div>
+                    <input
+                        style="max-width:6rem!important;"
+                        onInput={onInputTemperatureInput}
+                        type="number"
+                        min="0"
+                        max={
+                            type == "extruder"
+                                ? preferences.settings.extrudermax
+                                : preferences.settings.bedmax
+                        }
+                        value={currentTemperature[type][index]}
+                        class="form-control"
+                        id={id + "_input"}
+                    />
+
+                    <div class="input-group-append">
+                        <span class="input-group-text" id={id + "_unit"}>
+                            &deg;C
+                        </span>
+                        <button
+                            id={id + "_sendbtn"}
+                            class="btn btn-warning invisible rounded-right"
+                            type="button"
+                            onClick={onSet}
+                            title={T("S43")}
+                        >
+                            <Send size="1.2em" />
+                            <span class="hide-low text-button-setting">
+                                {T("S43")}
+                            </span>
+                        </button>
+                    </div>
+                    <div
+                        class="invalid-feedback text-center"
+                        style="text-align:center!important"
+                    >
+                        {T("S42")}
+                    </div>
+                </div>
+            </div>
+            <div class="p-1" />
+        </div>
+    )
+}
+
+/*
  * Temperatures panel control
  *
  */
 const TemperaturesPanel = () => {
     const { showTemperatures } = useStoreon("showTemperatures")
     const { panelsOrder } = useStoreon("panelsOrder")
+    const { TT, TB } = useStoreon("TT", "TB")
     let index = getPanelIndex(panelsOrder, "temperatures")
     if (!showTemperatures) {
         return null
@@ -150,21 +481,63 @@ const TemperaturesPanel = () => {
         dispatch("panel/showtemperatures", false)
     }
     let panelClass = "order-" + index + " w-100 panelCard"
+    let temperaturesControls = []
+    let size = TT.length
+    if (size == 0) size = 1
+    for (let i = 0; i < size; i++) {
+        temperaturesControls.push(
+            <TemperatureSlider id={"extruder_" + i} type="extruder" index={i} />
+        )
+    }
+    for (let i = 0; i < TB.length; i++) {
+        temperaturesControls.push(
+            <TemperatureSlider id={"bed_" + i} type="bed" index={i} />
+        )
+    }
+    const onStopAll = e => {
+        for (let i = 0; i < currentTemperature["extruder"].length; i++)
+            setTemperature(0, "extruder", i)
+        for (let i = 0; i < currentTemperature["bed"].length; i++)
+            setTemperature(0, "bed", i)
+    }
     return (
         <div class={panelClass} id="temperaturespanel">
             <div class="p-2 ">
                 <div class="border rounded p-2 panelCard">
                     <div class="w-100">
-                        <div class="ml-auto text-right">
-                            <button
-                                type="button"
-                                class="btn btn-light btn-sm red-hover"
-                                title={T("S86")}
-                                onClick={toogle}
-                            >
-                                <X />
-                            </button>
-                            <div class="text-center">Temp</div>
+                        <div class="d-flex flex-wrap">
+                            <div class="p-1">
+                                <Thermometer />
+                                <span class="hide-low control-like text-button">
+                                    {T("P29")}
+                                </span>
+                            </div>
+                            <div class="p-1">
+                                <button
+                                    class="btn btn-danger"
+                                    type="button"
+                                    onClick={onStopAll}
+                                    title={T("P38")}
+                                >
+                                    <XCircle />
+                                    <span class="hide-low text-button-setting">
+                                        {T("P40")}
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="ml-auto text-right">
+                                <button
+                                    type="button"
+                                    class="btn btn-light btn-sm red-hover"
+                                    title={T("S86")}
+                                    onClick={toogle}
+                                >
+                                    <X />
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column">
+                            {temperaturesControls}
                         </div>
                     </div>
                 </div>

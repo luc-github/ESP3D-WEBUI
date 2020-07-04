@@ -184,9 +184,7 @@ const DialogPage = () => {
                             {iconMsg}
                             <div
                                 className={
-                                    dialogData.type == "error"
-                                        ? "d-none"
-                                        : ""
+                                    dialogData.type == "error" ? "d-none" : ""
                                 }
                             />
                             {dialogData.message}

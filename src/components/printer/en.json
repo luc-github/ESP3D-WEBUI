@@ -35,5 +35,8 @@
     "P34": "Maximum ",
     "P35": "Preheat",
     "P36": "Extruders",
-    "P37": "Bed"
+    "P37": "Bed",
+    "P38": "Stop heating",
+    "P39": "Stop",
+    "P40": "Stop all"
 }
