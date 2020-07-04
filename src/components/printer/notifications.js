@@ -25,7 +25,7 @@ import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
 import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
-import { Page } from "../app"
+import { preferences, Page } from "../app"
 
 /*
  * Local variables
@@ -89,89 +89,94 @@ const Notifications = () => {
         SendCommand("M112", null, sendCommandError)
     }
     let temperatures = []
-    for (let index = 0; index < TT.length; index++) {
-        temperatures.push(
-            <div
-                class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                onclick={toggleshowTemperatures}
-            >
-                <span
-                    class={
-                        TT[index].target == "0.00"
-                            ? "bg-default input-group-text text-center textNotification justify-content-center"
-                            : "error input-group-text text-center textNotification justify-content-center"
-                    }
+    if (preferences.settings.showtemperaturespanel == true) {
+        for (let index = 0; index < TT.length; index++) {
+            temperatures.push(
+                <div
+                    class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                    onclick={toggleshowTemperatures}
                 >
-                    <Thermometer size="1.0em" />
-                    <span>{TT.length > 1 ? index + 1 : ""}</span>
-                </span>
-                <span
-                    class="bg-white input-group-text text-center textNotification justify-content-center"
-                    style="min-width:5em"
-                >
-                    {TT[index].value == "error" ? (
-                        <AlertTriangle size="1.0em" />
-                    ) : (
-                        TT[index].value
-                    )}
-                </span>
-                <span
-                    class={
-                        TT[index].target == "0.00"
-                            ? "bg-default input-group-text text-center textNotification justify-content-center"
-                            : "error input-group-text text-center textNotification justify-content-center"
-                    }
-                >
-                    <span class={TT[index].target == "0.00" ? "d-none" : ""}>
-                        {TT[index].target}
+                    <span
+                        class={
+                            TT[index].target == "0.00"
+                                ? "bg-default input-group-text text-center textNotification justify-content-center"
+                                : "error input-group-text text-center textNotification justify-content-center"
+                        }
+                    >
+                        <Thermometer size="1.0em" />
+                        <span>{TT.length > 1 ? index + 1 : ""}</span>
                     </span>
-                    <span>&deg;C</span>
-                </span>
-            </div>
-        )
-    }
-    for (let index = 0; index < TB.length; index++) {
-        temperatures.push(
-            <div
-                class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                onclick={toggleshowTemperatures}
-            >
-                <span
-                    class={
-                        TB[index].target == "0.00"
-                            ? "bg-default input-group-text text-center textNotification justify-content-center"
-                            : "error input-group-text text-center textNotification justify-content-center"
-                    }
-                >
-                    <Bed size="1.0em" />
-                    <span>{TB.length > 1 ? index + 1 : ""}</span>
-                </span>
-                <span
-                    class="bg-white input-group-text text-center textNotification justify-content-center"
-                    style="min-width:5em"
-                >
-                    {TB[index].value == "error" ? (
-                        <AlertTriangle size="1.0em" />
-                    ) : (
-                        TB[index].value
-                    )}
-                </span>
-                <span
-                    class={
-                        TB[index].target == "0.00"
-                            ? "bg-default input-group-text text-center textNotification justify-content-center"
-                            : "error input-group-text text-center textNotification justify-content-center"
-                    }
-                >
-                    <span class={TB[index].target == "0.00" ? "d-none" : ""}>
-                        {TB[index].target}
+                    <span
+                        class="bg-white input-group-text text-center textNotification justify-content-center"
+                        style="min-width:5em"
+                    >
+                        {TT[index].value == "error" ? (
+                            <AlertTriangle size="1.0em" />
+                        ) : (
+                            TT[index].value
+                        )}
                     </span>
-                    <span>&deg;C</span>
-                </span>
-            </div>
-        )
+                    <span
+                        class={
+                            TT[index].target == "0.00"
+                                ? "bg-default input-group-text text-center textNotification justify-content-center"
+                                : "error input-group-text text-center textNotification justify-content-center"
+                        }
+                    >
+                        <span
+                            class={TT[index].target == "0.00" ? "d-none" : ""}
+                        >
+                            {TT[index].target}
+                        </span>
+                        <span>&deg;C</span>
+                    </span>
+                </div>
+            )
+        }
+        for (let index = 0; index < TB.length; index++) {
+            temperatures.push(
+                <div
+                    class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                    onclick={toggleshowTemperatures}
+                >
+                    <span
+                        class={
+                            TB[index].target == "0.00"
+                                ? "bg-default input-group-text text-center textNotification justify-content-center"
+                                : "error input-group-text text-center textNotification justify-content-center"
+                        }
+                    >
+                        <Bed size="1.0em" />
+                        <span>{TB.length > 1 ? index + 1 : ""}</span>
+                    </span>
+                    <span
+                        class="bg-white input-group-text text-center textNotification justify-content-center"
+                        style="min-width:5em"
+                    >
+                        {TB[index].value == "error" ? (
+                            <AlertTriangle size="1.0em" />
+                        ) : (
+                            TB[index].value
+                        )}
+                    </span>
+                    <span
+                        class={
+                            TB[index].target == "0.00"
+                                ? "bg-default input-group-text text-center textNotification justify-content-center"
+                                : "error input-group-text text-center textNotification justify-content-center"
+                        }
+                    >
+                        <span
+                            class={TB[index].target == "0.00" ? "d-none" : ""}
+                        >
+                            {TB[index].target}
+                        </span>
+                        <span>&deg;C</span>
+                    </span>
+                </div>
+            )
+        }
     }
-
     if (temperatures.length == 0) {
         temperatures = (
             <div class="p-1 hotspotNotification">
@@ -188,7 +193,15 @@ const Notifications = () => {
 
     return (
         <div class="p-1">
-            <div class="d-flex flex-wrap p-1">{temperatures}</div>
+            <div
+                class={
+                    preferences.settings.showtemperaturespanel
+                        ? "d-flex flex-wrap p-1"
+                        : "d-none"
+                }
+            >
+                {temperatures}
+            </div>
             <div class="d-flex flex-wrap p-1">
                 <div class={x == "none" ? "p-1 hotspotNotification" : "d-none"}>
                     <button class="btn btn-default" onclick={toggleShowJog}>

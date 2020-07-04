@@ -145,7 +145,7 @@ function setTemperature(temperature, type, index) {
     let cmd = ""
     if (type == "extruder") {
         if (currentTemperature["extruder"].length > 1) {
-            cmd = "T" + index 
+            cmd = "T" + index
             SendCommand(cmd, null, sendCommandError)
         }
         cmd = "M104 S"
@@ -156,7 +156,7 @@ function setTemperature(temperature, type, index) {
         //Marlin/Marlin no support so need to use extruder
         //Smoothieware mo support but can define custom tool
         if (currentTemperature["bed"].length > 1) {
-            cmd = "T" + index 
+            cmd = "T" + index
             SendCommand(cmd, null, sendCommandError)
         }
         cmd = "M140 S"
@@ -165,8 +165,8 @@ function setTemperature(temperature, type, index) {
     SendCommand(cmd, null, sendCommandError)
     //currently there is not check the command is success
     //but if the value is not applied the control will go back to modified
-    currentTargetTemperature[type][index]=currentTemperature[type][index]
-    updateState(currentTargetTemperature[type][index], type+"_"+index)
+    currentTargetTemperature[type][index] = currentTemperature[type][index]
+    updateState(currentTargetTemperature[type][index], type + "_" + index)
 }
 
 /*
@@ -272,7 +272,10 @@ function updateState(entry, id) {
     if (!checkValue(entry)) {
         state = "error"
     } else {
-        if (parseFloat(entry) != parseFloat(currentTargetTemperature[type][index])) {
+        if (
+            parseFloat(entry) !=
+            parseFloat(currentTargetTemperature[type][index])
+        ) {
             state = "modified"
         }
     }
