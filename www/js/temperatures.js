@@ -39,7 +39,10 @@ var smoothiebed = new SmoothieChart({
 });
 var extruder_0_line = new TimeSeries();
 var extruder_1_line = new TimeSeries();
+var extruder_redundant_line = new TimeSeries();
+var probe_line = new TimeSeries();
 var bed_line = new TimeSeries();
+var chamber_line = new TimeSeries();
 
 function init_temperature_panel() {
     smoothiebed.addTimeSeries(bed_line, {
@@ -64,6 +67,40 @@ function temperature_second_extruder(enabled) {
         });
     } else {
         smoothieextuder.removeTimeSeries(extruder_1_line);
+    }
+}
+
+function temperature_extruder_redundant(enabled) {
+    if (enabled) {
+        smoothieextuder.addTimeSeries(extruder_redundant_line, {
+            lineWidth: 1,
+            strokeStyle: '#808080'
+        });
+    } else {
+        smoothieextuder.removeTimeSeries(extruder_redundant_line);
+    }
+}
+
+function temperature_probe(enabled) {
+    if (enabled) {
+        smoothiebed.addTimeSeries(probe_line, {
+            lineWidth: 1,
+            strokeStyle: '#202080'
+        });
+    } else {
+        smoothiebed.removeTimeSeries(probe_line);
+    }
+}
+
+
+function temperature_chamber(enabled) {
+    if (enabled) {
+        smoothiebed.addTimeSeries(chamber_line, {
+            lineWidth: 1,
+            strokeStyle: '#202020'
+        });
+    } else {
+        smoothiebed.removeTimeSeries(chamber_line);
     }
 }
 
@@ -118,6 +155,7 @@ function onTempIntervalChange() {
 
 function get_Temperatures() {
     var command = "M105";
+    command = preferenceslist[0].enable_redundant === 'true' ? command + " R" : command;
     //removeIf(production)
     var response = "";
     if (document.getElementById('autocheck_temperature').checked) response = "ok T:26.4 /0.0 T1:26.4 /0.0 @0 B:24.9 /0.0 @0 \n";
@@ -129,8 +167,22 @@ function get_Temperatures() {
     else SendPrinterCommand(command, false, process_Temperatures, null, 105, 1);
 }
 
+function submit_target_temperature(target, selectedTemp) {
+    var type = 104;
+    if (target == 'bed') {
+        type = 140;
+    } else if (target == 'chamber') {
+        type = 141;
+    }
+    var command = "M" + type + " S" + selectedTemp;
+    if (target != 'bed' && target != 'chamber') {
+        command += " " + target;
+    }
+    SendPrinterCommand(command, true, get_Temperatures);
+}
+
 function process_Temperatures(response) {
-    var regex_temp = /(B|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi;
+    var regex_temp = /(B|C|P|R|T(\d*)):\s*([+]?[0-9]*\.?[0-9]+)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi;
     var result;
     var timedata = new Date().getTime();
     while ((result = regex_temp.exec(response)) !== null) {
@@ -149,17 +201,31 @@ function process_Temperatures(response) {
             //to see if heating or not
             if (Number(value2) > 0) document.getElementById('heaterT0TargetTemp_anime').style.visibility = "visible";
             else document.getElementById('heaterT0TargetTemp_anime').style.visibility = "hidden";
+        } else if (tool == "R") {
+            extruder_redundant_line.append(timedata, parseFloat(result[3]));
+            document.getElementById('heaterRDisplayTemp').innerHTML = value;
+            if (Number(value2) > 0) document.getElementById('heaterRTargetTemp_anime').style.visibility = "visible";
+            else document.getElementById('heaterRTargetTemp_anime').style.visibility = "hidden";
         } else if (tool == "T1") {
             extruder_1_line.append(timedata, parseFloat(result[3]));
             document.getElementById('heaterT1DisplayTemp').innerHTML = value;
             if (Number(value2) > 0) document.getElementById('heaterT1TargetTemp_anime').style.visibility = "visible";
             else document.getElementById('heaterT1TargetTemp_anime').style.visibility = "hidden";
-        }
-        if (tool == "B") {
+        } else if (tool == "P") {
+            probe_line.append(timedata, parseFloat(result[3]));
+            document.getElementById('probeDisplayTemp').innerHTML = value;
+            if (Number(value2) > 0) document.getElementById('probeTargetTemp_anime').style.visibility = "visible";
+            else document.getElementById('probeTargetTemp_anime').style.visibility = "hidden";
+        } else if (tool == "B") {
             bed_line.append(timedata, parseFloat(result[3]));
             document.getElementById('bedDisplayTemp').innerHTML = value;
             if (Number(value2) > 0) document.getElementById('bedTargetTemp_anime').style.visibility = "visible";
             else document.getElementById('bedTargetTemp_anime').style.visibility = "hidden";
+        } else if (tool == "C") {
+            chamber_line.append(timedata, parseFloat(result[3]));
+            document.getElementById('chamberDisplayTemp').innerHTML = value;
+            if (Number(value2) > 0) document.getElementById('chamberTargetTemp_anime').style.visibility = "visible";
+            else document.getElementById('chamberTargetTemp_anime').style.visibility = "hidden";
         }
     }
 }
@@ -169,6 +235,8 @@ function temperature_heatOff(target) {
         case 'T0':
             document.getElementById('heaterT0SelectedTemp').value = 0;
             document.getElementById('heaterT0TargetTemp_anime').style.visibility = "hidden";
+            document.getElementById('heaterRDisplayTemp').value = 0;
+            document.getElementById('heaterRTargetTemp_anime').style.visibility = "hidden";
             break;
         case 'T1':
             document.getElementById('heaterT1SelectedTemp').value = 0;
@@ -178,13 +246,13 @@ function temperature_heatOff(target) {
             document.getElementById('bedSelectedTemp').value = 0;
             document.getElementById('bedTargetTemp_anime').style.visibility = "hidden";
             break;
+        case 'chamber':
+            document.getElementById('chamberSelectedTemp').value = 0;
+            document.getElementById('chamberTargetTemp_anime').style.visibility = "hidden";
+            break;
     }
-    var type = (target == 'bed') ? 140 : 104;
-    var command = "M" + type + " S0";
-    if (target != 'bed') {
-        command += " " + target;
-    }
-    SendPrinterCommand(command, true, get_Temperatures);
+
+    submit_target_temperature(target, 0);
 }
 
 function temperature_handleKeyUp(event, target) {
@@ -200,30 +268,32 @@ function temperature_heatSet(target) {
         case 'T0':
             selectedTemp = parseInt(document.getElementById('heaterT0SelectedTemp').value);
             if (selectedTemp < 0 || selectedTemp > 999 || isNaN(selectedTemp) || (selectedTemp === null)) {
-                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degres and 999 degres !"));
+                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degrees and 999 degrees !"));
                 return;
             }
             break;
         case 'T1':
             selectedTemp = parseInt(document.getElementById('heaterT1SelectedTemp').value);
             if (selectedTemp < 0 || selectedTemp > 999 || isNaN(selectedTemp) || (selectedTemp === null)) {
-                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degres and 999 degres !"));
+                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degrees and 999 degrees !"));
                 return;
             }
             break;
         case 'bed':
             selectedTemp = parseInt(document.getElementById('bedSelectedTemp').value);
             if (selectedTemp < 0 || selectedTemp > 999 || isNaN(selectedTemp) || (selectedTemp === null)) {
-                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degres and 999 degres !"));
+                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degrees and 999 degrees !"));
+                return;
+            }
+            break;
+        case 'chamber':
+            selectedTemp = parseInt(document.getElementById('chamberSelectedTemp').value);
+            if (selectedTemp < 0 || selectedTemp > 999 || isNaN(selectedTemp) || (selectedTemp === null)) {
+                alertdlg(translate_text_item("Out of range"), translate_text_item("Value must be between 0 degrees and 999 degrees !"));
                 return;
             }
             break;
     }
 
-    var type = (target == 'bed') ? 140 : 104;
-    var command = "M" + type + " S" + selectedTemp;
-    if (target != 'bed') {
-        command += " " + target;
-    }
-    SendPrinterCommand(command, true, get_Temperatures);
+    submit_target_temperature(target, selectedTemp);
 }
