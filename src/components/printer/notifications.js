@@ -25,7 +25,7 @@ import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
 import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
-import { preferences, Page } from "../app"
+import { esp3dSettings, preferences, Page } from "../app"
 
 /*
  * Local variables
@@ -49,6 +49,9 @@ const Notifications = () => {
     const { feedrate } = useStoreon("feedrate")
     const { flowrate } = useStoreon("flowrate")
     const { fanpercent } = useStoreon("fanpercent")
+    if (esp3dSettings.length == 0 || esp3dSettings.FWTarget == "unknown") {
+        return null
+    }
     const toggleShowJog = e => {
         const { dispatch } = useStoreon()
         dispatch("setPage", Page.dashboard)

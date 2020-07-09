@@ -48,6 +48,7 @@ let esp3dFWSettings = {} //full esp3d settings (ESP400)
 let esp3dFWimportSettings = {} //full esp3d settings to be imported
 let currentIndex
 let stopImport
+let refreshOngoing = false
 
 /*
  * Check value is valid
@@ -531,6 +532,7 @@ function loadSettings() {
     const cmd = "[ESP400]"
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW Settings")
+    refreshOngoing = true
     SendCommand(cmd, loadSettingsSuccess, loadSettingsError)
     isloaded = true
 }
@@ -540,6 +542,7 @@ function loadSettings() {
  */
 function loadSettingsSuccess(responseText) {
     try {
+        refreshOngoing = false
         esp3dFWSettings = JSON.parse(responseText)
         //console.log(esp3dFWSettings)
         showDialog({ displayDialog: false, refreshPage: true })
@@ -631,6 +634,7 @@ function loadWiFiNetworksSuccess(responseText) {
  * Load WiFi Networks query error
  */
 function loadSettingsError(errorCode, responseText) {
+    refreshOngoing = false
     showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 
@@ -910,7 +914,7 @@ export const Esp3DSettings = ({ currentPage }) => {
                 <span class="text-button-setting">
                     <button
                         type="button"
-                        class="btn btn-primary"
+                        class={!refreshOngoing ? "btn btn-primary" : "d-none"}
                         title={T("S23")}
                         onClick={loadSettings}
                     >
@@ -952,7 +956,9 @@ export const Esp3DSettings = ({ currentPage }) => {
                         <span class="hide-low text-button">{T("S52")}</span>
                     </button>
                 </span>
-                <span class="text-button-setting">
+                <span
+                    class={!refreshOngoing ? "text-button-setting" : "d-none"}
+                >
                     <button
                         type="button"
                         class="btn btn-danger"
