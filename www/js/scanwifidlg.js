@@ -50,7 +50,7 @@ function process_scanWifi_answer(response_text) {
                 if (aplist[i].IS_PROTECTED == "1") content += get_icon_svg("lock");
                 content += "</></td>";
                 content += "<td>";
-                content += "<button class='btn btn-primary' onclick='select_ap_ssid(\"" + aplist[i].SSID + "\");'>";
+                content += "<button class='btn btn-primary' onclick='select_ap_ssid(\"" + aplist[i].SSID.replace("'","\\'").replace("\"","\\\"") + "\");'>";
                 content += get_icon_svg("ok");
                 content += "</button>";
                 content += "</td>";
