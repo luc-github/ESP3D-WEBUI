@@ -928,7 +928,7 @@ app.get("/command", function(req, res) {
                 },
                 { SSID: "WIFI_OFFICE_B2G", SIGNAL: "88", IS_PROTECTED: "1" },
                 { SSID: "NETGEAR70", SIGNAL: "66", IS_PROTECTED: "1" },
-                { SSID: "WIFI_OFFICE_A2G", SIGNAL: "48", IS_PROTECTED: "1" },
+                { SSID: "ZenFone6&#39;luc", SIGNAL: "48", IS_PROTECTED: "1" },
                 { SSID: "Livebox-EF01", SIGNAL: "20", IS_PROTECTED: "1" },
                 { SSID: "orange", SIGNAL: "20", IS_PROTECTED: "0" },
             ],

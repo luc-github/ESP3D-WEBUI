@@ -359,6 +359,8 @@ const FlagEntry = ({ entry }) => {
 const Entry = ({ entry }) => {
     if (typeof entry.currentValue == "undefined") {
         entry.V = entry.V.trim()
+            .replace("&#39;", "'")
+            .replace("&#34;", '"')
         entry.currentValue = entry.V
     }
     let setting
@@ -511,7 +513,10 @@ const JoinNetworkButton = ({ SSID }) => {
     const onJoin = e => {
         for (let entry of esp3dFWSettings.Settings) {
             if (entry.F == "network/sta" && entry.H == "SSID") {
-                entry.currentValue = SSID
+                entry.currentValue = SSID.replace("&#39;", "'").replace(
+                    "&#34;",
+                    '"'
+                )
                 updateState(entry)
                 break
             }
@@ -588,7 +593,9 @@ function loadWiFiNetworksSuccess(responseText) {
             let sub_val = Object.values(listnetworks.AP_LIST[key])
             entries.push(
                 <tr>
-                    <td>{sub_val[0]}</td>
+                    <td>
+                        {sub_val[0].replace("&#39;", "'").replace("&#34;", '"')}
+                    </td>
                     <td>
                         {sub_val[1]}%
                         <div class="tshow-low">

@@ -343,7 +343,7 @@ export const AboutPage = ({ currentState }) => {
                                       <span class="text-info">
                                           {T(entry.id)}:{" "}
                                       </span>
-                                      {T(entry.value)}
+                                      {T(entry.value).replace("&#39;","'").replace("&#34;","\"")}
                                   </div>
                               )
                           })
