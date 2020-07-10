@@ -83,6 +83,7 @@ function pollingFunction() {
  */
 function startPolling() {
     stopPolling()
+    console.log("Start polling")
     if (prefs.enablepolling) {
         pollingInterval = setInterval(
             pollingFunction,
@@ -316,7 +317,7 @@ function loadConfig() {
     const cmd = "[ESP800]" + "time=" + PCtime
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW config")
-    SendCommand(cmd, loadConfigSuccess, loadConfigError)
+    SendCommand(cmd, loadConfigSuccess, loadConfigError, null, "noterminal")
 }
 
 /*

@@ -54,6 +54,10 @@ const pingDelay = 5000
  * Set page ID
  */
 function setPageId(id) {
+    if (currentPageId == "") {
+        console.log("Connection done")
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
     currentPageId = id
 }
 

@@ -27,6 +27,7 @@ var beepongoing = false
 let audioCtx
 let gainNode
 let oscillator
+let audioinitdone = false
 
 /*
  * Some constants
@@ -37,16 +38,19 @@ let oscillator
  *
  */
 function initAudio() {
-    if (typeof window.AudioContext !== "undefined") {
-        audioCtx = new window.AudioContext()
-    } else if (typeof window.webkitAudioContext() !== "undefined") {
-        audioCtx = new window.webkitAudioContext()
-    } else if (typeof window.audioContext !== "undefined") {
-        audioCtx = new window.audioContext()
+    if (!audioinitdone) {
+        if (typeof window.AudioContext !== "undefined") {
+            audioCtx = new window.AudioContext()
+        } else if (typeof window.webkitAudioContext() !== "undefined") {
+            audioCtx = new window.webkitAudioContext()
+        } else if (typeof window.audioContext !== "undefined") {
+            audioCtx = new window.audioContext()
+        }
+        //need this one but I do not understand why???
+        //if not, the first call to beep is ignored or not audible
+        beep(200, 0)
+        audioinitdone = true
     }
-    //need this one but I do not understand why???
-    //if not, the first call to beep is ignored or not audible
-    beep(200, 0)
 }
 
 /*
