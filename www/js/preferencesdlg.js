@@ -137,6 +137,14 @@ function initpreferences() {
         document.getElementById('ext_pref_panel').style.display = 'block';
         document.getElementById('grbl_pref_panel').style.display = 'none';
     }
+        
+    if (supportsRedundantTemperatures()) document.getElementById('redundant_controls_option').style.display = 'block';
+    else document.getElementById('redundant_controls_option').style.display = 'none';
+    if (supportsProbeTemperatures()) document.getElementById('probe_controls_option').style.display = 'block';
+    else document.getElementById('probe_controls_option').style.display = 'none';
+    if (supportsChamberTemperatures()) document.getElementById('chamber_controls_option').style.display = 'block';
+    else document.getElementById('chamber_controls_option').style.display = 'none';
+
     default_preferenceslist = JSON.parse(defaultpreferenceslist);
 }
 
@@ -316,34 +324,42 @@ function applypreferenceslist() {
         ontogglePing(false);
     }
 
-    if (preferenceslist[0].enable_redundant === 'true') {
-        document.getElementById('temperature_redundant').style.display = 'table-row';
-        temperature_extruder_redundant(true);
-    } else {
-        document.getElementById('temperature_redundant').style.display = 'none';
-        temperature_extruder_redundant(false);
+    if (supportsRedundantTemperatures()) {
+        if (preferenceslist[0].enable_redundant === 'true') {
+            document.getElementById('temperature_redundant').style.display = 'table-row';
+            temperature_extruder_redundant(true);
+        } else {
+            document.getElementById('temperature_redundant').style.display = 'none';
+            temperature_extruder_redundant(false);
+        }
     }
-    if (preferenceslist[0].enable_probe === 'true') {
-        document.getElementById('temperature_probe').style.display = 'table-row';
-        temperature_probe(true);
-    } else {
-        document.getElementById('temperature_probe').style.display = 'none';
-        temperature_probe(false);
+    if (supportsProbeTemperatures()) {
+        if (preferenceslist[0].enable_probe === 'true') {
+            document.getElementById('temperature_probe').style.display = 'table-row';
+            temperature_probe(true);
+        } else {
+            document.getElementById('temperature_probe').style.display = 'none';
+            temperature_probe(false);
+        }
     }
     if (preferenceslist[0].enable_bed === 'true') {
         document.getElementById('temperature_bed').style.display = 'table-row';
     } else {
         document.getElementById('temperature_bed').style.display = 'none';
     }
-    if (preferenceslist[0].enable_chamber === 'true') {
-        document.getElementById('temperature_chamber').style.display = 'table-row';
-        temperature_chamber(true);
-    } else {
-        document.getElementById('temperature_chamber').style.display = 'none';
-        temperature_chamber(false);
+    if (supportsChamberTemperatures()) {
+        if (preferenceslist[0].enable_chamber === 'true') {
+            document.getElementById('temperature_chamber').style.display = 'table-row';
+            temperature_chamber(true);
+        } else {
+            document.getElementById('temperature_chamber').style.display = 'none';
+            temperature_chamber(false);
+        }
     }
 
-    if (preferenceslist[0].enable_probe === 'true' || preferenceslist[0].enable_bed === 'true' || preferenceslist[0].enable_chamber === 'true') {
+    if (preferenceslist[0].enable_bed === 'true' ||
+            (preferenceslist[0].enable_chamber === 'true' && supportsChamberTemperatures()) ||
+            (preferenceslist[0].enable_probe === 'true' && supportsProbeTemperatures())) {
         document.getElementById('bedtemperaturesgraphic').style.display = 'block';
     } else {
         document.getElementById('bedtemperaturesgraphic').style.display = 'none';

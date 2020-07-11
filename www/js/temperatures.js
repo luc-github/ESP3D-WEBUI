@@ -155,7 +155,7 @@ function onTempIntervalChange() {
 
 function get_Temperatures() {
     var command = "M105";
-    command = preferenceslist[0].enable_redundant === 'true' ? command + " R" : command;
+    command = (preferenceslist[0].enable_redundant === 'true' && supportsRedundantTemperatures()) ? command + " R" : command;
     //removeIf(production)
     var response = "";
     if (document.getElementById('autocheck_temperature').checked) response = "ok T:26.4 /0.0 T1:26.4 /0.0 @0 B:24.9 /0.0 @0 \n";
@@ -296,4 +296,16 @@ function temperature_heatSet(target) {
     }
 
     submit_target_temperature(target, selectedTemp);
+}
+
+function supportsRedundantTemperatures() {
+    return target_firmware == "marlin-embedded" || target_firmware == "marlin" || target_firmware == "smoothieware";
+}
+
+function supportsProbeTemperatures() {
+    return target_firmware == "marlin-embedded" || target_firmware == "marlin" || target_firmware == "smoothieware";
+}
+
+function supportsChamberTemperatures() {
+    return target_firmware == "marlin-embedded" || target_firmware == "marlin" || target_firmware == "marlinkimbra" || target_firmware == "smoothieware";
 }
