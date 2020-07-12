@@ -47,7 +47,7 @@ function Monitor_output_Update(message) {
     var isverbosefilter = document.getElementById("monitor_enable_verbose_mode").checked;
     for (var i = 0; i < Monitor_outputLength; i++) {
         //Filter the output  
-        if ((Monitor_output[i].trim().toLowerCase() == "ok") && !isverbosefilter) continue;
+        if ((Monitor_output[i].trim().toLowerCase().startsWith("ok")) && !isverbosefilter) continue;
         if ((Monitor_output[i].trim().toLowerCase() == "wait") && !isverbosefilter) continue;
         if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")) {
             //no status

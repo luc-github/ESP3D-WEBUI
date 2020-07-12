@@ -33,6 +33,8 @@ var defaultpreferenceslist = "[{\
                                             \"enable_temperatures_panel\":\"true\",\
                                             \"enable_extruder_panel\":\"true\",\
                                             \"enable_files_panel\":\"true\",\
+                                            \"has_TFT_SD\":\"false\",\
+                                            \"has_TFT_USB\":\"false\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\",\
@@ -75,6 +77,8 @@ function initpreferences() {
                                             \"enable_temperatures_panel\":\"false\",\
                                             \"enable_extruder_panel\":\"false\",\
                                             \"enable_files_panel\":\"true\",\
+                                            \"has_TFT_SD\":\"false\",\
+                                            \"has_TFT_USB\":\"false\",\
                                             \"f_filters\":\"g;G;gco;GCO;gcode;GCODE;nc;NC;ngc;NCG;tap;TAP;txt;TXT\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
@@ -89,6 +93,8 @@ function initpreferences() {
         document.getElementById('temp_pref_panel').style.display = 'none';
         document.getElementById('ext_pref_panel').style.display = 'none';
         document.getElementById('grbl_pref_panel').style.display = 'block';
+        document.getElementById('has_tft_sd').style.display = 'none';
+        document.getElementById('has_tft_usb').style.display = 'none';
     } else {
         defaultpreferenceslist = "[{\
                                             \"language\":\"en\",\
@@ -120,6 +126,8 @@ function initpreferences() {
                                             \"enable_temperatures_panel\":\"true\",\
                                             \"enable_extruder_panel\":\"true\",\
                                             \"enable_files_panel\":\"true\",\
+                                            \"has_TFT_SD\":\"false\",\
+                                            \"has_TFT_USB\":\"false\",\
                                             \"f_filters\":\"g;G;gco;GCO;gcode;GCODE\",\
                                             \"enable_commands_panel\":\"true\",\
                                             \"enable_autoscroll\":\"true\",\
@@ -136,6 +144,8 @@ function initpreferences() {
         document.getElementById('temp_pref_panel').style.display = 'block';
         document.getElementById('ext_pref_panel').style.display = 'block';
         document.getElementById('grbl_pref_panel').style.display = 'none';
+        document.getElementById('has_tft_sd').style.display = 'table-row';
+        document.getElementById('has_tft_usb').style.display = 'table-row';
     }
         
     if (supportsRedundantTemperatures()) document.getElementById('redundant_controls_option').style.display = 'block';
@@ -306,10 +316,10 @@ function applypreferenceslist() {
             document.getElementById('temperature_secondExtruder').style.display = 'table-row';
             temperature_second_extruder(true);
         } else {
-			document.getElementById('second_extruder_UI').style.display = 'none';
+            document.getElementById('second_extruder_UI').style.display = 'none';
             document.getElementById('temperature_secondExtruder').style.display = 'none';
             temperature_second_extruder(false);
-		}
+        }
     }
     if (preferenceslist[0].enable_lock_UI === 'true') {
         document.getElementById('lock_ui_btn').style.display = 'block';
@@ -401,6 +411,28 @@ function applypreferenceslist() {
 
     if (preferenceslist[0].enable_files_panel === 'true') document.getElementById('filesPanel').style.display = 'flex';
     else document.getElementById('filesPanel').style.display = 'none';
+    
+    if (preferenceslist[0].has_TFT_SD === 'true'){
+         document.getElementById('files_refresh_tft_sd_btn').style.display = 'flex';
+     }
+    else {
+        document.getElementById('files_refresh_tft_sd_btn').style.display = 'none';
+    }
+    
+    if (preferenceslist[0].has_TFT_USB === 'true') {
+        document.getElementById('files_refresh_tft_usb_btn').style.display = 'flex';
+    }
+    else {
+        document.getElementById('files_refresh_tft_usb_btn').style.display = 'none';
+    }
+    
+    if ((preferenceslist[0].has_TFT_SD === 'true') || (preferenceslist[0].has_TFT_USB === 'true')){
+        document.getElementById('files_refresh_printer_sd_btn').style.display = 'flex';
+        document.getElementById('files_refresh_btn').style.display = 'none';
+    } else {
+        document.getElementById('files_refresh_printer_sd_btn').style.display = 'none';
+        document.getElementById('files_refresh_btn').style.display = 'flex';
+    }
 
     if (preferenceslist[0].enable_commands_panel === 'true') {
         document.getElementById('commandsPanel').style.display = 'flex';
@@ -545,6 +577,14 @@ function build_dlg_preferences_list() {
     if (typeof(preferenceslist[0].enable_files_panel) !== 'undefined') {
         document.getElementById('show_files_panel').checked = (preferenceslist[0].enable_files_panel === 'true');
     } else document.getElementById('show_files_panel').checked = false;
+    //TFT SD
+    if (typeof(preferenceslist[0].has_TFT_SD) !== 'undefined') {
+        document.getElementById('has_tft_sd').checked = (preferenceslist[0].has_TFT_SD === 'true');
+    } else document.getElementById('has_tft_sd').checked = false;
+    //TFT USB
+    if (typeof(preferenceslist[0].has_TFT_USB) !== 'undefined') {
+        document.getElementById('has_tft_usb').checked = (preferenceslist[0].has_TFT_USB === 'true');
+    } else document.getElementById('has_tft_usb').checked = false;
     //commands
     if (typeof(preferenceslist[0].enable_commands_panel) !== 'undefined') {
         document.getElementById('show_commands_panel').checked = (preferenceslist[0].enable_commands_panel === 'true');
@@ -671,6 +711,8 @@ function closePreferencesDialog() {
             (typeof(preferenceslist[0].probetouchplatethickness) === 'undefined') ||
             (typeof(preferenceslist[0].enable_extruder_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_files_panel) === 'undefined') ||
+            (typeof(preferenceslist[0].has_tft_sd) === 'undefined') ||
+            (typeof(preferenceslist[0].has_tft_usb) === 'undefined') ||
             (typeof(preferenceslist[0].interval_positions) === 'undefined') ||
             (typeof(preferenceslist[0].interval_temperatures) === 'undefined') ||
             (typeof(preferenceslist[0].interval_status) === 'undefined') ||
@@ -717,6 +759,10 @@ function closePreferencesDialog() {
             if (document.getElementById('show_extruder_panel').checked != (preferenceslist[0].enable_extruder_panel === 'true')) modified = true;
             //files panel
             if (document.getElementById('show_files_panel').checked != (preferenceslist[0].enable_files_panel === 'true')) modified = true;
+            //TFT SD
+            if (document.getElementById('has_tft_sd').checked != (preferenceslist[0].has_TFT_SD === 'true')) modified = true;
+            //TFT USB
+            if (document.getElementById('has_tft_usb').checked != (preferenceslist[0].has_TFT_USB === 'true')) modified = true;
             //commands
             if (document.getElementById('show_commands_panel').checked != (preferenceslist[0].enable_commands_panel === 'true')) modified = true;
             //interval positions
@@ -829,6 +875,8 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"enable_extruder_panel\":\"" + document.getElementById('show_extruder_panel').checked;
         saveprefs += "\",\"enable_grbl_panel\":\"" + document.getElementById('show_grbl_panel').checked;
         saveprefs += "\",\"enable_files_panel\":\"" + document.getElementById('show_files_panel').checked;
+        saveprefs += "\",\"has_TFT_SD\":\"" + document.getElementById('has_tft_sd').checked;
+        saveprefs += "\",\"has_TFT_USB\":\"" + document.getElementById('has_tft_usb').checked;
         saveprefs += "\",\"probemaxtravel\":\"" + document.getElementById('preferences_probemaxtravel').value;
         saveprefs += "\",\"probefeedrate\":\"" + document.getElementById('preferences_probefeedrate').value;
         saveprefs += "\",\"probetouchplatethickness\":\"" + document.getElementById('preferences_probetouchplatethickness').value;

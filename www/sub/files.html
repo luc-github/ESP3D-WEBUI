@@ -5,7 +5,7 @@
                 <div class="pull-left">
                     <table>
                         <tr>
-                            <td><b><span translate>SD Files</span></b></td>
+                            <td><b><span id="fileSource" translate>SD Files</span></b></td>
                             <td>&nbsp;&nbsp;</td>
                             <td>
                                 <button id="files_createdir_btn" onclick="files_Createdir()" class="btn btn-info btn-xs hide_it" style="padding: -2px 2px 0x 0px;">
@@ -54,11 +54,23 @@
                         &nbsp;
                         <button class="btn btn-xs btn-primary hide_it" id="files_refresh_secondary_sd_btn" onclick="files_refreshFiles(secondary_sd)">SD 2</button>
                         &nbsp;
+                        <span class="hide_it" id="files_refresh_printer_sd_btn">
+                            <button class="btn btn-xs btn-primary"  onclick="current_source = printer_sd ;files_refreshFiles(files_currentPath)">SD</button>
+                            &nbsp;
+                        </span>
+                        <span class="hide_it" id="files_refresh_tft_sd_btn">
+                            <button class="btn btn-xs btn-primary"  onclick="current_source = tft_sd ;files_refreshFiles(files_currentPath)">TFT SD</button>
+                            &nbsp;
+                        </span>
+                        <span class="hide_it" id="files_refresh_tft_usb_btn">
+                            <button class="btn btn-xs btn-primary"  onclick="current_source = tft_usb ;files_refreshFiles(files_currentPath)">TFT USB</button>
+                            &nbsp;
+                        </span>
                         <button id="progress_btn" class="btn btn-xs btn-primary" onclick="files_progress()" translate>Progress</button>
                         &nbsp;
                         <button id="abort_btn" class="btn btn-xs btn-primary" onclick="files_abort()" translate>Abort</button>
                         &nbsp;
-                        <button class="btn btn-xs btn-primary" onclick="files_select_upload()" translate>Upload</button>
+                        <button id="print_upload_btn" class="btn btn-xs btn-primary" onclick="files_select_upload()" translate>Upload</button>
                         <input type="file" id="files_input_file" onchange="files_check_if_upload()" accept=" .g, .gco, .gcode, .G, .GCO, .GCODE" style="display:none" />
                     </div>
                 </div>
