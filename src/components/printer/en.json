@@ -38,5 +38,9 @@
     "P37": "Bed",
     "P38": "Stop heating",
     "P39": "Stop",
-    "P40": "Stop all"
+    "P40": "Stop all",
+    "P41": "Extruder",
+    "P42": "Probe",
+    "P43": "Chamber",
+    "P44": "Redondant"
 }

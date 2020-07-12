@@ -75,11 +75,15 @@ function sendTemperature() {
         SendBinary(
             "ok T:" +
                 T +
+                " /200 R:" +
+                T +
                 " /200 B:" +
                 B +
-                " / 0 B@:0 @:0 T0:" +
-                T +
-                " / 0 @0:0 T1:" +
+                " / 0 P:" +
+                B +
+                " / 0 C:" +
+                B +
+                " / 0 T1:" +
                 T1 +
                 " / 0 @1:0\n"
         )

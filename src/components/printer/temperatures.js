@@ -27,7 +27,7 @@ import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
 import { Bed } from "./icon"
-import { Thermometer, XCircle, Send } from "preact-feather"
+import { Thermometer, XCircle, Send, Box } from "preact-feather"
 
 /*
  * Local variables
@@ -41,11 +41,14 @@ let currentTargetTemperature = []
  *
  */
 function processTemperatures(buffer) {
-    const regexTemp = /(B|T(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
+    const regexTemp = /((B|T|C|P|R)(\d*)):\s*([+|-]?[0-9]*\.?[0-9]+|inf)? (\/)([+]?[0-9]*\.?[0-9]+)?/gi
     let result
     let timestamp = Date.now()
     let extruders = []
     let beds = []
+    let probes = []
+    let redondants = []
+    let chambers = []
     const { dispatch } = useStoreon()
     if (typeof buffer == "object") {
         let size = buffer.heaters.length
@@ -89,44 +92,90 @@ function processTemperatures(buffer) {
             }
         }
     } else {
+        let dispatched = ""
         while ((result = regexTemp.exec(buffer)) !== null) {
+            console.log(result)
             var tool = result[1]
             var value
             var value2
-            if (isNaN(parseFloat(result[3])) || parseFloat(result[3]) < 5)
+            if (isNaN(parseFloat(result[4])) || parseFloat(result[4]) < 5)
                 value = "error"
             else
-                value = parseFloat(result[3])
+                value = parseFloat(result[4])
                     .toFixed(2)
                     .toString()
-            if (isNaN(parseFloat(result[5]))) value2 = "0.00"
+            if (isNaN(parseFloat(result[6]))) value2 = "0.00"
             else
-                value2 = parseFloat(result[5])
+                value2 = parseFloat(result[6])
                     .toFixed(2)
                     .toString()
-            if (tool.startsWith("T") || tool.startsWith("B")) {
+            if (
+                tool.startsWith("T") ||
+                tool.startsWith("B") ||
+                tool.startsWith("C") ||
+                tool.startsWith("P") ||
+                tool.startsWith("R")
+            ) {
                 if (tool == "T") tool = "T0"
                 if (tool == "B") tool = "B0"
-                let index = parseInt(tool.substring(1))
-                if (dispatch) {
-                    if (tool[0] == "T") extruders[index] = value
-                    else beds[index] = value
-                    dispatch("temperatures/updateT" + tool[0], {
-                        index: index,
-                        value: value,
-                        target: value2,
-                    })
-                } else {
-                    console.log("no dispatch")
+                if (tool == "C") tool = "C0"
+                if (tool == "R") tool = "R0"
+                if (tool == "P") tool = "P0"
+                if (dispatched.indexOf(tool) == -1) {
+                    dispatched += "*" + tool
+                    let index = parseInt(tool.substring(1))
+                    if (dispatch) {
+                        switch (tool[0]) {
+                            case "T":
+                                extruders[index] = value
+                                break
+                            case "B":
+                                beds[index] = value
+                                break
+                            case "C":
+                                chambers[index] = value
+                                break
+                            case "P":
+                                probes[index] = value
+                                break
+                            case "R":
+                                redondants[index] = value
+                                break
+                            default:
+                                break
+                        }
+                        console.log("temperatures/updateT" + tool[0] + index)
+                        console.log({
+                            index: index,
+                            value: value,
+                            target: value2,
+                        })
+                        dispatch("temperatures/updateT" + tool[0], {
+                            index: index,
+                            value: value,
+                            target: value2,
+                        })
+                    } else {
+                        console.log("no dispatch")
+                    }
                 }
             }
         }
     }
-    if (extruders.length > 0 || beds.length > 0) {
+    if (
+        extruders.length > 0 ||
+        beds.length > 0 ||
+        chambers.length > 0 ||
+        probes.length > 0 ||
+        redondants.length > 0
+    ) {
         dispatch("temperatures/addT", {
             timestamp: timestamp,
             extruders: extruders,
             beds: beds,
+            chambers: chambers,
+            probes: probes,
+            redondants: redondants,
         })
     }
 }
@@ -149,7 +198,7 @@ function setTemperature(temperature, type, index) {
             SendCommand(cmd, null, sendCommandError)
         }
         cmd = "M104 S"
-    } else {
+    } else if (type == "bed") {
         //TODO add syntax for multi bed
         //reprap use P and H
         //MK4DUO use T
@@ -160,6 +209,8 @@ function setTemperature(temperature, type, index) {
             SendCommand(cmd, null, sendCommandError)
         }
         cmd = "M140 S"
+    } else if (type == "chamber") {
+        cmd = "M141 S"
     }
     cmd += temperature
     SendCommand(cmd, null, sendCommandError)
@@ -252,8 +303,20 @@ function setState(id, state) {
  * Check control value
  *
  */
-function checkValue(entry) {
+function checkValue(entry, type) {
     if (entry.length == 0 || entry < 0) return false
+    switch (type) {
+        case "extruder":
+            if (entry > preferences.settings.extrudermax) return false
+            break
+        case "bed":
+            if (entry > preferences.settings.bedmax) return false
+            break
+        case "chamber":
+            if (entry > preferences.settings.chambermax) return false
+            break
+            defalt: break
+    }
     return true
 }
 
@@ -269,7 +332,7 @@ function updateState(entry, id) {
     let type = id.split("_")[0]
     let index = parseInt(id.split("_")[1])
     let state = "default"
-    if (!checkValue(entry)) {
+    if (!checkValue(entry, type)) {
         state = "error"
     } else {
         if (
@@ -287,7 +350,7 @@ function updateState(entry, id) {
  *
  */
 const TemperatureSlider = ({ id, type, index }) => {
-    const { TT, TB } = useStoreon("TT", "TB")
+    const { TT, TB, TC } = useStoreon("TT", "TB", "TC")
     if (typeof currentTemperature[type] == "undefined") {
         currentTemperature[type] = []
     }
@@ -298,8 +361,10 @@ const TemperatureSlider = ({ id, type, index }) => {
         if (type == "extruder") {
             if (TT.length > 0)
                 currentTemperature[type][index] = TT[index].target
-        } else {
+        } else if (type == "bed") {
             currentTemperature[type][index] = TB[index].target
+        } else if (type == "chamber") {
+            currentTemperature[type][index] = TC[index].target
         }
     }
 
@@ -309,9 +374,12 @@ const TemperatureSlider = ({ id, type, index }) => {
                 typeof TT[index].target != "undefined"
                     ? TT[index].target
                     : "0.00"
-    } else {
+    } else if (type == "bed") {
         currentTargetTemperature[type][index] =
             typeof TB[index].target != "undefined" ? TB[index].target : "0.00"
+    } else if (type == "chamber") {
+        currentTargetTemperature[type][index] =
+            typeof TC[index].target != "undefined" ? TC[index].target : "0.00"
     }
 
     const onInputTemperatureSlider = e => {
@@ -367,13 +435,26 @@ const TemperatureSlider = ({ id, type, index }) => {
             <div class="d-flex flex-column border p-1 rounded">
                 <div class="d-flex flex-wrap p-1">
                     <div class="control-like p-1">
-                        {type == "extruder" ? <Thermometer /> : <Bed />}
+                        {type == "extruder" ? (
+                            <Thermometer />
+                        ) : type == "bed" ? (
+                            <Bed />
+                        ) : (
+                            <Box />
+                        )}
+                        {type == "extruder"
+                            ? T("P41")
+                            : type == "bed"
+                            ? T("P37")
+                            : T("P43")}
                         {type == "extruder"
                             ? TT.length > 1
                                 ? index + 1
                                 : ""
-                            : TB.length > 1
-                            ? index + 1
+                            : type == "bed"
+                            ? TB.length > 1
+                                ? index + 1
+                                : ""
                             : ""}
                     </div>
                     <div class="p-1">
@@ -414,7 +495,9 @@ const TemperatureSlider = ({ id, type, index }) => {
                                 max={
                                     type == "extruder"
                                         ? preferences.settings.extrudermax
-                                        : preferences.settings.bedmax
+                                        : type == "bed"
+                                        ? preferences.settings.bedmax
+                                        : preferences.settings.chambermax
                                 }
                                 value={currentTemperature[type][index]}
                                 class="slider"
@@ -430,7 +513,9 @@ const TemperatureSlider = ({ id, type, index }) => {
                         max={
                             type == "extruder"
                                 ? preferences.settings.extrudermax
-                                : preferences.settings.bedmax
+                                : type == "bed"
+                                ? preferences.settings.bedmax
+                                : preferences.settings.chambermax
                         }
                         value={currentTemperature[type][index]}
                         class="form-control"
@@ -474,7 +559,7 @@ const TemperatureSlider = ({ id, type, index }) => {
 const TemperaturesPanel = () => {
     const { showTemperatures } = useStoreon("showTemperatures")
     const { panelsOrder } = useStoreon("panelsOrder")
-    const { TT, TB } = useStoreon("TT", "TB")
+    const { TT, TB, TC } = useStoreon("TT", "TB", "TC")
     let index = getPanelIndex(panelsOrder, "temperatures")
     if (!showTemperatures) {
         return null
@@ -497,11 +582,18 @@ const TemperaturesPanel = () => {
             <TemperatureSlider id={"bed_" + i} type="bed" index={i} />
         )
     }
+    for (let i = 0; i < TC.length; i++) {
+        temperaturesControls.push(
+            <TemperatureSlider id={"chamber_" + i} type="chamber" index={i} />
+        )
+    }
     const onStopAll = e => {
         for (let i = 0; i < currentTemperature["extruder"].length; i++)
             setTemperature(0, "extruder", i)
         for (let i = 0; i < currentTemperature["bed"].length; i++)
             setTemperature(0, "bed", i)
+        for (let i = 0; i < currentTemperature["chamber"].length; i++)
+            setTemperature(0, "chamber", i)
     }
     return (
         <div class={panelClass} id="temperaturespanel">

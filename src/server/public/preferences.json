@@ -18,7 +18,7 @@
   "tftsd": true,
   "tftusb": true,
   "printersd": false,
-  "enablepolling": true,
+  "enablepolling": false,
   "pollingrefresh": 3,
   "pollingcommands": "M105",
   "showtemperaturespanel": true,

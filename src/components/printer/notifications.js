@@ -22,7 +22,14 @@ import { h } from "preact"
 import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
 import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
-import { Thermometer, AlertTriangle, Home, AlertCircle } from "preact-feather"
+import {
+    Thermometer,
+    AlertTriangle,
+    Home,
+    AlertCircle,
+    Box,
+    Underline,
+} from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
 import { esp3dSettings, preferences, Page } from "../app"
@@ -44,7 +51,7 @@ function sendCommandError(errorCode, responseText) {
  *
  */
 const Notifications = () => {
-    const { TT, TB } = useStoreon("TT", "TB")
+    const { TT, TB, TC, TR, TP } = useStoreon("TT", "TB", "TR", "TP", "TC")
     const { x, y, z } = useStoreon("x", "y", "z")
     const { feedrate } = useStoreon("feedrate")
     const { flowrate } = useStoreon("flowrate")
@@ -91,92 +98,93 @@ const Notifications = () => {
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
     }
+    function pushUI(list, index, icon, title) {
+        temperatures.push(
+            <div
+                class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
+                onclick={toggleshowTemperatures}
+                title={title}
+            >
+                <span
+                    class={
+                        list[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    {icon}
+                    <span>{list.length > 1 ? index + 1 : ""}</span>
+                </span>
+                <span
+                    class="bg-white input-group-text text-center textNotification justify-content-center"
+                    style="min-width:5em"
+                >
+                    {list[index].value == "error" ? (
+                        <AlertTriangle size="1.0em" />
+                    ) : (
+                        list[index].value
+                    )}
+                </span>
+                <span
+                    class={
+                        list[index].target == "0.00"
+                            ? "bg-default input-group-text text-center textNotification justify-content-center"
+                            : "error input-group-text text-center textNotification justify-content-center"
+                    }
+                >
+                    <span class={list[index].target == "0.00" ? "d-none" : ""}>
+                        {list[index].target}
+                    </span>
+                    <span>&deg;C</span>
+                </span>
+            </div>
+        )
+    }
     let temperatures = []
     if (preferences.settings.showtemperaturespanel == true) {
         for (let index = 0; index < TT.length; index++) {
-            temperatures.push(
-                <div
-                    class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    onclick={toggleshowTemperatures}
-                >
-                    <span
-                        class={
-                            TT[index].target == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <Thermometer size="1.0em" />
-                        <span>{TT.length > 1 ? index + 1 : ""}</span>
-                    </span>
-                    <span
-                        class="bg-white input-group-text text-center textNotification justify-content-center"
-                        style="min-width:5em"
-                    >
-                        {TT[index].value == "error" ? (
-                            <AlertTriangle size="1.0em" />
-                        ) : (
-                            TT[index].value
-                        )}
-                    </span>
-                    <span
-                        class={
-                            TT[index].target == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <span
-                            class={TT[index].target == "0.00" ? "d-none" : ""}
-                        >
-                            {TT[index].target}
-                        </span>
-                        <span>&deg;C</span>
-                    </span>
-                </div>
+            pushUI(
+                TT,
+                index,
+                <Thermometer size="1.0em" />,
+                Trans("P41") + (TT.length > 1 ? index + 1 : "")
             )
+
+            if (TR.length > index) {
+                pushUI(
+                    TR,
+                    index,
+                    <div>
+                        <Thermometer size="1.0em" />
+                        <sub>R</sub>
+                        <span>{TT.length > 1 ? index + 1 : ""}</span>
+                    </div>,
+                    Trans("P44") + (TT.length > 1 ? index + 1 : "")
+                )
+            }
         }
         for (let index = 0; index < TB.length; index++) {
-            temperatures.push(
-                <div
-                    class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                    onclick={toggleshowTemperatures}
-                >
-                    <span
-                        class={
-                            TB[index].target == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <Bed size="1.0em" />
-                        <span>{TB.length > 1 ? index + 1 : ""}</span>
-                    </span>
-                    <span
-                        class="bg-white input-group-text text-center textNotification justify-content-center"
-                        style="min-width:5em"
-                    >
-                        {TB[index].value == "error" ? (
-                            <AlertTriangle size="1.0em" />
-                        ) : (
-                            TB[index].value
-                        )}
-                    </span>
-                    <span
-                        class={
-                            TB[index].target == "0.00"
-                                ? "bg-default input-group-text text-center textNotification justify-content-center"
-                                : "error input-group-text text-center textNotification justify-content-center"
-                        }
-                    >
-                        <span
-                            class={TB[index].target == "0.00" ? "d-none" : ""}
-                        >
-                            {TB[index].target}
-                        </span>
-                        <span>&deg;C</span>
-                    </span>
-                </div>
+            pushUI(
+                TB,
+                index,
+                <Bed size="1.0em" />,
+                Trans("P37") + (TB.length > 1 ? index + 1 : "")
+            )
+        }
+        for (let index = 0; index < TP.length; index++) {
+            pushUI(
+                TP,
+                index,
+                <Underline size="1.0em" />,
+                Trans("P42") + (TP.length > 1 ? index + 1 : "")
+            )
+        }
+        for (let index = 0; index < TC.length; index++) {
+            pushUI(
+                TC,
+                index,
+                <Box size="1.0em" />,
+                Trans("P43") + (TC.length > 1 ? index + 1 : "")
             )
         }
     }

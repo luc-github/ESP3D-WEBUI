@@ -61,7 +61,11 @@ function checkValue(id) {
         id == "printersd" ||
         id == "pollingcommands"
     ) {
-    } else if (id == "extruderpreheat" || id == "bedpreheat") {
+    } else if (
+        id == "extruderpreheat" ||
+        id == "bedpreheat" ||
+        id == "chamberpreheat"
+    ) {
         if (prefs[id] == null || prefs[id].length == 0) isvalid = false
         else {
             let tvals = prefs[id].split(";")
@@ -80,7 +84,8 @@ function checkValue(id) {
             }
             if (id == "xpos" || id == "ypos") {
             }
-            if (id == "extrudermax" || id == "bedmax") {
+            if (id == "extrudermax" || id == "bedmax" || id == "chambermax") {
+                console.log(prefs[id])
                 if (prefs[id] < 1) isvalid = false
             }
             if (id == "pollingrefresh") {
@@ -283,11 +288,17 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.bedmax == "undefined") {
         preferences.settings.bedmax = 140
     }
+    if (typeof preferences.settings.chambermax == "undefined") {
+        preferences.settings.chambermax = 140
+    }
     if (typeof preferences.settings.extruderpreheat == "undefined") {
         preferences.settings.extruderpreheat = "190;220;230"
     }
     if (typeof preferences.settings.bedpreheat == "undefined") {
         preferences.settings.bedpreheat = "50;90;110"
+    }
+    if (typeof preferences.settings.chamberpreheat == "undefined") {
+        preferences.settings.chamberpreheat = "50;90;110"
     }
 
     //Copy values to current settings
@@ -333,11 +344,17 @@ function initDefaultMachineValues() {
     if (typeof prefs.bedmax == "undefined") {
         prefs.bedmax = preferences.settings.bedmax
     }
+    if (typeof prefs.chambermax == "undefined") {
+        prefs.chambermax = preferences.settings.chambermax
+    }
     if (typeof prefs.extruderpreheat == "undefined") {
         prefs.extruderpreheat = preferences.settings.extruderpreheat
     }
     if (typeof prefs.bedpreheat == "undefined") {
         prefs.bedpreheat = preferences.settings.bedpreheat
+    }
+    if (typeof prefs.chamberpreheat == "undefined") {
+        prefs.chamberpreheat = preferences.settings.chamberpreheat
     }
 }
 
@@ -515,6 +532,26 @@ const MachineUIPreferences = () => {
                             />
                             <MachineUIEntry
                                 id="bedpreheat"
+                                label={T("P35")}
+                                help={T("S97")}
+                                type="text"
+                            />
+                        </div>
+                    </div>
+                    <div class="p-1" />
+                    <div class="card">
+                        <div class="card-header control-padding">
+                            {T("P43")}
+                        </div>
+                        <div class="card-body padding-low">
+                            <MachineUIEntry
+                                id="chambermax"
+                                label={T("P34")}
+                                help={T("C")}
+                                type="number"
+                            />
+                            <MachineUIEntry
+                                id="chamberpreheat"
                                 label={T("P35")}
                                 help={T("S97")}
                                 type="text"

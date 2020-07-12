@@ -4,6 +4,9 @@ export default store => {
     store.on("@init", () => ({
         TT: [],
         TB: [],
+        TC: [],
+        TP: [],
+        TR: [],
         TList: [],
     }))
 
@@ -25,6 +28,30 @@ export default store => {
         return {
             TB: [
                 ...TB.filter(element => element.index !== newvalue.index),
+                newvalue,
+            ],
+        }
+    })
+    store.on("temperatures/updateTR", ({ TR }, newvalue) => {
+        return {
+            TR: [
+                ...TR.filter(element => element.index !== newvalue.index),
+                newvalue,
+            ],
+        }
+    })
+    store.on("temperatures/updateTP", ({ TP }, newvalue) => {
+        return {
+            TP: [
+                ...TP.filter(element => element.index !== newvalue.index),
+                newvalue,
+            ],
+        }
+    })
+    store.on("temperatures/updateTC", ({ TC }, newvalue) => {
+        return {
+            TC: [
+                ...TC.filter(element => element.index !== newvalue.index),
                 newvalue,
             ],
         }
