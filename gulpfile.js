@@ -25,6 +25,7 @@ var ptbr_lang = false;
 var ru_lang = false;
 var uk_lang = false;
 var zh_cn_lang = false;
+var hu_lang = false;
 
 function clean() {
     return del(['dist']);
@@ -136,6 +137,7 @@ function clearlang() {
         es_lang = true;
         de_lang = true;
         it_lang = true;
+        hu_lang = true;
         pl_lang = true;
         ptbr_lang = true;
         ru_lang = true;
@@ -168,6 +170,12 @@ function clearlang() {
     }
     if (arg.lang == 'it'){
         it_lang = true;
+    }
+    if(hu_lang){
+        console.log("hu");
+    }
+    if (arg.lang == 'hu'){
+        hu_lang = true;
     }
     if(it_lang){
         console.log("it");
@@ -208,6 +216,7 @@ function clearlang() {
         .pipe(removeCode({es_lang_disabled: !es_lang}))
         .pipe(removeCode({fr_lang_disabled: !fr_lang}))
         .pipe(removeCode({it_lang_disabled: !it_lang}))
+        .pipe(removeCode({hu_lang_disabled: !hu_lang}))
         .pipe(removeCode({pl_lang_disabled: !pl_lang}))
         .pipe(removeCode({ptbr_lang_disabled: !ptbr_lang}))
         .pipe(removeCode({ru_lang_disabled: !ru_lang}))

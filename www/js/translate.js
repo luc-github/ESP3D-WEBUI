@@ -17,6 +17,9 @@ var language_list = [
 //removeIf(it_lang_disabled)
     ['it', 'Italiano', 'italiantrans'],
 //endRemoveIf(it_lang_disabled)
+//removeIf(hu_lang_disabled)
+    ['hu', 'Magyar', 'hungariantrans'],
+//endRemoveIf(hu_lang_disabled)
 //removeIf(pl_lang_disabled)
     ['pl', 'Polski', 'polishtrans'],
 //endRemoveIf(pl_lang_disabled)
