@@ -94,7 +94,7 @@ function processTemperatures(buffer) {
     } else {
         let dispatched = ""
         while ((result = regexTemp.exec(buffer)) !== null) {
-            console.log(result)
+            //console.log(result)
             var tool = result[1]
             var value
             var value2
@@ -144,12 +144,12 @@ function processTemperatures(buffer) {
                             default:
                                 break
                         }
-                        console.log("temperatures/updateT" + tool[0] + index)
+                        /*console.log("temperatures/updateT" + tool[0] + index)
                         console.log({
                             index: index,
                             value: value,
                             target: value2,
-                        })
+                        })*/
                         dispatch("temperatures/updateT" + tool[0], {
                             index: index,
                             value: value,
