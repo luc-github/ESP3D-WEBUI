@@ -161,6 +161,7 @@
     "service" : "Services",
     "http" : "HTTP protocol", 
     "telnetp" : "Telnet protocol", 
+    "websocketp" : "WebSocket protocol", 
     "telnet" : "Telnet",
     "ftp" : "FTP protocol", 
     "notification" : "Notifications",
