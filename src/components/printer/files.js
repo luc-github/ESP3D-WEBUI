@@ -517,11 +517,10 @@ function canUpload() {
 /*
  * Check if can download
  */
-function canDownload() {
+function canDownload(entry) {
     if (currentFilesType == "FS" || currentFilesType == "SDDirect") {
         return true
     }
-
     return false
 }
 
@@ -824,7 +823,6 @@ const FileEntry = ({ entry, pos }) => {
         processPrint(entry)
     }
     const downloadFile = e => {
-        return
         let filename =
             currentPath[currentFilesType] +
             (currentPath[currentFilesType] == "/" ? "" : "/") +
