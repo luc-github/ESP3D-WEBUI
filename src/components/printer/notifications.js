@@ -167,7 +167,7 @@ const Notifications = () => {
             pushUI(
                 TB,
                 index,
-                <Bed size="1.0em" />,
+                <Bed height="1em" />,
                 Trans("P37") + (TB.length > 1 ? index + 1 : "")
             )
         }
@@ -213,8 +213,22 @@ const Notifications = () => {
             >
                 {temperatures}
             </div>
-            <div class="d-flex flex-wrap p-1">
-                <div class={x == "none" ? "p-1 hotspotNotification" : "d-none"}>
+            <div
+                class={
+                    preferences.settings.showjogpanel
+                        ? "d-flex flex-wrap p-1"
+                        : "d-none"
+                }
+            >
+                <div
+                    class={
+                        x == "none"
+                            ? preferences.settings.showjogpanel
+                                ? "p-1 hotspotNotification"
+                                : "d-none"
+                            : "d-none"
+                    }
+                >
                     <button class="btn btn-default" onclick={toggleShowJog}>
                         <Home size="1.2em" />
                         <span class="hide-low text-button">
@@ -262,7 +276,7 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div>
+                <div class={preferences.settings.showjogpanel ? "" : "d-none"}>
                     <div
                         class={
                             z == "none"
@@ -282,23 +296,13 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div class="ml-auto align-self-center hotspotNotification">
-                    <div class="p-1 bg-warning rounded">
-                        <button
-                            type="button"
-                            class="btn btn-sm btn-danger"
-                            onclick={emergencyStop}
-                        >
-                            <AlertCircle size="1.2em" />
-                            <span class="hide-low text-button">
-                                {Trans("P15")}
-                            </span>
-                        </button>
-                    </div>
-                </div>
             </div>
             <div class="d-flex flex-wrap">
-                <div class="p-1">
+                <div
+                    class={
+                        preferences.settings.showspeedpanel ? "p-1" : "d-none"
+                    }
+                >
                     <div
                         class={
                             feedrate == "none"
@@ -342,7 +346,13 @@ const Notifications = () => {
                         </span>
                     </div>
                 </div>
-                <div class="p-1">
+                <div
+                    class={
+                        preferences.settings.showflowratepanel
+                            ? "p-1"
+                            : "d-none"
+                    }
+                >
                     <div
                         class={
                             flowrate == "none"
@@ -387,7 +397,11 @@ const Notifications = () => {
                     </div>
                 </div>
 
-                <div class="p-1">
+                <div
+                    class={
+                        preferences.settings.showfanspanel ? "p-1" : "d-none"
+                    }
+                >
                     <div
                         class={
                             fanpercent == "none"
@@ -429,7 +443,13 @@ const Notifications = () => {
                     </div>
                 </div>
 
-                <div class="p-1">
+                <div
+                    class={
+                        preferences.settings.showextruderspanel
+                            ? "p-1"
+                            : "d-none"
+                    }
+                >
                     <div class="p-1 hotspotNotification">
                         <button
                             class="btn btn-default"
@@ -440,6 +460,25 @@ const Notifications = () => {
                                 {Trans("P32")}
                             </span>
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap p-1">
+                <div class="p-1 hotspotNotification">
+                    <div class="align-self-center">
+                        <div class="p-1 bg-warning rounded">
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-danger"
+                                onclick={emergencyStop}
+                            >
+                                <AlertCircle />
+                                <span class="hide-low text-button">
+                                    {Trans("P15")}
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

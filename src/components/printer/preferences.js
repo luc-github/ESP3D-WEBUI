@@ -282,6 +282,18 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.showtemperaturespanel == "undefined") {
         preferences.settings.showtemperaturespanel = true
     }
+    if (typeof preferences.settings.showfanspanel == "undefined") {
+        preferences.settings.showfanspanel = true
+    }
+    if (typeof preferences.settings.showspeedpanel == "undefined") {
+        preferences.settings.showspeedpanel = true
+    }
+    if (typeof preferences.settings.showflowratepanel == "undefined") {
+        preferences.settings.showflowratepanel = true
+    }
+    if (typeof preferences.settings.showextruderspanel == "undefined") {
+        preferences.settings.showextruderspanel = true
+    }
     if (typeof preferences.settings.extrudermax == "undefined") {
         preferences.settings.extrudermax = 300
     }
@@ -337,6 +349,18 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.showtemperaturespanel == "undefined") {
         prefs.showtemperaturespanel = preferences.settings.showtemperaturespanel
+    }
+    if (typeof prefs.showfanspanel == "undefined") {
+        prefs.showfanspanel = preferences.settings.showfanspanel
+    }
+    if (typeof prefs.showspeedpanel == "undefined") {
+        prefs.showspeedpanel = preferences.settings.showspeedpanel
+    }
+    if (typeof prefs.showflowratepanel == "undefined") {
+        prefs.showflowratepanel = preferences.settings.showflowratepanel
+    }
+    if (typeof prefs.showextruderspanel == "undefined") {
+        prefs.showextruderspanel = preferences.settings.showextruderspanel
     }
     if (typeof prefs.extrudermax == "undefined") {
         prefs.extrudermax = preferences.settings.extrudermax
@@ -559,6 +583,49 @@ const MachineUIPreferences = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showfanspanel"
+                        title={T("P45")}
+                        label={T("P45")}
+                    />
+                </div>
+            </div>
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showspeedpanel"
+                        title={T("P46")}
+                        label={T("P46")}
+                    />
+                </div>
+            </div>
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showflowratepanel"
+                        title={T("P47")}
+                        label={T("P47")}
+                    />
+                </div>
+            </div>
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showextruderspanel"
+                        title={T("P48")}
+                        label={T("P48")}
+                    />
+                </div>
+                <div
+                    class={prefs["showextruderspanel"] ? "card-body" : "d-none"}
+                ></div>
             </div>
         </div>
     )

@@ -970,7 +970,8 @@ function buildStatus(data) {
         typeof data.used != "undefined" &&
         typeof data.occupation != "undefined"
     ) {
-        let style = "width:" + data.occupation + "%;"
+        let barsize = data.occupation < 10 ? 10 : data.occupation
+        let styleprogress = "width:" + barsize + "%"
         newstatus.push(
             <div class="d-flex flex wrap">
                 <div>{T("S98")}:</div>
@@ -986,16 +987,14 @@ function buildStatus(data) {
                     <div class="p-1" />
                     <div class="flex-grow-1 p-1">
                         <div class="progress ">
-                            <div class="progress-bar  bg-success" style={style}>
-                                <div
-                                    class={
-                                        data.occupation >= 10 ? "" : "d-none"
-                                    }
-                                >
-                                    {data.occupation}%
-                                </div>
-                            </div>
-                            <div class={data.occupation < 10 ? "" : "d-none"}>
+                            <div
+                                class="progress-bar bg-success"
+                                role="progressbar"
+                                style={styleprogress}
+                                aria-valuenow={data.occupation}
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                            >
                                 {data.occupation}%
                             </div>
                         </div>

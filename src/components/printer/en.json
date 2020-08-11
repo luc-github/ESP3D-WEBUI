@@ -42,5 +42,9 @@
     "P41": "Extruder",
     "P42": "Probe",
     "P43": "Chamber",
-    "P44": "Redondant"
+    "P44": "Redondant",
+    "P45": "Show fans panel",
+    "P46": "Show speed panel",
+    "P47": "Show flow rate panel",
+    "P48": "Show extruders panel"
 }
