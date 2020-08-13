@@ -315,7 +315,8 @@ function checkValue(entry, type) {
         case "chamber":
             if (entry > preferences.settings.chambermax) return false
             break
-            defalt: break
+        default:
+            break
     }
     return true
 }

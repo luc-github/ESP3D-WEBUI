@@ -116,6 +116,7 @@
     "S115" : "Commands",
     "S116" : "Positions",
     "S117" : "Close all panels",
+    "S118" : "Distance of movement",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

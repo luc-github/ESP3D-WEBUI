@@ -686,7 +686,7 @@ const JogPanel = () => {
                                 <div class="p-1" />
                                 <div
                                     class="d-flex flex-column border rounded"
-                                    title={T("G4")}
+                                    title={T("S118")}
                                 >
                                     <span class="badge badge-secondary">
                                         mm

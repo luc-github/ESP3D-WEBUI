@@ -46,5 +46,12 @@
     "P45": "Show fans panel",
     "P46": "Show speed panel",
     "P47": "Show flow rate panel",
-    "P48": "Show extruders panel"
+    "P48": "Show extruders panel",
+    "P49": "Mixed extruders",
+    "P50": "E feed rate",
+    "P51": "Colors",
+    "P52": "Number",
+    "P53": "Extrude",
+    "P54": "Reverse",
+    "P55" : "Distance of extrusion"
 }

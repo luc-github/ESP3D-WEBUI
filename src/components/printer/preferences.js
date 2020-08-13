@@ -189,6 +189,36 @@ function updateState(index) {
 }
 
 /*
+ * Generate a select control
+ */
+const SelectionEntry = ({ id, title, label, optionlist }) => {
+    const onChange = e => {
+        prefs[id] = e.target.value
+        updateState(id)
+    }
+    return (
+        <div style="margin-bottom: 15px" title={title}>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span id={id + "-UI-label"} class="input-group-text">
+                        {label}
+                    </span>
+                </div>
+
+                <select
+                    id={id + "-UI-select"}
+                    class="form-control"
+                    value={prefs[id]}
+                    onChange={onChange}
+                >
+                    {optionlist}
+                </select>
+            </div>
+        </div>
+    )
+}
+
+/*
  * MachineUIEntry
  */
 const MachineUIEntry = ({ id, label, help, type }) => {
@@ -312,7 +342,18 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.chamberpreheat == "undefined") {
         preferences.settings.chamberpreheat = "50;90;110"
     }
-
+    if (typeof preferences.settings.ismixedextruder == "undefined") {
+        preferences.settings.ismixedextruder = false
+    }
+    if (typeof preferences.settings.ecolors == "undefined") {
+        preferences.settings.ecolors = "blue;red;green;#FF00FF"
+    }
+    if (typeof preferences.settings.efeedrate == "undefined") {
+        preferences.settings.efeedrate = 400
+    }
+    if (typeof preferences.settings.enumber == "undefined") {
+        preferences.settings.enumber = 3
+    }
     //Copy values to current settings
     if (typeof prefs.xyfeedrate == "undefined") {
         prefs.xyfeedrate = preferences.settings.xyfeedrate
@@ -379,6 +420,19 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.chamberpreheat == "undefined") {
         prefs.chamberpreheat = preferences.settings.chamberpreheat
+    }
+
+    if (typeof prefs.ismixedextruder == "undefined") {
+        prefs.ismixedextruder = preferences.settings.ismixedextruder
+    }
+    if (typeof prefs.ecolors == "undefined") {
+        prefs.ecolors = preferences.settings.ecolors
+    }
+    if (typeof prefs.efeedrate == "undefined") {
+        prefs.efeedrate = preferences.settings.efeedrate
+    }
+    if (typeof prefs.enumber == "undefined") {
+        prefs.enumber = preferences.settings.enumber
     }
 }
 
@@ -464,6 +518,10 @@ const MachinePollingPreferences = () => {
  *
  */
 const MachineUIPreferences = () => {
+    let enumberoptions = []
+    for (let i = 2; i <= 6; i++) {
+        enumberoptions.push(<option value={i}>{i}</option>)
+    }
     return (
         <div>
             <div class="card">
@@ -625,7 +683,44 @@ const MachineUIPreferences = () => {
                 </div>
                 <div
                     class={prefs["showextruderspanel"] ? "card-body" : "d-none"}
-                ></div>
+                >
+                    <MachineUIEntry
+                        id="efeedrate"
+                        label={T("P50")}
+                        help={T("P14")}
+                        type="number"
+                    />
+                    <div class="p-2" />
+                    <div class="card">
+                        <div class="card-header">
+                            <CheckboxControl
+                                id="ismixedextruder"
+                                title={T("P49")}
+                                label={T("P49")}
+                            />
+                        </div>
+                        <div
+                            class={
+                                prefs["ismixedextruder"]
+                                    ? "card-body"
+                                    : "d-none"
+                            }
+                        >
+                            <SelectionEntry
+                                id="enumber"
+                                label={T("P52")}
+                                title={T("P52")}
+                                optionlist={enumberoptions}
+                            />
+                            <MachineUIEntry
+                                id="ecolors"
+                                label={T("P51")}
+                                help={T("S97")}
+                                type="text"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
