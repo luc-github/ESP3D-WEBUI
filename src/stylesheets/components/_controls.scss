@@ -111,6 +111,10 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     border: solid 1px #ced4da;
 }
 
+.locker .checkmark {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='1.4em' height='1.4em' viewBox='0 0 24 24' fill='none'%20stroke='white'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20x='3'%20y='11'%20width='18'%20height='11'%20rx='2'%20ry='2'%3E%3C/rect%3E%3Cpath%20d='M7%2011V7a5%205%200%200%201%2010%200v4'%3E%3C/path%3E  %3c/svg%3e");
+}
+
 .no-pointer {
     pointer-events: none;
     -webkit-user-select: none;
@@ -186,6 +190,11 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+/* Style the checkmark/indicator */
+.locker .checkmark:after {
+    display: none !important;
 }
 
 .input-group-text.error {

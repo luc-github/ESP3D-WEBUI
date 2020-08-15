@@ -691,7 +691,13 @@ const MachineUIPreferences = () => {
                         type="number"
                     />
                     <div class="p-2" />
-                    <div class="card">
+                    <div
+                        class={
+                            esp3dSettings.FWTarget == "smoothieware"
+                                ? "d-none"
+                                : "card"
+                        }
+                    >
                         <div class="card-header">
                             <CheckboxControl
                                 id="ismixedextruder"

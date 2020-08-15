@@ -35,6 +35,6 @@
   "ismixedextruder": true,
   "ecolors": "blue;red;green;#FF00FF",
   "efeedrate": 400,
-  "enumber": "3"
+  "enumber": "6"
  }
 }

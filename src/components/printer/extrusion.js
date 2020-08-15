@@ -22,7 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { X } from "preact-feather"
 import { useStoreon } from "storeon/preact"
-import { preferences, getPanelIndex } from "../app"
+import { esp3dSettings, preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -37,6 +37,8 @@ let currentFeedRate
 let extrudeDistance = 10
 let userextrudeDistance = 5
 let userextrudeselected = false
+let mixedpercent = []
+let islocked = []
 
 /*
  * Send command query error
@@ -188,6 +190,199 @@ const FeedRateInput = ({ id, label }) => {
             </div>
         </div>
     )
+}
+
+/*
+ * CheckboxControl
+ */
+const CheckboxControl = ({ id, label }) => {
+    let ids = id.split("_")
+    if (typeof islocked[parseInt(ids[1])] == "undefined")
+        islocked[parseInt(ids[1])] = false
+    const toggleCheckbox = e => {
+        if (e.target.checked && !canLockMixer()) e.target.checked = false
+        islocked[parseInt(ids[1])] = e.target.checked
+    }
+    return (
+        <label class="checkbox-control locker" id={id}>
+            {label}
+            <input
+                type="checkbox"
+                checked={islocked[parseInt(ids[1])]}
+                onChange={toggleCheckbox}
+            />
+            <span class="checkmark"></span>
+        </label>
+    )
+}
+
+function adjustMixer(id, ignorezero = false) {
+    let total = -100
+    let next = -1
+    let value
+    total = -100
+    for (let i = 0; i < preferences.settings.enumber; i++) {
+        total += parseFloat(mixedpercent[i])
+        if (!(i == id || islocked[i]) && next == -1) {
+            if (ignorezero) {
+                if (parseFloat(mixedpercent[i]) != 0) {
+                    value = parseFloat(mixedpercent[i])
+                    next = i
+                }
+            } else {
+                value = parseFloat(mixedpercent[i])
+                next = i
+            }
+        }
+    }
+    if (total == 0) {
+        return
+    }
+    if (total < 0) {
+        let newval = value - total
+        mixedpercent[next] = newval
+    } else {
+        let newval = value - total
+        if (newval < 0) {
+            newval = 0
+            mixedpercent[next] = newval
+            if (canDecrease(id)) {
+                adjustMixer(id, true)
+            } else {
+                let lockvalue = mixedpercent[id] - total
+                mixedpercent[id] = lockvalue
+            }
+        } else {
+            mixedpercent[next] = newval
+        }
+    }
+    for (let i = 0; i < preferences.settings.enumber; i++) {
+        document.getElementById("inputmixed_" + i).value = mixedpercent[i]
+        document.getElementById("slidermixed_" + i).value = mixedpercent[i]
+    }
+}
+
+function canDecrease(id) {
+    for (let i = 0; i < preferences.settings.enumber; i++) {
+        if (!islocked[i] && i != id && mixedpercent[i] > 0) return true
+    }
+    return false
+}
+
+function canLockMixer() {
+    let total = 0
+    for (let i = 0; i < preferences.settings.enumber; i++) {
+        if (islocked[i]) total++
+    }
+    if (preferences.settings.enumber - total > 2) return true
+    return false
+}
+
+const MixedExtrusionPanel = ({ visible }) => {
+    if (!visible || esp3dSettings.FWTarget == "smoothieware") return null
+    const onChange = e => {
+        let id = e.target.id.split("_")
+        if (islocked[parseInt(id[1])]) {
+            e.target.value = mixedpercent[parseInt(id[1])]
+            return
+        }
+        mixedpercent[parseInt(id[1])] = parseInt(e.target.value)
+        document.getElementById("inputmixed_" + id[1]).value = e.target.value
+        adjustMixer(parseInt(id[1]))
+    }
+    const onInput = e => {
+        let id = e.target.id.split("_")
+        if (islocked[parseInt(id[1])]) {
+            e.target.value = mixedpercent[parseInt(id[1])]
+            return
+        }
+        if (e.target.value < 0 || isNaN(e.target.value)) e.target.value = 0
+        if (e.target.value.length == 0) {
+            mixedpercent[parseInt(id[1])] = 0
+            e.target.value = ""
+        } else mixedpercent[parseInt(id[1])] = parseInt(e.target.value)
+        document.getElementById("slidermixed_" + id[1]).value =
+            mixedpercent[parseInt(id[1])]
+        adjustMixer(parseInt(id[1]))
+    }
+    let panel = []
+    let bgcolors = preferences.settings.ecolors.split(";")
+    for (let i = 0; i < preferences.settings.enumber; i++) {
+        let line = []
+        let colorbg
+        if (typeof bgcolors[i] != "undefined") {
+            colorbg = "background-color:" + bgcolors[i]
+        }
+        if (typeof mixedpercent[i] == "undefined") mixedpercent[i] = 0
+        line.push(
+            <div
+                style="padding-top:0.5em"
+                class={
+                    preferences.settings.enumber > 2
+                        ? "justify-content-center"
+                        : "d-none"
+                }
+            >
+                <CheckboxControl id={"lockMixed_" + i} />{" "}
+            </div>
+        )
+        line.push(
+            <div
+                style={
+                    "padding-left:0.5em!important;padding-right:0.5em!important;" +
+                    colorbg
+                }
+                class="control-like border rounded"
+            >
+                <span class="badge  badge-pill badge-light">
+                    {String.fromCharCode(65 + i)}
+                </span>
+            </div>
+        )
+        line.push(<div class="p-1"></div>)
+        line.push(
+            <div class="slider-control hide-low">
+                <div class="slidecontainer">
+                    <input
+                        onInput={onChange}
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={mixedpercent[i]}
+                        class="slider"
+                        id={"slidermixed_" + i}
+                    />
+                </div>
+            </div>
+        )
+        line.push(
+            <div>
+                <div class="input-group">
+                    <input
+                        class="form-control"
+                        style="width:5em"
+                        type="number"
+                        id={"inputmixed_" + i}
+                        min="0"
+                        max="100"
+                        oninput={onInput}
+                        value={mixedpercent[i]}
+                    />
+                    <div class="input-group-append ">
+                        <span class="input-group-text hide-low rounded-right">
+                            %
+                        </span>
+                    </div>
+                </div>
+            </div>
+        )
+        panel.push(
+            <div class="d-flex flex-wrap justify-content-center p-1 ">
+                {line}
+            </div>
+        )
+    }
+    return <div class="d-flex flex-column">{panel}</div>
 }
 
 /*
@@ -394,6 +589,10 @@ const ExtrusionPanel = () => {
                             </div>
                         </div>
                     </div>
+                    <div class="p-1" />
+                    <MixedExtrusionPanel
+                        visible={preferences.settings.ismixedextruder}
+                    />
                     <div class="p-1" />
                     <div class="d-flex flex-wrap justify-content-center">
                         <button
