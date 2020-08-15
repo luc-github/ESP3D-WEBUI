@@ -216,6 +216,9 @@ const CheckboxControl = ({ id, label }) => {
     )
 }
 
+/*
+ * adjustMixer to be sure total proportion is 100%
+ */
 function adjustMixer(id, ignorezero = false) {
     let total = -100
     let next = -1
@@ -262,6 +265,9 @@ function adjustMixer(id, ignorezero = false) {
     }
 }
 
+/*
+ * canDecrease check if can adjust or need to lock slider
+ */
 function canDecrease(id) {
     for (let i = 0; i < preferences.settings.enumber; i++) {
         if (!islocked[i] && i != id && mixedpercent[i] > 0) return true
@@ -269,6 +275,9 @@ function canDecrease(id) {
     return false
 }
 
+/*
+ * canLockMixer to check if this control can be locked or not
+ */
 function canLockMixer() {
     let total = 0
     for (let i = 0; i < preferences.settings.enumber; i++) {
@@ -278,6 +287,9 @@ function canLockMixer() {
     return false
 }
 
+/*
+ * MixedExtrusionPanel
+ */
 const MixedExtrusionPanel = ({ visible }) => {
     if (!visible || esp3dSettings.FWTarget == "smoothieware") return null
     const onChange = e => {
@@ -332,9 +344,9 @@ const MixedExtrusionPanel = ({ visible }) => {
                     "padding-left:0.5em!important;padding-right:0.5em!important;" +
                     colorbg
                 }
-                class="control-like border rounded"
+                class="control-like border border-secondary rounded"
             >
-                <span class="badge  badge-pill badge-light">
+                <span class="badge  badge-pill border border-secondary badge-light">
                     {String.fromCharCode(65 + i)}
                 </span>
             </div>
@@ -406,7 +418,41 @@ const ExtrusionPanel = () => {
     }
     const onExtrude = e => {
         let distance = extrudeDistance
-        let cmd = "T" + (currentExtruder - 1) + "\nG91\nG1 E"
+        let cmd
+        if (!preferences.settings.ismixedextruder) {
+            cmd = "T" + (currentExtruder - 1)
+        } else {
+            switch (esp3dSettings.FWTarget) {
+                case "repetier":
+                case "repetier4davinci":
+                    //one command per extruder
+                    cmd = ""
+                    for (let i = 0; i < preferences.settings.enumber; i++) {
+                        cmd += "M163 S" + i + "P" + mixedpercent[i] / 100 + "\n"
+                    }
+                    break
+                case "marlin-embedded":
+                case "marlin":
+                case "marlinkimbra":
+                    cmd = "M165 "
+                    //one command for all extruders
+                    for (let i = 0; i < preferences.settings.enumber; i++) {
+                        cmd +=
+                            String.fromCharCode(65 + i) +
+                            mixedpercent[i] / 100 +
+                            " "
+                    }
+                    cmd += "\n"
+                    break
+                case "smoothieware":
+                    console.log(
+                        "Smoothieware does not support properly mixed extrusion at this time"
+                    )
+                default:
+                    break
+            }
+        }
+        cmd += "G91\nG1 E"
         if (e.target.id == "reversebtn") distance = -distance
         cmd += distance + " F" + currentFeedRate + "\nG90"
         SendCommand(cmd, null, sendCommandError)
@@ -492,7 +538,15 @@ const ExtrusionPanel = () => {
                                     {T("P32")}
                                 </span>
                             </div>
-                            <div class="p-1">{selectedextruder}</div>
+                            <div
+                                class={
+                                    !preferences.settings.ismixedextruder
+                                        ? "p-1"
+                                        : "d-none"
+                                }
+                            >
+                                {selectedextruder}
+                            </div>
                             <div class="p-1" />
                             <div class="ml-auto text-right">
                                 <button
@@ -593,7 +647,13 @@ const ExtrusionPanel = () => {
                     <MixedExtrusionPanel
                         visible={preferences.settings.ismixedextruder}
                     />
-                    <div class="p-1" />
+                    <div
+                        class={
+                            preferences.settings.ismixedextruder
+                                ? "p-1"
+                                : "d-none"
+                        }
+                    />
                     <div class="d-flex flex-wrap justify-content-center">
                         <button
                             class="btn btn-dark"
