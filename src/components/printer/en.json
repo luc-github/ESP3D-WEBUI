@@ -53,5 +53,7 @@
     "P52": "Number",
     "P53": "Extrude",
     "P54": "Reverse",
-    "P55" : "Distance of extrusion"
+    "P55" : "Distance of extrusion",
+    "P56" : "Chart mode",
+    "P57" : "Control mode"
 }

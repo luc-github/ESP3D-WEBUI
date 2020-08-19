@@ -20,7 +20,7 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { X } from "preact-feather"
+import { X, MapPin, Sliders } from "preact-feather"
 import { useStoreon } from "storeon/preact"
 import { preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
@@ -28,6 +28,7 @@ import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
 import { Bed } from "./icon"
 import { Thermometer, XCircle, Send, Box } from "preact-feather"
+import { TimeSeries, SmoothieChart } from "./smoothie"
 
 /*
  * Local variables
@@ -35,6 +36,34 @@ import { Thermometer, XCircle, Send, Box } from "preact-feather"
  */
 let currentTemperature = []
 let currentTargetTemperature = []
+let extrudersChart = new SmoothieChart({
+    responsive: true,
+    tooltip: false,
+    millisPerPixel: 200,
+    maxValueScale: 1.1,
+    minValueScale: 1.1,
+    enableDpiScaling: false,
+    interpolation: "linear",
+    grid: {
+        fillStyle: "#ffffff",
+        strokeStyle: "rgba(128,128,128,0.5)",
+        verticalSections: 5,
+        millisPerLine: 0,
+        borderVisible: true,
+    },
+    labels: {
+        fillStyle: "#000000",
+        precision: 1,
+        showIntermediateLabels: true,
+        enableTopYLabel: false,
+    },
+})
+let bedChart
+let extruder_0_line = new TimeSeries()
+let maxdata = 0
+let setupDone = false
+let count = 0
+let graphsView = false
 
 /*
  * Process temperatures buffer
@@ -49,6 +78,7 @@ function processTemperatures(buffer) {
     let probes = []
     let redondants = []
     let chambers = []
+    let timedata = new Date().getTime()
     const { dispatch } = useStoreon()
     if (typeof buffer == "object") {
         let size = buffer.heaters.length
@@ -81,6 +111,7 @@ function processTemperatures(buffer) {
                 if (dispatch) {
                     if (tool[0] == "T") extruders[index] = value
                     else beds[index] = value
+
                     dispatch("temperatures/updateT" + tool[0], {
                         index: index,
                         value: value,
@@ -94,7 +125,6 @@ function processTemperatures(buffer) {
     } else {
         let dispatched = ""
         while ((result = regexTemp.exec(buffer)) !== null) {
-            //console.log(result)
             var tool = result[1]
             var value
             var value2
@@ -116,13 +146,13 @@ function processTemperatures(buffer) {
                 tool.startsWith("P") ||
                 tool.startsWith("R")
             ) {
-                if (tool == "T") tool = "T0"
-                if (tool == "B") tool = "B0"
-                if (tool == "C") tool = "C0"
-                if (tool == "R") tool = "R0"
-                if (tool == "P") tool = "P0"
                 if (dispatched.indexOf(tool) == -1) {
                     dispatched += "*" + tool
+                    if (tool == "T") tool = "T0"
+                    if (tool == "B") tool = "B0"
+                    if (tool == "C") tool = "C0"
+                    if (tool == "R") tool = "R0"
+                    if (tool == "P") tool = "P0"
                     let index = parseInt(tool.substring(1))
                     if (dispatch) {
                         switch (tool[0]) {
@@ -144,12 +174,6 @@ function processTemperatures(buffer) {
                             default:
                                 break
                         }
-                        /*console.log("temperatures/updateT" + tool[0] + index)
-                        console.log({
-                            index: index,
-                            value: value,
-                            target: value2,
-                        })*/
                         dispatch("temperatures/updateT" + tool[0], {
                             index: index,
                             value: value,
@@ -169,6 +193,7 @@ function processTemperatures(buffer) {
         probes.length > 0 ||
         redondants.length > 0
     ) {
+        //extruder_0_line.append(timedata, parseFloat(extruders[0]));
         dispatch("temperatures/addT", {
             timestamp: timestamp,
             extruders: extruders,
@@ -176,6 +201,7 @@ function processTemperatures(buffer) {
             chambers: chambers,
             probes: probes,
             redondants: redondants,
+            timestamp: timedata,
         })
     }
 }
@@ -204,9 +230,11 @@ function setTemperature(temperature, type, index) {
         //MK4DUO use T
         //Marlin/Marlin no support so need to use extruder
         //Smoothieware mo support but can define custom tool
-        if (currentTemperature["bed"].length > 1) {
-            cmd = "T" + index
-            SendCommand(cmd, null, sendCommandError)
+        if (typeof currentTemperature["bed"] != "undefined") {
+            if (currentTemperature["bed"].length > 1) {
+                cmd = "T" + index
+                SendCommand(cmd, null, sendCommandError)
+            }
         }
         cmd = "M140 S"
     } else if (type == "chamber") {
@@ -214,10 +242,29 @@ function setTemperature(temperature, type, index) {
     }
     cmd += temperature
     SendCommand(cmd, null, sendCommandError)
-    //currently there is not check the command is success
-    //but if the value is not applied the control will go back to modified
-    currentTargetTemperature[type][index] = currentTemperature[type][index]
-    updateState(currentTargetTemperature[type][index], type + "_" + index)
+    //this need to be done for stop and stop all buttons for consistency
+    if (
+        typeof document.getElementById(type + "_" + index + "_input") !=
+            "undefined" &&
+        document.getElementById(type + "_" + index + "_input")
+    ) {
+        document.getElementById(
+            type + "_" + index + "_input"
+        ).value = temperature
+        document.getElementById(
+            type + "_" + index + "_slider"
+        ).value = temperature
+        document.getElementById(
+            type + "_" + index + "_preheat"
+        ).value = temperature
+        currentTemperature[type][index] = temperature
+    }
+    if (typeof currentTemperature[type] != "undefined") {
+        //currently there is not check the command is success
+        //but if the value is not applied the control will go back to modified
+        currentTargetTemperature[type][index] = currentTemperature[type][index]
+        updateState(currentTargetTemperature[type][index], type + "_" + index)
+    }
 }
 
 /*
@@ -241,9 +288,11 @@ function setState(id, state) {
                 document
                     .getElementById(id + "_sendbtn")
                     .classList.remove("invisible")
-                document.getElementById(id + "slider").classList.remove("error")
                 document
-                    .getElementById(id + "slider")
+                    .getElementById(id + "_slider")
+                    .classList.remove("error")
+                document
+                    .getElementById(id + "_slider")
                     .classList.add("is-changed")
                 break
             case "success":
@@ -259,9 +308,9 @@ function setState(id, state) {
                 document
                     .getElementById(id + "_sendbtn")
                     .classList.add("invisible")
-                document.getElementById(id + "slider").classList.add("error")
+                document.getElementById(id + "_slider").classList.add("error")
                 document
-                    .getElementById(id + "slider")
+                    .getElementById(id + "_slider")
                     .classList.remove("is-changed")
                 break
             default:
@@ -272,9 +321,11 @@ function setState(id, state) {
                 document
                     .getElementById(id + "_sendbtn")
                     .classList.add("invisible")
-                document.getElementById(id + "slider").classList.remove("error")
                 document
-                    .getElementById(id + "slider")
+                    .getElementById(id + "_slider")
+                    .classList.remove("error")
+                document
+                    .getElementById(id + "_slider")
                     .classList.remove("is-changed")
                 break
         }
@@ -327,7 +378,7 @@ function checkValue(entry, type) {
  */
 function updateState(entry, id) {
     if (typeof entry == "undefined") {
-        console.log("undefined state")
+        //console.log("undefined state")
         return
     }
     let type = id.split("_")[0]
@@ -389,7 +440,7 @@ const TemperatureSlider = ({ id, type, index }) => {
         updateState(e.target.value, id)
     }
     const onInputTemperatureInput = e => {
-        document.getElementById(id + "slider").value = e.target.value
+        document.getElementById(id + "_slider").value = e.target.value
         currentTemperature[type][index] = e.target.value
         updateState(e.target.value, id)
     }
@@ -405,14 +456,14 @@ const TemperatureSlider = ({ id, type, index }) => {
         if (e.target.value.length > 0) {
             document.getElementById(id + "_input").value = e.target.value
             currentTemperature[type][index] = e.target.value
-            document.getElementById(id + "slider").value = e.target.value
+            document.getElementById(id + "_slider").value = e.target.value
             updateState(e.target.value, id)
         } else {
             document.getElementById(id + "_input").value =
                 currentTargetTemperature[type][index]
             currentTemperature[type][index] =
                 currentTargetTemperature[type][index]
-            document.getElementById(id + "slider").value =
+            document.getElementById(id + "_slider").value =
                 currentTargetTemperature[type][index]
             updateState(currentTargetTemperature[type][index], id)
         }
@@ -424,7 +475,7 @@ const TemperatureSlider = ({ id, type, index }) => {
     } else {
         tvalues = preferences.settings.bedpreheat.split(";")
     }
-    optionsList.push(<option></option>)
+    optionsList.push(<option value="0"></option>)
     for (let i = 0; i < tvalues.length; i++) {
         optionsList.push(<option value={tvalues[i]}>{tvalues[i]}</option>)
     }
@@ -478,6 +529,7 @@ const TemperatureSlider = ({ id, type, index }) => {
                             </div>
                             <select
                                 class="form-control"
+                                id={type + "_" + index + "_preheat"}
                                 value={currentTemperature[type][index]}
                                 onchange={onChange}
                             >
@@ -502,7 +554,7 @@ const TemperatureSlider = ({ id, type, index }) => {
                                 }
                                 value={currentTemperature[type][index]}
                                 class="slider"
-                                id={id + "slider"}
+                                id={id + "_slider"}
                             />
                         </div>
                     </div>
@@ -554,22 +606,55 @@ const TemperatureSlider = ({ id, type, index }) => {
 }
 
 /*
- * Temperatures panel control
+ * Temperatures graphs
  *
  */
-const TemperaturesPanel = () => {
-    const { showTemperatures } = useStoreon("showTemperatures")
-    const { panelsOrder } = useStoreon("panelsOrder")
-    const { TT, TB, TC } = useStoreon("TT", "TB", "TC")
-    let index = getPanelIndex(panelsOrder, "temperatures")
-    if (!showTemperatures) {
-        return null
-    }
-    const toogle = e => {
-        const { dispatch } = useStoreon()
-        dispatch("panel/showtemperatures", false)
-    }
-    let panelClass = "order-" + index + " w-100 panelCard"
+const TemperaturesGraphs = ({ visible }) => {
+    const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
+    if (!visible) return null
+    useEffect(() => {
+        if (typeof extrudersChart != "undefined")
+            extrudersChart.removeTimeSeries(extruder_0_line)
+        extruder_0_line = new TimeSeries()
+        extrudersChart.addTimeSeries(extruder_0_line, {
+            lineWidth: 1,
+            strokeStyle: "#ff8080",
+            fillStyle: "rgba(255,128,128,0.3)",
+        })
+
+        extrudersChart.canvas = document.getElementById("mycanvas")
+
+        setupDone = false
+        extrudersChart.delay = 3000
+        extrudersChart.start()
+
+        let startn = 0
+        maxdata = 36 //to calculate based on
+        if (TList.length > maxdata && maxdata) startn = TList.length - maxdata
+        if (startn <= 0) startn = 0
+        let nb = 0
+        for (let n = parseInt(startn); n < TList.length; n++) {
+            extruder_0_line.append(
+                TList[n].timestamp,
+                parseFloat(TList[n].extruders[0])
+            )
+            nb++
+        }
+    })
+    return (
+        <div class="d-flex flex-column">
+            <canvas id="mycanvas" style="width:100%;height:100px"></canvas>
+        </div>
+    )
+}
+
+/*
+ * Temperatures controls
+ *
+ */
+const TemperaturesControls = ({ visible }) => {
+    const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
+    if (!visible) return null
     let temperaturesControls = []
     let size = TT.length
     if (size == 0) size = 1
@@ -588,14 +673,48 @@ const TemperaturesPanel = () => {
             <TemperatureSlider id={"chamber_" + i} type="chamber" index={i} />
         )
     }
-    const onStopAll = e => {
-        for (let i = 0; i < currentTemperature["extruder"].length; i++)
-            setTemperature(0, "extruder", i)
-        for (let i = 0; i < currentTemperature["bed"].length; i++)
-            setTemperature(0, "bed", i)
-        for (let i = 0; i < currentTemperature["chamber"].length; i++)
-            setTemperature(0, "chamber", i)
+    return <div class="d-flex flex-column">{temperaturesControls}</div>
+}
+/*
+ * Temperatures panel control
+ *
+ */
+const TemperaturesPanel = () => {
+    const { showTemperatures } = useStoreon("showTemperatures")
+    const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
+    const { panelsOrder } = useStoreon("panelsOrder")
+    let index = getPanelIndex(panelsOrder, "temperatures")
+
+    if (!showTemperatures) {
+        return null
     }
+    const onClose = e => {
+        const { dispatch } = useStoreon()
+        dispatch("panel/showtemperatures", false)
+    }
+    const onToogleView = e => {
+        graphsView = !graphsView
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
+
+    let panelClass = "order-" + index + " w-100 panelCard"
+
+    const onStopAll = e => {
+        if (typeof currentTemperature["extruder"] != "undefined") {
+            for (let i = 0; i < currentTemperature["extruder"].length; i++)
+                setTemperature(0, "extruder", i)
+        } else setTemperature(0, "extruder", 0)
+        if (typeof currentTemperature["bed"] != "undefined") {
+            for (let i = 0; i < currentTemperature["bed"].length; i++)
+                setTemperature(0, "bed", i)
+        } else setTemperature(0, "bed", 0)
+        if (typeof currentTemperature["chamber"] != "undefined") {
+            for (let i = 0; i < currentTemperature["chamber"].length; i++)
+                setTemperature(0, "chamber", i)
+        } else setTemperature(0, "chamber", 0)
+    }
+    let iconView = graphsView ? <Sliders /> : <MapPin />
+
     return (
         <div class={panelClass} id="temperaturespanel">
             <div class="p-2 ">
@@ -621,20 +740,32 @@ const TemperaturesPanel = () => {
                                     </span>
                                 </button>
                             </div>
+                            <div class="p-1">
+                                <button
+                                    class="btn btn-info"
+                                    type="button"
+                                    onClick={onToogleView}
+                                    title={graphsView ? T("P57") : T("P56")}
+                                >
+                                    {iconView}
+                                    <span class="hide-low text-button-setting">
+                                        {graphsView ? T("P57") : T("P56")}
+                                    </span>
+                                </button>
+                            </div>
                             <div class="ml-auto text-right">
                                 <button
                                     type="button"
                                     class="btn btn-light btn-sm red-hover"
                                     title={T("S86")}
-                                    onClick={toogle}
+                                    onClick={onClose}
                                 >
                                     <X />
                                 </button>
                             </div>
                         </div>
-                        <div class="d-flex flex-column">
-                            {temperaturesControls}
-                        </div>
+                        <TemperaturesControls visible={!graphsView} />
+                        <TemperaturesGraphs visible={graphsView} />
                     </div>
                 </div>
             </div>
