@@ -94,7 +94,7 @@ let extrudersChart = new SmoothieChart({
         enableTopYLabel: false,
     },
 })
-let beds_toolsChart = new SmoothieChart({
+let extraChart = new SmoothieChart({
     responsive: true,
     tooltip: false,
     millisPerPixel: 200,
@@ -118,6 +118,7 @@ let beds_toolsChart = new SmoothieChart({
 })
 
 let extrudersline = []
+let bedsline = []
 let graphsView = false
 let extrudersLegend
 let extraLegend
@@ -254,6 +255,7 @@ function processTemperatures(buffer) {
         redondants.length > 0
     ) {
         console.log(extruders)
+        console.log(beds)
         dispatch("temperatures/addT", {
             timestamp: timestamp,
             extruders: extruders,
@@ -675,17 +677,16 @@ const TemperaturesGraphs = ({ visible }) => {
     useEffect(() => {
         if (typeof TList[0] != "undefined") {
             //extruders
-            let nb = 0
+            let nbExtruders = 0
+            let nbBeds = 0
             if (typeof TList[0].extruders != "undefined") {
-                document
-                    .getElementById("extraCharts")
-                    .classList.remove("d-none")
-                nb = TList[0].extruders.length
+                nbExtruders = TList[0].extruders.length
             }
             let alpha = "0.3"
             extrudersLegend = []
+            extraLegend = []
             let legendContent = []
-            for (let i = 0; i < nb; i++) {
+            for (let i = 0; i < nbExtruders; i++) {
                 if (typeof extrudersline[i] != "undefined")
                     extrudersChart.removeTimeSeries(extrudersline[i])
                 extrudersline[i] = new TimeSeries()
@@ -702,7 +703,7 @@ const TemperaturesGraphs = ({ visible }) => {
                         style={"color:rgb(" + extrudersChartColors[i] + ")"}
                     >
                         -<Extruder />
-                        {i + 1}
+                        {nbExtruders > 1 ? i + 1 : ""}
                     </span>
                 )
             }
@@ -729,12 +730,54 @@ const TemperaturesGraphs = ({ visible }) => {
                     done = true
                 }
             }
+            startn-- //to fix random glitch
             if (startn <= 0) startn = 0
 
-            //fil the data in charts
+            //redondants (if any)
+
+            //beds (if any)
+            if (typeof TList[0].beds != "undefined") {
+                document
+                    .getElementById("extraCharts")
+                    .classList.remove("d-none")
+                nbBeds = TList[0].beds.length
+            }
+            legendContent = []
+            alpha = "0.3"
+            for (let i = 0; i < nbBeds; i++) {
+                if (typeof bedsline[i] != "undefined")
+                    extraChart.removeTimeSeries(bedsline[i])
+                bedsline[i] = new TimeSeries()
+                if (i > 0) alpha = "0"
+                extraChart.addTimeSeries(bedsline[i], {
+                    lineWidth: 1,
+                    strokeStyle: "rgb(" + bedsChartColors[i] + ")",
+                    fillStyle: "rgba(" + bedsChartColors[i] + "," + alpha + ")",
+                })
+                legendContent.push(
+                    <span
+                        class="p-1"
+                        style={"color:rgb(" + bedsChartColors[i] + ")"}
+                    >
+                        -<Bed />
+                        {nbBeds > 1 ? i + 1 : ""}
+                    </span>
+                )
+            }
+            extraLegend.push(
+                <div class="d-flex flex-wrap p-1">{legendContent}</div>
+            )
+
+            //probes (if any)
+
+            //chamber (if any)
+
+            extraChart.streamTo(document.getElementById("extracanvas"), 1000)
+
+            //fill the data in charts
             for (let n = parseInt(startn); n < TList.length; n++) {
                 //extruders
-                for (let i = 0; i < nb; i++) {
+                for (let i = 0; i < nbExtruders; i++) {
                     extrudersline[i].append(
                         TList[n].timestamp,
                         parseFloat(TList[n].extruders[i])
@@ -743,7 +786,12 @@ const TemperaturesGraphs = ({ visible }) => {
                 //redondant (if any)
 
                 //beds (if any)
-
+                for (let i = 0; i < nbBeds; i++) {
+                    bedsline[i].append(
+                        TList[n].timestamp,
+                        parseFloat(TList[n].beds[i])
+                    )
+                }
                 //probe (if any)
 
                 //chamber (if any)
