@@ -26,9 +26,45 @@ import { preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
-import { Bed } from "./icon"
+import { Bed, Extruder } from "./icon"
 import { Thermometer, XCircle, Send, Box } from "preact-feather"
 import { TimeSeries, SmoothieChart } from "./smoothie"
+
+/*
+ * Local constants
+ *
+ */
+//12 colors for extruders
+const extrudersChartColors = [
+    "255,128,128", //pink
+    "0,0,255", //dark blue
+    "0,128,0", //dark green
+    "198,165,0", //gold
+    "255,0,0", //red
+    "0,0,128", //blue
+    "128,255,128", //light green
+    "255,128,0", //orange
+    "178,0,255", //purple
+    "0,128,128", //green blue
+    "128,128,0", //kaki
+    "128,128,128", //grey
+]
+//4 colors for extruders
+const bedsChartColors = [
+    "128,128,128", //grey
+    "255,0,0", //red
+    "0,0,255", //blue
+    "128,255,128", //light green
+]
+
+//1 color for chamber
+const chamberChartColor = "128,128,0" //kaki
+
+//1 color for probe
+const probeChartColor = "0,0,0" //black
+
+//1 color for redondant
+const redondantChartColor = "0,0,0" //black
 
 /*
  * Local variables
@@ -58,12 +94,34 @@ let extrudersChart = new SmoothieChart({
         enableTopYLabel: false,
     },
 })
-let bedChart
-let extruder_0_line = new TimeSeries()
-let maxdata = 0
-let setupDone = false
-let count = 0
+let beds_toolsChart = new SmoothieChart({
+    responsive: true,
+    tooltip: false,
+    millisPerPixel: 200,
+    maxValueScale: 1.1,
+    minValueScale: 1.1,
+    enableDpiScaling: false,
+    interpolation: "linear",
+    grid: {
+        fillStyle: "#ffffff",
+        strokeStyle: "rgba(128,128,128,0.5)",
+        verticalSections: 5,
+        millisPerLine: 0,
+        borderVisible: true,
+    },
+    labels: {
+        fillStyle: "#000000",
+        precision: 1,
+        showIntermediateLabels: true,
+        enableTopYLabel: false,
+    },
+})
+
+let extrudersline = []
 let graphsView = false
+let extrudersLegend
+let extraLegend
+let needExtraChart = false
 
 /*
  * Process temperatures buffer
@@ -104,6 +162,8 @@ function processTemperatures(buffer) {
                 value2 = parseFloat(buffer.active[index])
                     .toFixed(2)
                     .toString()
+            //FIXME - TODO
+            //how to detect chamber with M408?
             if (tool.startsWith("T") || tool.startsWith("B")) {
                 if (tool == "T") tool = "T0"
                 if (tool == "B") tool = "B0"
@@ -193,7 +253,7 @@ function processTemperatures(buffer) {
         probes.length > 0 ||
         redondants.length > 0
     ) {
-        //extruder_0_line.append(timedata, parseFloat(extruders[0]));
+        console.log(extruders)
         dispatch("temperatures/addT", {
             timestamp: timestamp,
             extruders: extruders,
@@ -613,37 +673,99 @@ const TemperaturesGraphs = ({ visible }) => {
     const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
     if (!visible) return null
     useEffect(() => {
-        if (typeof extrudersChart != "undefined")
-            extrudersChart.removeTimeSeries(extruder_0_line)
-        extruder_0_line = new TimeSeries()
-        extrudersChart.addTimeSeries(extruder_0_line, {
-            lineWidth: 1,
-            strokeStyle: "#ff8080",
-            fillStyle: "rgba(255,128,128,0.3)",
-        })
-
-        extrudersChart.canvas = document.getElementById("mycanvas")
-
-        setupDone = false
-        extrudersChart.delay = 3000
-        extrudersChart.start()
-
-        let startn = 0
-        maxdata = 36 //to calculate based on
-        if (TList.length > maxdata && maxdata) startn = TList.length - maxdata
-        if (startn <= 0) startn = 0
-        let nb = 0
-        for (let n = parseInt(startn); n < TList.length; n++) {
-            extruder_0_line.append(
-                TList[n].timestamp,
-                parseFloat(TList[n].extruders[0])
+        if (typeof TList[0] != "undefined") {
+            //extruders
+            let nb = 0
+            if (typeof TList[0].extruders != "undefined") {
+                document
+                    .getElementById("extraCharts")
+                    .classList.remove("d-none")
+                nb = TList[0].extruders.length
+            }
+            let alpha = "0.3"
+            extrudersLegend = []
+            let legendContent = []
+            for (let i = 0; i < nb; i++) {
+                if (typeof extrudersline[i] != "undefined")
+                    extrudersChart.removeTimeSeries(extrudersline[i])
+                extrudersline[i] = new TimeSeries()
+                if (i > 0) alpha = "0"
+                extrudersChart.addTimeSeries(extrudersline[i], {
+                    lineWidth: 1,
+                    strokeStyle: "rgb(" + extrudersChartColors[i] + ")",
+                    fillStyle:
+                        "rgba(" + extrudersChartColors[i] + "," + alpha + ")",
+                })
+                legendContent.push(
+                    <span
+                        class="p-1"
+                        style={"color:rgb(" + extrudersChartColors[i] + ")"}
+                    >
+                        -<Extruder />
+                        {i + 1}
+                    </span>
+                )
+            }
+            extrudersLegend.push(
+                <div class="d-flex flex-wrap p-1">{legendContent}</div>
             )
-            nb++
+            extrudersChart.streamTo(
+                document.getElementById("extruderscanvas"),
+                1000
+            )
+
+            //calculate number of points to display in canva form complete list
+            let now = Date.now()
+            let oldest =
+                now -
+                extrudersChart.canvas.clientWidth *
+                    extrudersChart.options.millisPerPixel
+            let startn = TList.length - 1
+            let done = false
+            while (startn >= 0 && !done) {
+                if (TList[startn].timestamp > oldest) {
+                    startn--
+                } else {
+                    done = true
+                }
+            }
+            if (startn <= 0) startn = 0
+
+            //fil the data in charts
+            for (let n = parseInt(startn); n < TList.length; n++) {
+                //extruders
+                for (let i = 0; i < nb; i++) {
+                    extrudersline[i].append(
+                        TList[n].timestamp,
+                        parseFloat(TList[n].extruders[i])
+                    )
+                }
+                //redondant (if any)
+
+                //beds (if any)
+
+                //probe (if any)
+
+                //chamber (if any)
+            }
         }
     })
     return (
         <div class="d-flex flex-column">
-            <canvas id="mycanvas" style="width:100%;height:100px"></canvas>
+            <div id="extrudersCharts">
+                {extrudersLegend}
+                <canvas
+                    id="extruderscanvas"
+                    style="width:100%;height:100px"
+                ></canvas>
+            </div>
+            <div id="extraCharts" class="d-none">
+                {extraLegend}
+                <canvas
+                    id="extracanvas"
+                    style="width:100%;height:100px"
+                ></canvas>
+            </div>
         </div>
     )
 }
