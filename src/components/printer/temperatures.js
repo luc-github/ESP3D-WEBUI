@@ -685,7 +685,99 @@ const TemperatureSlider = ({ id, type, index }) => {
 const TemperaturesGraphs = ({ visible }) => {
     const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
     if (!visible) return null
-    const exportcharts = e => {}
+    const exportcharts = e => {
+        let data, file
+        let nb = 0
+        const filename = "esp3dcharts.csv"
+        data = ""
+        if (typeof TList[0] != "undefined") {
+            let listsize = TList.length
+
+            //formated timestamp
+            data += '"' + T("P60") + '"'
+            for (let i = 0; i < listsize; i++) {
+                data += ',"' + new Date(TList[i].timestamp).toUTCString() + '"'
+            }
+            data += "\n"
+            //raw timestamp
+            data += '"' + T("P59") + '"'
+            for (let i = 0; i < listsize; i++) {
+                data += "," + TList[i].timestamp
+            }
+            data += "\n"
+            //extruders
+            if (typeof TList[0].extruders != "undefined") {
+                nb = TList[0].extruders.length
+                for (let index = 0; index < nb; index++) {
+                    data +=
+                        '"' + T("P41") + " " + (nb > 1 ? index + 1 : "") + '"'
+                    for (let i = 0; i < listsize; i++) {
+                        data += "," + TList[i].extruders[index]
+                    }
+                    data += "\n"
+                }
+            }
+            //redondant
+            if (typeof TList[0].redondants != "undefined") {
+                if (TList[0].redondants.length > 0) {
+                    data += '"' + T("P44") + " " + (nb > 1 ? 1 : "") + '"'
+                    for (let i = 0; i < listsize; i++) {
+                        data += "," + TList[i].redondants
+                    }
+                    data += "\n"
+                }
+            }
+            //beds
+            if (typeof TList[0].beds != "undefined") {
+                let nb = TList[0].beds.length
+                for (let index = 0; index < nb; index++) {
+                    data +=
+                        '"' + T("P37") + " " + (nb > 1 ? index + 1 : "") + '"'
+                    for (let i = 0; i < listsize; i++) {
+                        data += "," + TList[i].beds[index]
+                    }
+                    data += "\n"
+                }
+            }
+            //probe
+            if (typeof TList[0].probes != "undefined") {
+                if (TList[0].probes.length > 0) {
+                    data += '"' + T("P42") + '"'
+                    for (let i = 0; i < listsize; i++) {
+                        data += "," + TList[i].probes
+                    }
+                    data += "\n"
+                }
+            }
+            //chamber
+            if (typeof TList[0].chambers != "undefined") {
+                if (TList[0].chambers.length > 0) {
+                    data += '"' + T("P43") + '"'
+                    for (let i = 0; i < listsize; i++) {
+                        data += "," + TList[i].chambers
+                    }
+                    data += "\n"
+                }
+            }
+        }
+        file = new Blob([data], { type: "application/json" })
+        if (window.navigator.msSaveOrOpenBlob)
+            // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename)
+        else {
+            // Others
+            let a = document.createElement("a"),
+                url = URL.createObjectURL(file)
+            a.href = url
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function() {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 0)
+        }
+    }
     const clearcharts = e => {
         const { dispatch } = useStoreon()
         dispatch("temperatures/clear")
@@ -717,6 +809,10 @@ const TemperaturesGraphs = ({ visible }) => {
                 })
                 legendContent.push(
                     <span
+                        title={
+                            T("P41") +
+                            (nbExtruders > 1 ? "(" + (i + 1) + ")" : "")
+                        }
                         class="p-1"
                         style={"color:rgb(" + extrudersChartColors[i] + ")"}
                     >
@@ -729,6 +825,7 @@ const TemperaturesGraphs = ({ visible }) => {
                         if (TList[0].redondants.length > 0)
                             legendContent.push(
                                 <span
+                                    title={T("P44") + "(1)"}
                                     class="p-1"
                                     style={
                                         "color:rgb(" + redondantChartColor + ")"
@@ -786,6 +883,10 @@ const TemperaturesGraphs = ({ visible }) => {
                         })
                         legendContent.push(
                             <span
+                                title={
+                                    T("P37") +
+                                    (nbBeds > 1 ? "(" + (i + 1) + ")" : "")
+                                }
                                 class="p-1"
                                 style={"color:rgb(" + bedsChartColors[i] + ")"}
                             >
@@ -812,6 +913,7 @@ const TemperaturesGraphs = ({ visible }) => {
                     needExtraChart = true
                     legendContent.push(
                         <span
+                            title={T("P42")}
                             class="p-1"
                             style={"color:rgb(" + probeChartColor + ")"}
                         >
@@ -836,6 +938,7 @@ const TemperaturesGraphs = ({ visible }) => {
                     needExtraChart = true
                     legendContent.push(
                         <span
+                            title={T("P43")}
                             class="p-1"
                             style={"color:rgb(" + chamberChartColor + ")"}
                         >

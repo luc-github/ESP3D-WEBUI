@@ -56,5 +56,7 @@
     "P55" : "Distance of extrusion",
     "P56" : "Chart mode",
     "P57" : "Control mode",
-    "P58" : "Clear chart"
+    "P58" : "Clear chart",
+    "P59" : "Timestamp",
+    "P60" : "Date Time"
 }

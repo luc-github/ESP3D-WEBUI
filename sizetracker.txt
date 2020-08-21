@@ -24,4 +24,7 @@ Code Refactoring        : 0.0.0.23: 56.8KB      | 52KB
 Files Panel             : 0.0.0.26: 60.0KB      | N/A
 Notification Panel      : 0.0.0.44: 64.1KB      | N/A
 Feedrate / Flowrate     : 0.0.0.47: 66.0KB      | N/A
+Temperatures controls   : 0.0.0.53: 70.6KB      | N/A
+Extrusion               : 0.0.0.58: 75.1KB      | N/A
+Temperatures charts     : 0.0.0.59: 81.3KB      | N/A
 
