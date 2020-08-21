@@ -36,6 +36,7 @@ import {
     MapPin,
     Sliders,
     ExternalLink,
+    Underline,
 } from "preact-feather"
 import { TimeSeries, SmoothieChart } from "./smoothie"
 
@@ -128,6 +129,9 @@ let extraChart = new SmoothieChart({
 
 let extrudersline = []
 let bedsline = []
+let redondantline
+let probeline
+let chamberline
 let graphsView = false
 let extrudersLegend
 let extraLegend
@@ -720,7 +724,36 @@ const TemperaturesGraphs = ({ visible }) => {
                         {nbExtruders > 1 ? i + 1 : ""}
                     </span>
                 )
+                if (i == 0) {
+                    if (typeof TList[0].redondants != "undefined")
+                        if (TList[0].redondants.length > 0)
+                            legendContent.push(
+                                <span
+                                    class="p-1"
+                                    style={
+                                        "color:rgb(" + redondantChartColor + ")"
+                                    }
+                                >
+                                    -<Extruder />
+                                    <sub>R</sub>1
+                                </span>
+                            )
+                }
             }
+
+            //redondants (if any)
+            if (typeof TList[0].redondants != "undefined") {
+                if (typeof redondantline != "undefined")
+                    extrudersChart.removeTimeSeries(redondantline)
+                redondantline = new TimeSeries()
+                extrudersChart.addTimeSeries(redondantline, {
+                    lineWidth: 1,
+                    strokeStyle: "rgb(" + redondantChartColor + ")",
+                    fillStyle:
+                        "rgba(" + redondantChartColor + "," + alpha + ")",
+                })
+            }
+
             extrudersLegend.push(
                 <div class="d-flex flex-wrap p-1">{legendContent}</div>
             )
@@ -728,49 +761,103 @@ const TemperaturesGraphs = ({ visible }) => {
                 document.getElementById("extruderscanvas"),
                 1000
             )
-
-            //redondants (if any)
-
             //beds (if any)
             if (typeof TList[0].beds != "undefined") {
-                document
-                    .getElementById("extraCharts")
-                    .classList.remove("d-none")
                 nbBeds = TList[0].beds.length
+
+                legendContent = []
+                if (TList[0].beds.length > 0) {
+                    needExtraChart = true
+                    alpha = "0.3"
+                    for (let i = 0; i < nbBeds; i++) {
+                        if (typeof bedsline[i] != "undefined")
+                            extraChart.removeTimeSeries(bedsline[i])
+                        bedsline[i] = new TimeSeries()
+                        if (i > 0) alpha = "0"
+                        extraChart.addTimeSeries(bedsline[i], {
+                            lineWidth: 1,
+                            strokeStyle: "rgb(" + bedsChartColors[i] + ")",
+                            fillStyle:
+                                "rgba(" +
+                                bedsChartColors[i] +
+                                "," +
+                                alpha +
+                                ")",
+                        })
+                        legendContent.push(
+                            <span
+                                class="p-1"
+                                style={"color:rgb(" + bedsChartColors[i] + ")"}
+                            >
+                                -<Bed />
+                                {nbBeds > 1 ? i + 1 : ""}
+                            </span>
+                        )
+                    }
+                }
             }
-            legendContent = []
-            alpha = "0.3"
-            for (let i = 0; i < nbBeds; i++) {
-                if (typeof bedsline[i] != "undefined")
-                    extraChart.removeTimeSeries(bedsline[i])
-                bedsline[i] = new TimeSeries()
-                if (i > 0) alpha = "0"
-                extraChart.addTimeSeries(bedsline[i], {
+
+            //probes (if any)
+            if (typeof TList[0].probes != "undefined") {
+                if (typeof probeline != "undefined")
+                    extraChart.removeTimeSeries(probeline)
+                probeline = new TimeSeries()
+                extraChart.addTimeSeries(probeline, {
                     lineWidth: 1,
-                    strokeStyle: "rgb(" + bedsChartColors[i] + ")",
-                    fillStyle: "rgba(" + bedsChartColors[i] + "," + alpha + ")",
+                    strokeStyle: "rgb(" + probeChartColor + ")",
+                    fillStyle: "rgba(" + probeChartColor + "," + alpha + ")",
                 })
-                legendContent.push(
-                    <span
-                        class="p-1"
-                        style={"color:rgb(" + bedsChartColors[i] + ")"}
-                    >
-                        -<Bed />
-                        {nbBeds > 1 ? i + 1 : ""}
-                    </span>
-                )
+
+                if (TList[0].probes.length > 0) {
+                    needExtraChart = true
+                    legendContent.push(
+                        <span
+                            class="p-1"
+                            style={"color:rgb(" + probeChartColor + ")"}
+                        >
+                            -<Underline />
+                        </span>
+                    )
+                }
             }
+
+            //chamber (if any)
+            if (typeof TList[0].chambers != "undefined") {
+                if (typeof chamberline != "undefined")
+                    extraChart.removeTimeSeries(chamberline)
+                chamberline = new TimeSeries()
+                extraChart.addTimeSeries(chamberline, {
+                    lineWidth: 1,
+                    strokeStyle: "rgb(" + chamberChartColor + ")",
+                    fillStyle: "rgba(" + chamberChartColor + "," + alpha + ")",
+                })
+
+                if (TList[0].chambers.length > 0) {
+                    needExtraChart = true
+                    legendContent.push(
+                        <span
+                            class="p-1"
+                            style={"color:rgb(" + chamberChartColor + ")"}
+                        >
+                            -<Box />
+                        </span>
+                    )
+                }
+            }
+            //DHT or sensor if any
+
             extraLegend.push(
                 <div class="d-flex flex-wrap p-1">{legendContent}</div>
             )
-
-            //probes (if any)
-
-            //chamber (if any)
-
-            //DHT or sensor if any
-
-            extraChart.streamTo(document.getElementById("extracanvas"), 1000)
+            if (needExtraChart) {
+                document
+                    .getElementById("extraCharts")
+                    .classList.remove("d-none")
+                extraChart.streamTo(
+                    document.getElementById("extracanvas"),
+                    1000
+                )
+            }
             if (cleardata) return
             //calculate number of points to display in canva form complete list
             let now = Date.now()
@@ -799,7 +886,10 @@ const TemperaturesGraphs = ({ visible }) => {
                     )
                 }
                 //redondant (if any)
-
+                redondantline.append(
+                    TList[n].timestamp,
+                    parseFloat(TList[n].redondants)
+                )
                 //beds (if any)
                 for (let i = 0; i < nbBeds; i++) {
                     bedsline[i].append(
@@ -808,9 +898,15 @@ const TemperaturesGraphs = ({ visible }) => {
                     )
                 }
                 //probe (if any)
-
+                probeline.append(
+                    TList[n].timestamp,
+                    parseFloat(TList[n].probes)
+                )
                 //chamber (if any)
-
+                chamberline.append(
+                    TList[n].timestamp,
+                    parseFloat(TList[n].chambers)
+                )
                 //DHT or sensor if any
             }
         }

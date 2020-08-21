@@ -23,7 +23,7 @@ let tempInterval = null
 let waitInterval = null
 let feedrate = 100
 
-let targetFW = "repetier"
+let targetFW = "marlin"
 
 let targetFWnb =
     targetFW == "grbl"
@@ -58,7 +58,7 @@ function sendTemperature() {
     let T = Number(Math.floor(Math.random() * 215).toFixed(2))
     let T1 = Number(Math.floor(Math.random() * 215).toFixed(2))
     let B = Number(Math.floor(Math.random() * 45).toFixed(2))
-    if (targetFW == "repetier" || targetFW == "repetier4davinci") {
+    if (targetFW == "repetier") {
         SendBinary(
             "T:" +
                 T +
@@ -71,18 +71,23 @@ function sendTemperature() {
                 " / 0 @1:0\nok\n"
         )
     }
+    if (targetFW == "repetier4davinci") {
+        SendBinary("T:" + T + " /200 @1:0\nok\n")
+    }
     if (targetFW == "marlin" || targetFW == "marlinkimbra") {
         SendBinary(
             "ok T:" +
                 T +
                 " /200 R:" +
-                T +
+                T * 1.1 +
                 " /200 B:" +
                 B +
+                " / 0 B1:" +
+                T +
                 " / 0 P:" +
-                B +
+                B * 1.3 +
                 " / 0 C:" +
-                B +
+                B * 2 +
                 " / 0 T1:" +
                 T1 +
                 " / 0 @1:0\n"
