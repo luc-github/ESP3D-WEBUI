@@ -20,14 +20,23 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { X, MapPin, Sliders } from "preact-feather"
 import { useStoreon } from "storeon/preact"
 import { preferences, getPanelIndex } from "../app"
 import { useEffect } from "preact/hooks"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
 import { Bed, Extruder } from "./icon"
-import { Thermometer, XCircle, Send, Box } from "preact-feather"
+import {
+    Thermometer,
+    XCircle,
+    Send,
+    Box,
+    XOctagon,
+    X,
+    MapPin,
+    Sliders,
+    ExternalLink,
+} from "preact-feather"
 import { TimeSeries, SmoothieChart } from "./smoothie"
 
 /*
@@ -254,8 +263,6 @@ function processTemperatures(buffer) {
         probes.length > 0 ||
         redondants.length > 0
     ) {
-        console.log(extruders)
-        console.log(beds)
         dispatch("temperatures/addT", {
             timestamp: timestamp,
             extruders: extruders,
@@ -578,7 +585,7 @@ const TemperatureSlider = ({ id, type, index }) => {
                             onClick={onStop}
                             title={T("P38")}
                         >
-                            <XCircle />
+                            <XOctagon />
                             <span class="hide-low text-button-setting">
                                 {T("P39")}
                             </span>
@@ -674,7 +681,13 @@ const TemperatureSlider = ({ id, type, index }) => {
 const TemperaturesGraphs = ({ visible }) => {
     const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
     if (!visible) return null
-    useEffect(() => {
+    const exportcharts = e => {}
+    const clearcharts = e => {
+        const { dispatch } = useStoreon()
+        dispatch("temperatures/clear")
+        fillCharts(true)
+    }
+    function fillCharts(cleardata = false) {
         if (typeof TList[0] != "undefined") {
             //extruders
             let nbExtruders = 0
@@ -686,6 +699,7 @@ const TemperaturesGraphs = ({ visible }) => {
             extrudersLegend = []
             extraLegend = []
             let legendContent = []
+
             for (let i = 0; i < nbExtruders; i++) {
                 if (typeof extrudersline[i] != "undefined")
                     extrudersChart.removeTimeSeries(extrudersline[i])
@@ -714,24 +728,6 @@ const TemperaturesGraphs = ({ visible }) => {
                 document.getElementById("extruderscanvas"),
                 1000
             )
-
-            //calculate number of points to display in canva form complete list
-            let now = Date.now()
-            let oldest =
-                now -
-                extrudersChart.canvas.clientWidth *
-                    extrudersChart.options.millisPerPixel
-            let startn = TList.length - 1
-            let done = false
-            while (startn >= 0 && !done) {
-                if (TList[startn].timestamp > oldest) {
-                    startn--
-                } else {
-                    done = true
-                }
-            }
-            startn-- //to fix random glitch
-            if (startn <= 0) startn = 0
 
             //redondants (if any)
 
@@ -772,8 +768,27 @@ const TemperaturesGraphs = ({ visible }) => {
 
             //chamber (if any)
 
-            extraChart.streamTo(document.getElementById("extracanvas"), 1000)
+            //DHT or sensor if any
 
+            extraChart.streamTo(document.getElementById("extracanvas"), 1000)
+            if (cleardata) return
+            //calculate number of points to display in canva form complete list
+            let now = Date.now()
+            let oldest =
+                now -
+                extrudersChart.canvas.clientWidth *
+                    extrudersChart.options.millisPerPixel
+            let startn = TList.length - 1
+            let done = false
+            while (startn >= 0 && !done) {
+                if (TList[startn].timestamp > oldest) {
+                    startn--
+                } else {
+                    done = true
+                }
+            }
+            startn-- //to fix random glitch
+            if (startn <= 0) startn = 0
             //fill the data in charts
             for (let n = parseInt(startn); n < TList.length; n++) {
                 //extruders
@@ -795,8 +810,14 @@ const TemperaturesGraphs = ({ visible }) => {
                 //probe (if any)
 
                 //chamber (if any)
+
+                //DHT or sensor if any
             }
         }
+    }
+
+    useEffect(() => {
+        fillCharts()
     })
     return (
         <div class="d-flex flex-column">
@@ -813,6 +834,32 @@ const TemperaturesGraphs = ({ visible }) => {
                     id="extracanvas"
                     style="width:100%;height:100px"
                 ></canvas>
+            </div>
+            <div class="p-1" />
+            <div class="d-flex flex-wrap justify-content-center p-1 ">
+                <div class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        title={T("S53")}
+                        onClick={exportcharts}
+                    >
+                        <ExternalLink />
+                        <span class="hide-low text-button">{T("S52")}</span>
+                    </button>
+                </div>
+
+                <div class="text-button-setting">
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        title={T("P58")}
+                        onClick={clearcharts}
+                    >
+                        <XCircle />
+                        <span class="hide-low text-button">{T("P58")}</span>
+                    </button>
+                </div>
             </div>
         </div>
     )
@@ -904,7 +951,7 @@ const TemperaturesPanel = () => {
                                     onClick={onStopAll}
                                     title={T("P38")}
                                 >
-                                    <XCircle />
+                                    <XOctagon />
                                     <span class="hide-low text-button-setting">
                                         {T("P40")}
                                     </span>

@@ -16,6 +16,11 @@ export default store => {
         }
         return { TList: TList.concat([temperatures]) }
     })
+
+    store.on("temperatures/clear", ({ TList }) => {
+        return { TList: [] }
+    })
+
     store.on("temperatures/updateTT", ({ TT }, newvalue) => {
         return {
             TT: [
