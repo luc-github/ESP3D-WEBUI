@@ -26,6 +26,7 @@ var ru_lang = false;
 var uk_lang = false;
 var zh_cn_lang = false;
 var hu_lang = false;
+var tr_lang = false;
 
 function clean() {
     return del(['dist']);
@@ -141,6 +142,7 @@ function clearlang() {
         pl_lang = true;
         ptbr_lang = true;
         ru_lang = true;
+        tr_lang = true;
         uk_lang = true;
         zh_cn_lang = true;
     }
@@ -198,6 +200,12 @@ function clearlang() {
     if(ru_lang){
         console.log("ru");
     }
+    if (arg.lang == 'tr'){
+        tr_lang = true;
+    }
+    if(tr_lang){
+        console.log("tr");
+    }
     if (arg.lang == 'uk'){
         uk_lang = true;
     }
@@ -220,6 +228,7 @@ function clearlang() {
         .pipe(removeCode({pl_lang_disabled: !pl_lang}))
         .pipe(removeCode({ptbr_lang_disabled: !ptbr_lang}))
         .pipe(removeCode({ru_lang_disabled: !ru_lang}))
+        .pipe(removeCode({tr_lang_disabled: !tr_lang}))
         .pipe(removeCode({uk_lang_disabled: !uk_lang}))
         .pipe(removeCode({zh_cn_lang_disabled: !zh_cn_lang}))
         .pipe(gulp.dest('./dist/js/'))

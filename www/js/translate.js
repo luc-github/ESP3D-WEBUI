@@ -29,6 +29,9 @@ var language_list = [
 //removeIf(ru_lang_disabled)
     ['ru', 'Русский', 'russiantrans'],
 //endRemoveIf(ru_lang_disabled)
+//removeIf(tr_lang_disabled)
+    ['tr', 'T&uuml;rk&ccedil;e', 'turkishtrans'],
+//endRemoveIf(tr_lang_disabled)
 //removeIf(uk_lang_disabled)
     ['uk', 'Українська', 'ukrtrans'],
 //endRemoveIf(uk_lang_disabled)

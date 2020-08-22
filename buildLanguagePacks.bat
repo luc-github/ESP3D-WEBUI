@@ -28,6 +28,9 @@ copy index.html.gz languages\ptbr
 mkdir languages\ru
 cmd.exe /c gulp package --lang ru
 copy index.html.gz languages\ru
+mkdir languages\tr
+cmd.exe /c gulp package --lang tr
+copy index.html.gz languages\tr
 mkdir languages\zh_CN 
 cmd.exe /c gulp package --lang zh_CN 
 copy index.html.gz languages\zh_CN 
