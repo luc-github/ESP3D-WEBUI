@@ -62,8 +62,14 @@ function init_files_panel(dorefresh) {
         else document.getElementById('files_refresh_btn').style.display = "inline";
         document.getElementById('files_refresh_primary_sd_btn').style.display = "none";
         document.getElementById('files_refresh_secondary_sd_btn').style.display = "none";
+        if(target_firmware == "grbl") {
+            document.getElementById('files_refresh_printer_sd_btn').style.display = 'none';
+            document.getElementById('files_refresh_btn').style.display = 'none';
+            document.getElementById('print_upload_btn').style.display = 'none';
+            document.getElementById('files_createdir_btn').style.display = "none";
+        }
     }
-    if (!((target_firmware == "marlin") || (target_firmware == "???"))) document.getElementById('files_createdir_btn').style.display = "inline";
+    if (!((target_firmware == "marlin") || (target_firmware == "???") ||(target_firmware == "grbl"))) document.getElementById('files_createdir_btn').style.display = "inline";
     else document.getElementById('files_createdir_btn').style.display = "none";
     files_set_button_as_filter(files_filter_sd_list);
     var refreshlist = true;

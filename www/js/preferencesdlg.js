@@ -93,8 +93,8 @@ function initpreferences() {
         document.getElementById('temp_pref_panel').style.display = 'none';
         document.getElementById('ext_pref_panel').style.display = 'none';
         document.getElementById('grbl_pref_panel').style.display = 'block';
-        document.getElementById('has_tft_sd').style.display = 'none';
-        document.getElementById('has_tft_usb').style.display = 'none';
+        document.getElementById('has_tft_sd').style.display = 'table-row';
+        document.getElementById('has_tft_usb').style.display = 'table-row';
     } else {
         defaultpreferenceslist = "[{\
                                             \"language\":\"en\",\
@@ -433,6 +433,13 @@ function applypreferenceslist() {
         document.getElementById('files_refresh_printer_sd_btn').style.display = 'none';
         document.getElementById('files_refresh_btn').style.display = 'flex';
     }
+    
+    if(target_firmware == "grbl") {
+            document.getElementById('files_refresh_printer_sd_btn').style.display = 'none';
+            document.getElementById('files_refresh_btn').style.display = 'none';
+            document.getElementById('print_upload_btn').style.display = 'none';
+            document.getElementById('files_createdir_btn').style.display = "none";
+        }
 
     if (preferenceslist[0].enable_commands_panel === 'true') {
         document.getElementById('commandsPanel').style.display = 'flex';
