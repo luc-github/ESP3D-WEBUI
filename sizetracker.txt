@@ -27,4 +27,5 @@ Feedrate / Flowrate     : 0.0.0.47: 66.0KB      | N/A
 Temperatures controls   : 0.0.0.53: 70.6KB      | N/A
 Extrusion               : 0.0.0.58: 75.1KB      | N/A
 Temperatures charts     : 0.0.0.59: 81.3KB      | N/A
+Sensors                 : 0.0.0.60: 83.0KB      | N/A
 

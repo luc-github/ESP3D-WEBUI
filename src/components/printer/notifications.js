@@ -29,6 +29,7 @@ import {
     AlertCircle,
     Box,
     Underline,
+    Trello,
 } from "preact-feather"
 import { SendCommand } from "../http"
 import { showDialog } from "../dialog"
@@ -56,6 +57,7 @@ const Notifications = () => {
     const { feedrate } = useStoreon("feedrate")
     const { flowrate } = useStoreon("flowrate")
     const { fanpercent } = useStoreon("fanpercent")
+    const { SData } = useStoreon("SData")
     if (esp3dSettings.length == 0 || esp3dSettings.FWTarget == "unknown") {
         return null
     }
@@ -70,6 +72,12 @@ const Notifications = () => {
         dispatch("setPage", Page.dashboard)
         dispatch("panel/showtemperatures", false)
         dispatch("panel/showtemperatures", true)
+    }
+    const toggleshowSensors = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", Page.dashboard)
+        dispatch("panel/showsensors", false)
+        dispatch("panel/showsensors", true)
     }
     const toggleShowFeedRate = e => {
         const { dispatch } = useStoreon()
@@ -98,11 +106,12 @@ const Notifications = () => {
     const emergencyStop = e => {
         SendCommand("M112", null, sendCommandError)
     }
-    function pushUI(list, index, icon, title) {
+    function pushUI(temperatures, list, index, icon, title, action, unit) {
+        if (typeof unit == "undefined") unit = <span>&deg;C</span>
         temperatures.push(
             <div
                 class="p-1 d-flex flex-column flex-sm-row flex-md-row flex-lg-row flex-xl-row hotspotNotification"
-                onclick={toggleshowTemperatures}
+                onclick={action}
                 title={title}
             >
                 <span
@@ -135,7 +144,7 @@ const Notifications = () => {
                     <span class={list[index].target == "0.00" ? "d-none" : ""}>
                         {list[index].target}
                     </span>
-                    <span>&deg;C</span>
+                    <span>{unit}</span>
                 </span>
             </div>
         )
@@ -144,14 +153,17 @@ const Notifications = () => {
     if (preferences.settings.showtemperaturespanel == true) {
         for (let index = 0; index < TT.length; index++) {
             pushUI(
+                temperatures,
                 TT,
                 index,
                 <Thermometer size="1.0em" />,
-                Trans("P41") + (TT.length > 1 ? index + 1 : "")
+                Trans("P41") + (TT.length > 1 ? index + 1 : ""),
+                toggleshowTemperatures
             )
 
             if (TR.length > index) {
                 pushUI(
+                    temperatures,
                     TR,
                     index,
                     <div>
@@ -159,37 +171,44 @@ const Notifications = () => {
                         <sub>R</sub>
                         <span>{TT.length > 1 ? index + 1 : ""}</span>
                     </div>,
-                    Trans("P44") + (TT.length > 1 ? index + 1 : "")
+                    Trans("P44") + (TT.length > 1 ? index + 1 : ""),
+                    toggleshowTemperatures
                 )
             }
         }
         for (let index = 0; index < TB.length; index++) {
             pushUI(
+                temperatures,
                 TB,
                 index,
                 <Bed height="1em" />,
-                Trans("P37") + (TB.length > 1 ? index + 1 : "")
+                Trans("P37") + (TB.length > 1 ? index + 1 : ""),
+                toggleshowTemperatures
             )
         }
         for (let index = 0; index < TP.length; index++) {
             pushUI(
+                temperatures,
                 TP,
                 index,
                 <Underline size="1.0em" />,
-                Trans("P42") + (TP.length > 1 ? index + 1 : "")
+                Trans("P42") + (TP.length > 1 ? index + 1 : ""),
+                toggleshowTemperatures
             )
         }
         for (let index = 0; index < TC.length; index++) {
             pushUI(
+                temperatures,
                 TC,
                 index,
                 <Box size="1.0em" />,
-                Trans("P43") + (TC.length > 1 ? index + 1 : "")
+                Trans("P43") + (TC.length > 1 ? index + 1 : ""),
+                toggleshowTemperatures
             )
         }
     }
     if (temperatures.length == 0) {
-        temperatures = (
+        temperatures.push(
             <div class="p-1 hotspotNotification">
                 <button
                     class="btn btn-default"
@@ -201,7 +220,24 @@ const Notifications = () => {
             </div>
         )
     }
-
+    if (preferences.settings.showsensorspanel == true) {
+        for (let index = 0; index < SData.length; index++) {
+            SData[index].target = "0.00"
+            let unit = SData[index].unit
+            if (unit == "C" || unit == "F") {
+                unit = <span>&deg;{unit}</span>
+            }
+            pushUI(
+                temperatures,
+                SData,
+                index,
+                <Trello height="1em" />,
+                Trans("P61"),
+                toggleshowSensors,
+                unit
+            )
+        }
+    }
     return (
         <div class="p-1">
             <div

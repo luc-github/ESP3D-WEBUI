@@ -947,8 +947,6 @@ const TemperaturesGraphs = ({ visible }) => {
                     )
                 }
             }
-            //DHT or sensor if any
-
             extraLegend.push(
                 <div class="d-flex flex-wrap p-1">{legendContent}</div>
             )
@@ -1010,7 +1008,6 @@ const TemperaturesGraphs = ({ visible }) => {
                     TList[n].timestamp,
                     parseFloat(TList[n].chambers)
                 )
-                //DHT or sensor if any
             }
         }
     }

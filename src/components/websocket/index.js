@@ -23,7 +23,10 @@ import { updateTerminal, stopPolling } from "../app"
 import { cancelCurrentQuery } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
-const { processWSData } = require(`../${process.env.TARGET_ENV}`)
+const {
+    processWSData,
+    processEventsData,
+} = require(`../${process.env.TARGET_ENV}`)
 /*
  * Local variables
  *
@@ -96,17 +99,18 @@ function processWebSocketBuffer(wsBuffer) {
  * Process WS event line
  */
 function processWebSocketText(wsBuffer) {
-    console.log(wsBuffer)
     var tdata = wsBuffer.split(":")
     if (tdata.length >= 2) {
         switch (tdata[0]) {
             case "currentID":
+                console.log(wsBuffer)
                 setPageId(tdata[1])
                 break
             case "PING":
                 //TODO
                 break
             case "activeID":
+                console.log(wsBuffer)
                 if (getPageId() != tdata[1]) {
                     disconnectWsServer({
                         type: "disconnect",
@@ -115,14 +119,12 @@ function processWebSocketText(wsBuffer) {
                     })
                 }
                 break
-            case "DHT":
-                //TODO
-                break
             case "ERROR":
+                console.log(wsBuffer)
                 cancelCurrentQuery(tdata[1], tdata[2])
                 break
             default:
-                console.log("Unknow event")
+                processEventsData(tdata[0], tdata[1])
         }
     } else {
         console.log("Error processing event")

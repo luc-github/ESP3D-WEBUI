@@ -208,7 +208,7 @@
     "device" : "Connected device",
     "camera" : "Camera",
     "buzzer" : "Buzzer",
-    "dht"   : "DHT",
+    "sensor"   : "Sensor",
     "type" : "Type",
     "sd" : "SD card",
     "speedx" : "Speed factor",

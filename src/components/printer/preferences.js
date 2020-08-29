@@ -321,6 +321,9 @@ function initDefaultMachineValues() {
     if (typeof preferences.settings.showflowratepanel == "undefined") {
         preferences.settings.showflowratepanel = true
     }
+    if (typeof preferences.settings.showsensorspanel == "undefined") {
+        preferences.settings.showsensorspanel = true
+    }
     if (typeof preferences.settings.showextruderspanel == "undefined") {
         preferences.settings.showextruderspanel = true
     }
@@ -399,6 +402,9 @@ function initDefaultMachineValues() {
     }
     if (typeof prefs.showflowratepanel == "undefined") {
         prefs.showflowratepanel = preferences.settings.showflowratepanel
+    }
+    if (typeof prefs.showsensorspanel == "undefined") {
+        prefs.showsensorspanel = preferences.settings.showsensorspanel
     }
     if (typeof prefs.showextruderspanel == "undefined") {
         prefs.showextruderspanel = preferences.settings.showextruderspanel
@@ -640,6 +646,16 @@ const MachineUIPreferences = () => {
                             />
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="p-2" />
+            <div class="card">
+                <div class="card-header">
+                    <CheckboxControl
+                        id="showsensorspanel"
+                        title={T("P62")}
+                        label={T("P62")}
+                    />
                 </div>
             </div>
             <div class="p-2" />

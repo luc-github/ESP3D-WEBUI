@@ -30,6 +30,7 @@ import { FlowratePanel, processFlowRate } from "./flowrate"
 import { FilesPanel, processFiles } from "./files"
 import { ExtrusionPanel } from "./extrusion"
 import { FanPanel, processFanPercent } from "./fan"
+import { SensorsPanel, processSensors } from "./sensors"
 import {
     MachineUIPreferences,
     MachineFilesPreferences,
@@ -404,6 +405,22 @@ function process_Esp3d(buffer) {
                 beep(parseInt(tcmd[0]), parseInt(tcmd[1]))
             }
         }
+    }
+}
+
+/*
+ * Process WebEvent data
+ */
+function processEventsData(type, data) {
+    switch (type) {
+        case "SENSOR":
+            {
+                processSensors(data)
+            }
+            break
+        default:
+            console.log("Unknow event")
+            return
     }
 }
 
@@ -1249,6 +1266,7 @@ const MachinePanels = () => {
             <JogPanel />
             <FilesPanel />
             <TemperaturesPanel />
+            <SensorsPanel />
             <FeedratePanel />
             <FlowratePanel />
             <FanPanel />
@@ -1264,6 +1282,7 @@ export {
     MachineSettings,
     firmwareName,
     processWSData,
+    processEventsData,
     enLangRessourceExtra,
     clearData,
     MachineUIPreferences,

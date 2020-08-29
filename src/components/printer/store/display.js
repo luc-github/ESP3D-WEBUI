@@ -7,6 +7,7 @@ export default store => {
         showFeedRate: false,
         showFan: false,
         showExtrusion: false,
+        showSensors: false,
     }))
     store.on("panel/showtemperatures", ({ showTemperatures }, newstate) => {
         const { dispatch } = useStoreon()
@@ -37,5 +38,11 @@ export default store => {
         if (newstate) dispatch("panel/add", "extrusion")
         else dispatch("panel/remove", "extrusion")
         return { showExtrusion: newstate }
+    })
+    store.on("panel/showsensors", ({ showSensors }, newstate) => {
+        const { dispatch } = useStoreon()
+        if (newstate) dispatch("panel/add", "sensors")
+        else dispatch("panel/remove", "sensors")
+        return { showSensors: newstate }
     })
 }

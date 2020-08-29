@@ -19,6 +19,7 @@ const fileUpload = require("express-fileupload")
  * unknown: "0"
  * */
 
+let sensorInterval = null
 let tempInterval = null
 let waitInterval = null
 let feedrate = 100
@@ -93,6 +94,17 @@ function sendTemperature() {
                 " / 0 @1:0\n"
         )
     }
+}
+
+function sendSensorData() {
+    let T = Number(Math.floor(Math.random() * 25).toFixed(2))
+    let Pa = Number(Math.floor(Math.random() * 1500).toFixed(2))
+    let H = Number(Math.floor(Math.random() * 100).toFixed(2))
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send("SENSOR:" + T + "[C] " + Pa + "[Pa] " + H + "[%]")
+        }
+    })
 }
 
 function SendBinary(text) {
@@ -172,6 +184,22 @@ app.get("/command", function(req, res) {
         sendTemperature()
         res.send("")
         return
+    }
+
+    if (url.indexOf("SENSOR%20ON") != -1) {
+        console.log("Activate sensor")
+        if (sensorInterval == null) {
+            sensorInterval = setInterval(function() {
+                sendSensorData()
+            }, 3000)
+        }
+    }
+
+    if (url.indexOf("SENSOR%20OFF") != -1) {
+        if (sensorInterval) {
+            clearInterval(sensorInterval)
+            sensorInterval = null
+        }
     }
 
     if (url.indexOf("M205") != -1) {
@@ -1409,6 +1437,8 @@ app.all("/files", function(req, res) {
 app.listen(process.env.PORT || 8080, () =>
     console.log(`Listening on port ${process.env.PORT || 8080}!`)
 )
+
+setInterval
 
 wss.on("connection", function(ws) {
     console.log("New connection")

@@ -313,6 +313,13 @@ function saveAndApply() {
 }
 
 /*
+ * Process WebEvent data
+ */
+function processEventsData(type, data) {
+    console.log(type + " : " + data)
+}
+
+/*
  * Process WebSocket data
  */
 function processWSData(buffer) {
@@ -839,6 +846,7 @@ const MachineSettings = ({ currentPage }) => {
 export {
     MachineSettings,
     firmwareName,
+    processEventsData,
     processWSData,
     enLangRessourceExtra,
     clearData,

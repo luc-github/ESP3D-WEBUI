@@ -46,7 +46,7 @@
     "P45": "Show fans panel",
     "P46": "Show speed panel",
     "P47": "Show flow rate panel",
-    "P48": "Show extruders panel",
+    "P48": "Show extrusion panel",
     "P49": "Mixed extruders",
     "P50": "E feed rate",
     "P51": "Colors",
@@ -58,5 +58,7 @@
     "P57" : "Control mode",
     "P58" : "Clear chart",
     "P59" : "Timestamp",
-    "P60" : "Date Time"
+    "P60" : "Date Time",
+    "P61" : "Sensors",
+    "P62" : "Show sensors panel"
 }
