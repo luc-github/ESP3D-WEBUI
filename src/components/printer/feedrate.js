@@ -276,7 +276,7 @@ const FeedRateSlider = () => {
                         type="range"
                         min="1"
                         max="300"
-                        value={currentSpeed}
+                        value={isNaN(currentSpeed)?"":currentSpeed}
                         class="slider"
                         id="speedslider"
                     />
@@ -288,7 +288,7 @@ const FeedRateSlider = () => {
                 type="number"
                 min="1"
                 max="300"
-                value={currentSpeed}
+                value={isNaN(currentSpeed)?"":currentSpeed}
                 class="form-control"
                 id="speed_input"
             />
