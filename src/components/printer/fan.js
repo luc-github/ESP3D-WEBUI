@@ -263,7 +263,7 @@ const FanSlider = () => {
                         type="range"
                         min="0"
                         max="100"
-                        value={isNaN(currentPercent)?"":currentPercent}
+                        value={isNaN(currentPercent) ? "" : currentPercent}
                         class="slider"
                         id="fanslider"
                     />
@@ -275,7 +275,7 @@ const FanSlider = () => {
                 type="number"
                 min="0"
                 max="100"
-                value={isNaN(currentPercent)?"":currentPercent}
+                value={isNaN(currentPercent) ? "" : currentPercent}
                 class="form-control"
                 id="fan_input"
             />

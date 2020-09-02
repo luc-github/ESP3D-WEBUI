@@ -7,6 +7,7 @@ import feedrate from "./feedrate"
 import flowrate from "./flowrate"
 import sensor from "./sensor"
 import fan from "./fan"
+import status from "./status"
 import monitor from "../../store/monitor"
 import error from "../../store/error"
 import display from "../../store/display"
@@ -21,6 +22,7 @@ const store = createStoreon([
     feedrate,
     flowrate,
     fan,
+    status,
     sensor,
     monitor,
     error,

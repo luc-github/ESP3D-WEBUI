@@ -22,6 +22,7 @@ import { h } from "preact"
 import { T as Trans } from "../translations"
 import { useStoreon } from "storeon/preact"
 import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
+import { StatusControl } from "./status"
 import {
     Thermometer,
     AlertTriangle,
@@ -517,6 +518,7 @@ const Notifications = () => {
                         </div>
                     </div>
                 </div>
+                <StatusControl />
             </div>
         </div>
     )

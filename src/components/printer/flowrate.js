@@ -274,7 +274,7 @@ const FlowRateSlider = () => {
                         type="range"
                         min="1"
                         max="300"
-                        value={isNaN(currentFlow)?"":currentFlow}
+                        value={isNaN(currentFlow) ? "" : currentFlow}
                         class="slider"
                         id="flowslider"
                     />
@@ -286,7 +286,7 @@ const FlowRateSlider = () => {
                 type="number"
                 min="1"
                 max="300"
-                value={isNaN(currentFlow)?"":currentFlow}
+                value={isNaN(currentFlow) ? "" : currentFlow}
                 class="form-control"
                 id="flow_input"
             />

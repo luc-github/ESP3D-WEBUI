@@ -31,6 +31,7 @@ import { FilesPanel, processFiles } from "./files"
 import { ExtrusionPanel } from "./extrusion"
 import { FanPanel, processFanPercent } from "./fan"
 import { SensorsPanel, processSensors } from "./sensors"
+import { processStatus } from "./status"
 import {
     MachineUIPreferences,
     MachineFilesPreferences,
@@ -508,6 +509,7 @@ function processWSData(buffer) {
             processPositions(buffer)
         }
         processFiles(buffer)
+        processStatus(buffer)
     }
 }
 
