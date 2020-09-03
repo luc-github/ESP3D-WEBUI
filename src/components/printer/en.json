@@ -60,5 +60,9 @@
     "P59" : "Timestamp",
     "P60" : "Date Time",
     "P61" : "Sensors",
-    "P62" : "Show sensors panel"
+    "P62" : "Show sensors panel",
+    "P63" : "Printing",
+    "P64" : "Not printing",
+    "processing":"Processing",
+    "heating":"Heating"
 }

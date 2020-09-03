@@ -683,6 +683,8 @@ function processPrint(entry) {
     console.log("print " + entry.name)
     let cmd
     let path
+    const { dispatch } = useStoreon()
+    dispatch("status/print", T("P63"))
     switch (currentFilesType) {
         case "TFTSD":
             path = currentPath[currentFilesType]

@@ -441,6 +441,8 @@ function processWSData(buffer) {
                 processFlowRate(response)
             if (typeof response.fanPercent != "undefined")
                 processFanPercent(response)
+            //TODO
+            //processStatus(response)
         } catch (e) {
             console.log("Error processing JSON")
         }

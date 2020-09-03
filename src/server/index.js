@@ -121,9 +121,21 @@ function SendBinary(text) {
 
 app.get("/command", function(req, res) {
     var url = req.originalUrl
+    var urldecoded = decodeURI(decodeURI(url))
     console.log(url)
     if (url.indexOf("config-set") != -1) {
         SendBinary("ok\n")
+        res.send("")
+        return
+    }
+    console.log("Command:" + urldecoded)
+    if (urldecoded.indexOf("ECHO%3A") != -1) {
+        let command = urldecoded
+            .substring(urldecoded.indexOf("ECHO%3A") + 7)
+            .trim()
+        command = command.replace(/%3A/g, ":")
+        command = command.replace(/%2F/g, "/")
+        SendBinary(command.split("&")[0] + "\n")
         res.send("")
         return
     }
