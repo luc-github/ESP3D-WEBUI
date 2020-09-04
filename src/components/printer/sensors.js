@@ -313,7 +313,7 @@ const SensorsPanel = () => {
     }
     const onClose = e => {
         const { dispatch } = useStoreon()
-        dispatch("panel/showSensors", false)
+        dispatch("panel/showsensors", false)
     }
 
     let panelClass = "order-" + index + " w-100 panelCard"
