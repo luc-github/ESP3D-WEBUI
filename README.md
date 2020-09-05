@@ -7,21 +7,30 @@ using Preact per @aganov suggestion
    
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v10.15.3)    
-2 - Download all necessary packages
+1 - Install current nodejs LTS (currently using v13.18.3)   
+```
+ESP3D-WEBUI>node -v
+v12.18.3
+
+ESP3D-WEBUI>npm -v
+6.14.6
+```
+    
+2 - Download all necessary packages in ESP3D-WEBUI directory (repository root)
 ```
 npm install
 ```
 
-### Start dev server
+### Start dev server   
+in ESP3D-WEBUI directory (repository root)   
 ```
 npm run dev
 ```
 will open http://localhost:3000
 Back end query server is localhost:8080, websocket server is localhost:81
 
-### Build index.html.gz to /dist folder
-
+### Build index.html.gz to /dist folder    
+in ESP3D-WEBUI directory (repository root)       
 ```
 npm run build
 ```
