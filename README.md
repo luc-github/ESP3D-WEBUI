@@ -9,10 +9,10 @@ using Preact per @aganov suggestion
 
 1 - Install current nodejs LTS (currently using v13.18.3)   
 ```
-ESP3D-WEBUI>node -v
+node -v
 v12.18.3
 
-ESP3D-WEBUI>npm -v
+npm -v
 6.14.6
 ```
     
