@@ -7,7 +7,7 @@ using Preact per @aganov suggestion
    
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v10.15.3)
+1 - Install current nodejs LTS (currently using v10.15.3)    
 2 - Download all necessary packages
 ```
 npm install
