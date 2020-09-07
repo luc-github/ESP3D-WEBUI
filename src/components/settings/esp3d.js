@@ -688,8 +688,10 @@ function saveSettingError(errorCode, responseText) {
  * Save setting
  */
 function saveSetting(entry) {
-    const cmd =
-        "[ESP401]P=" + entry.P + " T=" + entry.T + " V=" + entry.currentValue
+    
+    let cmd ="[ESP401]P=" + entry.P + " T=" + entry.T + " V="
+    if(entry.T == "S")cmd+=entry.currentValue.split(" ").join("\\ ")
+    else cmd+=entry.currentValue
     showDialog({ type: "loader", message: T("S91") })
     SendCommand(cmd, saveSettingSuccess, saveSettingError)
 }
