@@ -7,7 +7,7 @@ using Preact per @aganov suggestion
    
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v13.18.3)   
+1 - Install current nodejs LTS (currently using v12.18.3)   
 ```
 node -v
 v12.18.3
