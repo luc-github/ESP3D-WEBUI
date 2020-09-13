@@ -58,6 +58,8 @@ const default_preferences =
     "autoload" : true,\
     "showterminalpanel":true,\
     "openterminalonstart":false,\
+    "showmacros":true,\
+    "expandmacrosbuttonsonstart":true,\
     "verbose":true,\
     "autoscroll":true,\
     "showfilespanel":true,\
@@ -110,6 +112,12 @@ function updateUI() {
     let allkey = Object.keys(prefs)
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "default")
+    }
+    if (typeof prefs.showmacros == "undefined") {
+        prefs.showmacros = true
+    }
+    if (typeof prefs.expandmacrosbuttonsonstart == "undefined") {
+        prefs.expandmacrosbuttonsonstart = true
     }
     if (typeof prefs.showterminalpanel == "undefined") {
         prefs.showterminalpanel = true
@@ -710,6 +718,28 @@ function setcurrentprefs(preferences) {
     prefs = JSON.parse(JSON.stringify(preferences.settings))
 }
 
+function openMacroEditor() {
+    showDialog({
+        type: "custom",
+        message: "test message",
+        button1text: "Apply",
+        next: onValidMacroEditor,
+        button2text: "Cancel",
+        next2: onDismissMacroEditor,
+        background: "grey",
+    })
+}
+
+function onValidMacroEditor() {
+    console.log("Ok Macro")
+    showDialog({ displayDialog: false })
+}
+
+function onDismissMacroEditor() {
+    console.log("cancel Macro")
+    showDialog({ displayDialog: false })
+}
+
 /*
  * Settings page
  *
@@ -794,6 +824,32 @@ const WebUISettings = ({ currentPage }) => {
                             />
                             <div class="p-1" />
                             <MachineFilesPreferences />
+                        </div>
+                    </div>
+                    <div class="p-2" />
+                    <div class="card">
+                        <div class="card-header">
+                            <CheckboxControl
+                                entry="showmacros"
+                                title={T("S119")}
+                                label={T("S119")}
+                            />
+                        </div>
+                        <div
+                            class={prefs["showmacros"] ? "card-body" : "d-none"}
+                        >
+                            <CheckboxControl
+                                entry="expandmacrosbuttonsonstart"
+                                title={T("S120")}
+                                label={T("S120")}
+                            />
+                            <div class="p-1" />
+                            <button
+                                class="btn btn-info"
+                                onclick={openMacroEditor}
+                            >
+                                Macros editor
+                            </button>
                         </div>
                     </div>
                     <div class="p-2" />

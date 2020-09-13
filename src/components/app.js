@@ -27,7 +27,7 @@ import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
 import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
 import { Header } from "./header"
-import { Notification } from "./notification"
+import { Notification, NotificationPage } from "./notification"
 import { setLang, T } from "./translations"
 import { prefs } from "./settings"
 import { beep, beepError, initAudio } from "./audio"
@@ -37,7 +37,7 @@ import { useStoreon } from "storeon/preact"
  * Some constants
  */
 const Setting = { none: 0, esp3d: 1, ui: 2, machine: 3 }
-const Page = { none: 0, about: 1, dashboard: 2, settings: 3 }
+const Page = { none: 0, about: 1, notifications: 2, dashboard: 3, settings: 4 }
 
 /*
  * Local variables
@@ -66,6 +66,7 @@ const Container = () => {
             style={style}
         >
             <AboutPage />
+            <NotificationPage />
             <DashboardPage />
             <SettingsPage />
         </div>

@@ -22,6 +22,7 @@ import { h } from "preact"
 import { T } from "../translations"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
+import { MacrosControls } from "./macros"
 const { MachinePanels } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../settings"
 import { useStoreon } from "storeon/preact"
@@ -45,6 +46,7 @@ const DashboardToolBar = () => {
         dispatch("panel/showfiles", false)
         dispatch("panel/showfiles", true)
     }
+
     const toogle = e => {
         const { dispatch } = useStoreon()
         for (
@@ -56,7 +58,7 @@ const DashboardToolBar = () => {
         }
     }
     return (
-        <div class="d-flex flex-row no_wrap">
+        <div class="d-flex flex-wrap p-2">
             <div
                 class={
                     preferences.settings.showterminalpanel ? "p-1" : "d-none"
@@ -83,6 +85,7 @@ const DashboardToolBar = () => {
                     <span class="hide-low text-button">{T("S84")}</span>
                 </button>
             </div>
+            <MacrosControls />
             <div class={panelsOrder.length > 0 ? "p-1 ml-auto" : "d-none"}>
                 <button
                     type="button"

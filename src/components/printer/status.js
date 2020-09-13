@@ -89,7 +89,10 @@ function processStatus(buffer) {
         } else if (buffer.indexOf("busy:") != -1) {
             let status = buffer.split("busy:")
             resetTimeout = true
-            dispatch("status/msg", <span class="text-info">{T(status[1])}</span>)
+            dispatch(
+                "status/msg",
+                <span class="text-info">{T(status[1])}</span>
+            )
             //Not SD printing
         } else if (buffer == "Not SD printing") {
             lastStatus = ""
@@ -99,7 +102,10 @@ function processStatus(buffer) {
         } else if (buffer.startsWith("fatal:")) {
             let status = buffer.split("fatal:")
             resetTimeout = true
-            dispatch("status/msg", <span class="text-danger">{T(status[1])}</span>)
+            dispatch(
+                "status/msg",
+                <span class="text-danger">{T(status[1])}</span>
+            )
             //Current file:
         } else if (buffer.startsWith("Current file: ")) {
             let status = buffer.split("Current file: ")

@@ -163,6 +163,9 @@ const DialogPage = () => {
         if (!dialogData.button2text) dialogData.button2text = T("S28")
         classname += " greybg"
     }
+    if (dialogData.type == "custom") {
+        if (dialogData.background == "grey") classname += " greybg"
+    }
     if (dialogData.type == "disconnect") classname += " greybg"
     return (
         <modal tabindex="-1" className={classname}>
@@ -229,7 +232,8 @@ const DialogPage = () => {
                                 dialogData.type == "progress"
                                     ? "btn btn-danger"
                                     : dialogData.type == "confirmation" ||
-                                      (dialogData.type == "message" &&
+                                      ((dialogData.type == "message" ||
+                                          dialogData.type == "custom") &&
                                           dialogData.button1text)
                                     ? "btn btn-secondary"
                                     : "d-none"
@@ -248,7 +252,8 @@ const DialogPage = () => {
                             className={
                                 dialogData.type == "confirmation"
                                     ? "btn btn-primary"
-                                    : dialogData.type == "message" &&
+                                    : (dialogData.type == "message" ||
+                                          dialogData.type == "custom") &&
                                       dialogData.button2text
                                     ? "btn btn-primary"
                                     : "d-none"

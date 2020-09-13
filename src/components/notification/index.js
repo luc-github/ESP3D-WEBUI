@@ -21,29 +21,61 @@
 import { h } from "preact"
 import { useEffect } from "preact/hooks"
 import { useStoreon } from "storeon/preact"
+import { Page } from "../app"
 const { Notifications } = require(`../${process.env.TARGET_ENV}`)
 
 function onResize() {
-    if (document.getElementById("notif")) {
-        const { dispatch } = useStoreon()
-        let currentpos =
-            document.getElementById("notif").clientHeight +
-            document.getElementById("notif").getClientRects()[0].top
-        dispatch("setNotificationBottom", currentpos)
+    const { activePage } = useStoreon("activePage")
+    const { dispatch } = useStoreon()
+    let currentpos = 0
+    if (document.getElementById("headerbar")) {
+        currentpos = document.getElementById("headerbar").clientHeight
     }
+    if (document.getElementById("notif")) {
+        if (activePage == Page.notifications)
+            dispatch("setPage", Page.dashboard)
+        if (
+            typeof document.getElementById("notif").getClientRects()[0] !==
+            "undefined"
+        ) {
+            currentpos =
+                document.getElementById("notif").clientHeight +
+                document.getElementById("notif").getClientRects()[0].top
+        }
+    }
+    dispatch("setNotificationBottom", currentpos)
 }
 
 /*
  * Notification component
  *
  */
-export const Notification = () => {
+const Notification = () => {
     useEffect(() => {
         new ResizeObserver(onResize).observe(document.getElementById("notif"))
     })
     return (
-        <div id="notif" class="espnotification fixed-top">
+        <div>
+            <div id="notif" class="espnotification fixed-top">
+                <div class="hide-low">
+                    <Notifications />
+                </div>
+            </div>
+        </div>
+    )
+}
+/*
+ * Notification component
+ *
+ */
+const NotificationPage = () => {
+    const { activePage } = useStoreon("activePage")
+    if (activePage != Page.notifications) return null
+    return (
+        <div class="show-low">
             <Notifications />
         </div>
     )
 }
+
+export { Notification, NotificationPage }

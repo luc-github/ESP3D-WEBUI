@@ -21,7 +21,7 @@
 import { h } from "preact"
 import { Page, customdata } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
-import { Server, Settings } from "preact-feather"
+import { Server, Settings, Eye } from "preact-feather"
 import { T } from "../translations"
 import { prefs } from "../settings"
 import { esp3dSettings } from "../app"
@@ -72,6 +72,22 @@ export const Header = () => {
                 onClick={() => dispatch("setPage", Page.about)}
             >
                 {logo}
+            </div>
+            <div
+                class={
+                    esp3dSettings.FWTarget == "unknown"
+                        ? "d-none"
+                        : activePage == Page.notifications
+                        ? "nav-item active  show-low"
+                        : "nav-item  show-low"
+                }
+                title={T("notification")}
+                onClick={() => dispatch("setPage", Page.notifications)}
+            >
+                <Eye />
+                <span class="disable-select hide-low">
+                    &nbsp;{T("notification")}
+                </span>
             </div>
             <div
                 class={
