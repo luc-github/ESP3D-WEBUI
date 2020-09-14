@@ -71,7 +71,7 @@ function showDialog(data) {
     if (typeof data.displayPage != "undefined") {
         if (data.displayPage) {
             const { activePage } = useStoreon("activePage")
-            if (activePage == Page.none) dispatch("setPage", Page.dashboard)
+            if (activePage == Page.none) dispatch("setPage", Page.notifications)
         }
         dispatch("displayPage", data.displayPage)
     }

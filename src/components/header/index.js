@@ -81,6 +81,7 @@ export const Header = () => {
                         ? "nav-item active  show-low"
                         : "nav-item  show-low"
                 }
+                id="notifficationButton"
                 title={T("notification")}
                 onClick={() => dispatch("setPage", Page.notifications)}
             >

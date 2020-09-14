@@ -339,7 +339,39 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
         max-height: 22.4rem;
     }
 }
-@include media-breakpoint-down(xs) {
+
+@include media-breakpoint-only(xs) {
+    .thide-low,
+    .hide-low {
+        display: none !important;
+    }
+    .show-low,
+    .tshow-low {
+        display: block !important;
+    }
+    .card-low {
+        padding: 0.25rem !important;
+    }
+    .card-noborder-low {
+        border: 1px solid transparent !important;
+    }
+    .autoWidth {
+        width: auto;
+    }
+    .fontsetting {
+        font-size: 0.7rem !important;
+    }
+    .terminalWindow {
+        max-height: 200px;
+        min-height: 200px;
+    }
+    .filespanel {
+        min-height: 15rem;
+        max-height: 15rem;
+    }
+}
+
+@media (max-height: 575.98px) {
     .thide-low,
     .hide-low {
         display: none !important;

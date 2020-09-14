@@ -48,6 +48,7 @@ let preferences
 let prefs
 let initdone = false
 let pollingInterval = null
+let needReload = false
 
 /*
  * Some constants
@@ -56,6 +57,7 @@ const default_preferences =
     '{"settings":{"language":"en",\
     "banner": true,\
     "autoload" : true,\
+    "mobileview" : false,\
     "showterminalpanel":true,\
     "openterminalonstart":false,\
     "showmacros":true,\
@@ -116,6 +118,9 @@ function updateUI() {
     if (typeof prefs.showmacros == "undefined") {
         prefs.showmacros = true
     }
+    if (typeof prefs.mobileview == "undefined") {
+        prefs.mobileview = false
+    }
     if (typeof prefs.expandmacrosbuttonsonstart == "undefined") {
         prefs.expandmacrosbuttonsonstart = true
     }
@@ -139,6 +144,24 @@ function updateUI() {
     }
     if (typeof prefs.openfilesonstart == "undefined") {
         prefs.openterminalonstart = false
+    }
+    let pos = 0
+    for (let p = 0; p < document.getElementsByTagName("Meta").length; p++) {
+        if (document.getElementsByTagName("Meta")[p].content) {
+            pos = p
+        }
+    }
+    if (preferences.settings.mobileview == true) {
+        document
+            .getElementsByTagName("Meta")
+            [pos].setAttribute("content", "width=575")
+    } else {
+        document
+            .getElementsByTagName("Meta")
+            [pos].setAttribute(
+                "content",
+                "initial-scale=1, maximum-scale=1, shrink-to-fit=yes"
+            )
     }
     initMachine()
     loadLanguage(prefs.language)
@@ -450,6 +473,7 @@ function saveAndApply() {
  */
 function closeDialog() {
     showDialog({ refreshPage: true, displayDialog: false })
+    if (needReload) document.location.reload(true)
 }
 
 /*
@@ -506,6 +530,7 @@ function progressUpload(oEvent) {
  * Save Preferences query
  */
 function savePreferences() {
+    if (prefs.mobileview != preferences.settings.mobileview) needReload = true
     // do some sanity check
     preferences.settings = JSON.parse(JSON.stringify(prefs))
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
@@ -765,6 +790,11 @@ const WebUISettings = ({ currentPage }) => {
                         entry="autoload"
                         title={T("S66")}
                         label={T("S64")}
+                    />
+                    <CheckboxControl
+                        entry="mobileview"
+                        title={T("S122")}
+                        label={T("S122")}
                     />
                     <div class="p-2" />
                     <MachinePollingPreferences />

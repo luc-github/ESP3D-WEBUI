@@ -120,6 +120,7 @@
     "S119" : "Show macros buttons",
     "S120" : "Expand buttons on start",
     "S121" : "Macros",
+    "S122" : "Force mobile view",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

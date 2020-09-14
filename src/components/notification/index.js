@@ -31,9 +31,13 @@ function onResize() {
     if (document.getElementById("headerbar")) {
         currentpos = document.getElementById("headerbar").clientHeight
     }
+    if (document.getElementById("notifficationButton")) {
+        if (document.getElementById("notifficationButton").clientHeight == 0) {
+            if (activePage == Page.notifications)
+                dispatch("setPage", Page.dashboard)
+        }
+    }
     if (document.getElementById("notif")) {
-        if (activePage == Page.notifications)
-            dispatch("setPage", Page.dashboard)
         if (
             typeof document.getElementById("notif").getClientRects()[0] !==
             "undefined"

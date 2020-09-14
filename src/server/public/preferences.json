@@ -38,6 +38,7 @@
   "enumber": "6",
   "showsensorspanel": true,
   "showmacros": true,
-  "expandmacrosbuttonsonstart": true
+  "expandmacrosbuttonsonstart": true,
+  "mobileview": false
  }
 }
