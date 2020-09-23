@@ -131,7 +131,20 @@ function clearlang() {
       return arg;
 
     })(process.argv);
-    
+    if ((arg.lang == 'grbl') ) {
+        en_lang = true;
+        fr_lang = true;
+        es_lang = true;
+        de_lang = true;
+        it_lang = true;
+        hu_lang = false;
+        pl_lang = true;
+        ptbr_lang = true;
+        ru_lang = true;
+        tr_lang = false;
+        uk_lang = true;
+        zh_cn_lang = false;
+    }
     if ((typeof arg.lang == 'undefined') || (arg.lang == 'all')) {
         en_lang = true;
         fr_lang = true;
