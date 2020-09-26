@@ -37,6 +37,9 @@ copy index.html.gz languages\zh_CN
 mkdir languages\uk
 cmd.exe /c gulp package --lang uk
 copy index.html.gz languages\uk
+mkdir languages\grbl
+cmd.exe /c gulp package --lang uk
+copy index.html.gz languages\grbl
 cmd.exe /c gulp package
 mkdir languages\multi
 copy index.html.gz languages\multi

@@ -361,7 +361,8 @@ w25 {
     }
 }
 
-@media (min-width: 1200px) and (max-width: 1350px){
+
+@media (min-width: 800px) and (max-width: 1350px){
     .fixedbutton {
         width: 6em !important;
     }
@@ -388,6 +389,12 @@ w25 {
 @media (min-width: 3201px) and (max-width: 4000px) {
     .grid-container {
         grid-template-columns: 20% 20% 20% 20% 20%;
+    }
+}
+
+@media (min-width: 1600px) {
+    .fixedbutton {
+        width: 6em !important;
     }
 }
 
