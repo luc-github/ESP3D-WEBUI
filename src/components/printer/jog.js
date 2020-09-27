@@ -549,7 +549,7 @@ const JogPanel = () => {
     let panelClass = "order-" + index + " p-2 w-100 panelCard"
     return (
         <div class={panelClass}>
-            <div class="p-2 border rounded">
+            <div class="p-2 border rounded panelCard">
                 <div class="d-flex flex-column">
                     <div class="d-flex flex-row">
                         <div class="mr-auto">

@@ -1131,7 +1131,7 @@ const TemperaturesPanel = () => {
     return (
         <div class={panelClass} id="temperaturespanel">
             <div class="p-2 ">
-                <div class="border rounded p-2">
+                <div class="border rounded p-2 panelCard">
                     <div class="w-100">
                         <div class="d-flex flex-wrap">
                             <div class="p-1">

@@ -311,6 +311,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .filespanel {
 }
 .panelCard {
+    min-height: auto;
 }
 
 @include media-breakpoint-up(xs) {
@@ -333,10 +334,11 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     }
     .panelCard {
         max-width: 34rem;
+        min-height: 29rem;
     }
     .filespanel {
-        min-height: 22.4rem;
-        max-height: 22.4rem;
+        min-height: 21rem;
+        max-height: 21rem;
     }
 }
 
@@ -369,6 +371,9 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
         min-height: 15rem;
         max-height: 15rem;
     }
+    .panelCard {
+        min-height: auto;
+    }
 }
 
 @media (max-height: 575.98px) {
@@ -399,5 +404,8 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .filespanel {
         min-height: 15rem;
         max-height: 15rem;
+    }
+    .panelCard {
+        min-height: auto;
     }
 }

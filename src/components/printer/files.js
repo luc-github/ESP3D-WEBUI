@@ -1007,7 +1007,8 @@ function buildStatus(data) {
     }
     if (typeof data.status != "undefined") {
         if (data.status != "ok") {
-            newstatus.push(<div>{data.status}</div>)
+            newstatus.push(<div class="show-low">{data.status}</div>)
+            dispatch("status/msg", data.status)
         }
     }
     dispatch("setFilesStatus", newstatus)
