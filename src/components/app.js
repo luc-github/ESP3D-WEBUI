@@ -22,7 +22,7 @@ import { h } from "preact"
 import "../stylesheets/application.scss"
 require(`../stylesheets/components/${process.env.TARGET_ENV}/_${process.env.TARGET_ENV}.scss`)
 import { useState, useEffect } from "preact/hooks"
-import { DialogPage } from "./dialog"
+import { DialogPage, showDialog } from "./dialog"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
 import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
@@ -51,6 +51,45 @@ let customdata = [] //custom data
  */
 function setCustomdata(data) {
     customdata = data
+}
+
+/*
+ * Captive portal detection
+ */
+function isLimitedEnvironment() {
+    const sitesList = [
+        "clients3.google.com", //Android Captive Portal Detection
+        "connectivitycheck.",
+        //Apple iPhone, iPad with iOS 6 Captive Portal Detection
+        "apple.com",
+        ".akamaitechnologies.com",
+        //Apple iPhone, iPad with iOS 7, 8, 9 and recent versions of OS X
+        "www.appleiphonecell.com",
+        "www.itools.info",
+        "www.ibook.info",
+        "www.airport.us",
+        "www.thinkdifferent.us",
+        ".akamaiedge.net",
+        //Windows
+        ".msftncsi.com",
+        "microsoft.com",
+    ]
+    for (let i = 0; i < sitesList.length; i++) {
+        if (document.location.host.indexOf(sitesList[i]) != -1) return true
+    }
+    return false
+}
+
+/*
+ * Show final information if necessary
+ */
+function finishSetup() {
+    if (isLimitedEnvironment()) {
+        showDialog({
+            type: "notification",
+            message: T("S124").replace("$IP$", esp3dSettings.WebSocketIP),
+        })
+    }
 }
 
 /*
@@ -158,4 +197,5 @@ export {
     beepError,
     beep,
     stopPolling,
+    finishSetup,
 }

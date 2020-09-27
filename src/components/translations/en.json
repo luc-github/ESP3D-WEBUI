@@ -121,6 +121,8 @@
     "S120" : "Expand buttons on start",
     "S121" : "Macros",
     "S122" : "Force mobile view",
+    "S123" : "Important information",
+    "S124" : "It seems you are in limited environment, please open a browser using $IP$ address to get all features working.",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

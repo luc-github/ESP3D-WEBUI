@@ -19,7 +19,7 @@
 */
 
 "use strict"
-import { updateTerminal, stopPolling } from "../app"
+import { updateTerminal, stopPolling, finishSetup } from "../app"
 import { cancelCurrentQuery } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
@@ -60,6 +60,7 @@ function setPageId(id) {
     if (currentPageId == "") {
         console.log("Connection done")
         showDialog({ displayDialog: false, refreshPage: true })
+        finishSetup()
     }
     currentPageId = id
 }

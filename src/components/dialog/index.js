@@ -129,6 +129,14 @@ const DialogPage = () => {
     let iconTitle, iconMsg
     let progressbar
     let title = dialogData.title
+    if (dialogData.type == "notification") {
+        if (!dialogData.button1text) {
+            dialogData.button1text = T("S24")
+        }
+        if (!dialogData.title) {
+            title = T("S123")
+        }
+    }
     if (typeof title != "undefined") iconTitle = <Info color="blue" />
     if (
         dialogData.type == "error" ||
@@ -228,6 +236,7 @@ const DialogPage = () => {
                             type="button"
                             id="but1"
                             className={
+                                dialogData.type == "notification" ||
                                 dialogData.type == "error" ||
                                 dialogData.type == "progress"
                                     ? "btn btn-danger"
