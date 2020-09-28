@@ -40,5 +40,6 @@
   "showmacros": true,
   "expandmacrosbuttonsonstart": true,
   "mobileview": false
- }
+ },
+ "macros": []
 }

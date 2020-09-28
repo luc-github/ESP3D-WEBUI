@@ -45,6 +45,7 @@ let expandmacrosbuttons
 const MacrosControls = () => {
     let ribon = []
     if (!preferences.settings.showmacros) return null
+    if (preferences.macros.length == 0) return null
     if (typeof expandmacrosbuttons == "undefined")
         expandmacrosbuttons = preferences.settings.expandmacrosbuttonsonstart
     const toogleMacros = e => {

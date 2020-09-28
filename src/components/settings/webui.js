@@ -49,6 +49,8 @@ let prefs
 let initdone = false
 let pollingInterval = null
 let needReload = false
+let macros
+let macrostmp
 
 /*
  * Some constants
@@ -66,7 +68,8 @@ const default_preferences =
     "autoscroll":true,\
     "showfilespanel":true,\
     "openfilesonstart":false,\
-    "showjogpanel":true}}'
+    "showjogpanel":true},\
+    "macros":[] }'
 const preferencesFileName = "preferences.json"
 
 /*
@@ -217,6 +220,7 @@ function initApp() {
 function setPreferences(data) {
     if (!data.settings) return false
     preferences = data
+    if (typeof preferences.macros == "undefined") preferences.macros = []
     return true
 }
 
@@ -235,8 +239,13 @@ function loadPreferences() {
 function loadPreferencesSuccess(responseText) {
     try {
         let pref = JSON.parse(responseText)
+        console.log(pref)
         if (setPreferences(pref)) {
             prefs = JSON.parse(JSON.stringify(preferences.settings))
+            if (typeof preferences.macros != "undefined") {
+                macros = JSON.parse(JSON.stringify(preferences.macros))
+            } else macros = []
+
             updateUI()
         } else {
             showDialog({ type: "error", numError: 500, message: T("S21") })
@@ -254,6 +263,9 @@ function loadPreferencesError(errorCode, responseText) {
     console.log("no valid " + preferencesFileName + ", use default")
     if (errorCode == 404) {
         prefs = JSON.parse(JSON.stringify(preferences.settings))
+        if (typeof preferences.macros != "undefined") {
+            macros = JSON.parse(JSON.stringify(preferences.macros))
+        } else macros = []
         updateUI()
     } else {
         showDialog({ type: "error", numError: errorCode, message: T("S7") })
@@ -394,6 +406,9 @@ function loadImportFile() {
             let pref = JSON.parse(contents)
             if (setPreferences(pref)) {
                 prefs = JSON.parse(JSON.stringify(preferences.settings))
+                if (typeof preferences.macros != "undefined") {
+                    macros = JSON.parse(JSON.stringify(preferences.macros))
+                } else macros = []
                 savePreferences()
                 updateUI()
             } else {
@@ -482,6 +497,9 @@ function closeDialog() {
  */
 function successUpload(response) {
     prefs = JSON.parse(JSON.stringify(preferences.settings))
+    if (typeof preferences.macros != "undefined") {
+        macros = JSON.parse(JSON.stringify(preferences.macros))
+    } else macros = []
     let allkey = Object.keys(prefs)
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "success")
@@ -533,6 +551,7 @@ function savePreferences() {
     if (prefs.mobileview != preferences.settings.mobileview) needReload = true
     // do some sanity check
     preferences.settings = JSON.parse(JSON.stringify(prefs))
+    preferences.macros = JSON.parse(JSON.stringify(macros))
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
@@ -736,14 +755,27 @@ const LanguageSelection = () => {
     )
 }
 
-function initPreferences() {}
-
+/*
+ * Copy preferences settings to prefs
+ *
+ */
 function setcurrentprefs(preferences) {
     //lets make a copy
     prefs = JSON.parse(JSON.stringify(preferences.settings))
+    if (typeof preferences.macros != "undefined") {
+        macros = JSON.parse(JSON.stringify(preferences.macros))
+    } else macros = []
 }
 
+/*
+ * Open macro editor
+ *
+ */
 function openMacroEditor() {
+    if (typeof macros != "undefined") {
+        macrostmp = JSON.parse(JSON.stringify(macros))
+    } else macrostmp = []
+
     showDialog({
         type: "custom",
         message: "test message",
@@ -755,11 +787,19 @@ function openMacroEditor() {
     })
 }
 
+/*
+ * On valid macro editor
+ *
+ */
 function onValidMacroEditor() {
     console.log("Ok Macro")
     showDialog({ displayDialog: false })
 }
 
+/*
+ * On cancel macro editor
+ *
+ */
 function onDismissMacroEditor() {
     console.log("cancel Macro")
     showDialog({ displayDialog: false })
@@ -963,4 +1003,5 @@ export {
     prefs,
     WebUISettings,
     stopPolling,
+    macros,
 }
