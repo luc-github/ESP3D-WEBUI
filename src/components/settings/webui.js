@@ -519,6 +519,7 @@ function successUpload(response) {
 
     for (let p = 0; p < macros.length; p++) {
         setState("name", "success", p)
+        setState("color", "success", p)
     }
 
     startPolling()
@@ -862,35 +863,56 @@ const MacroUIEntry = ({ index, id, label }) => {
     useEffect(() => {
         updateState(id, index)
     }, [macros[index][id]])
-    return (
-        <div class="p-2">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span
-                        class="input-group-text"
-                        id={id + "_" + index + "-UI-label"}
-                    >
-                        {label}
-                    </span>
-                </div>
-                <input
-                    id={id + "_" + index + "-UI-input"}
-                    onInput={onInput}
-                    type="text"
-                    style="max-width:8em"
-                    class="form-control rounded-right"
-                    placeholder={T("S41")}
-                    value={macros[index][id]}
-                />
+    if (id == "color") {
+        return (
+            <div class="p-2">
                 <div
-                    class="invalid-feedback text-center"
-                    style="text-align:center!important"
+                    class="input-group-text p-1"
+                    id={id + "_" + index + "-UI-label"}
                 >
-                    {T("S42")}
+                    <input
+                        title={label}
+                        style="width:1.4em;heigth:1.4em;"
+                        id={id + "_" + index + "-UI-input"}
+                        onInput={onInput}
+                        type="color"
+                        value={macros[index][id]}
+                    />
                 </div>
             </div>
-        </div>
-    )
+        )
+    } else
+        return (
+            <div class="p-2">
+                <div class="input-group">
+                    <div
+                        class={id == "name" ? "input-group-prepend" : "d-none"}
+                    >
+                        <span
+                            class="input-group-text"
+                            id={id + "_" + index + "-UI-label"}
+                        >
+                            {label}
+                        </span>
+                    </div>
+                    <input
+                        id={id + "_" + index + "-UI-input"}
+                        onInput={onInput}
+                        type="text"
+                        style="max-width:8em"
+                        class="form-control rounded-right"
+                        placeholder={T("S41")}
+                        value={macros[index][id]}
+                    />
+                    <div
+                        class="invalid-feedback text-center"
+                        style="text-align:center!important"
+                    >
+                        {T("S42")}
+                    </div>
+                </div>
+            </div>
+        )
 }
 
 const MacroLine = ({ data, index }) => {
@@ -966,8 +988,9 @@ const MacroLine = ({ data, index }) => {
                     </button>
                 </div>
             </div>
-            <div>
+            <div class="d-flex flex-wrap  align-items-center">
                 <MacroUIEntry index={index} id="name" label={T("S129")} />
+                <MacroUIEntry index={index} id="color" label={T("S130")} />
             </div>
         </div>
     )

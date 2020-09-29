@@ -128,6 +128,7 @@
     "S127" : "Macro",
     "S128" : "Add macro",
     "S129" : "Name",
+    "S130" : "Color",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",
