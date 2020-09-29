@@ -74,7 +74,7 @@ function checkValue(id) {
         }
     }
     hasError[id] = !isvalid
-    dispatch("error/set", hasSettingError())
+    dispatch("errorprefs/set", hasSettingError())
     return isvalid
 }
 

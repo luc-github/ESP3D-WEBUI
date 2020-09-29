@@ -37,6 +37,7 @@ import {
     MachineFilesPreferences,
     initDefaultMachineValues,
     MachinePollingPreferences,
+    resetPrefsErrors,
 } from "./preferences"
 import { Notifications } from "./notifications"
 import enLangRessourceExtra from "./en.json"
@@ -1297,4 +1298,5 @@ export {
     Notifications,
     gitHubURL,
     MachinePanels,
+    resetPrefsErrors,
 }

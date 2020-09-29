@@ -20,7 +20,18 @@
 
 import { h } from "preact"
 import { setLang, T } from "../translations"
-import { RefreshCcw, ExternalLink, Save, Globe, Download } from "preact-feather"
+import {
+    RefreshCcw,
+    ExternalLink,
+    Save,
+    Globe,
+    Download,
+    Edit,
+    PlusSquare,
+    Trash2,
+    ArrowUp,
+    ArrowDown,
+} from "preact-feather"
 import { Setting, applyConfig, setCustomdata } from "../app"
 import {
     SendCommand,
@@ -35,6 +46,7 @@ const {
     MachineFilesPreferences,
     initMachine,
     MachinePollingPreferences,
+    resetPrefsErrors,
 } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
@@ -50,7 +62,7 @@ let initdone = false
 let pollingInterval = null
 let needReload = false
 let macros
-let macrostmp
+let hasError = []
 
 /*
  * Some constants
@@ -239,13 +251,13 @@ function loadPreferences() {
 function loadPreferencesSuccess(responseText) {
     try {
         let pref = JSON.parse(responseText)
-        console.log(pref)
         if (setPreferences(pref)) {
             prefs = JSON.parse(JSON.stringify(preferences.settings))
             if (typeof preferences.macros != "undefined") {
                 macros = JSON.parse(JSON.stringify(preferences.macros))
             } else macros = []
-
+            resetPrefsErrors()
+            resetMacrosErrors()
             updateUI()
         } else {
             showDialog({ type: "error", numError: 500, message: T("S21") })
@@ -504,6 +516,11 @@ function successUpload(response) {
     for (let p = 0; p < allkey.length; p++) {
         setState(allkey[p], "success")
     }
+
+    for (let p = 0; p < macros.length; p++) {
+        setState("name", "success", p)
+    }
+
     startPolling()
     updateProgress({ progress: 100 })
     setTimeout(closeDialog, 2000)
@@ -602,20 +619,33 @@ function exportSettings() {
 /*
  *Set state of control
  */
-function setState(entry, state) {
+function setState(entry, state, index = null) {
     let controlId
     let controlIdLabel
     let controlIdUnit
-    if (document.getElementById(entry + "-UI-checkbox"))
-        controlId = document.getElementById(entry + "-UI-checkbox")
-    if (document.getElementById(entry + "-UI-input")) {
-        controlId = document.getElementById(entry + "-UI-input")
-        controlIdLabel = document.getElementById(entry + "-UI-label")
-        controlIdUnit = document.getElementById(entry + "-UI-unit")
-    }
-    if (document.getElementById(entry + "-UI-select")) {
-        controlId = document.getElementById(entry + "-UI-select")
-        controlIdLabel = document.getElementById(entry + "-UI-label")
+    let controlIdButton
+    if (index != null) {
+        hasError[index][entry] = false
+        if (document.getElementById(entry + "_" + index + "-UI-input")) {
+            controlId = document.getElementById(
+                entry + "_" + index + "-UI-input"
+            )
+            controlIdLabel = document.getElementById(
+                entry + "_" + index + "-UI-label"
+            )
+        }
+    } else {
+        if (document.getElementById(entry + "-UI-checkbox"))
+            controlId = document.getElementById(entry + "-UI-checkbox")
+        if (document.getElementById(entry + "-UI-input")) {
+            controlId = document.getElementById(entry + "-UI-input")
+            controlIdLabel = document.getElementById(entry + "-UI-label")
+            controlIdUnit = document.getElementById(entry + "-UI-unit")
+        }
+        if (document.getElementById(entry + "-UI-select")) {
+            controlId = document.getElementById(entry + "-UI-select")
+            controlIdLabel = document.getElementById(entry + "-UI-label")
+        }
     }
     if (controlId) {
         controlId.classList.remove("is-valid")
@@ -630,6 +660,7 @@ function setState(entry, state) {
                 break
             case "error":
                 controlId.classList.add("is-invalid")
+                if (index != null) hasError[index][entry] = true
                 break
             default:
                 break
@@ -671,18 +702,33 @@ function setState(entry, state) {
                 break
         }
     }
+    if (index != null) {
+        const { dispatch } = useStoreon()
+        dispatch("errormacros/set", hasMacrosError())
+    }
 }
 
 /*
  * Change state of control according context / check
  */
-function updateState(entry) {
+function updateState(entry, index = null) {
     let state = "default"
-
-    if (preferences.settings[entry] != prefs[entry]) {
-        state = "modified"
+    if (index == null) {
+        if (preferences.settings[entry] != prefs[entry]) {
+            state = "modified"
+        }
+    } else {
+        //macros
+        if (typeof preferences.macros[index] == "undefined") {
+            state = "modified"
+        } else if (preferences.macros[index][entry] != macros[index][entry]) {
+            state = "modified"
+        }
+        if (macros[index][entry].length == 0) {
+            state = "error"
+        }
     }
-    setState(entry, state)
+    setState(entry, state, index)
 }
 
 /*
@@ -768,41 +814,175 @@ function setcurrentprefs(preferences) {
 }
 
 /*
- * Open macro editor
+ * Check if any error
  *
  */
-function openMacroEditor() {
-    if (typeof macros != "undefined") {
-        macrostmp = JSON.parse(JSON.stringify(macros))
-    } else macrostmp = []
+function hasMacrosError() {
+    for (let index = 0; index < hasError.length; index++) {
+        if (hasError[index].name || hasError[index].paremeter) return true
+    }
+    return false
+}
+/*
+ * Reset  macros errors
+ *
+ */
+function resetMacrosErrors() {
+    hasError = []
+    const { dispatch } = useStoreon()
+    dispatch("errormacros/set", hasMacrosError())
+}
 
-    showDialog({
-        type: "custom",
-        message: "test message",
-        button1text: "Apply",
-        next: onValidMacroEditor,
-        button2text: "Cancel",
-        next2: onDismissMacroEditor,
-        background: "grey",
+/*
+ * Add macro function
+ */
+function addMacro() {
+    let newindex = macros.length
+    let macroname = T("S127") + (newindex + 1)
+    macros.push({
+        name: macroname,
+        target: "FS",
+        color: "#C0C0C0",
+        icon: "Globe",
+        parameter: "",
     })
+    showDialog({ displayDialog: false, refreshPage: true })
 }
 
 /*
- * On valid macro editor
- *
+ * MacroUIEntry
  */
-function onValidMacroEditor() {
-    console.log("Ok Macro")
-    showDialog({ displayDialog: false })
+const MacroUIEntry = ({ index, id, label }) => {
+    const onInput = e => {
+        macros[index][id] = e.target.value
+        updateState(id, index)
+        console.log("input:" + macros[index][id])
+    }
+    if (typeof hasError[index] == "undefined") hasError[index] = []
+    useEffect(() => {
+        updateState(id, index)
+    }, [macros[index][id]])
+    return (
+        <div class="p-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span
+                        class="input-group-text"
+                        id={id + "_" + index + "-UI-label"}
+                    >
+                        {label}
+                    </span>
+                </div>
+                <input
+                    id={id + "_" + index + "-UI-input"}
+                    onInput={onInput}
+                    type="text"
+                    style="max-width:8em"
+                    class="form-control rounded-right"
+                    placeholder={T("S41")}
+                    value={macros[index][id]}
+                />
+                <div
+                    class="invalid-feedback text-center"
+                    style="text-align:center!important"
+                >
+                    {T("S42")}
+                </div>
+            </div>
+        </div>
+    )
 }
 
-/*
- * On cancel macro editor
- *
- */
-function onDismissMacroEditor() {
-    console.log("cancel Macro")
-    showDialog({ displayDialog: false })
+const MacroLine = ({ data, index }) => {
+    let border_bottom = ""
+    const deleteMacro = e => {
+        let newmacrostmp = []
+        for (let p = 0; p < macros.length; p++) {
+            if (p != index) {
+                newmacrostmp.push(macros[p])
+            }
+        }
+        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        console.log(macros)
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
+    const upMacroLine = e => {
+        let newmacrostmp = []
+        for (let p = 0; p < macros.length; p++) {
+            if (p == index) {
+                let prevmacro = newmacrostmp.pop()
+                newmacrostmp.push(macros[p])
+                newmacrostmp.push(prevmacro)
+            } else {
+                newmacrostmp.push(macros[p])
+            }
+        }
+        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
+    const downMacroLine = e => {
+        let newmacrostmp = []
+        for (let p = 0; p < macros.length; p++) {
+            if (p == index) {
+                p++
+                newmacrostmp.push(macros[p])
+                newmacrostmp.push(macros[p - 1])
+            } else {
+                newmacrostmp.push(macros[p])
+            }
+        }
+        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        showDialog({ displayDialog: false, refreshPage: true })
+    }
+    if (index != macros.length - 1) border_bottom = " border-bottom"
+    return (
+        <div class={"d-flex flex-wrap p-1 align-items-center " + border_bottom}>
+            <div class="p-1">
+                <button
+                    type="button"
+                    class="btn btn-outline-danger  btn-sm"
+                    onclick={deleteMacro}
+                >
+                    <Trash2 />
+                </button>
+            </div>
+            <div class="d-flex flex-column">
+                <div class={index != 0 ? "p-1" : "d-none"}>
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary  btn-sm"
+                        onclick={upMacroLine}
+                    >
+                        <ArrowUp />
+                    </button>
+                </div>
+                <div class={index != macros.length - 1 ? "p-1" : "d-none"}>
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        onclick={downMacroLine}
+                    >
+                        <ArrowDown />
+                    </button>
+                </div>
+            </div>
+            <div>
+                <MacroUIEntry index={index} id="name" label={T("S129")} />
+            </div>
+        </div>
+    )
+}
+
+const MacroListControl = () => {
+    let content = []
+    let contentList = []
+    for (let i = 0; i < macros.length; i++) {
+        contentList.push(<MacroLine data={macros[i]} index={i} />)
+    }
+    useEffect(() => {
+        //TODO
+    }, [macros])
+    return <div class="macrolist d-flex flex-column">{contentList}</div>
 }
 
 /*
@@ -811,9 +991,10 @@ function onDismissMacroEditor() {
  */
 const WebUISettings = ({ currentPage }) => {
     const { preferences_error } = useStoreon("preferences_error")
+    const { macros_error } = useStoreon("macros_error")
     if (currentPage != Setting.ui) return null
     if (typeof prefs == "undefined") {
-        console.log("render")
+        console.log("render undefined")
     }
     return (
         <div>
@@ -915,11 +1096,18 @@ const WebUISettings = ({ currentPage }) => {
                             />
                             <div class="p-1" />
                             <button
-                                class="btn btn-info"
-                                onclick={openMacroEditor}
+                                type="button"
+                                class="btn btn-primary"
+                                title={T("S128")}
+                                onClick={addMacro}
                             >
-                                Macros editor
+                                <PlusSquare />
+                                <span class="hide-low text-button">
+                                    {T("S128")}
+                                </span>
                             </button>
+                            <div class="p-1" />
+                            <MacroListControl />
                         </div>
                     </div>
                     <div class="p-2" />
@@ -960,6 +1148,8 @@ const WebUISettings = ({ currentPage }) => {
                         preferences.settings
                             ? preferences_error
                                 ? "d-none"
+                                : macros_error
+                                ? "d-none"
                                 : "text-button-setting"
                             : " d-none"
                     }
@@ -975,7 +1165,13 @@ const WebUISettings = ({ currentPage }) => {
                     </button>
                 </span>
                 <span
-                    class={preferences_error ? "d-none" : "text-button-setting"}
+                    class={
+                        preferences_error
+                            ? "d-none"
+                            : macros_error
+                            ? "d-none"
+                            : "text-button-setting"
+                    }
                 >
                     <button
                         type="button"

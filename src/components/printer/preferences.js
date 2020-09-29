@@ -39,13 +39,26 @@ function hasSettingError() {
     if (
         hasError["xyfeedrate"] ||
         hasError["zfeedrate"] ||
+        hasError["efeedrate"] ||
         hasError["xpos"] ||
         hasError["filesfilter"] ||
-        hasError["ypos"]
+        hasError["ypos"] ||
+        hasError["bedmax"] ||
+        hasError["chambermax"] ||
+        hasError["extrudermax"]
     ) {
         return true
     }
     return false
+}
+
+/*
+ * Reset errors to show save button
+ */
+function resetPrefsErrors() {
+    hasError = []
+    const { dispatch } = useStoreon()
+    dispatch("errorprefs/set", hasSettingError())
 }
 
 /*
@@ -79,7 +92,7 @@ function checkValue(id) {
             prefs[id] = ""
             isvalid = false
         } else {
-            if (id == "xyfeedrate" || id == "zfeedrate") {
+            if (id == "xyfeedrate" || id == "zfeedrate" || id == "efeedrate") {
                 if (prefs[id] < 1) isvalid = false
             }
             if (id == "xpos" || id == "ypos") {
@@ -94,7 +107,7 @@ function checkValue(id) {
         }
     }
     hasError[id] = !isvalid
-    dispatch("error/set", hasSettingError())
+    dispatch("errorprefs/set", hasSettingError())
     return isvalid
 }
 
@@ -177,7 +190,6 @@ function setState(entry, state) {
  */
 function updateState(index) {
     let state = "default"
-    hasError[index] = false
     if (prefs[index] != preferences.settings[index]) {
         if (checkValue(index)) {
             state = "modified"
@@ -753,4 +765,5 @@ export {
     MachineFilesPreferences,
     initDefaultMachineValues,
     MachinePollingPreferences,
+    resetPrefsErrors,
 }
