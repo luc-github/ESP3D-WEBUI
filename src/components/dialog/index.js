@@ -137,7 +137,13 @@ const DialogPage = () => {
             title = T("S123")
         }
     }
-    if (typeof title != "undefined") iconTitle = <Info color="blue" />
+    if (typeof dialogData.icontitle != "undefined")
+        iconTitle = dialogData.icontitle
+    if (
+        typeof title != "undefined" &&
+        typeof dialogData.icontitle == "undefined"
+    )
+        iconTitle = <Info color="blue" />
     if (
         dialogData.type == "error" ||
         (dialogData.type == "disconnect" && dialogData.numError)
