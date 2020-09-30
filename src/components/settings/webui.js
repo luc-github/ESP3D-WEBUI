@@ -859,20 +859,30 @@ const MacroUIEntry = ({ index, id, label }) => {
         updateState(id, index)
         console.log("input:" + macros[index][id])
     }
+    const onFocus = e => {
+        document
+            .getElementById(id + "_" + index + "-UI-label")
+            .classList.remove("d-none")
+    }
+    const onFocusOut = e => {
+        document
+            .getElementById(id + "_" + index + "-UI-label")
+            .classList.add("d-none")
+    }
     if (typeof hasError[index] == "undefined") hasError[index] = []
     useEffect(() => {
         updateState(id, index)
     }, [macros[index][id]])
     if (id == "color") {
         return (
-            <div class="p-2">
+            <div class="p-1">
                 <div
                     class="input-group-text p-1"
                     id={id + "_" + index + "-UI-label"}
                 >
                     <input
                         title={label}
-                        style="width:1.4em;heigth:1.4em;"
+                        style="width:1.4em;heigth:1.4em;cursor:pointer"
                         id={id + "_" + index + "-UI-input"}
                         onInput={onInput}
                         type="color"
@@ -883,13 +893,13 @@ const MacroUIEntry = ({ index, id, label }) => {
         )
     } else
         return (
-            <div class="p-2">
+            <div class="p-1">
                 <div class="input-group">
                     <div
                         class={id == "name" ? "input-group-prepend" : "d-none"}
                     >
                         <span
-                            class="input-group-text"
+                            class="input-group-text d-none"
                             id={id + "_" + index + "-UI-label"}
                         >
                             {label}
@@ -898,8 +908,10 @@ const MacroUIEntry = ({ index, id, label }) => {
                     <input
                         id={id + "_" + index + "-UI-input"}
                         onInput={onInput}
+                        onFocus={onFocus}
+                        onBlur={onFocusOut}
                         type="text"
-                        style="max-width:8em"
+                        style="max-width:8em;cursor:pointer"
                         class="form-control rounded-right"
                         placeholder={T("S41")}
                         value={macros[index][id]}
