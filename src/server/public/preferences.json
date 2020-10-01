@@ -41,5 +41,14 @@
   "expandmacrosbuttonsonstart": true,
   "mobileview": false
  },
- "macros": []
+ "macros": [
+  {
+   "name": "Macro1",
+   "target": "FS",
+   "color": "#C0C0C0",
+   "textcolor": "#000000",
+   "icon": "Trash",
+   "parameter": ""
+  }
+ ]
 }

@@ -86,9 +86,14 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     width: 0;
 }
 
+.hotspotMacro,
 .hotspotNotification,
 .hotspot {
     cursor: pointer;
+}
+.hotspotMacro:hover {
+    border-radius: 0.25rem;
+    background-color: #92c7ff;
 }
 
 .hotspotNotification:hover {

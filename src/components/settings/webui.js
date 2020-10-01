@@ -47,6 +47,8 @@ const {
     initMachine,
     MachinePollingPreferences,
     resetPrefsErrors,
+    getIcon,
+    iconsList,
 } = require(`../${process.env.TARGET_ENV}`)
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
@@ -63,6 +65,7 @@ let pollingInterval = null
 let needReload = false
 let macros
 let hasError = []
+let selectedIcon = null
 
 /*
  * Some constants
@@ -631,6 +634,8 @@ function setState(entry, state, index = null) {
             controlId = document.getElementById(
                 entry + "_" + index + "-UI-input"
             )
+        }
+        if (document.getElementById(entry + "_" + index + "-UI-label")) {
             controlIdLabel = document.getElementById(
                 entry + "_" + index + "-UI-label"
             )
@@ -720,6 +725,7 @@ function updateState(entry, index = null) {
         }
     } else {
         //macros
+
         if (typeof preferences.macros[index] == "undefined") {
             state = "modified"
         } else if (preferences.macros[index][entry] != macros[index][entry]) {
@@ -844,10 +850,26 @@ function addMacro() {
         name: macroname,
         target: "FS",
         color: "#C0C0C0",
+        textcolor: "#000000",
         icon: "Globe",
         parameter: "",
     })
     showDialog({ displayDialog: false, refreshPage: true })
+}
+
+/*
+ * Icon Macro for selection
+ */
+const IconUIEntry = ({ index, name }) => {
+    const selectMacroIcon = e => {
+        macros[index].icon = name
+        showDialog({ refreshPage: true, displayDialog: false })
+    }
+    return (
+        <div class="p-1 hotspotMacro" onclick={selectMacroIcon}>
+            {iconsList[name]}
+        </div>
+    )
 }
 
 /*
@@ -857,8 +879,8 @@ const MacroUIEntry = ({ index, id, label }) => {
     const onInput = e => {
         macros[index][id] = e.target.value
         updateState(id, index)
-        console.log("input:" + macros[index][id])
     }
+
     const onFocus = e => {
         document
             .getElementById(id + "_" + index + "-UI-label")
@@ -869,20 +891,59 @@ const MacroUIEntry = ({ index, id, label }) => {
             .getElementById(id + "_" + index + "-UI-label")
             .classList.add("d-none")
     }
+    const showListIcons = e => {
+        let list = []
+        let message = []
+        console.log(iconsList)
+        let allkey = Object.keys(iconsList)
+        for (let n = 0; n < allkey.length; n++) {
+            list.push(<IconUIEntry index={index} name={allkey[n]} />)
+        }
+        message.push(<div class="d-flex flex-wrap">{list}</div>)
+        selectedIcon = null
+        showDialog({
+            type: "custom",
+            message: message,
+            title: T("S134"),
+            button1text: T("S28"),
+        })
+    }
     if (typeof hasError[index] == "undefined") hasError[index] = []
     useEffect(() => {
         updateState(id, index)
     }, [macros[index][id]])
-    if (id == "color") {
+    if (id == "icon") {
         return (
-            <div class="p-1">
+            <div class="p-1 hotspotMacro">
+                <div
+                    class="input-group-text p-1"
+                    id={id + "_" + index + "-UI-label"}
+                >
+                    <button
+                        class="btn btn-sm"
+                        style={
+                            "background-color:" +
+                            macros[index].color +
+                            ";color:" +
+                            macros[index].textcolor
+                        }
+                        onclick={showListIcons}
+                    >
+                        {getIcon(macros[index].icon)}
+                    </button>
+                </div>
+            </div>
+        )
+    } else if (id == "color" || id == "textcolor") {
+        return (
+            <div class="p-1 hotspotMacro">
                 <div
                     class="input-group-text p-1"
                     id={id + "_" + index + "-UI-label"}
                 >
                     <input
                         title={label}
-                        style="width:1.4em;heigth:1.4em;cursor:pointer"
+                        style="width:1.4em;heigth:1.4em"
                         id={id + "_" + index + "-UI-input"}
                         onInput={onInput}
                         type="color"
@@ -893,7 +954,7 @@ const MacroUIEntry = ({ index, id, label }) => {
         )
     } else
         return (
-            <div class="p-1">
+            <div class="p-1 hotspotMacro">
                 <div class="input-group">
                     <div
                         class={id == "name" ? "input-group-prepend" : "d-none"}
@@ -911,7 +972,7 @@ const MacroUIEntry = ({ index, id, label }) => {
                         onFocus={onFocus}
                         onBlur={onFocusOut}
                         type="text"
-                        style="max-width:8em;cursor:pointer"
+                        style="max-width:8em"
                         class="form-control rounded-right"
                         placeholder={T("S41")}
                         value={macros[index][id]}
@@ -937,7 +998,6 @@ const MacroLine = ({ data, index }) => {
             }
         }
         macros = JSON.parse(JSON.stringify(newmacrostmp))
-        console.log(macros)
         showDialog({ displayDialog: false, refreshPage: true })
     }
     const upMacroLine = e => {
@@ -971,7 +1031,7 @@ const MacroLine = ({ data, index }) => {
     if (index != macros.length - 1) border_bottom = " border-bottom"
     return (
         <div class={"d-flex flex-wrap p-1 align-items-center " + border_bottom}>
-            <div class="p-1">
+            <div class="p-1 hotspotMacro">
                 <button
                     type="button"
                     class="btn btn-outline-danger  btn-sm"
@@ -981,7 +1041,7 @@ const MacroLine = ({ data, index }) => {
                 </button>
             </div>
             <div class="d-flex flex-column">
-                <div class={index != 0 ? "p-1" : "d-none"}>
+                <div class={index != 0 ? "hotspotMacro p-1" : "d-none"}>
                     <button
                         type="button"
                         class="btn btn-outline-secondary  btn-sm"
@@ -990,7 +1050,13 @@ const MacroLine = ({ data, index }) => {
                         <ArrowUp />
                     </button>
                 </div>
-                <div class={index != macros.length - 1 ? "p-1" : "d-none"}>
+                <div
+                    class={
+                        index != macros.length - 1
+                            ? "hotspotMacro p-1"
+                            : "d-none"
+                    }
+                >
                     <button
                         type="button"
                         class="btn btn-outline-secondary btn-sm"
@@ -1003,6 +1069,8 @@ const MacroLine = ({ data, index }) => {
             <div class="d-flex flex-wrap  align-items-center">
                 <MacroUIEntry index={index} id="name" label={T("S129")} />
                 <MacroUIEntry index={index} id="color" label={T("S130")} />
+                <MacroUIEntry index={index} id="textcolor" label={T("S131")} />
+                <MacroUIEntry index={index} id="icon" label={T("S132")} />
             </div>
         </div>
     )

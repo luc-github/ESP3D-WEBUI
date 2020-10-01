@@ -47,7 +47,10 @@ import {
     Save,
     ExternalLink,
     Download,
+    Globe,
+    Trash2,
 } from "preact-feather"
+import { Bed, Fan, FeedRate, FlowRate, Extruder } from "./icon"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
 
@@ -55,6 +58,15 @@ import { showDialog, updateProgress } from "../dialog"
  * Some constants
  */
 const QUERY_TIMEOUT = 15000 //in ms
+const iconsList = {
+    Bed: <Bed height="1.6em" />,
+    Extruder: <Extruder height="1.6em" />,
+    Fan: <Fan height="1.6em" />,
+    FeedRate: <FeedRate height="1.6em" />,
+    FlowRate: <FlowRate height="1.6em" />,
+    Globe: <Globe />,
+    Trash: <Trash2 />,
+}
 
 /*
  * Local variables
@@ -75,6 +87,15 @@ let currentIndex
 let stopImport
 let timeoutLoader = null
 let configDataSize
+
+/*
+ * Get icon from List
+ *
+ */
+function getIcon(name) {
+    if (typeof iconsList[name] == "undefined") return <Globe />
+    return iconsList[name]
+}
 
 /*
  * Get GitHub URL
@@ -1299,4 +1320,6 @@ export {
     gitHubURL,
     MachinePanels,
     resetPrefsErrors,
+    getIcon,
+    iconsList,
 }

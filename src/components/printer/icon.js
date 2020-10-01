@@ -41,7 +41,7 @@ const Fan = ({ height = "1.2em" }) => (
 
 /*
  *bed icon
- * default height is 1.4em
+ * default height is 1.2em
  */
 const Bed = ({ height = "1.2em" }) => (
     <svg height={height} viewBox="0 0 165 140">
