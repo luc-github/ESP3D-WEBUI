@@ -462,7 +462,7 @@ const Notifications = () => {
                         onclick={toggleShowFan}
                     >
                         <span class="bg-default input-group-text text-center textNotification justify-content-center">
-                            <Fan height="1.2em" />
+                            <Fan />
                         </span>
                         <span
                             class="bg-white input-group-text  text-center textNotification justify-content-center"

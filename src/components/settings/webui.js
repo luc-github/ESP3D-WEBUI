@@ -523,6 +523,8 @@ function successUpload(response) {
     for (let p = 0; p < macros.length; p++) {
         setState("name", "success", p)
         setState("color", "success", p)
+        setState("textcolor", "success", p)
+        setState("icon", "success", p)
     }
 
     startPolling()
@@ -866,7 +868,7 @@ const IconUIEntry = ({ index, name }) => {
         showDialog({ refreshPage: true, displayDialog: false })
     }
     return (
-        <div class="p-1 hotspotMacro" onclick={selectMacroIcon}>
+        <div class="p-1 hotspotMacro border" onclick={selectMacroIcon}>
             {iconsList[name]}
         </div>
     )
@@ -894,7 +896,6 @@ const MacroUIEntry = ({ index, id, label }) => {
     const showListIcons = e => {
         let list = []
         let message = []
-        console.log(iconsList)
         let allkey = Object.keys(iconsList)
         for (let n = 0; n < allkey.length; n++) {
             list.push(<IconUIEntry index={index} name={allkey[n]} />)

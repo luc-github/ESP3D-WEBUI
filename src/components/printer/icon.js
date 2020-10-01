@@ -25,7 +25,7 @@ import { h } from "preact"
  * default height is 1.2m
  */
 const Fan = ({ height = "1.2em" }) => (
-    <svg height={height} viewBox="0 0 32 32">
+    <svg height={height} viewBox="-4 1 38 30">
         <g>
             <path
                 fill="currentColor"
@@ -44,7 +44,7 @@ const Fan = ({ height = "1.2em" }) => (
  * default height is 1.2em
  */
 const Bed = ({ height = "1.2em" }) => (
-    <svg height={height} viewBox="0 0 165 140">
+    <svg height={height} viewBox="0 0 180 140">
         <g>
             <path
                 style="fill:currentColor;stroke:#ffffff;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -71,7 +71,7 @@ const Bed = ({ height = "1.2em" }) => (
  * default height is 1.2m
  */
 const FeedRate = ({ height = "1.2em" }) => (
-    <svg height={height} viewBox="2 4 90 90">
+    <svg height={height} viewBox="-10 4 112 90">
         <path
             style="stroke:currentColor;stroke-width:12;fill:none"
             d="M84.78 48.08C84.88 62.28 74.58 75.08 61.48 79.78C46.08 85.78 26.88 81.68 16.38 68.48C7.98 58.58 6.58 43.48 13.18 32.28C20.38 18.98 36.08 11.58 50.98 13.24"
@@ -95,8 +95,8 @@ const FeedRate = ({ height = "1.2em" }) => (
  *flowrate icon
  * default height is 1.2m
  */
-const FlowRate = ({ height = "1.2em" }) => (
-    <svg height={height} viewBox="1 15 90 72">
+const FlowRate = ({ height = "1.0em" }) => (
+    <svg height={height} viewBox="1 21 90 59">
         <path
             d="m 47.2,42.3 0.2,-25 m 8.8,35.1 a 9.12,9.13 0 0 1 -9.1,9.1 9.12,9.13 0 0 1 -9.1,-9.1 9.12,9.13 0 0 1 9.1,-9.1 9.12,9.13 0 0 1 9.1,9.1 z m 13.7,0.7 A 22.8,22.8 0 0 1 47.1,75.9 22.8,22.8 0 0 1 24.3,53.1 22.8,22.8 0 0 1 47.1,30.3 22.8,22.8 0 0 1 69.9,53.1 Z M 47.2,29.9 A 22.8,22.8 0 0 0 25.8,44.5 H 4.66 c -0.74,0 -1.35,0.6 -1.35,1.3 v 13 c 0,0.8 0.61,1.6 1.35,1.6 H 25.5 A 22.8,22.8 0 0 0 47.2,75.5 22.8,22.8 0 0 0 68.6,60.4 h 19.1 c 0.8,0 1.3,-0.8 1.3,-1.6 v -13 c 0,-0.7 -0.5,-1.3 -1.3,-1.3 H 68.4 A 22.8,22.8 0 0 0 47.2,29.9 Z"
             style="fill:none;stroke:currentColor;stroke-width:7.5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -109,7 +109,7 @@ const FlowRate = ({ height = "1.2em" }) => (
  * default height is 1.2m
  */
 const Extruder = ({ height = "1.2em" }) => (
-    <svg height={height} viewBox="0 0 26.4 26.5">
+    <svg height={height} viewBox="-6 0 32 26.5">
         <path
             d="M6.05 1.1C10.35 1.1 14.45 1.1 18.65 1.1C19.65 1.1 19.85 2.77 19.85 4.07C19.85 5.57 18.85 5.87 18.05 5.87C14.05 5.87 10.05 5.87 6.05 5.87C5.15 5.87 4.95 4.17 5.05 3.07C5.05 1.91 5.55 1.1 6.05 1.1C6.05 1.1 6.05 1.1 6.05 1.1M5.65 8.27C9.95 8.27 14.35 8.27 18.75 8.27C19.75 8.27 19.95 10.57 19.75 11.97C19.35 13.47 18.35 12.97 17.55 12.97C13.55 12.97 9.65 12.97 5.65 12.97C4.65 13.07 4.45 10.87 4.75 9.47C4.85 8.77 5.25 8.27 5.65 8.27C5.65 8.27 5.65 8.27 5.65 8.27M6.25 15.67C10.35 15.67 14.35 15.67 18.35 15.67C19.45 15.67 19.75 16.47 19.55 17.17C19.55 17.97 19.55 18.87 19.55 19.57C19.35 20.37 18.35 20.47 17.65 20.37C13.85 20.37 10.05 20.37 6.25 20.37C5.25 20.37 4.95 19.47 5.05 18.87C5.05 18.07 5.05 17.27 5.05 16.37C5.15 15.97 5.65 15.67 6.25 15.67C6.25 15.67 6.25 15.67 6.25 15.67M7.35 20.37C9.15 18.57 10.95 16.77 12.75 14.87C14.45 16.77 16.05 18.57 17.65 20.37C15.95 22.17 14.15 23.97 12.25 25.67C10.65 23.97 9.05 22.17 7.35 20.37C7.35 20.37 7.35 20.37 7.35 20.37M9.85 1.25C11.55 1.25 13.55 1.25 15.35 1.25C16.35 1.43 16.95 2.47 16.85 3.37C16.85 7.77 16.85 12.07 16.85 16.47C16.75 17.57 15.55 18.27 14.45 18.17C12.75 18.17 11.15 18.17 9.45 18.07C8.35 17.97 7.75 16.97 7.95 15.87C7.95 11.57 7.95 7.17 7.95 2.77C8.05 1.96 8.85 1.23 9.85 1.25C9.85 1.25 9.85 1.25 9.85 1.25"
             style="fill:currentColor;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
