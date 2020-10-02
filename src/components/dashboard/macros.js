@@ -26,6 +26,7 @@ import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
 import { preferences } from "../app"
 import { Grid, Minimize2, Maximize2 } from "preact-feather"
+const { getIcon } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -37,6 +38,35 @@ let expandmacrosbuttons
  * Local constants
  *
  */
+
+/*
+ * Macro Button
+ */
+const MacroButton = ({ data, index }) => {
+    const onClick = e => {
+        console.log("clicked " + data.name)
+    }
+    return (
+        <div class="p-1">
+            <button
+                type="button"
+                class="btn overlay"
+                style={
+                    "max-width:8em!important;min-height:2.5em!important;min-width:2.5em!important;overflow: hidden;text-overflow: ellipsis;" +
+                    "background-color:" +
+                    data.color +
+                    ";color:" +
+                    data.textcolor
+                }
+                title={data.name}
+                onClick={onClick}
+            >
+                {data.icon != "None" ? getIcon(data.icon) : null}
+                <span class="hide-low text-button">{data.name}</span>
+            </button>
+        </div>
+    )
+}
 
 /*
  * Macros Controls
@@ -53,8 +83,11 @@ const MacrosControls = () => {
         showDialog({ displayDialog: false, refreshPage: true })
     }
     if (expandmacrosbuttons) {
-        //ribon.push(
-        //     )
+        for (let index = 0; index < preferences.macros.length; index++) {
+            ribon.push(
+                <MacroButton data={preferences.macros[index]} index={index} />
+            )
+        }
     }
     return (
         <Fragment>
