@@ -157,6 +157,7 @@ import { showDialog, updateProgress } from "../dialog"
  */
 const QUERY_TIMEOUT = 15000 //in ms
 const iconsList = {
+    None: <div style="min-width:1.5em;min-height:1.4em"></div>,
     Bed: <Bed />,
     Extruder: <Extruder />,
     Fan: <Fan />,
