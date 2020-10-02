@@ -52,7 +52,7 @@ const MacroButton = ({ data, index }) => {
                 type="button"
                 class="btn overlay"
                 style={
-                    "max-width:8em!important;min-height:2.5em!important;min-width:2.5em!important;overflow: hidden;text-overflow: ellipsis;" +
+                    "min-height:2.5em!important;min-width:2.5em!important;" +
                     "background-color:" +
                     data.color +
                     ";color:" +
@@ -61,8 +61,15 @@ const MacroButton = ({ data, index }) => {
                 title={data.name}
                 onClick={onClick}
             >
-                {data.icon != "None" ? getIcon(data.icon) : null}
-                <span class="hide-low text-button">{data.name}</span>
+                <div class="d-flex align-items-center">
+                    {data.icon != "None" ? getIcon(data.icon) : null}
+                    <span
+                        class="hide-low text-button"
+                        style="max-width:8em;overflow: hidden;text-overflow: ellipsis;"
+                    >
+                        {data.name}
+                    </span>
+                </div>
             </button>
         </div>
     )

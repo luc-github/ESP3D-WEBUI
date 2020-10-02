@@ -525,6 +525,8 @@ function successUpload(response) {
         setState("color", "success", p)
         setState("textcolor", "success", p)
         setState("icon", "success", p)
+        setState("target", "success", p)
+        setState("parameter", "success", p)
     }
 
     startPolling()
@@ -642,6 +644,14 @@ function setState(entry, state, index = null) {
                 entry + "_" + index + "-UI-label"
             )
         }
+        if (document.getElementById(entry + "_" + index + "-UI-select")) {
+            controlId = document.getElementById(
+                entry + "_" + index + "-UI-select"
+            )
+            controlIdLabel = document.getElementById(
+                entry + "_" + index + "-UI-label"
+            )
+        }
     } else {
         if (document.getElementById(entry + "-UI-checkbox"))
             controlId = document.getElementById(entry + "-UI-checkbox")
@@ -723,6 +733,7 @@ function updateState(entry, index = null) {
     let state = "default"
     if (index == null) {
         if (preferences.settings[entry] != prefs[entry]) {
+            console.log(entry + "_" + index)
             state = "modified"
         }
     } else {
@@ -854,7 +865,7 @@ function addMacro() {
         color: "#C0C0C0",
         textcolor: "#000000",
         icon: "Globe",
-        parameter: "",
+        parameter: "/",
     })
     showDialog({ displayDialog: false, refreshPage: true })
 }
@@ -877,12 +888,70 @@ const IconUIEntry = ({ index, name }) => {
 /*
  * MacroUIEntry
  */
+const MacroUISelectTarget = ({ index, id, label }) => {
+    const onChange = e => {
+        macros[index][id] = e.target.value
+        updateState(id, index)
+    }
+    const onFocus = e => {
+        document
+            .getElementById(id + "_" + index + "-UI-label")
+            .classList.remove("d-none")
+    }
+    const onFocusOut = e => {
+        document
+            .getElementById(id + "_" + index + "-UI-label")
+            .classList.add("d-none")
+    }
+    useEffect(() => {
+        updateState(id, index)
+    }, [macros[index][id]])
+    return (
+        <div class="p-1" title={T("S136")}>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span
+                        class="input-group-text d-none"
+                        id={id + "_" + index + "-UI-label"}
+                    >
+                        {T("S135")}
+                    </span>
+                </div>
+
+                <select
+                    id={id + "_" + index + "-UI-select"}
+                    class="form-control"
+                    value={macros[index][id]}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onFocusOut}
+                >
+                    <option value="FS" title={T("S137")}>
+                        FS
+                    </option>
+                    <option value="SD" title={T("S138")}>
+                        SD
+                    </option>
+                    <option value="URI" title={T("S139")}>
+                        URI
+                    </option>
+                    <option value="CMD" title={T("S140")}>
+                        CMD
+                    </option>
+                </select>
+            </div>
+        </div>
+    )
+}
+
+/*
+ * MacroUIEntry
+ */
 const MacroUIEntry = ({ index, id, label }) => {
     const onInput = e => {
         macros[index][id] = e.target.value
         updateState(id, index)
     }
-
     const onFocus = e => {
         document
             .getElementById(id + "_" + index + "-UI-label")
@@ -953,18 +1022,22 @@ const MacroUIEntry = ({ index, id, label }) => {
                 </div>
             </div>
         )
-    } else
+    } else {
+        let desc = label
+        if (id != "name") {
+            if (macros[index].target == "CMD") desc = T("S140")
+            else if (macros[index].target == "URI") desc = T("S139")
+            else desc = T("S141")
+        }
         return (
             <div class="p-1 hotspotMacro">
                 <div class="input-group">
-                    <div
-                        class={id == "name" ? "input-group-prepend" : "d-none"}
-                    >
+                    <div class="input-group-prepend">
                         <span
                             class="input-group-text d-none"
                             id={id + "_" + index + "-UI-label"}
                         >
-                            {label}
+                            {desc}
                         </span>
                     </div>
                     <input
@@ -987,6 +1060,7 @@ const MacroUIEntry = ({ index, id, label }) => {
                 </div>
             </div>
         )
+    }
 }
 
 const MacroLine = ({ data, index }) => {
@@ -1067,11 +1141,17 @@ const MacroLine = ({ data, index }) => {
                     </button>
                 </div>
             </div>
-            <div class="d-flex flex-wrap  align-items-center">
+            <div class="d-flex flex-wrap  align-items-center justify-content-around">
                 <MacroUIEntry index={index} id="name" label={T("S129")} />
                 <MacroUIEntry index={index} id="color" label={T("S130")} />
                 <MacroUIEntry index={index} id="textcolor" label={T("S131")} />
                 <MacroUIEntry index={index} id="icon" label={T("S132")} />
+                <MacroUISelectTarget
+                    index={index}
+                    id="target"
+                    label={T("S132")}
+                />
+                <MacroUIEntry index={index} id="parameter" label={T("S141")} />
             </div>
         </div>
     )
