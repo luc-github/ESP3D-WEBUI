@@ -90,7 +90,7 @@ function listSDSerialFilesCmd() {
                 "End file list",
                 "error",
             ]
-        case "SDSerial":
+        case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "repetier4davinci":
@@ -136,7 +136,7 @@ function checkSerialSDCmd() {
         case "TFTSD":
         case "TFTUSB":
             return null
-        case "SDSerial":
+        case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "repetier4davinci":
@@ -452,7 +452,7 @@ function canDelete(entry) {
     ) {
         return true
     }
-    if (currentFilesType == "SDSerial") {
+    if (currentFilesType == "TARGETSD") {
         switch (esp3dSettings.FWTarget) {
             case "repetier":
             case "repetier4davinci":
@@ -582,7 +582,7 @@ function processDelete() {
             queryOngoing = QUERY_FILE_DELETE
             SendCommand(cmd, querySuccess, queryError, null, "deletefile", 1)
             break
-        case "SDSerial":
+        case "TARGETSD":
             path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
             path += processingEntry.name
@@ -649,7 +649,7 @@ function processCreateDir() {
                     1
                 )
                 break
-            case "SDSerial":
+            case "TARGETSD":
                 let path = currentPath[currentFilesType]
                 if (!path.endsWith("/")) path += "/"
                 path += processingEntry
@@ -676,41 +676,24 @@ function processCreateDir() {
     }
 }
 
-/*
- * Send print command
- */
-function processPrint(entry) {
-    console.log("print " + entry.name)
+function startJobFile(source, filename) {
+    console.log("print " + filename + " from " + source)
     let cmd
-    let path
     const { dispatch } = useStoreon()
     dispatch("status/print", T("P63"))
-    switch (currentFilesType) {
+    switch (source) {
         case "TFTSD":
-            path = currentPath[currentFilesType]
-            if (!path.endsWith("/")) path += "/"
-            path += entry.name
-            cmd = "M23 SD:" + path + "\nM24"
-            break
         case "TFTUSB":
-            path = currentPath[currentFilesType]
-            if (!path.endsWith("/")) path += "/"
-            path += entry.name
-            cmd = "M23 U:" + path + "\nM24"
-            break
-        case "SDSerial":
-            path = currentPath[currentFilesType]
-            if (!path.endsWith("/")) path += "/"
-            path += entry.name
+        case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "repetier4davinci":
                 case "marlin":
                 case "marlinkimbra":
-                    cmd = "M23 " + path + "\nM24"
+                    cmd = "M23 " + filename + "\nM24"
                     break
                 case "smoothieware":
-                    cmd = "play /sd" + path
+                    cmd = "play /sd" + filename
                     break
                 default:
                     console.log(
@@ -722,12 +705,42 @@ function processPrint(entry) {
             }
             break
         default:
-            console.log(currentFilesType + " is not a valid file system")
+            console.log(source + " is not a valid file system")
             showDialog({ displayDialog: false })
             return
     }
     console.log(cmd)
     SendCommand(cmd, querySuccess, queryError, null, "print", 1)
+}
+
+/*
+ * Send print command
+ */
+function processPrint(entry) {
+    console.log("print " + entry.name)
+    let path
+    switch (currentFilesType) {
+        case "TFTSD":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += "SD:" + entry.name
+            break
+        case "TFTUSB":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += "U:" + entry.name
+            break
+        case "TARGETSD":
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += entry.name
+            break
+        default:
+            console.log(currentFilesType + " is not a valid file system")
+            showDialog({ displayDialog: false })
+            return
+    }
+    startJobFile(currentFilesType, path)
 }
 
 /*
@@ -1103,7 +1116,7 @@ function refreshFilesList(isopendir = false) {
             //only one level at once
             ListSDSerialFiles()
             break
-        case "SDSerial":
+        case "TARGETSD":
             if (isopendir && esp3dSettings.FWTarget != "smoothieware") {
                 fileSystemCache[currentFilesType].files = generateSDList(
                     filesListCache[currentFilesType]
@@ -1192,7 +1205,8 @@ const FilesTypeSelector = () => {
         }
     }
     optionsList.push(<option value="FS">ESP</option>)
-    if (prefs.printersd) optionsList.push(<option value="SDSerial">SD</option>)
+    if (prefs.printersd)
+        optionsList.push(<option value="TARGETSD">{T("S143")}</option>)
     if (esp3dSettings.SDConnection == "direct")
         optionsList.push(<option value="SDDirect">SD</option>)
     if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
@@ -1517,4 +1531,4 @@ const FilesPanel = () => {
     )
 }
 
-export { FilesPanel, processFiles }
+export { FilesPanel, processFiles, startJobFile }

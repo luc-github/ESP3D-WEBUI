@@ -922,7 +922,7 @@ const MacroUISelectTarget = ({ index, id, label }) => {
     if (esp3dSettings.SDConnection == "direct" || prefs.printersd)
         options.push(
             <option
-                value="FWTARGET"
+                value="TARGETSD"
                 title={process.env.TARGET_ENV == "grbl" ? T("S144") : T("S143")}
             >
                 {process.env.TARGET_ENV == "grbl" ? T("S144") : T("S143")}

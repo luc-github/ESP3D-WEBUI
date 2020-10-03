@@ -26,7 +26,7 @@ import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
 import { preferences } from "../app"
 import { Grid, Minimize2, Maximize2 } from "preact-feather"
-const { getIcon } = require(`../${process.env.TARGET_ENV}`)
+const { getIcon, startJobFile } = require(`../${process.env.TARGET_ENV}`)
 
 /*
  * Local variables
@@ -49,11 +49,10 @@ const MacroButton = ({ data, index }) => {
                 let cmd = "[ESP700]" + data.parameter
                 SendCommand(cmd, null, sendCommandError)
                 break
-            case "FWTARGET":
-                break
+            case "TARGETSD":
             case "TFTUSB":
-                break
             case "TFTSD":
+                startJobFile(data.target, data.parameter)
                 break
             case "CMD":
                 let cmdlist = data.parameter.split(";")
