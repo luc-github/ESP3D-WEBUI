@@ -32,7 +32,7 @@ import {
     ArrowUp,
     ArrowDown,
 } from "preact-feather"
-import { Setting, applyConfig, setCustomdata } from "../app"
+import { esp3dSettings, Setting, applyConfig, setCustomdata } from "../app"
 import {
     SendCommand,
     cancelCurrentQuery,
@@ -747,6 +747,13 @@ function updateState(entry, index = null) {
         if (macros[index][entry].length == 0) {
             state = "error"
         }
+        if (document.getElementById(entry + "_" + index + "-UI-select")) {
+            if (
+                document.getElementById(entry + "_" + index + "-UI-select")
+                    .value.length == 0
+            )
+                state = "error"
+        }
     }
     setState(entry, state, index)
 }
@@ -839,7 +846,12 @@ function setcurrentprefs(preferences) {
  */
 function hasMacrosError() {
     for (let index = 0; index < hasError.length; index++) {
-        if (hasError[index].name || hasError[index].paremeter) return true
+        if (
+            hasError[index].name ||
+            hasError[index].parameter ||
+            hasError[index].target
+        )
+            return true
     }
     return false
 }
@@ -905,7 +917,29 @@ const MacroUISelectTarget = ({ index, id, label }) => {
     }
     useEffect(() => {
         updateState(id, index)
-    }, [macros[index][id]])
+    }, [macros[index][id], prefs.tftusb, prefs.tftsd, prefs.printersd])
+    let options = []
+    if (esp3dSettings.SDConnection == "direct" || prefs.printersd)
+        options.push(
+            <option
+                value="FWTARGET"
+                title={process.env.TARGET_ENV == "grbl" ? T("S144") : T("S143")}
+            >
+                {process.env.TARGET_ENV == "grbl" ? T("S144") : T("S143")}
+            </option>
+        )
+    if (prefs.tftsd)
+        options.push(
+            <option value="TFTSD" title="TFT SD">
+                TFT SD
+            </option>
+        )
+    if (prefs.tftusb)
+        options.push(
+            <option value="TFTUSB" title="TFT USB">
+                TFT USB
+            </option>
+        )
     return (
         <div class="p-1" title={T("S136")}>
             <div class="input-group">
@@ -927,18 +961,22 @@ const MacroUISelectTarget = ({ index, id, label }) => {
                     onBlur={onFocusOut}
                 >
                     <option value="FS" title={T("S137")}>
-                        FS
+                        {T("S137")}
                     </option>
-                    <option value="SD" title={T("S138")}>
-                        SD
-                    </option>
+                    {options}
                     <option value="URI" title={T("S139")}>
                         URI
                     </option>
                     <option value="CMD" title={T("S140")}>
-                        CMD
+                        {T("S142")}
                     </option>
                 </select>
+                <div
+                    class="invalid-feedback text-center"
+                    style="text-align:center!important"
+                >
+                    {T("S42")}
+                </div>
             </div>
         </div>
     )

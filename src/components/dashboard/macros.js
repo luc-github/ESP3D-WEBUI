@@ -44,7 +44,30 @@ let expandmacrosbuttons
  */
 const MacroButton = ({ data, index }) => {
     const onClick = e => {
-        console.log("clicked " + data.name)
+        switch (data.target) {
+            case "FS":
+                let cmd = "[ESP700]" + data.parameter
+                SendCommand(cmd, null, sendCommandError)
+                break
+            case "FWTARGET":
+                break
+            case "TFTUSB":
+                break
+            case "TFTSD":
+                break
+            case "CMD":
+                let cmdlist = data.parameter.split(";")
+                for (let i = 0; i < cmdlist.length; i++) {
+                    let cmd = cmdlist[i].trim()
+                    if (cmd.length > 0) SendCommand(cmd, null, sendCommandError)
+                }
+                break
+            case "URI":
+                window.open(data.parameter)
+                break
+            default:
+                console.log("Unknow target")
+        }
     }
     return (
         <div class="p-1">
