@@ -28,10 +28,10 @@ import { updateTerminal } from "../app"
  * Local variables
  *
  */
-var httpCommandList = []
-var isProcessingHttpCommand = false
-var currentHttpCommand = {}
-var lastError = {}
+let httpCommandList = []
+let isProcessingHttpCommand = false
+let currentHttpCommand = {}
+let lastError = {}
 
 /*
  * Some constants
@@ -93,7 +93,7 @@ function defaultHttpErrorFn(errorcode, response_text) {
         var fn = httpCommandList[0].errorfn
         if (errorcode == 401) {
             requestAuthentication()
-            console.log("Authentication issue pls log")
+            return
         } else {
             fn(errorcode, response_text)
         }
@@ -107,8 +107,13 @@ function defaultHttpErrorFn(errorcode, response_text) {
  * Request Login/Password
  */
 function requestAuthentication() {
-    //TODO
     console.log("Need login password")
+    //remove previous failed command
+    if (httpCommandList.length > 0) {
+        if (httpCommandList[0].id == "login") httpCommandList.shift()
+    }
+    console.log(httpCommandList)
+    showDialog({ type: "login" })
 }
 
 /*
@@ -164,6 +169,7 @@ function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
     httpCommandList.push(cmd)
     processCommands()
 }
+
 /*
  * Add post query to command list
  */
@@ -212,7 +218,49 @@ function SendPostHttp(
         progressfn: progress_fn,
         id: cmd_id,
     }
+    //put command at the end of list
     httpCommandList.push(cmd)
+    processCommands()
+}
+
+/*
+ * Send login credentials
+ */
+function SubmitCredentials(login, password, newpassword, timeout) {
+    let url = "/login"
+    let formData = new FormData()
+
+    if (typeof login != "undefined") {
+        formData.append("USER", login)
+        formData.append("PASSWORD", password)
+        //to allow to change user password
+        if (typeof newpassword != "undefined") {
+            formData.append("NEWPASSWORD", newpassword)
+        }
+        //to change the session timeout (default in FW is 360000)
+        if (typeof timeout != "undefined") {
+            formData.append("TIMEOUT", timeout)
+        }
+        formData.append("SUBMIT", "yes")
+    } else {
+        formData.append("DISCONNNECT", "yes")
+    }
+
+    var cmd = {
+        uri: url,
+        type: "POST",
+        isupload: false,
+        data: formData,
+        resultfn: null,
+        errorfn: null,
+        progressfn: null,
+        id: "login",
+    }
+    //put command at the top of list
+    httpCommandList.unshift(cmd)
+    console.log("New login")
+    console.log(httpCommandList)
+    isProcessingHttpCommand = false
     processCommands()
 }
 
@@ -248,8 +296,11 @@ function processCommands() {
                                 : currentHttpCommand.responseText
                         )
                     } else {
-                        if (currentHttpCommand.status == 401)
-                            requestAuthentication()
+                        console.log(
+                            httpCommandList[0].uri +
+                                " Command status " +
+                                currentHttpCommand.status
+                        )
                         defaultHttpErrorFn(
                             currentHttpCommand.status,
                             isdownload
@@ -292,7 +343,8 @@ function processCommands() {
             console.log("Unknow request")
         }
     } else {
-        //if (httpCommandList.length == 0) console.log("Command list is empty")
+        if (isProcessingHttpCommand) console.log("busy processing")
+        if (httpCommandList.length == 0) console.log("Command list is empty")
     }
 }
 
@@ -310,4 +362,5 @@ export {
     SendPostHttp,
     cancelCurrentQuery,
     lastError,
+    SubmitCredentials,
 }

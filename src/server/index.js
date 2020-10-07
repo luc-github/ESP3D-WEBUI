@@ -119,6 +119,11 @@ function SendBinary(text) {
     })
 }
 
+app.post("/login", function(req, res) {
+    res.send("")
+    return
+})
+
 app.get("/command", function(req, res) {
     var url = req.originalUrl
     var urldecoded = decodeURI(decodeURI(url))

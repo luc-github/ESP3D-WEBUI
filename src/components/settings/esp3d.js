@@ -31,11 +31,10 @@ import {
     Download,
 } from "preact-feather"
 const { clearData } = require(`../${process.env.TARGET_ENV}`)
-import { Setting, esp3dSettings } from "../app"
+import { Setting, esp3dSettings, disconnectPage } from "../app"
 import { prefs } from "../settings"
 import { SendCommand } from "../http"
 import { useEffect } from "preact/hooks"
-import { disconnectWsServer } from "../websocket"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
 
@@ -759,7 +758,7 @@ function confirmRestart() {
  */
 function restartEsp() {
     const cmd = "[ESP444]RESTART"
-    disconnectWsServer()
+    disconnectPage()
     SendCommand(cmd, reloadPageFn, reloadPageFn)
     showDialog({ type: "loader", title: T("S60"), message: T("S35") })
 }

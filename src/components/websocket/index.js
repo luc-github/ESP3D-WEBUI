@@ -43,10 +43,6 @@ var reconnectCounter = 0
 var pingStarted = false
 var pingPaused = false
 
-function pausePing(state) {
-    pingPaused = state
-}
-
 /*
  * Some constants
  */
@@ -72,6 +68,16 @@ function getPageId() {
     return currentPageId
 }
 
+/*
+ * Pause Ping
+ */
+function pausePing(state) {
+    pingPaused = state
+}
+
+/*
+ * Ping function
+ */
 function ping(start = false) {
     //be sure it is not reconnection
     if (!pingStarted) {
@@ -226,7 +232,7 @@ function connectWsServer() {
 function disconnectWsServer(data) {
     isLogOff = true
     reconnectCounter = 0
-    webSocketClient.close()
+    if (typeof webSocketClient.close != "undefined") webSocketClient.close()
     stopPolling()
     document.title = document.title + "(" + T("S9") + ")"
     if (data) showDialog(data)

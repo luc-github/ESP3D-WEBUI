@@ -19,11 +19,107 @@
 */
 
 import { h } from "preact"
-import { useEffect } from "preact/hooks"
-import { AlertTriangle, Info, HelpCircle } from "preact-feather"
+import { useState, useEffect } from "preact/hooks"
+import { AlertTriangle, Info, HelpCircle, Eye, EyeOff } from "preact-feather"
 import { T } from "../translations"
 import { useStoreon } from "storeon/preact"
-import { Page, reloadPage, beepError } from "../app"
+import { Page, reloadPage, beepError, disconnectPage } from "../app"
+import { SubmitCredentials } from "../http"
+
+/*
+ * Local variables
+ *
+ */
+let loginvalue = ""
+let passwordvalue = ""
+let passwordvisible = false
+
+/*
+ * Some constants
+ */
+
+/*
+ * Login function
+ *
+ */
+function goLogIn() {
+    SubmitCredentials(loginvalue, passwordvalue)
+}
+
+/*
+ * Login entry
+ *
+ */
+const LoginEntry = () => {
+    const onInput = e => {
+        loginvalue = e.target.value
+    }
+    return (
+        <div class="input-group">
+            <label class="p-1 align-middle">{T("S146")}:</label>
+            <input
+                class="form-control"
+                style="width:8em"
+                type="text"
+                value={loginvalue}
+                placeholder={T("S41")}
+                onInput={onInput}
+            />
+        </div>
+    )
+}
+
+/*
+ * Login entry
+ *
+ */
+const PasswordEntry = () => {
+    const [isvisible, setVisible] = useState(passwordvisible)
+    const onInput = e => {
+        passwordvalue = e.target.value
+    }
+    const onToggle = e => {
+        passwordvisible = !passwordvisible
+        setVisible(passwordvisible)
+        showDialog({ displayDialog: false })
+        showDialog({ type: "login" })
+    }
+    return (
+        <div class="input-group">
+            <label class="p-1 align-middle">{T("S147")}:</label>
+            <input
+                class="form-control"
+                type={isvisible ? "text" : "password"}
+                style="width:8em"
+                value={passwordvalue}
+                placeholder={T("S41")}
+                onInput={onInput}
+            />
+            <div class="input-group-append ">
+                <button
+                    class={
+                        isvisible
+                            ? "d-none"
+                            : "btn btn-light form-control border rounded-right"
+                    }
+                    onclick={onToggle}
+                >
+                    <Eye size="1.0em" />
+                </button>
+                <button
+                    class={
+                        isvisible
+                            ? "btn btn-light form-control border rounded-right"
+                            : "d-none"
+                    }
+                    onclick={onToggle}
+                >
+                    <EyeOff size="1.0em" />
+                </button>
+            </div>
+        </div>
+    )
+}
 
 /*
  *Spin loader
@@ -62,6 +158,10 @@ function disableNode(node, state) {
     else node.removeAttribute("disabled")
 }
 
+/*
+ * showDialog function
+ *
+ */
 function showDialog(data) {
     const { dispatch } = useStoreon()
     if (typeof dispatch == "undefined") {
@@ -87,6 +187,10 @@ function showDialog(data) {
     } else dispatch("displayDialog", true)
 }
 
+/*
+ * Update dialog
+ *
+ */
 function updateProgress(data) {
     const { dispatch } = useStoreon()
     let { dialogData } = useStoreon("dialogData")
@@ -103,6 +207,10 @@ function updateProgress(data) {
     }
 }
 
+/*
+ * Hide dialog
+ *
+ */
 function hideDialog() {
     const { dispatch } = useStoreon()
     dispatch("displayDialog", false)
@@ -136,6 +244,21 @@ const DialogPage = () => {
         if (!dialogData.title) {
             title = T("S123")
         }
+    }
+    if (dialogData.type == "login") {
+        title = T("S145")
+        //TODO ADD PROPER FORM
+        dialogData.message = (
+            <div>
+                <LoginEntry />
+                <div class="p-1" />
+                <PasswordEntry />
+            </div>
+        )
+        dialogData.button1text = T("S148")
+        dialogData.button2text = T("S28")
+        dialogData.next = goLogIn
+        dialogData.next2 = disconnectPage
     }
     if (typeof dialogData.icontitle != "undefined")
         iconTitle = dialogData.icontitle
@@ -246,7 +369,8 @@ const DialogPage = () => {
                                 dialogData.type == "error" ||
                                 dialogData.type == "progress"
                                     ? "btn btn-danger"
-                                    : dialogData.type == "confirmation" ||
+                                    : dialogData.type == "login" ||
+                                      dialogData.type == "confirmation" ||
                                       ((dialogData.type == "message" ||
                                           dialogData.type == "custom") &&
                                           dialogData.button1text)
@@ -267,7 +391,8 @@ const DialogPage = () => {
                             className={
                                 dialogData.type == "confirmation"
                                     ? "btn btn-primary"
-                                    : (dialogData.type == "message" ||
+                                    : (dialogData.type == "login" ||
+                                          dialogData.type == "message" ||
                                           dialogData.type == "custom") &&
                                       dialogData.button2text
                                     ? "btn btn-primary"

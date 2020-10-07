@@ -12,6 +12,7 @@ module.exports = merge(environment, {
             "/command": "http://localhost:8080",
             "/files": "http://localhost:8080",
             "/updatefw": "http://localhost:8080",
+            "/login": "http://localhost:8080",
         },
     },
 })

@@ -23,6 +23,7 @@ import "../stylesheets/application.scss"
 require(`../stylesheets/components/${process.env.TARGET_ENV}/_${process.env.TARGET_ENV}.scss`)
 import { useState, useEffect } from "preact/hooks"
 import { DialogPage, showDialog } from "./dialog"
+import { disconnectWsServer } from "./websocket"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
 import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
@@ -142,6 +143,18 @@ function applyConfig(data) {
 }
 
 /*
+ * Disconnect Page
+ */
+function disconnectPage() {
+    disconnectWsServer({
+        type: "disconnect",
+        title: T("S150"),
+        message: T("S149"),
+        button1text: T("S8"),
+    })
+}
+
+/*
  * App entry
  */
 function App() {
@@ -198,4 +211,5 @@ export {
     beep,
     stopPolling,
     finishSetup,
+    disconnectPage,
 }
