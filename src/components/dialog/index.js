@@ -32,7 +32,6 @@ import { SubmitCredentials } from "../http"
  */
 let loginvalue = ""
 let passwordvalue = ""
-let passwordvisible = false
 
 /*
  * Some constants
@@ -43,7 +42,9 @@ let passwordvisible = false
  *
  */
 function goLogIn() {
+    hideDialog()
     SubmitCredentials(loginvalue, passwordvalue)
+    passwordvalue = ""
 }
 
 /*
@@ -74,13 +75,12 @@ const LoginEntry = () => {
  *
  */
 const PasswordEntry = () => {
-    const [isvisible, setVisible] = useState(passwordvisible)
+    const [isvisible, setVisible] = useState(false)
     const onInput = e => {
         passwordvalue = e.target.value
     }
     const onToggle = e => {
-        passwordvisible = !passwordvisible
-        setVisible(passwordvisible)
+        setVisible(!isvisible)
         showDialog({ displayDialog: false })
         showDialog({ type: "login" })
     }

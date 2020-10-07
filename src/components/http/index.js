@@ -22,7 +22,7 @@ import { h } from "preact"
 import { getPageId, pausePing } from "../websocket"
 import { showDialog } from "../dialog"
 import { T } from "../translations"
-import { updateTerminal } from "../app"
+import { updateTerminal, esp3dSettings } from "../app"
 
 /*
  * Local variables
@@ -85,18 +85,17 @@ function defaultHttpResultFn(response_text) {
  * Handle query error
  */
 function defaultHttpErrorFn(errorcode, response_text) {
+    if (errorcode == 401) {
+        requestAuthentication()
+        return
+    }
     if (
         httpCommandList.length > 0 &&
         typeof httpCommandList[0].errorfn != "undefined" &&
         httpCommandList[0].errorfn
     ) {
         var fn = httpCommandList[0].errorfn
-        if (errorcode == 401) {
-            requestAuthentication()
-            return
-        } else {
-            fn(errorcode, response_text)
-        }
+        fn(errorcode, response_text)
     } else {
         console.log("Error : " + errorcode + " : " + response_text)
     }
@@ -107,9 +106,13 @@ function defaultHttpErrorFn(errorcode, response_text) {
  * Request Login/Password
  */
 function requestAuthentication() {
+    console.log("Request authentication")
     //remove previous failed command
     if (httpCommandList.length > 0) {
-        if (httpCommandList[0].id == "login") httpCommandList.shift()
+        if (httpCommandList[0].id == "login") {
+            console.log("Removing login command from list")
+            httpCommandList.shift()
+        }
     }
     showDialog({ type: "login" })
 }
@@ -158,10 +161,10 @@ function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
     var cmd = {
         uri: url,
         type: "GET",
-        isupload: false,
         resultfn: result_fn,
         errorfn: error_fn,
         progressfn: progress_fn,
+        progressdlg: null,
         id: cmd_id,
     }
     httpCommandList.push(cmd)
@@ -177,6 +180,7 @@ function SendPostHttp(
     result_fn,
     error_fn,
     progress_fn,
+    progressDlg,
     id,
     max_id
 ) {
@@ -209,15 +213,28 @@ function SendPostHttp(
     var cmd = {
         uri: url,
         type: "POST",
-        isupload: false,
         data: postdata,
         resultfn: result_fn,
         errorfn: error_fn,
         progressfn: progress_fn,
+        progressdlg: progressDlg,
         id: cmd_id,
+    }
+    //do a check before sending command to keep in buffer if authentication failed
+    if (esp3dSettings.Authentication == "Enabled") {
+        httpCommandList.push({
+            uri: "/command?ping=yes",
+            type: "GET",
+            resultfn: null,
+            errorfn: null,
+            progressfn: null,
+            progressdlg: null,
+            id: "ping",
+        })
     }
     //put command at the end of list
     httpCommandList.push(cmd)
+    console.log(httpCommandList)
     processCommands()
 }
 
@@ -241,17 +258,17 @@ function SubmitCredentials(login, password, newpassword, timeout) {
         }
         formData.append("SUBMIT", "yes")
     } else {
-        formData.append("DISCONNNECT", "yes")
+        formData.append("DISCONNECT", "yes")
     }
 
     var cmd = {
         uri: url,
         type: "POST",
-        isupload: false,
         data: formData,
         resultfn: null,
         errorfn: null,
         progressfn: null,
+        progressdlg: null,
         id: "login",
     }
     //put command at the top of list
@@ -264,6 +281,8 @@ function SubmitCredentials(login, password, newpassword, timeout) {
  * Process all commands one by one
  */
 function processCommands() {
+    console.log("Entering processing commands")
+    console.log(Object.values(httpCommandList))
     if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
         console.log(
             "Processing " +
@@ -329,6 +348,10 @@ function processCommands() {
             if (httpCommandList[0].type == "POST") {
                 console.log("Post query")
                 console.log(httpCommandList[0].data)
+            }
+            if (httpCommandList[0].progressdlg != null) {
+                console.log("Display progress dialog")
+                showDialog(httpCommandList[0].progressdlg)
             }
             currentHttpCommand.send(
                 httpCommandList[0].type == "POST"

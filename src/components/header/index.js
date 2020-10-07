@@ -21,11 +21,17 @@
 import { h } from "preact"
 import { Page, customdata } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
-import { Server, Settings, Eye } from "preact-feather"
+import { Server, Settings, Eye, Lock } from "preact-feather"
 import { T } from "../translations"
 import { prefs } from "../settings"
-import { esp3dSettings } from "../app"
+import { esp3dSettings, disconnectPage } from "../app"
+import { SubmitCredentials } from "../http"
 import { useStoreon } from "storeon/preact"
+
+function disconnectNow() {
+    SubmitCredentials()
+    disconnectPage()
+}
 
 /*
  * Header component
@@ -113,6 +119,20 @@ export const Header = () => {
             >
                 <Settings />
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
+            </div>
+            <div
+                class={
+                    esp3dSettings.FWTarget == "unknown"
+                        ? "d-none"
+                        : esp3dSettings.Authentication == "Enabled"
+                        ? "nav-item"
+                        : "d-none"
+                }
+                title={T("S151")}
+                onClick={disconnectNow}
+            >
+                <Lock />
+                <span class="disable-select hide-low">&nbsp;{T("S151")}</span>
             </div>
             <ESP3DBanner
                 visible={prefs.banner}

@@ -1319,13 +1319,13 @@ function processUpload() {
     var formData = new FormData()
     var url = pathUpload
     formData.append("path", currentPath[currentFilesType])
-    showDialog({
+    let progressDlg = {
         type: "progress",
         progress: 0,
         title: T("S32"),
         button1text: T("S28"),
         next: cancelUpload,
-    })
+    }
     for (var i = 0; i < uploadFiles.length; i++) {
         var file = uploadFiles[i]
         var arg =
@@ -1343,7 +1343,14 @@ function processUpload() {
                 file.name
         )
     }
-    SendPostHttp(url, formData, successUpload, errorUpload, progressAction)
+    SendPostHttp(
+        url,
+        formData,
+        successUpload,
+        errorUpload,
+        progressAction,
+        progressDlg
+    )
 }
 
 /*

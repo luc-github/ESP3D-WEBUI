@@ -580,19 +580,26 @@ function savePreferences() {
     var blob = new Blob([JSON.stringify(preferences, null, " ")], {
         type: "application/json",
     })
-    showDialog({
+    let progressDlg = {
         type: "progress",
         title: T("S32"),
         button1text: T("S28"),
         next: cancelUpload,
         progress: 0,
-    })
+    }
     var file = new File([blob], preferencesFileName)
     var formData = new FormData()
     var url = "/files"
     formData.append("path", "/")
     formData.append("myfile", file, preferencesFileName)
-    SendPostHttp(url, formData, successUpload, errorUpload, progressUpload)
+    SendPostHttp(
+        url,
+        formData,
+        successUpload,
+        errorUpload,
+        progressUpload,
+        progressDlg
+    )
 }
 
 /*

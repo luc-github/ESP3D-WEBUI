@@ -11,7 +11,7 @@ const config = {
         include: [process.env.TARGET_ENV],
     },
     after: {
-        exclude: [dist  + "/index.html.gz"],
+        exclude: [dist + "/index.html.gz"],
         test: [
             {
                 folder: "./" + dist,

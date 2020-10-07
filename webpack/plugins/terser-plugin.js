@@ -19,7 +19,7 @@ const config = {
             ecma: 5,
             warnings: false,
             comparisons: false,
-            drop_console: process.env.BUILD_ENV == "debug" ? false:true,
+            drop_console: process.env.BUILD_ENV == "debug" ? false : true,
         },
         mangle: {
             safari10: true,
