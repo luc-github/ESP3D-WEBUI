@@ -224,7 +224,7 @@ const DialogPage = () => {
     const { showDialog } = useStoreon("showDialog")
     const { dialogData } = useStoreon("dialogData")
     if (!dialogData) return null
-    //console.log(dialogData)
+    console.log(dialogData)
     if (!showDialog) {
         disableNode(document.getElementById("mainwindow"), false)
         return null
@@ -232,7 +232,7 @@ const DialogPage = () => {
     useEffect(() => {
         disableNode(document.getElementById("mainwindow"), true)
     })
-    //console.log(dialogData)
+    console.log(dialogData)
     let classname = "modal d-block"
     let iconTitle, iconMsg
     let progressbar
@@ -247,7 +247,6 @@ const DialogPage = () => {
     }
     if (dialogData.type == "login") {
         title = T("S145")
-        //TODO ADD PROPER FORM
         dialogData.message = (
             <div>
                 <LoginEntry />

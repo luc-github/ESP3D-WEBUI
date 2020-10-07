@@ -575,6 +575,6 @@ wss.on("connection", function(ws) {
     })
     currentID++
     ws.on("message", function(message) {
-        //console.log("received: %s", message)
+        console.log("received: %s", message)
     })
 })

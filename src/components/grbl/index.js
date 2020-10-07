@@ -201,7 +201,7 @@ function loadImportFile() {
     let reader = new FileReader()
     reader.onload = function(e) {
         var contents = e.target.result
-        //console.log(contents)
+        console.log(contents)
         try {
             printerImportSettings = JSON.parse(contents)
             currentIndex = -1
@@ -231,7 +231,7 @@ function loadImportFile() {
 function cancelImport() {
     stopImport = true
     showDialog({ displayDialog: false })
-    //console.log("stopping import")
+    console.log("stopping import")
 }
 
 /*
@@ -268,7 +268,7 @@ function exportSettings() {
         }
     }
     data += "]}"
-    //console.log(data)
+    console.log(data)
     file = new Blob([data], { type: "application/json" })
     if (window.navigator.msSaveOrOpenBlob)
         // IE10+
@@ -325,8 +325,8 @@ function processEventsData(type, data) {
 function processWSData(buffer) {
     processFeedRate(buffer)
     if (isConfigRequested) {
-        //console.log("config requested, processing " + buffer)
-        //console.log("setting size " + listrawSettings.length)
+        console.log("config requested, processing " + buffer)
+        console.log("setting size " + listrawSettings.length)
         if (
             buffer.startsWith(configurationCmd()[2]) ||
             buffer.startsWith(configurationCmd()[3])
@@ -575,7 +575,7 @@ function setState(entry, state) {
     let input = document.getElementById("printer_input_" + id)
     let button = document.getElementById("printer_button_" + id)
     if (!label || !input || !button) {
-        //console.log("not found" + entry.id)
+        console.log("not found" + entry.id)
         return
     }
     input.classList.remove("is-valid")

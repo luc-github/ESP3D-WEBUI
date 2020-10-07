@@ -548,7 +548,7 @@ function loadSettingsSuccess(responseText) {
     try {
         refreshOngoing = false
         esp3dFWSettings = JSON.parse(responseText)
-        //console.log(esp3dFWSettings)
+        console.log(esp3dFWSettings)
         showDialog({ displayDialog: false, refreshPage: true })
     } catch (e) {
         console.log(responseText)
@@ -586,7 +586,7 @@ function loadWiFiNetworksSuccess(responseText) {
                 </tr>
             </thead>
         )
-        //console.log(listnetworks)
+        console.log(listnetworks)
         for (let key in listnetworks.AP_LIST) {
             let sub_key = Object.keys(listnetworks.AP_LIST[key])
             let sub_val = Object.values(listnetworks.AP_LIST[key])

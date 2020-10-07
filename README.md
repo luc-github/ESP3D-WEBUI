@@ -34,6 +34,22 @@ in ESP3D-WEBUI directory (repository root)
 ```
 npm run build
 ```
+Will generate production and debug versions for grbl and printer   
+
+
+```
+npm run build-debug
+```
+Will generate debug versions for grbl and printer, which contain all console.log message.  
+
+
+```
+npm run build-prod
+```
+Will generate production versions for grbl and printer, cleaned from all `console.log` messages.   
+
+you can even go to more atomic level with : `npm run build-printer`, `npm run build-grbl`, `npm run build-printer-debug`, `npm run build-grbl-debug`, `npm run build-lang`   
+
 
 ### Code beautify with prettier
 use pluggin or cli   

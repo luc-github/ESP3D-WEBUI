@@ -451,7 +451,7 @@ function checkValue(entry, type) {
  */
 function updateState(entry, id) {
     if (typeof entry == "undefined") {
-        //console.log("undefined state")
+        console.log("undefined state")
         return
     }
     let type = id.split("_")[0]

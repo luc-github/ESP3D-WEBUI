@@ -88,7 +88,7 @@ function ping(start = false) {
     setTimeout(ping, pingDelay)
     if (pingPaused) return
     if (webSocketClient.readyState == 1) {
-        //console.log("ping")
+        console.log("ping")
         webSocketClient.send("ping")
     }
 }
@@ -97,7 +97,7 @@ function ping(start = false) {
  * Process WS terminal line
  */
 function processWebSocketBuffer(wsBuffer) {
-    //console.log(wsBuffer)
+    console.log(wsBuffer)
     updateTerminal(wsBuffer)
     processWSData(wsBuffer)
 }
@@ -171,7 +171,7 @@ function connectWsServer() {
     //On open WS
     webSocketClient.onopen = function(e) {
         reconnectCounter = 0
-        //console.log("ws connection ok")
+        console.log("ws connection ok")
         ping(true)
     }
     //On close ws

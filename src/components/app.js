@@ -133,7 +133,7 @@ const MainPage = () => {
  * Apply necessary settings
  */
 function applyConfig(data) {
-    //console.log("Apply settings")
+    console.log("Apply settings")
     esp3dSettings = data
     document.title = esp3dSettings.Hostname
     if (esp3dSettings.FWTarget == "unknown") {

@@ -77,7 +77,7 @@ function defaultHttpResultFn(response_text) {
     ) {
         httpCommandList[0].resultfn(response_text)
     }
-    //console.log("Success : " + response_text)
+    console.log("Success : " + response_text)
     nextCommand()
 }
 
@@ -107,12 +107,10 @@ function defaultHttpErrorFn(errorcode, response_text) {
  * Request Login/Password
  */
 function requestAuthentication() {
-    console.log("Need login password")
     //remove previous failed command
     if (httpCommandList.length > 0) {
         if (httpCommandList[0].id == "login") httpCommandList.shift()
     }
-    console.log(httpCommandList)
     showDialog({ type: "login" })
 }
 
@@ -120,7 +118,7 @@ function requestAuthentication() {
  * Go to next command in queries list
  */
 function nextCommand() {
-    //console.log("pop " + httpCommandList[0].uri)
+    console.log("pop " + httpCommandList[0].uri)
     httpCommandList.shift()
     isProcessingHttpCommand = false
     pausePing(false)
@@ -258,8 +256,6 @@ function SubmitCredentials(login, password, newpassword, timeout) {
     }
     //put command at the top of list
     httpCommandList.unshift(cmd)
-    console.log("New login")
-    console.log(httpCommandList)
     isProcessingHttpCommand = false
     processCommands()
 }
@@ -269,12 +265,12 @@ function SubmitCredentials(login, password, newpassword, timeout) {
  */
 function processCommands() {
     if (httpCommandList.length > 0 && !isProcessingHttpCommand) {
-        /*console.log(
+        console.log(
             "Processing " +
                 httpCommandList[0].type +
                 " command:" +
                 httpCommandList[0].uri
-        )*/
+        )
         if (
             httpCommandList[0].type == "GET" ||
             httpCommandList[0].type == "POST"
@@ -331,7 +327,7 @@ function processCommands() {
                     )
                 }
             if (httpCommandList[0].type == "POST") {
-                //console.log("Post query")
+                console.log("Post query")
                 console.log(httpCommandList[0].data)
             }
             currentHttpCommand.send(

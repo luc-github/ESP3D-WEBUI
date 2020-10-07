@@ -337,7 +337,7 @@ function processFiles(rawdata) {
     let data = rawdata
     data.trim()
     if (data.length == 0) return
-    //console.log(rawdata)
+    console.log(rawdata)
     if (isSDCheckRequested) {
         let response = checkSerialSDCmd()
         if (data.indexOf(response[1]) != -1) {

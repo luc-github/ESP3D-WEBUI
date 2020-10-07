@@ -4,7 +4,7 @@
  */
 
 import TerserPlugin from "terser-webpack-plugin"
-
+import environment from "../environment"
 const config = {
     parallel: true,
     cache: false,
@@ -19,6 +19,7 @@ const config = {
             ecma: 5,
             warnings: false,
             comparisons: false,
+            drop_console: process.env.BUILD_ENV == "debug" ? false:true,
         },
         mangle: {
             safari10: true,
