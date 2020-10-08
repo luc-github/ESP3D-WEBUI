@@ -55,6 +55,11 @@ const LoginEntry = () => {
     const onInput = e => {
         loginvalue = e.target.value
     }
+     const onKeyUp = e => {
+        if (e.keyCode == 13) {
+            document.getElementById("passwordInput").focus()
+        }
+    }
     return (
         <div class="input-group">
             <label class="p-1 align-middle">{T("S146")}:</label>
@@ -65,6 +70,7 @@ const LoginEntry = () => {
                 value={loginvalue}
                 placeholder={T("S41")}
                 onInput={onInput}
+                onkeyup={onKeyUp}
             />
         </div>
     )
@@ -84,16 +90,23 @@ const PasswordEntry = () => {
         showDialog({ displayDialog: false })
         showDialog({ type: "login" })
     }
+    const onKeyUp = e => {
+        if (e.keyCode == 13) {
+            goLogIn()
+        }
+    }
     return (
         <div class="input-group">
             <label class="p-1 align-middle">{T("S147")}:</label>
             <input
+                id="passwordInput"
                 class="form-control"
                 type={isvisible ? "text" : "password"}
                 style="width:8em"
                 value={passwordvalue}
                 placeholder={T("S41")}
                 onInput={onInput}
+                onkeyup={onKeyUp}
             />
             <div class="input-group-append ">
                 <button
@@ -247,6 +260,7 @@ const DialogPage = () => {
     }
     if (dialogData.type == "login") {
         title = T("S145")
+        classname += " greybg"
         dialogData.message = (
             <div>
                 <LoginEntry />

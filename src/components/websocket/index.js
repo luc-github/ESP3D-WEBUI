@@ -19,7 +19,12 @@
 */
 
 "use strict"
-import { updateTerminal, stopPolling, finishSetup } from "../app"
+import {
+    updateTerminal,
+    stopPolling,
+    finishSetup,
+    disconnectPage,
+} from "../app"
 import { cancelCurrentQuery } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
@@ -75,6 +80,22 @@ function pausePing(state) {
     pingPaused = state
 }
 
+function getCookie(cname) {
+    let name = cname + "="
+    let decodedCookie = decodeURIComponent(document.cookie)
+    let ca = decodedCookie.split(";")
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while (c.charAt(0) == " ") {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
+    }
+    return ""
+}
+
 /*
  * Ping function
  */
@@ -88,8 +109,9 @@ function ping(start = false) {
     setTimeout(ping, pingDelay)
     if (pingPaused) return
     if (webSocketClient.readyState == 1) {
-        console.log("ping")
-        webSocketClient.send("ping")
+        console.log("ping " + document.cookie)
+        let pingmsg = "PING:" + getCookie("ESPSESSIONID")
+        webSocketClient.send(pingmsg)
     }
 }
 
@@ -114,7 +136,13 @@ function processWebSocketText(wsBuffer) {
                 setPageId(tdata[1])
                 break
             case "PING":
-                //TODO
+                if (tdata.length == 3) {
+                    //Todo add a reconnect page before session ends
+                    if (tdata[1] == 0) {
+                        console.log("Session time out")
+                        disconnectPage()
+                    }
+                }
                 break
             case "activeID":
                 console.log(wsBuffer)
