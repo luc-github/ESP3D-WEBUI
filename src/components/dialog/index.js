@@ -32,6 +32,7 @@ import { SubmitCredentials } from "../http"
  */
 let loginvalue = ""
 let passwordvalue = ""
+let timeouthandle
 
 /*
  * Some constants
@@ -130,6 +131,41 @@ const PasswordEntry = () => {
                     <EyeOff size="1.0em" />
                 </button>
             </div>
+        </div>
+    )
+}
+
+/*
+ * Progress bar with auto update between update
+ *
+ */
+const ProgressionDisconnectBar = ({ remaining }) => {
+    clearTimeout(timeouthandle)
+    let remainValue = parseInt(remaining)
+    function update() {
+        if (document.getElementById("disconnectbar")) {
+            timeouthandle = setTimeout(update, 250)
+            remainValue -= 250
+            document.getElementById("disconnectbar").style.width =
+                100 * ((28000 - (remainValue - 2000)) / 28000) + "%"
+            console.log("Now " + remainValue + "ms")
+        }
+    }
+    useEffect(() => {
+        setTimeout(update, 250)
+    })
+    return (
+        <div class="progress">
+            <div
+                class="progress-bar bg-danger"
+                id="disconnectbar"
+                role="progressbar"
+                style={
+                    "width:" +
+                    100 * ((28000 - (remaining - 2000)) / 28000) +
+                    "%;"
+                }
+            ></div>
         </div>
     )
 }
@@ -425,4 +461,4 @@ const DialogPage = () => {
     )
 }
 
-export { showDialog, updateProgress, DialogPage }
+export { showDialog, updateProgress, DialogPage, ProgressionDisconnectBar }

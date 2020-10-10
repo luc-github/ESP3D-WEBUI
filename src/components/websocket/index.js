@@ -18,16 +18,17 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-"use strict"
+import { h } from "preact"
 import {
     updateTerminal,
     stopPolling,
     finishSetup,
     disconnectPage,
 } from "../app"
-import { cancelCurrentQuery, clearCommandList } from "../http"
+import { cancelCurrentQuery, clearCommandList, SendCommand } from "../http"
 import { setLang, T } from "../translations"
-import { showDialog } from "../dialog"
+import { showDialog, ProgressionDisconnectBar } from "../dialog"
+
 const {
     processWSData,
     processEventsData,
@@ -126,6 +127,14 @@ function processWebSocketBuffer(wsBuffer) {
 }
 
 /*
+ * Stay connected function
+ */
+function stayConnected() {
+    SendCommand("/command?ping=yes")
+    showDialog({ displayDialog: false, refreshPage: true })
+}
+
+/*
  * Process WS event line
  */
 function processWebSocketText(wsBuffer) {
@@ -138,7 +147,24 @@ function processWebSocketText(wsBuffer) {
                 break
             case "PING":
                 if (tdata.length == 3) {
-                    //Todo add a reconnect page before session ends
+                    console.log("Pong:" + tdata[1] + ":" + tdata[2])
+                    if (tdata[1] < 30000) {
+                        console.log("under 30 sec : ")
+                        let msg = []
+                        msg.push(<div>{T("S153")}</div>)
+                        msg.push(<div class="p-1" />)
+                        msg.push(
+                            <ProgressionDisconnectBar remaining={tdata[1]} />
+                        )
+                        showDialog({
+                            type: "confirmation",
+                            message: msg,
+                            title: T("S26"),
+                            button1text: T("S154"),
+                            next: stayConnected,
+                        })
+                    }
+
                     if (tdata[1] == 0) {
                         console.log("Session time out")
                         disconnectPage()
