@@ -26,11 +26,26 @@ import { T } from "../translations"
 import { prefs } from "../settings"
 import { esp3dSettings, disconnectPage } from "../app"
 import { SubmitCredentials } from "../http"
+import { showDialog } from "../dialog"
 import { useStoreon } from "storeon/preact"
 
+/*
+ * Force disconnection
+ *
+ */
 function disconnectNow() {
     SubmitCredentials()
     disconnectPage()
+}
+
+function confirmDisconnection() {
+    showDialog({
+        type: "confirmation",
+        message: T("S152"),
+        title: T("S26"),
+        button1text: T("S27"),
+        next: disconnectNow,
+    })
 }
 
 /*
@@ -129,7 +144,7 @@ export const Header = () => {
                         : "d-none"
                 }
                 title={T("S151")}
-                onClick={disconnectNow}
+                onClick={confirmDisconnection}
             >
                 <Lock />
                 <span class="disable-select hide-low">&nbsp;{T("S151")}</span>

@@ -212,4 +212,5 @@ export {
     stopPolling,
     finishSetup,
     disconnectPage,
+    disconnectWsServer,
 }

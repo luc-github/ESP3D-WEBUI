@@ -25,7 +25,7 @@ import {
     finishSetup,
     disconnectPage,
 } from "../app"
-import { cancelCurrentQuery } from "../http"
+import { cancelCurrentQuery, clearCommandList } from "../http"
 import { setLang, T } from "../translations"
 import { showDialog } from "../dialog"
 const {
@@ -39,6 +39,7 @@ const {
 
 var webSocketClient = {}
 var isLogOff = false
+var isDisconnected = false
 var webSocketPort = 0
 var webSocketIp = ""
 var webSocketType = ""
@@ -191,6 +192,8 @@ function connectWsServer() {
         )
     } catch (exception) {
         showDialog({ type: "error", numError: exception, message: T("S6") })
+        reconnectCounter++
+        console.error("Failed connect Websocket with retry " + reconnectCounter)
         console.error(exception)
         return
     }
@@ -226,6 +229,8 @@ function connectWsServer() {
     webSocketClient.onerror = function(e) {
         //TODO move this to notification
         //showDialog({type:"error", numError:e, message:T("S4")})
+        reconnectCounter++
+        console.error("Failed connect Websocket with retry " + reconnectCounter)
         console.log("ws error", e)
     }
     //Handle msg of ws
@@ -259,11 +264,13 @@ function connectWsServer() {
  */
 function disconnectWsServer(data) {
     isLogOff = true
-    reconnectCounter = 0
+    reconnectCounter = 4
     if (typeof webSocketClient.close != "undefined") webSocketClient.close()
     stopPolling()
+    clearCommandList()
     document.title = document.title + "(" + T("S9") + ")"
-    if (data) showDialog(data)
+    if (data && !isDisconnected) showDialog(data)
+    isDisconnected = true
 }
 
 export {

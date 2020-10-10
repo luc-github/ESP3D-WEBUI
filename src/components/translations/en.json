@@ -150,6 +150,7 @@
     "S149": "You are now disconnected",
     "S150": "Disconnected",
     "S151": "Disconnect",
+    "S152": "Do you want to disconnect?",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

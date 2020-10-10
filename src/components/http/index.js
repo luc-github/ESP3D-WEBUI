@@ -22,7 +22,7 @@ import { h } from "preact"
 import { getPageId, pausePing } from "../websocket"
 import { showDialog } from "../dialog"
 import { T } from "../translations"
-import { updateTerminal, esp3dSettings } from "../app"
+import { updateTerminal, esp3dSettings, disconnectWsServer } from "../app"
 
 /*
  * Local variables
@@ -302,6 +302,16 @@ function processCommands() {
                 if (httpCommandList[0].id == "download") isdownload = true
             }
             if (isdownload) currentHttpCommand.responseType = "blob"
+            currentHttpCommand.onerror = function() {
+                console.log("Failing HTTP request " + httpCommandList[0].uri)
+                disconnectWsServer({
+                    type: "disconnect",
+                    numError: 1,
+                    message: T("S10"),
+                    button1text: T("S8"),
+                })
+            }
+            currentHttpCommand.ontimeout = currentHttpCommand.onerror
             currentHttpCommand.onreadystatechange = function() {
                 if (currentHttpCommand.readyState == 4) {
                     if (currentHttpCommand.status == 200) {

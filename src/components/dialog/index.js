@@ -55,7 +55,7 @@ const LoginEntry = () => {
     const onInput = e => {
         loginvalue = e.target.value
     }
-     const onKeyUp = e => {
+    const onKeyUp = e => {
         if (e.keyCode == 13) {
             document.getElementById("passwordInput").focus()
         }
