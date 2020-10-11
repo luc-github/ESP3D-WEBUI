@@ -20,6 +20,7 @@ var fr_lang = false;
 var es_lang = false;
 var de_lang = false;
 var it_lang = false;
+var ja_lang = false;
 var pl_lang = false;
 var ptbr_lang = false;
 var ru_lang = false;
@@ -137,6 +138,7 @@ function clearlang() {
         es_lang = true;
         de_lang = true;
         it_lang = true;
+        ja_lang = false;
         hu_lang = false;
         pl_lang = true;
         ptbr_lang = true;
@@ -151,6 +153,7 @@ function clearlang() {
         es_lang = true;
         de_lang = true;
         it_lang = true;
+        ja_lang = true;
         hu_lang = true;
         pl_lang = true;
         ptbr_lang = true;
@@ -186,6 +189,9 @@ function clearlang() {
     if (arg.lang == 'it'){
         it_lang = true;
     }
+    if (arg.lang == 'ja'){
+        ja_lang = true;
+    }
     if(hu_lang){
         console.log("hu");
     }
@@ -194,6 +200,9 @@ function clearlang() {
     }
     if(it_lang){
         console.log("it");
+    }
+    if(ja_lang){
+        console.log("ja");
     }
     if (arg.lang == 'pl'){
         pl_lang = true;
@@ -237,6 +246,7 @@ function clearlang() {
         .pipe(removeCode({es_lang_disabled: !es_lang}))
         .pipe(removeCode({fr_lang_disabled: !fr_lang}))
         .pipe(removeCode({it_lang_disabled: !it_lang}))
+        .pipe(removeCode({ja_lang_disabled: !ja_lang}))
         .pipe(removeCode({hu_lang_disabled: !hu_lang}))
         .pipe(removeCode({pl_lang_disabled: !pl_lang}))
         .pipe(removeCode({ptbr_lang_disabled: !ptbr_lang}))
