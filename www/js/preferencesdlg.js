@@ -718,8 +718,8 @@ function closePreferencesDialog() {
             (typeof(preferenceslist[0].probetouchplatethickness) === 'undefined') ||
             (typeof(preferenceslist[0].enable_extruder_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_files_panel) === 'undefined') ||
-            (typeof(preferenceslist[0].has_tft_sd) === 'undefined') ||
-            (typeof(preferenceslist[0].has_tft_usb) === 'undefined') ||
+            (typeof(preferenceslist[0].has_TFT_SD) === 'undefined') ||
+            (typeof(preferenceslist[0].has_TFT_USB) === 'undefined') ||
             (typeof(preferenceslist[0].interval_positions) === 'undefined') ||
             (typeof(preferenceslist[0].interval_temperatures) === 'undefined') ||
             (typeof(preferenceslist[0].interval_status) === 'undefined') ||
