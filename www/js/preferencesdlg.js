@@ -1041,10 +1041,12 @@ function Checkvalues(id_2_check) {
             break;
     }
     if (status) {
-        document.getElementById(id_2_check + "_group").className = "form-group";
+        document.getElementById(id_2_check + "_group").classList.remove("has-feedback");
+        document.getElementById(id_2_check + "_group").classList.remove("has-error");
         document.getElementById(id_2_check + "_icon").innerHTML = "";
     } else {
-        document.getElementById(id_2_check + "_group").className = "form-group has-feedback has-error";
+        document.getElementById(id_2_check + "_group").classList.add("has-feedback");
+        document.getElementById(id_2_check + "_group").classList.add("has-error");
         document.getElementById(id_2_check + "_icon").innerHTML = get_icon_svg("remove");
         alertdlg(translate_text_item("Out of range"), error_message);
     }
