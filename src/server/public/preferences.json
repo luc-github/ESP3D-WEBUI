@@ -39,7 +39,19 @@
   "showsensorspanel": true,
   "showmacros": true,
   "expandmacrosbuttonsonstart": true,
-  "mobileview": false
+  "mobileview": false,
+  "showextrapanels": true,
+  "extrapanels": [
+   {
+    "name": "Panel1",
+    "color": "#C0C0C0",
+    "textcolor": "#000000",
+    "icon": "Globe",
+    "target": "panel",
+    "source": "",
+    "refreshtime": "0"
+   }
+  ]
  },
  "macros": []
 }

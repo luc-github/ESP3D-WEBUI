@@ -8,6 +8,25 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     background-color: #e9ecef !important;
 }
 
+.underlay {
+    float: left;
+    clear: both;
+    width: 100%;
+    height: 100%;
+    margin: 0 0;
+    padding: 0 0;
+    border: none;
+    z-index: 0;
+}
+
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    z-index: 1;
+}
+
 .btn-default {
     color: #495057;
     background-color: #e9ecef;
@@ -97,12 +116,12 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     box-shadow: inset 0 0 0 99999px rgba(0, 0, 0, 0.3);
 }
 
-.hotspotMacro,
+.hotspotControl,
 .hotspotNotification,
 .hotspot {
     cursor: pointer;
 }
-.hotspotMacro:hover {
+.hotspotControl:hover {
     border-radius: 0.25rem;
     background-color: #92c7ff;
 }
@@ -326,6 +345,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 
 .filespanel {
 }
+.panellist,
 .macrolist {
     overflow-y: auto;
     max-height: 21rem;

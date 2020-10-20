@@ -65,6 +65,7 @@ let pollingInterval = null
 let needReload = false
 let macros
 let hasError = []
+let panel_hasError = []
 let selectedIcon = null
 
 /*
@@ -78,6 +79,8 @@ const default_preferences =
     "showterminalpanel":true,\
     "openterminalonstart":false,\
     "showmacros":true,\
+    "showextrapanels":false,\
+    "extrapanels":[],\
     "expandmacrosbuttonsonstart":true,\
     "verbose":true,\
     "autoscroll":true,\
@@ -135,6 +138,12 @@ function updateUI() {
     }
     if (typeof prefs.showmacros == "undefined") {
         prefs.showmacros = true
+    }
+    if (typeof prefs.showextrapanels == "undefined") {
+        prefs.showextrapanels = true
+    }
+    if (typeof prefs.extrapanels == "undefined") {
+        prefs.extrapanels = []
     }
     if (typeof prefs.mobileview == "undefined") {
         prefs.mobileview = false
@@ -634,30 +643,36 @@ function exportSettings() {
 /*
  *Set state of control
  */
-function setState(entry, state, index = null) {
+function setState(entry, state, index = null, target = "macro") {
     let controlId
     let controlIdLabel
     let controlIdUnit
     let controlIdButton
+
     if (index != null) {
-        hasError[index][entry] = false
-        if (document.getElementById(entry + "_" + index + "-UI-input")) {
-            controlId = document.getElementById(
-                entry + "_" + index + "-UI-input"
-            )
-        }
-        if (document.getElementById(entry + "_" + index + "-UI-label")) {
-            controlIdLabel = document.getElementById(
-                entry + "_" + index + "-UI-label"
-            )
-        }
-        if (document.getElementById(entry + "_" + index + "-UI-select")) {
-            controlId = document.getElementById(
-                entry + "_" + index + "-UI-select"
-            )
-            controlIdLabel = document.getElementById(
-                entry + "_" + index + "-UI-label"
-            )
+        if (target == "macro") {
+            hasError[index][entry] = false
+            if (document.getElementById(entry + "_" + index + "-UI-input")) {
+                controlId = document.getElementById(
+                    entry + "_" + index + "-UI-input"
+                )
+            }
+            if (document.getElementById(entry + "_" + index + "-UI-label")) {
+                controlIdLabel = document.getElementById(
+                    entry + "_" + index + "-UI-label"
+                )
+            }
+            if (document.getElementById(entry + "_" + index + "-UI-select")) {
+                controlId = document.getElementById(
+                    entry + "_" + index + "-UI-select"
+                )
+                controlIdLabel = document.getElementById(
+                    entry + "_" + index + "-UI-label"
+                )
+            }
+        } else {
+            //TODO
+            return
         }
     } else {
         if (document.getElementById(entry + "-UI-checkbox"))
@@ -736,7 +751,7 @@ function setState(entry, state, index = null) {
 /*
  * Change state of control according context / check
  */
-function updateState(entry, index = null) {
+function updateState(entry, index = null, target = "macro") {
     let state = "default"
     if (index == null) {
         if (preferences.settings[entry] != prefs[entry]) {
@@ -744,25 +759,29 @@ function updateState(entry, index = null) {
             state = "modified"
         }
     } else {
-        //macros
+        if (target == "macro") {
+            //macros
 
-        if (typeof preferences.macros[index] == "undefined") {
-            state = "modified"
-        } else if (preferences.macros[index][entry] != macros[index][entry]) {
-            state = "modified"
-        }
-        if (macros[index][entry].length == 0) {
-            state = "error"
-        }
-        if (document.getElementById(entry + "_" + index + "-UI-select")) {
-            if (
-                document.getElementById(entry + "_" + index + "-UI-select")
-                    .value.length == 0
-            )
+            if (typeof preferences.macros[index] == "undefined") {
+                state = "modified"
+            } else if (
+                preferences.macros[index][entry] != macros[index][entry]
+            ) {
+                state = "modified"
+            }
+            if (macros[index][entry].length == 0) {
                 state = "error"
+            }
+            if (document.getElementById(entry + "_" + index + "-UI-select")) {
+                if (
+                    document.getElementById(entry + "_" + index + "-UI-select")
+                        .value.length == 0
+                )
+                    state = "error"
+            }
         }
     }
-    setState(entry, state, index)
+    setState(entry, state, index, target)
 }
 
 /*
@@ -862,6 +881,7 @@ function hasMacrosError() {
     }
     return false
 }
+
 /*
  * Reset  macros errors
  *
@@ -890,22 +910,44 @@ function addMacro() {
 }
 
 /*
+ * Add panel function
+ */
+function addPanel() {
+    let newindex = prefs.extrapanels.length
+    let panelname = T("S157") + (newindex + 1)
+    prefs.extrapanels.push({
+        name: panelname,
+        color: "#C0C0C0",
+        textcolor: "#000000",
+        icon: "Globe",
+        target: "panel",
+        source: "",
+        refreshtime: "0",
+    })
+    showDialog({ displayDialog: false, refreshPage: true })
+}
+
+/*
  * Icon Macro for selection
  */
-const IconUIEntry = ({ index, name }) => {
-    const selectMacroIcon = e => {
-        macros[index].icon = name
+const IconUIEntry = ({ index, name, target }) => {
+    const selectControlIcon = e => {
+        if (target == "panel") {
+            prefs.extrapanels[index].icon = name
+        } else {
+            macros[index].icon = name
+        }
         showDialog({ refreshPage: true, displayDialog: false })
     }
     return (
-        <div class="p-1 hotspotMacro border" onclick={selectMacroIcon}>
+        <div class="p-1 hotspotControl border" onclick={selectControlIcon}>
             {iconsList[name]}
         </div>
     )
 }
 
 /*
- * MacroUIEntry
+ * MacroUISelectTarget
  */
 const MacroUISelectTarget = ({ index, id, label }) => {
     const onChange = e => {
@@ -948,14 +990,14 @@ const MacroUISelectTarget = ({ index, id, label }) => {
             </option>
         )
     return (
-        <div class="p-1" title={T("S136")}>
+        <div class="p-1 hotspotControl" title={label}>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span
                         class="input-group-text d-none"
                         id={id + "_" + index + "-UI-label"}
                     >
-                        {T("S135")}
+                        {label}
                     </span>
                 </div>
 
@@ -975,6 +1017,65 @@ const MacroUISelectTarget = ({ index, id, label }) => {
                         URI
                     </option>
                     <option value="CMD" title={T("S140")}>
+                        {T("S142")}
+                    </option>
+                </select>
+                <div
+                    class="invalid-feedback text-center"
+                    style="text-align:center!important"
+                >
+                    {T("S42")}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+/*
+ * PanelUISelectTarget
+ */
+const PanelUISelectTarget = ({ index, id, label }) => {
+    const onChange = e => {
+        prefs.extrapanels[index][id] = e.target.value
+        updateState(id, index, "panel")
+    }
+    const onFocus = e => {
+        document
+            .getElementById("panel_" + id + "_" + index + "-UI-label")
+            .classList.remove("d-none")
+    }
+    const onFocusOut = e => {
+        document
+            .getElementById("panel_" + id + "_" + index + "-UI-label")
+            .classList.add("d-none")
+    }
+    useEffect(() => {
+        updateState(id, index, "panel")
+    }, prefs.extrapanels[index][id])
+    return (
+        <div class="p-1 hotspotControl" title={label}>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span
+                        class="input-group-text d-none"
+                        id={"panel_" + id + "_" + index + "-UI-label"}
+                    >
+                        {label}
+                    </span>
+                </div>
+
+                <select
+                    id={"panel_" + id + "_" + index + "-UI-select"}
+                    class="form-control"
+                    value={prefs.extrapanels[index][id]}
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onFocusOut}
+                >
+                    <option value="panel" title={T("S157")}>
+                        {T("S157")}
+                    </option>
+                    <option value="page" title={T("S158")}>
                         {T("S142")}
                     </option>
                 </select>
@@ -1012,7 +1113,9 @@ const MacroUIEntry = ({ index, id, label }) => {
         let message = []
         let allkey = Object.keys(iconsList)
         for (let n = 0; n < allkey.length; n++) {
-            list.push(<IconUIEntry index={index} name={allkey[n]} />)
+            list.push(
+                <IconUIEntry index={index} name={allkey[n]} target="macro" />
+            )
         }
         message.push(<div class="d-flex flex-wrap">{list}</div>)
         selectedIcon = null
@@ -1029,7 +1132,7 @@ const MacroUIEntry = ({ index, id, label }) => {
     }, [macros[index][id]])
     if (id == "icon") {
         return (
-            <div class="p-1 hotspotMacro">
+            <div class="p-1 hotspotControl">
                 <div
                     class="input-group-text p-1"
                     id={id + "_" + index + "-UI-label"}
@@ -1051,7 +1154,7 @@ const MacroUIEntry = ({ index, id, label }) => {
         )
     } else if (id == "color" || id == "textcolor") {
         return (
-            <div class="p-1 hotspotMacro">
+            <div class="p-1 hotspotControl">
                 <div
                     class="input-group-text p-1"
                     id={id + "_" + index + "-UI-label"}
@@ -1075,8 +1178,8 @@ const MacroUIEntry = ({ index, id, label }) => {
             else desc = T("S141")
         }
         return (
-            <div class="p-1 hotspotMacro">
-                <div class="input-group">
+            <div class="p-1 hotspotControl">
+                <div class="input-group" title={desc}>
                     <div class="input-group-prepend">
                         <span
                             class="input-group-text d-none"
@@ -1108,95 +1211,311 @@ const MacroUIEntry = ({ index, id, label }) => {
     }
 }
 
-const MacroLine = ({ data, index }) => {
+/*
+ * PanelUIEntry
+ */
+const PanelUIEntry = ({ index, id, label }) => {
+    const onInput = e => {
+        prefs.extrapanels[index][id] = e.target.value
+        updateState(id, index, "panel")
+    }
+    const onFocus = e => {
+        document
+            .getElementById("panel_" + id + "_" + index + "-UI-label")
+            .classList.remove("d-none")
+    }
+    const onFocusOut = e => {
+        document
+            .getElementById("panel_" + id + "_" + index + "-UI-label")
+            .classList.add("d-none")
+    }
+    const showListIcons = e => {
+        let list = []
+        let message = []
+        let allkey = Object.keys(iconsList)
+        for (let n = 0; n < allkey.length; n++) {
+            list.push(
+                <IconUIEntry index={index} name={allkey[n]} target="panel" />
+            )
+        }
+        message.push(<div class="d-flex flex-wrap">{list}</div>)
+        selectedIcon = null
+        showDialog({
+            type: "custom",
+            message: message,
+            title: T("S134"),
+            button1text: T("S28"),
+        })
+    }
+    if (typeof panel_hasError[index] == "undefined") panel_hasError[index] = []
+    useEffect(() => {
+        updateState(id, index, "panel")
+    }, [prefs.extrapanels[index][id]])
+    if (id == "icon") {
+        return (
+            <div class="p-1 hotspotControl">
+                <div
+                    class="input-group-text p-1"
+                    id={"panel_" + id + "_" + index + "-UI-label"}
+                >
+                    <button
+                        class="btn btn-sm"
+                        style={
+                            "background-color:" +
+                            prefs.extrapanels[index].color +
+                            ";color:" +
+                            prefs.extrapanels[index].textcolor
+                        }
+                        onclick={showListIcons}
+                    >
+                        {getIcon(prefs.extrapanels[index].icon)}
+                    </button>
+                </div>
+            </div>
+        )
+    } else if (id == "color" || id == "textcolor") {
+        return (
+            <div class="p-1 hotspotControl">
+                <div
+                    class="input-group-text p-1"
+                    id={"panel_" + id + "_" + index + "-UI-label"}
+                >
+                    <input
+                        title={label}
+                        style="width:1.4em;heigth:1.4em"
+                        id={"panel_" + id + "_" + index + "-UI-input"}
+                        onInput={onInput}
+                        type="color"
+                        value={prefs.extrapanels[index][id]}
+                    />
+                </div>
+            </div>
+        )
+    } else {
+        return (
+            <div class="p-1 hotspotControl">
+                <div class="input-group" title={label}>
+                    <div class="input-group-prepend">
+                        <span
+                            class="input-group-text d-none"
+                            id={"panel_" + id + "_" + index + "-UI-label"}
+                        >
+                            {label}
+                        </span>
+                    </div>
+                    <input
+                        id={"panel_" + id + "_" + index + "-UI-input"}
+                        onInput={onInput}
+                        onFocus={onFocus}
+                        onBlur={onFocusOut}
+                        min="0"
+                        type={id == "refreshtime" ? "number" : "text"}
+                        style={
+                            id == "refreshtime"
+                                ? "max-width:4em"
+                                : "max-width:8em"
+                        }
+                        class="form-control rounded-right"
+                        placeholder={T("S41")}
+                        value={prefs.extrapanels[index][id]}
+                    />
+                    <div
+                        class={
+                            id == "refreshtime"
+                                ? "input-group-append"
+                                : "d-none"
+                        }
+                    >
+                        <span
+                            class="input-group-text hide-low rounded-right"
+                            id={"panel+" + id + "-UI-unit"}
+                        >
+                            {T("S114")}
+                        </span>
+                    </div>
+                    <div
+                        class="invalid-feedback text-center"
+                        style="text-align:center!important"
+                    >
+                        {T("S42")}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+/*
+ * ControlListLine
+ */
+const ControlListLine = ({ data, index, target }) => {
     let border_bottom = ""
-    const deleteMacro = e => {
-        let newmacrostmp = []
-        for (let p = 0; p < macros.length; p++) {
+    const deleteControlLine = e => {
+        let newlinetmp = []
+        let listsize
+        if (target == "panel") {
+            listsize = prefs.extrapanels.length
+        } else {
+            listsize = macros.length
+        }
+        for (let p = 0; p < listsize; p++) {
             if (p != index) {
-                newmacrostmp.push(macros[p])
+                if (target == "panel") {
+                    newlinetmp.push(prefs.extrapanels[p])
+                } else {
+                    newlinetmp.push(macros[p])
+                }
             }
         }
-        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        if (target == "panel") {
+            prefs.extrapanels = JSON.parse(JSON.stringify(newlinetmp))
+        } else {
+            macros = JSON.parse(JSON.stringify(newlinetmp))
+        }
         showDialog({ displayDialog: false, refreshPage: true })
     }
-    const upMacroLine = e => {
-        let newmacrostmp = []
+    const upControlLine = e => {
+        let newlinetmp = []
+        let listsize
+        if (target == "panel") {
+            listsize = prefs.extrapanels.length
+        } else {
+            listsize = macros.length
+        }
         for (let p = 0; p < macros.length; p++) {
             if (p == index) {
-                let prevmacro = newmacrostmp.pop()
-                newmacrostmp.push(macros[p])
-                newmacrostmp.push(prevmacro)
+                let prevline = newlinetmp.pop()
+                if (target == "panel") {
+                    newlinetmp.push(prefs.extrapanels[p])
+                } else {
+                    newlinetmp.push(macros[p])
+                }
+                newlinetmp.push(prevline)
             } else {
-                newmacrostmp.push(macros[p])
+                if (target == "panel") {
+                    newlinetmp.push(prefs.extrapanels[p])
+                } else {
+                    newlinetmp.push(macros[p])
+                }
             }
         }
-        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        if (target == "panel") {
+            prefs.extrapanels = JSON.parse(JSON.stringify(newlinetmp))
+        } else {
+            macros = JSON.parse(JSON.stringify(newlinetmp))
+        }
         showDialog({ displayDialog: false, refreshPage: true })
     }
-    const downMacroLine = e => {
-        let newmacrostmp = []
-        for (let p = 0; p < macros.length; p++) {
+    const downControlLine = e => {
+        let newlinetmp = []
+        let listsize
+        if (target == "panel") {
+            listsize = prefs.extrapanels.length
+        } else {
+            listsize = macros.length
+        }
+        for (let p = 0; p < listsize; p++) {
             if (p == index) {
                 p++
-                newmacrostmp.push(macros[p])
-                newmacrostmp.push(macros[p - 1])
+                if (target == "panel") {
+                    newlinetmp.push(prefs.extrapanels[p])
+                    newlinetmp.push(prefs.extrapanels[p - 1])
+                } else {
+                    newlinetmp.push(macros[p])
+                    newlinetmp.push(macros[p - 1])
+                }
             } else {
-                newmacrostmp.push(macros[p])
+                if (target == "panel") {
+                    newlinetmp.push(prefs.extrapanels[p])
+                } else {
+                    newlinetmp.push(macros[p])
+                }
             }
         }
-        macros = JSON.parse(JSON.stringify(newmacrostmp))
+        if (target == "panel") {
+            prefs.extrapanels = JSON.parse(JSON.stringify(newlinetmp))
+        } else {
+            macros = JSON.parse(JSON.stringify(newlinetmp))
+        }
         showDialog({ displayDialog: false, refreshPage: true })
     }
-    if (index != macros.length - 1) border_bottom = " border-bottom"
+    let listsize
+    let content = []
+    if (target == "panel") {
+        listsize = prefs.extrapanels.length
+        content.push(<PanelUIEntry index={index} id="name" label={T("S129")} />)
+        content.push(
+            <PanelUIEntry index={index} id="color" label={T("S130")} />
+        )
+        content.push(
+            <PanelUIEntry index={index} id="textcolor" label={T("S131")} />
+        )
+        content.push(<PanelUIEntry index={index} id="icon" label={T("S132")} />)
+        content.push(
+            <PanelUISelectTarget index={index} id="target" label={T("S159")} />
+        )
+        content.push(
+            <PanelUIEntry index={index} id="source" label={T("S139")} />
+        )
+        //TODO target
+        content.push(
+            <PanelUIEntry index={index} id="refreshtime" label={T("S113")} />
+        )
+    } else {
+        listsize = macros.length
+        content.push(<MacroUIEntry index={index} id="name" label={T("S129")} />)
+        content.push(
+            <MacroUIEntry index={index} id="color" label={T("S130")} />
+        )
+        content.push(
+            <MacroUIEntry index={index} id="textcolor" label={T("S131")} />
+        )
+        content.push(<MacroUIEntry index={index} id="icon" label={T("S132")} />)
+        content.push(
+            <MacroUISelectTarget index={index} id="target" label={T("S136")} />
+        )
+        content.push(
+            <MacroUIEntry index={index} id="parameter" label={T("S141")} />
+        )
+    }
+    if (index != listsize - 1) border_bottom = " border-bottom"
     return (
         <div class={"d-flex flex-wrap p-1 align-items-center " + border_bottom}>
-            <div class="p-1 hotspotMacro">
+            <div class="p-1 hotspotControl">
                 <button
                     type="button"
                     class="btn btn-outline-danger  btn-sm"
-                    onclick={deleteMacro}
+                    onclick={deleteControlLine}
                 >
                     <Trash2 />
                 </button>
             </div>
             <div class="d-flex flex-column">
-                <div class={index != 0 ? "hotspotMacro p-1" : "d-none"}>
+                <div class={index != 0 ? "hotspotControl p-1" : "d-none"}>
                     <button
                         type="button"
                         class="btn btn-outline-secondary  btn-sm"
-                        onclick={upMacroLine}
+                        onclick={upControlLine}
                     >
                         <ArrowUp />
                     </button>
                 </div>
                 <div
                     class={
-                        index != macros.length - 1
-                            ? "hotspotMacro p-1"
-                            : "d-none"
+                        index != listsize - 1 ? "hotspotControl p-1" : "d-none"
                     }
                 >
                     <button
                         type="button"
                         class="btn btn-outline-secondary btn-sm"
-                        onclick={downMacroLine}
+                        onclick={downControlLine}
                     >
                         <ArrowDown />
                     </button>
                 </div>
             </div>
             <div class="d-flex flex-wrap  align-items-center justify-content-around">
-                <MacroUIEntry index={index} id="name" label={T("S129")} />
-                <MacroUIEntry index={index} id="color" label={T("S130")} />
-                <MacroUIEntry index={index} id="textcolor" label={T("S131")} />
-                <MacroUIEntry index={index} id="icon" label={T("S132")} />
-                <MacroUISelectTarget
-                    index={index}
-                    id="target"
-                    label={T("S132")}
-                />
-                <MacroUIEntry index={index} id="parameter" label={T("S141")} />
+                {content}
             </div>
         </div>
     )
@@ -1206,12 +1525,28 @@ const MacroListControl = () => {
     let content = []
     let contentList = []
     for (let i = 0; i < macros.length; i++) {
-        contentList.push(<MacroLine data={macros[i]} index={i} />)
+        contentList.push(
+            <ControlListLine data={macros[i]} index={i} target="macro" />
+        )
     }
-    useEffect(() => {
-        //TODO
-    }, [macros])
+    useEffect(() => {}, [macros])
     return <div class="macrolist d-flex flex-column">{contentList}</div>
+}
+
+const PanelListControl = () => {
+    let content = []
+    let contentList = []
+    for (let i = 0; i < prefs.extrapanels.length; i++) {
+        contentList.push(
+            <ControlListLine
+                data={prefs.extrapanels[i]}
+                index={i}
+                target="panel"
+            />
+        )
+    }
+    useEffect(() => {}, [prefs.extrapanels])
+    return <div class="panellist d-flex flex-column">{contentList}</div>
 }
 
 /*
@@ -1341,6 +1676,37 @@ const WebUISettings = ({ currentPage }) => {
                     </div>
                     <div class="p-2" />
                     <MachineUIPreferences />
+                    <div class="p-2" />
+                    <div class="card">
+                        <div class="card-header">
+                            <CheckboxControl
+                                entry="showextrapanels"
+                                title={T("S155")}
+                                label={T("S155")}
+                            />
+                        </div>
+                        <div
+                            class={
+                                prefs["showextrapanels"]
+                                    ? "card-body"
+                                    : "d-none"
+                            }
+                        >
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                title={T("S156")}
+                                onClick={addPanel}
+                            >
+                                <PlusSquare />
+                                <span class="hide-low text-button">
+                                    {T("S156")}
+                                </span>
+                            </button>
+                            <div class="p-1" />
+                            <PanelListControl />
+                        </div>
+                    </div>
                 </div>
             </center>
 

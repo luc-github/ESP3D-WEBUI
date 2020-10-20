@@ -9,6 +9,7 @@ export default store => {
         activeSetting: 1,
         showPage: false,
         showDialog: false,
+        extraPanels: [],
         panelsOrder: [],
     }))
 
@@ -19,6 +20,17 @@ export default store => {
     })
     store.on("panel/remove", ({ panelsOrder }, element) => {
         return { panelsOrder: [...panelsOrder.filter(e => e !== element)] }
+    })
+    store.on("panel/showextra", ({ extraPanels }, newstate) => {
+        const { dispatch } = useStoreon()
+        if (newstate.visible) dispatch("panel/add", newstate.name)
+        else dispatch("panel/remove", newstate.name)
+        return {
+            extraPanels: [
+                newstate,
+                ...extraPanels.filter(e => e.name !== newstate.name),
+            ],
+        }
     })
     store.on("panel/showterminal", ({ showTerminal }, newstate) => {
         const { dispatch } = useStoreon()
