@@ -43,6 +43,7 @@
   "showextrapanels": true,
   "extrapanels": [
    {
+    "id": 1603307186211,
     "name": "Panel1",
     "color": "#C0C0C0",
     "textcolor": "#000000",
@@ -52,6 +53,7 @@
     "refreshtime": "0"
    },
    {
+    "id": 1603307186952,
     "name": "Panel2",
     "color": "#C0C0C0",
     "textcolor": "#000000",

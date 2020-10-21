@@ -23,10 +23,20 @@ import { T } from "../translations"
 import { Page } from "../app"
 import { TerminalPanel, updateTerminal } from "./terminal"
 import { MacrosControls } from "./macros"
+import { ExtraPanelsButtons, ExtraPanels } from "./extrapanels"
 const { MachinePanels } = require(`../${process.env.TARGET_ENV}`)
 import { preferences } from "../settings"
 import { useStoreon } from "storeon/preact"
 import { X, Terminal, Folder } from "preact-feather"
+
+function isExtraPanel(id) {
+    for (let i = 0; i < preferences.settings.extrapanels.length; i++) {
+        if (preferences.settings.extrapanels[i].target == "panel") {
+            if (preferences.settings.extrapanels[i].id == id) return true
+        }
+    }
+    return false
+}
 
 /*
  * Dashboard toolbar
@@ -36,6 +46,7 @@ const DashboardToolBar = () => {
     const { showTerminal } = useStoreon("showTerminal")
     const { showFiles } = useStoreon("showFiles")
     const { panelsOrder } = useStoreon("panelsOrder")
+
     const toogleTerminal = e => {
         const { dispatch } = useStoreon()
         dispatch("panel/showterminal", false)
@@ -46,7 +57,6 @@ const DashboardToolBar = () => {
         dispatch("panel/showfiles", false)
         dispatch("panel/showfiles", true)
     }
-
     const toogle = e => {
         const { dispatch } = useStoreon()
         for (
@@ -54,7 +64,14 @@ const DashboardToolBar = () => {
             panelIndex < panelsOrder.length;
             panelIndex++
         ) {
-            dispatch("panel/show" + panelsOrder[panelIndex], false)
+            if (isExtraPanel(panelsOrder[panelIndex])) {
+                dispatch("panel/showextra", {
+                    visible: false,
+                    id: panelsOrder[panelIndex],
+                })
+            } else {
+                dispatch("panel/show" + panelsOrder[panelIndex], false)
+            }
         }
     }
     return (
@@ -85,6 +102,7 @@ const DashboardToolBar = () => {
                     <span class="hide-low text-button">{T("S84")}</span>
                 </button>
             </div>
+            <ExtraPanelsButtons />
             <MacrosControls />
             <div class={panelsOrder.length > 0 ? "p-1 ml-auto" : "d-none"}>
                 <button
@@ -114,6 +132,7 @@ const DashboardPage = () => {
             <div class="d-flex flex-wrap">
                 <TerminalPanel />
                 <MachinePanels />
+                <ExtraPanels />
             </div>
         </div>
     )

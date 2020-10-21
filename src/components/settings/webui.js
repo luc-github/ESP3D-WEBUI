@@ -994,6 +994,7 @@ function addPanel() {
     let newindex = prefs.extrapanels.length
     let panelname = T("S157") + (newindex + 1)
     prefs.extrapanels.push({
+        id: Date.now(),
         name: panelname,
         color: "#C0C0C0",
         textcolor: "#000000",

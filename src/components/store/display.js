@@ -23,12 +23,15 @@ export default store => {
     })
     store.on("panel/showextra", ({ extraPanels }, newstate) => {
         const { dispatch } = useStoreon()
-        if (newstate.visible) dispatch("panel/add", newstate.name)
-        else dispatch("panel/remove", newstate.name)
+        if (newstate.visible) {
+            dispatch("panel/add", newstate.id)
+        } else {
+            dispatch("panel/remove", newstate.id)
+        }
         return {
             extraPanels: [
                 newstate,
-                ...extraPanels.filter(e => e.name !== newstate.name),
+                ...extraPanels.filter(e => e.id !== newstate.id),
             ],
         }
     })
