@@ -269,7 +269,7 @@ function loadPreferencesSuccess(responseText) {
                 macros = JSON.parse(JSON.stringify(preferences.macros))
             } else macros = []
             resetPrefsErrors()
-            resetMacrosErrors()
+            resetControlsErrors()
             updateUI()
         } else {
             showDialog({ type: "error", numError: 500, message: T("S21") })
@@ -537,7 +537,15 @@ function successUpload(response) {
         setState("target", "success", p)
         setState("parameter", "success", p)
     }
-
+    for (let p = 0; p < prefs.extrapanels.length; p++) {
+        setState("name", "success", p, "panel")
+        setState("color", "success", p, "panel")
+        setState("textcolor", "success", p, "panel")
+        setState("icon", "success", p, "panel")
+        setState("target", "success", p, "panel")
+        setState("source", "success", p, "panel")
+        setState("refreshtime", "success", p, "panel")
+    }
     startPolling()
     updateProgress({ progress: 100 })
     setTimeout(closeDialog, 2000)
@@ -650,8 +658,10 @@ function setState(entry, state, index = null, target = "macro") {
     let controlIdButton
 
     if (index != null) {
+        const { dispatch } = useStoreon()
         if (target == "macro") {
-            hasError[index][entry] = false
+            hasError[index][entry] = state == "error"
+            dispatch("errorcontrols/set", hasControlError())
             if (document.getElementById(entry + "_" + index + "-UI-input")) {
                 controlId = document.getElementById(
                     entry + "_" + index + "-UI-input"
@@ -671,8 +681,40 @@ function setState(entry, state, index = null, target = "macro") {
                 )
             }
         } else {
-            //TODO
-            return
+            panel_hasError[index][entry] = state == "error"
+            dispatch("errorcontrols/set", hasControlError())
+            if (
+                document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-input"
+                )
+            ) {
+                controlId = document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-input"
+                )
+            }
+            if (
+                document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-label"
+                )
+            ) {
+                controlIdLabel = document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-label"
+                )
+            }
+            if (
+                document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-unit"
+                )
+            ) {
+                controlIdUnit = document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-unit"
+                )
+            }
+            if (document.getElementById(entry + "_" + index + "-UI-select")) {
+                controlId = document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-select"
+                )
+            }
         }
     } else {
         if (document.getElementById(entry + "-UI-checkbox"))
@@ -700,7 +742,6 @@ function setState(entry, state, index = null, target = "macro") {
                 break
             case "error":
                 controlId.classList.add("is-invalid")
-                if (index != null) hasError[index][entry] = true
                 break
             default:
                 break
@@ -742,10 +783,6 @@ function setState(entry, state, index = null, target = "macro") {
                 break
         }
     }
-    if (index != null) {
-        const { dispatch } = useStoreon()
-        dispatch("errormacros/set", hasMacrosError())
-    }
 }
 
 /*
@@ -776,6 +813,37 @@ function updateState(entry, index = null, target = "macro") {
                 if (
                     document.getElementById(entry + "_" + index + "-UI-select")
                         .value.length == 0
+                )
+                    state = "error"
+            }
+        } else {
+            //panel
+
+            if (typeof preferences.settings.extrapanels[index] == "undefined") {
+                state = "modified"
+            } else if (
+                preferences.settings.extrapanels[index][entry] !=
+                prefs.extrapanels[index][entry]
+            ) {
+                state = "modified"
+            }
+            if (prefs.extrapanels[index][entry].length == 0) {
+                state = "error"
+            }
+            if (entry == "refreshtime") {
+                if (prefs.extrapanels[index][entry] < 0) {
+                    state = "error"
+                }
+            }
+            if (
+                document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-select"
+                )
+            ) {
+                if (
+                    document.getElementById(
+                        "panel_" + entry + "_" + index + "-UI-select"
+                    ).value.length == 0
                 )
                     state = "error"
             }
@@ -870,12 +938,21 @@ function setcurrentprefs(preferences) {
  * Check if any error
  *
  */
-function hasMacrosError() {
+function hasControlError() {
     for (let index = 0; index < hasError.length; index++) {
         if (
             hasError[index].name ||
             hasError[index].parameter ||
             hasError[index].target
+        )
+            return true
+    }
+    for (let index = 0; index < panel_hasError.length; index++) {
+        if (
+            panel_hasError[index].name ||
+            panel_hasError[index].source ||
+            panel_hasError[index].refreshtime ||
+            panel_hasError[index].target
         )
             return true
     }
@@ -886,10 +963,11 @@ function hasMacrosError() {
  * Reset  macros errors
  *
  */
-function resetMacrosErrors() {
+function resetControlsErrors() {
     hasError = []
+    panel_hasError = []
     const { dispatch } = useStoreon()
-    dispatch("errormacros/set", hasMacrosError())
+    dispatch("errorcontrols/set", hasControlError())
 }
 
 /*
@@ -921,7 +999,7 @@ function addPanel() {
         textcolor: "#000000",
         icon: "Globe",
         target: "panel",
-        source: "",
+        source: "/",
         refreshtime: "0",
     })
     showDialog({ displayDialog: false, refreshPage: true })
@@ -1051,7 +1129,7 @@ const PanelUISelectTarget = ({ index, id, label }) => {
     }
     useEffect(() => {
         updateState(id, index, "panel")
-    }, prefs.extrapanels[index][id])
+    }, [prefs.extrapanels[index][id]])
     return (
         <div class="p-1 hotspotControl" title={label}>
             <div class="input-group">
@@ -1076,7 +1154,7 @@ const PanelUISelectTarget = ({ index, id, label }) => {
                         {T("S157")}
                     </option>
                     <option value="page" title={T("S158")}>
-                        {T("S142")}
+                        {T("S158")}
                     </option>
                 </select>
                 <div
@@ -1312,7 +1390,7 @@ const PanelUIEntry = ({ index, id, label }) => {
                         type={id == "refreshtime" ? "number" : "text"}
                         style={
                             id == "refreshtime"
-                                ? "max-width:4em"
+                                ? "max-width:6em"
                                 : "max-width:8em"
                         }
                         class="form-control rounded-right"
@@ -1328,7 +1406,7 @@ const PanelUIEntry = ({ index, id, label }) => {
                     >
                         <span
                             class="input-group-text hide-low rounded-right"
-                            id={"panel+" + id + "-UI-unit"}
+                            id={"panel_" + id + "_" + index + "-UI-unit"}
                         >
                             {T("S114")}
                         </span>
@@ -1382,7 +1460,7 @@ const ControlListLine = ({ data, index, target }) => {
         } else {
             listsize = macros.length
         }
-        for (let p = 0; p < macros.length; p++) {
+        for (let p = 0; p < listsize; p++) {
             if (p == index) {
                 let prevline = newlinetmp.pop()
                 if (target == "panel") {
@@ -1555,7 +1633,7 @@ const PanelListControl = () => {
  */
 const WebUISettings = ({ currentPage }) => {
     const { preferences_error } = useStoreon("preferences_error")
-    const { macros_error } = useStoreon("macros_error")
+    const { controls_error } = useStoreon("controls_error")
     if (currentPage != Setting.ui) return null
     if (typeof prefs == "undefined") {
         console.log("render undefined")
@@ -1743,7 +1821,7 @@ const WebUISettings = ({ currentPage }) => {
                         preferences.settings
                             ? preferences_error
                                 ? "d-none"
-                                : macros_error
+                                : controls_error
                                 ? "d-none"
                                 : "text-button-setting"
                             : " d-none"
@@ -1763,7 +1841,7 @@ const WebUISettings = ({ currentPage }) => {
                     class={
                         preferences_error
                             ? "d-none"
-                            : macros_error
+                            : controls_error
                             ? "d-none"
                             : "text-button-setting"
                     }

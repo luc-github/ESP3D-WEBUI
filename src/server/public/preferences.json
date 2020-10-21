@@ -48,7 +48,16 @@
     "textcolor": "#000000",
     "icon": "Globe",
     "target": "panel",
-    "source": "",
+    "source": "/",
+    "refreshtime": "0"
+   },
+   {
+    "name": "Panel2",
+    "color": "#C0C0C0",
+    "textcolor": "#000000",
+    "icon": "Globe",
+    "target": "panel",
+    "source": "/",
     "refreshtime": "0"
    }
   ]
