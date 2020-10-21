@@ -8,7 +8,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     background-color: #e9ecef !important;
 }
 
-.underlay {
+.underlaywindow {
     float: left;
     clear: both;
     width: 100%;
@@ -19,7 +19,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     z-index: 0;
 }
 
-.overlay {
+.overlaywindow {
     position: fixed;
     width: 100%;
     height: 100%;
