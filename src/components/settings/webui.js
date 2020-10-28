@@ -545,6 +545,7 @@ function successUpload(response) {
         setState("target", "success", p, "panel")
         setState("source", "success", p, "panel")
         setState("refreshtime", "success", p, "panel")
+        setState("type", "success", p, "panel")
     }
     startPolling()
     updateProgress({ progress: 100 })
@@ -710,7 +711,11 @@ function setState(entry, state, index = null, target = "macro") {
                     "panel_" + entry + "_" + index + "-UI-unit"
                 )
             }
-            if (document.getElementById(entry + "_" + index + "-UI-select")) {
+            if (
+                document.getElementById(
+                    "panel_" + entry + "_" + index + "-UI-select"
+                )
+            ) {
                 controlId = document.getElementById(
                     "panel_" + entry + "_" + index + "-UI-select"
                 )
@@ -827,7 +832,10 @@ function updateState(entry, index = null, target = "macro") {
             ) {
                 state = "modified"
             }
-            if (prefs.extrapanels[index][entry].length == 0) {
+            if (
+                !prefs.extrapanels[index][entry] ||
+                prefs.extrapanels[index][entry].length == 0
+            ) {
                 state = "error"
             }
             if (entry == "refreshtime") {
@@ -952,7 +960,8 @@ function hasControlError() {
             panel_hasError[index].name ||
             panel_hasError[index].source ||
             panel_hasError[index].refreshtime ||
-            panel_hasError[index].target
+            panel_hasError[index].target ||
+            panel_hasError[index].type
         )
             return true
     }
@@ -1000,8 +1009,9 @@ function addPanel() {
         textcolor: "#000000",
         icon: "Globe",
         target: "panel",
-        source: "/",
+        source: "http://127.0.0.1",
         refreshtime: "0",
+        type: "content",
     })
     showDialog({ displayDialog: false, refreshPage: true })
 }
@@ -1111,9 +1121,9 @@ const MacroUISelectTarget = ({ index, id, label }) => {
 }
 
 /*
- * PanelUISelectTarget
+ * PanelUISelectControl
  */
-const PanelUISelectTarget = ({ index, id, label }) => {
+const PanelUISelectControl = ({ index, id, label, options }) => {
     const onChange = e => {
         prefs.extrapanels[index][id] = e.target.value
         updateState(id, index, "panel")
@@ -1151,12 +1161,7 @@ const PanelUISelectTarget = ({ index, id, label }) => {
                     onFocus={onFocus}
                     onBlur={onFocusOut}
                 >
-                    <option value="panel" title={T("S157")}>
-                        {T("S157")}
-                    </option>
-                    <option value="page" title={T("S158")}>
-                        {T("S158")}
-                    </option>
+                    {options}
                 </select>
                 <div
                     class="invalid-feedback text-center"
@@ -1522,6 +1527,35 @@ const ControlListLine = ({ data, index, target }) => {
     let content = []
     if (target == "panel") {
         listsize = prefs.extrapanels.length
+        let optionstarget = []
+        let optionstype = []
+        optionstarget.push(
+            <option value="panel" title={T("S157")}>
+                {T("S157")}
+            </option>
+        )
+        optionstarget.push(
+            <option value="page" title={T("S158")}>
+                {T("S158")}
+            </option>
+        )
+        optionstype.push(
+            <option value="image" title={T("S160")}>
+                {T("S160")}
+            </option>
+        )
+        optionstype.push(
+            <option value="content" title={T("S161")}>
+                {T("S161")}
+            </option>
+        )
+        if (typeof esp3dSettings.Cam_ID != "undefined") {
+            optionstype.push(
+                <option value="camera" title={T("S162")}>
+                    {T("S162")}
+                </option>
+            )
+        }
         content.push(<PanelUIEntry index={index} id="name" label={T("S129")} />)
         content.push(
             <PanelUIEntry index={index} id="color" label={T("S130")} />
@@ -1531,12 +1565,24 @@ const ControlListLine = ({ data, index, target }) => {
         )
         content.push(<PanelUIEntry index={index} id="icon" label={T("S132")} />)
         content.push(
-            <PanelUISelectTarget index={index} id="target" label={T("S159")} />
+            <PanelUISelectControl
+                index={index}
+                id="target"
+                label={T("S159")}
+                options={optionstarget}
+            />
+        )
+        content.push(
+            <PanelUISelectControl
+                index={index}
+                id="type"
+                label={T("S135")}
+                options={optionstype}
+            />
         )
         content.push(
             <PanelUIEntry index={index} id="source" label={T("S139")} />
         )
-        //TODO target
         content.push(
             <PanelUIEntry index={index} id="refreshtime" label={T("S113")} />
         )

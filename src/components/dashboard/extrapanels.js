@@ -33,6 +33,8 @@ const { getIcon } = require(`../${process.env.TARGET_ENV}`)
  *
  */
 
+let timeoutpanel = []
+
 /*
  * Local constants
  *
@@ -113,6 +115,66 @@ const ExtraPanel = ({ data }) => {
         dispatch("panel/showextra", { visible: false, id: data.id })
     }
     let panelClass = "order-" + index + " w-100 panelCard"
+    let source = ""
+    let content = []
+    if (data.source != "/") {
+        source = data.source
+    }
+    if (typeof timeoutpanel[data.id] == "undefined") {
+        timeoutpanel[data.id] = null
+    }
+    if (timeoutpanel[data.id]) {
+        clearInterval(timeoutpanel[data.id])
+    }
+    if (data.type == "content") {
+        content.push(
+            <iframe
+                class="w-100 h-100 d-inline-block mw-100"
+                id={"panel_content_" + data.id}
+                style="width:100%;border:none;"
+                src={source}
+            ></iframe>
+        )
+    } else {
+        content.push(
+            <img
+                id={"panel_content_" + data.id}
+                class="w-100"
+                width="100%"
+                src={source}
+            ></img>
+        )
+    }
+    if (data.refreshtime != 0) {
+        console.log(
+            "setup interval " +
+                data.refreshtime +
+                " for " +
+                document.getElementById("panel_content_" + data.id)
+        )
+        if (data.type != "camera") {
+            timeoutpanel[data.id] = setInterval(() => {
+                if (
+                    document.getElementById("panel_content_" + data.id) != null
+                ) {
+                    if (data.source.indexOf("?") == -1)
+                        source = data.source + "?esp3d=" + new Date().getTime()
+                    else source = data.source + "&esp3d=" + new Date().getTime()
+                    document.getElementById(
+                        "panel_content_" + data.id
+                    ).src = source
+                    document.getElementById("panel_content_" + data.id).width =
+                        "100%"
+                    console.log(
+                        "refresh for " +
+                            document.getElementById("panel_content_" + data.id)
+                    )
+                }
+            }, data.refreshtime * 1000)
+        } else {
+            //todo
+        }
+    }
     return (
         <div class={panelClass}>
             <div class="p-2 ">
@@ -137,6 +199,7 @@ const ExtraPanel = ({ data }) => {
                                 </button>
                             </div>
                         </div>
+                        <div style="height: 400px;">{content}</div>
                     </div>
                 </div>
             </div>
@@ -154,9 +217,9 @@ const ExtraPanels = () => {
     for (let i = 0; i < preferences.settings.extrapanels.length; i++) {
         if (preferences.settings.extrapanels[i].target == "panel") {
             if (isVisible(preferences.settings.extrapanels[i].id))
-            panels.push(
-                <ExtraPanel data={preferences.settings.extrapanels[i]} />
-            )
+                panels.push(
+                    <ExtraPanel data={preferences.settings.extrapanels[i]} />
+                )
         }
     }
     console.log("there are " + panels.length + " extra")

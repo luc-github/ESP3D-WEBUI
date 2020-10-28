@@ -49,18 +49,9 @@
     "textcolor": "#000000",
     "icon": "Globe",
     "target": "panel",
-    "source": "/",
-    "refreshtime": "0"
-   },
-   {
-    "id": 1603307186952,
-    "name": "Panel2",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
-    "icon": "Globe",
-    "target": "panel",
-    "source": "/",
-    "refreshtime": "0"
+    "source": "http://192.168.1.61/snap?framesize=9",
+    "refreshtime": "0.2",
+    "type": "content"
    }
   ]
  },
