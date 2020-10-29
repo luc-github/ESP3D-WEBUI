@@ -752,7 +752,7 @@ function closeDialog() {
 }
 
 /*
- * Upload sucess
+ * Download sucess
  *
  */
 function successDownload(response) {
