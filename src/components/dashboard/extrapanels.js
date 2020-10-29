@@ -21,7 +21,7 @@
 import { h, Fragment } from "preact"
 import { T } from "../translations"
 import { useState, useEffect } from "preact/hooks"
-import { SendCommand } from "../http"
+import { SendGetHttp } from "../http"
 import { useStoreon } from "storeon/preact"
 import { showDialog } from "../dialog"
 import { preferences, getPanelIndex } from "../app"
@@ -67,7 +67,7 @@ const ButtonExtraPanel = ({ data }) => {
                 <div class="d-flex align-items-center">
                     {data.icon != "None" ? getIcon(data.icon) : null}
                     <span
-                        class="hide-low text-button"
+                        class="hide-low text-button no_wrap"
                         style="max-width:8em;overflow: hidden;text-overflow: ellipsis;"
                     >
                         {data.name}
@@ -117,6 +117,8 @@ const ExtraPanel = ({ data }) => {
     let panelClass = "order-" + index + " w-100 panelCard"
     let source = ""
     let content = []
+    //small sanity check to avoid end loop
+    //need to improve check here
     if (data.source != "/") {
         source = data.source
     }
@@ -154,15 +156,16 @@ const ExtraPanel = ({ data }) => {
         )
         if (data.type != "camera") {
             timeoutpanel[data.id] = setInterval(() => {
+                let src
                 if (
                     document.getElementById("panel_content_" + data.id) != null
                 ) {
-                    if (data.source.indexOf("?") == -1)
-                        source = data.source + "?esp3d=" + new Date().getTime()
-                    else source = data.source + "&esp3d=" + new Date().getTime()
+                    if (source.indexOf("?") == -1)
+                        src = source + "?esp3d=" + new Date().getTime()
+                    else src = source + "&esp3d=" + new Date().getTime()
                     document.getElementById(
                         "panel_content_" + data.id
-                    ).src = source
+                    ).src = src
                     document.getElementById("panel_content_" + data.id).width =
                         "100%"
                     console.log(
@@ -172,7 +175,49 @@ const ExtraPanel = ({ data }) => {
                 }
             }, data.refreshtime * 1000)
         } else {
-            //todo
+            if (source.length > 0) {
+                timeoutpanel[data.id] = setInterval(() => {
+                    let src
+                    if (
+                        document.getElementById("panel_content_" + data.id) !=
+                        null
+                    ) {
+                        if (source.indexOf("?") == -1)
+                            src = source + "?esp3d=" + new Date().getTime()
+                        else src = source + "&esp3d=" + new Date().getTime()
+
+                        SendGetHttp(
+                            src,
+                            response => {
+                                if (
+                                    document.getElementById(
+                                        "panel_content_" + data.id
+                                    ) != null
+                                ) {
+                                    document.getElementById(
+                                        "panel_content_" + data.id
+                                    ).src = URL.createObjectURL(response)
+                                    document.getElementById(
+                                        "panel_content_" + data.id
+                                    ).width = "100%"
+                                }
+                            },
+                            (errorcode, response) => {
+                                console.log("fail getting image")
+                            },
+                            null,
+                            "download",
+                            5
+                        )
+                        console.log(
+                            "refresh for " +
+                                document.getElementById(
+                                    "panel_content_" + data.id
+                                )
+                        )
+                    }
+                }, data.refreshtime * 1000)
+            }
         }
     }
     return (
@@ -222,7 +267,7 @@ const ExtraPanels = () => {
                 )
         }
     }
-    console.log("there are " + panels.length + " extra")
+    console.log(panels.length + " extra panels")
     return <Fragment>{panels}</Fragment>
 }
 

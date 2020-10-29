@@ -1549,10 +1549,10 @@ const ControlListLine = ({ data, index, target }) => {
                 {T("S161")}
             </option>
         )
-        if (typeof esp3dSettings.Cam_ID != "undefined") {
+        if (typeof esp3dSettings.Cam_name != "undefined") {
             optionstype.push(
                 <option value="camera" title={T("S162")}>
-                    {T("S162")}
+                    {esp3dSettings.Cam_name}
                 </option>
             )
         }

@@ -86,7 +86,7 @@ const MacroButton = ({ data, index }) => {
                 <div class="d-flex align-items-center">
                     {data.icon != "None" ? getIcon(data.icon) : null}
                     <span
-                        class="hide-low text-button"
+                        class="hide-low text-button no_wrap"
                         style="max-width:8em;overflow: hidden;text-overflow: ellipsis;"
                     >
                         {data.name}

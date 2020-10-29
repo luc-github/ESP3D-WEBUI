@@ -31,3 +31,4 @@ Sensors                 : 0.0.0.60: 83.0KB      | N/A
 Status                  : 0.0.0.61: 83.6KB      | N/A
 Macros                  : 0.0.0.66: 91.0KB      | N/A
 Authentication          : 0.0.0.70: 91.2KB      | N/A
+Custom panels + camera  : 0.0.0.71: 93.0KB      | N/A

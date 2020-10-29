@@ -134,6 +134,7 @@ function nextCommand() {
 function SendGetHttp(url, result_fn, error_fn, progress_fn, id, max_id) {
     if (httpCommandList.length > maxCmdInList && maxCmdInList != -1) {
         console.log("[HTTP]Command rejected: full")
+        console.log(httpCommandList)
         if (typeof error_fn != "undefined") error_fn(errorListFull)
         return
     }
@@ -186,6 +187,7 @@ function SendPostHttp(
 ) {
     if (httpCommandList.length > maxCmdInList && maxCmdInList != -1) {
         console.log("[HTTP]Command rejected: full")
+        console.log(httpCommandList)
         if (typeof error_fn != "undefined") error_fn(errorListFull)
         return
     }
