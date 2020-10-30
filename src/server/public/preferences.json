@@ -44,13 +44,35 @@
   "extrapanels": [
    {
     "id": 1603307186211,
-    "name": "Panel1",
+    "name": "Page1 de la mort",
+    "color": "#C0C0C0",
+    "textcolor": "#000000",
+    "icon": "Globe",
+    "target": "page",
+    "source": "http://192.168.1.61/snap?framesize=9",
+    "refreshtime": "0",
+    "type": "image"
+   },
+   {
+    "id": 1604059348627,
+    "name": "Panel2",
     "color": "#C0C0C0",
     "textcolor": "#000000",
     "icon": "Globe",
     "target": "panel",
-    "source": "http://192.168.1.61/snap?framesize=9",
-    "refreshtime": "0.2",
+    "source": "http://127.0.0.1",
+    "refreshtime": "0",
+    "type": "content"
+   },
+   {
+    "id": 1604059351918,
+    "name": "Panel3",
+    "color": "#C0C0C0",
+    "textcolor": "#000000",
+    "icon": "Globe",
+    "target": "page",
+    "source": "/hello.html",
+    "refreshtime": "0",
     "type": "content"
    }
   ]

@@ -18,16 +18,25 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact"
+import { h, Fragment } from "preact"
 import { Page, customdata } from "../app"
 import { ESP3DLogo, ESP3DBanner } from "../images"
 import { Server, Settings, Eye, Lock } from "preact-feather"
 import { T } from "../translations"
 import { prefs } from "../settings"
+import { SendGetHttp } from "../http"
 import { esp3dSettings, disconnectPage } from "../app"
 import { SubmitCredentials } from "../http"
 import { showDialog } from "../dialog"
 import { useStoreon } from "storeon/preact"
+const { getIcon } = require(`../${process.env.TARGET_ENV}`)
+
+/*
+ * Local variables
+ *
+ */
+
+let timeoutpanel = []
 
 /*
  * Force disconnection
@@ -49,10 +58,199 @@ function confirmDisconnection() {
 }
 
 /*
+ * ButtonExtraPage
+ */
+const ButtonExtraPage = ({ data }) => {
+    const { activePage } = useStoreon("activePage")
+    const onClick = e => {
+        const { dispatch } = useStoreon()
+        dispatch("setPage", data.id)
+    }
+    return (
+        <div
+            class={activePage == data.id ? "nav-item active" : "nav-item"}
+            title={data.name}
+            onClick={onClick}
+        >
+            {data.icon != "None" ? getIcon(data.icon) : null}
+            <span class="disable-select hide-low">&nbsp;{data.name}</span>
+        </div>
+    )
+}
+
+/*
+ * ExtraPagesButtons
+ */
+const ExtraPagesButtons = () => {
+    let buttonlist = []
+    for (let i = 0; i < prefs.extrapanels.length; i++) {
+        if (prefs.extrapanels[i].target == "page") {
+            buttonlist.push(<ButtonExtraPage data={prefs.extrapanels[i]} />)
+        }
+    }
+    return <Fragment>{buttonlist}</Fragment>
+}
+
+/*
+ * ExtraPages
+ */
+const ExtraPages = () => {
+    const { activePage } = useStoreon("activePage")
+    for (let i = 0; i < prefs.extrapanels.length; i++) {
+        if (prefs.extrapanels[i].target == "page") {
+            if (activePage == prefs.extrapanels[i].id) {
+                let source = ""
+                let content = []
+                let data = prefs.extrapanels[i]
+                //small sanity check to avoid end loop
+                //need to improve check here
+                if (data.source != "/") {
+                    source = data.source
+                }
+                if (typeof timeoutpanel[data.id] == "undefined") {
+                    timeoutpanel[data.id] = null
+                }
+                if (timeoutpanel[data.id]) {
+                    clearInterval(timeoutpanel[data.id])
+                }
+                if (data.type == "content") {
+                    let d = 0
+                    if (document.getElementById("notif").clientHeight) {
+                        if (
+                            document.getElementById("notif").getClientRects()[0]
+                        ) {
+                            d =
+                                document.getElementById("notif").clientHeight +
+                                document
+                                    .getElementById("notif")
+                                    .getClientRects()[0].top
+                        }
+                    }
+                    content.push(
+                        <iframe
+                            class="w-100 mw-100"
+                            id={"panel_content_" + data.id}
+                            style={
+                                "border:none; height:calc(100vh - " + d + "px);"
+                            }
+                            src={source}
+                        ></iframe>
+                    )
+                } else {
+                    content.push(<div class="p-2" />)
+                    content.push(
+                        <div class="w-100" width="100%">
+                            <img
+                                id={"panel_content_" + data.id}
+                                src={source}
+                            ></img>
+                        </div>
+                    )
+                }
+                if (data.refreshtime != 0) {
+                    console.log(
+                        "setup interval " +
+                            data.refreshtime +
+                            " for " +
+                            document.getElementById("panel_content_" + data.id)
+                    )
+                    if (data.type != "camera") {
+                        timeoutpanel[data.id] = setInterval(() => {
+                            let src
+                            if (
+                                document.getElementById(
+                                    "panel_content_" + data.id
+                                ) != null
+                            ) {
+                                if (source.indexOf("?") == -1)
+                                    src =
+                                        source +
+                                        "?esp3d=" +
+                                        new Date().getTime()
+                                else
+                                    src =
+                                        source +
+                                        "&esp3d=" +
+                                        new Date().getTime()
+
+                                console.log(
+                                    "refresh for " +
+                                        document.getElementById(
+                                            "panel_content_" + data.id
+                                        )
+                                )
+                            }
+                        }, data.refreshtime * 1000)
+                    } else {
+                        if (source.length > 0) {
+                            timeoutpanel[data.id] = setInterval(() => {
+                                let src
+                                if (
+                                    document.getElementById(
+                                        "panel_content_" + data.id
+                                    ) != null
+                                ) {
+                                    if (source.indexOf("?") == -1)
+                                        src =
+                                            source +
+                                            "?esp3d=" +
+                                            new Date().getTime()
+                                    else
+                                        src =
+                                            source +
+                                            "&esp3d=" +
+                                            new Date().getTime()
+
+                                    SendGetHttp(
+                                        src,
+                                        response => {
+                                            if (
+                                                document.getElementById(
+                                                    "panel_content_" + data.id
+                                                ) != null
+                                            ) {
+                                                document.getElementById(
+                                                    "panel_content_" + data.id
+                                                ).src = URL.createObjectURL(
+                                                    response
+                                                )
+                                            }
+                                        },
+                                        (errorcode, response) => {
+                                            console.log("fail getting image")
+                                        },
+                                        null,
+                                        "download",
+                                        5
+                                    )
+                                    console.log(
+                                        "refresh for " +
+                                            document.getElementById(
+                                                "panel_content_" + data.id
+                                            )
+                                    )
+                                }
+                            }, data.refreshtime * 1000)
+                        }
+                    }
+                }
+                return (
+                    <Fragment>
+                        {content}
+                        <div class="p-2" />
+                    </Fragment>
+                )
+            }
+        }
+    }
+    return null
+}
+
+/*
  * Header component
  *
  */
-export const Header = () => {
+const Header = () => {
     const { activePage } = useStoreon("activePage")
     const { dispatch } = useStoreon()
     if (typeof esp3dSettings == "undefined") return
@@ -135,6 +333,7 @@ export const Header = () => {
                 <Settings />
                 <span class="disable-select hide-low">&nbsp;{T("S14")}</span>
             </div>
+            <ExtraPagesButtons />
             <div
                 class={
                     esp3dSettings.FWTarget == "unknown"
@@ -158,3 +357,5 @@ export const Header = () => {
         </nav>
     )
 }
+
+export { ExtraPages, Header }

@@ -27,7 +27,7 @@ import { disconnectWsServer } from "./websocket"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
 import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
-import { Header } from "./header"
+import { Header, ExtraPages } from "./header"
 import { Notification, NotificationPage } from "./notification"
 import { setLang, T } from "./translations"
 import { prefs } from "./settings"
@@ -109,6 +109,7 @@ const Container = () => {
             <NotificationPage />
             <DashboardPage />
             <SettingsPage />
+            <ExtraPages />
         </div>
     )
 }
