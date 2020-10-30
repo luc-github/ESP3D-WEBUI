@@ -887,6 +887,8 @@ app.get("/command", function(req, res) {
             WebUpdate: "Enabled",
             Filesystem: "SPIFFS",
             Time: "none",
+            Cam_ID: "4",
+            Cam_name: "ESP32 Cam",
         })
         return
     }

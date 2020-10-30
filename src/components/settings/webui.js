@@ -1126,6 +1126,14 @@ const MacroUISelectTarget = ({ index, id, label }) => {
 const PanelUISelectControl = ({ index, id, label, options }) => {
     const onChange = e => {
         prefs.extrapanels[index][id] = e.target.value
+        if (id == "type" && e.target.value == "camera") {
+            if (!prefs.extrapanels[index]["source"].startsWith("/snap")) {
+                prefs.extrapanels[index]["source"] = "/snap"
+                document.getElementById(
+                    "panel_source_" + index + "-UI-input"
+                ).value = "/snap"
+            }
+        }
         updateState(id, index, "panel")
     }
     const onFocus = e => {
