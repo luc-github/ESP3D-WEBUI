@@ -244,7 +244,7 @@ const ExtraPanel = ({ data }) => {
                                 </button>
                             </div>
                         </div>
-                        <div style="height: 400px;">{content}</div>
+                        <div style="height: 400px; overflow: auto;">{content}</div>
                     </div>
                 </div>
             </div>
