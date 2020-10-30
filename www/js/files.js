@@ -735,7 +735,9 @@ function files_progress() {
 function files_abort() {
     var command = "abort";
     if (target_firmware != "smoothieware") {
-        if (target_firmware == "marlin") {
+        if ((target_firmware == "marlin") || (target_firmware == "marlinkimbra")) {
+            command = "M108\nM108\nM108\nM524\nM27";
+        } if (target_firmware == "marlin-embedded") {
             command = "M108\nM108\nM108\nM524\nM27";
         } else command = "M112";
     }
