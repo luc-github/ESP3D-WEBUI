@@ -59,7 +59,7 @@ const ConnectingLine = ({
     color = "currentColor",
 }) => {
     return (
-        <span class={useClass}>
+        <span class={useClass + "  hide-low"}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={width}
@@ -88,10 +88,10 @@ const WizardPill = ({ type, icon }) => {
             typeclass += " bg-blue text-light border-blue"
             break
         case "done":
-            typeclass += " bg-light text-blue border-blue"
+            typeclass += " bg-light text-blue border-blue  hide-low"
             break
         default:
-            typeclass += " bg-default text-secondary border-default"
+            typeclass += " bg-default text-secondary border-default  hide-low"
     }
     return <span class={typeclass}>{icon} </span>
 }
@@ -147,6 +147,7 @@ function wizardTitle(type) {
             }
         />
     )
+    content.push(<span class="show-inline-low p-3">{T("S165")}</span>)
     return content
 }
 

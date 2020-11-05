@@ -338,6 +338,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
 .hide-low {
     display: inline-block;
 }
+.show-inline-low,
 .show-low {
     display: none;
 }
@@ -392,6 +393,7 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .autoWidth {
         width: 20em;
     }
+    .show-inline-low,
     .show-low {
         display: none !important;
     }
@@ -418,6 +420,9 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .show-low,
     .tshow-low {
         display: block !important;
+    }
+    .show-inline-low {
+        display: inline-block !important;
     }
     .card-low {
         padding: 0.25rem !important;
@@ -452,6 +457,9 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     .show-low,
     .tshow-low {
         display: block !important;
+    }
+    .show-inline-low {
+        display: inline-block !important;
     }
     .card-low {
         padding: 0.25rem !important;
