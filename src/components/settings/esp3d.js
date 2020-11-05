@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI settings file
+ esp3d.js - ESP3D WebUI settings file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -748,7 +748,7 @@ function confirmRestart() {
         message: T("S59"),
         title: T("S26"),
         button1text: T("S27"),
-        next: restartEsp,
+        next1: restartEsp,
     })
 }
 
@@ -822,7 +822,7 @@ function loadImportFile() {
                 progress: 0,
                 title: T("S32"),
                 button1text: T("S28"),
-                next: cancelImport,
+                next1: cancelImport,
             })
             stopImport = false
             doImport()
@@ -882,7 +882,7 @@ function importSettings() {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: loadImportFile,
+            next1: loadImportFile,
             next2: closeImport,
         })
     }

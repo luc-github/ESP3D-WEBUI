@@ -23,6 +23,7 @@ import { useState } from "preact/hooks"
 import { T } from "../translations"
 import { Page, Setting } from "../app"
 import { Selector } from "./selector"
+import { startWizard } from "./wizard"
 const { MachineSettings } = require(`../${process.env.TARGET_ENV}`)
 import {
     WebUISettings,
@@ -68,4 +69,5 @@ export {
     setcurrentprefs,
     initApp,
     stopPolling,
+    startWizard,
 }

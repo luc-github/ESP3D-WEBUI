@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI settings file
+ selector.js - ESP3D WebUI settings file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -20,9 +20,10 @@
 
 import { h } from "preact"
 import { T } from "../translations"
-import { Tool, Eye } from "preact-feather"
+import { Tool, Eye, Flag } from "preact-feather"
 import { Setting, esp3dSettings, customdata } from "../app"
 import { ESP3DLogo } from "../images"
+import { startWizard } from "./wizard"
 import { useStoreon } from "storeon/preact"
 const { firmwareName } = require(`../${process.env.TARGET_ENV}`)
 /*
@@ -58,6 +59,9 @@ export const Selector = ({ currentSetting }) => {
     }
     function onclickmachine() {
         dispatch("setSettingTab", Setting.machine)
+    }
+    function onclicksetup() {
+        startWizard()
     }
     if (
         !esp3dSettings ||
@@ -114,6 +118,14 @@ export const Selector = ({ currentSetting }) => {
                     >
                         <Tool />
                         <span class="hide-low text-button">{target}</span>
+                    </li>
+                    <li
+                        title={T("S165")}
+                        class="nav-link pill-link"
+                        onclick={onclicksetup}
+                    >
+                        <Flag />
+                        <span class="hide-low text-button">{T("S165")}</span>
                     </li>
                 </ul>
             </div>

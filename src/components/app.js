@@ -26,7 +26,13 @@ import { DialogPage, showDialog } from "./dialog"
 import { disconnectWsServer } from "./websocket"
 import { AboutPage } from "./about"
 import { DashboardPage, updateTerminal } from "./dashboard"
-import { SettingsPage, initApp, preferences, stopPolling } from "./settings"
+import {
+    SettingsPage,
+    initApp,
+    preferences,
+    stopPolling,
+    startWizard,
+} from "./settings"
 import { Header, ExtraPages } from "./header"
 import { Notification, NotificationPage } from "./notification"
 import { setLang, T } from "./translations"
@@ -91,6 +97,7 @@ function finishSetup() {
             message: T("S124").replace("$IP$", esp3dSettings.WebSocketIP),
         })
     }
+    if (esp3dSettings.Setup == "Enabled") startWizard()
 }
 
 /*

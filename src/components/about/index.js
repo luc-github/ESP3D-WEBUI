@@ -122,7 +122,7 @@ function PrepareUpload() {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: processUpload,
+            next1: processUpload,
             next2: cancelUpload,
         })
     }
@@ -163,7 +163,7 @@ function processUpload() {
         progress: 0,
         title: T("S32"),
         button1text: T("S28"),
-        next: cancelUpload,
+        next1: cancelUpload,
     }
     for (var i = 0; i < uploadFiles.length; i++) {
         var file = uploadFiles[i]

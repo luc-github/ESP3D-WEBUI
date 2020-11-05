@@ -283,76 +283,119 @@ const DialogPage = () => {
     })
     console.log(dialogData)
     let classname = "modal d-block"
-    let iconTitle, iconMsg
+    let iconTitle = dialogData.icontitle
+    let iconMsg
     let progressbar
     let title = dialogData.title
-    if (dialogData.type == "notification") {
-        if (!dialogData.button1text) {
-            dialogData.button1text = T("S24")
-        }
-        if (!dialogData.title) {
-            title = T("S123")
-        }
+    let btn1Txt = dialogData.button1text
+    let btn2Txt = dialogData.button2text
+    let btn3Txt = dialogData.button3text
+    let btn1Fn = dialogData.next1
+    let btn2Fn = dialogData.next2
+    let btn3Fn = dialogData.next3
+    let btn1Col = dialogData.button1color
+    let btn2Col = dialogData.button2color
+    let btn3Col = dialogData.button3color
+    let dialogmsg = dialogData.message
+    let progress = dialogData.progress
+    let messageclass = "text-center"
+
+    switch (dialogData.type) {
+        case "confirmation":
+            if (!iconTitle) iconTitle = <HelpCircle color="blue" />
+            if (!btn2Txt) btn2Txt = T("S28")
+            classname += " greybg"
+            messageclass = "text-left"
+            if (!btn1Col) btn1Col = "btn-secondary"
+            break
+        case "custom":
+            if (dialogData.background == "grey") classname += " greybg"
+            break
+        case "disconnect":
+            if (!btn1Fn) btn1Fn = reloadPage
+            classname += " greybg"
+            if (dialogData.numError) {
+                iconTitle = <AlertTriangle color="red" />
+                beepError()
+                if (!title) Title = T("S22")
+                if (!btn1Txt) btn1Txt = T("S24")
+                if (!btn1Col) btn1Col = "btn-primary"
+                if (dialogData.numError) {
+                    title += " (" + dialogData.numError + ")"
+                }
+            } else {
+                if (!iconTitle) iconTitle = <Info color="blue" />
+            }
+            break
+        case "error":
+            if (!btn1Col) btn1Col = "btn-danger"
+            if (!iconTitle) iconTitle = <AlertTriangle color="red" />
+            beepError()
+            if (!title) title = T("S22")
+            if (!btn1Txt) btn1Txt = T("S24")
+            if (dialogData.numError) {
+                title += " (" + dialogData.numError + ")"
+            }
+            break
+        case "loader":
+            if (!iconMsg) iconMsg = <SpinLoader color="lightblue" />
+            break
+        case "login":
+            classname += " greybg"
+            if (!title) {
+                title = T("S145")
+            }
+            dialogmsg = (
+                <div>
+                    <LoginEntry />
+                    <div class="p-1" />
+                    <PasswordEntry />
+                </div>
+            )
+            btn1Txt = T("S148")
+            if (!btn1Col) btn1Col = "btn-secondary"
+            btn21Txt = T("S28")
+            dialogData.next = goLogIn
+            dialogData.next2 = disconnectPage
+            break
+        case "message":
+            if (!iconTitle) iconTitle = <Info color="blue" />
+            if (!btn1Col) btn1Col = "btn-secondary"
+            break
+        case "notification":
+            if (!btn1Txt) btn1Txt = T("S24")
+            if (!title) title = T("S123")
+            if (!btn1Col) btn1Col = "btn-danger"
+            if (!iconTitle) iconTitle = <Info color="blue" />
+            break
+        case "progress":
+            if (!btn1Col) btn1Col = "btn-danger"
+            if (!iconTitle) iconTitle = <Info color="blue" />
+            progressbar = (
+                <div class="progress">
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style={"width:" + dialogData.progress + "%"}
+                        aria-valuenow={dialogData.progress}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                    >
+                        {dialogData.progress}%
+                    </div>
+                </div>
+            )
+            break
+        default:
+            console.log("Unknow dialog type")
+            return null
     }
-    if (dialogData.type == "login") {
-        title = T("S145")
-        classname += " greybg"
-        dialogData.message = (
-            <div>
-                <LoginEntry />
-                <div class="p-1" />
-                <PasswordEntry />
-            </div>
-        )
-        dialogData.button1text = T("S148")
-        dialogData.button2text = T("S28")
-        dialogData.next = goLogIn
-        dialogData.next2 = disconnectPage
-    }
-    if (typeof dialogData.icontitle != "undefined")
-        iconTitle = dialogData.icontitle
-    if (
-        typeof title != "undefined" &&
-        typeof dialogData.icontitle == "undefined"
-    )
-        iconTitle = <Info color="blue" />
-    if (
-        dialogData.type == "error" ||
-        (dialogData.type == "disconnect" && dialogData.numError)
-    ) {
-        iconTitle = <AlertTriangle color="red" />
-        beepError()
-        if (!dialogData.title) {
-            title = T("S22")
-        }
-        if (!dialogData.button1text) {
-            dialogData.button1text = T("S24")
-        }
-        if (dialogData.numError) {
-            title += " (" + dialogData.numError + ")"
-        }
-    }
-    if (dialogData.type == "loader") {
-        iconMsg = <SpinLoader color="lightblue" />
-    }
-    if (dialogData.type == "progress") {
-        progressbar = "width:" + dialogData.progress + "%"
-    }
-    if (
-        dialogData.type == "message" ||
-        (dialogData.type == "disconnect" && !dialogData.numError)
-    ) {
-        iconTitle = <Info color="blue" />
-    }
-    if (dialogData.type == "confirmation") {
-        iconTitle = <HelpCircle color="blue" />
-        if (!dialogData.button2text) dialogData.button2text = T("S28")
-        classname += " greybg"
-    }
-    if (dialogData.type == "custom") {
-        if (dialogData.background == "grey") classname += " greybg"
-    }
-    if (dialogData.type == "disconnect") classname += " greybg"
+    if (!btn1Fn) btn1Fn = hideDialog
+    if (!btn2Fn) btn2Fn = hideDialog
+    if (!btn3Fn) btn3Fn = hideDialog
+    if (!btn1Col) btn1Col = "btn-primary"
+    if (!btn2Col) btn2Col = "btn-primary"
+    if (!btn3Col) btn3Col = "btn-danger"
     return (
         <modal tabindex="-1" className={classname}>
             <div class="modal-dialog modal-dialog-centered ">
@@ -363,96 +406,39 @@ const DialogPage = () => {
                         </div>
                     </div>
                     <div class="modal-body">
-                        <div
-                            class={
-                                dialogData.type == "confirmation"
-                                    ? "text-left"
-                                    : "text-center"
-                            }
-                        >
+                        <div class={messageclass}>
                             {iconMsg}
-                            <div
-                                className={
-                                    dialogData.type == "error" ? "d-none" : ""
-                                }
-                            />
-                            {dialogData.message}
+                            <br />
+                            {dialogmsg}
                         </div>
-                        <div
-                            class={
-                                dialogData.type == "progress"
-                                    ? "progress"
-                                    : "d-none"
-                            }
-                        >
-                            <div
-                                class="progress-bar"
-                                role="progressbar"
-                                style={progressbar}
-                                aria-valuenow={dialogData.progress}
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                            >
-                                {dialogData.progress}%
-                            </div>
-                        </div>
+                        {progressbar}
                     </div>
                     <div class="modal-footer">
                         {dialogData.footer}
                         <button
-                            type="button"
-                            className={
-                                dialogData.type == "disconnect"
-                                    ? "btn btn-primary"
-                                    : "d-none"
-                            }
-                            onClick={reloadPage}
-                        >
-                            {dialogData.button1text}
-                        </button>
-                        <button
-                            type="button"
                             id="but1"
-                            className={
-                                dialogData.type == "notification" ||
-                                dialogData.type == "error" ||
-                                dialogData.type == "progress"
-                                    ? "btn btn-danger"
-                                    : dialogData.type == "login" ||
-                                      dialogData.type == "confirmation" ||
-                                      ((dialogData.type == "message" ||
-                                          dialogData.type == "custom") &&
-                                          dialogData.button1text)
-                                    ? "btn btn-secondary"
-                                    : "d-none"
-                            }
-                            onClick={() => {
-                                if (dialogData.next) dialogData.next()
-                                else hideDialog()
-                            }}
+                            type="button"
+                            className={btn1Txt ? "btn " + btn1Col : "d-none"}
+                            onClick={btn1Fn}
                             focus
                         >
-                            {dialogData.button1text}
+                            {btn1Txt}
                         </button>
                         <button
-                            type="button"
                             id="but2"
-                            className={
-                                dialogData.type == "confirmation"
-                                    ? "btn btn-primary"
-                                    : (dialogData.type == "login" ||
-                                          dialogData.type == "message" ||
-                                          dialogData.type == "custom") &&
-                                      dialogData.button2text
-                                    ? "btn btn-primary"
-                                    : "d-none"
-                            }
-                            onClick={() => {
-                                if (dialogData.next2) dialogData.next2()
-                                else hideDialog()
-                            }}
+                            type="button"
+                            className={btn2Txt ? "btn " + btn2Col : "d-none"}
+                            onClick={btn2Fn}
                         >
-                            {dialogData.button2text}
+                            {btn2Txt}
+                        </button>
+                        <button
+                            id="but3"
+                            type="button"
+                            className={btn3Txt ? "btn " + btn3Col : "d-none"}
+                            onClick={btn3Fn}
+                        >
+                            {btn3Txt}
                         </button>
                     </div>
                 </div>

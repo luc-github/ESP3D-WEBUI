@@ -831,7 +831,7 @@ const FileEntry = ({ entry, pos }) => {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: processDelete,
+            next1: processDelete,
         })
     }
     const printFile = e => {
@@ -849,7 +849,7 @@ const FileEntry = ({ entry, pos }) => {
             title: T("S108"),
             message: <div class="p-1">{entry.name}</div>,
             button1text: T("S28"),
-            next: cancelUpload,
+            next1: cancelUpload,
             progress: 0,
         })
         if (currentFilesType == "SDDirect") filename = "/sd" + filename
@@ -1177,7 +1177,7 @@ function clickCreateDirectory() {
         message: message,
         title: T("S104"),
         button1text: T("S106"),
-        next: processCreateDir,
+        next1: processCreateDir,
     })
 }
 
@@ -1285,7 +1285,7 @@ function PrepareUpload() {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: processUpload,
+            next1: processUpload,
             next2: cancelUpload,
         })
     }
@@ -1324,7 +1324,7 @@ function processUpload() {
         progress: 0,
         title: T("S32"),
         button1text: T("S28"),
-        next: cancelUpload,
+        next1: cancelUpload,
     }
     for (var i = 0; i < uploadFiles.length; i++) {
         var file = uploadFiles[i]

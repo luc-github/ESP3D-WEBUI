@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI settings file
+ webui.js - ESP3D WebUI settings file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -339,7 +339,7 @@ function loadLanguageSuccess(responseText) {
                 type: "error",
                 numError: err,
                 message: T("S7"),
-                next: loadConfig,
+                next1: loadConfig,
             })
         }
     }
@@ -359,7 +359,7 @@ function loadLanguageError(errorCode, responseText) {
             type: "error",
             numError: err,
             message: T("S7"),
-            next: loadConfig,
+            next1: loadConfig,
         })
     }
 }
@@ -493,7 +493,7 @@ function importSettings() {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: loadImportFile,
+            next1: loadImportFile,
             next2: closeImport,
         })
     }
@@ -602,7 +602,7 @@ function savePreferences() {
         type: "progress",
         title: T("S32"),
         button1text: T("S28"),
-        next: cancelUpload,
+        next1: cancelUpload,
         progress: 0,
     }
     var file = new File([blob], preferencesFileName)
@@ -1928,4 +1928,5 @@ export {
     WebUISettings,
     stopPolling,
     macros,
+    LanguageSelection,
 }

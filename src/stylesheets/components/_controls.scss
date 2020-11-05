@@ -8,6 +8,34 @@ $warning-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'
     background-color: #e9ecef !important;
 }
 
+.border-blue {
+    border-color: #337ab7 !important;
+}
+
+.border-default {
+    border-color: #e9ecef !important;
+}
+
+.text-blue {
+    color: #337ab7 !important;
+}
+
+.text-default {
+    color: #e9ecef !important;
+}
+
+.bg-blue {
+    background-color: #337ab7 !important;
+}
+
+.wizardPill {
+    width: 3rem;
+    height: 3rem;
+    cursor: default !important;
+    padding-left: 0.72rem;
+    padding-top: 0.5rem;
+}
+
 .underlaywindow {
     float: left;
     clear: both;

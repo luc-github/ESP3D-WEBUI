@@ -53,7 +53,7 @@ function confirmDisconnection() {
         message: T("S152"),
         title: T("S26"),
         button1text: T("S27"),
-        next: disconnectNow,
+        next1: disconnectNow,
     })
 }
 

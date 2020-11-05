@@ -452,7 +452,7 @@ function importSettings() {
             message: message,
             title: T("S26"),
             button1text: T("S27"),
-            next: loadImportFile,
+            next1: loadImportFile,
             next2: closeImport,
         })
     }
@@ -497,7 +497,7 @@ function loadImportFile() {
                 progress: 0,
                 title: T("S32"),
                 button1text: T("S28"),
-                next: cancelImport,
+                next1: cancelImport,
             })
             stopImport = false
             doImport()
@@ -599,7 +599,7 @@ function saveAndApply() {
                 : T("P3"),
         title: T("S26"),
         button1text: T("S27"),
-        next: processSaveConfig,
+        next1: processSaveConfig,
     })
 }
 /*
