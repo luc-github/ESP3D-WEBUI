@@ -281,7 +281,6 @@ const DialogPage = () => {
     useEffect(() => {
         disableNode(document.getElementById("mainwindow"), true)
     })
-    console.log(dialogData)
     let classname = "modal d-block"
     let iconTitle = dialogData.icontitle
     let iconMsg
