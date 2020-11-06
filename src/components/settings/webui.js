@@ -53,6 +53,7 @@ const {
 import LangListRessource from "../../languages/language-list.json"
 import { showDialog, updateProgress } from "../dialog"
 import { setupWebSocket } from "../websocket"
+import { showWizard, isWizardActive } from "./wizard"
 
 /*
  * Local variables
@@ -313,6 +314,7 @@ function loadLanguage(lang = "en") {
  * Load Language query success
  */
 function loadLanguageSuccess(responseText) {
+    hasError["ui"] = []
     try {
         if (responseText == "en") {
             setLang("en")
@@ -320,9 +322,15 @@ function loadLanguageSuccess(responseText) {
             let langressource = JSON.parse(responseText)
             setLang(prefs.language, langressource)
         }
+        const { dispatch } = useStoreon()
+        hasError["ui"].language = false
+        dispatch("errorcontrols/set", hasControlError())
         if (initdone) {
             updateState("language")
-            showDialog({ displayDialog: false, refreshPage: true })
+            if (isWizardActive()) {
+                console.log("wizard on going")
+                showWizard()
+            } else showDialog({ displayDialog: false, refreshPage: true })
         } else {
             initdone = true
             loadConfig()
@@ -331,8 +339,19 @@ function loadLanguageSuccess(responseText) {
         console.log("error")
         console.error(responseText)
         if (initdone) {
-            showDialog({ type: "error", numError: err, message: T("S7") })
+            if (isWizardActive()) {
+                showDialog({
+                    type: "error",
+                    numError: err,
+                    message: T("S7"),
+                    next1: showWizard,
+                })
+            } else
+                showDialog({ type: "error", numError: err, message: T("S7") })
             setState("language", "error")
+
+            hasError["ui"].language = true
+            dispatch("errorcontrols/set", hasControlError())
         } else {
             initdone = true
             showDialog({
@@ -351,8 +370,24 @@ function loadLanguageSuccess(responseText) {
 function loadLanguageError(errorCode, responseText) {
     console.log("no valid /" + prefs.language + ".json.gz file, use default")
     if (initdone) {
+        const { dispatch } = useStoreon()
+        hasError["ui"] = []
+        hasError["ui"].language = true
+        dispatch("errorcontrols/set", hasControlError())
+        if (isWizardActive()) {
+            showDialog({
+                type: "error",
+                numError: errorCode,
+                message: T("S67"),
+                next1: showWizard,
+            })
+        } else
+            showDialog({
+                type: "error",
+                numError: errorCode,
+                message: T("S67"),
+            })
         setState("language", "error")
-        showDialog({ type: "error", numError: errorCode, message: T("S67") })
     } else {
         initdone = true
         showDialog({
@@ -797,8 +832,11 @@ function updateState(entry, index = null, target = "macro") {
     let state = "default"
     if (index == null) {
         if (preferences.settings[entry] != prefs[entry]) {
-            console.log(entry + "_" + index)
+            console.log(entry)
             state = "modified"
+        }
+        if (entry == "language") {
+            if (hasError["ui"].language) state = "error"
         }
     } else {
         if (target == "macro") {
@@ -964,6 +1002,12 @@ function hasControlError() {
             panel_hasError[index].type
         )
             return true
+    }
+    if (typeof hasError["ui"] != "undefined") {
+        if (hasError["ui"].language) {
+            console.log("we have error on language")
+            return true
+        }
     }
     return false
 }

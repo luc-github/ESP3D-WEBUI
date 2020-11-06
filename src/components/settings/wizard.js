@@ -21,7 +21,7 @@ wizard.js - ESP3D WebUI settings file
 import { h } from "preact"
 import { T } from "../translations"
 import { Save, Wifi, Globe, Check } from "preact-feather"
-import { esp3dSettings, Setting } from "../app"
+import { esp3dSettings, Setting, Page } from "../app"
 import { SendCommand } from "../http"
 import { useStoreon } from "storeon/preact"
 const { getIcon, iconsList } = require(`../${process.env.TARGET_ENV}`)
@@ -35,6 +35,7 @@ import { LanguageSelection } from "./webui"
 
 let currentStep = 0
 let totalSteps = 0
+let wizardIsActive = false
 
 /*
  * Some constants
@@ -46,6 +47,10 @@ const stepfinal = 3
 
 function getTotalSteps() {
     let val = 3
+}
+
+function isWizardActive() {
+    return wizardIsActive
 }
 
 /*
@@ -155,13 +160,11 @@ function wizardTitle(type) {
  * Start wizard function
  */
 function startWizard() {
+    const { dispatch } = useStoreon()
     currentStep = stepstart
     totalSteps = getTotalSteps()
-    const { dispatch } = useStoreon()
-    const { activeSetting } = useStoreon("activeSetting")
-    let activesetting = activeSetting
-    if (typeof activeSetting == "undefined") activesetting = Setting.esp3d
-    dispatch("setSettingTab", "$" + activesetting)
+    wizardIsActive = true
+    dispatch("setPage", Page.none)
     showWizard()
 }
 
@@ -180,16 +183,14 @@ function finalizeSetup() {
     console.log("Save setup done")
     esp3dSettings.Setup == "Disabled"
     SendCommand("[ESP800]setup=1")
-    dispatch("displayDialog", false)
+    wizardIsActive = true
+    dispatch("setPage", Page.settings)
+    showDialog({ displayDialog: false })
 }
 
 function endWizard() {
     const { dispatch } = useStoreon()
-    const { activeSetting } = useStoreon("activeSetting")
-
-    if (typeof activeSetting != "undefined") {
-        dispatch("setSettingTab", activeSetting.substring(1))
-    } else dispatch("setSettingTab", Setting.esp3d)
+    wizardIsActive = false
     if (esp3dSettings.Setup == "Enabled") {
         showDialog({
             type: "confirmation",
@@ -201,7 +202,10 @@ function endWizard() {
             next2: finalizeSetup,
             button2text: T("S168"),
         })
-    } else dispatch("displayDialog", false)
+    } else {
+        dispatch("setPage", Page.settings)
+        showDialog({ displayDialog: false })
+    }
 }
 
 /*
@@ -210,13 +214,12 @@ function endWizard() {
 function showWizard() {
     let data
     let title = wizardTitle()
-    //<LanguageSelection />
     switch (currentStep) {
         case 1:
             data = {
                 icontitle: null,
                 type: "custom",
-                message: <div>select language</div>,
+                message: <LanguageSelection />,
                 title: title,
                 button2text: T("S163"),
                 next2: stepWiFi,
@@ -259,4 +262,4 @@ function showWizard() {
     showDialog(data)
 }
 
-export { startWizard }
+export { startWizard, showWizard, isWizardActive }
