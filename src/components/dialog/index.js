@@ -316,7 +316,7 @@ const DialogPage = () => {
             if (dialogData.numError) {
                 iconTitle = <AlertTriangle color="red" />
                 beepError()
-                if (!title) Title = T("S22")
+                if (!title) title = T("S22")
                 if (!btn1Txt) btn1Txt = T("S24")
                 if (!btn1Col) btn1Col = "btn-primary"
                 if (dialogData.numError) {
