@@ -428,6 +428,7 @@ const Entry = ({ entry }) => {
         </div>
     )
 }
+
 /*
  * Generate a section of settings
  */
@@ -537,7 +538,7 @@ function loadSettings() {
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW Settings")
     refreshOngoing = true
-    SendCommand(cmd, loadSettingsSuccess, loadSettingsError)
+    SendCommand(cmd, loadSettingsSuccess, loadSettingsError,null,"noterminal")
     isloaded = true
 }
 
