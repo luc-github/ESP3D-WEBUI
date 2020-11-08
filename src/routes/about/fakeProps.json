@@ -1,0 +1,142 @@
+[
+    {
+      "prop": "Firmware",
+      "value": "3.0.0.a28  "
+    },
+    {
+      "prop": "Interface",
+      "value": "3.0.0.74  "
+    },
+    {
+      "prop": "Browser version",
+      "value": "Chrome 86"
+    },
+    {
+      "prop": "Chip ID",
+      "value": 38078
+    },
+    {
+      "prop": "CPU Frequency",
+      "value": "240 Mhz"
+    },
+    {
+      "prop": "CPU Temperature",
+      "value": "50.6 C"
+    },
+    {
+      "prop": "Free memory",
+      "value": "217.50 KB"
+    },
+    {
+      "prop": "SDK",
+      "value": "v3.3.1-61-g367c3c09c"
+    },
+    {
+      "prop": "Flash Size",
+      "value": "4.00 MB"
+    },
+    {
+      "prop": "Available Size for update",
+      "value": "1.87 MB"
+    },
+    {
+      "prop": "Filesystem type",
+      "value": "SPIFFS"
+    },
+    {
+      "prop": "Filesystem usage",
+      "value": "39.95 KB/169.38 KB"
+    },
+    {
+      "prop": "Baud rate",
+      "value": 115200
+    },
+    {
+      "prop": "Sleep mode",
+      "value": "None"
+    },
+    {
+      "prop": "WiFi",
+      "value": "Enabled"
+    },
+    {
+      "prop": "Hostname",
+      "value": "esp3d"
+    },
+    {
+      "prop": "HTTP port",
+      "value": 80
+    },
+    {
+      "prop": "Telnet port",
+      "value": 23
+    },
+    {
+      "prop": "Ftp ports",
+      "value": 21
+    },
+    {
+      "prop": "Client mode",
+      "value": "Enabled"
+    },
+    {
+      "prop": "Mac address",
+      "value": "30:AE:A4:21:BE:94"
+    },
+    {
+      "prop": "SSID",
+      "value": "WIFI_OFFICE_B2G"
+    },
+    {
+      "prop": "Signal",
+      "value": "100 %"
+    },
+    {
+      "prop": "Phy Mode",
+      "value": "11n"
+    },
+    {
+      "prop": "Channel",
+      "value": 2
+    },
+    {
+      "prop": "IP Mode",
+      "value": "DHCP"
+    },
+    {
+      "prop": "IP",
+      "value": "192.168.1.43"
+    },
+    {
+      "prop": "Gateway",
+      "value": "192.168.1.1"
+    },
+    {
+      "prop": "Mask",
+      "value": "255.255.255.0"
+    },
+    {
+      "prop": "DNS",
+      "value": "192.168.1.1"
+    },
+    {
+      "prop": "Access point mode",
+      "value": "Disabled"
+    },
+    {
+      "prop": "Mac address",
+      "value": "30:AE:A4:21:BE:95"
+    },
+    {
+      "prop": "Serial",
+      "value": "Enabled"
+    },
+    {
+      "prop": "Notifications",
+      "value": "Disabled"
+    },
+    {
+      "prop": "FW architecture",
+      "value": "ESP32"
+    }
+  ]
