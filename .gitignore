@@ -1,4 +1,5 @@
 node_modules
+build
 dist/images/jogdial.svg
 dist/images/jogdial1.svg
 dist/images/jogdial2.svg
