@@ -1,12 +1,11 @@
 import { h } from 'preact';
 import { useEffect, useState } from "preact/hooks";
 import Loader from '../../components/Loader'
-// import './dashboard.scss'
 
 import panelList from './Panels'
 
 const Dashboard = () => {
-	const [userPrefActivePanels, setUserPrefActivePanels] = useState(['temperatures', 'positions', 'fan', 'flowrate'])
+	const [userPrefActivePanels, setUserPrefActivePanels] = useState(Object.keys(panelList))
 	const [activePanels, setActivePanels] = useState()
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -15,7 +14,7 @@ const Dashboard = () => {
 	}, [activePanels, userPrefActivePanels])
 
 	const getUserPrefActivePanels = () => {
-		//logic to get pref from localStorage or other
+		//logic to get pref from localStorage or preferences.json
 		return userPrefActivePanels //fake
 	}
 
@@ -23,7 +22,7 @@ const Dashboard = () => {
 		let filteredPanelList = {}, key
 		const userPrefActivePanels = getUserPrefActivePanels()
 		for (key in panelList) {
-			if (panelList.hasOwnProperty(key) && userPrefActivePanels.includes(key)) {
+			if (Object.prototype.hasOwnProperty.call(panelList, key) && userPrefActivePanels.includes(key)) {
 				const element = panelList[key]
 				filteredPanelList[key] = element
 			}
@@ -40,7 +39,7 @@ const Dashboard = () => {
 			{isLoading && <Loader />}
 			{!isLoading && <div className="columns">
 				{activePanels && Object.keys(activePanels).map(panelKey => {
-					const { comp, ...rest } = activePanels[panelKey]
+					const { comp } = activePanels[panelKey]
 					const Panel = comp
 					return (<div key={panelKey} className="column col-xs-12 cold-md-6 col-4"><Panel title={panelKey} /></div>)
 				})}

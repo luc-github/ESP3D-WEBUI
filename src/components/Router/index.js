@@ -6,45 +6,50 @@ const parseLocation = () => { if (typeof window !== "undefined") { return locati
 
 const Router = ({ children, routes }) => {
     const [ActiveRoute, setActiveRoute] = useState(parseLocation)
-    const [ActiveComponent, setActiveComponent] = useState(routes.HOME.component)
+    const [ActiveComponent, setActiveComponent] = useState(routes.DEFAULT.component)
 
     const handleHashChange = useCallback(() => {
-        const location = parseLocation()
         getActiveRoute()
     }, [])
 
     const getActiveRoute = () => {
-        for (const key in routes) {
-            if (routes.hasOwnProperty(key)) {
-                const element = routes[key]
-                if (element.path === parseLocation()) {
-                    setActiveRoute(element.path)
-                    setActiveComponent(element.component)
+        const location = parseLocation().split('/')
+        for (let i = 0; i < location.length; i++) {
+            const subLocation = location.slice(0, i + 1).join('/')
+            for (const key in routes) {
+                if (Object.prototype.hasOwnProperty.call(routes, key)) {
+                    const element = routes[key]
+                    if (element.path === subLocation) {
+                        setActiveRoute(element.path)
+                        setActiveComponent(element.component)
+                        break
+                    }
                 }
             }
         }
     }
 
-
     useEffect(() => {
         getActiveRoute()
+        console.log(ActiveRoute)
         window.addEventListener('hashchange', handleHashChange);
-        return () => {
-            window.removeEventListener('hashchange', handleHashChange);
-        };
-    }, [handleHashChange])
+        return () => window.removeEventListener('hashchange', handleHashChange);
+
+    }, [handleHashChange, ActiveRoute])
 
     return (
         <div>
-            <p>ActiveRoute : {ActiveRoute}</p>
             {ActiveComponent}
             {children}
         </div>
     )
 }
 
-const Link = ({ activeClassName = '', children, href, ...rest }) => {
-    return <a href={`#${href}`} {...rest}> {children}</a>
+/**
+ * @todo handle activeClassName
+ **/
+const Link = ({ activeClassName = '', className = '', href, children, ...rest }) => {
+    return <a href={`#${href}`} className={className} {...rest}> {children}</a>
 }
 
 export { Router, Link }

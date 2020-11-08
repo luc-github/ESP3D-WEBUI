@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { useEffect, useState } from "preact/hooks";
 
 const ExtrusionPanel = ({ title }) => (
     <div class="panel">
