@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { Link } from 'preact-router/match';
+// import { Link } from 'preact-router/match';
+import { Link } from '../Router'
 
 
 const Navbar = () => (

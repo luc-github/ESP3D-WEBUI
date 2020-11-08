@@ -1,31 +1,40 @@
 import { h } from 'preact';
-import { Router } from 'preact-router';
-
+import { Router } from '../Router'
 import Navbar from '../Navbar';
 
 // Code-splitting is automated for `routes` directory
-import Home from '../../routes/home';
-// import Profile from '../../routes/profile';
+import Home from '../../pages/home';
+// import Profile from '../../pages/profile';
 
 
-import About from '../../routes/about';
-import Dashboard from '../../routes/dashboard';
-import Settings from '../../routes/settings';
-// import Kitchensink from '../../routes/Kitchensink';
-
+import About from '../../pages/about';
+import Dashboard from '../../pages/dashboard';
+import Settings from '../../pages/settings';
+// import Kitchensink from '../../pages/Kitchensink';
+const routes = {
+    HOME: {
+        component: <Home />,
+        path: '/',
+    },
+    DASHBOARD: {
+        component: <Dashboard />,
+        path: '/dashboard',
+    },
+    ABOUT: {
+        component: <About />,
+        path: '/about',
+    },
+    SETTINGS: {
+        component: <Settings />,
+        path: '/settings',
+    },
+}
 
 const App = () => (
     <div id="app">
         <Navbar />
-        <Router>
-            <Home path="/" />
-            <About path="/about" />
-            <Settings path="/settings" />
-            <Settings path="/settings/:tab" />
-            <Dashboard path="/dashboard" />
-            {/* <Kitchensink path="/kitchensink" /> */}
-            {/* <Profile path="/profile/" user="me" /> */}
-            {/* <Profile path="/profile/:user" /> */}
+        <Router routes={routes}>
+            <div></div>
         </Router>
     </div>
 )
