@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { useEffect, useState } from "preact/hooks";
 
 const FilesPanel = ({ title }) => (
     <div class="panel">

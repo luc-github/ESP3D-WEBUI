@@ -1,10 +1,10 @@
-import { h } from 'preact';
+import { h } from 'preact'
 
 const InterfaceTab = () => {
     return (
         <div>
-            <p>Interface Tab Content</p>
+            <p>Interface Tab Content</p>             
         </div>
     )
 }
-export default InterfaceTab;
+export default InterfaceTab

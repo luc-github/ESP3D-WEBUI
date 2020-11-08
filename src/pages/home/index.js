@@ -5,6 +5,6 @@ const Home = () => (
 		<h2>Home</h2>
 		<p>This is the Home component.</p>
 	</div>
-);
+)
 
-export default Home;
+export default Home

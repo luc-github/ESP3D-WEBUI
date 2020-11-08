@@ -35,4 +35,3 @@ const panelList = {
 }
 
 export default panelList
-export { }
