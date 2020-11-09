@@ -8,3 +8,13 @@
         margin-bottom: 1em;
     }
 }
+
+.toaster-container {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+
+    >.toast {
+        margin: 0.2rem 0;
+    }
+}
