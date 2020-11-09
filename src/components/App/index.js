@@ -1,7 +1,9 @@
 import { h } from 'preact';
 import { Router } from '../Router'
+import { UiContextProvider } from '../UiContext'
 import Navbar from '../Navbar';
-
+import { Toast } from '../Toast';
+import { Modal } from '../Modal';
 import Home from '../../pages/home';
 import About from '../../pages/about';
 import Dashboard from '../../pages/dashboard';
@@ -30,11 +32,17 @@ const routes = {
     },
 }
 
-const App = () => (
-    <div id="app">
-        <Navbar />
-        <Router routes={routes} />
-    </div>
-)
+const App = () => {
+    return (
+        <div id="app">
+            <UiContextProvider>
+                <Toast />
+                <Modal />
+                <Navbar />
+                <Router routes={routes} />
+            </UiContextProvider>
+        </div>
+    )
+}
 
 export default App;
