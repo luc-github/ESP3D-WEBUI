@@ -1,4 +1,7 @@
+import { h, render } from "preact"
+import { App } from "./components/App"
 import './style/index.scss';
-import App from './components/App';
-
-export default App;
+render(
+        <App />,
+    document.body
+)
