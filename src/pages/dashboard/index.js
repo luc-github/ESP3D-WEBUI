@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from "preact/hooks";
 import Loader from '../../components/Loader'
+import { Filter } from './Filter'
 
 import panelList from './Panels'
 
@@ -34,9 +35,9 @@ const Dashboard = () => {
 	return (
 		<div id="dashboard" className="container">
 			<h2>Dashboard</h2>
-			<p>This is the component.</p>
-			<button className='btn btn-primary' onClick={() => { setUserPrefActivePanels(["positions", "speed", "flowrate"]) }}>Filter </button>
+
 			{isLoading && <Loader />}
+			{!isLoading && <div className="filter-wrapper mb-2"><Filter items={panelList}><button className='btn btn-primary' onClick={() => { setUserPrefActivePanels(["positions", "speed", "flowrate"]) }}>Filter </button></Filter></div>}
 			{!isLoading && <div className="columns">
 				{activePanels && Object.keys(activePanels).map(panelKey => {
 					const { comp } = activePanels[panelKey]
