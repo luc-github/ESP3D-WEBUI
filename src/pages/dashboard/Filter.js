@@ -21,7 +21,7 @@ export const Filter = ({ items, activePanels, children, action }) => {
                             </label>
                         </li>)
                 })}
-                {[...children].map(child => (<li className="menu-item">{child}</li>))}
+                {children && [...children].map(child => (<li className="menu-item">{child}</li>))}
             </ul>
 
         </div>
