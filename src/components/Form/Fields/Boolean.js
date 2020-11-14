@@ -6,7 +6,7 @@ export const Boolean = ({
     id,
     label,
     validation,
-    value,
+    value = false,
     type,
     // horizontal, 
     fields,
@@ -16,7 +16,6 @@ export const Boolean = ({
     const inputCheckboxProps = {
         name: id,
         id,
-        value,
         checked: value,
         ...rest
     }
