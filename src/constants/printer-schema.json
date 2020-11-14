@@ -1,0 +1,167 @@
+{
+    "settings": {
+        "fields": {
+            "language": {
+                "type": "select",
+                "options": []
+            },
+            "banner": {
+                "type": "boolean"
+            },
+            "autoload": {
+                "type": "boolean"
+            },
+            "mobileview": {
+                "type": "boolean"
+            },
+            "enablepolling": {
+                "type": "boolean",
+                "fields": {
+                    "pollingrefresh": {
+                        "type": "number"
+                    },
+                    "pollingcommands": {
+                        "type": "string"
+                    }
+                }
+            },
+            "showterminalpanel": {
+                "type": "boolean",
+                "fields": {
+                    "openterminalonstart": {
+                        "type": "boolean"
+                    },
+                    "verbose": {
+                        "type": "boolean"
+                    },
+                    "autoscroll": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "showfilespanel": {
+                "type": "boolean",
+                "fields": {
+                    "openfilesonstart": {
+                        "type": "boolean"
+                    },
+                    "filesfilter": {
+                        "type": "text"
+                    },
+                    "printersd": {
+                        "type": "boolean"
+                    },
+                    "tftsd": {
+                        "type": "boolean"
+                    },
+                    "tftusb": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "showmacros": {
+                "type": "boolean",
+                "fields": {
+                    "expandmacrosbuttonsonstart": {
+                        "type": "boolean"
+                    }
+                },
+                "children": ["macro"]
+            },
+            "showjogpanel": {
+                "type": "boolean",
+                "fields": {
+                    "xyfeedrate": {
+                        "type": "number"
+                    },
+                    "zfeedrate": {
+                        "type": "number"
+                    },
+                    "movetoposition": {
+                        "fields": {
+                            "xpos": {
+                                "type": "number"
+                            },
+                            "ypos": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            },
+            "showtemperaturespanel": {
+                "type": "boolean",
+                "fields": {
+                    "extruders": {
+                        "fields": {
+                            "extrudermax": {
+                                "type": "number"
+                            },
+                            "extruderpreheat": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "bed": {
+                        "fields": {
+                            "bedmax": {
+                                "type": "number"
+                            },
+                            "bedpreheat": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "chamber": {
+                        "fields": {
+                            "chambermax": {
+                                "type": "number"
+                            },
+                            "chamberpreheat": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "showsensorspanel": {
+                "type": "boolean"
+            },
+            "showfanspanel": {
+                "type": "boolean"
+            },
+            "showspeedpanel": {
+                "type": "boolean"
+            },
+            "showflowratepanel": {
+                "type": "boolean"
+            },
+            "showextruderspanel": {
+                "type": "boolean",
+                "fields": {
+                    "efeedrate": {
+                        "type": "number"
+                    },
+                    "ismixedextruder": {
+                        "type": "boolean",
+                        "fields": {
+                            "enumber": {
+                                "type": "number"
+                            },
+                            "ecolors": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "showextrapanels": {
+                "type": "boolean",
+                "fields": {},
+                "children": ["panels"]
+            }
+        }
+    },
+    "macros": [],
+    "panels": []
+}
