@@ -75,24 +75,15 @@ const RenderInput = ({ id, ...props }) => <p><label htmlFor=""><input type='chec
 
 const MyForm = (props) => {
     const [fields, setFields] = useState(props.fields)
-    const [flattendFields, setFlattendFields] = useState(flattenSchema(props.fields))
-
-    const handleChange = (key, e) => {
-        const name = e.target.name
-        const checked = e.target.checked
-        console.log(key, name, e.target.checked)
-        setFlattendFields({ ...flattendFields, [name]: { checked } })
-    }
 
     useEffect(() => {
         console.log('fields', fields)
-        console.log('flattendFields', flattendFields)
-    }, [fields, flattendFields])
+    }, [fields])
 
     return (
         Object.keys(fields).map(fieldId => {
-            if (fields[fieldId].fields) return <SubForm controllerFieldId={fieldId} fields={fields[fieldId].fields} changeHandler={handleChange} />
-            return <RenderInput id={fieldId} onChange={e => handleChange(fieldId, e)} />
+            if (fields[fieldId].fields) return <SubForm controllerFieldId={fieldId} fields={fields[fieldId].fields} changeHandler={props.handleChange} />
+            return <RenderInput id={fieldId} onChange={e => props.handleChange(fieldId, e)} />
         })
     )
 }
@@ -103,17 +94,25 @@ const SubForm = ({ controllerFieldId, fields, changeHandler }) => {
     return (<div>
         <RenderInput id={controllerFieldId} onChange={e => { changeHandler(controllerFieldId, e); setIsOpen(e.target.checked) }} />
         <div class="panel" style={{ marginLeft: '1em' }} >
-            {isOpen && <MyForm fields={fieldsState} />}
+            {isOpen && <MyForm fields={fieldsState} handleChange={changeHandler} />}
         </div></div>)
 }
 
 const MarlinTab = () => {
     const [settings, setSettings] = useState(monSchema.fields)
+    const [flattendFields, setFlattendFields] = useState(flattenSchema(monSchema.fields))
+
+    const handleChange = (key, e) => {
+        const name = e.target.name
+        const checked = e.target.checked
+        console.log(key, name, e.target.checked)
+        setFlattendFields({ ...flattendFields, [name]: { checked } })
+    }
 
     useEffect(() => {
-        console.log('settings Marlin Tab', settings)
-        console.log('flatten', flattenSchema(settings))
-    }, [settings])
+        console.log('flattendFields', flattendFields)
+    }, [flattendFields])
+
 
     // const handleChange = (e) => {
     //     const { name, checked } = e.target
@@ -123,7 +122,7 @@ const MarlinTab = () => {
     return (
         <div>
             <p>Marlin Tab Content</p>
-            <MyForm fields={monSchema.fields} />
+            <MyForm fields={monSchema.fields} handleChange={handleChange} />
             {/* <RenderForm src={monSchema.fields} handleChange={handleChange} /> */}
         </div>
     )
