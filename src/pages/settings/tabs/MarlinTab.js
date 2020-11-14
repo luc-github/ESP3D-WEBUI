@@ -44,36 +44,7 @@ const monSchema = {
 
 const RenderInput = ({ id, ...props }) => <p><label htmlFor=""><input type='checkbox' name={id} {...props} /> {id}</label></p>
 
-/* const RenderForm = ({ src, handleChange }) => {
-    const [settings, setSettings] = useState(src)
-
-    const handleSubChanges = (e) => {
-        const { name, checked } = e.target
-        setSettings({ ...src, [name]: checked })
-        console.log('subchange', settings)
-    }
-
-    useEffect(() => {
-        console.log('settings state', settings)
-
-    }, [settings])
-
-
-    return Object.keys(settings).map(field => {
-        const element = settings[field]
-        // if (Object.prototype.hasOwnProperty.call(element, 'fields')) return (
-        if ('fields' in element) return (
-            <div className="panel">
-                <p> {JSON.stringify(element)} </p>
-                <RenderInput id={field} onChange={(e) => { handleChange(e); handleSubChanges(e) }} />
-                <RenderForm src={element.fields} handleChange={(e) => { handleChange(e); handleSubChanges(e) }} />
-            </div>)
-        return <RenderInput id={field} onChange={(e) => { handleChange(e) }} />
-    })
-
-} */
-
-const MyForm = (props) => {
+const SettingsForm = (props) => {
     const [fields, setFields] = useState(props.fields)
 
     useEffect(() => {
@@ -82,19 +53,19 @@ const MyForm = (props) => {
 
     return (
         Object.keys(fields).map(fieldId => {
-            if (fields[fieldId].fields) return <SubForm controllerFieldId={fieldId} fields={fields[fieldId].fields} changeHandler={props.handleChange} />
+            if (fields[fieldId].fields) return <SubSettingsForm controllerFieldId={fieldId} fields={fields[fieldId].fields} changeHandler={props.handleChange} />
             return <RenderInput id={fieldId} onChange={e => props.handleChange(fieldId, e)} />
         })
     )
 }
 
-const SubForm = ({ controllerFieldId, fields, changeHandler }) => {
+const SubSettingsForm = ({ controllerFieldId, fields, changeHandler }) => {
     const [fieldsState, setFieldsState] = useState(fields)
     const [isOpen, setIsOpen] = useState(false)
     return (<div>
         <RenderInput id={controllerFieldId} onChange={e => { changeHandler(controllerFieldId, e); setIsOpen(e.target.checked) }} />
         <div class="panel" style={{ marginLeft: '1em' }} >
-            {isOpen && <MyForm fields={fieldsState} handleChange={changeHandler} />}
+            {isOpen && <SettingsForm fields={fieldsState} handleChange={changeHandler} />}
         </div></div>)
 }
 
@@ -113,16 +84,10 @@ const MarlinTab = () => {
         console.log('flattendFields', flattendFields)
     }, [flattendFields])
 
-
-    // const handleChange = (e) => {
-    //     const { name, checked } = e.target
-    //     console.log('handleChange', { name, checked })
-    // }
-
     return (
         <div>
             <p>Marlin Tab Content</p>
-            <MyForm fields={monSchema.fields} handleChange={handleChange} />
+            <SettingsForm fields={monSchema.fields} handleChange={handleChange} />
             {/* <RenderForm src={monSchema.fields} handleChange={handleChange} /> */}
         </div>
     )
