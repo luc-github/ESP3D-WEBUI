@@ -39,10 +39,12 @@ const App = () => {
                 <Toast />
                 <Modal />
                 <Navbar />
-                <Router routes={routes} />
+                <div id="main-container">
+                    <Router routes={routes} />
+                </div>
             </UiContextProvider>
         </div>
     )
 }
 
-export {App}
+export { App }
