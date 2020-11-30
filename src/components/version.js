@@ -19,4 +19,4 @@
 */
 import { h } from "preact"
 
-export const Esp3dVersion = () => <span>3.0.0.74</span>
+export const Esp3dVersion = () => <span>3.0.0.75</span>

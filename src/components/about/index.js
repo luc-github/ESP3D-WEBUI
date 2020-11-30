@@ -383,7 +383,7 @@ function loadStatus() {
     isloaded = true
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW status")
-    SendCommand(cmd, loadStatusSuccess, loadStatusError,null,"noterminal")
+    SendCommand(cmd, loadStatusSuccess, loadStatusError, null, "noterminal")
 }
 
 /*

@@ -538,7 +538,7 @@ function loadSettings() {
     showDialog({ type: "loader", message: T("S1") })
     console.log("load FW Settings")
     refreshOngoing = true
-    SendCommand(cmd, loadSettingsSuccess, loadSettingsError,null,"noterminal")
+    SendCommand(cmd, loadSettingsSuccess, loadSettingsError, null, "noterminal")
     isloaded = true
 }
 

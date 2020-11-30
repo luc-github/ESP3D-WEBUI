@@ -1207,7 +1207,10 @@ const FilesTypeSelector = () => {
     optionsList.push(<option value="FS">ESP</option>)
     if (prefs.printersd)
         optionsList.push(<option value="TARGETSD">{T("S143")}</option>)
-    if (esp3dSettings.SDConnection == "direct")
+    if (
+        esp3dSettings.SDConnection == "direct" ||
+        esp3dSettings.SDConnection == "shared"
+    )
         optionsList.push(<option value="SDDirect">SD</option>)
     if (prefs.tftsd) optionsList.push(<option value="TFTSD">TFT SD</option>)
     if (prefs.tftusb) optionsList.push(<option value="TFTUSB">TFT USB</option>)

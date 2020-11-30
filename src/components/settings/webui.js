@@ -1101,7 +1101,11 @@ const MacroUISelectTarget = ({ index, id, label }) => {
         updateState(id, index)
     }, [macros[index][id], prefs.tftusb, prefs.tftsd, prefs.printersd])
     let options = []
-    if (esp3dSettings.SDConnection == "direct" || prefs.printersd)
+    if (
+        esp3dSettings.SDConnection == "direct" ||
+        esp3dSettings.SDConnection == "shared" ||
+        prefs.printersd
+    )
         options.push(
             <option
                 value="TARGETSD"
