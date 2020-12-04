@@ -472,7 +472,7 @@ function canDelete(entry) {
  * Check if can print file
  */
 function canPrint(entry) {
-    if (currentFilesType == "FS" || entry.size == -1) {
+    if (currentFilesType == "FS" || entry.size == -1 || currentFilesType == "SDDirect") {
         return false
     }
     let filefilter = prefs.filesfilter.trim()
