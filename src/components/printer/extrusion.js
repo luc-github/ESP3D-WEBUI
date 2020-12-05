@@ -420,7 +420,7 @@ const ExtrusionPanel = () => {
         let distance = extrudeDistance
         let cmd
         if (!preferences.settings.ismixedextruder) {
-            cmd = "T" + (currentExtruder - 1)
+            cmd = "T" + (currentExtruder - 1) + "\n"
         } else {
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
