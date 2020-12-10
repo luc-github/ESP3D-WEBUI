@@ -280,5 +280,6 @@
     "intervalms" : "Interval (millisec)",
     "modem": "Modem",
     "light" : "Light",
-    "grbl" : "Grbl"
+    "grbl" : "Grbl",
+    "SD updater":"SD updater"
 }

@@ -253,106 +253,6 @@ const InputEntry = ({ entry }) => {
 }
 
 /*
- * Generate a flag control
- */
-const FlagSubEntry = ({ entry, label, val, index }) => {
-    const onChange = e => {
-        entry.O[index]["current_value"] = e.target.value
-        updateState(entry, index)
-    }
-    const onSet = e => {
-        let newval = parseInt(entry.V)
-        let flag = parseInt(Object.values(entry.O[index])[0])
-        if (entry.O[index]["current_value"] == 0) {
-            newval &= ~flag
-        } else {
-            newval |= flag
-        }
-        entry.currentValue = newval
-        entry.O[index].saving = true
-        saveSetting(entry)
-    }
-    useEffect(() => {
-        updateState(entry, index)
-    }, [entry])
-    let current = entry.O[index]["current_value"]
-    return (
-        <div class="card-text">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span
-                        class="input-group-text"
-                        id={"label_setting" + entry.P + "_" + val}
-                    >
-                        {T(label)}
-                    </span>
-                </div>
-                <select
-                    class="form-control rounded-right"
-                    value={current}
-                    onChange={onChange}
-                    id={"setting" + entry.P + "_" + val}
-                >
-                    <option value="0">{T("OFF")}</option>
-                    <option value="1">{T("ON")}</option>
-                </select>
-                <div class="input-group-append">
-                    <button
-                        class="btn btn-warning d-none rounded-right"
-                        type="button"
-                        id={"button_setting" + entry.P + "_" + val}
-                        title={T("S43")}
-                        onClick={onSet}
-                    >
-                        <Save size="1.2em" />
-                        <span class="hide-low text-button-setting">
-                            {T("S43")}
-                        </span>
-                    </button>
-                </div>
-            </div>
-            <div class="controlSpacer" />
-        </div>
-    )
-}
-
-/*
- * Generate a flag list
- */
-const FlagEntry = ({ entry }) => {
-    const flagsettings = []
-    let index = 0
-    for (let key in entry.O) {
-        let sub_key
-        let sub_val
-        if (typeof entry.O[key]["current_value"] == "undefined")
-            entry.O[key]["current_value"] =
-                parseInt(Object.values(entry.O[key])[0]) & parseInt(entry.V)
-                    ? 1
-                    : 0
-        sub_key = Object.keys(entry.O[key])[0].trim()
-        sub_val = Object.values(entry.O[key])[0].trim()
-        flagsettings.push(
-            <FlagSubEntry
-                entry={entry}
-                label={sub_key}
-                val={sub_val}
-                index={index}
-            />
-        )
-        index++
-    }
-    return (
-        <div>
-            <div class="card">
-                <div class="card-header control-padding">{T(entry.H)}</div>
-                <div class="card-body padding-low">{flagsettings}</div>
-            </div>
-        </div>
-    )
-}
-
-/*
  * Generate a UI for a setting
  */
 const Entry = ({ entry }) => {
@@ -369,10 +269,7 @@ const Entry = ({ entry }) => {
     }
     if (!entry.O) setting = <InputEntry entry={entry} />
     else {
-        if (entry.T != "F") setting = <SelectEntry entry={entry} />
-        else {
-            return <FlagEntry entry={entry} />
-        }
+        setting = <SelectEntry entry={entry} />
     }
     let extra
     //position may vary from FW location should not
@@ -656,16 +553,7 @@ function saveSettingSuccess(responseText) {
         for (let entry of esp3dFWSettings.Settings) {
             if (entry.P == res[1]) {
                 entry.V = entry.currentValue
-                if (entry.T != "F") {
-                    setState(res[1], "success")
-                } else {
-                    for (let i = 0; i < entry.O.length; i++) {
-                        if (entry.O[i].saving) {
-                            entry.O[i].saving = false
-                            setState(entry, "success", i)
-                        }
-                    }
-                }
+                setState(res[1], "success")
                 applyChangeOnUI(entry)
                 break
             }
