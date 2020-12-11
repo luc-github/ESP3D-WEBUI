@@ -95,6 +95,6 @@ Please use the latest [ESP3D firmware](https://github.com/luc-github/ESP3D/tree/
 Check wiki section [Contribution/Development](https://github.com/luc-github/ESP3D-WEBUI/wiki/Compilation---Development)
 
 ## Issues / Questions
-You can submit ticket [here](https://github.com/luc-github/ESP3D-WEBUI/issues)
+You can submit ticket [here](https://github.com/luc-github/ESP3D-WEBUI/issues) or open discussion if it is not an issue [here](https://github.com/luc-github/ESP3D-WEBUI/discussions)
 
  
