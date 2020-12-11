@@ -1271,7 +1271,7 @@ function PrepareUpload() {
         uploadFiles = document.getElementById("uploadFilesControl").files
         let fileList = []
         let message = []
-        fileList.push(<div>{T("S30")}</div>)
+        fileList.push(<div>{T("S31")}</div>)
         fileList.push(<br />)
         for (let i = 0; i < uploadFiles.length; i++) {
             fileList.push(<li>{uploadFiles[i].name}</li>)
