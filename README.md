@@ -45,7 +45,7 @@ and the result is a monolitic file with a size less than 70Kb allowing almost fu
  Every support is welcome, giving support/ developing new features need time and devices, donations contribute a lot to make things happen, thank you.
 
 ## Features
-- It supports several firmwares based on Repetier, Marlin and Smoothieware.
+- It supports several firmwares based on Repetier, Marlin, Smoothieware and GRBL.
 - It allows to fully configure ESP wifi
 - It has a macro support to add custom commands in UI by adding buttons launching some GCODE files from SD or ESP 
 - It supports several languages, check list [here](https://github.com/luc-github/ESP3D-WEBUI/wiki/Translation-support)
