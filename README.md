@@ -23,7 +23,7 @@ So I came with a full rewrite using pure javascript and resized resources:
 2 - a local limited version of svg based of [Glyphicons Halflings](http://glyphicons.com/) to get a small footprint.    
 3 - a customized version of [smoothiecharts](http://smoothiecharts.org/) is used to display temperatures charts, it is simple and perfectly sized for the current purpose   
 
-and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
+The result is a monolitic file with a minimal size allowing almost full control of ESP3D board and your 3D printer
 
 ## Sponsors 
 [<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/FYSETC/LOGO.png">](https://www.fysetc.com/)  
