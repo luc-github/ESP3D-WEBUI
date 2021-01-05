@@ -18,10 +18,10 @@ So the solution was to make all resources available - easy no ?
 
 Yes but!  ESP webserver is a convenient but it is also a very light webserver, allowing no more than 5 active connections at once and with a pretty limited filesystem space, so even concatenated all resources like bootstrap icon, angular and others libraries do not work as expected and do not fit the available space.
 
-So I came with a full rewrite using pure javascript and resized resources:
-1 - a compressed css based on [bootstrap](http://getbootstrap.com/css/) 
-2 - a local limited version of svg based of [Glyphicons Halflings](http://glyphicons.com/) to get a small footprint.
-3 - a customized version of [smoothiecharts](http://smoothiecharts.org/) is used to display temperatures charts, it is simple and perfectly sized for the current purpose
+So I came with a full rewrite using pure javascript and resized resources:    
+1 - a compressed css based on [bootstrap](http://getbootstrap.com/css/)   
+2 - a local limited version of svg based of [Glyphicons Halflings](http://glyphicons.com/) to get a small footprint.    
+3 - a customized version of [smoothiecharts](http://smoothiecharts.org/) is used to display temperatures charts, it is simple and perfectly sized for the current purpose   
 
 and the result is a monolitic file with a size less than 70Kb allowing almost full control of ESP3D board and your 3D printer
 
