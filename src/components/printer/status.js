@@ -62,25 +62,8 @@ function processStatus(buffer) {
                     (100 * parseInt(status[0])) /
                     parseInt(status[1])
                 ).toFixed(2)
-                let output
+                let output = T("P63")
                 if (printFileName.length > 0) output = printFileName
-                else {
-                    output = T("P63")
-                    //try to get filename
-                    switch (esp3dSettings.FWTarget) {
-                        case "marlin-embedded":
-                        case "marlin":
-                        case "marlinkimbra":
-                            let cmd = "M27 C "
-                            SendCommand(cmd, null, sendCommandError)
-                            break
-                        case "repetier":
-                        case "repetier4davinci":
-                        case "smoothieware":
-                        default:
-                            break
-                    }
-                }
                 lastStatus = ": " + percent + "%"
                 output += lastStatus
                 dispatch("status/print", output)
