@@ -57,7 +57,6 @@ function processFeedRate(msg) {
         let found = false
         switch (esp3dSettings.FWTarget) {
             case "repetier":
-            case "repetier4davinci":
                 if (msg.startsWith("SpeedMultiply:")) {
                     f = msg
                     f = f.replace("SpeedMultiply:", "")

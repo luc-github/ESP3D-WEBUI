@@ -57,7 +57,6 @@ function processFlowRate(msg) {
         let found = false
         switch (esp3dSettings.FWTarget) {
             case "repetier":
-            case "repetier4davinci":
                 if (msg.startsWith("FlowMultiply:")) {
                     f = msg
                     f = f.replace("FlowMultiply:", "")

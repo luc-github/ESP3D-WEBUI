@@ -11,11 +11,10 @@ var currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
 /* repetier : "5"
- * repetier4davinci: "1"
  * marlin: "2"
  * marlinkimbra: "3"
  * smoothieware: "4"
- * grbl: "6"
+ * grbl: "1"
  * unknown: "0"
  * */
 
@@ -71,9 +70,6 @@ function sendTemperature() {
                 T1 +
                 " / 0 @1:0\nok\n"
         )
-    }
-    if (targetFW == "repetier4davinci") {
-        SendBinary("T:" + T + " /200 @1:0\nok\n")
     }
     if (targetFW == "marlin" || targetFW == "marlinkimbra") {
         SendBinary(
@@ -220,7 +216,7 @@ app.get("/command", function(req, res) {
     }
 
     if (url.indexOf("M205") != -1) {
-        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+        if (targetFW == "repetier" )
             SendBinary(
                 "EPR:0 1028 0 Language\n" +
                     "EPR:2 75 230400 Baudrate\n" +
@@ -350,7 +346,7 @@ app.get("/command", function(req, res) {
         return
     }
     if (url.indexOf("M20%20SD%3A") != -1) {
-        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+        if (targetFW == "repetier")
             SendBinary(
                 "Begin file list\n" +
                     "mcodeL.gco\n" +
@@ -365,7 +361,7 @@ app.get("/command", function(req, res) {
         return
     }
     if (url.indexOf("M20%20U%3A") != -1) {
-        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+        if (targetFW == "repetier")
             SendBinary(
                 "Begin file list\n" +
                     "mycodeL.gco\n" +
@@ -379,7 +375,7 @@ app.get("/command", function(req, res) {
         return
     }
     if (url.indexOf("M20") != -1) {
-        if (targetFW == "repetier" || targetFW == "repetier4davinci")
+        if (targetFW == "repetier")
             SendBinary(
                 "ok 0\n" +
                     "Begin file list\n" +
@@ -409,7 +405,7 @@ app.get("/command", function(req, res) {
 
     if (url.indexOf("M21") != -1) {
         console.info("M21 detected")
-        if (targetFW == "repetier" || targetFW == "repetier4davinci") {
+        if (targetFW == "repetier") {
             SendBinary("ok\n")
         }
         res.send("")
@@ -904,22 +900,19 @@ app.get("/command", function(req, res) {
             p2 = url.substring(p1 + 4, p3)
             targetFWnb = p2
             switch (p2) {
-                case "6":
+                case "10":
                     targetFW = "grbl"
                     break
-                case "5":
+                case "50":
                     targetFW = "repetier"
                     break
-                case "1":
-                    targetFW = "repetier4davinci"
-                    break
-                case "2":
+                case "20":
                     targetFW = "marlin"
                     break
-                case "3":
+                case "35":
                     targetFW = "marlinkimbra"
                     break
-                case "4":
+                case "40":
                     targetFW = "smoothieware"
                     console.log("smoothieware")
                     break
@@ -1233,12 +1226,11 @@ app.get("/command", function(req, res) {
                     V: targetFWnb,
                     H: "targetfw",
                     O: [
-                        { repetier: "5" },
-                        { repetier4davinci: "1" },
-                        { marlin: "2" },
-                        { marlinkimbra: "3" },
-                        { smoothieware: "4" },
-                        { grbl: "6" },
+                        { repetier: "50" },
+                        { marlin: "20" },
+                        { marlinkimbra: "35" },
+                        { smoothieware: "40" },
+                        { grbl: "10" },
                         { unknown: "0" },
                     ],
                 },

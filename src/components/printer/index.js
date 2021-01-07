@@ -360,8 +360,6 @@ function firmwareName(shortname) {
     switch (shortname) {
         case "repetier":
             return "Repetier"
-        case "repetier4davinci":
-            return "Repetier for Davinci"
         case "marlin-embedded":
             return "Marlin ESP32"
         case "marlin":
@@ -385,7 +383,6 @@ function firmwareName(shortname) {
 function configurationCmd(override) {
     switch (esp3dSettings.FWTarget) {
         case "repetier":
-        case "repetier4davinci":
             return ["M205", "EPR", "wait", "error"]
         case "marlin-embedded":
         case "marlin":
@@ -411,7 +408,6 @@ function configurationCmd(override) {
 function saveConfigurationCmd(override) {
     switch (esp3dSettings.FWTarget) {
         case "repetier":
-        case "repetier4davinci":
             return ["M500", "wait", "error"]
         case "marlin-embedded":
         case "marlin":
@@ -872,8 +868,7 @@ function isComment(sline) {
         return false
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         return false
     }
@@ -909,8 +904,7 @@ function isConfigEntry(sline) {
         return false
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         if (line.indexOf("EPR:") == 0) return true
         else return false
@@ -952,8 +946,7 @@ function getValue(sline) {
         }
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         let tlist = sline.split(" ")
         line = tlist[2].trim()
@@ -986,8 +979,7 @@ function getLabel(sline) {
         line = tlist[0]
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         let tlist = sline.split(" ")
         line = ""
@@ -1033,8 +1025,7 @@ function getComment(sline) {
         if (line.length < 2) line = "" //no meaning so remove it
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         let tlist = sline.split("[")
         line = ""
@@ -1051,8 +1042,7 @@ function getComment(sline) {
  */
 function getPT(sline) {
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         let tline = sline.split(" ")
         let p = tline[1]
@@ -1084,8 +1074,7 @@ function getCommand(entry) {
         }
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         let cmd = "M206 T" + entry.T + " P" + entry.P //+ (entry.T == "3")?" X":" S" + entry.currentValue
         if (entry.T == "3") cmd += " X"
@@ -1127,8 +1116,7 @@ function checkValue(entry) {
         }
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         //only numbers
         var regex = /^-?(\d+(\.\d+)?)+$/
@@ -1260,8 +1248,7 @@ const PrinterSetting = ({ entry }) => {
         helpclass = "d-none"
     }
     if (
-        esp3dSettings.FWTarget == "repetier" ||
-        esp3dSettings.FWTarget == "repetier4davinci"
+        esp3dSettings.FWTarget == "repetier"
     ) {
         entryclass += " W15"
         label = T(entry.label)

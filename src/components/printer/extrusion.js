@@ -424,7 +424,6 @@ const ExtrusionPanel = () => {
         } else {
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
-                case "repetier4davinci":
                     //one command per extruder
                     cmd = ""
                     for (let i = 0; i < preferences.settings.enumber; i++) {

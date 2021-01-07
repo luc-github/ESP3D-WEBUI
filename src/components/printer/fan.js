@@ -57,7 +57,6 @@ function processFanPercent(msg) {
         let found = false
         switch (esp3dSettings.FWTarget) {
             case "repetier":
-            case "repetier4davinci":
                 if (msg.startsWith("Fanspeed:")) {
                     f = msg
                     f = f.replace("Fanspeed:", "")

@@ -93,7 +93,6 @@ function listSDSerialFilesCmd() {
         case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
-                case "repetier4davinci":
                     return ["M20", "Begin file list", "End file list", "error"]
                 case "marlin-embedded":
                 case "marlin":
@@ -139,11 +138,12 @@ function checkSerialSDCmd() {
         case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
-                case "repetier4davinci":
                     return ["M21", "ok", "error"]
                 case "marlin-embedded":
                 case "marlin":
                 case "marlinkimbra":
+                    if(esp3dSettings.serialprotocol == "MKS")
+                        return ["M21", "ok", "SD init fail"]
                     return ["M21", "SD card ok", "SD init fail"]
                 case "smoothieware":
                     return ["M21", "SD card ok", "Could not open"]
@@ -253,6 +253,10 @@ function consvertStringToFileDescriptor(data, list) {
         }
         return { name: name, size: size }
     } else {
+        if(esp3dSettings.serialprotocol == "MKS") {
+            if (entry.endsWith(".DIR"))return null;
+            return { name: entry, size: "" }
+        } 
         pos = entry.lastIndexOf(" ")
         size = parseInt(entry.substring(pos))
         if (isNaN(size)) {
@@ -455,7 +459,6 @@ function canDelete(entry) {
     if (currentFilesType == "TARGETSD") {
         switch (esp3dSettings.FWTarget) {
             case "repetier":
-            case "repetier4davinci":
                 return true
             case "smoothieware":
             case "marlin":
@@ -499,7 +502,6 @@ function canCreateDirectory() {
     }
     switch (esp3dSettings.FWTarget) {
         case "repetier":
-        case "repetier4davinci":
             return true
         default:
             return false
@@ -592,7 +594,6 @@ function processDelete() {
             path += processingEntry.name
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
-                case "repetier4davinci":
                 case "marlin":
                 case "marlinkimbra":
                 case "smoothieware":
@@ -659,7 +660,6 @@ function processCreateDir() {
                 path += processingEntry
                 switch (esp3dSettings.FWTarget) {
                     case "repetier":
-                    case "repetier4davinci":
                         cmd = "M32 " + path
                         break
                     default:
@@ -691,7 +691,6 @@ function startJobFile(source, filename) {
         case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
-                case "repetier4davinci":
                 case "marlin":
                 case "marlinkimbra":
                     cmd = "M23 " + filename + "\nM24"

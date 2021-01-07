@@ -264,7 +264,6 @@
     "speedx" : "Speed factor",
     "targetfw" : "Target firmware",
     "repetier" : "Repetier",
-    "repetier4davinci":"Repetier for Davinci",
     "marlin":"Marlin",
     "marlinkimbra":"Marlin Kimbra",
     "smoothieware":"Smoothieware",
