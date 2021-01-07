@@ -427,6 +427,11 @@ function processFiles(rawdata) {
                 } else if (rawdata.startsWith("File deleted")) {
                     queryOngoing = QUERY_NONE
                     querySuccess = true
+                } else if ((esp3dSettings.serialprotocol == "MKS") && (currentFilesType == "TARGETSD")) {
+                    if (rawdata.startsWith("ok")) {
+                    queryOngoing = QUERY_NONE
+                    querySuccess = true
+                } 
                 }
             }
         }
@@ -513,7 +518,9 @@ function canCreateDirectory() {
  * Check if can upload
  */
 function canUpload() {
-    if (currentFilesType == "FS" || currentFilesType == "SDDirect") {
+    if ((currentFilesType == "FS") 
+    || (currentFilesType == "SDDirect")
+    ||( (currentFilesType == "TARGETSD") && (esp3dSettings.serialprotocol == "MKS"))) {
         return true
     }
 
@@ -1255,7 +1262,8 @@ function clickUpload() {
         document
             .getElementById("uploadFilesControl")
             .setAttribute("multiple", "false")
-        pathUpload = "/sdfiles"
+        if (esp3dSettings.serialprotocol == "MKS")pathUpload = "/upload"
+        else pathUpload = "/sdfiles"
     }
     PrepareUpload()
 }
