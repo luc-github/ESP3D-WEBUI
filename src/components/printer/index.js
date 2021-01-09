@@ -721,7 +721,7 @@ function processWSData(buffer) {
                 }
             }
         }
-        if (buffer.startsWith("T:") || buffer.startsWith("ok T:")) {
+        if (buffer.trim().startsWith("T:") || buffer.startsWith("ok T:")) {
             processTemperatures(buffer)
         }
 
