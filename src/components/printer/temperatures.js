@@ -163,7 +163,8 @@ function processTemperatures(buffer) {
                 if (index > 1) tool += index + 1
             }
             if (
-                isNaN(parseFloat(buffer.heaters[index])) ||  parseFloat(buffer.heaters[index]) < 5
+                isNaN(parseFloat(buffer.heaters[index])) ||
+                parseFloat(buffer.heaters[index]) < 5
             )
                 value = "error"
             else
@@ -201,7 +202,10 @@ function processTemperatures(buffer) {
             var tool = result[1]
             var value
             var value2
-            if ((isNaN(parseFloat(result[4])) || parseFloat(result[4]) < 5) && (result[4]!="0.0"))
+            if (
+                (isNaN(parseFloat(result[4])) || parseFloat(result[4]) < 5) &&
+                result[4] != "0.0"
+            )
                 value = "error"
             else
                 value = parseFloat(result[4])
@@ -247,11 +251,17 @@ function processTemperatures(buffer) {
                             default:
                                 break
                         }
-                        if (!((value=="0.00") && (esp3dSettings.serialprotocol == "MKS")))dispatch("temperatures/updateT" + tool[0], {
-                            index: index,
-                            value: value,
-                            target: value2,
-                        })
+                        if (
+                            !(
+                                value == "0.00" &&
+                                esp3dSettings.serialprotocol == "MKS"
+                            )
+                        )
+                            dispatch("temperatures/updateT" + tool[0], {
+                                index: index,
+                                value: value,
+                                target: value2,
+                            })
                     } else {
                         console.log("no dispatch")
                     }

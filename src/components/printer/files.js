@@ -142,7 +142,7 @@ function checkSerialSDCmd() {
                 case "marlin-embedded":
                 case "marlin":
                 case "marlinkimbra":
-                    if(esp3dSettings.serialprotocol == "MKS")
+                    if (esp3dSettings.serialprotocol == "MKS")
                         return ["M21", "ok", "SD init fail"]
                     return ["M21", "SD card ok", "SD init fail"]
                 case "smoothieware":
@@ -253,10 +253,10 @@ function consvertStringToFileDescriptor(data, list) {
         }
         return { name: name, size: size }
     } else {
-        if(esp3dSettings.serialprotocol == "MKS") {
-            if (entry.endsWith(".DIR"))return null;
+        if (esp3dSettings.serialprotocol == "MKS") {
+            if (entry.endsWith(".DIR")) return null
             return { name: entry, size: "" }
-        } 
+        }
         pos = entry.lastIndexOf(" ")
         size = parseInt(entry.substring(pos))
         if (isNaN(size)) {
@@ -427,11 +427,14 @@ function processFiles(rawdata) {
                 } else if (rawdata.startsWith("File deleted")) {
                     queryOngoing = QUERY_NONE
                     querySuccess = true
-                } else if ((esp3dSettings.serialprotocol == "MKS") && (currentFilesType == "TARGETSD")) {
+                } else if (
+                    esp3dSettings.serialprotocol == "MKS" &&
+                    currentFilesType == "TARGETSD"
+                ) {
                     if (rawdata.startsWith("ok")) {
-                    queryOngoing = QUERY_NONE
-                    querySuccess = true
-                } 
+                        queryOngoing = QUERY_NONE
+                        querySuccess = true
+                    }
                 }
             }
         }
@@ -518,9 +521,12 @@ function canCreateDirectory() {
  * Check if can upload
  */
 function canUpload() {
-    if ((currentFilesType == "FS") 
-    || (currentFilesType == "SDDirect")
-    ||( (currentFilesType == "TARGETSD") && (esp3dSettings.serialprotocol == "MKS"))) {
+    if (
+        currentFilesType == "FS" ||
+        currentFilesType == "SDDirect" ||
+        (currentFilesType == "TARGETSD" &&
+            esp3dSettings.serialprotocol == "MKS")
+    ) {
         return true
     }
 
@@ -1262,7 +1268,7 @@ function clickUpload() {
         document
             .getElementById("uploadFilesControl")
             .setAttribute("multiple", "false")
-        if (esp3dSettings.serialprotocol == "MKS")pathUpload = "/upload"
+        if (esp3dSettings.serialprotocol == "MKS") pathUpload = "/upload"
         else pathUpload = "/sdfiles"
     }
     PrepareUpload()

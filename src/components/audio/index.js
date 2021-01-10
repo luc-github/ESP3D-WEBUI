@@ -17,6 +17,8 @@ audio.js - ESP3D audio management file
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+import { h } from "preact"
+import { preferences } from "../app"
 
 /*
  * Local variables
@@ -58,6 +60,7 @@ function initAudio() {
  *
  */
 function playSound() {
+    if (preferences.settings.sound == false) return
     beepongoing = true
     if (typeof audioCtx == "undefined") initAudio()
     if (beepListList.length > 0) {
@@ -83,6 +86,7 @@ function playSound() {
  *
  */
 function beep(duration, frequency) {
+    if (preferences.settings.sound == false) return
     beepListList.push({ d: duration, f: frequency })
     if (beepongoing) {
         return

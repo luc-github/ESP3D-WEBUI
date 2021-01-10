@@ -867,9 +867,7 @@ function isComment(sline) {
         if (isoverloadedconfig && sline.trim().startsWith(";")) return true
         return false
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         return false
     }
     return false
@@ -903,9 +901,7 @@ function isConfigEntry(sline) {
             return true
         return false
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         if (line.indexOf("EPR:") == 0) return true
         else return false
     }
@@ -945,9 +941,7 @@ function getValue(sline) {
             line = tlist[0].substring(p).trim()
         }
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         let tlist = sline.split(" ")
         line = tlist[2].trim()
     }
@@ -978,9 +972,7 @@ function getLabel(sline) {
         let tlist = line.split(" ")
         line = tlist[0]
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         let tlist = sline.split(" ")
         line = ""
         for (let i = 3; i < tlist.length; i++) {
@@ -1024,9 +1016,7 @@ function getComment(sline) {
         }
         if (line.length < 2) line = "" //no meaning so remove it
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         let tlist = sline.split("[")
         line = ""
         if (tlist.length == 2) {
@@ -1041,9 +1031,7 @@ function getComment(sline) {
  * Extract P and T values from line (for repetier only)
  */
 function getPT(sline) {
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         let tline = sline.split(" ")
         let p = tline[1]
         let t = tline[0].split(":")[1]
@@ -1073,9 +1061,7 @@ function getCommand(entry) {
             return entry.label + " " + value
         }
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         let cmd = "M206 T" + entry.T + " P" + entry.P //+ (entry.T == "3")?" X":" S" + entry.currentValue
         if (entry.T == "3") cmd += " X"
         else cmd += " S"
@@ -1115,9 +1101,7 @@ function checkValue(entry) {
             return regex.test(entry.currentValue.trim())
         }
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         //only numbers
         var regex = /^-?(\d+(\.\d+)?)+$/
         return regex.test(entry.currentValue.trim())
@@ -1247,9 +1231,7 @@ const PrinterSetting = ({ entry }) => {
         entryclass += " autoWidth"
         helpclass = "d-none"
     }
-    if (
-        esp3dSettings.FWTarget == "repetier"
-    ) {
+    if (esp3dSettings.FWTarget == "repetier") {
         entryclass += " W15"
         label = T(entry.label)
         labelclass += " fontsetting"

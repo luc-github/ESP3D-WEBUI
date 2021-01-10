@@ -216,7 +216,7 @@ app.get("/command", function(req, res) {
     }
 
     if (url.indexOf("M205") != -1) {
-        if (targetFW == "repetier" )
+        if (targetFW == "repetier")
             SendBinary(
                 "EPR:0 1028 0 Language\n" +
                     "EPR:2 75 230400 Baudrate\n" +

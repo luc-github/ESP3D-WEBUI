@@ -167,6 +167,8 @@
     "S166" : "Display setup next time?",
     "S167" : "Show it",
     "S168" : "Hide it",
+    "S169" : "Enable/disable sound notifications",
+    "S170" : "Sound notifications",
     "chip id" : "Chip ID",
     "CPU Freq" : "CPU Frequency",
     "CPU Temp" : "CPU Temperature",

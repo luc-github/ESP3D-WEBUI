@@ -76,6 +76,7 @@ const default_preferences =
     '{"settings":{"language":"en",\
     "banner": true,\
     "autoload" : true,\
+    "sound" : true,\
     "mobileview" : false,\
     "showterminalpanel":true,\
     "openterminalonstart":false,\
@@ -148,6 +149,9 @@ function updateUI() {
     }
     if (typeof prefs.mobileview == "undefined") {
         prefs.mobileview = false
+    }
+    if (typeof prefs.sound == "undefined") {
+        prefs.sound = true
     }
     if (typeof prefs.expandmacrosbuttonsonstart == "undefined") {
         prefs.expandmacrosbuttonsonstart = true
@@ -1756,6 +1760,11 @@ const WebUISettings = ({ currentPage }) => {
                         entry="autoload"
                         title={T("S66")}
                         label={T("S64")}
+                    />
+                    <CheckboxControl
+                        entry="sound"
+                        title={T("S169")}
+                        label={T("S170")}
                     />
                     <CheckboxControl
                         entry="mobileview"

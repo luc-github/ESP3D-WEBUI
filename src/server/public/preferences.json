@@ -75,7 +75,8 @@
     "refreshtime": "0",
     "type": "content"
    }
-  ]
+  ],
+  "sound": false
  },
  "macros": []
 }
