@@ -77,19 +77,37 @@ let queryOngoing = QUERY_NONE
 function listSDSerialFilesCmd() {
     switch (currentFilesType) {
         case "TFTSD":
-            return [
-                "M20 SD:" + currentPath[currentFilesType],
-                "Begin file list",
-                "End file list",
-                "error",
-            ]
+            if (esp3dSettings.serialprotocol == "MKS") {
+                return [
+                    "M998 1\r\nM20 1:" + currentPath[currentFilesType],
+                    "Begin file list",
+                    "End file list",
+                    "error",
+                ]
+            } else {
+                return [
+                    "M20 SD:" + currentPath[currentFilesType],
+                    "Begin file list",
+                    "End file list",
+                    "error",
+                ]
+            }
         case "TFTUSB":
-            return [
-                "M20 U:" + currentPath[currentFilesType],
-                "Begin file list",
-                "End file list",
-                "error",
-            ]
+            if (esp3dSettings.serialprotocol == "MKS") {
+                return [
+                    "M998 0\r\nM20 0:" + currentPath[currentFilesType],
+                    "Begin file list",
+                    "End file list",
+                    "error",
+                ]
+            } else {
+                return [
+                    "M20 U:" + currentPath[currentFilesType],
+                    "Begin file list",
+                    "End file list",
+                    "error",
+                ]
+            }
         case "TARGETSD":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
@@ -251,10 +269,15 @@ function consvertStringToFileDescriptor(data, list) {
         if (name.startsWith("/")) {
             name = name.substring(1)
         }
-        return { name: name, size: size }
+        if (esp3dSettings.serialprotocol == "MKS" && entry.endsWith(".DIR")) {
+            name = entry.substring(0, entry.length - 4)
+            return { name: name, size: -1 }
+        } else return { name: name, size: size }
     } else {
         if (esp3dSettings.serialprotocol == "MKS") {
-            if (entry.endsWith(".DIR")) return null
+            if (entry.endsWith(".DIR")) {
+                return null
+            }
             return { name: entry, size: "" }
         }
         pos = entry.lastIndexOf(" ")
@@ -456,14 +479,14 @@ function processFiles(rawdata) {
  * Check is can create directory
  */
 function canDelete(entry) {
-    if (
-        currentFilesType == "SDDirect" ||
-        currentFilesType == "FS" ||
-        currentFilesType == "TFTSD" ||
-        currentFilesType == "TFTUSB"
-    ) {
+    if (currentFilesType == "SDDirect" || currentFilesType == "FS") {
         return true
     }
+    if (currentFilesType == "TFTSD" || currentFilesType == "TFTUSB") {
+        if (esp3dSettings.serialprotocol == "MKS") return false
+        else return true
+    }
+
     if (currentFilesType == "TARGETSD") {
         switch (esp3dSettings.FWTarget) {
             case "repetier":
@@ -525,6 +548,8 @@ function canUpload() {
         currentFilesType == "FS" ||
         currentFilesType == "SDDirect" ||
         (currentFilesType == "TARGETSD" &&
+            esp3dSettings.serialprotocol == "MKS") ||
+        ((currentFilesType == "TFTSD" || currentFilesType == "TFTUSB") &&
             esp3dSettings.serialprotocol == "MKS")
     ) {
         return true
@@ -695,7 +720,7 @@ function processCreateDir() {
 
 function startJobFile(source, filename) {
     console.log("print " + filename + " from " + source)
-    let cmd
+    let cmd =""
     const { dispatch } = useStoreon()
     dispatch("status/print", T("P63"))
     switch (source) {
@@ -706,7 +731,11 @@ function startJobFile(source, filename) {
                 case "repetier":
                 case "marlin":
                 case "marlinkimbra":
-                    cmd = "M23 " + filename + "\nM24"
+                    if((esp3dSettings.serialprotocol == "MKS") && ((source=="TFTSD") || (source=="TFTUSB"))) {
+                        if (source=="TFTSD") cmd = "M998 1\n"
+                        else cmd = "M998 0\n"
+                    }
+                    cmd += "M23 " + filename + "\nM24"
                     break
                 case "smoothieware":
                     cmd = "play /sd" + filename
@@ -739,12 +768,18 @@ function processPrint(entry) {
         case "TFTSD":
             path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
-            path += "SD:" + entry.name
+            if (esp3dSettings.serialprotocol != "MKS") {
+                path += "SD:"
+            }
+            path += entry.name
             break
         case "TFTUSB":
             path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
-            path += "U:" + entry.name
+            if (esp3dSettings.serialprotocol != "MKS") {
+                path += "U:"
+            }
+            ath += entry.name
             break
         case "TARGETSD":
             path = currentPath[currentFilesType]
@@ -1268,8 +1303,15 @@ function clickUpload() {
         document
             .getElementById("uploadFilesControl")
             .setAttribute("multiple", "false")
-        if (esp3dSettings.serialprotocol == "MKS") pathUpload = "/upload"
-        else pathUpload = "/sdfiles"
+        if (esp3dSettings.serialprotocol == "MKS") {
+            if (currentFilesType == "TFTUSB") {
+                pathUpload = "/upload?rpath=USB:"
+            } else if (currentFilesType == "TFTSD") {
+                pathUpload = "/upload?rpath=SD:"
+            } else {
+                pathUpload = "/upload"
+            }
+        } else pathUpload = "/sdfiles"
     }
     PrepareUpload()
 }

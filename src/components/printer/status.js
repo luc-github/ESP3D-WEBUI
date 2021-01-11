@@ -68,8 +68,17 @@ function processStatus(buffer) {
                 output += lastStatus
                 dispatch("status/print", output)
             }
-            //busy:XXXX
+        } else if (buffer.startsWith("M27 ")) {
+            //M27 30 = 30%
+            let buf = buffer
+            let percent = buf.split(" ")
+            let output = T("P63")
+            if (printFileName.length > 0) output = printFileName
+            lastStatus = ": " + percent[1] + "%"
+            output += lastStatus
+            dispatch("status/print", output)
         } else if (buffer.indexOf("busy:") != -1) {
+            //busy:XXXX
             let status = buffer.split("busy:")
             resetTimeout = true
             dispatch(
@@ -77,7 +86,10 @@ function processStatus(buffer) {
                 <span class="text-info">{T(status[1])}</span>
             )
             //Not SD printing
-        } else if (buffer == "Not SD printing") {
+        } else if (
+            buffer == "Not SD printing" ||
+            buffer.startsWith("M997 IDLE")
+        ) {
             lastStatus = ""
             dispatch("status/print", T("P64"))
             lastStatusReset = 0
@@ -98,6 +110,22 @@ function processStatus(buffer) {
                 lastStatus = ""
                 dispatch("status/print", T("P64"))
             } else dispatch("status/print", printFileName + lastStatus)
+            lastStatusReset = 0
+        } else if (buffer.startsWith("M997 PRINTING")) {
+            let output = T("P63")
+            if (printFileName.length > 0) output = printFileName
+            if (lastStatus.length > 0) output += lastStatus
+            dispatch("status/print", output)
+            lastStatusReset = 0
+        } else if (buffer.startsWith("M994 ")) {
+            //M994 filename;size
+            let status = buffer.split(" ")
+            printFileName = status[1].split(";")[0]
+            if (printFileName.startsWith("0:") || printFileName.startsWith("1:")){
+               let f = printFileName.replace("0:", "USB:")
+               printFileName = f.replace("1:", "SD:")
+            }
+            dispatch("status/print", printFileName + lastStatus)
             lastStatusReset = 0
         } else {
             resetTimeout = false
