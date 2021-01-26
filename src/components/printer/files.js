@@ -38,10 +38,17 @@ import {
     SendPostHttp,
     cancelCurrentQuery,
     lastError,
+    clearCommandList,
 } from "../http"
 import { useStoreon } from "storeon/preact"
 import { showDialog, updateProgress } from "../dialog"
-import { esp3dSettings, prefs, getPanelIndex } from "../app"
+import {
+    esp3dSettings,
+    prefs,
+    getPanelIndex,
+    stopPolling,
+    startPolling,
+} from "../app"
 /*
  * Local constants
  *
@@ -207,6 +214,7 @@ function sdSerialListSuccess(responseText) {}
  */
 function sdSerialListError(errorCode, responseText) {
     isSDListRequested = false
+    startPolling()
     fileSystemLoaded[currentFilesType] = false
     showDialog({ type: "error", numError: errorCode, message: T("S103") })
 }
@@ -218,8 +226,10 @@ function ListSDSerialFiles() {
     let cmd = listSDSerialFilesCmd()
     if (cmd) {
         console.log(cmd[0])
-        SendCommand(cmd[0], sdCheckSuccess, sdCheckError, null, "sdlist", 1)
         isSDListRequested = true
+        stopPolling()
+        clearCommandList()
+        SendCommand(cmd[0], sdCheckSuccess, sdCheckError, null, "sdlist", 1)
         listDataSize = 0
     }
 }
@@ -389,6 +399,7 @@ function processFiles(rawdata) {
         if (response) {
             if (data.indexOf(response[2]) != -1) {
                 isSDListRequested = false
+                startPolling()
                 isSDListDetected = false
                 fileSystemCache[currentFilesType] = []
                 fileSystemCache[currentFilesType].files = generateSDList(
@@ -405,6 +416,7 @@ function processFiles(rawdata) {
                 data.status = T("S111")
                 buildStatus(data)
                 isSDListRequested = false
+                startPolling()
                 isSDListDetected = false
                 //revert path to allow refresh
                 let pos = currentPath[currentFilesType].lastIndexOf("/")
@@ -720,7 +732,7 @@ function processCreateDir() {
 
 function startJobFile(source, filename) {
     console.log("print " + filename + " from " + source)
-    let cmd =""
+    let cmd = ""
     const { dispatch } = useStoreon()
     dispatch("status/print", T("P63"))
     switch (source) {
@@ -731,8 +743,11 @@ function startJobFile(source, filename) {
                 case "repetier":
                 case "marlin":
                 case "marlinkimbra":
-                    if((esp3dSettings.serialprotocol == "MKS") && ((source=="TFTSD") || (source=="TFTUSB"))) {
-                        if (source=="TFTSD") cmd = "M998 1\n"
+                    if (
+                        esp3dSettings.serialprotocol == "MKS" &&
+                        (source == "TFTSD" || source == "TFTUSB")
+                    ) {
+                        if (source == "TFTSD") cmd = "M998 1\n"
                         else cmd = "M998 0\n"
                     }
                     cmd += "M23 " + filename + "\nM24"

@@ -121,9 +121,12 @@ function processStatus(buffer) {
             //M994 filename;size
             let status = buffer.split(" ")
             printFileName = status[1].split(";")[0]
-            if (printFileName.startsWith("0:") || printFileName.startsWith("1:")){
-               let f = printFileName.replace("0:", "USB:")
-               printFileName = f.replace("1:", "SD:")
+            if (
+                printFileName.startsWith("0:") ||
+                printFileName.startsWith("1:")
+            ) {
+                let f = printFileName.replace("0:", "USB:")
+                printFileName = f.replace("1:", "SD:")
             }
             dispatch("status/print", printFileName + lastStatus)
             lastStatusReset = 0

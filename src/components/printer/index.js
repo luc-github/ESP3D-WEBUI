@@ -19,10 +19,17 @@
 */
 
 import { h, Fragment } from "preact"
-import { Setting, esp3dSettings, prefs, beep } from "../app"
+import {
+    Setting,
+    esp3dSettings,
+    prefs,
+    beep,
+    startPolling,
+    stopPolling,
+} from "../app"
 import { useEffect } from "preact/hooks"
 import { T } from "../translations"
-import { SendCommand } from "../http"
+import { SendCommand, clearCommandList } from "../http"
 import { JogPanel, processPositions } from "./jog"
 import { TemperaturesPanel, processTemperatures } from "./temperatures"
 import { FeedratePanel, processFeedRate } from "./feedrate"
@@ -688,6 +695,7 @@ function processWSData(buffer) {
                 }
                 isConfigData = false
                 isConfigRequested = false
+                startPolling()
                 if (
                     buffer.startsWith(configurationCmd(isoverloadedconfig)[2])
                 ) {
@@ -802,6 +810,8 @@ function processConfigData() {
  */
 function timeoutError() {
     stopTimeout()
+    startPolling()
+    isConfigRequested = false
     showDialog({ type: "error", numError: 404, message: T("P17") })
 }
 
@@ -820,7 +830,6 @@ function stopTimeout() {
     if (timeoutLoader != null) {
         clearInterval(timeoutLoader)
     }
-    timeoutLoader = null
 }
 
 /*
@@ -828,8 +837,11 @@ function stopTimeout() {
  */
 function loadConfig() {
     const cmd = configurationCmd(isoverloadedconfig)[0]
+    stopPolling()
+    console.log("***************************************");
     isloaded = true
     isConfigRequested = true
+    clearCommandList()
     isConfigData = false
     configDataSize = 0
     listrawSettings = []
@@ -845,6 +857,7 @@ function loadConfig() {
 function loadConfigError(errorCode, responseText) {
     isConfigRequested = false
     isConfigData = false
+    startPolling()
     showDialog({ type: "error", numError: errorCode, message: T("S5") })
 }
 

@@ -31,6 +31,7 @@ import {
     initApp,
     preferences,
     stopPolling,
+    startPolling,
     startWizard,
 } from "./settings"
 import { Header, ExtraPages } from "./header"
@@ -218,6 +219,7 @@ export {
     beepError,
     beep,
     stopPolling,
+    startPolling,
     finishSetup,
     disconnectPage,
     disconnectWsServer,

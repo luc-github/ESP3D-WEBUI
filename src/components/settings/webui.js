@@ -38,6 +38,7 @@ import {
     cancelCurrentQuery,
     SendGetHttp,
     SendPostHttp,
+    clearCommandList,
 } from "../http"
 import { useStoreon } from "storeon/preact"
 import { useEffect } from "preact/hooks"
@@ -127,6 +128,7 @@ function stopPolling() {
         clearInterval(pollingInterval)
     }
     pollingInterval = null
+    console.log("Stop polling")
 }
 
 /*
@@ -1984,6 +1986,7 @@ export {
     prefs,
     WebUISettings,
     stopPolling,
+    startPolling,
     macros,
     LanguageSelection,
 }

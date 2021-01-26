@@ -32,6 +32,7 @@ import {
     setcurrentprefs,
     initApp,
     stopPolling,
+    startPolling,
 } from "./webui"
 import { Esp3DSettings } from "./esp3d"
 import { useStoreon } from "storeon/preact"
@@ -69,5 +70,6 @@ export {
     setcurrentprefs,
     initApp,
     stopPolling,
+    startPolling,
     startWizard,
 }
