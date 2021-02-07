@@ -340,6 +340,7 @@ function processCommands() {
             let url = httpCommandList[0].uri
             if (url.indexOf("?") != -1) url += "&PAGEID=" + getPageId()
             currentHttpCommand.open(httpCommandList[0].type, url, true)
+            currentHttpCommand.setRequestHeader("Cache-Control", "no-cache, no-store, max-age=0")
             if (
                 typeof httpCommandList[0].progressfn != "undefined" &&
                 httpCommandList[0].progressfn != null
