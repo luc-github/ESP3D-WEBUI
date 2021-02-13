@@ -43,6 +43,7 @@ let timeouthandle
  *
  */
 function goLogIn() {
+    console.log("Go login");
     hideDialog()
     SubmitCredentials(loginvalue, passwordvalue)
     passwordvalue = ""
@@ -353,9 +354,9 @@ const DialogPage = () => {
             )
             btn1Txt = T("S148")
             if (!btn1Col) btn1Col = "btn-secondary"
-            btn21Txt = T("S28")
-            dialogData.next = goLogIn
-            dialogData.next2 = disconnectPage
+            btn2Txt = T("S28")
+            btn1Fn= goLogIn
+            btn2Fn= disconnectPage
             break
         case "message":
             if (!iconTitle) iconTitle = <Info color="blue" />

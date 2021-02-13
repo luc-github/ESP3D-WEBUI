@@ -121,7 +121,7 @@ function requestAuthentication() {
  * Go to next command in queries list
  */
 function nextCommand() {
-    console.log("pop " + httpCommandList[0].uri)
+    console.log("pop Uri")
     httpCommandList.shift()
     isProcessingHttpCommand = false
     pausePing(false)
@@ -244,6 +244,7 @@ function SendPostHttp(
  * Send login credentials
  */
 function SubmitCredentials(login, password, newpassword, timeout) {
+    console.log("Submit credentials");
     let url = "/login"
     let formData = new FormData()
 
@@ -262,7 +263,7 @@ function SubmitCredentials(login, password, newpassword, timeout) {
     } else {
         formData.append("DISCONNECT", "yes")
     }
-
+    console.log(formData);
     var cmd = {
         uri: url,
         type: "POST",
@@ -305,7 +306,7 @@ function processCommands() {
             }
             if (isdownload) currentHttpCommand.responseType = "blob"
             currentHttpCommand.onerror = function() {
-                console.log("Failing HTTP request " + httpCommandList[0].uri)
+                console.log("Failing HTTP request " + (httpCommandList[0].uri)?httpCommandList[0].uri:" Uri")
                 disconnectWsServer({
                     type: "disconnect",
                     numError: 1,
