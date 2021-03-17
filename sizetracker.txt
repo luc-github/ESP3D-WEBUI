@@ -1,35 +1,3 @@
 
                                     printer         grbl
-Base code               : 0.0.0.1 : 25KB        |
-Websocket               : 0.0.0.2 : 27KB        |
-Setup                   : 0.0.0.3 : 29KB        |
-Logo                    : 0.0.0.3 : 31.3KB      |
-Basic Navbar            : 0.0.0.4 : 32.4KB      |
-Basic About             : 0.0.0.5 : 34.15KB     |
-UI update               : 0.0.0.6 : 35.7KB      |
-Settings Page           : 0.0.0.7 : 36.3KB      |
-Basic ESP3D Settings    : 0.0.0.8 : 36.9KB      |
-ESP3D Settings V1       : 0.0.0.9 : 39.6KB      |
-Scan network dialog     : 0.0.0.11: 40.3KB      |
-Export Settings         : 0.0.0.12: 40.6KB      |
-Import Settings         : 0.0.0.13: 41.2KB      |
-Basic UI settings       : 0.0.0.15: 41.8KB      |
-UI settings feedback    : 0.0.0.16: 42.0KB      |
-UI language pack        : 0.0.0.17: 42.6KB      |
-Machine settings        : 0.0.0.18: 46.3KB      | 45.6 KB
-Terminal panel          : 0.0.0.18: 47.4KB      | 46.7 KB
-Jog Panel               : 0.0.0.21: 56.5KB      | TBD
-Jog Panel GRBL/Printer  : 0.0.0.22: 56.7KB      | 52.6KB
-Code Refactoring        : 0.0.0.23: 56.8KB      | 52KB
-Files Panel             : 0.0.0.26: 60.0KB      | N/A
-Notification Panel      : 0.0.0.44: 64.1KB      | N/A
-Feedrate / Flowrate     : 0.0.0.47: 66.0KB      | N/A
-Temperatures controls   : 0.0.0.53: 70.6KB      | N/A
-Extrusion               : 0.0.0.58: 75.1KB      | N/A
-Temperatures charts     : 0.0.0.59: 81.3KB      | N/A
-Sensors                 : 0.0.0.60: 83.0KB      | N/A
-Status                  : 0.0.0.61: 83.6KB      | N/A
-Macros                  : 0.0.0.66: 91.0KB      | N/A
-Authentication          : 0.0.0.70: 91.2KB      | N/A
-Custom panels + camera  : 0.0.0.71: 93.0KB      | N/A
-Custom pages            : 0.0.0.73: 93.5KB      | N/A
+Base code               : 0.0.0.1 : 22.5KB        |

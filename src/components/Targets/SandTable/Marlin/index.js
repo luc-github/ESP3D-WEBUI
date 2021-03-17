@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI App file
+ index.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,9 +17,10 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+import { h } from "preact";
 
-import { h, render } from "preact"
-import { App } from "./components/App"
-import './style/index.scss'
+const Target = () => {
+    return <div>Marlin</div>
+}
 
-render(<App />, document.body)
+export { Target }

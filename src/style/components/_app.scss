@@ -1,0 +1,26 @@
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  overflow-y: hidden;
+}
+
+#app {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.menu-container {
+  flex: 0 1 auto;
+}
+
+.information-container {
+  flex: 0 1 auto;
+}
+
+.main-page-container {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  height: 100%;
+}

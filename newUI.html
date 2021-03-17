@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100vh;
+        margin: 0;
+        overflow-y: hidden;
+      }
+      .header {
+        padding: 10px 10px;
+        background: purple;
+      }
+      .notification {
+        padding: 10px 10px;
+        background: yellow;
+      }
+      .content {
+        background: white;
+      }
+      .footer {
+        background: pink;
+      }
+
+      .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+      }
+
+      .header {
+        flex: 0 1 50px;
+      }
+
+      .notification {
+        flex: 0 1 auto;
+        /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+      }
+
+      .content {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 0px 10px;
+      }
+
+      .footer {
+        flex: 0 1 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="header">menu</div>
+
+      <div class="notification">
+        <p>
+          <b>header</b>
+          <br />
+          <br />(sized to content) Lorem ipsum, dolor sit amet consectetur
+          adipisicing elit. Cum incidunt hic architecto iusto doloremque ad vero
+          maiores nostrum magni. Et doloribus, placeat inventore vitae nobis
+          laudantium quibusdam officia consequatur obcaecati!
+        </p>
+      </div>
+      <div class="content">
+        <p>
+          <b>content</b>
+          (fills remaining space) Lorem ipsum dolor sit amet consectetur
+          adipisicing elit. Optio esse ipsam accusamus distinctio recusandae
+          exercitationem veniam incidunt ullam et nesciunt? Natus blanditiis
+          tenetur vero quo accusantium odio quas incidunt harum. Lorem ipsum
+          dolor sit amet consectetur adipisicing elit. Distinctio nulla
+          voluptate necessitatibus ullam dolores? Deserunt in autem perferendis
+          rem praesentium? Temporibus sint adipisci impedit mollitia similique
+          laudantium velit sunt. Cupiditate. Lorem ipsum dolor, sit amet
+          consectetur adipisicing elit. Nisi praesentium asperiores accusamus
+          laborum sed odit atque dolorum nesciunt fugit dicta, autem velit,
+          minima quasi animi aliquid delectus consectetur. Asperiores, ducimus!
+        </p>
+      </div>
+      <div class="footer">
+        <p><b>footer</b> (fixed height)</p>
+      </div>
+    </div>
+  </body>
+</html>

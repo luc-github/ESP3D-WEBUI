@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI App file
+ index.js - ESP3D WebUI Menu file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,9 +17,18 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+import { h } from "preact";
+import { ESP3DLogo } from "../Images/logo";
+import { Target } from "TargetPath";
+import { T } from "../Translations";
+const Menu = () => {
+  return (
+    <div id="menu" class="menu-container">
+      <ESP3DLogo bgcolor="#ffffff" color="#5755d9" />
+      <Target />
+      {T("lang")}
+    </div>
+  );
+};
 
-import { h, render } from "preact"
-import { App } from "./components/App"
-import './style/index.scss'
-
-render(<App />, document.body)
+export { Menu };

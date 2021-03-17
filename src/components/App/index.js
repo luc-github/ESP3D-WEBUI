@@ -17,9 +17,22 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+import { h } from "preact";
+import { TranslationsContextProvider } from "../Translations";
+import { Menu } from "../Menu";
+import { InformationArea } from "../InformationArea";
+import { MainPage } from "../MainPage";
 
-import { h, render } from "preact"
-import { App } from "./components/App"
-import './style/index.scss'
+const App = () => {
+  return (
+    <div id="app">
+      <TranslationsContextProvider>
+        <Menu />
+        <InformationArea />
+        <MainPage />
+      </TranslationsContextProvider>
+    </div>
+  );
+};
 
-render(<App />, document.body)
+export { App };

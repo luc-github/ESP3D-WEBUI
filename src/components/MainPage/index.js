@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI App file
+ index.js - ESP3D WebUI MainPage file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,9 +17,14 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+import { h } from "preact";
 
-import { h, render } from "preact"
-import { App } from "./components/App"
-import './style/index.scss'
+const MainPage = () => {
+  return (
+    <div id="main" class="main-page-container">
+      MainPage
+    </div>
+  );
+};
 
-render(<App />, document.body)
+export { MainPage };
