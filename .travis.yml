@@ -6,7 +6,7 @@ cache:
     - "node_modules"
 sudo: false
 install:
-  - npm install 
+  - npm clean-install 
 script:
   - echo "build index.html"
   - npm run build
