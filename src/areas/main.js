@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI Information area file
+ main.js - ESP3D WebUI MainPage file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,12 +19,12 @@
 */
 import { h } from "preact";
 
-const InformationArea = () => {
+const MainContainer = () => {
   return (
-    <div id="info" class="information-container">
-      Info
+    <div id="main" class="main-page-container">
+      MainPage
     </div>
   );
 };
 
-export { InformationArea };
+export { MainContainer };

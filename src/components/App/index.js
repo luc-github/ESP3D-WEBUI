@@ -18,19 +18,22 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { TranslationsContextProvider } from "../../contexts";
-import { Menu } from "../Menu";
-import { InformationArea } from "../InformationArea";
-import { MainPage } from "../MainPage";
+import {
+  TranslationsContextProvider,
+  RouterContextProvider,
+} from "../../contexts";
+import { Informations, MainContainer, Menu } from "../../areas";
 
 const App = () => {
   return (
     <div id="app">
-      <TranslationsContextProvider>
-        <Menu />
-        <InformationArea />
-        <MainPage />
-      </TranslationsContextProvider>
+      <RouterContextProvider>
+        <TranslationsContextProvider>
+          <Menu />
+          <Informations />
+          <MainContainer />
+        </TranslationsContextProvider>
+      </RouterContextProvider>
     </div>
   );
 };

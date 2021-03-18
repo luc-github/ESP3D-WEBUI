@@ -1,6 +1,6 @@
 /*
  TranslationsContext.js - ESP3D WebUI context file
- Copyright (c) 2020 Luc Lebosse. All rights reserved.
+ Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either

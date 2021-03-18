@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI context file
+ index.js - ESP3D WebUI areas file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,15 +18,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import {
-  TranslationsContextProvider,
-  useTranslationsContext,
-} from "./TranslationsContext";
-import { RouterContextProvider, useRouterContext } from "./RouterContext";
+import { Menu } from "./menu";
+import {Informations} from "./informations"
+import {MainContainer} from "./main"
 
-export {
-  TranslationsContextProvider,
-  useTranslationsContext,
-  RouterContextProvider,
-  useRouterContext,
-};
+export { Informations,MainContainer, Menu };
