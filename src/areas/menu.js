@@ -18,16 +18,12 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { ESP3DLogo } from "../components/Images/logo";
-import { T } from "../components/Translations";
-import { Target } from "TargetPath";
+import { Navbar } from "../components/Navbar";
 
 const Menu = () => {
   return (
     <div id="menu" class="menu-container">
-      <ESP3DLogo bgcolor="#ffffff" color="#5755d9" />
-      <Target />
-      {T("lang")}
+      <Navbar />
     </div>
   );
 };

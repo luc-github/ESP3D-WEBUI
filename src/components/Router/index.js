@@ -1,6 +1,7 @@
 /*
  Router.js - ESP3D WebUI router file
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ modified by Luc LEBOSSE 2021
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -18,21 +19,28 @@ import { useRouterContext } from "../../contexts";
 import { useState, useEffect, useCallback } from "preact/hooks";
 import { Loading } from "../Spectre";
 
-const parseLocation = () =>
-  typeof window !== "undefined" ? location.hash.slice(1).toLowerCase() : "/";
-
 const Router = ({ children, routesList }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const { setActiveRoute, setRoutes, activeRoute } = useRouterContext();
+  const {
+    setActiveRoute,
+    setRoutes,
+    activeRoute,
+    routes,
+    defaultRoute,
+  } = useRouterContext();
   const [ActiveComponent, setActiveComponent] = useState(
     routesList.DEFAULT.component
   );
-
+  const parseLocation = () =>
+    typeof window !== "undefined"
+      ? location.hash.slice(1).toLowerCase()
+      : defaultRoute;
   const handleHashChange = useCallback(() => {
     setActiveRouteAndComp();
   }, []);
 
   const setActiveRouteAndComp = () => {
+    let found = false;
     setIsLoading(true);
     const location = parseLocation().split("/");
     for (let i = 0; i < location.length; i++) {
@@ -43,11 +51,24 @@ const Router = ({ children, routesList }) => {
           if (element.path === subLocation) {
             setActiveRoute(element.path);
             setActiveComponent(element.component);
+            found = true;
             setIsLoading(false);
             break;
           }
         }
       }
+    }
+    if (!found) {
+      const listElements = document
+        .getElementById("menu")
+        .querySelectorAll("a");
+      listElements.forEach((element) => {
+        element.style.outline = 0;
+        if (element.href.endsWith(defaultRoute)) {
+          element.focus();
+        }
+      });
+      window.location.href = "/#" + defaultRoute;
     }
   };
   useEffect(() => {
@@ -71,9 +92,6 @@ const Router = ({ children, routesList }) => {
   );
 };
 
-/**
- * @todo handle activeClassName
- **/
 const Link = ({
   activeClassName = "",
   className = "",
@@ -93,7 +111,6 @@ const Link = ({
   return (
     mergedClassName && (
       <a href={`#${href}`} className={mergedClassName} {...rest}>
-        {" "}
         {children}
       </a>
     )

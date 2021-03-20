@@ -1,5 +1,5 @@
 /*
- main.js - ESP3D WebUI MainPage file
+ about.js - ESP3D WebUI navigation page file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,36 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Router } from "../components/Router";
-import About from "../pages/about";
-import Dashboard from "../pages/dashboard";
-import Settings from "../pages/settings";
 
-const routes = {
-  DEFAULT: {
-    component: <About />,
-    path: "/about",
-  },
-  DASHBOARD: {
-    component: <Dashboard />,
-    path: "/dashboard",
-  },
-  ABOUT: {
-    component: <About />,
-    path: "/about",
-  },
-  SETTINGS: {
-    component: <Settings />,
-    path: "/settings",
-  },
-};
-
-const MainContainer = () => {
+const About = () => {
   return (
-    <div id="main" class="main-page-container">
-      <Router routesList={routes} />
+    <div id="about">
+      <h2>About</h2>
     </div>
   );
 };
 
-export { MainContainer };
+export default About;

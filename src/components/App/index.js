@@ -2,7 +2,7 @@
  index.js - ESP3D WebUI App file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
-
+ Original code inspiration : 2021 Alexandre Aussourd
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -18,6 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useEffect } from "preact/hooks";
 import {
   TranslationsContextProvider,
   RouterContextProvider,
@@ -25,6 +26,10 @@ import {
 import { Informations, MainContainer, Menu } from "../../areas";
 
 const App = () => {
+  useEffect(() => {
+    //init app
+    //todo
+  }, []);
   return (
     <div id="app">
       <RouterContextProvider>

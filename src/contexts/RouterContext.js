@@ -1,6 +1,7 @@
 /*
  RouterContext.js - ESP3D WebUI context file
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ Modified by Luc LEBOSSE 2021
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -23,13 +24,16 @@ import { useContext, useState } from "preact/hooks";
 const RouterContext = createContext("RouterContext");
 const useRouterContext = () => useContext(RouterContext);
 const RouterContextProvider = ({ children }) => {
-  const [activeRoute, setActiveRoute] = useState("/");
+  const [activeRoute, setActiveRoute] = useState("/settings");
+  const [defaultRoute, setDefaultRoute] = useState("/settings");
   const [routes, setRoutes] = useState({});
   const store = {
     activeRoute,
     setActiveRoute,
     routes,
     setRoutes,
+    defaultRoute,
+    setDefaultRoute,
   };
   return (
     <RouterContext.Provider value={store}>{children}</RouterContext.Provider>

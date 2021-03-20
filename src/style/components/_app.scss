@@ -24,3 +24,14 @@ body {
   overflow-y: auto;
   height: 100%;
 }
+
+.logo {
+  padding-top: 7px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 5px;
+}
+
+.active {
+  box-shadow: 0 0 0 0.1rem rgba(87, 85, 217, 0.2);
+}
