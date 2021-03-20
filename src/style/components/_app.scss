@@ -33,5 +33,10 @@ body {
 }
 
 .active {
-  box-shadow: 0 0 0 0.1rem rgba(87, 85, 217, 0.2);
+  color: blue !important;
+  font-weight: 700; // bold
+}
+
+.no-box {
+  box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0) !important;
 }

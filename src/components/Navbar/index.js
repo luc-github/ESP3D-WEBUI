@@ -24,7 +24,7 @@ import { T } from "../Translations";
 
 const defaultLinks = [
   {
-    label: <ESP3DLogo bgcolor="#ffffff" color="#5755d9" />,
+    label: <ESP3DLogo bgcolor="#ffffff" />,
     href: "/about",
   },
   { label: "Dashboard", href: "/dashboard" },
@@ -47,7 +47,9 @@ const Navbar = () => {
           defaultLinks.map(({ label, href }) => (
             <Link
               className={
-                href == "/about" ? "navbar-brand logo" : "btn btn-link"
+                href == "/about"
+                  ? "navbar-brand logo no-box"
+                  : "btn btn-link no-box"
               }
               activeClassName="active"
               href={href}
