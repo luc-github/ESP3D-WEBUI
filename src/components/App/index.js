@@ -32,7 +32,7 @@ const App = () => {
   }, []);
   return (
     <div id="app">
-      <RouterContextProvider>
+      <RouterContextProvider initialDefaultRoute="/settings">
         <TranslationsContextProvider>
           <Menu />
           <Informations />

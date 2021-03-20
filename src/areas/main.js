@@ -24,10 +24,6 @@ import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
 
 const routes = {
-  DEFAULT: {
-    component: <About />,
-    path: "/about",
-  },
   DASHBOARD: {
     component: <Dashboard />,
     path: "/dashboard",

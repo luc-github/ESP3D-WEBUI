@@ -26,15 +26,19 @@ const Router = ({ children, routesList }) => {
     setRoutes,
     activeRoute,
     routes,
-    defaultRoute,
+    getDefaultRoute,
   } = useRouterContext();
+  const elements = Object.values(routesList);
+  const defaultElement = elements.find(
+    (element) => element.path == getDefaultRoute()
+  );
   const [ActiveComponent, setActiveComponent] = useState(
-    routesList.DEFAULT.component
+    defaultElement.component
   );
   const parseLocation = () =>
     typeof window !== "undefined"
       ? location.hash.slice(1).toLowerCase()
-      : defaultRoute;
+      : getDefaultRoute();
   const handleHashChange = useCallback(() => {
     setActiveRouteAndComp();
   }, []);
@@ -59,7 +63,7 @@ const Router = ({ children, routesList }) => {
       }
     }
     if (!found) {
-      window.location.href = "/#" + defaultRoute;
+      window.location.href = "/#" + getDefaultRoute();
     }
   };
   useEffect(() => {

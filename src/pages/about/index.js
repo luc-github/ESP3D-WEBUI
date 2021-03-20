@@ -18,8 +18,10 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-
+import { useRouterContext } from "../../contexts";
 const About = () => {
+  const { setDefaultRoute } = useRouterContext();
+  setDefaultRoute("/about");
   return (
     <div id="about">
       <h2>About</h2>

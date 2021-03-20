@@ -17,23 +17,33 @@
 import { h, createContext } from "preact";
 import { useContext, useState } from "preact/hooks";
 
+let defaultRoute;
+
 /*
  * Local const
  *
  */
 const RouterContext = createContext("RouterContext");
 const useRouterContext = () => useContext(RouterContext);
-const RouterContextProvider = ({ children }) => {
-  const [activeRoute, setActiveRoute] = useState("/settings");
-  const [defaultRoute, setDefaultRoute] = useState("/settings");
+const RouterContextProvider = ({ children, initialDefaultRoute }) => {
+  if (typeof defaultRoute === "undefined") {
+    defaultRoute = initialDefaultRoute;
+  }
+  const [activeRoute, setActiveRoute] = useState(defaultRoute);
+  function setDefaultRoute(newDefaultRoute) {
+    defaultRoute = newDefaultRoute;
+  }
+  function getDefaultRoute() {
+    return defaultRoute;
+  }
   const [routes, setRoutes] = useState({});
   const store = {
     activeRoute,
     setActiveRoute,
     routes,
     setRoutes,
-    defaultRoute,
     setDefaultRoute,
+    getDefaultRoute,
   };
   return (
     <RouterContext.Provider value={store}>{children}</RouterContext.Provider>
