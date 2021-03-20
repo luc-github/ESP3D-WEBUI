@@ -59,15 +59,6 @@ const Router = ({ children, routesList }) => {
       }
     }
     if (!found) {
-      const listElements = document
-        .getElementById("menu")
-        .querySelectorAll("a");
-      listElements.forEach((element) => {
-        element.style.outline = 0;
-        if (element.href.endsWith(defaultRoute)) {
-          element.focus();
-        }
-      });
       window.location.href = "/#" + defaultRoute;
     }
   };
