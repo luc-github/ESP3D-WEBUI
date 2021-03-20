@@ -15,11 +15,10 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, Fragment } from "preact";
-import { useRouterContext } from "../../contexts";
 import { useState, useEffect, useCallback } from "preact/hooks";
 import { Loading } from "../Spectre";
 
-const Router = ({ children, routesList }) => {
+const Router = ({ children, routesList, contextInstance }) => {
   const [isLoading, setIsLoading] = useState(true);
   const {
     setActiveRoute,
@@ -27,7 +26,7 @@ const Router = ({ children, routesList }) => {
     activeRoute,
     routes,
     getDefaultRoute,
-  } = useRouterContext();
+  } = contextInstance;
   const elements = Object.values(routesList);
   const defaultElement = elements.find(
     (element) => element.path == getDefaultRoute()
@@ -91,10 +90,10 @@ const Link = ({
   activeClassName = "",
   className = "",
   href,
+  activeRoute,
   children,
   ...rest
 }) => {
-  const { activeRoute } = useRouterContext();
   const [mergedClassName, setMergedClassName] = useState();
 
   useEffect(() => {

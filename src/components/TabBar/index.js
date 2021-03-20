@@ -1,5 +1,5 @@
 /*
- Navbar.js - ESP3D WebUI navigation bar file
+TabNar.js - ESP3D WebUI Tabs bar file
  Original code inspiration : 2021 Alexandre Aussourd
  Copyright (c) 2021 Luc Lebosse. All rights reserved.
  Original code inspiration : 2021 Alexandre Aussourd
@@ -18,50 +18,38 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { useMenuContext } from "../../contexts";
+import { useTabContext } from "../../contexts";
 
 const defaultLinks = [
   {
-    label: <ESP3DLogo bgcolor="#ffffff" />,
-    href: "/about",
+    label: "S36",
+    href: "/settings/features",
   },
-  { label: "S13", href: "/dashboard" },
-  { label: "S14", href: "/settings" },
+  { label: "S17", href: "/settings/interface" },
+  { label: "S16", href: "/settings/machine" },
 ];
-
-const Navbar = () => {
-  //TODO
-  //if target FW is not defined:
-  //1 -  set default route to settings
-  //2 - do not show dashboard link
-  //if target FW is defined :
-  //1 = default route should be dashboard
-  //2 - show dashboard element as well as extra items
-  const { activeRoute } = useMenuContext();
+const TabBar = () => {
+  //Todo : Hide Fw tab is no target FW defined
+  const { activeRoute } = useTabContext();
   return (
-    <header class="navbar">
-      <section class="navbar-section">
-        {defaultLinks &&
-          defaultLinks.map(({ label, href }) => (
+    <ul class="tab tab-block">
+      {defaultLinks &&
+        defaultLinks.map(({ label, href }) => (
+          <li class="tab-item">
             <Link
-              className={
-                href == "/about"
-                  ? "navbar-brand logo no-box"
-                  : "btn btn-link no-box"
-              }
+              className="btn btn-link no-box"
               activeClassName="active"
               href={href}
               activeRoute={activeRoute}
             >
               {T(label)}
             </Link>
-          ))}
-      </section>
-    </header>
+          </li>
+        ))}
+    </ul>
   );
 };
 
-export { Navbar };
+export { TabBar };

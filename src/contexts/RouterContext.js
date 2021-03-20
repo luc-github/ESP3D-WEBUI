@@ -18,14 +18,15 @@ import { h, createContext } from "preact";
 import { useContext, useState } from "preact/hooks";
 
 let defaultRoute;
+let defaultTab;
 
 /*
  * Local const
  *
  */
-const RouterContext = createContext("RouterContext");
-const useRouterContext = () => useContext(RouterContext);
-const RouterContextProvider = ({ children, initialDefaultRoute }) => {
+const MenuContext = createContext("MenuContext");
+const useMenuContext = () => useContext(MenuContext);
+const MenuContextProvider = ({ children, initialDefaultRoute }) => {
   if (typeof defaultRoute === "undefined") {
     defaultRoute = initialDefaultRoute;
   }
@@ -45,9 +46,37 @@ const RouterContextProvider = ({ children, initialDefaultRoute }) => {
     setDefaultRoute,
     getDefaultRoute,
   };
-  return (
-    <RouterContext.Provider value={store}>{children}</RouterContext.Provider>
-  );
+  return <MenuContext.Provider value={store}>{children}</MenuContext.Provider>;
 };
 
-export { RouterContextProvider, useRouterContext };
+const TabContext = createContext("TabContext");
+const useTabContext = () => useContext(TabContext);
+const TabContextProvider = ({ children, initialDefaultRoute }) => {
+  if (typeof defaultTab === "undefined") {
+    defaultTab = initialDefaultRoute;
+  }
+  const [activeRoute, setActiveRoute] = useState(defaultTab);
+  function setDefaultRoute(newDefaultRoute) {
+    defaultTab = newDefaultRoute;
+  }
+  function getDefaultRoute() {
+    return defaultTab;
+  }
+  const [routes, setRoutes] = useState({});
+  const store = {
+    activeRoute,
+    setActiveRoute,
+    routes,
+    setRoutes,
+    setDefaultRoute,
+    getDefaultRoute,
+  };
+  return <TabContext.Provider value={store}>{children}</TabContext.Provider>;
+};
+
+export {
+  MenuContextProvider,
+  useMenuContext,
+  TabContextProvider,
+  useTabContext,
+};

@@ -1,8 +1,8 @@
 /*
- index.js - ESP3D WebUI App file
+ index.js - ESP3D WebUI navigation tab file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
- Original code inspiration : 2021 Alexandre Aussourd
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -18,29 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useEffect } from "preact/hooks";
-import {
-  TranslationsContextProvider,
-  MenuContextProvider,
-} from "../../contexts";
-import { Informations, MainContainer, Menu } from "../../areas";
 
-const App = () => {
-  useEffect(() => {
-    //init app
-    //todo
-  }, []);
+const InterfaceTab = () => {
   return (
-    <div id="app">
-      <MenuContextProvider initialDefaultRoute="/settings">
-        <TranslationsContextProvider>
-          <Menu />
-          <Informations />
-          <MainContainer />
-        </TranslationsContextProvider>
-      </MenuContextProvider>
+    <div id="interface">
+      <h2>Interface</h2>
     </div>
   );
 };
 
-export { App };
+export { InterfaceTab };

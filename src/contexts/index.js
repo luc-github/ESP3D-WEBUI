@@ -22,11 +22,18 @@ import {
   TranslationsContextProvider,
   useTranslationsContext,
 } from "./TranslationsContext";
-import { RouterContextProvider, useRouterContext } from "./RouterContext";
+import {
+  MenuContextProvider,
+  useMenuContext,
+  TabContextProvider,
+  useTabContext,
+} from "./RouterContext";
 
 export {
   TranslationsContextProvider,
   useTranslationsContext,
-  RouterContextProvider,
-  useRouterContext,
+  MenuContextProvider,
+  useMenuContext,
+  TabContextProvider,
+  useTabContext,
 };
