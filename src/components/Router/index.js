@@ -19,8 +19,6 @@ import { useState, useEffect, useCallback } from "preact/hooks";
 import { Loading } from "../Spectre";
 import { useRouterContext } from "../../contexts";
 
-let activeTab = "/settings/features";
-
 const Router = ({ children, routesList, localDefault }) => {
   const [isLoading, setIsLoading] = useState(true);
   const {
@@ -29,14 +27,15 @@ const Router = ({ children, routesList, localDefault }) => {
     activeRoute,
     routes,
     defaultRoute,
+    activeTab,
   } = useRouterContext();
 
   function parseLocation() {
     if (typeof window !== "undefined") {
       const location = window.location.hash.slice(1).toLowerCase();
       if (location == "/settings") {
-        window.location.href = "/#" + activeTab;
-        return activeTab;
+        window.location.href = "/#" + activeTab.current;
+        return "/settings/features";
       } else {
         return location;
       }
@@ -44,7 +43,9 @@ const Router = ({ children, routesList, localDefault }) => {
       return defaultRoute;
     }
   }
-  const localDefaultRoute = localDefault ? activeTab : defaultRoute;
+  const localDefaultRoute = localDefault
+    ? activeTab.current
+    : defaultRoute.current;
 
   const elements = Object.values(routesList);
   const defaultElement = elements.find(
@@ -89,7 +90,7 @@ const Router = ({ children, routesList, localDefault }) => {
   useEffect(() => {
     setActiveRouteAndComp();
     if (activeRoute.startsWith("/settings/")) {
-      activeTab = activeRoute;
+      activeTab.current = activeRoute;
     }
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
