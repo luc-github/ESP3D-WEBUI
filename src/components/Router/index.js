@@ -17,27 +17,37 @@
 import { h, Fragment } from "preact";
 import { useState, useEffect, useCallback } from "preact/hooks";
 import { Loading } from "../Spectre";
-
-const Router = ({ children, routesList, contextInstance }) => {
+import { useRouterContext } from "../../contexts";
+const Router = ({ children, routesList, localDefault }) => {
   const [isLoading, setIsLoading] = useState(true);
   const {
     setActiveRoute,
     setRoutes,
     activeRoute,
     routes,
-    getDefaultRoute,
-  } = contextInstance;
+    defaultRoute,
+  } = useRouterContext();
+
+  function parseLocation() {
+    if (typeof window !== "undefined") {
+      if (window.location.hash.slice(1).toLowerCase() == "/settings") {
+        window.location.href = "/#/settings/features";
+        return "/settings/features";
+      } else return window.location.hash.slice(1).toLowerCase();
+    } else {
+      return defaultRoute;
+    }
+  }
+  const localDefaultRoute = localDefault ? localDefault : defaultRoute;
+
   const elements = Object.values(routesList);
   const defaultElement = elements.find(
-    (element) => element.path == getDefaultRoute()
+    (element) => element.path == localDefaultRoute
   );
   const [ActiveComponent, setActiveComponent] = useState(
     defaultElement.component
   );
-  const parseLocation = () =>
-    typeof window !== "undefined"
-      ? location.hash.slice(1).toLowerCase()
-      : getDefaultRoute();
+
   const handleHashChange = useCallback(() => {
     setActiveRouteAndComp();
   }, []);
@@ -62,7 +72,7 @@ const Router = ({ children, routesList, contextInstance }) => {
       }
     }
     if (!found) {
-      window.location.href = "/#" + getDefaultRoute();
+      window.location.href = "/#" + localDefaultRoute;
     }
   };
   useEffect(() => {
@@ -90,16 +100,24 @@ const Link = ({
   activeClassName = "",
   className = "",
   href,
-  activeRoute,
   children,
   ...rest
 }) => {
+  const { activeRoute, setActiveRoute } = useRouterContext();
   const [mergedClassName, setMergedClassName] = useState();
 
   useEffect(() => {
-    setMergedClassName(
-      activeRoute === href ? `${className} ${activeClassName}` : className
-    );
+    const route = window.location.hash.slice(1).toLowerCase();
+    console.log(route);
+    if (
+      (activeRoute == "/settings" && href == route) ||
+      (route.startsWith("/settings") && href == "/settings")
+    ) {
+      setMergedClassName(`${className} ${activeClassName}`);
+    } else
+      setMergedClassName(
+        activeRoute === href ? `${className} ${activeClassName}` : className
+      );
   }, [activeRoute]);
 
   return (

@@ -21,7 +21,7 @@ import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import {
   TranslationsContextProvider,
-  MenuContextProvider,
+  RouterContextProvider,
 } from "../../contexts";
 import { Informations, MainContainer, Menu } from "../../areas";
 
@@ -32,13 +32,13 @@ const App = () => {
   }, []);
   return (
     <div id="app">
-      <MenuContextProvider initialDefaultRoute="/settings">
+      <RouterContextProvider>
         <TranslationsContextProvider>
           <Menu />
           <Informations />
           <MainContainer />
         </TranslationsContextProvider>
-      </MenuContextProvider>
+      </RouterContextProvider>
     </div>
   );
 };

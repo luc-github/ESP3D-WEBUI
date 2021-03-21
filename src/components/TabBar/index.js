@@ -20,7 +20,6 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { useTabContext } from "../../contexts";
 
 const defaultLinks = [
   {
@@ -32,7 +31,6 @@ const defaultLinks = [
 ];
 const TabBar = () => {
   //Todo : Hide Fw tab is no target FW defined
-  const { activeRoute } = useTabContext();
   return (
     <ul class="tab tab-block">
       {defaultLinks &&
@@ -42,7 +40,6 @@ const TabBar = () => {
               className="btn btn-link no-box"
               activeClassName="active"
               href={href}
-              activeRoute={activeRoute}
             >
               {T(label)}
             </Link>

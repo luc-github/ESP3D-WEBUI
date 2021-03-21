@@ -15,68 +15,39 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { useContext, useState } from "preact/hooks";
-
-let defaultRoute;
-let defaultTab;
+import { useContext, useState, useEffect } from "preact/hooks";
 
 /*
  * Local const
  *
  */
-const MenuContext = createContext("MenuContext");
-const useMenuContext = () => useContext(MenuContext);
-const MenuContextProvider = ({ children, initialDefaultRoute }) => {
-  if (typeof defaultRoute === "undefined") {
-    defaultRoute = initialDefaultRoute;
-  }
+const RouterContext = createContext("RouterContext");
+const useRouterContext = () => useContext(RouterContext);
+const RouterContextProvider = ({ children }) => {
+  const [defaultRoute, setDefaultRoute] = useState("/about");
   const [activeRoute, setActiveRoute] = useState(defaultRoute);
-  function setDefaultRoute(newDefaultRoute) {
-    defaultRoute = newDefaultRoute;
-  }
-  function getDefaultRoute() {
-    return defaultRoute;
-  }
+  const [activeTab, setActiveTab] = useState("/features");
   const [routes, setRoutes] = useState({});
   const store = {
     activeRoute,
     setActiveRoute,
     routes,
     setRoutes,
+    defaultRoute,
     setDefaultRoute,
-    getDefaultRoute,
+    activeTab,
+    setActiveTab,
   };
-  return <MenuContext.Provider value={store}>{children}</MenuContext.Provider>;
+  //useEffect(() => {
+  //   if (activeRoute == "/settings") setActiveRoute("/settings/features");
+  //   console.log(activeRoute);
+  //console.log("set default:/about");
+  //setDefaultRoute("/about");
+  //console.log("new default:", defaultRoute);
+  // }, [activeRoute]);
+  return (
+    <RouterContext.Provider value={store}>{children}</RouterContext.Provider>
+  );
 };
 
-const TabContext = createContext("TabContext");
-const useTabContext = () => useContext(TabContext);
-const TabContextProvider = ({ children, initialDefaultRoute }) => {
-  if (typeof defaultTab === "undefined") {
-    defaultTab = initialDefaultRoute;
-  }
-  const [activeRoute, setActiveRoute] = useState(defaultTab);
-  function setDefaultRoute(newDefaultRoute) {
-    defaultTab = newDefaultRoute;
-  }
-  function getDefaultRoute() {
-    return defaultTab;
-  }
-  const [routes, setRoutes] = useState({});
-  const store = {
-    activeRoute,
-    setActiveRoute,
-    routes,
-    setRoutes,
-    setDefaultRoute,
-    getDefaultRoute,
-  };
-  return <TabContext.Provider value={store}>{children}</TabContext.Provider>;
-};
-
-export {
-  MenuContextProvider,
-  useMenuContext,
-  TabContextProvider,
-  useTabContext,
-};
+export { RouterContextProvider, useRouterContext };

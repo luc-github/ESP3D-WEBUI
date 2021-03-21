@@ -19,7 +19,6 @@
 */
 import { h } from "preact";
 import { Router } from "../../components/Router";
-import { TabContextProvider, useTabContext } from "../../contexts";
 import { Target } from "TargetPath";
 import { FeaturesTab } from "../../tabs/features";
 import { InterfaceTab } from "../../tabs/interface";
@@ -30,30 +29,23 @@ import { T } from "../../components/Translations";
 const routes = {
   FEATURES: {
     component: <FeaturesTab />,
-    path: "/features",
+    path: "/settings/features",
   },
   INTERFACE: {
     component: <InterfaceTab />,
-    path: "/interface",
+    path: "/settings/interface",
   },
   MACHINE: {
     component: <MachineTab />,
-    path: "/machine",
+    path: "/settings/machine",
   },
 };
 
 const Settings = () => {
-  const context = useTabContext();
-  console.log(context);
-  let content;
-  //let content = <Router routesList={routes} contextInstance={context} />;
-
   return (
     <div id="settings" class="container">
-      <TabContextProvider initialDefaultRoute="/features">
-        <TabBar />
-        {content}
-      </TabContextProvider>
+      <TabBar />
+      <Router routesList={routes} localDefault={"/settings/features"} />
     </div>
   );
 };

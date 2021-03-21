@@ -21,7 +21,6 @@ import { h } from "preact";
 import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { useMenuContext } from "../../contexts";
 
 const defaultLinks = [
   {
@@ -40,7 +39,6 @@ const Navbar = () => {
   //if target FW is defined :
   //1 = default route should be dashboard
   //2 - show dashboard element as well as extra items
-  const { activeRoute } = useMenuContext();
   return (
     <header class="navbar">
       <section class="navbar-section">
@@ -54,7 +52,6 @@ const Navbar = () => {
               }
               activeClassName="active"
               href={href}
-              activeRoute={activeRoute}
             >
               {T(label)}
             </Link>

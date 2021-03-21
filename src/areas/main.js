@@ -22,7 +22,7 @@ import { Router } from "../components/Router";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
-import { useMenuContext } from "../contexts";
+import { useRouterContext } from "../contexts";
 
 const routes = {
   DASHBOARD: {
@@ -40,10 +40,9 @@ const routes = {
 };
 
 const MainContainer = () => {
-  const context = useMenuContext();
   return (
     <div id="main" class="main-page-container">
-      <Router routesList={routes} contextInstance={context} />
+      <Router routesList={routes} />
     </div>
   );
 };

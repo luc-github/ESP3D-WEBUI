@@ -20,7 +20,6 @@
 import { h } from "preact";
 
 const FeaturesTab = () => {
-  console.log("Yes");
   return (
     <div id="features">
       <h2>Features</h2>
@@ -28,4 +27,4 @@ const FeaturesTab = () => {
   );
 };
 
-export {FeaturesTab};
+export { FeaturesTab };
