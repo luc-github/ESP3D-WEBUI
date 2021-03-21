@@ -26,19 +26,26 @@ const Router = ({ children, routesList, localDefault }) => {
     activeRoute,
     routes,
     defaultRoute,
+    activeTab,
+    setActiveTab,
   } = useRouterContext();
 
   function parseLocation() {
     if (typeof window !== "undefined") {
-      if (window.location.hash.slice(1).toLowerCase() == "/settings") {
-        window.location.href = "/#/settings/features";
-        return "/settings/features";
-      } else return window.location.hash.slice(1).toLowerCase();
+      const location = window.location.hash.slice(1).toLowerCase();
+      if (location == "/settings") {
+        console.log("Tab:", activeTab);
+        console.log("Change hash1");
+        window.location.href = "/#" + activeTab;
+        return activeTab;
+      } else {
+        return location;
+      }
     } else {
       return defaultRoute;
     }
   }
-  const localDefaultRoute = localDefault ? localDefault : defaultRoute;
+  const localDefaultRoute = localDefault ? activeTab : defaultRoute;
 
   const elements = Object.values(routesList);
   const defaultElement = elements.find(
@@ -49,6 +56,8 @@ const Router = ({ children, routesList, localDefault }) => {
   );
 
   const handleHashChange = useCallback(() => {
+    console.log("Tab:", activeTab);
+    console.log("Hash changed");
     setActiveRouteAndComp();
   }, []);
 
@@ -72,6 +81,7 @@ const Router = ({ children, routesList, localDefault }) => {
       }
     }
     if (!found) {
+      console.log("Change hash2");
       window.location.href = "/#" + localDefaultRoute;
     }
   };
@@ -82,6 +92,11 @@ const Router = ({ children, routesList, localDefault }) => {
 
   useEffect(() => {
     setActiveRouteAndComp();
+    //console.log("route:", activeRoute, " tab:", activeTab);
+    if (activeRoute.startsWith("/settings/")) {
+      console.log("Change active Tab:", activeRoute);
+      setActiveTab(activeRoute);
+    }
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, [handleHashChange, activeRoute]);
@@ -103,12 +118,11 @@ const Link = ({
   children,
   ...rest
 }) => {
-  const { activeRoute, setActiveRoute } = useRouterContext();
+  const { activeRoute, activeTab } = useRouterContext();
   const [mergedClassName, setMergedClassName] = useState();
 
   useEffect(() => {
     const route = window.location.hash.slice(1).toLowerCase();
-    console.log(route);
     if (
       (activeRoute == "/settings" && href == route) ||
       (route.startsWith("/settings") && href == "/settings")
@@ -118,6 +132,8 @@ const Link = ({
       setMergedClassName(
         activeRoute === href ? `${className} ${activeClassName}` : className
       );
+    //console.log("[", href, "]");
+    //console.log("route:", activeRoute, " tab:", activeTab);
   }, [activeRoute]);
 
   return (

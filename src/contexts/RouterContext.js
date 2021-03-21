@@ -26,7 +26,7 @@ const useRouterContext = () => useContext(RouterContext);
 const RouterContextProvider = ({ children }) => {
   const [defaultRoute, setDefaultRoute] = useState("/about");
   const [activeRoute, setActiveRoute] = useState(defaultRoute);
-  const [activeTab, setActiveTab] = useState("/features");
+  const [activeTab, setActiveTab] = useState("/settings/features");
   const [routes, setRoutes] = useState({});
   const store = {
     activeRoute,
