@@ -18,6 +18,9 @@ import { h, Fragment } from "preact";
 import { useState, useEffect, useCallback } from "preact/hooks";
 import { Loading } from "../Spectre";
 import { useRouterContext } from "../../contexts";
+
+let activeTab = "/settings/features";
+
 const Router = ({ children, routesList, localDefault }) => {
   const [isLoading, setIsLoading] = useState(true);
   const {
@@ -26,7 +29,6 @@ const Router = ({ children, routesList, localDefault }) => {
     activeRoute,
     routes,
     defaultRoute,
-    activeTab,
     setActiveTab,
   } = useRouterContext();
 
@@ -95,7 +97,7 @@ const Router = ({ children, routesList, localDefault }) => {
     //console.log("route:", activeRoute, " tab:", activeTab);
     if (activeRoute.startsWith("/settings/")) {
       console.log("Change active Tab:", activeRoute);
-      setActiveTab(activeRoute);
+      activeTab = activeRoute;
     }
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
@@ -118,7 +120,7 @@ const Link = ({
   children,
   ...rest
 }) => {
-  const { activeRoute, activeTab } = useRouterContext();
+  const { activeRoute } = useRouterContext();
   const [mergedClassName, setMergedClassName] = useState();
 
   useEffect(() => {
