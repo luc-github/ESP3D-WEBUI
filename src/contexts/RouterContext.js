@@ -15,7 +15,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { useContext, useState, useEffect } from "preact/hooks";
+import { useContext, useState } from "preact/hooks";
 
 /*
  * Local const
@@ -26,7 +26,6 @@ const useRouterContext = () => useContext(RouterContext);
 const RouterContextProvider = ({ children }) => {
   const [defaultRoute, setDefaultRoute] = useState("/about");
   const [activeRoute, setActiveRoute] = useState(defaultRoute);
-  const [activeTab, setActiveTab] = useState("/settings/features");
   const [routes, setRoutes] = useState({});
   const store = {
     activeRoute,
@@ -35,16 +34,7 @@ const RouterContextProvider = ({ children }) => {
     setRoutes,
     defaultRoute,
     setDefaultRoute,
-    activeTab,
-    setActiveTab,
   };
-  //useEffect(() => {
-  //   if (activeRoute == "/settings") setActiveRoute("/settings/features");
-  //   console.log(activeRoute);
-  //console.log("set default:/about");
-  //setDefaultRoute("/about");
-  //console.log("new default:", defaultRoute);
-  // }, [activeRoute]);
   return (
     <RouterContext.Provider value={store}>{children}</RouterContext.Provider>
   );

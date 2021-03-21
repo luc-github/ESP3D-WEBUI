@@ -29,15 +29,12 @@ const Router = ({ children, routesList, localDefault }) => {
     activeRoute,
     routes,
     defaultRoute,
-    setActiveTab,
   } = useRouterContext();
 
   function parseLocation() {
     if (typeof window !== "undefined") {
       const location = window.location.hash.slice(1).toLowerCase();
       if (location == "/settings") {
-        console.log("Tab:", activeTab);
-        console.log("Change hash1");
         window.location.href = "/#" + activeTab;
         return activeTab;
       } else {
@@ -58,8 +55,6 @@ const Router = ({ children, routesList, localDefault }) => {
   );
 
   const handleHashChange = useCallback(() => {
-    console.log("Tab:", activeTab);
-    console.log("Hash changed");
     setActiveRouteAndComp();
   }, []);
 
@@ -83,7 +78,6 @@ const Router = ({ children, routesList, localDefault }) => {
       }
     }
     if (!found) {
-      console.log("Change hash2");
       window.location.href = "/#" + localDefaultRoute;
     }
   };
@@ -94,9 +88,7 @@ const Router = ({ children, routesList, localDefault }) => {
 
   useEffect(() => {
     setActiveRouteAndComp();
-    //console.log("route:", activeRoute, " tab:", activeTab);
     if (activeRoute.startsWith("/settings/")) {
-      console.log("Change active Tab:", activeRoute);
       activeTab = activeRoute;
     }
     window.addEventListener("hashchange", handleHashChange);
@@ -134,8 +126,6 @@ const Link = ({
       setMergedClassName(
         activeRoute === href ? `${className} ${activeClassName}` : className
       );
-    //console.log("[", href, "]");
-    //console.log("route:", activeRoute, " tab:", activeTab);
   }, [activeRoute]);
 
   return (
