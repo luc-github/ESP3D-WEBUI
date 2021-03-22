@@ -1,8 +1,9 @@
 /*
 TabNar.js - ESP3D WebUI Tabs bar file
- Original code inspiration : 2021 Alexandre Aussourd
+
  Copyright (c) 2021 Luc Lebosse. All rights reserved.
  Original code inspiration : 2021 Alexandre Aussourd
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either

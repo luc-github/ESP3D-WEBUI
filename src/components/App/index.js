@@ -3,6 +3,7 @@
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
  Original code inspiration : 2021 Alexandre Aussourd
+ 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -22,7 +23,9 @@ import { useEffect } from "preact/hooks";
 import {
   TranslationsContextProvider,
   RouterContextProvider,
+  HttpQueueContextProvider,
 } from "../../contexts";
+
 import { Informations, MainContainer, Menu } from "../../areas";
 
 const App = () => {
@@ -33,11 +36,13 @@ const App = () => {
   return (
     <div id="app">
       <RouterContextProvider>
-        <TranslationsContextProvider>
-          <Menu />
-          <Informations />
-          <MainContainer />
-        </TranslationsContextProvider>
+        <HttpQueueContextProvider>
+          <TranslationsContextProvider>
+            <Menu />
+            <Informations />
+            <MainContainer />
+          </TranslationsContextProvider>
+        </HttpQueueContextProvider>
       </RouterContextProvider>
     </div>
   );

@@ -2,6 +2,7 @@
  main.js - ESP3D WebUI MainPage file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
+  Original code inspiration : 2021 Alexandre Aussourd
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public

@@ -23,10 +23,16 @@ import {
   useTranslationsContext,
 } from "./TranslationsContext";
 import { RouterContextProvider, useRouterContext } from "./RouterContext";
+import {
+  HttpQueueContextProvider,
+  useHttpQueueContext,
+} from "./HttpQueueContext";
 
 export {
   TranslationsContextProvider,
   useTranslationsContext,
   RouterContextProvider,
   useRouterContext,
+  HttpQueueContextProvider,
+  useHttpQueueContext,
 };
