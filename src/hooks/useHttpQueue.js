@@ -19,7 +19,7 @@
 import { h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 import { useHttpQueueContext } from "../contexts";
-import { generateUID } from "../Helpers";
+import { generateUID } from "../components/Helpers";
 
 /*
  * Local const

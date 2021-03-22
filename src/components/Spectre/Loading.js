@@ -14,7 +14,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { createComponent } from "../helpers";
+import { createComponent } from "../Helpers";
 
 const modifiers = {
   lg: "loading-lg",
