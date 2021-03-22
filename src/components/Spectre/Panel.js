@@ -1,5 +1,5 @@
 /*
- Loading.js - ESP3D WebUI component file
+ Panel.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
  
@@ -18,10 +18,11 @@
 import { h } from "preact";
 import { createComponent } from "../Helpers";
 
-const modifiers = {
-  lg: "loading-lg",
-  large: "loading-lg",
-};
-const Loading = createComponent("div", "loading", modifiers);
+const Panel = createComponent("div", "panel");
+Panel.Header = createComponent("div", "panel-header");
+Panel.Title = createComponent("div", "panel-title");
+Panel.Nav = createComponent("div", "panel-nav");
+Panel.Body = createComponent("div", "panel-body");
+Panel.Footer = createComponent("div", "panel-footer");
 
-export default Loading;
+export default Panel;

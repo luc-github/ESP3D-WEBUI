@@ -113,9 +113,20 @@ const limitArr = (arr, limit) =>
     arr.length
   );
 
+//generate an URL with server host and base address
+//args is array of argumments: [{'cmd':'[ESP800]},...]
+const espHttpURL = (base, args) => {
+  const url = new URL("http://" + window.location.host + "/" + base);
+  for (const [key, value] of Object.entries(args)) {
+    url.searchParams.append(key, value);
+  }
+  return url;
+};
+
 export {
   capitalize,
   createComponent,
+  espHttpURL,
   generateUID,
   getColClasses,
   hslToHex,
