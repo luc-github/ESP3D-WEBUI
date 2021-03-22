@@ -18,6 +18,10 @@
 import { h } from "preact";
 import { createComponent } from "../Helpers";
 
+/*
+ * Local const
+ *
+ */
 const Panel = createComponent("div", "panel");
 Panel.Header = createComponent("div", "panel-header");
 Panel.Title = createComponent("div", "panel-title");

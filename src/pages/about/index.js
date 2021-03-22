@@ -24,12 +24,14 @@ import { Loading } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
+import { useUiContext } from "../../contexts";
 
 /*
  * Local const
  *
  */
 const About = () => {
+  const { toasts } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
   const [props, setProps] = useState([]);
@@ -41,13 +43,12 @@ const About = () => {
       {
         onSuccess: (result) => {
           const { Status } = JSON.parse(result);
-          console.log(Status);
           setProps([...Status]);
           setIsLoading(false);
         },
         onFail: (error) => {
           setIsLoading(false);
-          //toasts.addToast({ content: error, type: 'error' })
+          toasts.addToast({ content: error, type: "error" });
         },
       }
     );

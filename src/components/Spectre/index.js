@@ -15,5 +15,7 @@
 */
 import Loading from "./Loading";
 import Panel from "./Panel";
+import Modal from "./Modal";
+import Toast from "./Toast";
 
-export { Loading, Panel };
+export { Loading, Panel, Modal, Toast };

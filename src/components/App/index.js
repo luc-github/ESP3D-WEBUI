@@ -24,8 +24,10 @@ import {
   TranslationsContextProvider,
   RouterContextProvider,
   HttpQueueContextProvider,
+  UiContextProvider,
 } from "../../contexts";
-
+import { ToastsContainer } from "../Toast";
+import { Modal } from "../Modal";
 import { Informations, MainContainer, Menu } from "../../areas";
 
 const App = () => {
@@ -38,9 +40,13 @@ const App = () => {
       <RouterContextProvider>
         <HttpQueueContextProvider>
           <TranslationsContextProvider>
-            <Menu />
-            <Informations />
-            <MainContainer />
+            <UiContextProvider>
+              <ToastsContainer />
+              <Modal />
+              <Menu />
+              <Informations />
+              <MainContainer />
+            </UiContextProvider>
           </TranslationsContextProvider>
         </HttpQueueContextProvider>
       </RouterContextProvider>

@@ -34,14 +34,12 @@ const HttpQueueContextProvider = ({ children }) => {
   //Add new rRequest to queue
   const addInQueue = (newRequest) => {
     requestQueue.current = [...requestQueue.current, newRequest];
-    console.log("addInQueue", requestQueue);
     if (!isBusy.current) executeHttpCall();
   };
   //Remove finished request from queue
   const removeRequestDone = () => {
     requestQueue.current = [...requestQueue.current].slice(1);
     currentRequest.current = null;
-    console.log("removeRequestDone", requestQueue);
   };
   //Remove finished request from queue
   const removeRequests = (requestIds) => {
@@ -65,24 +63,18 @@ const HttpQueueContextProvider = ({ children }) => {
       onProgress,
     } = requestQueue.current[0];
     try {
-      console.log(requestQueue.current[0]);
-      console.log(`requete en cours... ${requestQueue.current[0].id}`);
       currentRequest.current = httpAdapter(url, params, onProgress);
       const response = await currentRequest.current.response;
 
       onSuccess(response);
     } catch (e) {
-      console.log("catch");
-      console.log(e.message);
       if (onFail) onFail(e.message); //to-check
       // add toast notification
     } finally {
       removeRequestDone();
       if (requestQueue.current.length > 0) {
-        console.log("next");
         executeHttpCall();
       } else {
-        console.log("end");
         isBusy.current = false;
       }
     }
