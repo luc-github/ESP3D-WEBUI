@@ -18,7 +18,9 @@ let serverpath = path.normalize(__dirname + "/../server/public/");
 
 let WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({ port: 81 });
+app.use("/", express.static(serverpath));
 app.use(fileUpload({ preserveExtension: true, debug: false }));
+
 app.listen(port, () =>
   console.log(expresscolor(`[express] Listening on port ${port}!`))
 );

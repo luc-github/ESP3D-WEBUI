@@ -47,7 +47,10 @@ const useSettings = () => {
           setSettings({ ...settingsState.current, interface: jsonResult });
         },
         onFail: (error) => {
-          toasts.addToast({ content: error + " package.json", type: "error" });
+          toasts.addToast({
+            content: error + " preferences.json",
+            type: "error",
+          });
           //use defaults and continue
         },
       }
