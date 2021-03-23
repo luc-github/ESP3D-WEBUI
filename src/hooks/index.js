@@ -19,5 +19,6 @@
 */
 import { h } from "preact";
 import { useHttpQueue } from "./useHttpQueue";
+import { useSettings } from "./useSettings";
 
-export { useHttpQueue };
+export { useHttpQueue, useSettings };

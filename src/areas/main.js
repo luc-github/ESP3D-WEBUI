@@ -23,7 +23,7 @@ import { Router } from "../components/Router";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
-import { useRouterContext } from "../contexts";
+import { useSettings } from "../hooks";
 
 const routes = {
   DASHBOARD: {
@@ -41,6 +41,9 @@ const routes = {
 };
 
 const MainContainer = () => {
+  //just to init settings
+  const [settings, setSettings] = useSettings();
+
   return (
     <div id="main" class="main-page-container">
       <Router routesList={routes} />

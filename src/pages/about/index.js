@@ -35,6 +35,7 @@ const About = () => {
   const { createNewRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
   const [props, setProps] = useState([]);
+
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(

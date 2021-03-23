@@ -28,6 +28,7 @@ import {
   useHttpQueueContext,
 } from "./HttpQueueContext";
 import { UiContextProvider, useUiContext } from "./UiContext";
+import { SettingsContextProvider, useSettingsContext } from "./SettingsContext";
 
 export {
   TranslationsContextProvider,
@@ -38,4 +39,6 @@ export {
   useHttpQueueContext,
   UiContextProvider,
   useUiContext,
+  SettingsContextProvider,
+  useSettingsContext,
 };

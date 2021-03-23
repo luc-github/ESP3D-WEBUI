@@ -17,7 +17,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { useState, useEffect, useRef, useReducer } from "preact/hooks";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useReducer,
+  useContext,
+} from "preact/hooks";
 //TODO: move parser to TargetPath
 import { Parser } from "TargetPath";
 import { limitArr } from "../components/Helpers";

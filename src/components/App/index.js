@@ -19,36 +19,34 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useEffect } from "preact/hooks";
 import {
   TranslationsContextProvider,
   RouterContextProvider,
   HttpQueueContextProvider,
   UiContextProvider,
+  SettingsContextProvider,
 } from "../../contexts";
 import { ToastsContainer } from "../Toast";
 import { Modal } from "../Modal";
 import { Informations, MainContainer, Menu } from "../../areas";
 
 const App = () => {
-  useEffect(() => {
-    //init app
-    //todo
-  }, []);
   return (
     <div id="app">
       <RouterContextProvider>
-        <HttpQueueContextProvider>
-          <TranslationsContextProvider>
-            <UiContextProvider>
-              <ToastsContainer />
-              <Modal />
-              <Menu />
-              <Informations />
-              <MainContainer />
-            </UiContextProvider>
-          </TranslationsContextProvider>
-        </HttpQueueContextProvider>
+        <UiContextProvider>
+          <HttpQueueContextProvider>
+            <TranslationsContextProvider>
+              <SettingsContextProvider>
+                <ToastsContainer />
+                <Modal />
+                <Menu />
+                <Informations />
+                <MainContainer />
+              </SettingsContextProvider>
+            </TranslationsContextProvider>
+          </HttpQueueContextProvider>
+        </UiContextProvider>
       </RouterContextProvider>
     </div>
   );
