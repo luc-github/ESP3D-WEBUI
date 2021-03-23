@@ -19,8 +19,6 @@
 */
 import { h } from "preact";
 
-const Target = () => {
-    return <div>GRBL</div>
-}
+const Target = "Grbl";
 
-export { Target }
+export { Target };

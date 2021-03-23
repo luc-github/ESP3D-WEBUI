@@ -19,8 +19,6 @@
 */
 import { h } from "preact";
 
-const Target = () => {
-    return <div>GRBL ESP32</div>
-}
+const Target = "Grbl ESP32";
 
-export { Target }
+export { Target };

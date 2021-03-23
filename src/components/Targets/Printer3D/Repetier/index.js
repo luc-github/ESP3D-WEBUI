@@ -19,8 +19,6 @@
 */
 import { h } from "preact";
 
-const Target = () => {
-    return <div>Repetier</div>
-}
+const Target = "Repetier";
 
-export { Target }
+export { Target };

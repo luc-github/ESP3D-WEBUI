@@ -19,8 +19,6 @@
 */
 import { h } from "preact";
 
-const Target = () => {
-    return <div>Marlin</div>
-}
+const Target = "Marlin";
 
-export { Target }
+export { Target };

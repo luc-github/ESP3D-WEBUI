@@ -21,6 +21,7 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
+import { Target } from "TargetPath";
 
 const defaultLinks = [
   {
@@ -28,7 +29,7 @@ const defaultLinks = [
     href: "/settings/features",
   },
   { label: "S17", href: "/settings/interface" },
-  { label: "S16", href: "/settings/machine" },
+  { label: Target, href: "/settings/machine" },
 ];
 const TabBar = () => {
   //Todo : Hide Fw tab is no target FW defined

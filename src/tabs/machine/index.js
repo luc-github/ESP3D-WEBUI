@@ -18,11 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { Target } from "TargetPath";
 
 const MachineTab = () => {
   return (
     <div id="machine">
       <h2>Machine</h2>
+      The firmare target is {Target}
     </div>
   );
 };
