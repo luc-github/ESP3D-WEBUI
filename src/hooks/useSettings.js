@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
 import { espHttpURL } from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
@@ -51,6 +51,7 @@ const useSettings = () => {
             content: error + " preferences.json",
             type: "error",
           });
+          //Todo
           //use defaults and continue
         },
       }
@@ -72,20 +73,15 @@ const useSettings = () => {
     );
   };
 
-  useEffect(() => {
-    console.log("Use setting");
-    getConnectionSettings();
-    getInterfaceSettings();
-    //TODO: do not do it here but only when go to setting pages
-    getFeaturesSettings();
-  }, []);
-
-  return [
-    settings.current,
-    (settingsState) => {
+  return {
+    settings: settings.current,
+    setSettings: (settingsState) => {
       settings.current = settingsState;
     },
-  ];
+    getFeaturesSettings,
+    getInterfaceSettings,
+    getConnectionSettings,
+  };
 };
 
 export { useSettings };
