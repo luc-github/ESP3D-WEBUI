@@ -47,19 +47,13 @@ const useSettings = () => {
         return s;
       }
       const d = new Date();
-      return (
-        d.getFullYear() +
-        "-" +
-        padNumber(d.getMonth() + 1, 2) +
-        "-" +
-        padNumber(d.getDate(), 2) +
-        "-" +
-        padNumber(d.getHours(), 2) +
-        "-" +
-        padNumber(d.getMinutes(), 2) +
-        "-" +
-        padNumber(d.getSeconds(), 2)
-      );
+      return `${d.getFullYear()}-${padNumber(d.getMonth() + 1, 2)}-${padNumber(
+        d.getDate(),
+        2
+      )}-${padNumber(d.getHours(), 2)}-${padNumber(
+        d.getMinutes(),
+        2
+      )}-${padNumber(d.getSeconds(), 2)}`;
     }
     createNewRequest(
       espHttpURL("command", { cmd: "[ESP800]", time: getPCTime() }).toString(),

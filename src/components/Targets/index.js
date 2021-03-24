@@ -28,8 +28,22 @@ import defaultPreferencesBase from "./preferences.json";
  *
  */
 const defaultPreferences = {
-  ...defaultPreferencesTarget,
-  ...defaultPreferencesSubTarget,
-  ...defaultPreferencesBase,
+  settings: {
+    ...defaultPreferencesBase.settings,
+    ...defaultPreferencesTarget.settings,
+    ...defaultPreferencesSubTarget.settings,
+  },
+  macros: {
+    ...defaultPreferencesBase.macros,
+    ...defaultPreferencesTarget.macros,
+    ...defaultPreferencesSubTarget.macros,
+  },
 };
+
+defaultPreferences.settings.extrapanels = {
+  ...defaultPreferencesBase.settings.extrapanels,
+  ...defaultPreferencesTarget.settings.extrapanels,
+  ...defaultPreferencesSubTarget.settings.extrapanels,
+};
+
 export { Target, defaultPreferences };
