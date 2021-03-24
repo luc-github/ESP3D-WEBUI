@@ -25,6 +25,7 @@ import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { useUiContext } from "../../contexts";
+import { useSettings } from "../../hooks";
 
 /*
  * Local const
@@ -35,6 +36,7 @@ const About = () => {
   const { createNewRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
   const [props, setProps] = useState([]);
+  const { settings } = useSettings();
 
   const getProps = () => {
     setIsLoading(true);
@@ -76,6 +78,7 @@ const About = () => {
   }
   useEffect(() => {
     getProps();
+    console.log(settings);
   }, []);
   return (
     <div id="about" class="container">

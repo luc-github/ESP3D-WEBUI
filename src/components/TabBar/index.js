@@ -21,7 +21,7 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { Target } from "TargetPath";
+import { Target } from "../Targets";
 
 const defaultLinks = [
   {

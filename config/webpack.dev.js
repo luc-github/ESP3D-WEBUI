@@ -9,7 +9,8 @@ console.log("Target:", target, " Subtarget:", subtarget);
 module.exports = {
   resolve: {
     alias: {
-      TargetPath: path.resolve(
+      TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
+      SubTargetPath: path.resolve(
         __dirname,
         "../src/components/Targets",
         target,
@@ -18,14 +19,13 @@ module.exports = {
       TranslateTargetPath: path.resolve(
         __dirname,
         "../src/components/Translations",
-        target,
+        target
       ),
       TranslateSubTargetPath: path.resolve(
         __dirname,
         "../src/components/Translations",
         target,
-        subtarget,
-        
+        subtarget
       ),
     },
   },
@@ -38,7 +38,7 @@ module.exports = {
   devServer: {
     historyApiFallback: true, // to make our SPA works after a full reload, so that it serves 'index.html' when 404 response
     open: true,
-    contentBase: path.resolve(__dirname, "server","public"),
+    contentBase: path.resolve(__dirname, "server", "public"),
     inline: true,
     port: 8088,
     proxy: {

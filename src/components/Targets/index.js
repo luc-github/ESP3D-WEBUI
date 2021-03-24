@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI navigation tab file
+ index.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,15 +18,18 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Target } from "../../components/Targets";
+import { Target } from "SubTargetPath";
+import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
+import defaultPreferencesTarget from "TargetPath/preferences.json";
+import defaultPreferencesBase from "./preferences.json";
 
-const MachineTab = () => {
-  return (
-    <div id="machine">
-      <h2>Machine</h2>
-      The firmware target is {Target}
-    </div>
-  );
+/*
+ * Local const
+ *
+ */
+const defaultPreferences = {
+  ...defaultPreferencesTarget,
+  ...defaultPreferencesSubTarget,
+  ...defaultPreferencesBase,
 };
-
-export { MachineTab };
+export { Target, defaultPreferences };

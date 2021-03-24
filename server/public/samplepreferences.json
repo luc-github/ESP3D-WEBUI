@@ -20,7 +20,7 @@
         "printersd": false,
         "enablepolling": false,
         "pollingrefresh": 3,
-        "pollingcommands": "M105",
+        "pollingcommands": "M105;M114",
         "showtemperaturespanel": true,
         "extrudermax": 300,
         "bedmax": 140,

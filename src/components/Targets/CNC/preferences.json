@@ -1,0 +1,11 @@
+{
+  "settings": {
+    "xyfeedrate": 1000,
+    "xpos": 100,
+    "ypos": 100,
+    "zfeedrate": 100,
+    "filesfilter": "g;G;gco;GCO;gcode;GCODE",
+    "tftsd": true,
+    "tftusb": true
+  }
+}

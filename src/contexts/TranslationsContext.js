@@ -27,9 +27,9 @@ import { useContext, useState } from "preact/hooks";
  *
  */
 const baseLangRessource = {
-  ...LangRessourceBase,
-  ...LangRessourceTarget,
   ...LangRessourceSubTarget,
+  ...LangRessourceTarget,
+  ...LangRessourceBase,
 };
 const TranslationsContext = createContext("TranslationsContext");
 const useTranslationsContext = () => useContext(TranslationsContext);

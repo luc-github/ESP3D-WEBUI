@@ -15,7 +15,8 @@ let subtarget = process.env.SUBTARGET_ENV
 module.exports = {
   resolve: {
     alias: {
-      TargetPath: path.resolve(
+      TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
+      SubTargetPath: path.resolve(
         __dirname,
         "../src/components/Targets",
         target,

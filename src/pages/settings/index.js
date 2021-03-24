@@ -20,7 +20,6 @@
 */
 import { h } from "preact";
 import { Router } from "../../components/Router";
-import { Target } from "TargetPath";
 import { FeaturesTab } from "../../tabs/features";
 import { InterfaceTab } from "../../tabs/interface";
 import { MachineTab } from "../../tabs/machine";
