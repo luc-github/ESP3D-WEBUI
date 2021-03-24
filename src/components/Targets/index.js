@@ -22,28 +22,15 @@ import { Target } from "SubTargetPath";
 import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
+import { mergePreferences } from "../Helpers";
 
 /*
  * Local const
  *
  */
-const defaultPreferences = {
-  settings: {
-    ...defaultPreferencesBase.settings,
-    ...defaultPreferencesTarget.settings,
-    ...defaultPreferencesSubTarget.settings,
-  },
-  macros: {
-    ...defaultPreferencesBase.macros,
-    ...defaultPreferencesTarget.macros,
-    ...defaultPreferencesSubTarget.macros,
-  },
-};
-
-defaultPreferences.settings.extrapanels = {
-  ...defaultPreferencesBase.settings.extrapanels,
-  ...defaultPreferencesTarget.settings.extrapanels,
-  ...defaultPreferencesSubTarget.settings.extrapanels,
-};
+const defaultPreferences = mergePreferences(
+  mergePreferences(defaultPreferencesBase, defaultPreferencesTarget),
+  defaultPreferencesSubTarget
+);
 
 export { Target, defaultPreferences };

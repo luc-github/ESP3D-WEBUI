@@ -118,11 +118,30 @@ const limitArr = (arr, limit) =>
 const espHttpURL = (base, args) => {
   const url = new URL("http://" + window.location.host + "/" + base);
   if (args)
-    for (const [key, value] of Object.entries(args)) {
-      url.searchParams.append(key, value);
-    }
+    Object.keys(args).forEach((key) => {
+      url.searchParams.append(key, args[key]);
+    });
   return url;
 };
+
+//Merge 2 preferences.json
+function mergePreferences(json1, json2) {
+  let preferences = {
+    settings: {
+      ...json1.settings,
+      ...json2.settings,
+    },
+    macros: {
+      ...json1.macros,
+      ...json2.macros,
+    },
+  };
+  preferences.settings.extrapanels = {
+    ...json1.settings.extrapanels,
+    ...json2.settings.extrapanels,
+  };
+  return preferences;
+}
 
 export {
   capitalize,
@@ -135,4 +154,5 @@ export {
   mergeFlatPrefToNestedSchema,
   parseFileSizeString,
   removeEntriesByIDs,
+  mergePreferences,
 };
