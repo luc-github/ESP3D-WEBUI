@@ -143,16 +143,32 @@ function mergePreferences(json1, json2) {
   return preferences;
 }
 
+function getBrowserTime() {
+  function padNumber(num, size) {
+    const s = num.toString().padStart(size, "0");
+    return s;
+  }
+  const d = new Date();
+  return `${d.getFullYear()}-${padNumber(d.getMonth() + 1, 2)}-${padNumber(
+    d.getDate(),
+    2
+  )}-${padNumber(d.getHours(), 2)}-${padNumber(d.getMinutes(), 2)}-${padNumber(
+    d.getSeconds(),
+    2
+  )}`;
+}
+
 export {
   capitalize,
   createComponent,
   espHttpURL,
   generateUID,
+  getBrowserTime,
   getColClasses,
   hslToHex,
   limitArr,
   mergeFlatPrefToNestedSchema,
+  mergePreferences,
   parseFileSizeString,
   removeEntriesByIDs,
-  mergePreferences,
 };

@@ -19,7 +19,11 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
-import { espHttpURL } from "../components/Helpers";
+import {
+  espHttpURL,
+  mergePreferences,
+  getBrowserTime,
+} from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
 import { useUiContext } from "../contexts";
 import { defaultPreferences } from "../components/Targets";
@@ -41,22 +45,11 @@ const useSettings = () => {
   };
 
   const getConnectionSettings = () => {
-    function getPCTime() {
-      function padNumber(num, size) {
-        const s = num.toString().padStart(size, "0");
-        return s;
-      }
-      const d = new Date();
-      return `${d.getFullYear()}-${padNumber(d.getMonth() + 1, 2)}-${padNumber(
-        d.getDate(),
-        2
-      )}-${padNumber(d.getHours(), 2)}-${padNumber(
-        d.getMinutes(),
-        2
-      )}-${padNumber(d.getSeconds(), 2)}`;
-    }
     createNewRequest(
-      espHttpURL("command", { cmd: "[ESP800]", time: getPCTime() }).toString(),
+      espHttpURL("command", {
+        cmd: "[ESP800]",
+        time: getBrowserTime(),
+      }).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {
@@ -78,10 +71,9 @@ const useSettings = () => {
       { method: "GET" },
       {
         onSuccess: (result) => {
-          //TODO:
-          //Handle corrupted preference.json
           const jsonResult = JSON.parse(result);
-          setSettings({ ...settingsState.current, interface: jsonResult });
+          const preferences = mergePreferences(defaultPreferences, jsonResult);
+          setSettings({ ...settingsState.current, interface: preferences });
         },
         onFail: (error) => {
           toasts.addToast({
