@@ -24,7 +24,7 @@ import { Loading } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import { useUiContext } from "../../contexts";
+import { useUiContext, useDatasContext } from "../../contexts";
 import { useSettings } from "../../hooks";
 
 /*
@@ -38,7 +38,7 @@ const About = () => {
   const { createNewRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
   const [props, setProps] = useState([]);
-  const { settings } = useSettings();
+  const { data } = useDatasContext();
 
   const getProps = () => {
     setIsLoading(true);
@@ -49,6 +49,7 @@ const About = () => {
         onSuccess: (result) => {
           const { Status } = JSON.parse(result);
           setProps([...Status]);
+          data.current.about = [...Status];
           setIsLoading(false);
         },
         onFail: (error) => {
@@ -79,8 +80,12 @@ const About = () => {
     return M.join(" ");
   }
   useEffect(() => {
-    getProps();
-    console.log(settings);
+    if (data.current.about.length != 0) {
+      setProps([...data.current.about]);
+      setIsLoading(false);
+    } else {
+      getProps();
+    }
   }, []);
   return (
     <div id="about" class="container">
@@ -103,7 +108,7 @@ const About = () => {
                     <span class="text-dark">{value}</span>
                   </li>
                 ))}
-              </ul>{" "}
+              </ul>
             </div>
             <hr />
             <button

@@ -25,6 +25,7 @@ import {
   HttpQueueContextProvider,
   UiContextProvider,
   SettingsContextProvider,
+  DatasContextProvider,
 } from "../../contexts";
 import { ToastsContainer } from "../Toast";
 import { Modal } from "../Modal";
@@ -33,19 +34,21 @@ import { ContentContainer } from "../../areas";
 const App = () => {
   return (
     <div id="app">
-      <RouterContextProvider>
-        <UiContextProvider>
-          <HttpQueueContextProvider>
-            <TranslationsContextProvider>
-              <SettingsContextProvider>
-                <ToastsContainer />
-                <Modal />
-                <ContentContainer />
-              </SettingsContextProvider>
-            </TranslationsContextProvider>
-          </HttpQueueContextProvider>
-        </UiContextProvider>
-      </RouterContextProvider>
+      <DatasContextProvider>
+        <RouterContextProvider>
+          <UiContextProvider>
+            <HttpQueueContextProvider>
+              <TranslationsContextProvider>
+                <SettingsContextProvider>
+                  <ToastsContainer />
+                  <Modal />
+                  <ContentContainer />
+                </SettingsContextProvider>
+              </TranslationsContextProvider>
+            </HttpQueueContextProvider>
+          </UiContextProvider>
+        </RouterContextProvider>
+      </DatasContextProvider>
     </div>
   );
 };
