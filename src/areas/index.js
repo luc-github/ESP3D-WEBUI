@@ -17,9 +17,38 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h, Fragment } from "preact";
 import { Menu } from "./menu";
-import {Informations} from "./informations"
-import {MainContainer} from "./main"
+import { Informations } from "./informations";
+import { ConnectionContainer } from "./connection";
+import { MainContainer } from "./main";
+import { useUiContext } from "../contexts/UiContext";
+import { useSettings } from "../hooks";
+import { useEffect } from "preact/hooks";
 
-export { Informations,MainContainer, Menu };
+/*
+ * Local const
+ *
+ */
+const ContentContainer = () => {
+  const { connection } = useUiContext();
+  const { getConnectionSettings, getInterfaceSettings } = useSettings();
+  useEffect(() => {
+    //To init settings
+    getConnectionSettings();
+    getInterfaceSettings();
+  }, []);
+  if (connection.connectionState.connected)
+    return (
+      <Fragment>
+        <Menu />
+        <Informations />
+        <MainContainer />
+      </Fragment>
+    );
+  else {
+    return <ConnectionContainer />;
+  }
+};
+
+export { ContentContainer };

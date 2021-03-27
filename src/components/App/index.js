@@ -28,7 +28,7 @@ import {
 } from "../../contexts";
 import { ToastsContainer } from "../Toast";
 import { Modal } from "../Modal";
-import { Informations, MainContainer, Menu } from "../../areas";
+import { ContentContainer } from "../../areas";
 
 const App = () => {
   return (
@@ -40,9 +40,7 @@ const App = () => {
               <SettingsContextProvider>
                 <ToastsContainer />
                 <Modal />
-                <Menu />
-                <Informations />
-                <MainContainer />
+                <ContentContainer />
               </SettingsContextProvider>
             </TranslationsContextProvider>
           </HttpQueueContextProvider>

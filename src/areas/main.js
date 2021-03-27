@@ -19,12 +19,10 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useEffect } from "preact/hooks";
 import { Router } from "../components/Router";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
-import { useSettings } from "../hooks";
 
 const routes = {
   DASHBOARD: {
@@ -42,12 +40,6 @@ const routes = {
 };
 
 const MainContainer = () => {
-  const { getConnectionSettings, getInterfaceSettings } = useSettings();
-  useEffect(() => {
-    //To init settings
-    getConnectionSettings();
-    getInterfaceSettings();
-  }, []);
   return (
     <div id="main" class="main-page-container">
       <Router routesList={routes} />

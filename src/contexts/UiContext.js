@@ -30,6 +30,10 @@ const UiContextProvider = ({ children }) => {
   const [data, setData] = useState();
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
+  const [connectionState, setConnectionState] = useState({
+    connected: false,
+    page: 0,
+  });
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
 
@@ -52,6 +56,7 @@ const UiContextProvider = ({ children }) => {
     data: [data, setData],
     modals: { modalList: modals, addModal, removeModal },
     toasts: { toastList: toasts, addToast, removeToast },
+    connection: { connectionState, setConnectionState },
   };
 
   return <UiContext.Provider value={store}>{children}</UiContext.Provider>;

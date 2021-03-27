@@ -34,7 +34,7 @@ import { defaultPreferences } from "../components/Targets";
  */
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
-  const { toasts } = useUiContext();
+  const { toasts, connection } = useUiContext();
   const { settings } = useSettingsContext();
 
   const [settingsState, setSettingsState] = useState(settings);
@@ -55,35 +55,39 @@ const useSettings = () => {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
           setSettings({ ...settingsState.current, connection: jsonResult });
-          console.log("Connection done");
+          connection.setConnectionState({ connected: true, page: 0 });
         },
         onFail: (error) => {
+          connection.setConnectionState({ connected: false, page: 1 });
           toasts.addToast({ content: error, type: "error" });
-          //TODO display a modal with a retry button
         },
       }
     );
   };
   const getInterfaceSettings = () => {
     setSettings({ ...settingsState.current, interface: defaultPreferences });
-    createNewRequest(
-      espHttpURL("preferences.json").toString(),
-      { method: "GET" },
-      {
-        onSuccess: (result) => {
-          const jsonResult = JSON.parse(result);
-          const preferences = mergePreferences(defaultPreferences, jsonResult);
-          setSettings({ ...settingsState.current, interface: preferences });
-        },
-        onFail: (error) => {
-          toasts.addToast({
-            content: error + " preferences.json",
-            type: "error",
-          });
-          console.log("No valid preferences.json");
-        },
-      }
-    );
+    if (connection.connected)
+      createNewRequest(
+        espHttpURL("preferences.json").toString(),
+        { method: "GET" },
+        {
+          onSuccess: (result) => {
+            const jsonResult = JSON.parse(result);
+            const preferences = mergePreferences(
+              defaultPreferences,
+              jsonResult
+            );
+            setSettings({ ...settingsState.current, interface: preferences });
+          },
+          onFail: (error) => {
+            toasts.addToast({
+              content: error + " preferences.json",
+              type: "error",
+            });
+            console.log("No valid preferences.json");
+          },
+        }
+      );
   };
   const getFeaturesSettings = () => {
     createNewRequest(

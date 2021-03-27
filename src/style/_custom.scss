@@ -6,6 +6,19 @@
   }
 }
 
+.fullscreen {
+  height: 100vh;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 .navbar {
   padding: 0rem;
   padding-left: 15px;

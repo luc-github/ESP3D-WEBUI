@@ -31,6 +31,8 @@ import { useSettings } from "../../hooks";
  * Local const
  *
  */
+//TODO: need to cache the information -> only query if empty or manual refresh
+
 const About = () => {
   const { toasts } = useUiContext();
   const { createNewRequest } = useHttpQueue();
@@ -115,6 +117,7 @@ const About = () => {
           </center>
         </div>
       )}
+      <br />
     </div>
   );
 };
