@@ -35,8 +35,10 @@ const ContentContainer = () => {
   const { getConnectionSettings, getInterfaceSettings } = useSettings();
   useEffect(() => {
     //To init settings
-    getConnectionSettings();
+    //to get language first
     getInterfaceSettings();
+    //to get communication connection
+    getConnectionSettings();
   }, []);
   if (connection.connectionState.connected)
     return (

@@ -22,6 +22,7 @@ import { useUiContext } from "../contexts/UiContext";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
 import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
+import { T } from "../components/Translations";
 
 //TODO add translations for previously connected page (1-2-3)
 
@@ -44,46 +45,45 @@ const ConnectionContainer = () => {
     switch (connection.connectionState.page) {
       //No connection
       case 1:
-        contentTitle = "Connection failed";
+        contentTitle = T("S1"); //"Connection error"
         contentIcon = <Frown size="50px" />;
-        contentSubtitle = "Cannot communicate with ESP3D";
+        contentSubtitle = T("S5"); //"Cannot connect with board"
         contentAction = (
           <button class="btn" onClick={onclick}>
-            Retry
+            {T("S8")}
           </button>
         );
         break;
       //Error connection lost
       case 2:
-        contentTitle = "Connection lost";
+        contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
-        contentSubtitle = "Communication with ESP3D lost";
+        contentSubtitle = T("S10"); //"Connection with board is lost"
         contentAction = (
           <button class="btn" onClick={onclick}>
-            Connect again
+            {T("S11")}
           </button>
         );
         break;
       //Disconnected
       case 3:
-        contentTitle = "Disconnected";
+        contentTitle = T("S9");
         contentIcon = <Slash size="50px" />;
-        contentSubtitle =
-          "You are connected from another location, this page is now disconnected";
+        contentSubtitle = T("S3");
         contentAction = (
           <button class="btn" onClick={onclick}>
-            Connect again
+            {T("S11")}
           </button>
         );
         break;
       default:
-        contentTitle = "Connecting";
+        contentTitle = T("S2"); //"Connecting";
         contentIcon = (
           <div class="d-inline-block" style="padding:0 20px">
             <Loading large />
           </div>
         );
-        contentSubtitle = "Wait...";
+        contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
     return (
