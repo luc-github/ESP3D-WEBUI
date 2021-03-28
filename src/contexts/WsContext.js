@@ -24,10 +24,9 @@ import {
   useReducer,
   useContext,
 } from "preact/hooks";
-//TODO: move parser to TargetPath
-import { Parser } from "TargetPath";
+import { Parser } from "../components/Targets";
 import { limitArr } from "../components/Helpers";
-import { useUiContext } from "../contexts";
+import { useUiContext, useSettingsContext } from "../contexts";
 
 /*
  * Local const
@@ -60,16 +59,13 @@ const reducer = (state, action) => {
 };
 
 const WsContextProvider = ({ children }) => {
-  const { toasts } = useUiContext();
+  const { toasts, connection } = useUiContext();
   const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
-  //TODO: use parser from TargetPath
-  const parser = useRef(new Parser("marlin"));
+  const { settings } = useSettingsContext();
+  const parser = useRef(new Parser());
   const [wsConnection, setWsConnection] = useState();
   const [wsData, setWsData] = useState([]);
-  //TODO: use the values from SettingsContext
-  const webSocketIp = "localhost";
-  const webSocketPort = 8881;
 
   const splitArrayBufferByLine = (arrayBuffer) => {
     const bytes = new Uint8Array(arrayBuffer);
@@ -98,6 +94,27 @@ const WsContextProvider = ({ children }) => {
       });
     } else {
       //others txt messages
+      console.log(stdOutData);
+      const eventLine = stdOutData.split(":");
+      if (eventLine.length > 1) {
+        switch (eventLine[0].toUpperCase()) {
+          case "CURRENTID":
+            settings.current.wsID = eventLine[1];
+            break;
+          case "ACTIVEID":
+            if (eventLine[1] != settings.current.wsID) {
+              connection.setConnectionState({ connected: false, page: 3 });
+              //TODO: Stop all http query
+              //TODO: Stop websocket
+              if (wsConnection) wsConnection.close();
+              else console.log("No wsConnection but I have ws events!!!!");
+            }
+            break;
+          default:
+            //unknow event
+            break;
+        }
+      }
       dataBuffer.current = [
         ...dataBuffer.current,
         { std: "out", value: stdOutData },
@@ -112,17 +129,24 @@ const WsContextProvider = ({ children }) => {
 
   const onCloseCB = (e) => {
     //TODO: Need to handle auto reconnect
+    //TODO: Need to Handle forced disconnection
+    //TODO:  Need to handle error disconnection
   };
 
   const onErrorCB = (e) => {
     toasts.addToast({ content: e, type: "error" });
+    //TODO: Need to handle disconnection
   };
 
-  useEffect(() => {
-    //TODO: Need to handle possible hooked WebSocket, so need to add path support e.g: "/ws"
-    const ws = new WebSocket(`ws://${webSocketIp}:${webSocketPort}`, [
-      "arduino",
-    ]);
+  const setupWS = () => {
+    const path =
+      settings.current.connection.WebCommunication === "Synchronous"
+        ? ""
+        : "/ws";
+    const ws = new WebSocket(
+      `ws://${settings.current.connection.WebSocketIP}:${settings.current.connection.WebSocketport}${path}`,
+      ["arduino"]
+    );
     ws.binaryType = "arraybuffer";
     setWsConnection(ws);
 
@@ -130,11 +154,17 @@ const WsContextProvider = ({ children }) => {
     ws.onmessage = (e) => onMessageCB(e);
     ws.onclose = (e) => onCloseCB(e);
     ws.onerror = (e) => onErrorCB(e);
+  };
+
+  useEffect(() => {
+    if (settings.current.connection) {
+      setupWS();
+    }
 
     return () => {
       if (wsConnection) ws.close();
     };
-  }, []);
+  }, [settings.current.connection]);
 
   const addData = (cmdLine) => {
     const newWsData = [...wsData, cmdLine];

@@ -47,7 +47,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "preact": "^10.5.12",
+    "preact": "^10.5.13",
     "preact-feather": "^4.1.0",
     "smoothie": "^1.35.0",
     "spectre.css": "^0.5.9"

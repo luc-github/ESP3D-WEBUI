@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Target } from "SubTargetPath";
+import { Target, Parser } from "SubTargetPath";
 import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
@@ -33,4 +33,4 @@ const defaultPreferences = mergePreferences(
   defaultPreferencesSubTarget
 );
 
-export { Target, defaultPreferences };
+export { Target, defaultPreferences, Parser };

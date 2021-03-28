@@ -30,6 +30,7 @@ import {
 import { UiContextProvider, useUiContext } from "./UiContext";
 import { SettingsContextProvider, useSettingsContext } from "./SettingsContext";
 import { DatasContextProvider, useDatasContext } from "./DatasContext";
+import { WsContextProvider, useWsContext } from "./WsContext";
 
 export {
   TranslationsContextProvider,
@@ -44,4 +45,6 @@ export {
   useSettingsContext,
   DatasContextProvider,
   useDatasContext,
+  WsContextProvider,
+  useWsContext,
 };
