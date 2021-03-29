@@ -86,6 +86,8 @@ const ConnectionContainer = () => {
         contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
+    if (connection.connectionState.page > 0)
+      document.title = document.title + "(" + T("S9") + ")";
     return (
       <div class="empty fullscreen">
         <div class="centered text-primary">
