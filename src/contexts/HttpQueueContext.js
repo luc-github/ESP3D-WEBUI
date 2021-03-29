@@ -52,6 +52,14 @@ const HttpQueueContextProvider = ({ children }) => {
   const getCurrentRequest = () => {
     return currentRequest.current;
   };
+
+  //Remove all request from queue
+  const removeAllRequests = () => {
+    if (currentRequest.current) currentRequest.current.abort();
+    requestQueue.current = [];
+    currentRequest.current = null;
+  };
+
   //Process query in queue
   const executeHttpCall = async () => {
     if (!isBusy.current) isBusy.current = true;
@@ -82,7 +90,12 @@ const HttpQueueContextProvider = ({ children }) => {
 
   return (
     <HttpQueueContext.Provider
-      value={{ addInQueue, removeRequests, getCurrentRequest }}
+      value={{
+        addInQueue,
+        removeRequests,
+        getCurrentRequest,
+        removeAllRequests,
+      }}
     >
       {children}
     </HttpQueueContext.Provider>

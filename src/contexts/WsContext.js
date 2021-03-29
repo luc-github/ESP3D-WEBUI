@@ -104,10 +104,6 @@ const WsContextProvider = ({ children }) => {
           case "ACTIVEID":
             if (eventLine[1] != settings.current.wsID) {
               connection.setConnectionState({ connected: false, page: 3 });
-              //TODO: Stop all http query
-              //TODO: Stop websocket
-              if (wsConnection) wsConnection.close();
-              else console.log("No wsConnection but I have ws events!!!!");
             }
             break;
           default:

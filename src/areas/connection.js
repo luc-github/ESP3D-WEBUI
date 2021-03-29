@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useUiContext } from "../contexts/UiContext";
+import { useUiContext, useWsContext, useHttpQueueContext } from "../contexts";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
 import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
@@ -32,6 +32,8 @@ import { T } from "../components/Translations";
  */
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
+  const { removeAllRequests } = useHttpQueueContext();
+  const { ws } = useWsContext();
   let contentTitle;
   let contentIcon;
   let contentSubtitle;
@@ -86,8 +88,14 @@ const ConnectionContainer = () => {
         contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
-    if (connection.connectionState.page > 0)
+    if (connection.connectionState.page > 0) {
       document.title = document.title + "(" + T("S9") + ")";
+      //Close websocket
+      ws.close();
+      //Abort  / Remove all queries
+      removeAllRequests();
+    }
+
     return (
       <div class="empty fullscreen">
         <div class="centered text-primary">
