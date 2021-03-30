@@ -41,7 +41,8 @@ const ConnectionContainer = () => {
       window.location.reload();
     };
     if (connection.connectionState.page != "connecting") {
-      document.title = document.title + "(" + T("S9") + ")";
+      document.title =
+        document.title.replace("(" + T("S9") + ")", "") + "(" + T("S9") + ")";
     }
     switch (connection.connectionState.page) {
       //No connection

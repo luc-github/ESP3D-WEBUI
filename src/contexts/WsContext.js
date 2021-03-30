@@ -186,6 +186,8 @@ const WsContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    //TODO : handle reconnection if not manual disconnection and not error
+
     if (connectionState.current.status === "request disconnection") {
       if (wsConnection) {
         connection.setConnectionState({
