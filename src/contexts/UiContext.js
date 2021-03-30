@@ -32,7 +32,7 @@ const UiContextProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
   const [connectionState, setConnectionState] = useState({
     connected: false,
-    page: 0,
+    page: "connecting",
   });
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;

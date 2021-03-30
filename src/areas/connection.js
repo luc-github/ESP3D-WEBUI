@@ -18,13 +18,11 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useUiContext, useWsContext, useHttpQueueContext } from "../contexts";
+import { useUiContext } from "../contexts";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
 import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
 import { T } from "../components/Translations";
-
-//TODO add translations for previously connected page (1-2-3)
 
 /*
  * Local const
@@ -32,8 +30,6 @@ import { T } from "../components/Translations";
  */
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
-  const { removeAllRequests } = useHttpQueueContext();
-  const { ws } = useWsContext();
   let contentTitle;
   let contentIcon;
   let contentSubtitle;
@@ -41,12 +37,15 @@ const ConnectionContainer = () => {
 
   if (!connection.connectionState.connected) {
     const onclick = (e) => {
-      connection.setConnectionState({ connected: false, page: 0 });
+      connection.setConnectionState({ connected: false, page: "connecting" });
       window.location.reload();
     };
+    if (connection.connectionState.page != "connecting") {
+      document.title = document.title + "(" + T("S9") + ")";
+    }
     switch (connection.connectionState.page) {
       //No connection
-      case 1:
+      case "error":
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
@@ -57,7 +56,7 @@ const ConnectionContainer = () => {
         );
         break;
       //Error connection lost
-      case 2:
+      case "connection lost":
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
         contentSubtitle = T("S10"); //"Connection with board is lost"
@@ -68,7 +67,7 @@ const ConnectionContainer = () => {
         );
         break;
       //Disconnected
-      case 3:
+      case "already connected":
         contentTitle = T("S9");
         contentIcon = <Slash size="50px" />;
         contentSubtitle = T("S3");
@@ -88,14 +87,6 @@ const ConnectionContainer = () => {
         contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
-    if (connection.connectionState.page > 0) {
-      document.title = document.title + "(" + T("S9") + ")";
-      //Close websocket
-      ws.close();
-      //Abort  / Remove all queries
-      removeAllRequests();
-    }
-
     return (
       <div class="empty fullscreen">
         <div class="centered text-primary">

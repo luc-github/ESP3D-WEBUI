@@ -26,7 +26,11 @@ import {
 } from "preact/hooks";
 import { Parser } from "../components/Targets";
 import { limitArr } from "../components/Helpers";
-import { useUiContext, useSettingsContext } from "../contexts";
+import {
+  useUiContext,
+  useSettingsContext,
+  useHttpQueueContext,
+} from "../contexts";
 
 /*
  * Local const
@@ -60,11 +64,18 @@ const reducer = (state, action) => {
 
 const WsContextProvider = ({ children }) => {
   const { toasts, connection } = useUiContext();
+  const { removeAllRequests } = useHttpQueueContext();
   const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
   const { settings } = useSettingsContext();
   const parser = useRef(new Parser());
   const [wsConnection, setWsConnection] = useState();
+  const connectionState = useRef({
+    connected: false,
+    status: "not connected",
+    reason: "connecting",
+    attemps: 0,
+  });
   const [wsData, setWsData] = useState([]);
 
   const splitArrayBufferByLine = (arrayBuffer) => {
@@ -94,7 +105,6 @@ const WsContextProvider = ({ children }) => {
       });
     } else {
       //others txt messages
-      console.log(stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {
@@ -103,7 +113,7 @@ const WsContextProvider = ({ children }) => {
             break;
           case "ACTIVEID":
             if (eventLine[1] != settings.current.wsID) {
-              connection.setConnectionState({ connected: false, page: 3 });
+              Disconnect("already connected");
             }
             break;
           default:
@@ -123,15 +133,37 @@ const WsContextProvider = ({ children }) => {
     setWsData(dataBuffer.current);
   };
 
+  const Disconnect = (reason) => {
+    connectionState.current = {
+      connected: true,
+      status: "request disconnection",
+      reason: reason,
+      attemps: 0,
+    };
+  };
+
+  const onOpenCB = (e) => {
+    connectionState.current = {
+      connected: true,
+      status: "connected",
+      reason: "",
+      attemps: 0,
+    };
+  };
+
   const onCloseCB = (e) => {
-    //TODO: Need to handle auto reconnect
-    //TODO: Need to Handle forced disconnection
-    //TODO:  Need to handle error disconnection
+    connectionState.current.connected = false;
+    connectionState.current.attemps = connectionState.current.attemps + 1;
   };
 
   const onErrorCB = (e) => {
     toasts.addToast({ content: e, type: "error" });
-    //TODO: Need to handle disconnection
+    connectionState.current = {
+      connected: false,
+      status: "error",
+      reason: "error",
+      attemps: 0,
+    };
   };
 
   const setupWS = () => {
@@ -147,19 +179,36 @@ const WsContextProvider = ({ children }) => {
     setWsConnection(ws);
 
     //Handle msg of ws
+    ws.onopen = (e) => onOpenCB(e);
     ws.onmessage = (e) => onMessageCB(e);
     ws.onclose = (e) => onCloseCB(e);
     ws.onerror = (e) => onErrorCB(e);
   };
 
   useEffect(() => {
+    if (connectionState.current.status === "request disconnection") {
+      if (wsConnection) {
+        connection.setConnectionState({
+          connected: false,
+          page: "already connected",
+        });
+        wsConnection.close();
+        //Abort  / Remove all queries
+        removeAllRequests();
+        connectionState.current = {
+          connected: false,
+          status: "closed",
+          reason: connectionState.current.reason,
+          attemps: connectionState.current.attemps,
+        };
+      }
+    }
+  }, [connectionState.current]);
+
+  useEffect(() => {
     if (settings.current.connection) {
       setupWS();
     }
-
-    return () => {
-      if (wsConnection) ws.close();
-    };
   }, [settings.current.connection]);
 
   const addData = (cmdLine) => {
@@ -174,6 +223,7 @@ const WsContextProvider = ({ children }) => {
 
   const store = {
     ws: wsConnection,
+    state: connectionState,
     data: wsData,
     parsedValues,
     setData,
