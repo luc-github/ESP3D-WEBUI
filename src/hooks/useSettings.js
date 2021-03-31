@@ -49,12 +49,16 @@ const useSettings = () => {
         cmd: "[ESP800]",
         time: getBrowserTime(),
       }).toString(),
-      { method: "GET" },
+      { method: "GET", id: "login" },
       {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
           setSettings({ ...settingsState.current, connection: jsonResult });
-          connection.setConnectionState({ connected: true, page: 0 });
+          document.title = jsonResult.Hostname;
+          connection.setConnectionState({
+            connected: true,
+            page: "connecting",
+          });
           if (jsonResult.FWTarget == 0) {
             setActiveRoute("/settings");
             defaultRoute.current = "/settings";
@@ -64,7 +68,7 @@ const useSettings = () => {
           }
         },
         onFail: (error) => {
-          connection.setConnectionState({ connected: false, page: 1 });
+          connection.setConnectionState({ connected: false, page: "error" });
           toasts.addToast({ content: error, type: "error" });
         },
       }

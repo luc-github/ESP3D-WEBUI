@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useUiContext } from "../contexts";
+import { useUiContext, useSettingsContext } from "../contexts";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
 import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
@@ -31,9 +31,10 @@ import { espHttpURL } from "../components/Helpers";
  */
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
-  let contentTitle;
+  const { settings } = useSettingsContext();
   let contentIcon;
   let contentSubtitle;
+  let contentTitle;
   let contentAction;
 
   if (!connection.connectionState.connected) {
@@ -41,16 +42,20 @@ const ConnectionContainer = () => {
       connection.setConnectionState({ connected: false, page: "connecting" });
       window.location.href = espHttpURL().toString();
     };
-    if (connection.connectionState.page != "connecting") {
-      document.title =
-        document.title.replace("(" + T("S9") + ")", "") + "(" + T("S9") + ")";
-    }
+
     switch (connection.connectionState.page) {
       //No connection
       case "error":
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S22") +
+          ")";
         contentAction = (
           <button class="btn" onClick={onclick}>
             {T("S8")}
@@ -62,6 +67,13 @@ const ConnectionContainer = () => {
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
         contentSubtitle = T("S10"); //"Connection with board is lost"
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S9") +
+          ")";
         contentAction = (
           <button class="btn" onClick={onclick}>
             {T("S11")}
@@ -73,6 +85,13 @@ const ConnectionContainer = () => {
         contentTitle = T("S9");
         contentIcon = <Slash size="50px" />;
         contentSubtitle = T("S3");
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S9") +
+          ")";
         contentAction = (
           <button class="btn" onClick={onclick}>
             {T("S11")}
@@ -80,6 +99,13 @@ const ConnectionContainer = () => {
         );
         break;
       default:
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S2") +
+          ")";
         contentTitle = T("S2"); //"Connecting";
         contentIcon = (
           <div class="d-inline-block" style="padding:0 20px">

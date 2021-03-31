@@ -47,30 +47,30 @@ const Navbar = () => {
   //1 = default route should be dashboard
   //2 - show dashboard element as well as extra items
   const { settings } = useSettingsContext();
-
-  return (
-    <header class="navbar">
-      <section class="navbar-section">
-        {defaultLinks &&
-          defaultLinks.map(({ label, href }) => (
-            <Link
-              className={
-                href == "/about"
-                  ? "navbar-brand logo no-box"
-                  : settings.current.connection.FWTarget == 0 &&
-                    href == "/dashboard"
-                  ? "d-none"
-                  : "btn btn-link no-box"
-              }
-              activeClassName="active"
-              href={href}
-            >
-              {T(label)}
-            </Link>
-          ))}
-      </section>
-    </header>
-  );
+  if (settings.current.connection)
+    return (
+      <header class="navbar">
+        <section class="navbar-section">
+          {defaultLinks &&
+            defaultLinks.map(({ label, href }) => (
+              <Link
+                className={
+                  href == "/about"
+                    ? "navbar-brand logo no-box"
+                    : settings.current.connection.FWTarget == 0 &&
+                      href == "/dashboard"
+                    ? "d-none"
+                    : "btn btn-link no-box"
+                }
+                activeClassName="active"
+                href={href}
+              >
+                {T(label)}
+              </Link>
+            ))}
+        </section>
+      </header>
+    );
 };
 
 export { Navbar };

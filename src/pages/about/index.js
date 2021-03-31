@@ -25,7 +25,7 @@ import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { useUiContext, useDatasContext } from "../../contexts";
-import { useSettings } from "../../hooks";
+import { Esp3dVersion } from "../../components/App/version";
 
 /*
  * Local const
@@ -101,6 +101,12 @@ const About = () => {
                 <li>
                   <span class="text-primary">{T("S18")} </span> :{" "}
                   <span class="text-dark">{getBrowserInformation()}</span>
+                </li>
+                <li>
+                  <span class="text-primary">{T("S150")} </span> :{" "}
+                  <span class="text-dark">
+                    <Esp3dVersion />
+                  </span>
                 </li>
                 {props.map(({ id, value }) => (
                   <li>

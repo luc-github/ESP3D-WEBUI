@@ -87,6 +87,7 @@ app.get("/command", function (req, res) {
   console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
   let url = req.query.cmd;
   if (url.startsWith("[ESP800]")) {
+    //res.status(401);
     res.json({
       FWVersion: "3.0.0.a28",
       FWTarget: 40,
@@ -110,6 +111,7 @@ app.get("/command", function (req, res) {
     return;
   }
   if (url.indexOf("ESP420") != -1) {
+    // res.status(401);
     res.json({
       Status: [
         { id: "chip id", value: "38078" },

@@ -25,14 +25,25 @@ import { MainContainer } from "./main";
 import { useUiContext } from "../contexts/UiContext";
 import { useSettings } from "../hooks";
 import { useEffect } from "preact/hooks";
+import { T } from "../components/Translations";
 
 /*
  * Local const
  *
  */
 const ContentContainer = () => {
-  const { connection } = useUiContext();
+  const { connection, login, modals } = useUiContext();
   const { getConnectionSettings, getInterfaceSettings } = useSettings();
+  if (login.needLogin == true) {
+    login.setNeedLogin(false);
+    modals.addModal({
+      title: T("S2"),
+      content: <div>Login form</div>,
+      //overlay: true,
+      hideclose: true,
+    });
+  }
+
   useEffect(() => {
     //To init settings
     //to get language first

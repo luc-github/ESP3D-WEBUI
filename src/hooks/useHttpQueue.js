@@ -18,7 +18,7 @@
 */
 import { h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
-import { useHttpQueueContext } from "../contexts";
+import { useHttpQueueContext, useUiContext } from "../contexts";
 import { generateUID } from "../components/Helpers";
 
 /*
@@ -31,7 +31,6 @@ const useHttpQueue = () => {
     removeRequests,
     getCurrentRequest,
   } = useHttpQueueContext();
-
   const [data, setData] = useState();
   const [killOnUnmount, setKillOnUnmount] = useState(true);
   const _localRequests = useRef([]);
@@ -40,13 +39,41 @@ const useHttpQueue = () => {
     return () => killOnUnmount && removeRequests(_localRequests.current);
   }, []);
 
+  const createNewTopRequest = (url, params, callbacks = {}) => {
+    const {
+      onSuccess: onSuccessCb,
+      onFail: onFailCb,
+      onProgress: onProgressCb,
+    } = callbacks;
+    const id = params.id ? params.id : generateUID();
+    _localRequests.current = [..._localRequests.current, id];
+    addInTopQueue({
+      id,
+      url,
+      params,
+      onSuccess: (result) => {
+        setData(result);
+        if (onSuccessCb) onSuccessCb(result);
+      },
+      onProgress: (e) => {
+        onProgressCb(e);
+      },
+      onFail: onFailCb
+        ? (error) => {
+            onFailCb(error);
+          }
+        : null,
+    });
+  };
+
   const createNewRequest = (url, params, callbacks = {}) => {
     const {
       onSuccess: onSuccessCb,
       onFail: onFailCb,
       onProgress: onProgressCb,
     } = callbacks;
-    const id = generateUID();
+    const id = params.id ? params.id : generateUID();
+    //TODO: reject if has params maxid and number inside is already over
     _localRequests.current = [..._localRequests.current, id];
     addInQueue({
       id,
@@ -54,7 +81,7 @@ const useHttpQueue = () => {
       params,
       onSuccess: (result) => {
         setData(result);
-        if (onSuccessCb) onSuccessCb(result); // Faire des trucs ici
+        if (onSuccessCb) onSuccessCb(result);
       },
       onProgress: (e) => {
         onProgressCb(e);
@@ -80,6 +107,7 @@ const useHttpQueue = () => {
     data,
     setData,
     createNewRequest,
+    createNewTopRequest,
     abortRequest,
     setKillOnUnmount,
   };

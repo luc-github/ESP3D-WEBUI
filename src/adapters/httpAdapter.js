@@ -62,11 +62,11 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
   const response = new Promise((resolve, reject) => {
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
-      reject(
-        new Error(
-          `${xhr.status}${xhr.statusText ? ` - ${xhr.statusText}` : ""}`
-        )
+      const e = new Error(
+        `${xhr.status}${xhr.statusText ? ` - ${xhr.statusText}` : ""}`
       );
+      e.code = xhr.status;
+      reject(e);
     };
     xhr.onerror = () =>
       reject(new Error("An error occurred during the transaction"));

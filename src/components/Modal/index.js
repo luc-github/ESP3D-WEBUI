@@ -34,12 +34,16 @@ const Modal = () => {
         <SpectreModal class={`active`} id="modal-id" key={index}>
           <SpectreModal.Overlay
             aria-label="Close"
-            onClick={() => modals.removeModal(index)}
+            onClick={() => {
+              if (modal.overlay) modals.removeModal(index);
+            }}
           />
           <SpectreModal.Container>
             <SpectreModal.Header>
               <button
-                className="btn btn-clear float-right"
+                className={
+                  modal.hideclose ? "d-none" : "btn btn-clear float-right"
+                }
                 aria-label="Close"
                 onClick={() => modals.removeModal(index)}
               />

@@ -19,6 +19,7 @@
 import { h, createContext } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { httpAdapter } from "../adapters";
+import { useUiContext } from "./UiContext";
 
 /*
  * Local const
@@ -31,9 +32,15 @@ const HttpQueueContextProvider = ({ children }) => {
   const requestQueue = useRef([]); // Http queue for every components
   const isBusy = useRef(false);
   const currentRequest = useRef();
-  //Add new rRequest to queue
+  const { login } = useUiContext();
+  //Add new Request to queue
   const addInQueue = (newRequest) => {
     requestQueue.current = [...requestQueue.current, newRequest];
+    if (!isBusy.current) executeHttpCall();
+  };
+  //Add new Request to top of queue
+  const addInTopQueue = (newRequest) => {
+    requestQueue.current = [newRequest, ...requestQueue.current];
     if (!isBusy.current) executeHttpCall();
   };
   //Remove finished request from queue
@@ -70,20 +77,30 @@ const HttpQueueContextProvider = ({ children }) => {
       onFail,
       onProgress,
     } = requestQueue.current[0];
+    let is401Error = false;
     try {
       currentRequest.current = httpAdapter(url, params, onProgress);
       const response = await currentRequest.current.response;
 
       onSuccess(response);
     } catch (e) {
+      if (e.code == 401) {
+        is401Error = true;
+      }
       if (onFail) onFail(e.message); //to-check
       // add toast notification
     } finally {
-      removeRequestDone();
-      if (requestQueue.current.length > 0) {
-        executeHttpCall();
+      //check if need to remove or not
+      if (!is401Error) {
+        removeRequestDone();
+        if (requestQueue.current.length > 0) {
+          executeHttpCall();
+        } else {
+          isBusy.current = false;
+        }
       } else {
-        isBusy.current = false;
+        removeRequests("login");
+        login.setNeedLogin(true);
       }
     }
   };
@@ -92,6 +109,7 @@ const HttpQueueContextProvider = ({ children }) => {
     <HttpQueueContext.Provider
       value={{
         addInQueue,
+        addInTopQueue,
         removeRequests,
         getCurrentRequest,
         removeAllRequests,
