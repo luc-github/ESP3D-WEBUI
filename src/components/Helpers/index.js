@@ -115,7 +115,7 @@ const limitArr = (arr, limit) =>
 
 //generate an URL with server host and base address
 //args is array of argumments: [{'cmd':'[ESP800]},...]
-const espHttpURL = (base, args) => {
+const espHttpURL = (base = "", args) => {
   const url = new URL("http://" + window.location.host + "/" + base);
   if (args)
     Object.keys(args).forEach((key) => {

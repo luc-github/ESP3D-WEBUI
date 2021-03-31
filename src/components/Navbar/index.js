@@ -23,6 +23,7 @@ import { h } from "preact";
 import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
+import { useSettingsContext } from "../../contexts";
 
 const defaultLinks = [
   {
@@ -33,6 +34,10 @@ const defaultLinks = [
   { label: "S14", href: "/settings" },
 ];
 
+/*
+ * Local const
+ *
+ */
 const Navbar = () => {
   //TODO
   //if target FW is not defined:
@@ -41,6 +46,8 @@ const Navbar = () => {
   //if target FW is defined :
   //1 = default route should be dashboard
   //2 - show dashboard element as well as extra items
+  const { settings } = useSettingsContext();
+
   return (
     <header class="navbar">
       <section class="navbar-section">
@@ -50,6 +57,9 @@ const Navbar = () => {
               className={
                 href == "/about"
                   ? "navbar-brand logo no-box"
+                  : settings.current.connection.FWTarget == 0 &&
+                    href == "/dashboard"
+                  ? "d-none"
                   : "btn btn-link no-box"
               }
               activeClassName="active"

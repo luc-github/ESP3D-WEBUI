@@ -22,7 +22,12 @@ import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import { Target } from "../Targets";
+import { useSettingsContext } from "../../contexts";
 
+/*
+ * Local const
+ *
+ */
 const defaultLinks = [
   {
     label: "S36",
@@ -32,14 +37,19 @@ const defaultLinks = [
   { label: Target, href: "/settings/machine" },
 ];
 const TabBar = () => {
-  //Todo : Hide Fw tab is no target FW defined
+  const { settings } = useSettingsContext();
   return (
     <ul class="tab tab-block">
       {defaultLinks &&
         defaultLinks.map(({ label, href }) => (
           <li class="tab-item">
             <Link
-              className="btn btn-link no-box"
+              className={
+                settings.current.connection.FWTarget == 0 &&
+                href == "/settings/machine"
+                  ? "d-none"
+                  : "btn btn-link no-box"
+              }
               activeClassName="active"
               href={href}
             >

@@ -23,6 +23,7 @@ import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
 import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
 import { T } from "../components/Translations";
+import { espHttpURL } from "../components/Helpers";
 
 /*
  * Local const
@@ -38,7 +39,7 @@ const ConnectionContainer = () => {
   if (!connection.connectionState.connected) {
     const onclick = (e) => {
       connection.setConnectionState({ connected: false, page: "connecting" });
-      window.location.reload();
+      window.location.href = espHttpURL().toString();
     };
     if (connection.connectionState.page != "connecting") {
       document.title =

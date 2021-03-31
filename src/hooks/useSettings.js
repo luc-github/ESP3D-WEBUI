@@ -25,7 +25,7 @@ import {
   getBrowserTime,
 } from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
-import { useUiContext } from "../contexts";
+import { useUiContext, useRouterContext } from "../contexts";
 import { defaultPreferences } from "../components/Targets";
 
 /*
@@ -36,9 +36,8 @@ const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
   const { toasts, connection } = useUiContext();
   const { settings } = useSettingsContext();
-
+  const { defaultRoute, setActiveRoute } = useRouterContext();
   const [settingsState, setSettingsState] = useState(settings);
-
   const setSettings = (_settingsState) => {
     settings.current = _settingsState;
     setSettingsState(_settingsState);
@@ -56,6 +55,13 @@ const useSettings = () => {
           const jsonResult = JSON.parse(result);
           setSettings({ ...settingsState.current, connection: jsonResult });
           connection.setConnectionState({ connected: true, page: 0 });
+          if (jsonResult.FWTarget == 0) {
+            setActiveRoute("/settings");
+            defaultRoute.current = "/settings";
+          } else {
+            setActiveRoute("/dashboard");
+            defaultRoute.current = "/dashboard";
+          }
         },
         onFail: (error) => {
           connection.setConnectionState({ connected: false, page: 1 });
