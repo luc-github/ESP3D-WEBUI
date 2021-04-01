@@ -24,6 +24,8 @@ import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import { useSettingsContext } from "../../contexts";
+import { useHttpQueue } from "../../hooks";
+import { espHttpURL } from "../Helpers";
 
 const defaultLinks = [
   {
@@ -39,15 +41,26 @@ const defaultLinks = [
  *
  */
 const Navbar = () => {
-  //TODO
-  //if target FW is not defined:
-  //1 -  set default route to settings
-  //2 - do not show dashboard link
-  //if target FW is defined :
-  //1 = default route should be dashboard
-  //2 - show dashboard element as well as extra items
   const { settings } = useSettingsContext();
-  if (settings.current.connection)
+  const { createNewRequest } = useHttpQueue();
+  if (settings.current.connection) {
+    const onDisconnect = () => {
+      console.log("Click disconnect");
+      const formData = new FormData();
+      formData.append("DISCONNECT", "YES");
+      createNewRequest(
+        espHttpURL("login").toString(),
+        { method: "POST", id: "login", body: formData },
+        {
+          onSuccess: (result) => {
+            //TODO:Need to do something ? TBD
+          },
+          onFail: (error) => {
+            //TODO:Need to do something ? TBD
+          },
+        }
+      );
+    };
     return (
       <header class="navbar">
         <section class="navbar-section">
@@ -69,8 +82,21 @@ const Navbar = () => {
               </Link>
             ))}
         </section>
+        <section class="navbar-section">
+          <span
+            className={
+              settings.current.connection.Authentication == "Disabled"
+                ? "d-none"
+                : "btn btn-link no-box"
+            }
+            onClick={onDisconnect}
+          >
+            {T("S151")}
+          </span>
+        </section>
       </header>
     );
+  }
 };
 
 export { Navbar };

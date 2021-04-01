@@ -192,11 +192,13 @@ const WsContextProvider = ({ children }) => {
       if (wsConnection) {
         connection.setConnectionState({
           connected: false,
+          authenticate: connection.connectionState.authenticate,
           page: "already connected",
         });
         wsConnection.close();
         //Abort  / Remove all queries
         removeAllRequests();
+        //TODO: Stop polling
         connectionState.current = {
           connected: false,
           status: "closed",

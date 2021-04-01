@@ -32,7 +32,7 @@ const HttpQueueContextProvider = ({ children }) => {
   const requestQueue = useRef([]); // Http queue for every components
   const isBusy = useRef(false);
   const currentRequest = useRef();
-  const { login } = useUiContext();
+  const { login, connection } = useUiContext();
   //Add new Request to queue
   const addInQueue = (newRequest) => {
     requestQueue.current = [...requestQueue.current, newRequest];
@@ -66,6 +66,10 @@ const HttpQueueContextProvider = ({ children }) => {
     requestQueue.current = [];
     currentRequest.current = null;
   };
+  //Process requests from queue
+  const processRequests = () => {
+    executeHttpCall();
+  };
 
   //Process query in queue
   const executeHttpCall = async () => {
@@ -81,11 +85,20 @@ const HttpQueueContextProvider = ({ children }) => {
     try {
       currentRequest.current = httpAdapter(url, params, onProgress);
       const response = await currentRequest.current.response;
-
+      connection.setConnectionState({
+        connected: connection.connectionState.connected,
+        authenticate: true,
+        page: "connecting",
+      });
       onSuccess(response);
     } catch (e) {
       if (e.code == 401) {
         is401Error = true;
+        connection.setConnectionState({
+          connected: connection.connectionState.connected,
+          authenticate: false,
+          page: "notauthenticated",
+        });
       }
       if (onFail) onFail(e.message); //to-check
       // add toast notification
@@ -100,6 +113,7 @@ const HttpQueueContextProvider = ({ children }) => {
         }
       } else {
         removeRequests("login");
+        currentRequest.current = null;
         login.setNeedLogin(true);
       }
     }
@@ -113,6 +127,7 @@ const HttpQueueContextProvider = ({ children }) => {
         removeRequests,
         getCurrentRequest,
         removeAllRequests,
+        processRequests,
       }}
     >
       {children}

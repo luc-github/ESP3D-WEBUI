@@ -33,21 +33,30 @@ const UiContextProvider = ({ children }) => {
   const [needLogin, setNeedLogin] = useState(false);
   const [connectionState, setConnectionState] = useState({
     connected: false,
+    authenticate: true,
     page: "connecting",
   });
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
 
   const addToast = (newToast) => {
-    setToasts([...toasts, { ...newToast, id: generateUID() }]);
+    setToasts([...toastsRef.current, { ...newToast, id: generateUID() }]);
   };
 
   const removeToast = (uids) => {
     const removedIds = removeEntriesByIDs(toastsRef.current, uids);
+
     setToasts([...removedIds]);
   };
 
-  const addModal = (newModal) => setModal([...modals, newModal]);
+  const addModal = (newModal) =>
+    setModal([
+      ...modals,
+      { ...newModal, id: newModal.id ? newModal.id : generateUID() },
+    ]);
+  const getModalIndex = (id) => {
+    return modals.findIndex((element) => element.id == id);
+  };
   const removeModal = (modalIndex) => {
     const newModalList = modals.filter((modal, index) => index !== modalIndex);
     setModal(newModalList);
@@ -55,10 +64,16 @@ const UiContextProvider = ({ children }) => {
 
   const store = {
     data: [data, setData],
-    modals: { modalList: modals, addModal, removeModal },
+    modals: { modalList: modals, addModal, removeModal, getModalIndex },
     toasts: { toastList: toasts, addToast, removeToast },
-    connection: { connectionState, setConnectionState },
-    login: { needLogin, setNeedLogin },
+    connection: {
+      connectionState,
+      setConnectionState,
+    },
+    login: {
+      needLogin,
+      setNeedLogin,
+    },
   };
 
   return <UiContext.Provider value={store}>{children}</UiContext.Provider>;

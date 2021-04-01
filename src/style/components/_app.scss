@@ -31,10 +31,21 @@ body {
   padding-right: 4px;
   border-radius: 5px;
 }
-
-.active {
+section .active,
+li .active {
   color: blue !important;
   font-weight: 700; // bold
+}
+
+.passwordReveal {
+  color: #c0c0c0;
+  cursor: pointer;
+  margin-top: -0.22rem !important;
+  margin-right: 0.35rem !important;
+}
+
+.passwordReveal:hover {
+  color: blue;
 }
 
 .no-box {

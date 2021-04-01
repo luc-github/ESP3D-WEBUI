@@ -49,7 +49,7 @@ const useSettings = () => {
         cmd: "[ESP800]",
         time: getBrowserTime(),
       }).toString(),
-      { method: "GET", id: "login" },
+      { method: "GET", id: "connection" },
       {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
@@ -57,6 +57,7 @@ const useSettings = () => {
           document.title = jsonResult.Hostname;
           connection.setConnectionState({
             connected: true,
+            authenticate: true,
             page: "connecting",
           });
           if (jsonResult.FWTarget == 0) {
@@ -68,7 +69,11 @@ const useSettings = () => {
           }
         },
         onFail: (error) => {
-          connection.setConnectionState({ connected: false, page: "error" });
+          connection.setConnectionState({
+            connected: false,
+            authenticate: false,
+            page: "error",
+          });
           toasts.addToast({ content: error, type: "error" });
         },
       }
@@ -76,28 +81,24 @@ const useSettings = () => {
   };
   const getInterfaceSettings = () => {
     setSettings({ ...settingsState.current, interface: defaultPreferences });
-    if (connection.connected)
-      createNewRequest(
-        espHttpURL("preferences.json").toString(),
-        { method: "GET" },
-        {
-          onSuccess: (result) => {
-            const jsonResult = JSON.parse(result);
-            const preferences = mergePreferences(
-              defaultPreferences,
-              jsonResult
-            );
-            setSettings({ ...settingsState.current, interface: preferences });
-          },
-          onFail: (error) => {
-            toasts.addToast({
-              content: error + " preferences.json",
-              type: "error",
-            });
-            console.log("No valid preferences.json");
-          },
-        }
-      );
+    createNewRequest(
+      espHttpURL("preferences.json").toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          const jsonResult = JSON.parse(result);
+          const preferences = mergePreferences(defaultPreferences, jsonResult);
+          setSettings({ ...settingsState.current, interface: preferences });
+        },
+        onFail: (error) => {
+          toasts.addToast({
+            content: error + " preferences.json",
+            type: "error",
+          });
+          console.log("No valid preferences.json");
+        },
+      }
+    );
   };
   const getFeaturesSettings = () => {
     createNewRequest(

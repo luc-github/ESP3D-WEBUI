@@ -23,35 +23,99 @@ import { Informations } from "./informations";
 import { ConnectionContainer } from "./connection";
 import { MainContainer } from "./main";
 import { useUiContext } from "../contexts/UiContext";
-import { useSettings } from "../hooks";
+import { useSettings, useHttpQueue } from "../hooks";
 import { useEffect } from "preact/hooks";
 import { T } from "../components/Translations";
-
+import { PasswordInput } from "../components/Controls";
+import { espHttpURL } from "../components/Helpers";
 /*
  * Local const
  *
  */
-const ContentContainer = () => {
-  const { connection, login, modals } = useUiContext();
-  const { getConnectionSettings, getInterfaceSettings } = useSettings();
+
+const showLogin = () => {
+  const { modals, connection } = useUiContext();
+  const { createNewTopRequest, processRequestsNow } = useHttpQueue();
+  const clickLogin = () => {
+    const login = document.getElementById("login").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const formData = new FormData();
+    formData.append("SUBMIT", "YES");
+    formData.append("USER", login);
+    formData.append("PASSWORD", password);
+    createNewTopRequest(
+      espHttpURL("login").toString(),
+      { method: "POST", id: "login", body: formData },
+      {
+        onSuccess: (result) => {
+          //TODO:Need to do something ? TBD
+        },
+        onFail: (error) => {
+          //TODO:Need to do something ? TBD
+        },
+      }
+    );
+    connection.setConnectionState({
+      connected: connection.connectionState.connected,
+      authenticate: false,
+      page: "connecting",
+    });
+    modals.removeModal(modals.getModalIndex("login"));
+    processRequestsNow();
+  };
+  const clickCancel = () => {
+    modals.removeModal(modals.getModalIndex("login"));
+  };
+  modals.addModal({
+    id: "login",
+    title: T("S145"),
+    content: (
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label class="form-label text-primary p-2" for="login">
+            {T("S146")}:
+          </label>
+          <input
+            class="form-input"
+            style="width:15rem"
+            type="text"
+            id="login"
+            placeholder="admin/user"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label text-primary p-2" for="password">
+            {T("S147")}:
+          </label>
+          <PasswordInput id="password" />
+        </div>
+      </div>
+    ),
+    footer: (
+      <div>
+        <button class="btn mx-2" onClick={clickLogin}>
+          {T("S148")}
+        </button>
+        <button class="btn mx-2" onClick={clickCancel}>
+          {T("S28")}
+        </button>
+      </div>
+    ),
+    //overlay: true,
+    hideclose: true,
+  });
+};
+
+const ViewContainer = () => {
+  const { connection, login } = useUiContext();
   if (login.needLogin == true) {
     login.setNeedLogin(false);
-    modals.addModal({
-      title: T("S2"),
-      content: <div>Login form</div>,
-      //overlay: true,
-      hideclose: true,
-    });
+    showLogin();
   }
-
-  useEffect(() => {
-    //To init settings
-    //to get language first
-    getInterfaceSettings();
-    //to get communication connection
-    getConnectionSettings();
-  }, []);
-  if (connection.connectionState.connected)
+  if (
+    connection.connectionState.connected &&
+    connection.connectionState.authenticate
+  )
     return (
       <Fragment>
         <Menu />
@@ -62,6 +126,19 @@ const ContentContainer = () => {
   else {
     return <ConnectionContainer />;
   }
+};
+
+const ContentContainer = () => {
+  const { getConnectionSettings, getInterfaceSettings } = useSettings();
+
+  useEffect(() => {
+    //To init settings
+    //to get language first
+    getInterfaceSettings();
+    //to get communication connection
+    getConnectionSettings();
+  }, []);
+  return <ViewContainer />;
 };
 
 export { ContentContainer };

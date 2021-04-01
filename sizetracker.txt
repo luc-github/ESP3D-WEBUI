@@ -1,3 +1,4 @@
 
-                                        printer         grbl
-Base code               : 3.0.0.a1 : 21.2KB        |
+                                    printer         grbl      size in 3.0
+Base code               : 3.0.0.a1 : 21.2KB        |        | 27KB
+WS/Http/Auth/Menu       : 3.0.0.a2 : 28.4KB        |        | 34.15KB

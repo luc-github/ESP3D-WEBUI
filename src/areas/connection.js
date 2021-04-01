@@ -21,7 +21,14 @@ import { h } from "preact";
 import { useUiContext, useSettingsContext } from "../contexts";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
-import { Minus, HardDrive, Frown, AlertTriangle, Slash } from "preact-feather";
+import {
+  Minus,
+  HardDrive,
+  Frown,
+  AlertTriangle,
+  Slash,
+  Lock,
+} from "preact-feather";
 import { T } from "../components/Translations";
 import { espHttpURL } from "../components/Helpers";
 
@@ -37,13 +44,37 @@ const ConnectionContainer = () => {
   let contentTitle;
   let contentAction;
 
-  if (!connection.connectionState.connected) {
+  if (
+    !connection.connectionState.connected ||
+    !connection.connectionState.authenticate
+  ) {
     const onclick = (e) => {
-      connection.setConnectionState({ connected: false, page: "connecting" });
+      connection.setConnectionState({
+        connected: false,
+        authenticate: connection.connectionState.authenticate,
+        page: "connecting",
+      });
       window.location.href = espHttpURL().toString();
     };
 
     switch (connection.connectionState.page) {
+      case "notauthenticated":
+        contentTitle = T("S1"); //"Connection error"
+        contentIcon = <Lock size="50px" />;
+        contentSubtitle = T("S145"); //"Authentication required"
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S22") +
+          ")";
+        contentAction = (
+          <button class="btn" onClick={onclick}>
+            {T("S11")}
+          </button>
+        );
+        break;
       //No connection
       case "error":
         contentTitle = T("S1"); //"Connection error"

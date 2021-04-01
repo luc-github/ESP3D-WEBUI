@@ -25,6 +25,8 @@ app.listen(port, () =>
   console.log(expresscolor(`[express] Listening on port ${port}!`))
 );
 
+let logindone = false;
+
 //app.use(express.urlencoded({ extended: false }));
 
 function SendBinary(text) {
@@ -40,6 +42,15 @@ function SendBinary(text) {
 }
 
 app.post("/login", function (req, res) {
+  if (req.body.DISCONNECT == "Yes") {
+    res.status(401);
+    logindone = false;
+  } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin")
+    logindone = true;
+  else {
+    res.status(401);
+    logindone = false;
+  }
   res.send("");
   return;
 });
@@ -87,12 +98,12 @@ app.get("/command", function (req, res) {
   console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
   let url = req.query.cmd;
   if (url.startsWith("[ESP800]")) {
-    //res.status(401);
+    if (!logindone) res.status(401);
     res.json({
       FWVersion: "3.0.0.a28",
       FWTarget: 40,
       SDConnection: "none",
-      Authentication: "Disabled",
+      Authentication: "Enabled",
       WebCommunication: "Synchronous",
       WebSocketIP: "localhost",
       WebSocketport: "81",
@@ -111,7 +122,7 @@ app.get("/command", function (req, res) {
     return;
   }
   if (url.indexOf("ESP420") != -1) {
-    // res.status(401);
+    if (!logindone) res.status(401);
     res.json({
       Status: [
         { id: "chip id", value: "38078" },

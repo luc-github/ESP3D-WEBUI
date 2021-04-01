@@ -28,15 +28,17 @@ import { generateUID } from "../components/Helpers";
 const useHttpQueue = () => {
   const {
     addInQueue,
+    addInTopQueue,
     removeRequests,
     getCurrentRequest,
+    processRequests,
   } = useHttpQueueContext();
   const [data, setData] = useState();
   const [killOnUnmount, setKillOnUnmount] = useState(true);
   const _localRequests = useRef([]);
 
   useEffect(() => {
-    return () => killOnUnmount && removeRequests(_localRequests.current);
+    // return () => killOnUnmount && removeRequests(_localRequests.current);
   }, []);
 
   const createNewTopRequest = (url, params, callbacks = {}) => {
@@ -103,10 +105,15 @@ const useHttpQueue = () => {
     }
   };
 
+  const processRequestsNow = () => {
+    processRequests();
+  };
+
   return {
     data,
     setData,
     createNewRequest,
+    processRequestsNow,
     createNewTopRequest,
     abortRequest,
     setKillOnUnmount,
