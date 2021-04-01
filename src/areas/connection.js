@@ -94,7 +94,7 @@ const ConnectionContainer = () => {
         );
         break;
       //Error connection lost
-      case "connection lost":
+      case "connectionlost":
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
         contentSubtitle = T("S10"); //"Connection with board is lost"

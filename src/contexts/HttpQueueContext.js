@@ -99,6 +99,14 @@ const HttpQueueContextProvider = ({ children }) => {
           authenticate: false,
           page: "notauthenticated",
         });
+      } else {
+        if (!e.code) {
+          connection.setConnectionState({
+            connected: false,
+            authenticate: connection.connectionState.authenticate,
+            page: "connectionlost",
+          });
+        }
       }
       if (onFail) onFail(e.message); //to-check
       // add toast notification

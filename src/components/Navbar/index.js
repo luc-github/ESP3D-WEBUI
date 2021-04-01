@@ -45,7 +45,6 @@ const Navbar = () => {
   const { createNewRequest } = useHttpQueue();
   if (settings.current.connection) {
     const onDisconnect = () => {
-      console.log("Click disconnect");
       const formData = new FormData();
       formData.append("DISCONNECT", "YES");
       createNewRequest(
