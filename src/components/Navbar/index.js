@@ -20,12 +20,14 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useState } from "preact/hooks";
 import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { useSettingsContext } from "../../contexts";
+import { useSettingsContext, useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
+import { confirmationModal } from "../Modal/confirmModal";
 
 const defaultLinks = [
   {
@@ -42,24 +44,46 @@ const defaultLinks = [
  */
 const Navbar = () => {
   const { settings } = useSettingsContext();
+  const { modals } = useUiContext();
   const { createNewRequest } = useHttpQueue();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const disconnectNow = () => {
+    const formData = new FormData();
+    formData.append("DISCONNECT", "YES");
+    createNewRequest(
+      espHttpURL("login").toString(),
+      { method: "POST", id: "login", body: formData },
+      {
+        onSuccess: (result) => {
+          //TODO:Need to do something ? TBD
+        },
+        onFail: (error) => {
+          //TODO:Need to do something ? TBD
+        },
+      }
+    );
+  };
+  if (showConfirmation) {
+    const title = T("S26");
+    const content = T("S152");
+    const yes = T("S27");
+    const cancel = T("S28");
+
+    confirmationModal({
+      modals,
+      title,
+      content,
+      button1: { cb: disconnectNow, text: yes },
+      button2: { text: cancel },
+    });
+    setShowConfirmation(false);
+  }
+
+  const onDisconnect = () => {
+    setShowConfirmation(true);
+  };
+
   if (settings.current.connection) {
-    const onDisconnect = () => {
-      const formData = new FormData();
-      formData.append("DISCONNECT", "YES");
-      createNewRequest(
-        espHttpURL("login").toString(),
-        { method: "POST", id: "login", body: formData },
-        {
-          onSuccess: (result) => {
-            //TODO:Need to do something ? TBD
-          },
-          onFail: (error) => {
-            //TODO:Need to do something ? TBD
-          },
-        }
-      );
-    };
     return (
       <header class="navbar">
         <section class="navbar-section">
@@ -86,7 +110,7 @@ const Navbar = () => {
             className={
               settings.current.connection.Authentication == "Disabled"
                 ? "d-none"
-                : "btn btn-link no-box"
+                : "btn btn-link no-box mx-2"
             }
             onClick={onDisconnect}
           >
