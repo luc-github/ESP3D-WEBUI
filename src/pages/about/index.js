@@ -99,19 +99,19 @@ const About = () => {
             <div style="display: inline-block;text-align: left;">
               <ul>
                 <li>
-                  <span class="text-primary">{T("S18")} </span> :{" "}
+                  <span class="text-primary">{T("S18")} </span> :
                   <span class="text-dark">{getBrowserInformation()}</span>
                 </li>
                 <li>
-                  <span class="text-primary">{T("S150")} </span> :{" "}
+                  <span class="text-primary">{T("S150")} </span> :
                   <span class="text-dark">
                     <Esp3dVersion />
                   </span>
                 </li>
                 {props.map(({ id, value }) => (
                   <li>
-                    <span class="text-primary">{T(id)} </span> :{" "}
-                    <span class="text-dark">{value}</span>
+                    <span class="text-primary">{T(id)} </span> :
+                    <span class="text-dark">{T(value)}</span>
                   </li>
                 ))}
               </ul>
