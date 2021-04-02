@@ -20,7 +20,7 @@
 */
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { Loading } from "../../components/Spectre";
+import { Loading, Button } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
@@ -124,40 +124,44 @@ const About = () => {
                   <span class="text-dark">
                     <Esp3dVersion />
                   </span>
-                  <button
-                    class="btn btn-sm mx-2 tooltip feather-btn"
+                  <Button
+                    class="mx-2 tooltip feather-btn"
+                    sm
                     data-tooltip={T("S20")}
                     onClick={onWebUiGit}
                   >
                     <Github size="0.9rem" />
-                  </button>
-                  <button
-                    class="btn btn-sm mx-2 tooltip"
+                  </Button>
+                  <Button
+                    class="mx-2 tooltip"
+                    sm
                     data-tooltip={T("S171")}
                     onClick={onWebUiUpdate}
                   >
                     {T("S25")}
-                  </button>
+                  </Button>
                 </li>
                 <li>
                   <span class="text-primary">{T("FW ver")} </span> :
                   <span class="text-dark">
                     {props.find((element) => element.id == "FW ver").value}
                   </span>
-                  <button
-                    class="btn  mx-2 btn-sm tooltip feather-btn"
+                  <Button
+                    class="mx-2 tooltip feather-btn"
+                    sm
                     data-tooltip={T("S20")}
                     onClick={onFWGit}
                   >
                     <Github size="0.9rem" />
-                  </button>
-                  <button
-                    class="btn btn-sm mx-2 tooltip"
+                  </Button>
+                  <Button
+                    class="mx-2 tooltip"
+                    sm
                     onClick={onFWUpdate}
                     data-tooltip={T("S172")}
                   >
                     {T("S25")}
-                  </button>
+                  </Button>
                 </li>
                 <li>
                   <span class="text-primary">{T("S18")} </span> :
@@ -175,14 +179,13 @@ const About = () => {
               </ul>
             </div>
             <hr />
-            <button
-              className="btn"
+            <Button
               onClick={() => {
                 getProps();
               }}
             >
               {T("S50")}
-            </button>
+            </Button>
           </center>
         </div>
       )}

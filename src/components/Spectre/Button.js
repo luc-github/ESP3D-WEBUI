@@ -1,6 +1,8 @@
 /*
- Loading.js - ESP3D WebUI context file
+ Button.js - ESP3D WebUI component file
+
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -13,11 +15,28 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import Loading from "./Loading";
-import Panel from "./Panel";
-import Modal from "./Modal";
-import Toast from "./Toast";
-import Button from "./Button";
-import Progress from "./Progress";
+import { h } from "preact";
+import { createComponent } from "../Helpers";
 
-export { Loading, Panel, Modal, Toast, Button, Progress };
+/*
+ * Local const
+ *
+ */
+
+const modifiers = {
+  link: "btn-link",
+  primary: "btn-primary",
+  error: "btn-error",
+  success: "btn-success",
+  lg: "btn-lg",
+  sm: "btn-sm",
+  block: "btn-block",
+  action: "btn-action",
+  circle: "s-circle",
+  active: "active",
+  disable: "disable",
+  loading: "loading",
+};
+const Button = createComponent("button", "btn", modifiers);
+
+export default Button;
