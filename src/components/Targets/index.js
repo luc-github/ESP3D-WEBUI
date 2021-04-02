@@ -23,6 +23,7 @@ import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
 import { mergePreferences } from "../Helpers";
+import { fwUrl } from "SubTargetPath";
 
 /*
  * Local const
@@ -33,4 +34,6 @@ const defaultPreferences = mergePreferences(
   defaultPreferencesSubTarget
 );
 
-export { Target, defaultPreferences, Parser };
+const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0";
+
+export { Target, defaultPreferences, Parser, fwUrl, webUiUrl };

@@ -25,7 +25,7 @@ app.listen(port, () =>
   console.log(expresscolor(`[express] Listening on port ${port}!`))
 );
 
-let logindone = false;
+let logindone = true;
 
 //app.use(express.urlencoded({ extended: false }));
 

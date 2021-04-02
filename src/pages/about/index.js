@@ -26,6 +26,8 @@ import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { useUiContext, useDatasContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
+import { Github } from "preact-feather";
+import { webUiUrl, fwUrl } from "../../components/Targets";
 
 /*
  * Local const
@@ -79,6 +81,25 @@ const About = () => {
     if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
     return M.join(" ");
   }
+
+  const onFWUpdate = (e) => {
+    e.target.blur();
+    console.log("Update");
+  };
+
+  const onFWGit = (e) => {
+    window.open(fwUrl, "_blank");
+    e.target.blur();
+  };
+  const onWebUiUpdate = (e) => {
+    e.target.blur();
+    console.log("Update");
+  };
+
+  const onWebUiGit = (e) => {
+    window.open(webUiUrl, "_blank");
+    e.target.blur();
+  };
   useEffect(() => {
     if (data.current.about.length != 0) {
       setProps([...data.current.about]);
@@ -99,21 +120,58 @@ const About = () => {
             <div style="display: inline-block;text-align: left;">
               <ul>
                 <li>
-                  <span class="text-primary">{T("S18")} </span> :
-                  <span class="text-dark">{getBrowserInformation()}</span>
-                </li>
-                <li>
                   <span class="text-primary">{T("S150")} </span> :
                   <span class="text-dark">
                     <Esp3dVersion />
                   </span>
+                  <button
+                    class="btn btn-sm mx-2 tooltip feather-btn"
+                    data-tooltip={T("S20")}
+                    onClick={onWebUiGit}
+                  >
+                    <Github size="0.9rem" />
+                  </button>
+                  <button
+                    class="btn btn-sm mx-2 tooltip"
+                    data-tooltip={T("S171")}
+                    onClick={onWebUiUpdate}
+                  >
+                    {T("S25")}
+                  </button>
                 </li>
-                {props.map(({ id, value }) => (
-                  <li>
-                    <span class="text-primary">{T(id)} </span> :
-                    <span class="text-dark">{T(value)}</span>
-                  </li>
-                ))}
+                <li>
+                  <span class="text-primary">{T("FW ver")} </span> :
+                  <span class="text-dark">
+                    {props.find((element) => element.id == "FW ver").value}
+                  </span>
+                  <button
+                    class="btn  mx-2 btn-sm tooltip feather-btn"
+                    data-tooltip={T("S20")}
+                    onClick={onFWGit}
+                  >
+                    <Github size="0.9rem" />
+                  </button>
+                  <button
+                    class="btn btn-sm mx-2 tooltip"
+                    onClick={onFWUpdate}
+                    data-tooltip={T("S172")}
+                  >
+                    {T("S25")}
+                  </button>
+                </li>
+                <li>
+                  <span class="text-primary">{T("S18")} </span> :
+                  <span class="text-dark">{getBrowserInformation()}</span>
+                </li>
+                {props.map(({ id, value }) => {
+                  if (id != "FW ver")
+                    return (
+                      <li>
+                        <span class="text-primary">{T(id)} </span> :
+                        <span class="text-dark">{T(value)}</span>
+                      </li>
+                    );
+                })}
               </ul>
             </div>
             <hr />

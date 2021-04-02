@@ -21,5 +21,6 @@ import { h } from "preact";
 import { Parser } from "./parser";
 
 const Target = "Marlin";
+const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 
-export { Target, Parser };
+export { Target, Parser, fwUrl };

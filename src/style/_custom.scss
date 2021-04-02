@@ -51,6 +51,16 @@
   }
 }
 
+.feather-btn {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0px !important;
+}
+
+.tooltip > svg,
+.tooltip > span {
+  pointer-events: none;
+}
+
 #dashboard {
   .panel {
     margin-bottom: 1em;
