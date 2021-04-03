@@ -26,7 +26,7 @@ import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { useUiContext, useDatasContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
-import { Github } from "preact-feather";
+import { Github, RefreshCcw, UploadCloud } from "preact-feather";
 import { webUiUrl, fwUrl } from "../../components/Targets";
 
 /*
@@ -84,6 +84,7 @@ const About = () => {
 
   const onFWUpdate = (e) => {
     e.target.blur();
+
     console.log("Update");
   };
 
@@ -120,58 +121,61 @@ const About = () => {
             <div style="display: inline-block;text-align: left;">
               <ul>
                 <li>
-                  <span class="text-primary">{T("S150")} </span> :
+                  <span class="text-primary">{T("S150")}: </span>
                   <span class="text-dark">
                     <Esp3dVersion />
                   </span>
                   <Button
-                    class="mx-2 tooltip feather-btn"
+                    class="mx-2 tooltip"
                     sm
                     data-tooltip={T("S20")}
                     onClick={onWebUiGit}
                   >
-                    <Github size="0.9rem" />
+                    <Github />
                   </Button>
                   <Button
-                    class="mx-2 tooltip"
+                    class="mx-2 tooltip feather-icon-container"
                     sm
                     data-tooltip={T("S171")}
                     onClick={onWebUiUpdate}
                   >
-                    {T("S25")}
+                    {" "}
+                    <UploadCloud />
+                    <label class="hide-low">{T("S25")}</label>
                   </Button>
                 </li>
                 <li>
-                  <span class="text-primary">{T("FW ver")} </span> :
+                  <span class="text-primary">{T("FW ver")}: </span>
                   <span class="text-dark">
                     {props.find((element) => element.id == "FW ver").value}
                   </span>
                   <Button
-                    class="mx-2 tooltip feather-btn"
+                    class="mx-2 tooltip"
                     sm
                     data-tooltip={T("S20")}
                     onClick={onFWGit}
                   >
-                    <Github size="0.9rem" />
+                    <Github />
                   </Button>
                   <Button
-                    class="mx-2 tooltip"
+                    class="mx-2 tooltip feather-icon-container"
                     sm
                     onClick={onFWUpdate}
                     data-tooltip={T("S172")}
                   >
-                    {T("S25")}
+                    <UploadCloud />
+                    <label class="hide-low">{T("S25")}</label>
                   </Button>
                 </li>
                 <li>
-                  <span class="text-primary">{T("S18")} </span> :
+                  <span class="text-primary">{T("S18")}: </span>
                   <span class="text-dark">{getBrowserInformation()}</span>
                 </li>
                 {props.map(({ id, value }) => {
                   if (id != "FW ver")
                     return (
                       <li>
-                        <span class="text-primary">{T(id)} </span> :
+                        <span class="text-primary">{T(id)}: </span>
                         <span class="text-dark">{T(value)}</span>
                       </li>
                     );
@@ -180,11 +184,13 @@ const About = () => {
             </div>
             <hr />
             <Button
+              class="feather-icon-container"
               onClick={() => {
                 getProps();
               }}
             >
-              {T("S50")}
+              <RefreshCcw />
+              <label class="hide-low">{T("S50")}</label>
             </Button>
           </center>
         </div>

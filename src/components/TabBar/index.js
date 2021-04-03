@@ -23,6 +23,8 @@ import { Link } from "../Router";
 import { T } from "../Translations";
 import { Target } from "../Targets";
 import { useSettingsContext } from "../../contexts";
+import { Eye, Tool } from "preact-feather";
+import { ESP3DLogo } from "../../components/Images/logo";
 
 /*
  * Local const
@@ -31,29 +33,31 @@ import { useSettingsContext } from "../../contexts";
 const defaultLinks = [
   {
     label: "S36",
+    icon: <ESP3DLogo height="24px" />,
     href: "/settings/features",
   },
-  { label: "S17", href: "/settings/interface" },
-  { label: Target, href: "/settings/machine" },
+  { label: "S17", icon: <Eye />, href: "/settings/interface" },
+  { label: Target, icon: <Tool />, href: "/settings/machine" },
 ];
 const TabBar = () => {
   const { settings } = useSettingsContext();
   return (
     <ul class="tab tab-block">
       {defaultLinks &&
-        defaultLinks.map(({ label, href }) => (
+        defaultLinks.map(({ label, icon, href }) => (
           <li class="tab-item">
             <Link
               className={
                 settings.current.connection.FWTarget == 0 &&
                 href == "/settings/machine"
                   ? "d-none"
-                  : "btn btn-link no-box"
+                  : "btn btn-link no-box feather-icon-container"
               }
               activeClassName="active"
               href={href}
             >
-              {T(label)}
+              {icon}
+              <label class="hide-low">{T(label)}</label>
             </Link>
           </li>
         ))}

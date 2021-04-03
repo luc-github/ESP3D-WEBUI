@@ -18,11 +18,28 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useState } from "preact/hooks";
 
 const InterfaceTab = () => {
+  const [mobileView, setMobileView] = useState(false);
+  const toggle = (e) => {
+    if (mobileView) {
+      console.log("Now desktop view");
+      e.target.innerHTML = " On";
+      document.getElementById("app").classList.remove("mobile-view");
+    } else {
+      console.log("Now mobile view");
+      e.target.innerHTML = " Off";
+      document.getElementById("app").classList.add("mobile-view");
+    }
+    setMobileView(!mobileView);
+  };
   return (
     <div id="interface">
       <h2>Interface</h2>
+      <button class="btn" onClick={toggle}>
+        Desktop
+      </button>
     </div>
   );
 };

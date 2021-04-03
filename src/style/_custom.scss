@@ -19,6 +19,9 @@
   transform: translate(-50%, -50%);
 }
 
+.hide-low {
+}
+
 .navbar {
   padding: 0rem;
   padding-left: 15px;
@@ -51,9 +54,9 @@
   }
 }
 
-.feather-btn {
-  padding-top: 0.3rem !important;
-  padding-bottom: 0px !important;
+.feather-icon-container label {
+  vertical-align: top;
+  margin-left: 0.25rem;
 }
 
 .tooltip > svg,
@@ -232,5 +235,15 @@
         margin: 0px $control-padding-x 0px 0px;
       }
     }
+  }
+}
+
+.mobile-view .hide-low {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  .hide-low {
+    display: none !important;
   }
 }

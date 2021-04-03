@@ -28,14 +28,16 @@ import { useSettingsContext, useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { confirmationModal } from "../Modal/confirmModal";
+import { Server, Settings, LogOut } from "preact-feather";
 
 const defaultLinks = [
   {
     label: <ESP3DLogo bgcolor="#ffffff" />,
+    icon: null,
     href: "/about",
   },
-  { label: "S13", href: "/dashboard" },
-  { label: "S14", href: "/settings" },
+  { label: "S13", icon: <Server />, href: "/dashboard" },
+  { label: "S14", icon: <Settings />, href: "/settings" },
 ];
 
 /*
@@ -88,20 +90,23 @@ const Navbar = () => {
       <header class="navbar">
         <section class="navbar-section">
           {defaultLinks &&
-            defaultLinks.map(({ label, href }) => (
+            defaultLinks.map(({ label, icon, href }) => (
               <Link
                 className={
                   href == "/about"
-                    ? "navbar-brand logo no-box"
+                    ? "navbar-brand logo no-box "
                     : settings.current.connection.FWTarget == 0 &&
                       href == "/dashboard"
                     ? "d-none"
-                    : "btn btn-link no-box"
+                    : "btn btn-link no-box feather-icon-container"
                 }
                 activeClassName="active"
                 href={href}
               >
-                {T(label)}
+                {icon}
+                <label class={href == "/about" ? "" : "hide-low"}>
+                  {T(label)}
+                </label>
               </Link>
             ))}
         </section>
@@ -110,11 +115,12 @@ const Navbar = () => {
             className={
               settings.current.connection.Authentication == "Disabled"
                 ? "d-none"
-                : "btn btn-link no-box mx-2"
+                : "btn btn-link no-box mx-2 feather-icon-container"
             }
             onClick={onDisconnect}
           >
-            {T("S151")}
+            <LogOut />
+            <label class="hide-low">{T("S151")}</label>
           </span>
         </section>
       </header>
