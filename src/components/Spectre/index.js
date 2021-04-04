@@ -19,5 +19,6 @@ import Modal from "./Modal";
 import Toast from "./Toast";
 import Button from "./Button";
 import Progress from "./Progress";
+import CenterLeft from "./CenterLeft";
 
-export { Loading, Panel, Modal, Toast, Button, Progress };
+export { Loading, Panel, Modal, Toast, Button, Progress, CenterLeft };

@@ -158,9 +158,26 @@ function getBrowserTime() {
   )}`;
 }
 
+/*
+ * Ugly hack to avoid unwished tab stop to reach button not supposed to be accessed
+ *
+ */
+function disableNode(node, state) {
+  if (!node) return;
+  let nodeList = node.children;
+  if (nodeList) {
+    for (var i = 0; i < nodeList.length; i++) {
+      disableNode(nodeList[i], state);
+    }
+  }
+  if (state) node.setAttribute("disabled", "true");
+  else node.removeAttribute("disabled");
+}
+
 export {
   capitalize,
   createComponent,
+  disableNode,
   espHttpURL,
   generateUID,
   getBrowserTime,

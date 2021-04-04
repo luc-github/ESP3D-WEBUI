@@ -1,9 +1,8 @@
 /*
- DatasContext.js - ESP3D WebUI context file
+ Button.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
- Modified by Luc LEBOSSE 2021
- 
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -16,26 +15,18 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact";
-import { useRef, useContext } from "preact/hooks";
+import { h } from "preact";
 
 /*
  * Local const
  *
  */
-const DatasContext = createContext("DatasContext");
-const useDatasContext = () => useContext(DatasContext);
-
-const DatasContextProvider = ({ children }) => {
-  const dataValues = useRef({ about: [] });
-
-  const store = {
-    datas: dataValues,
-  };
-
+const CenterLeft = ({ children }) => {
   return (
-    <DatasContext.Provider value={store}>{children}</DatasContext.Provider>
+    <center>
+      <div style="display: inline-block;text-align: left;">{children}</div>
+    </center>
   );
 };
 
-export { DatasContextProvider, useDatasContext };
+export default CenterLeft;

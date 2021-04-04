@@ -18,6 +18,7 @@
 import { h } from "preact";
 import { useUiContext } from "../../contexts";
 import { Modal as SpectreModal } from "../Spectre";
+import { disableNode } from "../Helpers";
 
 /*
  * Local const
@@ -25,6 +26,12 @@ import { Modal as SpectreModal } from "../Spectre";
  */
 const Modal = () => {
   const { modals } = useUiContext();
+  if (modals.modalList && modals.modalList.length > 0) {
+    disableNode(document.getElementById("main"), true);
+    disableNode(document.getElementById("info"), true);
+    disableNode(document.getElementById("menu"), true);
+  }
+
   return (
     modals.modalList &&
     modals.modalList.length > 0 &&

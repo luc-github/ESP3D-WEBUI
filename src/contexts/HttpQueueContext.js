@@ -99,6 +99,8 @@ const HttpQueueContextProvider = ({ children }) => {
           authenticate: false,
           page: "notauthenticated",
         });
+      } else if (e.code == 499) {
+        //just do not raise error screen
       } else {
         if (!e.code) {
           connection.setConnectionState({
@@ -108,7 +110,9 @@ const HttpQueueContextProvider = ({ children }) => {
           });
         }
       }
-      if (onFail) onFail(e.message); //to-check
+      if (onFail) {
+        onFail(e.message); //to-check
+      }
       // add toast notification
     } finally {
       //check if need to remove or not

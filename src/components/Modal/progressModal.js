@@ -1,5 +1,5 @@
 /*
- confirmationModal.js - ESP3D WebUI component file
+ progressModal.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
  
@@ -16,42 +16,34 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { HelpCircle } from "preact-feather";
+import { Info } from "preact-feather";
 
-const confirmationModal = ({ modals, title, content, button1, button2 }) => {
+const progressModal = ({ modals, title, button1, content }) => {
   const defaultCb1 = () => {
     modals.removeModal(modals.getModalIndex("confirmation"));
     if (button1 && button1.cb) button1.cb();
   };
-  const defaultCb2 = () => {
-    modals.removeModal(modals.getModalIndex("confirmation"));
-    if (button2 && button2.cb) button2.cb();
-  };
+
   modals.addModal({
-    id: "confirmation",
+    id: "progression",
     title: (
       <div
         class="text-primary feather-icon-container"
         style="line-height:24px!important"
       >
-        <HelpCircle />
+        <Info />
         <label>{title}</label>
       </div>
     ),
     content: content,
     footer: (
-      <div>
-        <button class="btn mx-2" onClick={defaultCb1}>
-          {button1.text}
-        </button>
-        <button class="btn mx-2" onClick={defaultCb2}>
-          {button2.text}
-        </button>
-      </div>
+      <button class="btn mx-2" onClick={defaultCb1}>
+        {button1.text}
+      </button>
     ),
     //overlay: true,
     hideclose: true,
   });
 };
 
-export { confirmationModal };
+export { progressModal };

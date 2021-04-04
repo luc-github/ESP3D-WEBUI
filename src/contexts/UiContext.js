@@ -18,7 +18,11 @@
 */
 import { h, createContext } from "preact";
 import { useContext, useState, useRef } from "preact/hooks";
-import { generateUID, removeEntriesByIDs } from "../components/Helpers";
+import {
+  generateUID,
+  removeEntriesByIDs,
+  disableNode,
+} from "../components/Helpers";
 
 /*
  * Local const
@@ -60,6 +64,10 @@ const UiContextProvider = ({ children }) => {
   const removeModal = (modalIndex) => {
     const newModalList = modals.filter((modal, index) => index !== modalIndex);
     setModal(newModalList);
+    if (newModalList.length == 0)
+      disableNode(document.getElementById("main"), false);
+    disableNode(document.getElementById("info"), false);
+    disableNode(document.getElementById("menu"), false);
   };
 
   const store = {

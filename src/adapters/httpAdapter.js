@@ -70,7 +70,11 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
     };
     xhr.onerror = () =>
       reject(new Error("An error occurred during the transaction"));
-    xhr.onabort = () => reject(new Error("Request aborted"));
+    xhr.onabort = () => {
+      const e = new Error("Request aborted");
+      e.code = 499;
+      reject(e);
+    };
   });
 
   const sendBody = ["POST", "PUT", "CONNECT", "PATCH"].toLocaleString(method)

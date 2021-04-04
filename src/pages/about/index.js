@@ -19,8 +19,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
-import { Loading, Button } from "../../components/Spectre";
+import { useEffect, useState, useRef } from "preact/hooks";
+import { Loading, Button, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
@@ -28,6 +28,8 @@ import { useUiContext, useDatasContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
 import { Github, RefreshCcw, UploadCloud } from "preact-feather";
 import { webUiUrl, fwUrl } from "../../components/Targets";
+import { confirmationModal } from "../../components/Modal/confirmModal";
+import { progressModal } from "../../components/Modal/progressModal";
 
 /*
  * Local const
@@ -36,12 +38,17 @@ import { webUiUrl, fwUrl } from "../../components/Targets";
 //TODO: need to cache the information -> only query if empty or manual refresh
 
 const About = () => {
-  const { toasts } = useUiContext();
-  const { createNewRequest } = useHttpQueue();
+  const { toasts, modals, connection } = useUiContext();
+  const { createNewRequest, abortRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
+  const progressValue = useRef(0);
+  const progressValueDisplay = useRef(0);
   const [props, setProps] = useState([]);
-  const { data } = useDatasContext();
-
+  const [isFwUpdate, setIsFwUpdate] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showProgression, setShowProgression] = useState(false);
+  const { datas } = useDatasContext();
+  const inputFiles = useRef(null);
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(
@@ -51,7 +58,7 @@ const About = () => {
         onSuccess: (result) => {
           const { Status } = JSON.parse(result);
           setProps([...Status]);
-          data.current.about = [...Status];
+          datas.current.about = [...Status];
           setIsLoading(false);
         },
         onFail: (error) => {
@@ -84,31 +91,130 @@ const About = () => {
 
   const onFWUpdate = (e) => {
     e.target.blur();
-
-    console.log("Update");
+    setIsFwUpdate(true);
+    inputFiles.current.value = "";
+    inputFiles.current.setAttribute("accept", ".bin, .bin.gz");
+    inputFiles.current.setAttribute("multiple", "false");
+    inputFiles.current.click();
   };
-
   const onFWGit = (e) => {
     window.open(fwUrl, "_blank");
     e.target.blur();
   };
   const onWebUiUpdate = (e) => {
+    setIsFwUpdate(false);
+    inputFiles.current.value = "";
+    inputFiles.current.setAttribute("accept", "*");
+    inputFiles.current.setAttribute("multiple", "true");
+    inputFiles.current.click();
     e.target.blur();
-    console.log("Update");
   };
-
   const onWebUiGit = (e) => {
     window.open(webUiUrl, "_blank");
     e.target.blur();
   };
+
+  const uploadFiles = () => {
+    const list = inputFiles.current.files;
+    const formData = new FormData();
+    formData.append("path", "/");
+    if (list.length > 0) {
+      for (let i = 0; i < list.length; i++) {
+        const file = list[i];
+        const arg = "/" + file.name + "S";
+        //append file size first to check updload is complete
+        formData.append(arg, file.size);
+        formData.append("myfiles", file, "/" + file.name);
+      }
+    }
+
+    createNewRequest(
+      espHttpURL("files"),
+      { method: "POST", id: "upload", body: formData },
+      {
+        onSuccess: (result) => {
+          modals.removeModal(modals.getModalIndex("upload"));
+          connection.setConnectionState({
+            connected: connection.connectionState.connected,
+            authenticate: false,
+            page: "connecting",
+          });
+          window.location.reload();
+        },
+        onFail: (error) => {
+          modals.removeModal(modals.getModalIndex("upload"));
+          toasts.addToast({ content: error, type: "error" });
+        },
+        onProgress: (e) => {
+          progressValue.current.value = e;
+          progressValueDisplay.current.innerHTML = e + "%";
+        },
+      }
+    );
+
+    setShowProgression(true);
+  };
+
+  const filesSelected = () => {
+    if (inputFiles.current.files.length > 0) {
+      setShowConfirmation(true);
+    }
+  };
+
+  const Progression = () => {
+    return (
+      <CenterLeft>
+        <progress ref={progressValue} value="0" max="100" />
+        <label style="margin-left:15px" ref={progressValueDisplay}></label>
+      </CenterLeft>
+    );
+  };
+
+  if (showProgression) {
+    const title = T("S32");
+    const cancel = T("S28");
+    progressModal({
+      modals,
+      title,
+      button1: { cb: abortRequest, text: cancel },
+      content: <Progression />,
+    });
+    setShowProgression(false);
+  }
+
+  if (showConfirmation) {
+    const title = isFwUpdate ? T("S30") : T("S31");
+    const yes = T("S27");
+    const cancel = T("S28");
+    const list = [...inputFiles.current.files];
+    const content = (
+      <CenterLeft>
+        <ul>
+          {list.reduce((accumulator, currentElement) => {
+            return [...accumulator, <li>{currentElement.name}</li>];
+          }, [])}
+        </ul>
+      </CenterLeft>
+    );
+    confirmationModal({
+      modals,
+      title,
+      content,
+      button1: { cb: uploadFiles, text: yes },
+      button2: { text: cancel },
+    });
+    setShowConfirmation(false);
+  }
+
   useEffect(() => {
-    if (data.current.about.length != 0) {
-      setProps([...data.current.about]);
+    if (datas.current.about.length != 0) {
+      setProps([...datas.current.about]);
       setIsLoading(false);
     } else {
       getProps();
     }
   }, []);
+
   return (
     <div id="about" class="container">
       <h2>{T("S12")}</h2>
@@ -116,73 +222,78 @@ const About = () => {
 
       {!isLoading && props && (
         <div>
+          <input
+            ref={inputFiles}
+            type="file"
+            class="d-none"
+            onChange={filesSelected}
+          />
+          <hr />
+          <CenterLeft>
+            <ul>
+              <li>
+                <span class="text-primary">{T("S150")}: </span>
+                <span class="text-dark">
+                  <Esp3dVersion />
+                </span>
+                <Button
+                  class="mx-2 tooltip"
+                  sm
+                  data-tooltip={T("S20")}
+                  onClick={onWebUiGit}
+                >
+                  <Github />
+                </Button>
+                <Button
+                  class="mx-2 tooltip feather-icon-container"
+                  sm
+                  data-tooltip={T("S171")}
+                  onClick={onWebUiUpdate}
+                >
+                  <UploadCloud />
+                  <label class="hide-low">{T("S25")}</label>
+                </Button>
+              </li>
+              <li>
+                <span class="text-primary">{T("FW ver")}: </span>
+                <span class="text-dark">
+                  {props.find((element) => element.id == "FW ver").value}
+                </span>
+                <Button
+                  class="mx-2 tooltip"
+                  sm
+                  data-tooltip={T("S20")}
+                  onClick={onFWGit}
+                >
+                  <Github />
+                </Button>
+                <Button
+                  class="mx-2 tooltip feather-icon-container"
+                  sm
+                  onClick={onFWUpdate}
+                  data-tooltip={T("S172")}
+                >
+                  <UploadCloud />
+                  <label class="hide-low">{T("S25")}</label>
+                </Button>
+              </li>
+              <li>
+                <span class="text-primary">{T("S18")}: </span>
+                <span class="text-dark">{getBrowserInformation()}</span>
+              </li>
+              {props.map(({ id, value }) => {
+                if (id != "FW ver")
+                  return (
+                    <li>
+                      <span class="text-primary">{T(id)}: </span>
+                      <span class="text-dark">{T(value)}</span>
+                    </li>
+                  );
+              })}
+            </ul>
+          </CenterLeft>
           <hr />
           <center>
-            <div style="display: inline-block;text-align: left;">
-              <ul>
-                <li>
-                  <span class="text-primary">{T("S150")}: </span>
-                  <span class="text-dark">
-                    <Esp3dVersion />
-                  </span>
-                  <Button
-                    class="mx-2 tooltip"
-                    sm
-                    data-tooltip={T("S20")}
-                    onClick={onWebUiGit}
-                  >
-                    <Github />
-                  </Button>
-                  <Button
-                    class="mx-2 tooltip feather-icon-container"
-                    sm
-                    data-tooltip={T("S171")}
-                    onClick={onWebUiUpdate}
-                  >
-                    {" "}
-                    <UploadCloud />
-                    <label class="hide-low">{T("S25")}</label>
-                  </Button>
-                </li>
-                <li>
-                  <span class="text-primary">{T("FW ver")}: </span>
-                  <span class="text-dark">
-                    {props.find((element) => element.id == "FW ver").value}
-                  </span>
-                  <Button
-                    class="mx-2 tooltip"
-                    sm
-                    data-tooltip={T("S20")}
-                    onClick={onFWGit}
-                  >
-                    <Github />
-                  </Button>
-                  <Button
-                    class="mx-2 tooltip feather-icon-container"
-                    sm
-                    onClick={onFWUpdate}
-                    data-tooltip={T("S172")}
-                  >
-                    <UploadCloud />
-                    <label class="hide-low">{T("S25")}</label>
-                  </Button>
-                </li>
-                <li>
-                  <span class="text-primary">{T("S18")}: </span>
-                  <span class="text-dark">{getBrowserInformation()}</span>
-                </li>
-                {props.map(({ id, value }) => {
-                  if (id != "FW ver")
-                    return (
-                      <li>
-                        <span class="text-primary">{T(id)}: </span>
-                        <span class="text-dark">{T(value)}</span>
-                      </li>
-                    );
-                })}
-              </ul>
-            </div>
-            <hr />
             <Button
               class="feather-icon-container"
               onClick={() => {
