@@ -129,7 +129,7 @@ const About = () => {
     }
 
     createNewRequest(
-      espHttpURL("files"),
+      isFwUpdate ? espHttpURL("updatefw") : espHttpURL("files"),
       { method: "POST", id: "upload", body: formData },
       {
         onSuccess: (result) => {
@@ -138,8 +138,14 @@ const About = () => {
             connected: connection.connectionState.connected,
             authenticate: false,
             page: "connecting",
+            timer: isFwUpdate ? 40 : 0,
           });
-          window.location.reload();
+          if (isFwUpdate) {
+            console.log("Refresh in 40s");
+            setTimeout(() => {
+              window.location.reload();
+            }, 40000);
+          } else window.location.reload();
         },
         onFail: (error) => {
           modals.removeModal(modals.getModalIndex("upload"));

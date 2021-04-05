@@ -18,6 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext } from "../contexts";
 import { Loading } from "../components/Spectre";
 import { ESP3DLogo } from "../components/Images/logo";
@@ -39,10 +40,14 @@ import { espHttpURL } from "../components/Helpers";
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
   const { settings } = useSettingsContext();
+  const timer = useRef(0);
+  const timerCtrl = useRef(0);
   let contentIcon;
   let contentSubtitle;
   let contentTitle;
   let contentAction;
+  let intervalTimer = 0;
+  const sec = T("S114");
 
   if (
     !connection.connectionState.connected ||
@@ -146,6 +151,22 @@ const ConnectionContainer = () => {
         contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
+    useEffect(() => {
+      clearInterval(intervalTimer);
+      if (connection.connectionState.timer) {
+        timer.current = connection.connectionState.timer;
+        timerCtrl.current.innerHTML = timer.current + sec;
+        intervalTimer = setInterval(() => {
+          if (timer.current > 0) {
+            timer.current--;
+            timerCtrl.current.innerHTML = timer.current + sec;
+          } else {
+            clearInterval(intervalTimer);
+            timerCtrl.current.innerHTML = "";
+          }
+        }, 1000);
+      }
+    }, []);
     return (
       <div class="empty fullscreen">
         <div class="centered text-primary">
@@ -159,7 +180,10 @@ const ConnectionContainer = () => {
             </div>
           </div>
           <div class="empty-title h5">{contentTitle}</div>
-          <div class="empty-subtitle">{contentSubtitle}</div>
+          <div class="empty-subtitle">
+            {contentSubtitle}
+            <span ref={timerCtrl}></span>
+          </div>
           <div class="empty-action">{contentAction}</div>
         </div>
       </div>
