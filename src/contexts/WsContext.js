@@ -189,15 +189,20 @@ const WsContextProvider = ({ children }) => {
   };
 
   const Disconnect = (reason) => {
-    //connectionState.current = {
-    //  connected: true,
-    //  status: "request disconnection",
-    //  reason: reason,
-    //};
+    connection.setConnectionState({
+      connected: false,
+      authenticate: false,
+      page: reason,
+    });
+    connectionState.current = {
+      connected: false,
+      status: "request disconnection",
+      reason: reason,
+    };
     console.log("request disconnection");
-    //setIsPingStarted(false);
-    //setIsPingPaused(true);
-    //isLogOff.current = true;
+    setIsPingStarted(false);
+    setIsPingPaused(true);
+    isLogOff.current = true;
   };
 
   const onOpenCB = (e) => {
@@ -268,11 +273,6 @@ const WsContextProvider = ({ children }) => {
         //Abort  / Remove all queries
         removeAllRequests();
         //TODO: Stop polling
-        connectionState.current = {
-          connected: false,
-          status: "closed",
-          reason: connectionState.current.reason,
-        };
       }
     }
   }, [connectionState.current]);
