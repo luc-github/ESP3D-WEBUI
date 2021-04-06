@@ -16,6 +16,11 @@ const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 
+const enableAuthentication = false;
+let lastconnection = Date.now();
+let logindone = false;
+const sessiontTime = 30000;
+
 let WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({ port: 81 });
 app.use("/", express.static(serverpath));
@@ -24,8 +29,6 @@ app.use(fileUpload({ preserveExtension: true, debug: false }));
 app.listen(port, () =>
   console.log(expresscolor(`[express] Listening on port ${port}!`))
 );
-
-let logindone = true;
 
 //app.use(express.urlencoded({ extended: false }));
 
@@ -45,9 +48,10 @@ app.post("/login", function (req, res) {
   if (req.body.DISCONNECT == "Yes") {
     res.status(401);
     logindone = false;
-  } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin")
+  } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin") {
     logindone = true;
-  else {
+    lastconnection = Date.now();
+  } else {
     res.status(401);
     logindone = false;
   }
@@ -98,12 +102,16 @@ app.get("/command", function (req, res) {
   console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
   let url = req.query.cmd;
   if (url.startsWith("[ESP800]")) {
-    if (!logindone) res.status(401);
+    if (!logindone && enableAuthentication) {
+      res.status(401);
+    }
+    lastconnection = Date.now();
+
     res.json({
       FWVersion: "3.0.0.a28",
       FWTarget: 40,
       SDConnection: "none",
-      Authentication: "Enabled",
+      Authentication: enableAuthentication ? "Enabled" : "Disabled",
       WebCommunication: "Synchronous",
       WebSocketIP: "localhost",
       WebSocketport: "81",
@@ -118,11 +126,18 @@ app.get("/command", function (req, res) {
     return;
   }
   if (url.indexOf("ESP111") != -1) {
+    if (!logindone && enableAuthentication) {
+      res.status(401);
+    }
+    lastconnection = Date.now();
     res.send("192.168.1.111");
     return;
   }
   if (url.indexOf("ESP420") != -1) {
-    if (!logindone) res.status(401);
+    if (!logindone && enableAuthentication) {
+      res.status(401);
+    }
+    lastconnection = Date.now();
     res.json({
       Status: [
         { id: "chip id", value: "38078" },
@@ -164,6 +179,10 @@ app.get("/command", function (req, res) {
   }
 
   if (url.indexOf("ESP410") != -1) {
+    if (!logindone && enableAuthentication) {
+      res.status(401);
+    }
+    lastconnection = Date.now();
     res.json({
       AP_LIST: [
         {
@@ -182,6 +201,10 @@ app.get("/command", function (req, res) {
   }
 
   if (url.indexOf("ESP400") != -1) {
+    if (!logindone && enableAuthentication) {
+      res.status(401);
+    }
+    lastconnection = Date.now();
     res.json({
       Settings: [
         {
@@ -623,9 +646,21 @@ wss.on("connection", (socket, request) => {
   });
   currentID++;
   socket.on("message", (message) => {
-    console.log(wscolor("[ws] received: %s", message));
+    console.log(wscolor("[ws] received:", message));
+    if (enableAuthentication && message.startsWith("PING:")) {
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          let t = enableAuthentication
+            ? sessiontTime - (Date.now() - lastconnection)
+            : 60000;
+          let remainingtime = t < 0 ? 0 : t;
+          console.log("remain:", remainingtime, "millisec");
+          client.send(`PING:${remainingtime}:60000`);
+        }
+      });
+    }
   });
 });
 wss.on("error", (error) => {
-  console.log(wscolor("[ws] Error: %s", error));
+  console.log(wscolor("[ws] Error:", error));
 });

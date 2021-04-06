@@ -141,7 +141,6 @@ const About = () => {
             timer: isFwUpdate ? 40 : 0,
           });
           if (isFwUpdate) {
-            console.log("Refresh in 40s");
             setTimeout(() => {
               window.location.reload();
             }, 40000);

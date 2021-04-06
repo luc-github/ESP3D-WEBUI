@@ -24,7 +24,7 @@ import { useState } from "preact/hooks";
 import { ESP3DLogo } from "../Images/logo";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { useSettingsContext, useUiContext } from "../../contexts";
+import { useSettingsContext, useUiContext, useWsContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { confirmationModal } from "../Modal/confirmModal";
@@ -49,6 +49,7 @@ const Navbar = () => {
   const { modals } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { Disconnect } = useWsContext();
   const disconnectNow = () => {
     const formData = new FormData();
     formData.append("DISCONNECT", "YES");
@@ -57,10 +58,10 @@ const Navbar = () => {
       { method: "POST", id: "login", body: formData },
       {
         onSuccess: (result) => {
-          //TODO:Need to do something ? TBD
+          Disconnect("sessiontimeout");
         },
         onFail: (error) => {
-          //TODO:Need to do something ? TBD
+          Disconnect("sessiontimeout");
         },
       }
     );

@@ -61,7 +61,6 @@ const ConnectionContainer = () => {
       });
       window.location.href = espHttpURL().toString();
     };
-
     switch (connection.connectionState.page) {
       case "notauthenticated":
         contentTitle = T("S1"); //"Connection error"
@@ -98,11 +97,16 @@ const ConnectionContainer = () => {
           </button>
         );
         break;
+      //Session timeout
+      case "sessiontimeout":
       //Error connection lost
       case "connectionlost":
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
-        contentSubtitle = T("S10"); //"Connection with board is lost"
+        contentSubtitle =
+          connection.connectionState.page == "connectionlost"
+            ? T("S10")
+            : T("S173"); //"Connection with board is lost"
         document.title =
           (settings.current.connection
             ? settings.current.connection.Hostname

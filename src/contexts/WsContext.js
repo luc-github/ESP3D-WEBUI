@@ -31,6 +31,7 @@ import {
   useSettingsContext,
   useHttpQueueContext,
 } from "../contexts";
+import { T } from "../components/Translations";
 
 /*
  * Local const
@@ -38,7 +39,8 @@ import {
  */
 const WsContext = createContext("wsContext");
 const useWsContext = () => useContext(WsContext);
-
+const pingDelay = 5000;
+const maxReconnections = 4;
 const INITIAL_STATE = {
   temp: [],
   files: [],
@@ -62,6 +64,22 @@ const reducer = (state, action) => {
   }
 };
 
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 const WsContextProvider = ({ children }) => {
   const { toasts, connection } = useUiContext();
   const { removeAllRequests } = useHttpQueueContext();
@@ -69,12 +87,15 @@ const WsContextProvider = ({ children }) => {
   const dataBuffer = useRef([]);
   const { settings } = useSettingsContext();
   const parser = useRef(new Parser());
-  const [wsConnection, setWsConnection] = useState();
+  const wsConnection = useRef();
+  const [isPingPaused, setIsPingPaused] = useState(false);
+  const [isPingStarted, setIsPingStarted] = useState(false);
+  const isLogOff = useRef(false);
+  const reconnectCounter = useRef(0);
   const connectionState = useRef({
     connected: false,
     status: "not connected",
     reason: "connecting",
-    attemps: 0,
   });
   const [wsData, setWsData] = useState([]);
 
@@ -90,7 +111,26 @@ const WsContextProvider = ({ children }) => {
     );
   };
 
+  const ping = (start = false) => {
+    if (isLogOff.current) return;
+    if (!isPingStarted) {
+      setIsPingStarted(true);
+    } else {
+      if (start) return;
+    }
+    setTimeout(ping, pingDelay);
+    if (isPingPaused) return;
+    if (wsConnection.current) {
+      if (wsConnection.current.readyState == 1) {
+        const c = getCookie("ESPSESSIONID");
+        const pingmsg = "PING:" + (c.length > 0 ? c : "none");
+        wsConnection.current.send(pingmsg);
+      }
+    }
+  };
+
   const onMessageCB = (e) => {
+    if (isLogOff.current) return;
     const { parse } = parser.current;
     //for binary messages used for terminal
     const stdOutData = e.data;
@@ -105,6 +145,7 @@ const WsContextProvider = ({ children }) => {
       });
     } else {
       //others txt messages
+      console.log(stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {
@@ -114,6 +155,20 @@ const WsContextProvider = ({ children }) => {
           case "ACTIVEID":
             if (eventLine[1] != settings.current.wsID) {
               Disconnect("already connected");
+            }
+            break;
+          case "PING":
+            if (eventLine.length == 3) {
+              if (eventLine[1] <= 0) {
+                Disconnect("sessiontimeout");
+              } else if (eventLine[1] < 30000) {
+                //TODO: Show dialog
+                console.log("under 30 sec : ");
+                toasts.addToast({
+                  content: "Time out:" + Math.floor(eventLine[1] / 1000),
+                  type: "warning",
+                });
+              }
             }
             break;
           default:
@@ -134,68 +189,82 @@ const WsContextProvider = ({ children }) => {
   };
 
   const Disconnect = (reason) => {
-    connectionState.current = {
-      connected: true,
-      status: "request disconnection",
-      reason: reason,
-      attemps: 0,
-    };
+    //connectionState.current = {
+    //  connected: true,
+    //  status: "request disconnection",
+    //  reason: reason,
+    //};
+    console.log("request disconnection");
+    //setIsPingStarted(false);
+    //setIsPingPaused(true);
+    //isLogOff.current = true;
   };
 
   const onOpenCB = (e) => {
+    console.log("open");
     connectionState.current = {
       connected: true,
       status: "connected",
       reason: "",
-      attemps: 0,
     };
+    reconnectCounter.current = 0;
+    ping(true);
   };
 
   const onCloseCB = (e) => {
+    console.log("CloseWS");
     connectionState.current.connected = false;
-    connectionState.current.attemps = connectionState.current.attemps + 1;
+    //seems sometimes it disconnect so wait 3s and reconnect
+    //if it is not a log off
+    if (!isLogOff.current) {
+      console.log("Try close :" + reconnectCounter.current);
+      if (!isPingPaused) reconnectCounter.current++;
+      if (reconnectCounter.current >= maxReconnections) {
+        Disconnect("connectionlost");
+        // window.location.reload();
+      } else {
+        setTimeout(setupWS, 3000);
+      }
+    }
   };
 
   const onErrorCB = (e) => {
-    toasts.addToast({ content: e, type: "error" });
+    reconnectCounter.current++;
+    console.log(e);
+    toasts.addToast({ content: "WS Error", type: "error" });
     connectionState.current = {
       connected: false,
       status: "error",
       reason: "error",
-      attemps: 0,
     };
   };
-
   const setupWS = () => {
     const path =
       settings.current.connection.WebCommunication === "Synchronous"
         ? ""
         : "/ws";
-    const ws = new WebSocket(
+    wsConnection.current = new WebSocket(
       `ws://${settings.current.connection.WebSocketIP}:${settings.current.connection.WebSocketport}${path}`,
       ["arduino"]
     );
-    ws.binaryType = "arraybuffer";
-    setWsConnection(ws);
+    wsConnection.current.binaryType = "arraybuffer";
 
     //Handle msg of ws
-    ws.onopen = (e) => onOpenCB(e);
-    ws.onmessage = (e) => onMessageCB(e);
-    ws.onclose = (e) => onCloseCB(e);
-    ws.onerror = (e) => onErrorCB(e);
+    wsConnection.current.onopen = (e) => onOpenCB(e);
+    wsConnection.current.onmessage = (e) => onMessageCB(e);
+    wsConnection.current.onclose = (e) => onCloseCB(e);
+    wsConnection.current.onerror = (e) => onErrorCB(e);
   };
 
   useEffect(() => {
-    //TODO : handle reconnection if not manual disconnection and not error
-
     if (connectionState.current.status === "request disconnection") {
-      if (wsConnection) {
+      if (wsConnection.current) {
         connection.setConnectionState({
           connected: false,
           authenticate: connection.connectionState.authenticate,
-          page: "already connected",
+          page: connectionState.current.reason,
         });
-        wsConnection.close();
+        wsConnection.current.close();
         //Abort  / Remove all queries
         removeAllRequests();
         //TODO: Stop polling
@@ -203,7 +272,6 @@ const WsContextProvider = ({ children }) => {
           connected: false,
           status: "closed",
           reason: connectionState.current.reason,
-          attemps: connectionState.current.attemps,
         };
       }
     }
@@ -226,12 +294,14 @@ const WsContextProvider = ({ children }) => {
   };
 
   const store = {
-    ws: wsConnection,
+    ws: wsConnection.current,
     state: connectionState,
     data: wsData,
     parsedValues,
     setData,
     addData,
+    setIsPingPaused, //to be used in HTTP queries
+    Disconnect,
   };
 
   return <WsContext.Provider value={store}>{children}</WsContext.Provider>;
