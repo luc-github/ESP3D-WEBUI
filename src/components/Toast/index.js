@@ -19,6 +19,7 @@ import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../contexts";
 import { Toast as SpectreToast } from "../Spectre";
+import { T } from "../Translations";
 
 /*
  * Local const
@@ -56,7 +57,7 @@ const ToastsContainer = () => {
           const { id, type, content } = toast;
           return (
             <Toast remove={toasts.removeToast} index={id} type={type} key={id}>
-              {content}
+              {T(content)}
             </Toast>
           );
         })}

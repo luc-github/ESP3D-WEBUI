@@ -81,7 +81,7 @@ function getCookie(cname) {
 }
 
 const WsContextProvider = ({ children }) => {
-  const { toasts, connection } = useUiContext();
+  const { toasts, connection, dialogs, modals } = useUiContext();
   const { removeAllRequests } = useHttpQueueContext();
   const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
@@ -92,11 +92,6 @@ const WsContextProvider = ({ children }) => {
   const [isPingStarted, setIsPingStarted] = useState(false);
   const isLogOff = useRef(false);
   const reconnectCounter = useRef(0);
-  const connectionState = useRef({
-    connected: false,
-    status: "not connected",
-    reason: "connecting",
-  });
   const [wsData, setWsData] = useState([]);
 
   const splitArrayBufferByLine = (arrayBuffer) => {
@@ -145,7 +140,6 @@ const WsContextProvider = ({ children }) => {
       });
     } else {
       //others txt messages
-      console.log(stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {
@@ -162,12 +156,7 @@ const WsContextProvider = ({ children }) => {
               if (eventLine[1] <= 0) {
                 Disconnect("sessiontimeout");
               } else if (eventLine[1] < 30000) {
-                //TODO: Show dialog
-                console.log("under 30 sec : ");
-                toasts.addToast({
-                  content: "Time out:" + Math.floor(eventLine[1] / 1000),
-                  type: "warning",
-                });
+                dialogs.setShowKeepConnected(true);
               }
             }
             break;
@@ -194,39 +183,31 @@ const WsContextProvider = ({ children }) => {
       authenticate: false,
       page: reason,
     });
-    connectionState.current = {
-      connected: false,
-      status: "request disconnection",
-      reason: reason,
-    };
-    console.log("request disconnection");
     setIsPingStarted(false);
     setIsPingPaused(true);
     isLogOff.current = true;
+    if (wsConnection.current) {
+      wsConnection.current.close();
+    }
+    //Abort  / Remove all queries
+    removeAllRequests();
+    //Clear all opened modals
+    modals.clearModals();
+    //TODO: Stop polling
   };
 
   const onOpenCB = (e) => {
-    console.log("open");
-    connectionState.current = {
-      connected: true,
-      status: "connected",
-      reason: "",
-    };
     reconnectCounter.current = 0;
     ping(true);
   };
 
   const onCloseCB = (e) => {
-    console.log("CloseWS");
-    connectionState.current.connected = false;
     //seems sometimes it disconnect so wait 3s and reconnect
     //if it is not a log off
     if (!isLogOff.current) {
-      console.log("Try close :" + reconnectCounter.current);
       if (!isPingPaused) reconnectCounter.current++;
       if (reconnectCounter.current >= maxReconnections) {
         Disconnect("connectionlost");
-        // window.location.reload();
       } else {
         setTimeout(setupWS, 3000);
       }
@@ -235,13 +216,7 @@ const WsContextProvider = ({ children }) => {
 
   const onErrorCB = (e) => {
     reconnectCounter.current++;
-    console.log(e);
-    toasts.addToast({ content: "WS Error", type: "error" });
-    connectionState.current = {
-      connected: false,
-      status: "error",
-      reason: "error",
-    };
+    toasts.addToast({ content: "S6", type: "error" });
   };
   const setupWS = () => {
     const path =
@@ -262,22 +237,6 @@ const WsContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (connectionState.current.status === "request disconnection") {
-      if (wsConnection.current) {
-        connection.setConnectionState({
-          connected: false,
-          authenticate: connection.connectionState.authenticate,
-          page: connectionState.current.reason,
-        });
-        wsConnection.current.close();
-        //Abort  / Remove all queries
-        removeAllRequests();
-        //TODO: Stop polling
-      }
-    }
-  }, [connectionState.current]);
-
-  useEffect(() => {
     if (settings.current.connection) {
       setupWS();
     }
@@ -295,7 +254,6 @@ const WsContextProvider = ({ children }) => {
 
   const store = {
     ws: wsConnection.current,
-    state: connectionState,
     data: wsData,
     parsedValues,
     setData,

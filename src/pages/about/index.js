@@ -24,7 +24,7 @@ import { Loading, Button, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import { useUiContext, useDatasContext } from "../../contexts";
+import { useUiContext, useDatasContext, useWsContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
 import { Github, RefreshCcw, UploadCloud } from "preact-feather";
 import { webUiUrl, fwUrl } from "../../components/Targets";
@@ -38,7 +38,8 @@ import { progressModal } from "../../components/Modal/progressModal";
 //TODO: need to cache the information -> only query if empty or manual refresh
 
 const About = () => {
-  const { toasts, modals, connection } = useUiContext();
+  const { toasts, modals } = useUiContext();
+  const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
@@ -134,12 +135,7 @@ const About = () => {
       {
         onSuccess: (result) => {
           modals.removeModal(modals.getModalIndex("upload"));
-          connection.setConnectionState({
-            connected: connection.connectionState.connected,
-            authenticate: false,
-            page: "connecting",
-            timer: isFwUpdate ? 40 : 0,
-          });
+          Disconnect(isFwUpdate ? "restart" : "connecting");
           if (isFwUpdate) {
             setTimeout(() => {
               window.location.reload();

@@ -28,11 +28,12 @@ import { useEffect } from "preact/hooks";
 import { T } from "../components/Translations";
 import { PasswordInput } from "../components/Controls";
 import { espHttpURL } from "../components/Helpers";
+import { HelpCircle, AlertCircle } from "preact-feather";
+
 /*
  * Local const
  *
  */
-
 const showLogin = () => {
   const { modals, connection } = useUiContext();
   const { createNewTopRequest, processRequestsNow } = useHttpQueue();
@@ -48,7 +49,7 @@ const showLogin = () => {
       { method: "POST", id: "login", body: formData },
       {
         onSuccess: (result) => {
-          //TODO:Need to do something ? TBD
+          window.location.reload();
         },
         onFail: (error) => {
           //TODO:Need to do something ? TBD
@@ -68,7 +69,15 @@ const showLogin = () => {
   };
   modals.addModal({
     id: "login",
-    title: T("S145"),
+    title: (
+      <div
+        class="text-primary feather-icon-container"
+        style="line-height:24px!important"
+      >
+        <AlertCircle />
+        <label>{T("S145")}</label>
+      </div>
+    ),
     content: (
       <div class="form-horizontal">
         <div class="form-group">
@@ -106,11 +115,64 @@ const showLogin = () => {
   });
 };
 
+const showKeepConnected = () => {
+  const { modals } = useUiContext();
+  const { createNewRequest } = useHttpQueue();
+  const clickKeepConnected = () => {
+    createNewRequest(
+      espHttpURL("command", { PING: "Yes" }).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          //TODO:Need to do something ? TBD
+        },
+        onFail: (error) => {
+          //TODO:Need to do something ? TBD
+        },
+      }
+    );
+    modals.removeModal(modals.getModalIndex("keepconnected"));
+  };
+  const clickCancel = () => {
+    modals.removeModal(modals.getModalIndex("keepconnected"));
+  };
+  if (modals.getModalIndex("keepconnected") == -1)
+    modals.addModal({
+      id: "keepconnected",
+      title: (
+        <div
+          class="text-primary feather-icon-container"
+          style="line-height:24px!important"
+        >
+          <HelpCircle />
+          <label>{T("S145")}</label>
+        </div>
+      ),
+      content: T("S153"),
+      footer: (
+        <div>
+          <button class="btn mx-2" onClick={clickKeepConnected}>
+            {T("S27")}
+          </button>
+          <button class="btn mx-2" onClick={clickCancel}>
+            {T("S28")}
+          </button>
+        </div>
+      ),
+      //overlay: true,
+      hideclose: false,
+    });
+};
+
 const ViewContainer = () => {
-  const { connection, login } = useUiContext();
+  const { connection, login, dialogs } = useUiContext();
   if (login.needLogin == true) {
     login.setNeedLogin(false);
     showLogin();
+  }
+  if (dialogs.showKeepConnected == true) {
+    dialogs.setShowKeepConnected(false);
+    showKeepConnected();
   }
   if (
     connection.connectionState.connected &&

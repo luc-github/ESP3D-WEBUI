@@ -35,6 +35,7 @@ const UiContextProvider = ({ children }) => {
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
   const [needLogin, setNeedLogin] = useState(false);
+  const [showKeepConnected, setShowKeepConnected] = useState(false);
   const [connectionState, setConnectionState] = useState({
     connected: false,
     authenticate: true,
@@ -70,9 +71,19 @@ const UiContextProvider = ({ children }) => {
     disableNode(document.getElementById("menu"), false);
   };
 
+  const clearModals = () => {
+    setModal([]);
+  };
+
   const store = {
     data: [data, setData],
-    modals: { modalList: modals, addModal, removeModal, getModalIndex },
+    modals: {
+      modalList: modals,
+      addModal,
+      removeModal,
+      getModalIndex,
+      clearModals,
+    },
     toasts: { toastList: toasts, addToast, removeToast },
     connection: {
       connectionState,
@@ -82,6 +93,7 @@ const UiContextProvider = ({ children }) => {
       needLogin,
       setNeedLogin,
     },
+    dialogs: { showKeepConnected, setShowKeepConnected },
   };
 
   return <UiContext.Provider value={store}>{children}</UiContext.Provider>;

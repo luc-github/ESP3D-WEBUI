@@ -40,19 +40,24 @@ import { espHttpURL } from "../components/Helpers";
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
   const { settings } = useSettingsContext();
-  const timer = useRef(0);
-  const timerCtrl = useRef(0);
+  const timerCtrl = useRef();
   let contentIcon;
   let contentSubtitle;
   let contentTitle;
   let contentAction;
   let intervalTimer = 0;
-  const sec = T("S114");
 
   if (
     !connection.connectionState.connected ||
     !connection.connectionState.authenticate
   ) {
+    const refreshTimer = () => {
+      if (intervalTimer > 0) {
+        intervalTimer--;
+        if (timerCtrl) timerCtrl.current.innerHTML = intervalTimer;
+        setTimeout(refreshTimer, 1000);
+      }
+    };
     const onclick = (e) => {
       connection.setConnectionState({
         connected: false,
@@ -138,6 +143,32 @@ const ConnectionContainer = () => {
           </button>
         );
         break;
+      //restart
+      case "restart":
+        intervalTimer = 40;
+        setTimeout(refreshTimer, 1000);
+        document.title =
+          (settings.current.connection
+            ? settings.current.connection.Hostname
+            : "ESP3D") +
+          "(" +
+          T("S35") +
+          ")";
+        contentTitle = T("S35"); //"restarting";
+        contentIcon = (
+          <div class="d-inline-block" style="padding:0 20px">
+            <Loading large />
+          </div>
+        );
+        contentSubtitle = (
+          <span>
+            {T("S60")}
+            <span ref={timerCtrl}>40</span>
+            {T("S114")}
+          </span>
+        );
+        contentAction = "";
+        break;
       default:
         document.title =
           (settings.current.connection
@@ -155,22 +186,6 @@ const ConnectionContainer = () => {
         contentSubtitle = T("S60"); //"Please wait..."
         contentAction = "";
     }
-    useEffect(() => {
-      clearInterval(intervalTimer);
-      if (connection.connectionState.timer) {
-        timer.current = connection.connectionState.timer;
-        timerCtrl.current.innerHTML = timer.current + sec;
-        intervalTimer = setInterval(() => {
-          if (timer.current > 0) {
-            timer.current--;
-            timerCtrl.current.innerHTML = timer.current + sec;
-          } else {
-            clearInterval(intervalTimer);
-            timerCtrl.current.innerHTML = "";
-          }
-        }, 1000);
-      }
-    }, []);
     return (
       <div class="empty fullscreen">
         <div class="centered text-primary">
@@ -184,10 +199,7 @@ const ConnectionContainer = () => {
             </div>
           </div>
           <div class="empty-title h5">{contentTitle}</div>
-          <div class="empty-subtitle">
-            {contentSubtitle}
-            <span ref={timerCtrl}></span>
-          </div>
+          <div class="empty-subtitle">{contentSubtitle}</div>
           <div class="empty-action">{contentAction}</div>
         </div>
       </div>
