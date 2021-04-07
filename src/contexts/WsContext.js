@@ -31,7 +31,7 @@ import {
   useSettingsContext,
   useHttpQueueContext,
 } from "../contexts";
-import { T } from "../components/Translations";
+import { getCookie } from "../components/Helpers";
 
 /*
  * Local const
@@ -63,22 +63,6 @@ const reducer = (state, action) => {
       return { ...INITIAL_STATE, ...state };
   }
 };
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
 
 const WsContextProvider = ({ children }) => {
   const { toasts, connection, dialogs, modals } = useUiContext();

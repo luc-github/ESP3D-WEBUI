@@ -107,6 +107,22 @@ const hslToHex = (h, s, l) => {
   return `#${f(0)}${f(8)}${f(4)}`;
 };
 
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 const limitArr = (arr, limit) =>
   arr.slice(
     arr.length - (arr.length <= limit ? arr.length : limit),
@@ -182,6 +198,7 @@ export {
   generateUID,
   getBrowserTime,
   getColClasses,
+  getCookie,
   hslToHex,
   limitArr,
   mergeFlatPrefToNestedSchema,
