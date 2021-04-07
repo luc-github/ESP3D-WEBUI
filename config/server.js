@@ -16,7 +16,7 @@ const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 
-const enableAuthentication = true;
+const enableAuthentication = false;
 let lastconnection = Date.now();
 let logindone = false;
 const sessiontTime = 60000;
@@ -102,10 +102,12 @@ app.get("/command", function (req, res) {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
-  else console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
+  else console.log(commandcolor(`[server]/command : ${url}`));
   if (url.indexOf("PING") != -1) {
     lastconnection = Date.now();
     res.status(200);
+    res.send("ok");
+    console.log(commandcolor(`[server]/command :PING`));
     return;
   }
 

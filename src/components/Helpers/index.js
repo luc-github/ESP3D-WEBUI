@@ -151,6 +151,10 @@ function mergePreferences(json1, json2) {
       ...json1.macros,
       ...json2.macros,
     },
+    custom: {
+      ...json1.custom,
+      ...json2.custom,
+    },
   };
   preferences.settings.extrapanels = {
     ...json1.settings.extrapanels,

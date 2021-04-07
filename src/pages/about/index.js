@@ -24,10 +24,21 @@ import { Loading, Button, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import { useUiContext, useDatasContext, useWsContext } from "../../contexts";
+import {
+  useUiContext,
+  useDatasContext,
+  useWsContext,
+  useSettingsContext,
+} from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
-import { Github, RefreshCcw, UploadCloud } from "preact-feather";
-import { webUiUrl, fwUrl } from "../../components/Targets";
+import {
+  Github,
+  RefreshCcw,
+  UploadCloud,
+  HelpCircle,
+  Info,
+} from "preact-feather";
+import { webUiUrl, fwUrl, Name } from "../../components/Targets";
 import {
   showConfirmationModal,
   showProgressModal,
@@ -37,12 +48,52 @@ import {
  * Local const
  *
  */
-//TODO: need to cache the information -> only query if empty or manual refresh
+const CustomEntry = () => {
+  const { settings } = useSettingsContext();
+  let HelpEntry;
+  let InfoEntry;
+  if (
+    settings.current.interface.custom &&
+    (settings.current.interface.custom.help ||
+      settings.current.interface.custom.information)
+  ) {
+    if (settings.current.interface.custom.help) {
+      const onClickHelp = (e) => {
+        window.open(settings.current.interface.custom.help, "_blank");
+        e.target.blur();
+      };
+      HelpEntry = (
+        <Button class="mx-2" sm onClick={onClickHelp}>
+          <HelpCircle />
+          <label>{T("S72")}</label>
+        </Button>
+      );
+    }
+    if (settings.current.interface.custom.information) {
+      const onClickInfo = (e) => {
+        window.open(settings.current.interface.custom.information, "_blank");
+        e.target.blur();
+      };
+      InfoEntry = (
+        <Button class="mx-2" sm onClick={onClickInfo}>
+          <Info />
+          <label>{T("S123")}</label>
+        </Button>
+      );
+    }
+    return (
+      <li class="feather-icon-container">
+        {HelpEntry} {InfoEntry}
+      </li>
+    );
+  }
+};
 
 const About = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
+  const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
@@ -101,7 +152,12 @@ const About = () => {
     inputFiles.current.click();
   };
   const onFWGit = (e) => {
-    window.open(fwUrl, "_blank");
+    window.open(
+      settings.current.interface.custom.fwurl
+        ? settings.current.interface.custom.fwurl
+        : fwurl,
+      "_blank"
+    );
     e.target.blur();
   };
   const onWebUiUpdate = (e) => {
@@ -220,7 +276,14 @@ const About = () => {
 
   return (
     <div id="about" class="container">
-      <h2>{T("S12")}</h2>
+      <h2>
+        {T("S12").replace(
+          "%s",
+          settings.current.interface.custom.name
+            ? settings.current.interface.custom.name
+            : Name
+        )}
+      </h2>
       {isLoading && <Loading />}
 
       {!isLoading && props && (
@@ -280,6 +343,7 @@ const About = () => {
                   <label class="hide-low">{T("S25")}</label>
                 </Button>
               </li>
+              <CustomEntry />
               <li>
                 <span class="text-primary">{T("S18")}: </span>
                 <span class="text-dark">{getBrowserInformation()}</span>
