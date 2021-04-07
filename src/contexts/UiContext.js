@@ -89,11 +89,13 @@ const UiContextProvider = ({ children }) => {
       connectionState,
       setConnectionState,
     },
-    login: {
+
+    dialogs: {
       needLogin,
       setNeedLogin,
+      showKeepConnected,
+      setShowKeepConnected,
     },
-    dialogs: { showKeepConnected, setShowKeepConnected },
   };
 
   return <UiContext.Provider value={store}>{children}</UiContext.Provider>;

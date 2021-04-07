@@ -32,7 +32,7 @@ const HttpQueueContextProvider = ({ children }) => {
   const requestQueue = useRef([]); // Http queue for every components
   const isBusy = useRef(false);
   const currentRequest = useRef();
-  const { login, connection } = useUiContext();
+  const { dialogs, connection } = useUiContext();
   //Add new Request to queue
   const addInQueue = (newRequest) => {
     requestQueue.current = [...requestQueue.current, newRequest];
@@ -113,7 +113,6 @@ const HttpQueueContextProvider = ({ children }) => {
       if (onFail) {
         onFail(e.message); //to-check
       }
-      // add toast notification
     } finally {
       //check if need to remove or not
       if (!is401Error) {
@@ -126,7 +125,7 @@ const HttpQueueContextProvider = ({ children }) => {
       } else {
         removeRequests("login");
         currentRequest.current = null;
-        login.setNeedLogin(true);
+        dialogs.setNeedLogin(true);
       }
     }
   };

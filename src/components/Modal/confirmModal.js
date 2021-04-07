@@ -18,17 +18,24 @@
 import { h } from "preact";
 import { HelpCircle } from "preact-feather";
 
-const confirmationModal = ({ modals, title, content, button1, button2 }) => {
+const showConfirmationModal = ({
+  modals,
+  title,
+  content,
+  button1,
+  button2,
+}) => {
+  const id = "confirmation";
   const defaultCb1 = () => {
-    modals.removeModal(modals.getModalIndex("confirmation"));
+    modals.removeModal(modals.getModalIndex(id));
     if (button1 && button1.cb) button1.cb();
   };
   const defaultCb2 = () => {
-    modals.removeModal(modals.getModalIndex("confirmation"));
+    modals.removeModal(modals.getModalIndex(id));
     if (button2 && button2.cb) button2.cb();
   };
   modals.addModal({
-    id: "confirmation",
+    id: id,
     title: (
       <div
         class="text-primary feather-icon-container"
@@ -54,4 +61,4 @@ const confirmationModal = ({ modals, title, content, button1, button2 }) => {
   });
 };
 
-export { confirmationModal };
+export { showConfirmationModal };

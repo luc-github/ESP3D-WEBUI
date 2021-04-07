@@ -27,7 +27,7 @@ import { T } from "../Translations";
 import { useSettingsContext, useUiContext, useWsContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { confirmationModal } from "../Modal/confirmModal";
+import { showConfirmationModal } from "../Modal";
 import { Server, Settings, LogOut } from "preact-feather";
 
 const defaultLinks = [
@@ -72,7 +72,7 @@ const Navbar = () => {
     const yes = T("S27");
     const cancel = T("S28");
 
-    confirmationModal({
+    showConfirmationModal({
       modals,
       title,
       content,

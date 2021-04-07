@@ -28,8 +28,10 @@ import { useUiContext, useDatasContext, useWsContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
 import { Github, RefreshCcw, UploadCloud } from "preact-feather";
 import { webUiUrl, fwUrl } from "../../components/Targets";
-import { confirmationModal } from "../../components/Modal/confirmModal";
-import { progressModal } from "../../components/Modal/progressModal";
+import {
+  showConfirmationModal,
+  showProgressModal,
+} from "../../components/Modal";
 
 /*
  * Local const
@@ -174,7 +176,7 @@ const About = () => {
   if (showProgression) {
     const title = T("S32");
     const cancel = T("S28");
-    progressModal({
+    showProgressModal({
       modals,
       title,
       button1: { cb: abortRequest, text: cancel },
@@ -197,7 +199,7 @@ const About = () => {
         </ul>
       </CenterLeft>
     );
-    confirmationModal({
+    showConfirmationModal({
       modals,
       title,
       content,

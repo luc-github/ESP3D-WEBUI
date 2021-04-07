@@ -74,7 +74,8 @@ const useSettings = () => {
             authenticate: false,
             page: "error",
           });
-          toasts.addToast({ content: error, type: "error" });
+          if (!error.startsWith("401"))
+            toasts.addToast({ content: error, type: "error" });
         },
       }
     );

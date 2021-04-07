@@ -16,10 +16,10 @@ const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 
-const enableAuthentication = false;
+const enableAuthentication = true;
 let lastconnection = Date.now();
 let logindone = false;
-const sessiontTime = 30000;
+const sessiontTime = 60000;
 
 let WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({ port: 81 });
@@ -99,9 +99,17 @@ app.get("/config", function (req, res) {
 });
 
 app.get("/command", function (req, res) {
-  console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
-  let url = req.query.cmd;
-  if (url.startsWith("[ESP800]")) {
+  let url = req.query.cmd ? req.query.cmd : req.originalUrl;
+  if (req.query.cmd)
+    console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
+  else console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
+  if (url.indexOf("PING") != -1) {
+    lastconnection = Date.now();
+    res.status(200);
+    return;
+  }
+
+  if (url.indexOf("ESP800") != -1) {
     if (!logindone && enableAuthentication) {
       res.status(401);
     }

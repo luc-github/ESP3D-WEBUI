@@ -19,6 +19,10 @@ import { h } from "preact";
 import { useUiContext } from "../../contexts";
 import { Modal as SpectreModal } from "../Spectre";
 import { disableNode } from "../Helpers";
+import { showConfirmationModal } from "./confirmModal";
+import { showKeepConnected } from "./keepConnectedModal";
+import { showLogin } from "./logginModal";
+import { showProgressModal } from "./progressModal";
 
 /*
  * Local const
@@ -69,4 +73,10 @@ const Modal = () => {
   );
 };
 
-export { Modal };
+export {
+  Modal,
+  showConfirmationModal,
+  showKeepConnected,
+  showLogin,
+  showProgressModal,
+};
