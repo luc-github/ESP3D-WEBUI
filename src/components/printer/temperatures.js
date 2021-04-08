@@ -167,15 +167,9 @@ function processTemperatures(buffer) {
                 parseFloat(buffer.heaters[index]) < 5
             )
                 value = "error"
-            else
-                value = parseFloat(buffer.heaters[index])
-                    .toFixed(2)
-                    .toString()
+            else value = parseFloat(buffer.heaters[index]).toFixed(2).toString()
             if (isNaN(parseFloat(buffer.active[index]))) value2 = "0.00"
-            else
-                value2 = parseFloat(buffer.active[index])
-                    .toFixed(2)
-                    .toString()
+            else value2 = parseFloat(buffer.active[index]).toFixed(2).toString()
             //FIXME - TODO
             //how to detect chamber with M408?
             if (tool.startsWith("T") || tool.startsWith("B")) {
@@ -204,18 +198,12 @@ function processTemperatures(buffer) {
             var value2
             if (
                 (isNaN(parseFloat(result[4])) || parseFloat(result[4]) < 5) &&
-                result[4] != "0.0"
+                parseInt(result[4]) != 0
             )
                 value = "error"
-            else
-                value = parseFloat(result[4])
-                    .toFixed(2)
-                    .toString()
+            else value = parseFloat(result[4]).toFixed(2).toString()
             if (isNaN(parseFloat(result[6]))) value2 = "0.00"
-            else
-                value2 = parseFloat(result[6])
-                    .toFixed(2)
-                    .toString()
+            else value2 = parseFloat(result[6]).toFixed(2).toString()
             if (
                 tool.startsWith("T") ||
                 tool.startsWith("B") ||
@@ -251,9 +239,16 @@ function processTemperatures(buffer) {
                             default:
                                 break
                         }
+                        console.log(
+                            tool[0],
+                            " ",
+                            esp3dSettings.serialprotocol,
+                            " ",
+                            value
+                        )
                         if (
                             !(
-                                value == "0.00" &&
+                                parseInt(value) == 0 &&
                                 esp3dSettings.serialprotocol == "MKS"
                             )
                         )
@@ -263,7 +258,7 @@ function processTemperatures(buffer) {
                                 target: value2,
                             })
                     } else {
-                        console.log("no dispatch")
+                        console.log("no dispatch--------")
                     }
                 }
             }
@@ -516,25 +511,25 @@ const TemperatureSlider = ({ id, type, index }) => {
             typeof TC[index].target != "undefined" ? TC[index].target : "0.00"
     }
 
-    const onInputTemperatureSlider = e => {
+    const onInputTemperatureSlider = (e) => {
         document.getElementById(id + "_input").value = e.target.value
         currentTemperature[type][index] = e.target.value
         updateState(e.target.value, id)
     }
-    const onInputTemperatureInput = e => {
+    const onInputTemperatureInput = (e) => {
         document.getElementById(id + "_slider").value = e.target.value
         currentTemperature[type][index] = e.target.value
         updateState(e.target.value, id)
     }
-    const onSet = e => {
+    const onSet = (e) => {
         setTemperature(currentTemperature[type][index], type, index)
     }
 
-    const onStop = e => {
+    const onStop = (e) => {
         setTemperature(0, type, index)
     }
 
-    const onChange = e => {
+    const onChange = (e) => {
         if (e.target.value.length > 0) {
             document.getElementById(id + "_input").value = e.target.value
             currentTemperature[type][index] = e.target.value
@@ -694,7 +689,7 @@ const TemperatureSlider = ({ id, type, index }) => {
 const TemperaturesGraphs = ({ visible }) => {
     const { TT, TB, TC, TList } = useStoreon("TT", "TB", "TC", "TList")
     if (!visible) return null
-    const exportcharts = e => {
+    const exportcharts = (e) => {
         let data, file
         let nb = 0
         const filename = "esp3dcharts.csv"
@@ -781,13 +776,13 @@ const TemperaturesGraphs = ({ visible }) => {
             a.download = filename
             document.body.appendChild(a)
             a.click()
-            setTimeout(function() {
+            setTimeout(function () {
                 document.body.removeChild(a)
                 window.URL.revokeObjectURL(url)
             }, 0)
         }
     }
-    const clearcharts = e => {
+    const clearcharts = (e) => {
         const { dispatch } = useStoreon()
         dispatch("temperatures/clear")
         fillCharts(true)
@@ -1110,18 +1105,18 @@ const TemperaturesPanel = () => {
     if (!showTemperatures) {
         return null
     }
-    const onClose = e => {
+    const onClose = (e) => {
         const { dispatch } = useStoreon()
         dispatch("panel/showtemperatures", false)
     }
-    const onToogleView = e => {
+    const onToogleView = (e) => {
         graphsView = !graphsView
         showDialog({ displayDialog: false, refreshPage: true })
     }
 
     let panelClass = "order-" + index + " w-100 panelCard"
 
-    const onStopAll = e => {
+    const onStopAll = (e) => {
         if (typeof currentTemperature["extruder"] != "undefined") {
             for (let i = 0; i < currentTemperature["extruder"].length; i++)
                 setTemperature(0, "extruder", i)
