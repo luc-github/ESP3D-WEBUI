@@ -64,6 +64,6 @@ prettier --config .prettierrc --write "{src/**/,webpack/**/}*.js"
 prettier --config .prettierrc --write src/**/*.html"
 
 # Chat
-ESP3D is now on discord https://discord.gg/Z4ujTwE
+ESP3D is now on [![Discord server](https://img.shields.io/discord/752822148795596940?color=blue&label=discord&logo=discord)](https://discord.gg/Z4ujTwE)   
 
  
