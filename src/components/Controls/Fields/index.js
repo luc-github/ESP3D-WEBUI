@@ -19,7 +19,9 @@
 */
 import { h } from "preact";
 
-import { PasswordInput } from "./passwordinput";
-import { Field } from "./Field";
+import Boolean from "./Boolean";
+import FormGroup from "./FormGroup";
+import Input from "./Input";
+import Select from "./Select";
 
-export { PasswordInput, Field };
+export { Boolean, FormGroup, Input, Select };

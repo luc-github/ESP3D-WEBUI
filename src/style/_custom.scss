@@ -9,7 +9,9 @@
 .fullscreen {
   height: 100vh;
 }
-
+.flex-wrap .form-label {
+  margin-right: 10px;
+}
 .centered {
   position: fixed;
   top: 50%;
@@ -62,6 +64,94 @@
 .tooltip > svg,
 .tooltip > span {
   pointer-events: none;
+}
+
+.form-group .form-label,
+.form-switch {
+  cursor: pointer;
+  user-select: none;
+}
+
+.flex-wrap {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.flex-cols {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.has-modification svg {
+  color: $warning-color;
+}
+
+.has-error svg {
+  color: $error-color;
+}
+
+.has-success svg {
+  color: $success-color;
+}
+
+.has-modification label,
+.has-modification .form-input-hint,
+.is-modified + .form-input-hint {
+  color: $warning-color;
+}
+
+.has-modification .form-input,
+.form-input.is-modified,
+.has-modification .form-select,
+.form-select.is-modified {
+  background: #fffaf7;
+  border-color: $warning-color;
+}
+
+.has-modification .form-input:focus,
+.form-input.is-modified:focus,
+.has-modification .form-select:focus,
+.form-select.is-modified:focus {
+  box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
+}
+
+.has-modification .form-checkbox .form-icon,
+.form-checkbox.is-modified .form-icon,
+.has-modification .form-radio .form-icon,
+.form-radio.is-modified .form-icon,
+.has-modification .form-switch .form-icon,
+.form-switch.is-modified .form-icon {
+  border-color: $warning-color;
+}
+
+.has-modification .form-checkbox input:checked + .form-icon,
+.form-checkbox.is-modified input:checked + .form-icon,
+.has-modification .form-radio input:checked + .form-icon,
+.form-radio.is-modified input:checked + .form-icon,
+.has-modification .form-switch input:checked + .form-icon,
+.form-switch.is-modified input:checked + .form-icon {
+  background: $warning-color;
+  border-color: $warning-color;
+}
+
+.has-modification .form-checkbox input:focus + .form-icon,
+.form-checkbox.is-modified input:focus + .form-icon,
+.has-modification .form-radio input:focus + .form-icon,
+.form-radio.is-modified input:focus + .form-icon,
+.has-modification .form-switch input:focus + .form-icon,
+.form-switch.is-modified input:focus + .form-icon {
+  border-color: $warning-color;
+  box-shadow: 0 0 0 0.1rem rgba(232, 86, 0, 0.2);
+}
+
+.has-modification .form-checkbox input:indeterminate + .form-icon,
+.form-checkbox.is-modified input:indeterminate + .form-icon {
+  background: $warning-color;
+  border-color: $warning-color;
 }
 
 #dashboard {

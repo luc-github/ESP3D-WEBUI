@@ -18,7 +18,7 @@ import { useTranslationsContext } from "../../contexts";
 
 /*
  * Give text from id according language selection
- * give languag base text if no corresponding id
+ * give language base text if no corresponding id
  */
 function T(id) {
   const { currentLanguage, baseLangRessource } = useTranslationsContext();

@@ -18,11 +18,48 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useState } from "preact/hooks";
+import { Field } from "../../components/Controls";
 
 const FeaturesTab = () => {
+  const [val, setVal] = useState(true);
+  const [validation, setValidation] = useState(null);
+  const [valI, setValI] = useState("test");
+  const [validationI, setValidationI] = useState(null);
+  const setValue = (val) => {
+    setVal(val);
+    if (val)
+      setValidation({ message: "modified", valid: true, modified: true });
+    else setValidation(null);
+  };
+  const setValueI = (val) => {
+    setValI(val);
+    console.log(val);
+    if (val != "yes")
+      setValidationI({ message: "modified", valid: true, modified: false });
+    else setValidationI(null);
+  };
   return (
     <div id="features">
       <h2>Features</h2>
+      <Field
+        type="boolean"
+        label="my check"
+        id="checkbox"
+        value={val}
+        style="width:15rem"
+        setValue={setValue}
+        validation={validation}
+      />
+      <Field
+        type="password"
+        label="my input"
+        id="password"
+        value={valI}
+        style="width:15rem"
+        setValue={setValueI}
+        validation={validationI}
+      />
     </div>
   );
 };

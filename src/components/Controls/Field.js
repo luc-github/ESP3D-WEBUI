@@ -1,7 +1,8 @@
 /*
- Button.js - ESP3D WebUI component file
+Field.js - ESP3D WebUI component file
 
- Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
+ Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ Modified by Luc LEBOSSE 2021
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -15,18 +16,32 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 import { h } from "preact";
+import { FormGroup, Input, Select, Boolean } from "./Fields";
 
-/*
- * Local const
- *
- */
-const CenterLeft = ({ children }) => {
-  return (
-    <center>
-      <div style="display: inline-block;text-align: left;">{children}</div>
-    </center>
-  );
+export const Field = (props) => {
+  const { type } = props;
+  switch (type) {
+    case "select":
+      return (
+        <FormGroup {...props}>
+          <Select {...props} />
+        </FormGroup>
+      );
+    case "boolean":
+      return (
+        <FormGroup {...props}>
+          <Boolean {...props} />
+        </FormGroup>
+      );
+    default:
+      //input
+      return (
+        <FormGroup {...props}>
+          <Input {...props} />
+        </FormGroup>
+      );
+  }
 };
-
-export default CenterLeft;
+export default Field;
