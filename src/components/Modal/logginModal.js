@@ -16,8 +16,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useRef } from "preact/hooks";
 import { Lock } from "preact-feather";
-import { PasswordInput } from "../Controls";
+import { Field } from "../Controls";
 import { useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { T } from "../../components/Translations";
@@ -31,13 +32,19 @@ const showLogin = () => {
   const { modals, connection } = useUiContext();
   const { createNewTopRequest, processRequestsNow } = useHttpQueue();
   const id = "login";
+  const loginValue = useRef();
+  const passwordValue = useRef();
+  const setLogin = (val) => {
+    loginValue.current = val;
+  };
+  const setPassword = (val) => {
+    passwordValue.current = val;
+  };
   const clickLogin = () => {
-    const login = document.getElementById("login").value.trim();
-    const password = document.getElementById("password").value.trim();
     const formData = new FormData();
     formData.append("SUBMIT", "YES");
-    formData.append("USER", login);
-    formData.append("PASSWORD", password);
+    formData.append("USER", loginValue.current.trim());
+    formData.append("PASSWORD", passwordValue.current.trim());
     createNewTopRequest(
       espHttpURL("login").toString(),
       { method: "POST", id: id, body: formData },
@@ -75,24 +82,24 @@ const showLogin = () => {
       ),
       content: (
         <div class="form-horizontal">
-          <div class="form-group">
-            <label class="form-label text-primary p-2" for="login">
-              {T("S146")}:
-            </label>
-            <input
-              class="form-input"
-              style="width:15rem"
-              type="text"
-              id="login"
-              placeholder="admin/user"
-            />
-          </div>
-          <div class="form-group">
-            <label class="form-label text-primary p-2" for="password">
-              {T("S147")}:
-            </label>
-            <PasswordInput id="password" />
-          </div>
+          <Field
+            type="text"
+            id="login"
+            value={loginValue.current}
+            label={T("S146")}
+            style="width:15rem"
+            setValue={setLogin}
+            inline
+          />
+          <Field
+            type="password"
+            label={T("S147")}
+            id="password"
+            value={passwordValue.current}
+            style="width:15rem"
+            setValue={setPassword}
+            inline
+          />
         </div>
       ),
       footer: (

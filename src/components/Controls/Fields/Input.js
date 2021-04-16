@@ -18,7 +18,7 @@
 */
 
 import { h } from "preact";
-import { useState, useEffect } from "preact/hooks";
+import { useRef, useEffect } from "preact/hooks";
 import { Eye, EyeOff } from "preact-feather";
 
 const Input = ({
@@ -29,13 +29,15 @@ const Input = ({
   setValue,
   ...rest
 }) => {
-  const [isReveal, setIsReveal] = useState(false);
+  const isReveal = useRef(false);
   const onInput = (e) => {
-    if (setValue) setValue(e.target.value);
+    if (setValue) {
+      setValue(e.target.value);
+    }
   };
   const clickReveal = () => {
-    setIsReveal(!isReveal);
-    document.getElementById(id).type = isReveal ? "password" : "text";
+    isReveal.current = !isReveal.current;
+    document.getElementById(id).type = isReveal.current ? "text" : "password";
   };
   const props = {
     type,
@@ -63,7 +65,7 @@ const Input = ({
           value={value}
           onCLick={clickReveal}
         >
-          {isReveal ? (
+          {isReveal.current ? (
             <EyeOff size="1rem" class="has-error" />
           ) : (
             <Eye size="1rem" class="has-error" />

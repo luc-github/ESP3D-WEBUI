@@ -19,7 +19,6 @@
 */
 import { h } from "preact";
 
-import { PasswordInput } from "./passwordinput";
 import { Field } from "./Field";
 
-export { PasswordInput, Field };
+export { Field };
