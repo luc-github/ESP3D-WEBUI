@@ -26,6 +26,18 @@ const FeaturesTab = () => {
   const [validation, setValidation] = useState(null);
   const [valI, setValI] = useState("test");
   const [validationI, setValidationI] = useState(null);
+  const [valS, setValS] = useState(1);
+  const [validationS, setValidationS] = useState(null);
+  const setValueS = (val) => {
+    setValS(val);
+    if (val == 2)
+      setValidationS({ message: "modified", valid: true, modified: true });
+    else if (val == 3)
+      setValidationS({ message: "error", valid: false, modified: true });
+    else if (val == 4)
+      setValidationS({ message: "success", valid: true, modified: false });
+    else setValidationS(null);
+  };
   const setValue = (val) => {
     setVal(val);
     if (val)
@@ -34,7 +46,6 @@ const FeaturesTab = () => {
   };
   const setValueI = (val) => {
     setValI(val);
-    console.log(val);
     if (val != "yes")
       setValidationI({ message: "modified", valid: true, modified: false });
     else setValidationI(null);
@@ -59,6 +70,22 @@ const FeaturesTab = () => {
         style="width:15rem"
         setValue={setValueI}
         validation={validationI}
+      />
+      <Field
+        type="select"
+        label="my selection"
+        id="selector"
+        value={valS}
+        options={[
+          { label: "value 1", value: 1 },
+          { label: "value 2", value: 2 },
+          { label: "value 3", value: 3 },
+          { label: "value 4", value: 4 },
+        ]}
+        style="width:15rem"
+        setValue={setValueS}
+        validation={validationS}
+        inline
       />
     </div>
   );

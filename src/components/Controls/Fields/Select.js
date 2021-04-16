@@ -2,6 +2,7 @@
  Select.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ Modified by Luc LEBOSSE 2021
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -17,6 +18,7 @@
 */
 
 import { h } from "preact";
+import { useEffect } from "preact/hooks";
 
 const Option = ({ label, ...props }) => <option {...props}>{label}</option>;
 
@@ -24,7 +26,8 @@ const Select = ({
   label = "",
   id = "",
   options = [],
-  horizontal,
+  inline,
+  setValue,
   value,
   ...rest
 }) => {
@@ -33,9 +36,22 @@ const Select = ({
     id,
     name: id,
   };
+  const onChange = (e) => {
+    if (setValue) setValue(e.target.value);
+  };
+  useEffect(() => {
+    //to update state
+    if (setValue) setValue(value);
+  }, []);
 
   return (
-    <select class="form-select" {...props} {...rest} value={value}>
+    <select
+      class="form-select"
+      {...props}
+      {...rest}
+      value={value}
+      onChange={onChange}
+    >
       {optionList}
     </select>
   );
