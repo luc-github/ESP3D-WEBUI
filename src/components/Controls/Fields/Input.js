@@ -18,8 +18,30 @@
 */
 
 import { h } from "preact";
-import { useRef, useEffect } from "preact/hooks";
+import { useRef, useState, useEffect } from "preact/hooks";
 import { Eye, EyeOff } from "preact-feather";
+
+const Reveal = ({ applyTo }) => {
+  const [reveal, setReveal] = useState(false);
+  const clickReveal = () => {
+    setReveal(!reveal);
+    //note: reveal is not yet updated so need to upside down compare to use effect
+    applyTo.current.type = reveal ? "password" : "text";
+  };
+  useEffect(() => {
+    //for consistency in case of redraw
+    applyTo.current.type = reveal ? "text" : "password";
+  }, []);
+  return (
+    <div class="form-icon passwordReveal" onCLick={clickReveal}>
+      {reveal ? (
+        <EyeOff size="1rem" class="has-error" style="margin-top:0.15rem" />
+      ) : (
+        <Eye size="1rem" class="has-error" style="margin-top:0.15rem" />
+      )}
+    </div>
+  );
+};
 
 const Input = ({
   label = "",
@@ -29,16 +51,13 @@ const Input = ({
   setValue,
   ...rest
 }) => {
-  const isReveal = useRef(false);
+  const inputref = useRef();
   const onInput = (e) => {
     if (setValue) {
       setValue(e.target.value);
     }
   };
-  const clickReveal = () => {
-    isReveal.current = !isReveal.current;
-    document.getElementById(id).type = isReveal.current ? "text" : "password";
-  };
+
   const props = {
     type,
     id,
@@ -53,24 +72,14 @@ const Input = ({
     return (
       <div class="has-icon-right" {...rest}>
         <input
+          ref={inputref}
           class="form-input"
           {...props}
           placeholder=""
           {...rest}
           onInput={onInput}
         />
-        <div
-          class="form-icon passwordReveal"
-          id="iconreveal"
-          value={value}
-          onCLick={clickReveal}
-        >
-          {isReveal.current ? (
-            <EyeOff size="1rem" class="has-error" />
-          ) : (
-            <Eye size="1rem" class="has-error" />
-          )}
-        </div>
+        <Reveal applyTo={inputref} />
       </div>
     );
   else
