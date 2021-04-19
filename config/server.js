@@ -16,7 +16,7 @@ const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 
-const enableAuthentication = true;
+const enableAuthentication = false;
 let lastconnection = Date.now();
 let logindone = false;
 const sessiontTime = 60000;

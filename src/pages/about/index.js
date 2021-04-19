@@ -35,7 +35,7 @@ import {
   Github,
   RefreshCcw,
   UploadCloud,
-  HelpCircle,
+  LifeBuoy,
   Info,
 } from "preact-feather";
 import { webUiUrl, fwUrl, Name } from "../../components/Targets";
@@ -64,7 +64,7 @@ const CustomEntry = () => {
       };
       HelpEntry = (
         <Button class="mx-2" sm onClick={onClickHelp}>
-          <HelpCircle />
+          <LifeBuoy />
           <label>{T("S72")}</label>
         </Button>
       );
