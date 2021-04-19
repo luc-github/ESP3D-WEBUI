@@ -34,6 +34,7 @@ npm run dev
 ```
 
 will open http://localhost:8088
+
 Back end query server is localhost:8080, websocket server is localhost:81
 
 ### Build index.html.gz to /dist folder
