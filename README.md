@@ -1,7 +1,7 @@
 # ESP3D-WEBUI 3.0
 
-using Preact per @aganov suggestion   
-Rewrite per @alxblog suggestion to use proper Preactjs API and lighter code: use spectre.css instead of bootstrap 4.x   
+using Preact per @aganov suggestion  
+Rewrite per @alxblog suggestion to use proper Preactjs API and lighter code: use spectre.css instead of bootstrap 4.x
 
 ## In development / pre-alpha stage - NOT ready to test...
 
@@ -9,14 +9,14 @@ Rewrite per @alxblog suggestion to use proper Preactjs API and lighter code: use
 
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v14.15.4)
+1 - Install current nodejs LTS (currently using v14.16.1)
 
 ```
 node -v
-v12.18.3
+v14.16.1
 
 npm -v
-6.14.10
+6.14.12
 ```
 
 2 - Download all necessary packages in ESP3D-WEBUI directory (repository root)
@@ -33,7 +33,7 @@ in ESP3D-WEBUI directory (repository root)
 npm run dev
 ```
 
-will open http://localhost:3000
+will open http://localhost:8088
 Back end query server is localhost:8080, websocket server is localhost:81
 
 ### Build index.html.gz to /dist folder
