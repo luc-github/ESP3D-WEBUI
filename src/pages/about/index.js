@@ -20,7 +20,7 @@
 */
 import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { Loading, Button, CenterLeft } from "../../components/Spectre";
+import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
@@ -63,10 +63,12 @@ const CustomEntry = () => {
         e.target.blur();
       };
       HelpEntry = (
-        <Button class="mx-2" sm onClick={onClickHelp}>
-          <LifeBuoy />
-          <label>{T("S72")}</label>
-        </Button>
+        <ButtonImg
+          mx2
+          icon={<LifeBuoy />}
+          label={T("S72")}
+          onClick={onClickHelp}
+        />
       );
     }
     if (settings.current.interface.custom.information) {
@@ -75,10 +77,12 @@ const CustomEntry = () => {
         e.target.blur();
       };
       InfoEntry = (
-        <Button class="mx-2" sm onClick={onClickInfo}>
-          <Info />
-          <label>{T("S123")}</label>
-        </Button>
+        <ButtonImg
+          mx2
+          icon={<Info />}
+          label={T("S123")}
+          onClick={onClickInfo}
+        />
       );
     }
     return (
@@ -302,46 +306,46 @@ const About = () => {
                 <span class="text-dark">
                   <Esp3dVersion />
                 </span>
-                <Button
-                  class="mx-2 tooltip"
+                <ButtonImg
                   sm
+                  mx2
+                  tooltip
                   data-tooltip={T("S20")}
+                  icon={<Github />}
                   onClick={onWebUiGit}
-                >
-                  <Github />
-                </Button>
-                <Button
-                  class="mx-2 tooltip feather-icon-container"
+                />
+                <ButtonImg
                   sm
+                  mx2
+                  tooltip
                   data-tooltip={T("S171")}
+                  icon={<UploadCloud />}
+                  label={T("S25")}
                   onClick={onWebUiUpdate}
-                >
-                  <UploadCloud />
-                  <label class="hide-low">{T("S25")}</label>
-                </Button>
+                />
               </li>
               <li>
                 <span class="text-primary">{T("FW ver")}: </span>
                 <span class="text-dark">
                   {props.find((element) => element.id == "FW ver").value}
                 </span>
-                <Button
-                  class="mx-2 tooltip"
+                <ButtonImg
                   sm
+                  mx2
+                  tooltip
                   data-tooltip={T("S20")}
+                  icon={<Github />}
                   onClick={onFWGit}
-                >
-                  <Github />
-                </Button>
-                <Button
-                  class="mx-2 tooltip feather-icon-container"
+                />
+                <ButtonImg
                   sm
-                  onClick={onFWUpdate}
+                  mx2
+                  tooltip
                   data-tooltip={T("S172")}
-                >
-                  <UploadCloud />
-                  <label class="hide-low">{T("S25")}</label>
-                </Button>
+                  icon={<UploadCloud />}
+                  label={T("S25")}
+                  onClick={onFWUpdate}
+                />
               </li>
               <CustomEntry />
               <li>
@@ -361,15 +365,13 @@ const About = () => {
           </CenterLeft>
           <hr />
           <center>
-            <Button
-              class="feather-icon-container"
+            <ButtonImg
+              icon={<RefreshCcw />}
+              label={T("S50")}
               onClick={() => {
                 getProps();
               }}
-            >
-              <RefreshCcw />
-              <label class="hide-low">{T("S50")}</label>
-            </Button>
+            />
           </center>
         </div>
       )}

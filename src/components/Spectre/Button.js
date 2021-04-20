@@ -36,7 +36,18 @@ const modifiers = {
   active: "active",
   disable: "disable",
   loading: "loading",
+  tooltip: "tooltip",
+  mx2: "mx-2",
 };
 const Button = createComponent("button", "btn", modifiers);
 
-export default Button;
+const ButtonImg = ({ label, icon, ...rest }) => {
+  return (
+    <Button class="feather-icon-container" {...rest}>
+      {icon}
+      {label && <label class="hide-low">{label}</label>}
+    </Button>
+  );
+};
+
+export { Button, ButtonImg };
