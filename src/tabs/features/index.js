@@ -17,7 +17,7 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { Loading, ButtonImg } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
@@ -45,12 +45,103 @@ import {
 import { Field } from "../../components/Controls";
 
 const FeaturesTab = () => {
+  const { toasts, modals } = useUiContext();
+  const { createNewRequest, abortRequest } = useHttpQueue();
+  const { settings } = useSettingsContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const progressValue = useRef(0);
+  const progressValueDisplay = useRef(0);
+  const [features, setFeatures] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showProgression, setShowProgression] = useState(false);
+  const inputFile = useRef(null);
+  const errorMsg = T("S21");
+  const getFeatures = () => {
+    setIsLoading(true);
+    createNewRequest(
+      espHttpURL("command", { cmd: "[ESP400]" }).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          try {
+            const Status = JSON.parse(result);
+            setFeatures(Status.Settings);
+            console.log(Status);
+            settings.current.features = Status.Settings;
+          } catch (e) {
+            console.log(e);
+            toasts.addToast({ content: errorMsg, type: "error" });
+          } finally {
+            setIsLoading(false);
+          }
+        },
+        onFail: (error) => {
+          setIsLoading(false);
+          toasts.addToast({ content: error, type: "error" });
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    console.log(settings);
+    if (settings.current.features && settings.current.features.length != 0) {
+      setFeatures([...settings.current.features]);
+      setIsLoading(false);
+    } else {
+      if (settings.current.interface.settings.autoload) getFeatures();
+      else setIsLoading(false);
+    }
+  }, []);
+
   return (
     <div id="features">
-      <h2>{T("S36")}</h2>{" "}
-      <center>
-        <ButtonImg label={T("S50")} icon={<RefreshCcw />} onClick={() => {}} />
-      </center>
+      <h2>{T("S36")}</h2>
+      {isLoading && <Loading />}
+
+      {!isLoading && (
+        <Fragment>
+          {JSON.stringify(settings.current.features)}
+          <center>
+            <ButtonImg
+              mx2
+              label={T("S50")}
+              tooltip
+              data-tooltip={T("S23")}
+              icon={<RefreshCcw />}
+              onClick={getFeatures}
+            />
+            {settings.current.features && (
+              <Fragment>
+                <ButtonImg
+                  mx2
+                  label={T("S54")}
+                  tooltip
+                  data-tooltip={T("S55")}
+                  icon={<Download />}
+                  onClick={() => {}}
+                />
+                <ButtonImg
+                  mx2
+                  label={T("S52")}
+                  tooltip
+                  data-tooltip={T("S53")}
+                  icon={<ExternalLink />}
+                  onClick={() => {}}
+                />
+                <ButtonImg
+                  mx2
+                  tooltip
+                  data-tooltip={T("S59")}
+                  label={T("S58")}
+                  icon={<RotateCcw />}
+                  onClick={() => {}}
+                />
+              </Fragment>
+            )}
+          </center>
+        </Fragment>
+      )}
     </div>
   );
 };

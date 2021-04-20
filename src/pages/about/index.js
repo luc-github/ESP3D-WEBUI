@@ -274,7 +274,8 @@ const About = () => {
       setProps([...datas.current.about]);
       setIsLoading(false);
     } else {
-      getProps();
+      if (settings.current.interface.settings.autoload) getProps();
+      else setIsLoading(false);
     }
   }, []);
 
@@ -327,7 +328,8 @@ const About = () => {
               <li>
                 <span class="text-primary">{T("FW ver")}: </span>
                 <span class="text-dark">
-                  {props.find((element) => element.id == "FW ver").value}
+                  {props.find((element) => element.id == "FW ver") &&
+                    props.find((element) => element.id == "FW ver").value}
                 </span>
                 <ButtonImg
                   sm
@@ -368,6 +370,8 @@ const About = () => {
             <ButtonImg
               icon={<RefreshCcw />}
               label={T("S50")}
+              tooltip
+              data-tooltip={T("S23")}
               onClick={() => {
                 getProps();
               }}

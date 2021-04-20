@@ -101,28 +101,12 @@ const useSettings = () => {
       }
     );
   };
-  const getFeaturesSettings = () => {
-    createNewRequest(
-      espHttpURL("command", { cmd: "[ESP400]" }).toString(),
-      { method: "GET" },
-      {
-        onSuccess: (result) => {
-          const jsonResult = JSON.parse(result);
-          setSettings({ ...settingsState.current, features: jsonResult });
-        },
-        onFail: (error) => {
-          toasts.addToast({ content: error, type: "error" });
-        },
-      }
-    );
-  };
 
   return {
     settings: settings.current,
     setSettings: (settingsState) => {
       settings.current = settingsState;
     },
-    getFeaturesSettings,
     getInterfaceSettings,
     getConnectionSettings,
   };
