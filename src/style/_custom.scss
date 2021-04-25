@@ -341,6 +341,11 @@
   display: none !important;
 }
 
+.align-top {
+  align-items: top !important;
+  -ms-flex-align: top !important;
+}
+
 @media (max-width: 480px) {
   .hide-low {
     display: none !important;

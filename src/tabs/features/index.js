@@ -117,15 +117,19 @@ const FeaturesTab = () => {
                     {Object.keys(section).map((subsectionId) => {
                       const subSection = section[subsectionId];
                       return (
-                        <div className="column col-sm-12 col-md-6 col-4 mb-2">
+                        <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
                           <div class="panel mb-2 panel-features">
                             <div class="navbar">
-                              <span class="navbar-section label label-secondary">
-                                <strong>{T(subsectionId)}</strong>
+                              <span class="navbar-section label label-secondary text-ellipsis">
+                                <strong class="text-ellipsis">
+                                  {T(subsectionId)}
+                                </strong>
                               </span>
                               <span class="navbar-section">
-                                <span class="label label-primary">
-                                  {T(sectionId)}
+                                <span style="height: 100%;">
+                                  <span class="label label-primary align-top">
+                                    {T(sectionId)}
+                                  </span>
                                 </span>
                               </span>
                             </div>
