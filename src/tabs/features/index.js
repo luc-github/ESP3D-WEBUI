@@ -169,6 +169,7 @@ const FeaturesTab = () => {
             </div>
           )}
           <center>
+            <br />
             <ButtonImg
               mx2
               label={T("S50")}
