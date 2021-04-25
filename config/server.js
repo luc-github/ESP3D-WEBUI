@@ -233,6 +233,7 @@ app.get("/command", function (req, res) {
           V: "1",
           H: "radio mode",
           O: [{ none: "0" }, { sta: "1" }, { ap: "2" }],
+          R: "1",
         },
         {
           F: "network/sta",
@@ -242,6 +243,7 @@ app.get("/command", function (req, res) {
           S: "32",
           H: "SSID",
           M: "1",
+          R: "1",
         },
         {
           F: "network/sta",
@@ -251,7 +253,9 @@ app.get("/command", function (req, res) {
           V: "********",
           S: "64",
           H: "pwd",
-          M: "8",
+          M: "0",
+          MS: "8",
+          R: "1",
         },
         {
           F: "network/sta",
@@ -260,6 +264,7 @@ app.get("/command", function (req, res) {
           V: "1",
           H: "ip mode",
           O: [{ dhcp: "1" }, { static: "0" }],
+          R: "1",
         },
         {
           F: "network/sta",
@@ -267,6 +272,7 @@ app.get("/command", function (req, res) {
           T: "A",
           V: "192.168.0.1",
           H: "ip",
+          R: "1",
         },
         {
           F: "network/sta",
@@ -274,6 +280,7 @@ app.get("/command", function (req, res) {
           T: "A",
           V: "192.168.0.1",
           H: "gw",
+          R: "1",
         },
         {
           F: "network/sta",
@@ -281,6 +288,7 @@ app.get("/command", function (req, res) {
           T: "A",
           V: "255.255.255.0",
           H: "msk",
+          R: "1",
         },
         {
           F: "network/ap",
@@ -290,6 +298,7 @@ app.get("/command", function (req, res) {
           S: "32",
           H: "SSID",
           M: "1",
+          R: "1",
         },
         {
           F: "network/ap",
@@ -299,7 +308,9 @@ app.get("/command", function (req, res) {
           V: "********",
           S: "64",
           H: "pwd",
-          M: "8",
+          M: "0",
+          MS: "8",
+          R: "1",
         },
         {
           F: "network/ap",
@@ -307,6 +318,7 @@ app.get("/command", function (req, res) {
           T: "A",
           V: "192.168.0.1",
           H: "ip",
+          R: "1",
         },
         {
           F: "network/ap",
@@ -330,6 +342,7 @@ app.get("/command", function (req, res) {
             { 13: "13" },
             { 14: "14" },
           ],
+          R: "1",
         },
         {
           F: "service/http",
@@ -485,14 +498,6 @@ app.get("/command", function (req, res) {
           H: "bootdelay",
           S: "40000",
           M: "0",
-        },
-        {
-          F: "system/system",
-          P: "129",
-          T: "F",
-          V: "255",
-          H: "outputmsg",
-          O: [{ M117: "16" }, { serial: "1" }, { telnet: "2" }],
         },
       ],
     });

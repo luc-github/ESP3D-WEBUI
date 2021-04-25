@@ -23,11 +23,7 @@ import { Loading, ButtonImg } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import {
-  useUiContext,
-  useDatasContext,
-  useSettingsContext,
-} from "../../contexts";
+import { useUiContext, useSettingsContext } from "../../contexts";
 import {
   RefreshCcw,
   RotateCcw,
@@ -43,6 +39,7 @@ import {
   showProgressModal,
 } from "../../components/Modal";
 import { Field } from "../../components/Controls";
+import { formatStructure } from "./formatHelper";
 
 const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
@@ -67,7 +64,7 @@ const FeaturesTab = () => {
             const Status = JSON.parse(result);
             setFeatures(Status.Settings);
             console.log(Status);
-            settings.current.features = Status.Settings;
+            settings.current.features = formatStructure(Status.Settings);
           } catch (e) {
             console.log(e);
             toasts.addToast({ content: errorMsg, type: "error" });
@@ -77,16 +74,26 @@ const FeaturesTab = () => {
         },
         onFail: (error) => {
           setIsLoading(false);
+          console.log(error);
           toasts.addToast({ content: error, type: "error" });
         },
       }
     );
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    /*const isValid = true //for dev purpose, handeValidation todo
+    const validation = { valid: isValid, message: 'test message' }
+    const newValue = { [name]: { ...formState[name], value: value, validation } }
+    setFormState({ ...formState, ...newValue })
+    if (isValid.valid) setUpdatableSettingsState({ ...updatableSettingsState, [name]: value })*/
+  };
+
   useEffect(() => {
     console.log(settings);
     if (settings.current.features && settings.current.features.length != 0) {
-      setFeatures([...settings.current.features]);
+      setFeatures(settings.current.features);
       setIsLoading(false);
     } else {
       if (settings.current.interface.settings.autoload) getFeatures();
@@ -101,7 +108,66 @@ const FeaturesTab = () => {
 
       {!isLoading && (
         <Fragment>
-          {JSON.stringify(settings.current.features)}
+          {settings.current.features && (
+            <div class="flex-wrap">
+              {Object.keys(settings.current.features).map((sectionId) => {
+                const section = settings.current.features[sectionId];
+                return (
+                  <Fragment>
+                    {Object.keys(section).map((subsectionId) => {
+                      const subSection = section[subsectionId];
+                      return (
+                        <div className="column col-sm-12 col-md-6 col-4 mb-2">
+                          <div class="panel mb-2 panel-features">
+                            <div class="navbar">
+                              <span class="navbar-section label label-secondary">
+                                <strong>{T(subsectionId)}</strong>
+                              </span>
+                              <span class="navbar-section">
+                                <span class="label label-primary">
+                                  {T(sectionId)}
+                                </span>
+                              </span>
+                            </div>
+
+                            <div class="panel-body panel-body-features">
+                              {subSection.map((fieldData) => {
+                                {
+                                  /* console.log({ ...formState[fieldId] }) */
+                                }
+                                const { label, options, ...rest } = fieldData;
+                                const Options = options
+                                  ? options.reduce((acc, curval) => {
+                                      return [
+                                        ...acc,
+                                        {
+                                          label: T(curval.label),
+                                          value: curval.value,
+                                        },
+                                      ];
+                                    }, [])
+                                  : null;
+                                return (
+                                  <Field
+                                    label={T(label)}
+                                    options={Options}
+                                    {...rest}
+                                    onChange={(e) => {
+                                      handleChange(e);
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </Fragment>
+                );
+              })}
+            </div>
+          )}
           <center>
             <ButtonImg
               mx2
@@ -132,6 +198,14 @@ const FeaturesTab = () => {
                 <ButtonImg
                   mx2
                   tooltip
+                  data-tooltip={T("S62")}
+                  label={T("S61")}
+                  icon={<Save />}
+                  onClick={() => {}}
+                />
+                <ButtonImg
+                  mx2
+                  tooltip
                   data-tooltip={T("S59")}
                   label={T("S58")}
                   icon={<RotateCcw />}
@@ -142,6 +216,7 @@ const FeaturesTab = () => {
           </center>
         </Fragment>
       )}
+      <br />
     </div>
   );
 };

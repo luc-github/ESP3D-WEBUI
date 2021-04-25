@@ -56,6 +56,15 @@
   }
 }
 
+.panel-features {
+}
+
+.panel-body-features {
+  @media (min-width: $size-sm) {
+    max-height: 400px;
+  }
+}
+
 .feather-icon-container label {
   vertical-align: top;
   margin-left: 0.25rem;
