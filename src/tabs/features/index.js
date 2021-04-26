@@ -40,6 +40,7 @@ import {
 } from "../../components/Modal";
 import { Field } from "../../components/Controls";
 import { formatStructure } from "./formatHelper";
+import { exportFeatures } from "./exportHelper";
 
 const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
@@ -63,7 +64,6 @@ const FeaturesTab = () => {
           try {
             const Status = JSON.parse(result);
             setFeatures(Status.Settings);
-            console.log(Status);
             settings.current.features = formatStructure(Status.Settings);
           } catch (e) {
             console.log(e);
@@ -91,7 +91,6 @@ const FeaturesTab = () => {
   };
 
   useEffect(() => {
-    console.log(settings);
     if (settings.current.features && settings.current.features.length != 0) {
       setFeatures(settings.current.features);
       setIsLoading(false);
@@ -197,8 +196,10 @@ const FeaturesTab = () => {
                   label={T("S52")}
                   tooltip
                   data-tooltip={T("S53")}
-                  icon={<ExternalLink />}
-                  onClick={() => {}}
+                  exportFeatures
+                  onClick={() => {
+                    exportFeatures(settings.current.features);
+                  }}
                 />
                 <ButtonImg
                   mx2
