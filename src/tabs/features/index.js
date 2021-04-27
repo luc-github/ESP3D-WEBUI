@@ -41,6 +41,7 @@ import {
 import { Field } from "../../components/Controls";
 import { formatStructure } from "./formatHelper";
 import { exportFeatures } from "./exportHelper";
+import { importFeatures } from "./importHelper";
 
 const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
@@ -49,7 +50,7 @@ const FeaturesTab = () => {
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
-  const [features, setFeatures] = useState([]);
+  const [features, setFeatures] = useState();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showProgression, setShowProgression] = useState(false);
   const inputFile = useRef(null);
@@ -63,8 +64,8 @@ const FeaturesTab = () => {
         onSuccess: (result) => {
           try {
             const Status = JSON.parse(result);
-            setFeatures(Status.Settings);
             settings.current.features = formatStructure(Status.Settings);
+            setFeatures(settings.current.features);
           } catch (e) {
             console.log(e);
             toasts.addToast({ content: errorMsg, type: "error" });
@@ -82,12 +83,43 @@ const FeaturesTab = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    /*console.log(section);
+    const { name, value, initial } = e;
+    if (value != initial) {
+      console.log("change", value, "for ", section, ".", e.subsection);
+      console.log(features);
+      e.validation = { message: "modified", valid: true, modified: true };
+    }*/
     /*const isValid = true //for dev purpose, handeValidation todo
     const validation = { valid: isValid, message: 'test message' }
     const newValue = { [name]: { ...formState[name], value: value, validation } }
     setFormState({ ...formState, ...newValue })
     if (isValid.valid) setUpdatableSettingsState({ ...updatableSettingsState, [name]: value })*/
+  };
+
+  const fileSelected = () => {
+    let haserrors = false;
+    if (inputFile.current.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const importFile = e.target.result;
+        try {
+          const importData = JSON.parse(importFile);
+          [settings.current.features, haserrors] = importFeatures(
+            settings.current.features,
+            importData
+          );
+          if (haserrors) {
+            toasts.addToast({ content: "S56", type: "error" });
+          }
+          setFeatures(settings.current.features);
+        } catch (e) {
+          console.log(e);
+          toasts.addToast({ content: "S56", type: "error" });
+        }
+      };
+      reader.readAsText(inputFile.current.files[0]);
+    }
   };
 
   useEffect(() => {
@@ -102,15 +134,22 @@ const FeaturesTab = () => {
 
   return (
     <div id="features">
+      <input
+        ref={inputFile}
+        type="file"
+        class="d-none"
+        accept=".json"
+        onChange={fileSelected}
+      />
       <h2>{T("S36")}</h2>
       {isLoading && <Loading />}
 
       {!isLoading && (
         <Fragment>
-          {settings.current.features && (
+          {features && (
             <div class="flex-wrap">
-              {Object.keys(settings.current.features).map((sectionId) => {
-                const section = settings.current.features[sectionId];
+              {Object.keys(features).map((sectionId) => {
+                const section = features[sectionId];
                 return (
                   <Fragment>
                     {Object.keys(section).map((subsectionId) => {
@@ -135,9 +174,6 @@ const FeaturesTab = () => {
 
                             <div class="panel-body panel-body-features">
                               {subSection.map((fieldData) => {
-                                {
-                                  /* console.log({ ...formState[fieldId] }) */
-                                }
                                 const { label, options, ...rest } = fieldData;
                                 const Options = options
                                   ? options.reduce((acc, curval) => {
@@ -155,9 +191,6 @@ const FeaturesTab = () => {
                                     label={T(label)}
                                     options={Options}
                                     {...rest}
-                                    onChange={(e) => {
-                                      handleChange(e);
-                                    }}
                                   />
                                 );
                               })}
@@ -181,7 +214,7 @@ const FeaturesTab = () => {
               icon={<RefreshCcw />}
               onClick={getFeatures}
             />
-            {settings.current.features && (
+            {features && (
               <Fragment>
                 <ButtonImg
                   mx2
@@ -189,7 +222,11 @@ const FeaturesTab = () => {
                   tooltip
                   data-tooltip={T("S55")}
                   icon={<Download />}
-                  onClick={() => {}}
+                  onClick={(e) => {
+                    e.target.blur();
+                    inputFile.current.value = "";
+                    inputFile.current.click();
+                  }}
                 />
                 <ButtonImg
                   mx2
@@ -197,7 +234,8 @@ const FeaturesTab = () => {
                   tooltip
                   data-tooltip={T("S53")}
                   exportFeatures
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.target.blur();
                     exportFeatures(settings.current.features);
                   }}
                 />
