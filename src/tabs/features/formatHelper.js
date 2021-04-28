@@ -36,12 +36,14 @@ const generateFormattedSelectOptionList = (rawOpt) => {
 };
 
 const formatSettingItem = (settingItem) => {
-  const { F, P: id, T, V, H, O: options, M, S, MS, R } = settingItem;
+  const { F, P, T, V, H, O: options, M, S, MS, R } = settingItem;
   let settingFieldProps = {
-    id: `${id}`,
+    id: P,
+    initial: V,
     label: H,
     type: T,
     value: V,
+    cast: T,
   };
   if (Array.isArray(options) && options !== undefined)
     settingFieldProps.options = generateFormattedSelectOptionList(options);

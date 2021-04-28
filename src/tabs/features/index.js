@@ -82,21 +82,6 @@ const FeaturesTab = () => {
     );
   };
 
-  const handleChange = (e) => {
-    /*console.log(section);
-    const { name, value, initial } = e;
-    if (value != initial) {
-      console.log("change", value, "for ", section, ".", e.subsection);
-      console.log(features);
-      e.validation = { message: "modified", valid: true, modified: true };
-    }*/
-    /*const isValid = true //for dev purpose, handeValidation todo
-    const validation = { valid: isValid, message: 'test message' }
-    const newValue = { [name]: { ...formState[name], value: value, validation } }
-    setFormState({ ...formState, ...newValue })
-    if (isValid.valid) setUpdatableSettingsState({ ...updatableSettingsState, [name]: value })*/
-  };
-
   const fileSelected = () => {
     let haserrors = false;
     if (inputFile.current.files.length > 0) {
@@ -174,7 +159,13 @@ const FeaturesTab = () => {
 
                             <div class="panel-body panel-body-features">
                               {subSection.map((fieldData) => {
-                                const { label, options, ...rest } = fieldData;
+                                const [validation, setvalidation] = useState();
+                                const {
+                                  label,
+                                  options,
+                                  initial,
+                                  ...rest
+                                } = fieldData;
                                 const Options = options
                                   ? options.reduce((acc, curval) => {
                                       return [
@@ -191,6 +182,18 @@ const FeaturesTab = () => {
                                     label={T(label)}
                                     options={Options}
                                     {...rest}
+                                    setValue={(val) => {
+                                      fieldData.value = val;
+                                      console.log(fieldData.max);
+                                      if (initial != val) {
+                                        setvalidation({
+                                          message: "",
+                                          valid: true,
+                                          modified: true,
+                                        });
+                                      } else setvalidation(null);
+                                    }}
+                                    validation={validation}
                                   />
                                 );
                               })}
