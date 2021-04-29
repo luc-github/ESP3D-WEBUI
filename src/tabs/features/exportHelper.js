@@ -33,7 +33,7 @@ function exportFeatures(features) {
         strippedFeature[sectionId][subsectionId].push({
           id: entry.id,
           label: entry.label,
-          value: entry.value,
+          value: entry.initial,
         });
       });
     });

@@ -48,9 +48,18 @@ const formatSettingItem = (settingItem) => {
   if (Array.isArray(options) && options !== undefined)
     settingFieldProps.options = generateFormattedSelectOptionList(options);
   if (R !== undefined) settingFieldProps.needRestart = R;
-  if (S !== undefined) settingFieldProps.max = S;
-  if (M !== undefined) settingFieldProps.min = M;
-  if (MS !== undefined) settingFieldProps.minSecondary = MS;
+  if (S !== undefined) settingFieldProps.max = parseInt(S);
+  if (M !== undefined) {
+    settingFieldProps.min = parseInt(M);
+    if (MS !== undefined) {
+      settingFieldProps.minSecondary = parseInt(MS);
+      if (parseInt(MS) < parseInt(M)) {
+        //be sure Min is small than Min Secondary
+        settingFieldProps.min = parseInt(MS);
+        settingFieldProps.minSecondary = parseInt(M);
+      }
+    }
+  }
   if (T === "A") settingFieldProps.format = "ip";
   settingFieldProps.type = getFieldTypeName(settingFieldProps);
   return settingFieldProps;

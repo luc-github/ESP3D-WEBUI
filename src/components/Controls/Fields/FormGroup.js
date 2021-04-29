@@ -49,7 +49,9 @@ const FormGroup = ({
 
         {children}
       </div>
-      {validation && <p className="form-input-hint">{validation.message}</p>}
+      {validation && validation.message && (
+        <div className="form-input-hint text-center">{validation.message}</div>
+      )}
     </div>
   );
 };

@@ -29,9 +29,7 @@ import {
   RotateCcw,
   Save,
   Search,
-  Lock,
-  CheckCircle,
-  ExternalLink,
+  Flag,
   Download,
 } from "preact-feather";
 import {
@@ -55,6 +53,7 @@ const FeaturesTab = () => {
   const [showProgression, setShowProgression] = useState(false);
   const inputFile = useRef(null);
   const errorMsg = T("S21");
+  const errorValidationMsg = T("S42");
   const getFeatures = () => {
     setIsLoading(true);
     createNewRequest(
@@ -105,6 +104,60 @@ const FeaturesTab = () => {
       };
       reader.readAsText(inputFile.current.files[0]);
     }
+  };
+
+  const generateValidation = (fieldData) => {
+    const validation = {
+      message: <Flag size="1rem" />,
+      valid: true,
+      modified: true,
+    };
+    if (fieldData.type == "text") {
+      if (fieldData.cast == "A") {
+        if (
+          !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+            fieldData.value
+          )
+        )
+          validation.valid = false;
+      } else {
+        if (fieldData.min) {
+          if (fieldData.value.trim().length < fieldData.min) {
+            validation.valid = false;
+          } else if (fieldData.minSecondary) {
+            if (
+              fieldData.value.trim().length < fieldData.minSecondary &&
+              fieldData.value.trim().length > fieldData.min
+            ) {
+              validation.valid = false;
+            }
+          }
+        }
+
+        if (fieldData.max) {
+          if (fieldData.value.trim().length > fieldData.max) {
+            validation.valid = false;
+          }
+        }
+      }
+    } else if (fieldData.type == "number") {
+      if (fieldData.max) {
+        if (fieldData.value > fieldData.max) {
+          validation.valid = false;
+        }
+      }
+      if (fieldData.min) {
+        if (fieldData.value < fieldData.min) {
+          validation.valid = false;
+        }
+      }
+    } else if (fieldData.type == "select") {
+    }
+    if (!validation.valid) {
+      validation.message = errorValidationMsg;
+    }
+    if (fieldData.value == fieldData.initial) return null;
+    else return validation;
   };
 
   useEffect(() => {
@@ -182,16 +235,11 @@ const FeaturesTab = () => {
                                     label={T(label)}
                                     options={Options}
                                     {...rest}
-                                    setValue={(val) => {
-                                      fieldData.value = val;
-                                      console.log(fieldData.max);
-                                      if (initial != val) {
-                                        setvalidation({
-                                          message: "",
-                                          valid: true,
-                                          modified: true,
-                                        });
-                                      } else setvalidation(null);
+                                    setValue={(val, update) => {
+                                      if (val && !update) fieldData.value = val;
+                                      setvalidation(
+                                        generateValidation(fieldData)
+                                      );
                                     }}
                                     validation={validation}
                                   />

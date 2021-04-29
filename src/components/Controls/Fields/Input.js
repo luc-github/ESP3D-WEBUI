@@ -65,9 +65,9 @@ const Input = ({
     value,
   };
   useEffect(() => {
-    //to update state
-    if (setValue) setValue(value);
-  }, []);
+    //to update state when import- but why ?
+    if (setValue) setValue(null, true);
+  }, [value]);
   if (type === "password")
     return (
       <div class="has-icon-right" {...rest}>

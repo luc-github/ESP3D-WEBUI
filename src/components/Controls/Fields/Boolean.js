@@ -47,8 +47,8 @@ const Boolean = ({
 
   useEffect(() => {
     //to update state
-    if (setValue) setValue(value);
-  }, []);
+    if (setValue) setValue(null, true);
+  }, [value]);
   return (
     <label class="form-switch">
       <input type="checkbox" {...inputCheckboxProps} onChange={onChange} />

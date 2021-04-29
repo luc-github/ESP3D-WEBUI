@@ -41,8 +41,8 @@ const Select = ({
   };
   useEffect(() => {
     //to update state
-    if (setValue) setValue(value);
-  }, []);
+    if (setValue) setValue(null, true);
+  }, [value]);
 
   return (
     <select
