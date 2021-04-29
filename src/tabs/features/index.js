@@ -28,7 +28,7 @@ import {
   RefreshCcw,
   RotateCcw,
   Save,
-  Search,
+  ExternalLink,
   Flag,
   Download,
 } from "preact-feather";
@@ -46,6 +46,7 @@ const FeaturesTab = () => {
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
+  const [showSave, setShowSave] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
   const [features, setFeatures] = useState();
@@ -80,6 +81,24 @@ const FeaturesTab = () => {
       }
     );
   };
+
+  function checkSaveStatus() {
+    let hasmodified = false;
+    let haserrors = false;
+    Object.keys(features).map((sectionId) => {
+      const section = features[sectionId];
+      Object.keys(section).map((subsectionId) => {
+        const subsection = section[subsectionId];
+        Object.keys(subsection).map((entryId) => {
+          const entry = subsection[entryId];
+          if (entry.initial != entry.value) hasmodified = true;
+          if (entry.haserror == true) haserrors = true;
+        });
+      });
+    });
+    if (haserrors || !hasmodified) return false;
+    return true;
+  }
 
   const fileSelected = () => {
     let haserrors = false;
@@ -156,6 +175,8 @@ const FeaturesTab = () => {
     if (!validation.valid) {
       validation.message = errorValidationMsg;
     }
+    fieldData.haserror = !validation.valid;
+    setShowSave(checkSaveStatus());
     if (fieldData.value == fieldData.initial) return null;
     else return validation;
   };
@@ -234,6 +255,11 @@ const FeaturesTab = () => {
                                   <Field
                                     label={T(label)}
                                     options={Options}
+                                    extra={
+                                      subsectionId == "sta" && label == "SSID"
+                                        ? "scan"
+                                        : null
+                                    }
                                     {...rest}
                                     setValue={(val, update) => {
                                       if (!update) fieldData.value = val;
@@ -258,7 +284,7 @@ const FeaturesTab = () => {
           <center>
             <br />
             <ButtonImg
-              mx2
+              m2
               label={T("S50")}
               tooltip
               data-tooltip={T("S23")}
@@ -268,7 +294,7 @@ const FeaturesTab = () => {
             {features && (
               <Fragment>
                 <ButtonImg
-                  mx2
+                  m2
                   label={T("S54")}
                   tooltip
                   data-tooltip={T("S55")}
@@ -280,31 +306,38 @@ const FeaturesTab = () => {
                   }}
                 />
                 <ButtonImg
-                  mx2
+                  m2
                   label={T("S52")}
                   tooltip
                   data-tooltip={T("S53")}
-                  exportFeatures
+                  icon={<ExternalLink />}
                   onClick={(e) => {
                     e.target.blur();
                     exportFeatures(settings.current.features);
                   }}
                 />
+                {showSave && (
+                  <ButtonImg
+                    m2
+                    tooltip
+                    data-tooltip={T("S62")}
+                    label={T("S61")}
+                    icon={<Save />}
+                    onClick={(e) => {
+                      e.target.blur();
+                    }}
+                  />
+                )}
+
                 <ButtonImg
-                  mx2
-                  tooltip
-                  data-tooltip={T("S62")}
-                  label={T("S61")}
-                  icon={<Save />}
-                  onClick={() => {}}
-                />
-                <ButtonImg
-                  mx2
+                  m2
                   tooltip
                   data-tooltip={T("S59")}
                   label={T("S58")}
                   icon={<RotateCcw />}
-                  onClick={() => {}}
+                  onClick={(e) => {
+                    e.target.blur();
+                  }}
                 />
               </Fragment>
             )}

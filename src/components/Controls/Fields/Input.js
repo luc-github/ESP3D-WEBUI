@@ -19,7 +19,9 @@
 
 import { h } from "preact";
 import { useRef, useState, useEffect } from "preact/hooks";
-import { Eye, EyeOff } from "preact-feather";
+import { Eye, EyeOff, Search } from "preact-feather";
+import { ButtonImg } from "../../Spectre";
+import { T } from "./../../Translations";
 
 const Reveal = ({ applyTo }) => {
   const [reveal, setReveal] = useState(false);
@@ -49,6 +51,7 @@ const Input = ({
   id = "",
   value = "",
   setValue,
+  extra,
   ...rest
 }) => {
   const inputref = useRef();
@@ -82,16 +85,39 @@ const Input = ({
         <Reveal applyTo={inputref} />
       </div>
     );
-  else
+  else if (extra == "scan") {
     return (
-      <input
-        class="form-input"
-        {...props}
-        placeholder=""
-        {...rest}
-        onInput={onInput}
-      />
+      <div class="input-group">
+        <input
+          ref={inputref}
+          class="form-input"
+          {...props}
+          placeholder=""
+          {...rest}
+          onInput={onInput}
+        />
+        <ButtonImg
+          class="input-group-btn"
+          ltooltip
+          data-tooltip={T("S40")}
+          icon={<Search color="blue" />}
+          onClick={(e) => {
+            e.target.blur();
+            //inputref.current.value = "";
+          }}
+        />
+      </div>
     );
+  }
+  return (
+    <input
+      class="form-input"
+      {...props}
+      placeholder=""
+      {...rest}
+      onInput={onInput}
+    />
+  );
 };
 
 export default Input;

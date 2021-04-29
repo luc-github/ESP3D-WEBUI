@@ -37,7 +37,9 @@ const modifiers = {
   disable: "disable",
   loading: "loading",
   tooltip: "tooltip",
+  ltooltip: "tooltip tooltip-left",
   mx2: "mx-2",
+  m2: "m-2",
 };
 const Button = createComponent("button", "btn", modifiers);
 
@@ -45,7 +47,11 @@ const ButtonImg = ({ label, icon, ...rest }) => {
   return (
     <Button class="feather-icon-container" {...rest}>
       {icon}
-      {label && <label class="hide-low">{label}</label>}
+      {label && (
+        <label class="hide-low" style="pointer-events: none;">
+          {label}
+        </label>
+      )}
     </Button>
   );
 };
