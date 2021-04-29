@@ -171,6 +171,12 @@ const FeaturesTab = () => {
         }
       }
     } else if (fieldData.type == "select") {
+      const index = fieldData.options.findIndex(
+        (element) => element.value == parseInt(fieldData.value)
+      );
+      if (index == -1) {
+        validation.valid = false;
+      }
     }
     if (!validation.valid) {
       validation.message = errorValidationMsg;
