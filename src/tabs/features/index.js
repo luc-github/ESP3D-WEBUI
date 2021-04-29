@@ -121,10 +121,10 @@ const FeaturesTab = () => {
         )
           validation.valid = false;
       } else {
-        if (fieldData.min) {
+        if (typeof fieldData.min != undefined) {
           if (fieldData.value.trim().length < fieldData.min) {
             validation.valid = false;
-          } else if (fieldData.minSecondary) {
+          } else if (typeof fieldData.minSecondary != undefined) {
             if (
               fieldData.value.trim().length < fieldData.minSecondary &&
               fieldData.value.trim().length > fieldData.min
@@ -236,7 +236,7 @@ const FeaturesTab = () => {
                                     options={Options}
                                     {...rest}
                                     setValue={(val, update) => {
-                                      if (val && !update) fieldData.value = val;
+                                      if (!update) fieldData.value = val;
                                       setvalidation(
                                         generateValidation(fieldData)
                                       );
