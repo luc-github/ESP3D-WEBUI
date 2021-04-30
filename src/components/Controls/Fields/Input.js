@@ -21,7 +21,10 @@ import { h } from "preact";
 import { useRef, useState, useEffect } from "preact/hooks";
 import { Eye, EyeOff, Search } from "preact-feather";
 import { ButtonImg } from "../../Spectre";
+import { ScanApList } from "./../ScanAp";
 import { T } from "./../../Translations";
+import { showModal } from "./../../Modal";
+import { useUiContext } from "../../../contexts";
 
 const Reveal = ({ applyTo }) => {
   const [reveal, setReveal] = useState(false);
@@ -60,13 +63,18 @@ const Input = ({
       setValue(e.target.value);
     }
   };
-
+  const { modals } = useUiContext();
   const props = {
     type,
     id,
     name: id,
     value,
   };
+  let ScanNetworks = null;
+  const refreshList = () => {
+    if (ScanNetworks) ScanNetworks();
+  };
+
   useEffect(() => {
     //to update state when import- but why ?
     if (setValue) setValue(null, true);
@@ -86,10 +94,14 @@ const Input = ({
       </div>
     );
   else if (extra == "scan") {
+    const title = T("S45");
+    const closeTxt = T("S24");
+    const refreshTxt = T("S50");
     return (
       <div class="input-group">
         <input
           ref={inputref}
+          id="ssid_sta"
           class="form-input"
           {...props}
           placeholder=""
@@ -103,7 +115,22 @@ const Input = ({
           icon={<Search color="blue" />}
           onClick={(e) => {
             e.target.blur();
-            //inputref.current.value = "";
+            const modalId = "scan";
+            showModal({
+              modals,
+              title,
+              button2: { text: closeTxt },
+              button1: { cb: refreshList, text: refreshTxt, noclose: true },
+              icon: <Search />,
+              id: modalId,
+              content: (
+                <ScanApList
+                  id={modalId}
+                  setValue={setValue}
+                  refreshfn={(scannetwork) => (ScanNetworks = scannetwork)}
+                />
+              ),
+            });
           }}
         />
       </div>

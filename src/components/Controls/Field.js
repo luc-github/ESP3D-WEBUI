@@ -20,7 +20,7 @@ Field.js - ESP3D WebUI component file
 import { h } from "preact";
 import { FormGroup, Input, Select, Boolean } from "./Fields";
 
-export const Field = (props) => {
+const Field = (props) => {
   const { type } = props;
   switch (type) {
     case "select":
@@ -44,4 +44,4 @@ export const Field = (props) => {
       );
   }
 };
-export default Field;
+export { Field };

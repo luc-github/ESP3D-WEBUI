@@ -20,5 +20,6 @@
 import { h } from "preact";
 
 import { Field } from "./Field";
+import { ScanApList } from "./ScanAp";
 
-export { Field };
+export { Field, ScanApList };

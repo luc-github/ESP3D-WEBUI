@@ -23,6 +23,7 @@ import { showConfirmationModal } from "./confirmModal";
 import { showKeepConnected } from "./keepConnectedModal";
 import { showLogin } from "./logginModal";
 import { showProgressModal } from "./progressModal";
+import { showModal } from "./genericModal";
 
 /*
  * Local const
@@ -79,4 +80,5 @@ export {
   showKeepConnected,
   showLogin,
   showProgressModal,
+  showModal,
 };

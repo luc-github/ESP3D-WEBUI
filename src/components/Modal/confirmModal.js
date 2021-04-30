@@ -17,6 +17,7 @@
 */
 import { h } from "preact";
 import { HelpCircle } from "preact-feather";
+import { showModal } from "./genericModal";
 
 const showConfirmationModal = ({
   modals,
@@ -25,38 +26,14 @@ const showConfirmationModal = ({
   button1,
   button2,
 }) => {
-  const id = "confirmation";
-  const defaultCb1 = () => {
-    modals.removeModal(modals.getModalIndex(id));
-    if (button1 && button1.cb) button1.cb();
-  };
-  const defaultCb2 = () => {
-    modals.removeModal(modals.getModalIndex(id));
-    if (button2 && button2.cb) button2.cb();
-  };
-  modals.addModal({
-    id: id,
-    title: (
-      <div
-        class="text-primary feather-icon-container"
-        style="line-height:24px!important"
-      >
-        <HelpCircle />
-        <label>{title}</label>
-      </div>
-    ),
-    content: content,
-    footer: (
-      <div>
-        <button class="btn mx-2" onClick={defaultCb1}>
-          {button1.text}
-        </button>
-        <button class="btn mx-2" onClick={defaultCb2}>
-          {button2.text}
-        </button>
-      </div>
-    ),
-    //overlay: true,
+  showModal({
+    modals,
+    title,
+    content,
+    button1,
+    button2,
+    id: "confirmation",
+    icon: <HelpCircle />,
     hideclose: true,
   });
 };
