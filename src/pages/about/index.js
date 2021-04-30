@@ -159,7 +159,7 @@ const About = () => {
     window.open(
       settings.current.interface.custom.fwurl
         ? settings.current.interface.custom.fwurl
-        : fwurl,
+        : fwUrl,
       "_blank"
     );
     e.target.blur();

@@ -23,7 +23,7 @@ import { Loading, ButtonImg } from "../../components/Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import { useUiContext, useSettingsContext } from "../../contexts";
+import { useUiContext, useSettingsContext, useWsContext } from "../../contexts";
 import {
   RefreshCcw,
   RotateCcw,
@@ -43,7 +43,8 @@ import { importFeatures } from "./importHelper";
 
 const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
-  const { createNewRequest, abortRequest } = useHttpQueue();
+  const { Disconnect } = useWsContext();
+  const { createNewRequest } = useHttpQueue();
   const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
@@ -55,6 +56,11 @@ const FeaturesTab = () => {
   const inputFile = useRef(null);
   const errorMsg = T("S21");
   const errorValidationMsg = T("S42");
+  const title = T("S58");
+  const yes = T("S27");
+  const cancel = T("S28");
+  const content = T("S59");
+
   const getFeatures = () => {
     setIsLoading(true);
     createNewRequest(
@@ -98,6 +104,14 @@ const FeaturesTab = () => {
     });
     if (haserrors || !hasmodified) return false;
     return true;
+  }
+
+  function reStartBoard() {
+    Disconnect("restart");
+    setTimeout(() => {
+      window.location.reload();
+    }, 40000);
+    console.log("restart");
   }
 
   const fileSelected = () => {
@@ -186,6 +200,20 @@ const FeaturesTab = () => {
     if (fieldData.value == fieldData.initial) return null;
     else return validation;
   };
+
+  useEffect(() => {
+    if (showConfirmation) {
+      showConfirmationModal({
+        modals,
+        title,
+        content,
+        button1: { cb: reStartBoard, text: yes },
+        button2: { text: cancel },
+      });
+      console.log("Show");
+      setShowConfirmation(false);
+    }
+  }, [showConfirmation]);
 
   useEffect(() => {
     if (settings.current.features && settings.current.features.length != 0) {
@@ -343,6 +371,7 @@ const FeaturesTab = () => {
                   icon={<RotateCcw />}
                   onClick={(e) => {
                     e.target.blur();
+                    setShowConfirmation(true);
                   }}
                 />
               </Fragment>
