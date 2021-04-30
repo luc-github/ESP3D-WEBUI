@@ -78,8 +78,8 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
                   <td>
                     <ButtonImg
                       m2
-                      rtooltip
-                      data-tooltip={T("S53")}
+                      ltooltip
+                      data-tooltip={T("S51")}
                       icon={<CheckCircle />}
                       onClick={() => {
                         setValue(
