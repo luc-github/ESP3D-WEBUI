@@ -118,7 +118,7 @@ const FeaturesTab = () => {
       showConfirmationModal({
         modals,
         title,
-        contentrestart,
+        content: contentrestart,
         button1: { cb: reStartBoard, text: yes },
         button2: { text: cancel },
       });
