@@ -172,6 +172,8 @@
   "S171": "Update WebUI",
   "S172": "Update Firmware",
   "S173": "Session timeout",
+  "S174":"Changes applied, now need to restart the board.",
+  "S175":"Operation canceled by user",
   "chip id": "Chip ID",
   "CPU Freq": "CPU Frequency",
   "CPU Temp": "CPU Temperature",

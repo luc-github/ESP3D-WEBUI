@@ -96,7 +96,10 @@ const useHttpQueue = () => {
     });
   };
 
-  const abortRequest = () => {
+  const abortRequest = (id) => {
+    if (id) {
+      removeRequests(id);
+    }
     const currentRequest = getCurrentRequest();
     if (currentRequest) {
       currentRequest.abort();

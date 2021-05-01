@@ -44,15 +44,13 @@ import { importFeatures } from "./importHelper";
 const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
-  const { createNewRequest } = useHttpQueue();
+  const { createNewRequest, abortRequest } = useHttpQueue();
   const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
   const [features, setFeatures] = useState();
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showProgression, setShowProgression] = useState(false);
   const inputFile = useRef(null);
   const errorMsg = T("S21");
   const errorValidationMsg = T("S42");
@@ -60,6 +58,18 @@ const FeaturesTab = () => {
   const yes = T("S27");
   const cancel = T("S28");
   const content = T("S59");
+  const titleupdate = T("S91");
+  const contentrestart = T("S174");
+  const usercancel = T("S175");
+
+  const Progression = () => {
+    return (
+      <center>
+        <progress ref={progressValue} value="0" max="100" />
+        <label style="margin-left:15px" ref={progressValueDisplay}></label>
+      </center>
+    );
+  };
 
   const getFeatures = () => {
     setIsLoading(true);
@@ -87,6 +97,103 @@ const FeaturesTab = () => {
       }
     );
   };
+
+  function abortSave() {
+    abortRequest("ESP401");
+    toasts.addToast({ content: usercancel, type: "error" });
+    endProgression(false);
+  }
+
+  function updateProgression(index, total) {
+    if (typeof progressValue.current.value != undefined) {
+      progressValue.current.value = (((index + 1) * 100) / total).toFixed(0);
+      progressValueDisplay.current.innerHTML = index + 1 + " / " + total;
+    }
+  }
+
+  function endProgression(needrestart) {
+    modals.removeModal(modals.getModalIndex("progression"));
+    setIsLoading(false);
+    if (needrestart) {
+      showConfirmationModal({
+        modals,
+        title,
+        contentrestart,
+        button1: { cb: reStartBoard, text: yes },
+        button2: { text: cancel },
+      });
+    }
+  }
+
+  function saveEntry(entry, index, total, needrestart) {
+    let cmd =
+      "[ESP401]P=" + entry.id + " T=" + entry.cast + " V=" + entry.value;
+    createNewRequest(
+      espHttpURL("command", { cmd }).toString(),
+      { method: "GET", id: "ESP401" },
+      {
+        onSuccess: (result) => {
+          updateProgression(index, total);
+          try {
+            entry.initial = entry.value;
+          } catch (e) {
+            console.log(e);
+            toasts.addToast({ content: e, type: "error" });
+          } finally {
+            if (index == total - 1) {
+              endProgression(needrestart);
+            }
+          }
+        },
+        onFail: (error) => {
+          updateProgression(index, total);
+          console.log(error);
+          toasts.addToast({ content: error, type: "error" });
+          if (index == total - 1) {
+            endProgression(needrestart);
+          }
+        },
+      }
+    );
+  }
+
+  function SaveSettings() {
+    let needrestart = false;
+    let index = 0;
+    let total = 0;
+    setIsLoading(true);
+    showProgressModal({
+      modals,
+      title: titleupdate,
+      button1: { cb: abortSave, text: cancel },
+      content: <Progression />,
+    });
+
+    Object.keys(features).map((sectionId) => {
+      const section = features[sectionId];
+      Object.keys(section).map((subsectionId) => {
+        const subsection = section[subsectionId];
+        Object.keys(subsection).map((entryId) => {
+          const entry = subsection[entryId];
+          if (entry.initial != entry.value) total++;
+          if (entry.needRestart == "1") needrestart = true;
+        });
+      });
+    });
+    Object.keys(features).map((sectionId) => {
+      const section = features[sectionId];
+      Object.keys(section).map((subsectionId) => {
+        const subsection = section[subsectionId];
+        Object.keys(subsection).map((entryId) => {
+          const entry = subsection[entryId];
+          if (entry.initial != entry.value) {
+            saveEntry(entry, index, total, needrestart);
+            index++;
+          }
+        });
+      });
+    });
+  }
 
   function checkSaveStatus() {
     let hasmodified = false;
@@ -117,6 +224,7 @@ const FeaturesTab = () => {
   const fileSelected = () => {
     let haserrors = false;
     if (inputFile.current.files.length > 0) {
+      setIsLoading(true);
       const reader = new FileReader();
       reader.onload = function (e) {
         const importFile = e.target.result;
@@ -133,6 +241,8 @@ const FeaturesTab = () => {
         } catch (e) {
           console.log(e);
           toasts.addToast({ content: "S56", type: "error" });
+        } finally {
+          setIsLoading(false);
         }
       };
       reader.readAsText(inputFile.current.files[0]);
@@ -202,20 +312,6 @@ const FeaturesTab = () => {
   };
 
   useEffect(() => {
-    if (showConfirmation) {
-      showConfirmationModal({
-        modals,
-        title,
-        content,
-        button1: { cb: reStartBoard, text: yes },
-        button2: { text: cancel },
-      });
-      console.log("Show");
-      setShowConfirmation(false);
-    }
-  }, [showConfirmation]);
-
-  useEffect(() => {
     if (settings.current.features && settings.current.features.length != 0) {
       setFeatures(settings.current.features);
       setIsLoading(false);
@@ -235,7 +331,7 @@ const FeaturesTab = () => {
         onChange={fileSelected}
       />
       <h2>{T("S36")}</h2>
-      {isLoading && <Loading />}
+      {isLoading && <Loading large />}
 
       {!isLoading && (
         <Fragment>
@@ -359,6 +455,7 @@ const FeaturesTab = () => {
                     icon={<Save />}
                     onClick={(e) => {
                       e.target.blur();
+                      SaveSettings();
                     }}
                   />
                 )}
@@ -371,7 +468,13 @@ const FeaturesTab = () => {
                   icon={<RotateCcw />}
                   onClick={(e) => {
                     e.target.blur();
-                    setShowConfirmation(true);
+                    showConfirmationModal({
+                      modals,
+                      title,
+                      content,
+                      button1: { cb: reStartBoard, text: yes },
+                      button2: { text: cancel },
+                    });
                   }}
                 />
               </Fragment>
