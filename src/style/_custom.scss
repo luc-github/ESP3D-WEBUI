@@ -221,6 +221,13 @@
   }
 }
 
+.btn-red {
+}
+.btn-red:hover {
+  color: white;
+  background-color: blue !important;
+}
+
 .panel-dropdown {
   color: $gray-color-dark;
   float: right;

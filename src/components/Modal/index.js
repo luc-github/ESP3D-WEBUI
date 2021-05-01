@@ -54,7 +54,9 @@ const Modal = () => {
             <SpectreModal.Header>
               <button
                 className={
-                  modal.hideclose ? "d-none" : "btn btn-clear float-right"
+                  modal.hideclose
+                    ? "d-none"
+                    : "btn btn-clear float-right btn-red"
                 }
                 aria-label="Close"
                 onClick={() => modals.removeModal(index)}
