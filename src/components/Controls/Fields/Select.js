@@ -46,7 +46,7 @@ const Select = ({
 
   return (
     <select
-      class="form-select"
+      class={`form-select ${inline ? "column" : ""}`}
       {...props}
       {...rest}
       value={value}

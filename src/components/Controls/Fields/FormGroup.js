@@ -37,10 +37,12 @@ const FormGroup = ({
   };
   return (
     <div class={`${getValidationClass(validation)}`}>
-      <div class={inline ? "flex-wrap" : "flex-cols"}>
+      <div class={inline ? "columns mt-2" : "flex-cols"}>
         <label
           class={
-            inline && type == "boolean" ? "d-none" : "form-label text-dark"
+            inline && type == "boolean"
+              ? "d-none"
+              : `form-label text-dark ${inline ? "column col-auto" : ""}`
           }
           htmlFor={id}
         >
@@ -50,7 +52,11 @@ const FormGroup = ({
         {children}
       </div>
       {validation && validation.message && (
-        <div className="form-input-hint text-center">{validation.message}</div>
+        <div
+          className={`form-input-hint ${inline ? "text-left" : "text-center"}`}
+        >
+          {validation.message}
+        </div>
       )}
     </div>
   );

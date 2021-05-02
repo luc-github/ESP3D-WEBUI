@@ -55,6 +55,7 @@ const Input = ({
   value = "",
   setValue,
   extra,
+  inline,
   ...rest
 }) => {
   const inputref = useRef();
@@ -81,7 +82,7 @@ const Input = ({
   }, [value]);
   if (type === "password")
     return (
-      <div class="has-icon-right" {...rest}>
+      <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
         <input
           ref={inputref}
           class="form-input"
@@ -98,7 +99,7 @@ const Input = ({
     const closeTxt = T("S24");
     const refreshTxt = T("S50");
     return (
-      <div class="input-group">
+      <div class={`input-group ${inline ? "column" : ""} `}>
         <input
           ref={inputref}
           id="ssid_sta"
@@ -138,7 +139,7 @@ const Input = ({
   }
   return (
     <input
-      class="form-input"
+      class={`form-input ${inline ? "column" : ""}`}
       {...props}
       placeholder=""
       {...rest}
