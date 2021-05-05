@@ -116,25 +116,21 @@ const InterfaceTab = () => {
       validation.message = errorValidationMsg;
     }
     fieldData.haserror = !validation.valid;
+    if (fieldData.value == fieldData.initial) {
+      fieldData.hasmodified = false;
+    } else {
+      fieldData.hasmodified = true;
+    }
     setShowSave(checkSaveStatus());
-    if (fieldData.value == fieldData.initial) return null;
-    else return validation;
+    if (!fieldData.hasmodified && !fieldData.haserror) return null;
+    return validation;
   };
 
   function checkSaveStatus() {
-    let hasmodified = false;
-    let haserrors = false;
-    /* Object.keys(features).map((sectionId) => {
-      const section = features[sectionId];
-      Object.keys(section).map((subsectionId) => {
-        const subsection = section[subsectionId];
-        Object.keys(subsection).map((entryId) => {
-          const entry = subsection[entryId];
-          if (entry.initial != entry.value) hasmodified = true;
-          if (entry.haserror == true) haserrors = true;
-        });
-      });
-    });*/
+    let stringified = JSON.stringify(settings.current.interface.settings);
+    let hasmodified =
+      stringified.indexOf('"hasmodified":true') == -1 ? false : true;
+    let haserrors = stringified.indexOf('"haserror":true') == -1 ? false : true;
     if (haserrors || !hasmodified) return false;
     return true;
   }
