@@ -8,7 +8,6 @@
   },
   "settings": {
     "language": "en",
-    "banner": true,
     "autoload": true,
     "showterminalpanel": true,
     "openterminalonstart": false,
@@ -17,20 +16,20 @@
     "showfilespanel": true,
     "openfilesonstart": false,
     "showjogpanel": true,
-    "xyfeedrate": 1000,
-    "xpos": 100,
-    "ypos": 100,
-    "zfeedrate": 100,
+    "xyfeedrate": "1000",
+    "xpos": "100",
+    "ypos": "100",
+    "zfeedrate": "100",
     "filesfilter": "g;G;gco;GCO;gcode;GCODE",
     "tftsd": true,
     "tftusb": true,
     "printersd": false,
     "enablepolling": false,
-    "pollingrefresh": 3,
+    "pollingrefresh": "3000",
     "pollingcommands": "M105;M114",
     "showtemperaturespanel": true,
-    "extrudermax": 300,
-    "bedmax": 140,
+    "extrudermax": "300",
+    "bedmax": "140",
     "extruderpreheat": "190;220;230",
     "bedpreheat": "50;90;110",
     "showfanspanel": true,
@@ -41,16 +40,17 @@
     "chamberpreheat": "50;90;110",
     "ismixedextruder": false,
     "ecolors": "blue;red;green;#FF00FF",
-    "efeedrate": 400,
+    "efeedrate": "400",
     "enumber": "6",
     "showsensorspanel": true,
     "showmacros": true,
     "expandmacrosbuttonsonstart": true,
     "mobileview": false,
     "showextrapanels": true,
+    "macros": [],
     "extrapanels": [
       {
-        "id": 1603307186211,
+        "id": "1603307186211",
         "name": "Page1 de la mort",
         "color": "#C0C0C0",
         "textcolor": "#000000",
@@ -61,7 +61,7 @@
         "type": "image"
       },
       {
-        "id": 1604059348627,
+        "id": "1604059348627",
         "name": "Panel2",
         "color": "#C0C0C0",
         "textcolor": "#000000",
@@ -72,7 +72,7 @@
         "type": "content"
       },
       {
-        "id": 1604059351918,
+        "id": "1604059351918",
         "name": "Panel3",
         "color": "#C0C0C0",
         "textcolor": "#000000",
@@ -83,6 +83,5 @@
         "type": "content"
       }
     ]
-  },
-  "macros": []
+  }
 }

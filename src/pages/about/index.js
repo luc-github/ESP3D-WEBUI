@@ -97,7 +97,7 @@ const About = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { settings } = useSettingsContext();
+  const { settings, getInterfaceValue } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
@@ -274,7 +274,7 @@ const About = () => {
       setProps([...datas.current.about]);
       setIsLoading(false);
     } else {
-      if (settings.current.interface.settings.autoload) getProps();
+      if (getInterfaceValue("autoload")) getProps();
       else setIsLoading(false);
     }
   }, []);

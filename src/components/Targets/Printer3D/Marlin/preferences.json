@@ -1,5 +1,25 @@
 {
   "settings": {
-    "pollingcommands": "M105"
+    "polling": [
+      {
+        "id": "pollingcommands",
+        "type": "text",
+        "label": "S115",
+        "help": "S97",
+        "value": "M105"
+      }
+    ],
+    "macros": [
+      {
+        "id": "macros",
+        "type": "list",
+        "value": [
+          {
+            "id": "1",
+            "value": "G28"
+          }
+        ]
+      }
+    ]
   }
 }

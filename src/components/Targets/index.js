@@ -22,14 +22,14 @@ import { Target, Parser, fwUrl, Name } from "SubTargetPath";
 import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
-import { mergePreferences } from "../Helpers";
+import { mergeJSON } from "../Helpers";
 
 /*
  * Local const
  *
  */
-const defaultPreferences = mergePreferences(
-  mergePreferences(defaultPreferencesBase, defaultPreferencesTarget),
+const defaultPreferences = mergeJSON(
+  mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
   defaultPreferencesSubTarget
 );
 

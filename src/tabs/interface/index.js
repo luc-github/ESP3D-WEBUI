@@ -17,10 +17,42 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { useState } from "preact/hooks";
+import { Fragment, h } from "preact";
+import { useEffect, useState, useRef } from "preact/hooks";
+import { formatPreferences } from "./importHelper";
+import {
+  useUiContext,
+  useSettingsContext,
+  useDatasContext,
+} from "../../contexts";
+
+import { Loading, ButtonImg } from "../../components/Spectre";
+import { useHttpQueue } from "../../hooks";
+import { espHttpURL } from "../../components/Helpers";
+import { T } from "../../components/Translations";
+import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
+import {
+  showConfirmationModal,
+  showProgressModal,
+} from "../../components/Modal";
+import { Field } from "../../components/Controls";
+//import { formatStructure } from "./formatHelper";
+import { exportPreferences } from "./exportHelper";
+//import { importFeatures } from "./importHelper";
 
 const InterfaceTab = () => {
+  const { toasts, modals } = useUiContext();
+  const { datas } = useDatasContext();
+  const { createNewRequest, abortRequest } = useHttpQueue();
+  const { settings } = useSettingsContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [webUi, setWebUi] = useState();
+  const [showSave, setShowSave] = useState(true);
+  const progressValue = useRef(0);
+  const progressValueDisplay = useRef(0);
+  const inputFile = useRef(null);
+  const errorValidationMsg = T("S42");
+
   const [mobileView, setMobileView] = useState(false);
   const toggle = (e) => {
     if (mobileView) {
@@ -34,12 +66,204 @@ const InterfaceTab = () => {
     }
     setMobileView(!mobileView);
   };
+
+  const generateValidation = (fieldData) => {
+    const validation = {
+      message: <Flag size="1rem" />,
+      valid: true,
+      modified: true,
+    };
+    if (fieldData.type == "text") {
+      if (typeof fieldData.min != undefined) {
+        if (fieldData.value.trim().length < fieldData.min) {
+          validation.valid = false;
+        } else if (typeof fieldData.minSecondary != undefined) {
+          if (
+            fieldData.value.trim().length < fieldData.minSecondary &&
+            fieldData.value.trim().length > fieldData.min
+          ) {
+            validation.valid = false;
+          }
+        }
+      }
+
+      if (fieldData.max) {
+        if (fieldData.value.trim().length > fieldData.max) {
+          validation.valid = false;
+        }
+      }
+    } else if (fieldData.type == "number") {
+      if (fieldData.max) {
+        if (fieldData.value > parseInt(fieldData.max)) {
+          console.log("max");
+          validation.valid = false;
+        }
+      }
+      if (fieldData.min) {
+        if (fieldData.value < parseInt(fieldData.min)) {
+          validation.valid = false;
+        }
+      }
+    } else if (fieldData.type == "select") {
+      const index = fieldData.options.findIndex(
+        (element) => element.value == parseInt(fieldData.value)
+      );
+      if (index == -1) {
+        validation.valid = false;
+      }
+    }
+    if (!validation.valid) {
+      validation.message = errorValidationMsg;
+    }
+    fieldData.haserror = !validation.valid;
+    setShowSave(checkSaveStatus());
+    if (fieldData.value == fieldData.initial) return null;
+    else return validation;
+  };
+
+  function checkSaveStatus() {
+    let hasmodified = false;
+    let haserrors = false;
+    /* Object.keys(features).map((sectionId) => {
+      const section = features[sectionId];
+      Object.keys(section).map((subsectionId) => {
+        const subsection = section[subsectionId];
+        Object.keys(subsection).map((entryId) => {
+          const entry = subsection[entryId];
+          if (entry.initial != entry.value) hasmodified = true;
+          if (entry.haserror == true) haserrors = true;
+        });
+      });
+    });*/
+    if (haserrors || !hasmodified) return false;
+    return true;
+  }
+
+  const getInterface = () => {
+    //TODO
+    console.log("Get Interface");
+  };
+  const fileSelected = () => {
+    //TODO
+    console.log("File Selected");
+  };
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
   return (
     <div id="interface">
-      <h2>Interface</h2>
-      <button class="btn" onClick={toggle}>
-        Desktop
-      </button>
+      <input
+        ref={inputFile}
+        type="file"
+        class="d-none"
+        accept=".json"
+        onChange={fileSelected}
+      />
+      <h2>{T("S17")}</h2>
+      {isLoading && <Loading large />}
+
+      {!isLoading && settings.current.interface.settings && (
+        <Fragment>
+          {settings.current.interface && (
+            <div class="flex-wrap">
+              {Object.keys(settings.current.interface.settings).map(
+                (sectionId) => {
+                  const section =
+                    settings.current.interface.settings[sectionId];
+                  return (
+                    <Fragment>
+                      <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
+                        <div class="panel mb-2 panel-features">
+                          <span class="navbar-section label label-secondary text-ellipsis">
+                            <strong class="text-ellipsis">
+                              {T(sectionId)}
+                            </strong>
+                          </span>
+                          <div class="panel-body panel-body-features">
+                            {Object.keys(section).map((subsectionId) => {
+                              const fieldData = section[subsectionId];
+                              const {
+                                label,
+                                initial,
+                                type,
+                                ...rest
+                              } = fieldData;
+                              const [validation, setvalidation] = useState();
+                              return (
+                                <Field
+                                  label={T(label)}
+                                  type={type}
+                                  inline={type == "boolean" ? true : false}
+                                  {...rest}
+                                  setValue={(val, update) => {
+                                    if (!update) fieldData.value = val;
+                                    setvalidation(
+                                      generateValidation(fieldData)
+                                    );
+                                  }}
+                                  validation={validation}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </Fragment>
+                  );
+                }
+              )}
+            </div>
+          )}
+          <center>
+            <br />
+            <ButtonImg
+              m2
+              label={T("S50")}
+              tooltip
+              data-tooltip={T("S23")}
+              icon={<RefreshCcw />}
+              onClick={getInterface}
+            />
+            <ButtonImg
+              m2
+              label={T("S54")}
+              tooltip
+              data-tooltip={T("S55")}
+              icon={<Download />}
+              onClick={(e) => {
+                e.target.blur();
+                inputFile.current.value = "";
+                inputFile.current.click();
+              }}
+            />
+            <ButtonImg
+              m2
+              label={T("S52")}
+              tooltip
+              data-tooltip={T("S53")}
+              icon={<ExternalLink />}
+              onClick={(e) => {
+                e.target.blur();
+                exportPreferences(settings.current.interface);
+              }}
+            />
+            {showSave && (
+              <ButtonImg
+                m2
+                tooltip
+                data-tooltip={T("S62")}
+                label={T("S61")}
+                icon={<Save />}
+                onClick={(e) => {
+                  e.target.blur();
+                  //SaveSettings();
+                }}
+              />
+            )}
+          </center>
+        </Fragment>
+      )}
     </div>
   );
 };

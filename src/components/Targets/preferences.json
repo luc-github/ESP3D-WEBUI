@@ -1,58 +1,139 @@
-{
-  "settings": {
-    "language": "en",
-    "banner": true,
-    "autoload": true,
-    "showterminalpanel": true,
-    "openterminalonstart": false,
-    "verbose": true,
-    "autoscroll": true,
-    "showfilespanel": true,
-    "openfilesonstart": false,
-    "showjogpanel": true,
-    "enablepolling": false,
-    "pollingrefresh": 3,
-    "pollingcommands": "M105",
-    "showsensorspanel": true,
-    "showmacros": true,
-    "expandmacrosbuttonsonstart": true,
-    "mobileview": false,
-    "showextrapanels": true,
-    "extrapanels": [
-      {
-        "id": 1603307186211,
-        "name": "Page1 de la mort",
-        "color": "#C0C0C0",
-        "textcolor": "#000000",
-        "icon": "Globe",
-        "target": "page",
-        "source": "http://192.168.1.61/snap?framesize=9",
-        "refreshtime": "0",
-        "type": "image"
-      },
-      {
-        "id": 1604059348627,
-        "name": "Panel2",
-        "color": "#C0C0C0",
-        "textcolor": "#000000",
-        "icon": "Globe",
-        "target": "panel",
-        "source": "http://127.0.0.1",
-        "refreshtime": "0",
-        "type": "content"
-      },
-      {
-        "id": 1604059351918,
-        "name": "Panel3",
-        "color": "#C0C0C0",
-        "textcolor": "#000000",
-        "icon": "Globe",
-        "target": "page",
-        "source": "/hello.html",
-        "refreshtime": "0",
-        "type": "content"
-      }
-    ]
-  },
-  "macros": []
-}
+  {
+    "settings": {
+      "general": [
+        {
+          "id": "language",
+          "type": "text",
+          "label": "S68",
+          "value": "en"
+        },
+        {
+          "id": "autoload",
+          "type": "boolean",
+          "label": "S64",
+          "value": true
+        },
+        {
+          "id": "mobileview",
+          "type": "boolean",
+          "label": "S122",
+          "value": false
+        },
+        {
+          "id": "showsensorspanel",
+          "type": "boolean",
+          "label": "S176",
+          "value": false
+        }
+      ],
+      "polling": [
+        {
+          "id": "enablepolling",
+          "type": "boolean",
+          "label": "S112",
+          "value": false
+        },
+        {
+          "id": "pollingrefresh",
+          "type": "number",
+          "label": "S113",
+          "min": "1",
+          "max": "360000",
+          "append": "S114",
+          "value": "3000"
+        },
+        {
+          "id": "pollingcommands",
+          "type": "text",
+          "label": "S115",
+          "help": "S97",
+          "value": ""
+        }
+      ],
+      "terminal": [
+        {
+          "id": "showterminalpanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openterminalonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        },
+        {
+          "id": "verbose",
+          "type": "boolean",
+          "label": "S76",
+          "value": true
+        },
+        {
+          "id": "autoscroll",
+          "type": "boolean",
+          "label": "S77",
+          "value": true
+        }
+      ],
+      "files": [
+        {
+          "id": "showfilespanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openfilesonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        }
+      ],
+      "jog": [
+        {
+          "id": "showjogpanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        }
+      ],
+      "macros": [
+        {
+          "id": "showmacros",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "expandmacrosbuttonsonstart",
+          "type": "boolean",
+          "label": "S120",
+          "value": true
+        },
+        {
+          "id": "macros",
+          "type": "list",
+          "value": [
+            {
+              "id": "2",
+              "value": "G1 X0 Y0"
+            }
+          ]
+        }
+      ],
+      "extrapanels": [
+        {
+          "id": "showextrapanels",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "extrapanels",
+          "type": "list",
+          "value": []
+        }
+      ]
+    }
+  }

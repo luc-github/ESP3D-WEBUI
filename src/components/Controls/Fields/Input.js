@@ -56,6 +56,8 @@ const Input = ({
   setValue,
   extra,
   inline,
+  append,
+  help,
   ...rest
 }) => {
   const inputref = useRef();
@@ -138,13 +140,13 @@ const Input = ({
     );
   }
   return (
-    <input
-      class={`form-input ${inline ? "column" : ""}`}
-      {...props}
-      placeholder=""
-      {...rest}
-      onInput={onInput}
-    />
+    <div
+      class={`input-group ${inline ? "column" : ""} ${help ? "tooltip" : ""}`}
+      data-tooltip={T(help)}
+    >
+      <input class="form-input" {...props} {...rest} onInput={onInput} />
+      {append && <span class="input-group-addon">{T(append)}</span>}
+    </div>
   );
 };
 

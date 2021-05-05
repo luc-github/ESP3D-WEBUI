@@ -140,27 +140,38 @@ const espHttpURL = (base = "", args) => {
   return url;
 };
 
-//Merge 2 preferences.json
-function mergePreferences(json1, json2) {
-  let preferences = {
-    settings: {
-      ...json1.settings,
-      ...json2.settings,
-    },
-    macros: {
-      ...json1.macros,
-      ...json2.macros,
-    },
-    custom: {
-      ...json1.custom,
-      ...json2.custom,
-    },
-  };
-  preferences.settings.extrapanels = {
-    ...json1.settings.extrapanels,
-    ...json2.settings.extrapanels,
-  };
-  return preferences;
+//Merge 2 JSON in generic way
+//based on https://gist.github.com/sinemetu1/1732896#gistcomment-2571586
+function mergeJSON(o1, o2) {
+  let tempNewObj = o1;
+  if (o1.length === undefined && typeof o1 !== "number") {
+    for (let key in o2) {
+      let value = o2[key];
+      if (o1[key] === undefined) {
+        tempNewObj[key] = value;
+      } else {
+        tempNewObj[key] = mergeJSON(o1[key], o2[key]);
+      }
+    }
+  } else if (o1.length > 0 && typeof o1 !== "string") {
+    for (let index in o2) {
+      if (JSON.stringify(o1).indexOf(JSON.stringify(o2[index])) === -1) {
+        //look for existing id in same section
+        let i = tempNewObj.findIndex((element) => element.id == o2[index].id);
+        if (i == -1) tempNewObj.push(o2[index]);
+        else {
+          if (Array.isArray(tempNewObj[i].value)) {
+            for (let v in o2[index].value) {
+              tempNewObj[i].value.push(o2[index].value[v]);
+            }
+          } else tempNewObj[i].value = o2[index].value;
+        }
+      }
+    }
+  } else {
+    tempNewObj = o2;
+  }
+  return tempNewObj;
 }
 
 function getBrowserTime() {
@@ -205,8 +216,8 @@ export {
   getCookie,
   hslToHex,
   limitArr,
+  mergeJSON,
   mergeFlatPrefToNestedSchema,
-  mergePreferences,
   parseFileSizeString,
   removeEntriesByIDs,
 };

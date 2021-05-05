@@ -21,8 +21,10 @@ import { h } from "preact";
 import { FormGroup, Input, Select, Boolean } from "./Fields";
 
 const Field = (props) => {
-  const { type } = props;
+  const { type, id } = props;
   switch (type) {
+    case "list":
+      return <span>List for {id} (TODO)</span>;
     case "select":
       return (
         <FormGroup {...props}>

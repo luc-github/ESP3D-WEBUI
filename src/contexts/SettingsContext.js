@@ -27,12 +27,47 @@ const SettingsContext = createContext("SettingsContext");
 const useSettingsContext = () => useContext(SettingsContext);
 
 const SettingsContextProvider = ({ children }) => {
-  const isLoading = useRef(true);
   const settingsValues = useRef({});
+  //TODO: this should be more generic !!!
+  const getInterfaceValue = (Id) => {
+    if (settingsValues.current.interface) {
+      for (let key in settingsValues.current.interface) {
+        if (Array.isArray(settingsValues.current.interface[key])) {
+          for (
+            let index = 0;
+            index < settingsValues.current.interface[key].length;
+            index++
+          ) {
+            if (settingsValues.current.interface[key][index].id == Id) {
+              return settingsValues.current.interface[key][index].value;
+            }
+          }
+        } else {
+          for (let subkey in settingsValues.current.interface[key]) {
+            if (Array.isArray(settingsValues.current.interface[key][subkey])) {
+              for (
+                let index = 0;
+                index < settingsValues.current.interface[key][subkey].length;
+                index++
+              ) {
+                if (
+                  settingsValues.current.interface[key][subkey][index].id == Id
+                ) {
+                  return settingsValues.current.interface[key][subkey][index]
+                    .value;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return undefined;
+  };
 
   const store = {
-    loading: isLoading,
     settings: settingsValues,
+    getInterfaceValue,
   };
 
   return (

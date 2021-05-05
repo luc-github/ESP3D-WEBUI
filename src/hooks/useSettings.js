@@ -19,14 +19,15 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
-import {
-  espHttpURL,
-  mergePreferences,
-  getBrowserTime,
-} from "../components/Helpers";
+import { espHttpURL, getBrowserTime } from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
 import { useUiContext, useRouterContext } from "../contexts";
 import { defaultPreferences } from "../components/Targets";
+import {
+  importPreferences,
+  formatPreferences,
+} from "../tabs/interface/importHelper";
+import { Frown } from "preact-feather";
 
 /*
  * Local const
@@ -35,7 +36,7 @@ import { defaultPreferences } from "../components/Targets";
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
   const { toasts, connection } = useUiContext();
-  const { settings } = useSettingsContext();
+  const { settings, getInterfaceValue } = useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
   const [settingsState, setSettingsState] = useState(settings);
   const setSettings = (_settingsState) => {
@@ -88,7 +89,22 @@ const useSettings = () => {
       {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
-          const preferences = mergePreferences(defaultPreferences, jsonResult);
+          const [preferences, haserrors] = importPreferences(
+            defaultPreferences,
+            jsonResult
+          );
+          formatPreferences(preferences.settings);
+          if (haserrors) {
+            toasts.addToast({
+              content: (
+                <span class="feather-icon-container">
+                  <Frown />
+                  <span class="m-1">preferences.json</span>
+                </span>
+              ),
+              type: "error",
+            });
+          }
           setSettings({ ...settingsState.current, interface: preferences });
         },
         onFail: (error) => {
@@ -109,6 +125,7 @@ const useSettings = () => {
     },
     getInterfaceSettings,
     getConnectionSettings,
+    getInterfaceValue: getInterfaceValue,
   };
 };
 

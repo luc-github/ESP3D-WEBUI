@@ -1,27 +1,172 @@
-{
-  "settings": {
-    "xyfeedrate": 1000,
-    "xpos": 100,
-    "ypos": 100,
-    "zfeedrate": 100,
-    "filesfilter": "g;G;gco;GCO;gcode;GCODE",
-    "tftsd": true,
-    "tftusb": true,
-    "printersd": false,
-    "showtemperaturespanel": true,
-    "extrudermax": 300,
-    "bedmax": 140,
-    "extruderpreheat": "190;220;230",
-    "bedpreheat": "50;90;110",
-    "showfanspanel": true,
-    "showspeedpanel": true,
-    "showflowratepanel": true,
-    "showextruderspanel": true,
-    "chambermax": 140,
-    "chamberpreheat": "50;90;110",
-    "ismixedextruder": false,
-    "ecolors": "blue;red;green;#FF00FF",
-    "efeedrate": 400,
-    "enumber": "6"
+  {
+    "settings": {
+      "temperatures": [
+        {
+          "id": "showtemperaturespanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "extrudermax",
+          "type": "number",
+          "label": "P48",
+          "value": "300",
+          "append": "P72",
+          "min": "1"
+        },
+        {
+          "id": "extruderpreheat",
+          "type": "text",
+          "label": "P68",
+          "value": "190;220;230",
+          "append": "P72",
+          "help": "S97"
+        },
+        {
+          "id": "bedmax",
+          "type": "number",
+          "label": "P67",
+          "value": "140",
+          "append": "P72",
+          "min": "1"
+        },
+        {
+          "id": "bedpreheat",
+          "type": "text",
+          "label": "P69",
+          "value": "50;90;110",
+          "append": "P72",
+          "help": "S97"
+        },
+        {
+          "id": "chambermax",
+          "type": "number",
+          "label": "P70",
+          "value": "140",
+          "append": "P72"
+        },
+        {
+          "id": "chamberpreheat",
+          "type": "text",
+          "label": "P71",
+          "append": "P72",
+          "value": "50;90;110",
+          "help": "S97"
+        }
+      ],
+      "extruders": [
+        {
+          "id": "showextruderspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "ismixedextruder",
+          "type": "boolean",
+          "label": "P49",
+          "value": false
+        },
+        {
+          "id": "ecolors",
+          "type": "text",
+          "label": "P51",
+          "help": "S97",
+          "value": "blue;red;green;#FF00FF"
+        },
+        {
+          "id": "efeedrate",
+          "type": "number",
+          "label": "P50",
+          "append": "P14",
+          "value": "400",
+          "min": "1"
+        },
+        {
+          "id": "enumber",
+          "type": "number",
+          "label": "P52",
+          "value": "1",
+          "min": "1"
+        }
+      ],
+      "controls": [
+        {
+          "id": "showfanspanel",
+          "type": "boolean",
+          "label": "P45",
+          "value": true
+        },
+        {
+          "id": "showspeedpanel",
+          "type": "boolean",
+          "label": "P46",
+          "value": false
+        },
+        {
+          "id": "showflowratepanel",
+          "type": "boolean",
+          "label": "P47",
+          "value": false
+        }
+      ],
+      "files": [
+        {
+          "id": "filesfilter",
+          "type": "text",
+          "label": "S96",
+          "value": "g;G;gco;GCO;gcode;GCODE",
+          "help": "S97"
+        },
+        {
+          "id": "tftsd",
+          "type": "boolean",
+          "label": "P23",
+          "value": false
+        },
+        {
+          "id": "tftusb",
+          "type": "boolean",
+          "label": "P24",
+          "value": false
+        },
+        {
+          "id": "printersd",
+          "type": "boolean",
+          "label": "P26",
+          "value": false
+        }
+      ],
+      "jog": [
+        {
+          "id": "xyfeedrate",
+          "type": "number",
+          "label": "P10",
+          "min": "1",
+          "append": "P14",
+          "value": "1000"
+        },
+        {
+          "id": "zfeedrate",
+          "type": "number",
+          "label": "P11",
+          "append": "P14",
+          "min": "1",
+          "value": "1000"
+        },
+        {
+          "id": "xpos",
+          "type": "number",
+          "label": "P65",
+          "value": "100"
+        },
+        {
+          "id": "ypos",
+          "type": "number",
+          "label": "P66",
+          "value": "100"
+        }
+      ]
+    }
   }
-}

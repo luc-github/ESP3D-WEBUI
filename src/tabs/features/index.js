@@ -45,7 +45,7 @@ const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { settings } = useSettingsContext();
+  const { settings, getInterfaceValue } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
   const progressValue = useRef(0);
@@ -314,9 +314,10 @@ const FeaturesTab = () => {
   useEffect(() => {
     if (settings.current.features && settings.current.features.length != 0) {
       setFeatures(settings.current.features);
+      console.log(JSON.stringify(settings.current.features));
       setIsLoading(false);
     } else {
-      if (settings.current.interface.settings.autoload) getFeatures();
+      if (getInterfaceValue("autoload")) getFeatures();
       else setIsLoading(false);
     }
   }, []);
