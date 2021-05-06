@@ -137,8 +137,6 @@ const InterfaceTab = () => {
   const getInterface = () => {
     setIsLoading(true);
     getInterfaceSettings(setIsLoading);
-    //TODO
-    console.log("Get Interface");
   };
   const fileSelected = () => {
     //TODO
