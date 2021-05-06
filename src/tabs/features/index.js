@@ -310,7 +310,6 @@ const FeaturesTab = () => {
   useEffect(() => {
     if (settings.current.features && settings.current.features.length != 0) {
       setFeatures(settings.current.features);
-      console.log(JSON.stringify(settings.current.features));
       setIsLoading(false);
     } else {
       if (getInterfaceValue("autoload")) getFeatures();

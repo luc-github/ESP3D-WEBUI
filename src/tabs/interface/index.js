@@ -19,7 +19,6 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { formatPreferences } from "./importHelper";
 import {
   useUiContext,
   useSettingsContext,
@@ -27,7 +26,7 @@ import {
 } from "../../contexts";
 
 import { Loading, ButtonImg } from "../../components/Spectre";
-import { useHttpQueue } from "../../hooks";
+import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
@@ -36,7 +35,6 @@ import {
   showProgressModal,
 } from "../../components/Modal";
 import { Field } from "../../components/Controls";
-//import { formatStructure } from "./formatHelper";
 import { exportPreferences } from "./exportHelper";
 //import { importFeatures } from "./importHelper";
 
@@ -44,6 +42,7 @@ const InterfaceTab = () => {
   const { toasts, modals } = useUiContext();
   const { datas } = useDatasContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
+  const { getInterfaceSettings } = useSettings();
   const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [webUi, setWebUi] = useState();
@@ -136,12 +135,18 @@ const InterfaceTab = () => {
   }
 
   const getInterface = () => {
+    setIsLoading(true);
+    getInterfaceSettings(setIsLoading);
     //TODO
     console.log("Get Interface");
   };
   const fileSelected = () => {
     //TODO
     console.log("File Selected");
+  };
+  const SaveSettings = () => {
+    //TODO
+    console.log("Save Preferences");
   };
 
   useEffect(() => {
@@ -253,7 +258,7 @@ const InterfaceTab = () => {
                 icon={<Save />}
                 onClick={(e) => {
                   e.target.blur();
-                  //SaveSettings();
+                  SaveSettings();
                 }}
               />
             )}

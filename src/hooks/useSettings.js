@@ -81,7 +81,7 @@ const useSettings = () => {
       }
     );
   };
-  const getInterfaceSettings = () => {
+  const getInterfaceSettings = (setLoading) => {
     setSettings({ ...settingsState.current, interface: defaultPreferences });
     createNewRequest(
       espHttpURL("preferences.json").toString(),
@@ -106,8 +106,14 @@ const useSettings = () => {
             });
           }
           setSettings({ ...settingsState.current, interface: preferences });
+          if (setLoading) {
+            setLoading(false);
+          }
         },
         onFail: (error) => {
+          if (setLoading) {
+            setLoading(false);
+          }
           toasts.addToast({
             content: error + " preferences.json",
             type: "error",
