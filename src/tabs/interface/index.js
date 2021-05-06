@@ -36,7 +36,7 @@ import {
 } from "../../components/Modal";
 import { Field } from "../../components/Controls";
 import { exportPreferences } from "./exportHelper";
-//import { importFeatures } from "./importHelper";
+import { importPreferences } from "./importHelper";
 
 const InterfaceTab = () => {
   const { toasts, modals } = useUiContext();
@@ -138,10 +138,34 @@ const InterfaceTab = () => {
     setIsLoading(true);
     getInterfaceSettings(setIsLoading);
   };
+
   const fileSelected = () => {
-    //TODO
-    console.log("File Selected");
+    let haserrors = false;
+    if (inputFile.current.files.length > 0) {
+      setIsLoading(true);
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const importFile = e.target.result;
+        try {
+          const importData = JSON.parse(importFile);
+          [settings.current.interface, haserrors] = importPreferences(
+            settings.current.interface,
+            importData
+          );
+          if (haserrors) {
+            toasts.addToast({ content: "S56", type: "error" });
+          }
+        } catch (e) {
+          console.log(e);
+          toasts.addToast({ content: "S56", type: "error" });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      reader.readAsText(inputFile.current.files[0]);
+    }
   };
+
   const SaveSettings = () => {
     //TODO
     console.log("Save Preferences");
