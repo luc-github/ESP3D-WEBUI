@@ -68,6 +68,7 @@ let currentFileList = []
 let fileSystemLoaded = []
 let fileSystemCache = []
 let filesListCache = []
+let subDirlist = []
 let isloaded = false
 let processingEntry
 let uploadFiles
@@ -324,6 +325,10 @@ function consvertStringToFileDescriptor(data, list) {
                 let subdir = name.substring(0, name.indexOf("/"))
                 for (let item of list) {
                     if (item.name == subdir) return null
+                    if (subDirlist.includes(subdir)) {
+                        return null
+                    }
+                    subDirlist.push(subdir)
                     return { name: subdir, size: -1 }
                 }
             }
@@ -343,6 +348,10 @@ function consvertStringToFileDescriptor(data, list) {
                     let subdir = name.substring(0, name.indexOf("/"))
                     for (let item of list) {
                         if (item.name == subdir) return null
+                        if (subDirlist.includes(subdir)) {
+                            return null
+                        }
+                        subDirlist.push(subdir)
                         return { name: subdir, size: -1 }
                     }
                 }
@@ -357,6 +366,7 @@ function consvertStringToFileDescriptor(data, list) {
  */
 function generateSDList(list) {
     let result = []
+    subDirlist = []
     for (let data of list) {
         console.log(data)
         let entry = consvertStringToFileDescriptor(data, result)
@@ -835,7 +845,7 @@ function successDownload(response) {
         a.download = processingEntry.name
         document.body.appendChild(a)
         a.click()
-        setTimeout(function() {
+        setTimeout(function () {
             document.body.removeChild(a)
             window.URL.revokeObjectURL(url)
         }, 0)
@@ -873,12 +883,12 @@ const FileEntry = ({ entry, pos }) => {
     if (typeof entry.time != "undefined") timestamp = entry.time
     let topclass = "d-flex flex-row justify-content-around p-1 rounded hotspot"
     if (pos > 0) topclass += " border-top"
-    const openDir = e => {
+    const openDir = (e) => {
         currentPath[currentFilesType] +=
             (currentPath[currentFilesType] == "/" ? "" : "/") + entry.name
         refreshFilesList(true)
     }
-    const deleteFile = e => {
+    const deleteFile = (e) => {
         processingEntry = entry
         let message = (
             <div class="d-flex flex-wrap">
@@ -900,10 +910,10 @@ const FileEntry = ({ entry, pos }) => {
             next1: processDelete,
         })
     }
-    const printFile = e => {
+    const printFile = (e) => {
         processPrint(entry)
     }
-    const downloadFile = e => {
+    const downloadFile = (e) => {
         let filename =
             currentPath[currentFilesType] +
             (currentPath[currentFilesType] == "/" ? "" : "/") +
@@ -1000,7 +1010,7 @@ function buildFilesList(data) {
     const { dispatch } = useStoreon()
     let nb = 0
     currentFileList[currentFilesType] = []
-    const levelUp = e => {
+    const levelUp = (e) => {
         let pos = currentPath[currentFilesType].lastIndexOf("/")
         let newpath = currentPath[currentFilesType].substring(0, pos)
         if (newpath.length == 0) newpath = "/"
@@ -1217,10 +1227,10 @@ function refreshFilesList(isopendir = false) {
  * Create directory requested by click
  */
 function clickCreateDirectory() {
-    const onInput = e => {
+    const onInput = (e) => {
         processingEntry = e.target.value
     }
-    const onKeyUp = e => {
+    const onKeyUp = (e) => {
         if (e.keyCode == 13) {
             processCreateDir()
         }
@@ -1252,7 +1262,7 @@ function clickCreateDirectory() {
  */
 const FilesTypeSelector = () => {
     let optionsList = []
-    const selectChange = e => {
+    const selectChange = (e) => {
         const { dispatch } = useStoreon()
         currentFilesType = e.target.value
         dispatch("setFilesList", "")
@@ -1481,10 +1491,10 @@ function progressAction(oEvent) {
  */
 const FilesControls = () => {
     const { dispatch } = useStoreon()
-    const toogleFiles = e => {
+    const toogleFiles = (e) => {
         dispatch("panel/showfiles", false)
     }
-    const refreshFiles = e => {
+    const refreshFiles = (e) => {
         dispatch("setFilesList", "")
         dispatch("setFilesStatus", "")
         refreshFilesList()

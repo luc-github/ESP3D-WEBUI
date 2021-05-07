@@ -115,12 +115,12 @@ function SendBinary(text) {
     })
 }
 
-app.post("/login", function(req, res) {
+app.post("/login", function (req, res) {
     res.send("")
     return
 })
 
-app.get("/command", function(req, res) {
+app.get("/command", function (req, res) {
     var url = req.originalUrl
     var urldecoded = decodeURI(decodeURI(url))
     console.log(url)
@@ -143,7 +143,7 @@ app.get("/command", function(req, res) {
     if (url.indexOf("AUTOWAIT") != -1) {
         if (url.indexOf("ON") != -1) {
             if (waitInterval == null) {
-                waitInterval = setInterval(function() {
+                waitInterval = setInterval(function () {
                     SendBinary("wait\n")
                 }, 1000)
             }
@@ -185,7 +185,7 @@ app.get("/command", function(req, res) {
         console.info("M105 detected")
         if (url.indexOf("M105%20ON") != -1) {
             if (tempInterval == null) {
-                tempInterval = setInterval(function() {
+                tempInterval = setInterval(function () {
                     sendTemperature()
                 }, 3000)
             }
@@ -202,7 +202,7 @@ app.get("/command", function(req, res) {
     if (url.indexOf("SENSOR%20ON") != -1) {
         console.log("Activate sensor")
         if (sensorInterval == null) {
-            sensorInterval = setInterval(function() {
+            sensorInterval = setInterval(function () {
                 sendSensorData()
             }, 3000)
         }
@@ -399,6 +399,23 @@ app.get("/command", function(req, res) {
                     "End file list\n" +
                     "wait\n"
             )
+        if (targetFW == "marlin")
+            SendBinary(
+                "Begin file list\n" +
+                    "COOL_V~1.GCO 66622272\n" +
+                    "415%VA~1.GCO 66622272\n" +
+                    "/ARCHIEVE/TWISTY~1.GCO 1040\n" +
+                    "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
+                    "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
+                    "/ARCHIEVE/RET229~1.GCO 2050\n" +
+                    "/ARCHIEVE/FILE__~1.GCO 1050\n" +
+                    "/ARCHIEVE/FILE__~2.GCO 1050\n" +
+                    "/ARCHIEVE/FILE__~3.GCO 1050\n" +
+                    "/ARCHIEVE/FILE__~4.GCO 1050\n" +
+                    "/ARCHIEVE/FILE__~5.GCO 1050\n" +
+                    "End file list\n" +
+                    "ok\n"
+            )
         res.send("")
         return
     }
@@ -407,6 +424,9 @@ app.get("/command", function(req, res) {
         console.info("M21 detected")
         if (targetFW == "repetier") {
             SendBinary("ok\n")
+        }
+        if (targetFW == "marlin") {
+            SendBinary("SD card ok\n")
         }
         res.send("")
         return
@@ -1086,20 +1106,20 @@ app.get("/command", function(req, res) {
                     V: "11",
                     H: "channel",
                     O: [
-                        { "1": "1" },
-                        { "2": "2" },
-                        { "3": "3" },
-                        { "4": "4" },
-                        { "5": "5" },
-                        { "6": "6" },
-                        { "7": "7" },
-                        { "8": "8" },
-                        { "9": "9" },
-                        { "10": "10" },
-                        { "11": "11" },
-                        { "12": "12" },
-                        { "13": "13" },
-                        { "14": "14" },
+                        { 1: "1" },
+                        { 2: "2" },
+                        { 3: "3" },
+                        { 4: "4" },
+                        { 5: "5" },
+                        { 6: "6" },
+                        { 7: "7" },
+                        { 8: "8" },
+                        { 9: "9" },
+                        { 10: "10" },
+                        { 11: "11" },
+                        { 12: "12" },
+                        { 13: "13" },
+                        { 14: "14" },
                     ],
                 },
                 {
@@ -1241,16 +1261,16 @@ app.get("/command", function(req, res) {
                     V: "115200",
                     H: "baud",
                     O: [
-                        { "9600": "9600" },
-                        { "19200": "19200" },
-                        { "38400": "38400" },
-                        { "57600": "57600" },
-                        { "74880": "74880" },
-                        { "115200": "115200" },
-                        { "230400": "230400" },
-                        { "250000": "250000" },
-                        { "500000": "500000" },
-                        { "921600": "921600" },
+                        { 9600: "9600" },
+                        { 19200: "19200" },
+                        { 38400: "38400" },
+                        { 57600: "57600" },
+                        { 74880: "74880" },
+                        { 115200: "115200" },
+                        { 230400: "230400" },
+                        { 250000: "250000" },
+                        { 500000: "500000" },
+                        { 921600: "921600" },
                     ],
                 },
                 {
@@ -1294,7 +1314,7 @@ function filesList(mypath) {
     let nb = 0
     let totalused = getTotalSize(__dirname + "/public")
     let total = 1.31 * 1024 * 1024
-    fs.readdirSync(__dirname + "/public" + mypath).forEach(fileelement => {
+    fs.readdirSync(__dirname + "/public" + mypath).forEach((fileelement) => {
         let fst = fs.statSync(
             __dirname +
                 "/public" +
@@ -1324,12 +1344,12 @@ function filesList(mypath) {
     return res
 }
 
-const getAllFiles = function(dirPath, arrayOfFiles) {
+const getAllFiles = function (dirPath, arrayOfFiles) {
     let files = fs.readdirSync(dirPath)
 
     arrayOfFiles = arrayOfFiles || []
 
-    files.forEach(function(file) {
+    files.forEach(function (file) {
         if (fs.statSync(dirPath + "/" + file).isDirectory()) {
             arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
         } else {
@@ -1340,12 +1360,12 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
     return arrayOfFiles
 }
 
-const getTotalSize = function(directoryPath) {
+const getTotalSize = function (directoryPath) {
     const arrayOfFiles = getAllFiles(directoryPath)
 
     let totalSize = 0
 
-    arrayOfFiles.forEach(function(filePath) {
+    arrayOfFiles.forEach(function (filePath) {
         totalSize += fs.statSync(filePath).size
     })
 
@@ -1354,7 +1374,7 @@ const getTotalSize = function(directoryPath) {
 
 function deleteFolderRecursive(path) {
     if (fs.existsSync(path) && fs.lstatSync(path).isDirectory()) {
-        fs.readdirSync(path).forEach(function(file, index) {
+        fs.readdirSync(path).forEach(function (file, index) {
             var curPath = path + "/" + file
 
             if (fs.lstatSync(curPath).isDirectory()) {
@@ -1371,11 +1391,11 @@ function deleteFolderRecursive(path) {
     } else console.log(`No directory "${path}"...`)
 }
 
-app.all("/updatefw", function(req, res) {
+app.all("/updatefw", function (req, res) {
     res.send("ok")
 })
 
-app.all("/files", function(req, res) {
+app.all("/files", function (req, res) {
     let mypath = req.query.path
     var url = req.originalUrl
 
@@ -1427,7 +1447,7 @@ app.all("/files", function(req, res) {
     let myFile = req.files.myfile
     if (typeof myFile.length == "undefined") {
         console.log("one files")
-        myFile.mv(__dirname + "/public" + mypath + myFile.name, function(err) {
+        myFile.mv(__dirname + "/public" + mypath + myFile.name, function (err) {
             if (err) return res.status(500).send(err)
         })
     } else {
@@ -1436,7 +1456,7 @@ app.all("/files", function(req, res) {
             console.log(__dirname + "/public/" + mypath + myFile[i].name)
             myFile[i].mv(
                 __dirname + "/public/" + mypath + myFile[i].name,
-                function(err) {
+                function (err) {
                     if (err) return res.status(500).send(err)
                 }
             )
@@ -1451,7 +1471,7 @@ app.listen(process.env.PORT || 8080, () =>
 
 setInterval
 
-wss.on("connection", function(ws) {
+wss.on("connection", function (ws) {
     console.log("New connection")
     ws.send(`currentID:${currentID}`)
     wss.clients.forEach(function each(client) {
@@ -1460,7 +1480,7 @@ wss.on("connection", function(ws) {
         }
     })
     currentID++
-    ws.on("message", function(message) {
+    ws.on("message", function (message) {
         console.log("received: %s", message)
     })
 })
