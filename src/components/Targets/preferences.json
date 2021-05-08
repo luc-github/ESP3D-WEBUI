@@ -110,16 +110,6 @@
           "type": "boolean",
           "label": "S120",
           "value": true
-        },
-        {
-          "id": "macros",
-          "type": "list",
-          "value": [
-            {
-              "id": "2",
-              "value": "G1 X0 Y0"
-            }
-          ]
         }
       ],
       "extrapanels": [

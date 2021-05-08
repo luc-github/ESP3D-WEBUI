@@ -19,41 +19,45 @@ exportHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-function exportPreferences(preferencesSettings) {
+function exportPreferences(preferencesSettings, asFile = true) {
   const preferences = {};
   const filename = "preferences.json";
-  console.log(preferencesSettings);
   preferences.settings = {};
   if (preferencesSettings.custom)
     preferences.custom = preferencesSettings.custom;
   for (let key in preferencesSettings.settings) {
     for (let subkey in preferencesSettings.settings[key]) {
       if (preferencesSettings.settings[key][subkey].id) {
-        preferences.settings[preferencesSettings.settings[key][subkey].id] =
-          preferencesSettings.settings[key][subkey].initial;
+        preferences.settings[
+          preferencesSettings.settings[key][subkey].id
+        ] = asFile
+          ? preferencesSettings.settings[key][subkey].initial
+          : preferencesSettings.settings[key][subkey].value;
       }
     }
   }
-
-  const file = new Blob([JSON.stringify(preferences, null, " ")], {
-    type: "application/json",
-  });
-  if (window.navigator.msSaveOrOpenBlob)
-    // IE10+
-    window.navigator.msSaveOrOpenBlob(file, filename);
-  else {
-    // Others
-    const a = document.createElement("a"),
-      url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 0);
+  if (asFile) {
+    const file = new Blob([JSON.stringify(preferences, null, " ")], {
+      type: "application/json",
+    });
+    if (window.navigator.msSaveOrOpenBlob)
+      // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else {
+      // Others
+      const a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
   }
+  return preferences;
 }
 
 export { exportPreferences };

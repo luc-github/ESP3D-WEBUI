@@ -106,6 +106,10 @@ const useSettings = () => {
             });
           }
           setSettings({ ...settingsState.current, interface: preferences });
+          if (getInterfaceValue("mobileview"))
+            document.getElementById("app").classList.add("mobile-view");
+          else document.getElementById("app").classList.remove("mobile-view");
+
           if (setLoading) {
             setLoading(false);
           }

@@ -284,7 +284,10 @@ const About = () => {
       <h2>
         {T("S12").replace(
           "%s",
-          settings.current.interface.custom.name
+          settings.current &&
+            settings.current.interface &&
+            settings.current.interface.custom &&
+            settings.current.interface.custom.name
             ? settings.current.interface.custom.name
             : Name
         )}

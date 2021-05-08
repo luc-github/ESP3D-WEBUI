@@ -8,18 +8,6 @@
         "help": "S97",
         "value": "M105"
       }
-    ],
-    "macros": [
-      {
-        "id": "macros",
-        "type": "list",
-        "value": [
-          {
-            "id": "1",
-            "value": "G28"
-          }
-        ]
-      }
     ]
   }
 }

@@ -25,15 +25,12 @@ import {
   useDatasContext,
 } from "../../contexts";
 
-import { Loading, ButtonImg } from "../../components/Spectre";
+import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
-import {
-  showConfirmationModal,
-  showProgressModal,
-} from "../../components/Modal";
+import { showConfirmationModal } from "../../components/Modal";
 import { Field } from "../../components/Controls";
 import { exportPreferences } from "./exportHelper";
 import { importPreferences } from "./importHelper";
@@ -45,26 +42,9 @@ const InterfaceTab = () => {
   const { getInterfaceSettings } = useSettings();
   const { settings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [webUi, setWebUi] = useState();
   const [showSave, setShowSave] = useState(true);
-  const progressValue = useRef(0);
-  const progressValueDisplay = useRef(0);
   const inputFile = useRef(null);
   const errorValidationMsg = T("S42");
-
-  const [mobileView, setMobileView] = useState(false);
-  const toggle = (e) => {
-    if (mobileView) {
-      console.log("Now desktop view");
-      e.target.innerHTML = " On";
-      document.getElementById("app").classList.remove("mobile-view");
-    } else {
-      console.log("Now mobile view");
-      e.target.innerHTML = " Off";
-      document.getElementById("app").classList.add("mobile-view");
-    }
-    setMobileView(!mobileView);
-  };
 
   const generateValidation = (fieldData) => {
     const validation = {
@@ -167,8 +147,33 @@ const InterfaceTab = () => {
   };
 
   const SaveSettings = () => {
-    //TODO
-    console.log("Save Preferences");
+    const preferencestosave = JSON.stringify(
+      exportPreferences(settings.current.interface, false),
+      null,
+      " "
+    );
+    const blob = new Blob([preferencestosave], {
+      type: "application/json",
+    });
+    const preferencesFileName = "preferences.json";
+    const formData = new FormData();
+    const file = new File([blob], preferencesFileName);
+    formData.append("path", "/");
+    formData.append(preferencesFileName + "S", preferencestosave.length);
+    formData.append("myfiles", file, preferencesFileName);
+    setIsLoading(true);
+    createNewRequest(
+      espHttpURL("files").toString(),
+      { method: "POST", id: "preferences", body: formData },
+      {
+        onSuccess: (result) => {
+          setTimeout(getInterface, 1000);
+        },
+        onFail: (error) => {
+          setIsLoading(false);
+        },
+      }
+    );
   };
 
   useEffect(() => {

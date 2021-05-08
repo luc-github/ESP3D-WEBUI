@@ -58,11 +58,11 @@ const useHttpQueue = () => {
         if (onSuccessCb) onSuccessCb(result);
       },
       onProgress: (e) => {
-        onProgressCb(e);
+        if (onProgressCb) onProgressCb(e);
       },
       onFail: onFailCb
         ? (error) => {
-            onFailCb(error);
+            if (onFailCb) onFailCb(error);
           }
         : null,
     });
@@ -86,11 +86,11 @@ const useHttpQueue = () => {
         if (onSuccessCb) onSuccessCb(result);
       },
       onProgress: (e) => {
-        onProgressCb(e);
+        if (onProgressCb) onProgressCb(e);
       },
       onFail: onFailCb
         ? (error) => {
-            onFailCb(error);
+            if (onFailCb) onFailCb(error);
           }
         : null,
     });

@@ -1,6 +1,0 @@
-settings locations
-const { settings } = useSettingsContext();
-it is a reference
-- connection: the [ESP800]
-- interface: the preferences.json
-- features: the [ESP400]
