@@ -82,7 +82,6 @@ const FeaturesTab = () => {
             const Status = JSON.parse(result);
             const feat = formatStructure(Status.Settings);
             featuresSettings.current = { ...feat };
-            console.log(featuresSettings.current);
             setFeatures(featuresSettings.current);
           } catch (e) {
             console.log(e);

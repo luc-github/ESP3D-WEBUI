@@ -74,7 +74,6 @@ const InterfaceTab = () => {
     } else if (fieldData.type == "number") {
       if (fieldData.max) {
         if (fieldData.value > parseInt(fieldData.max)) {
-          console.log("max");
           validation.valid = false;
         }
       }
