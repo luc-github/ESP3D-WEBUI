@@ -40,7 +40,7 @@ const defaultLinks = [
   { label: Target, icon: <Tool />, href: "/settings/machine" },
 ];
 const TabBar = () => {
-  const { settings } = useSettingsContext();
+  const { connectionSettings } = useSettingsContext();
   return (
     <ul class="tab tab-block">
       {defaultLinks &&
@@ -48,7 +48,7 @@ const TabBar = () => {
           <li class="tab-item">
             <Link
               className={
-                settings.current.connection.FWTarget == 0 &&
+                connectionSettings.current.FWTarget == 0 &&
                 href == "/settings/machine"
                   ? "d-none"
                   : "btn btn-link no-box feather-icon-container"

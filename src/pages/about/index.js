@@ -49,17 +49,17 @@ import {
  *
  */
 const CustomEntry = () => {
-  const { settings } = useSettingsContext();
+  const { interfaceSettings } = useSettingsContext();
   let HelpEntry;
   let InfoEntry;
   if (
-    settings.current.interface.custom &&
-    (settings.current.interface.custom.help ||
-      settings.current.interface.custom.information)
+    interfaceSettings.current.custom &&
+    (interfaceSettings.current.custom.help ||
+      interfaceSettings.current.custom.information)
   ) {
-    if (settings.current.interface.custom.help) {
+    if (interfaceSettings.current.custom.help) {
       const onClickHelp = (e) => {
-        window.open(settings.current.interface.custom.help, "_blank");
+        window.open(interfaceSettings.current.custom.help, "_blank");
         e.target.blur();
       };
       HelpEntry = (
@@ -71,9 +71,9 @@ const CustomEntry = () => {
         />
       );
     }
-    if (settings.current.interface.custom.information) {
+    if (interfaceSettings.current.custom.information) {
       const onClickInfo = (e) => {
-        window.open(settings.current.interface.custom.information, "_blank");
+        window.open(sinterfaceSettings.current.custom.information, "_blank");
         e.target.blur();
       };
       InfoEntry = (
@@ -97,7 +97,7 @@ const About = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { settings, getInterfaceValue } = useSettingsContext();
+  const { interfaceSettings, getInterfaceValue } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
@@ -157,8 +157,8 @@ const About = () => {
   };
   const onFWGit = (e) => {
     window.open(
-      settings.current.interface.custom.fwurl
-        ? settings.current.interface.custom.fwurl
+      interfaceSettings.current.custom.fwurl
+        ? interfaceSettings.current.custom.fwurl
         : fwUrl,
       "_blank"
     );
@@ -284,11 +284,10 @@ const About = () => {
       <h2>
         {T("S12").replace(
           "%s",
-          settings.current &&
-            settings.current.interface &&
-            settings.current.interface.custom &&
-            settings.current.interface.custom.name
-            ? settings.current.interface.custom.name
+          interfaceSettings.current &&
+            interfaceSettings.current.custom &&
+            interfaceSettings.current.custom.name
+            ? interfaceSettings.current.custom.name
             : Name
         )}
       </h2>

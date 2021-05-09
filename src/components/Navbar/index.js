@@ -45,7 +45,7 @@ const defaultLinks = [
  *
  */
 const Navbar = () => {
-  const { settings } = useSettingsContext();
+  const { connectionSettings } = useSettingsContext();
   const { modals } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -86,7 +86,7 @@ const Navbar = () => {
     setShowConfirmation(true);
   };
 
-  if (settings.current.connection) {
+  if (connectionSettings.current) {
     return (
       <header class="navbar">
         <section class="navbar-section">
@@ -96,7 +96,7 @@ const Navbar = () => {
                 className={
                   href == "/about"
                     ? "navbar-brand logo no-box "
-                    : settings.current.connection.FWTarget == 0 &&
+                    : connectionSettings.current.FWTarget == 0 &&
                       href == "/dashboard"
                     ? "d-none"
                     : "btn btn-link no-box feather-icon-container"
@@ -114,7 +114,7 @@ const Navbar = () => {
         <section class="navbar-section">
           <span
             className={
-              settings.current.connection.Authentication == "Disabled"
+              connectionSettings.current.Authentication == "Disabled"
                 ? "d-none"
                 : "btn btn-link no-box mx-2 feather-icon-container"
             }

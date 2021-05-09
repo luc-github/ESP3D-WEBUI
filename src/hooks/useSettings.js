@@ -36,13 +36,12 @@ import { Frown } from "preact-feather";
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
   const { toasts, connection } = useUiContext();
-  const { settings, getInterfaceValue } = useSettingsContext();
+  const {
+    interfaceSettings,
+    connectionSettings,
+    getInterfaceValue,
+  } = useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
-  const [settingsState, setSettingsState] = useState(settings);
-  const setSettings = (_settingsState) => {
-    settings.current = _settingsState;
-    setSettingsState(_settingsState);
-  };
 
   const getConnectionSettings = () => {
     createNewRequest(
@@ -54,7 +53,7 @@ const useSettings = () => {
       {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
-          setSettings({ ...settingsState.current, connection: jsonResult });
+          connectionSettings.current = jsonResult;
           document.title = jsonResult.Hostname;
           connection.setConnectionState({
             connected: true,
@@ -82,7 +81,7 @@ const useSettings = () => {
     );
   };
   const getInterfaceSettings = (setLoading) => {
-    setSettings({ ...settingsState.current, interface: defaultPreferences });
+    interfaceSettings.current = defaultPreferences;
     createNewRequest(
       espHttpURL("preferences.json").toString(),
       { method: "GET" },
@@ -105,7 +104,7 @@ const useSettings = () => {
               type: "error",
             });
           }
-          setSettings({ ...settingsState.current, interface: preferences });
+          interfaceSettings.current = preferences;
           if (getInterfaceValue("mobileview"))
             document.getElementById("app").classList.add("mobile-view");
           else document.getElementById("app").classList.remove("mobile-view");
@@ -129,10 +128,6 @@ const useSettings = () => {
   };
 
   return {
-    settings: settings.current,
-    setSettings: (settingsState) => {
-      settings.current = settingsState;
-    },
     getInterfaceSettings,
     getConnectionSettings,
     getInterfaceValue: getInterfaceValue,

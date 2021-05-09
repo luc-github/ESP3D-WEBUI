@@ -30,18 +30,16 @@ const ESP3DLogo = ({
   color = "currentColor",
   bgcolor = "white",
 }) => {
-  const { settings } = useSettingsContext();
+  const { interfaceSettings } = useSettingsContext();
   if (
-    settings &&
-    settings.current &&
-    settings.current.interface &&
-    settings.current.interface.custom &&
-    settings.current.interface.custom.logo
+    interfaceSettings.current &&
+    interfaceSettings.custom &&
+    interfaceSettings.custom.logo
   )
     return (
       <span
         dangerouslySetInnerHTML={{
-          __html: settings.current.interface.custom.logo
+          __html: interfaceSettings.custom.logo
             .replace("{height}", height)
             .replaceAll("{color}", color)
             .replaceAll("{bgcolor}", bgcolor),

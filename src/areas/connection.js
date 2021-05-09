@@ -39,7 +39,7 @@ import { espHttpURL } from "../components/Helpers";
  */
 const ConnectionContainer = () => {
   const { connection } = useUiContext();
-  const { settings } = useSettingsContext();
+  const { connectionSettings } = useSettingsContext();
   const timerCtrl = useRef();
   let contentIcon;
   let contentSubtitle;
@@ -72,8 +72,8 @@ const ConnectionContainer = () => {
         contentIcon = <Lock size="50px" />;
         contentSubtitle = T("S145"); //"Authentication required"
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S22") +
@@ -90,8 +90,8 @@ const ConnectionContainer = () => {
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S22") +
@@ -113,8 +113,8 @@ const ConnectionContainer = () => {
             ? T("S10")
             : T("S173"); //"Connection with board is lost"
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S9") +
@@ -131,8 +131,8 @@ const ConnectionContainer = () => {
         contentIcon = <Slash size="50px" />;
         contentSubtitle = T("S3");
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S9") +
@@ -148,8 +148,8 @@ const ConnectionContainer = () => {
         intervalTimer = 40;
         setTimeout(refreshTimer, 1000);
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S35") +
@@ -171,8 +171,8 @@ const ConnectionContainer = () => {
         break;
       default:
         document.title =
-          (settings.current.connection
-            ? settings.current.connection.Hostname
+          (connectionSettings.current
+            ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
           T("S2") +

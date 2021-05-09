@@ -27,34 +27,33 @@ const SettingsContext = createContext("SettingsContext");
 const useSettingsContext = () => useContext(SettingsContext);
 
 const SettingsContextProvider = ({ children }) => {
-  const settingsValues = useRef({});
+  const interfaceValues = useRef({});
+  const connectionValues = useRef({});
+  const featuresValues = useRef({});
   //TODO: this should be more generic !!!
   const getInterfaceValue = (Id) => {
-    if (settingsValues.current.interface) {
-      for (let key in settingsValues.current.interface) {
-        if (Array.isArray(settingsValues.current.interface[key])) {
+    if (interfaceValues.current) {
+      for (let key in interfaceValues.current) {
+        if (Array.isArray(interfaceValues.current[key])) {
           for (
             let index = 0;
-            index < settingsValues.current.interface[key].length;
+            index < interfaceValues.current[key].length;
             index++
           ) {
-            if (settingsValues.current.interface[key][index].id == Id) {
-              return settingsValues.current.interface[key][index].value;
+            if (interfaceValues.current[key][index].id == Id) {
+              return interfaceValues.current[key][index].value;
             }
           }
         } else {
-          for (let subkey in settingsValues.current.interface[key]) {
-            if (Array.isArray(settingsValues.current.interface[key][subkey])) {
+          for (let subkey in interfaceValues.current[key]) {
+            if (Array.isArray(interfaceValues.current[key][subkey])) {
               for (
                 let index = 0;
-                index < settingsValues.current.interface[key][subkey].length;
+                index < interfaceValues.current[key][subkey].length;
                 index++
               ) {
-                if (
-                  settingsValues.current.interface[key][subkey][index].id == Id
-                ) {
-                  return settingsValues.current.interface[key][subkey][index]
-                    .value;
+                if (interfaceValues.current[key][subkey][index].id == Id) {
+                  return interfaceValues.current[key][subkey][index].value;
                 }
               }
             }
@@ -66,7 +65,10 @@ const SettingsContextProvider = ({ children }) => {
   };
 
   const store = {
-    settings: settingsValues,
+    settings: interfaceValues,
+    interfaceSettings: interfaceValues,
+    connectionSettings: connectionValues,
+    featuresSettings: featuresValues,
     getInterfaceValue,
   };
 

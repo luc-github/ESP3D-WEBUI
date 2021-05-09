@@ -69,7 +69,7 @@ const WsContextProvider = ({ children }) => {
   const { removeAllRequests } = useHttpQueueContext();
   const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
-  const { settings } = useSettingsContext();
+  const { connectionSettings } = useSettingsContext();
   const parser = useRef(new Parser());
   const wsConnection = useRef();
   const [isPingPaused, setIsPingPaused] = useState(false);
@@ -128,10 +128,10 @@ const WsContextProvider = ({ children }) => {
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {
           case "CURRENTID":
-            settings.current.wsID = eventLine[1];
+            connectionSettings.current.wsID = eventLine[1];
             break;
           case "ACTIVEID":
-            if (eventLine[1] != settings.current.wsID) {
+            if (eventLine[1] != connectionSettings.current.wsID) {
               Disconnect("already connected");
             }
             break;
@@ -193,6 +193,7 @@ const WsContextProvider = ({ children }) => {
       if (reconnectCounter.current >= maxReconnections) {
         Disconnect("connectionlost");
       } else {
+        console.log("Ws connection lost");
         setTimeout(setupWS, 3000);
       }
     }
@@ -203,12 +204,24 @@ const WsContextProvider = ({ children }) => {
     toasts.addToast({ content: "S6", type: "error" });
   };
   const setupWS = () => {
+    console.log("Setup WS");
+    if (!connectionSettings.current.WebCommunication) {
+      if (reconnectCounter.current < maxReconnections) {
+        reconnectCounter.current++;
+        console.log("Error with connection data", connectionSettings.current);
+        setTimeout(setupWS, 3000);
+        return;
+      } else {
+        toasts.addToast({ content: "S6", type: "error" });
+        return;
+      }
+    }
     const path =
-      settings.current.connection.WebCommunication === "Synchronous"
+      connectionSettings.current.WebCommunication === "Synchronous"
         ? ""
         : "/ws";
     wsConnection.current = new WebSocket(
-      `ws://${settings.current.connection.WebSocketIP}:${settings.current.connection.WebSocketport}${path}`,
+      `ws://${connectionSettings.current.WebSocketIP}:${connectionSettings.current.WebSocketport}${path}`,
       ["arduino"]
     );
     wsConnection.current.binaryType = "arraybuffer";
@@ -221,10 +234,10 @@ const WsContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (settings.current.connection) {
+    if (connectionSettings.current.WebCommunication) {
       setupWS();
     }
-  }, [settings.current.connection]);
+  }, [connectionSettings.current]);
 
   const addData = (cmdLine) => {
     const newWsData = [...wsData, cmdLine];

@@ -40,7 +40,7 @@ const InterfaceTab = () => {
   const { datas } = useDatasContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { getInterfaceSettings } = useSettings();
-  const { settings } = useSettingsContext();
+  const { interfaceSettings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
   const inputFile = useRef(null);
@@ -106,7 +106,7 @@ const InterfaceTab = () => {
   };
 
   function checkSaveStatus() {
-    let stringified = JSON.stringify(settings.current.interface.settings);
+    let stringified = JSON.stringify(interfaceSettings.current.settings);
     let hasmodified =
       stringified.indexOf('"hasmodified":true') == -1 ? false : true;
     let haserrors = stringified.indexOf('"haserror":true') == -1 ? false : true;
@@ -128,8 +128,8 @@ const InterfaceTab = () => {
         const importFile = e.target.result;
         try {
           const importData = JSON.parse(importFile);
-          [settings.current.interface, haserrors] = importPreferences(
-            settings.current.interface,
+          [interfaceSettings.current, haserrors] = importPreferences(
+            interfaceSettings.current,
             importData
           );
           if (haserrors) {
@@ -148,7 +148,7 @@ const InterfaceTab = () => {
 
   const SaveSettings = () => {
     const preferencestosave = JSON.stringify(
-      exportPreferences(settings.current.interface, false),
+      exportPreferences(interfaceSettings.current, false),
       null,
       " "
     );
@@ -191,14 +191,13 @@ const InterfaceTab = () => {
       <h2>{T("S17")}</h2>
       {isLoading && <Loading large />}
 
-      {!isLoading && settings.current.interface.settings && (
+      {!isLoading && interfaceSettings.current && (
         <Fragment>
-          {settings.current.interface && (
+          {interfaceSettings.current.settings && (
             <div class="flex-wrap">
-              {Object.keys(settings.current.interface.settings).map(
+              {Object.keys(interfaceSettings.current.settings).map(
                 (sectionId) => {
-                  const section =
-                    settings.current.interface.settings[sectionId];
+                  const section = interfaceSettings.current.settings[sectionId];
                   return (
                     <Fragment>
                       <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
@@ -273,7 +272,7 @@ const InterfaceTab = () => {
               icon={<ExternalLink />}
               onClick={(e) => {
                 e.target.blur();
-                exportPreferences(settings.current.interface);
+                exportPreferences(interfaceSettings.current);
               }}
             />
             {showSave && (

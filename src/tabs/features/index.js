@@ -45,12 +45,12 @@ const FeaturesTab = () => {
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { settings, getInterfaceValue } = useSettingsContext();
+  const { featuresSettings, getInterfaceValue } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
-  const [features, setFeatures] = useState();
+  const [features, setFeatures] = useState(featuresSettings.current);
   const inputFile = useRef(null);
   const errorMsg = T("S21");
   const errorValidationMsg = T("S42");
@@ -80,8 +80,10 @@ const FeaturesTab = () => {
         onSuccess: (result) => {
           try {
             const Status = JSON.parse(result);
-            settings.current.features = formatStructure(Status.Settings);
-            setFeatures(settings.current.features);
+            const feat = formatStructure(Status.Settings);
+            featuresSettings.current = { ...feat };
+            console.log(featuresSettings.current);
+            setFeatures(featuresSettings.current);
           } catch (e) {
             console.log(e);
             toasts.addToast({ content: errorMsg, type: "error" });
@@ -221,14 +223,14 @@ const FeaturesTab = () => {
         const importFile = e.target.result;
         try {
           const importData = JSON.parse(importFile);
-          [settings.current.features, haserrors] = importFeatures(
-            settings.current.features,
+          [featuresSettings.current, haserrors] = importFeatures(
+            featuresSettings.current,
             importData
           );
           if (haserrors) {
             toasts.addToast({ content: "S56", type: "error" });
           }
-          setFeatures(settings.current.features);
+          setFeatures(featuresSettings.current);
         } catch (e) {
           console.log(e);
           toasts.addToast({ content: "S56", type: "error" });
@@ -308,12 +310,16 @@ const FeaturesTab = () => {
   };
 
   useEffect(() => {
-    if (settings.current.features && settings.current.features.length != 0) {
-      setFeatures(settings.current.features);
+    if (
+      featuresSettings.current &&
+      Object.keys(featuresSettings.current).length != 0
+    ) {
+      setFeatures(featuresSettings.current);
       setIsLoading(false);
     } else {
-      if (getInterfaceValue("autoload")) getFeatures();
-      else setIsLoading(false);
+      if (getInterfaceValue("autoload")) {
+        getFeatures();
+      } else setIsLoading(false);
     }
   }, []);
 
@@ -331,7 +337,7 @@ const FeaturesTab = () => {
 
       {!isLoading && (
         <Fragment>
-          {features && (
+          {Object.keys(features).length != 0 && (
             <div class="flex-wrap">
               {Object.keys(features).map((sectionId) => {
                 const section = features[sectionId];
@@ -417,7 +423,7 @@ const FeaturesTab = () => {
               icon={<RefreshCcw />}
               onClick={getFeatures}
             />
-            {features && (
+            {Object.keys(features).length != 0 && (
               <Fragment>
                 <ButtonImg
                   m2
@@ -439,7 +445,7 @@ const FeaturesTab = () => {
                   icon={<ExternalLink />}
                   onClick={(e) => {
                     e.target.blur();
-                    exportFeatures(settings.current.features);
+                    exportFeatures(featuresSettings.current);
                   }}
                 />
                 {showSave && (
