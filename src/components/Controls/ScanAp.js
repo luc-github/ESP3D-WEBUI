@@ -17,7 +17,7 @@ ScanAp.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact";
-import { useState, useEffect, useLayoutEffect } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { Loading, ButtonImg } from "./../Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";

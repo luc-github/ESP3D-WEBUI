@@ -23,6 +23,7 @@ import { Router } from "../components/Router";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
+import { Informations } from "../areas/informations";
 
 const routes = {
   DASHBOARD: {
@@ -36,6 +37,10 @@ const routes = {
   SETTINGS: {
     component: <Settings />,
     path: "/settings",
+  },
+  INFORMATIONS: {
+    component: <Informations type="page" />,
+    path: "/informations",
   },
 };
 

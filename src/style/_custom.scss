@@ -348,6 +348,13 @@
   display: none !important;
 }
 
+.mobile-view .show-low {
+  display: block !important;
+}
+.show-low {
+  display: none;
+}
+
 .align-top {
   align-items: top !important;
   -ms-flex-align: top !important;
@@ -356,5 +363,8 @@
 @media (max-width: 480px) {
   .hide-low {
     display: none !important;
+  }
+  .show-low {
+    display: block !important;
   }
 }

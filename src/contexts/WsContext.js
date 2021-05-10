@@ -204,7 +204,6 @@ const WsContextProvider = ({ children }) => {
     toasts.addToast({ content: "S6", type: "error" });
   };
   const setupWS = () => {
-    console.log("Setup WS");
     if (!connectionSettings.current.WebCommunication) {
       if (reconnectCounter.current < maxReconnections) {
         reconnectCounter.current++;
