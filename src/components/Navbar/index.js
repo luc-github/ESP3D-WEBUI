@@ -48,7 +48,7 @@ const defaultLinks = [
 
 const Navbar = () => {
   const { connectionSettings } = useSettingsContext();
-  const { activeRoute } = useRouterContext();
+  const { defaultRoute, activeRoute } = useRouterContext();
   const { modals } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -62,7 +62,9 @@ const Navbar = () => {
       //we should not be there so move to another page
       document
         .getElementById(
-          activeRoute == "/dashboard" ? "dashboardLink" : "settingsLink"
+          defaultRoute.current == "/dashboard"
+            ? "dashboardLink"
+            : "settingsLink"
         )
         .click();
     }
