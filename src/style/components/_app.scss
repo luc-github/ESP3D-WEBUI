@@ -44,7 +44,10 @@ li .active {
   color: blue !important;
   font-weight: 700; // bold
 }
-
+.mobile-view section .active,
+.mobile-view li .active {
+  background-color: rgba(0, 0, 255, 0.1) !important;
+}
 .passwordReveal {
   color: #c0c0c0;
   cursor: pointer;

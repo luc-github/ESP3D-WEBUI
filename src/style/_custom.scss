@@ -367,4 +367,8 @@
   .show-low {
     display: block !important;
   }
+  section .active,
+  li .active {
+    background-color: rgba(100, 100, 100, 0.1) !important;
+  }
 }
