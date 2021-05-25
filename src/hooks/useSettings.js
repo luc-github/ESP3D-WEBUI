@@ -85,6 +85,47 @@ const useSettings = () => {
 
   const getInterfaceSettings = (setLoading, next) => {
     interfaceSettings.current = defaultPreferences;
+    function loadTheme() {
+      const themepack = getInterfaceValue("theme");
+      console.log(themepack);
+      if (themepack != "default") {
+        createNewRequest(
+          espHttpURL(themepack).toString(),
+          { method: "GET" },
+          {
+            onSuccess: (result) => {
+              console.log(result);
+              var styleItem = document.createElement("style");
+              styleItem.type = "text/css";
+              styleItem.id = "themestyle";
+              styleItem.innerHTML = result;
+              document.head.appendChild(styleItem);
+              if (next) next();
+              if (setLoading) {
+                setLoading(false);
+              }
+            },
+            onFail: (error) => {
+              if (next) next();
+              if (setLoading) {
+                setLoading(false);
+              }
+              toasts.addToast({
+                content: error + " " + themepack,
+                type: "error",
+              });
+            },
+          }
+        );
+      } else {
+        const elem = document.getElementById("themestyle");
+        if (elem) elem.parentNode.removeChild(elem);
+        if (next) next();
+        if (setLoading) {
+          setLoading(false);
+        }
+      }
+    }
     createNewRequest(
       espHttpURL("preferences.json").toString(),
       { method: "GET" },
@@ -127,16 +168,10 @@ const useSettings = () => {
                 onSuccess: (result) => {
                   const langjson = JSON.parse(result);
                   setCurrentLanguage(langjson);
-                  if (next) next();
-                  if (setLoading) {
-                    setLoading(false);
-                  }
+                  loadTheme();
                 },
                 onFail: (error) => {
-                  if (next) next();
-                  if (setLoading) {
-                    setLoading(false);
-                  }
+                  loadTheme();
                   toasts.addToast({
                     content: error + " " + languagepack,
                     type: "error",
@@ -145,10 +180,7 @@ const useSettings = () => {
               }
             );
           } else {
-            if (next) next();
-            if (setLoading) {
-              setLoading(false);
-            }
+            loadTheme();
           }
         },
         onFail: (error) => {
