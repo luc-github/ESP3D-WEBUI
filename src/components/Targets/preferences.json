@@ -3,9 +3,9 @@
       "general": [
         {
           "id": "language",
-          "type": "text",
+          "type": "pickup",
           "label": "S68",
-          "value": "en"
+          "value": "default"
         },
         {
           "id": "autoload",

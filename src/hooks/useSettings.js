@@ -21,7 +21,11 @@ import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
 import { espHttpURL, getBrowserTime } from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
-import { useUiContext, useRouterContext } from "../contexts";
+import {
+  useUiContext,
+  useRouterContext,
+  useTranslationsContext,
+} from "../contexts";
 import { defaultPreferences } from "../components/Targets";
 import {
   importPreferences,
@@ -36,14 +40,12 @@ import { Frown } from "preact-feather";
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
   const { toasts, connection } = useUiContext();
-  const {
-    interfaceSettings,
-    connectionSettings,
-    getInterfaceValue,
-  } = useSettingsContext();
+  const { interfaceSettings, connectionSettings, getInterfaceValue } =
+    useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
-
-  const getConnectionSettings = () => {
+  const { currentLanguage, baseLangRessource, setCurrentLanguage } =
+    useTranslationsContext();
+  const getConnectionSettings = (next) => {
     createNewRequest(
       espHttpURL("command", {
         cmd: "[ESP800]",
@@ -80,7 +82,8 @@ const useSettings = () => {
       }
     );
   };
-  const getInterfaceSettings = (setLoading) => {
+
+  const getInterfaceSettings = (setLoading, next) => {
     interfaceSettings.current = defaultPreferences;
     createNewRequest(
       espHttpURL("preferences.json").toString(),
@@ -105,12 +108,47 @@ const useSettings = () => {
             });
           }
           interfaceSettings.current = preferences;
+          //Mobile view
           if (getInterfaceValue("mobileview"))
             document.getElementById("app").classList.add("mobile-view");
           else document.getElementById("app").classList.remove("mobile-view");
-
-          if (setLoading) {
-            setLoading(false);
+          //language
+          const languagepack = getInterfaceValue("language");
+          //set default first
+          setCurrentLanguage(baseLangRessource);
+          if (languagepack != "default") {
+            if (setLoading) {
+              setLoading(false);
+            }
+            createNewRequest(
+              espHttpURL(languagepack).toString(),
+              { method: "GET" },
+              {
+                onSuccess: (result) => {
+                  const langjson = JSON.parse(result);
+                  setCurrentLanguage(langjson);
+                  if (next) next();
+                  if (setLoading) {
+                    setLoading(false);
+                  }
+                },
+                onFail: (error) => {
+                  if (next) next();
+                  if (setLoading) {
+                    setLoading(false);
+                  }
+                  toasts.addToast({
+                    content: error + " " + languagepack,
+                    type: "error",
+                  });
+                },
+              }
+            );
+          } else {
+            if (next) next();
+            if (setLoading) {
+              setLoading(false);
+            }
           }
         },
         onFail: (error) => {

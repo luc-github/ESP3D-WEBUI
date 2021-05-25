@@ -2,7 +2,8 @@
                                     printer         grbl      size in 3.0
 Base code               : 3.0.0.a1 : 21.2KB        |        | 27KB
 WS/Http/Auth/Menu       : 3.0.0.a2 : 28.4KB        |        | 34.15KB
-Icons & Mobile view     : 3.0.0.a3 : 29.8KB	   |        |
-UI update		: 3.0.0.a4 : 30.6KB	   |        | 35.7KB
-Features        : 3.0.0.a5 : 36KB     |        | 41.2KB
-Interface       : 3.0.0.a6 : 36.6KB   |        | 42KB
+Icons & Mobile view     : 3.0.0.a3 : 29.8KB        |        |
+UI update               : 3.0.0.a4 : 30.6KB        |        | 35.7KB
+Features                : 3.0.0.a5 : 36KB          |        | 41.2KB
+Interface               : 3.0.0.a6 : 36.6KB        |        | 42KB
+UI language pack        : 3.0.0.a7 : 37.3KB        |        | 42.6KB

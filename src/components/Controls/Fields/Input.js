@@ -21,9 +21,9 @@ import { h } from "preact";
 import { useRef, useState, useEffect } from "preact/hooks";
 import { Eye, EyeOff, Search } from "preact-feather";
 import { ButtonImg } from "../../Spectre";
-import { ScanApList } from "./../ScanAp";
+import { ScanApList } from "../ScanAp";
 import { T } from "./../../Translations";
-import { showModal } from "./../../Modal";
+import { showModal } from "../../Modal";
 import { useUiContext } from "../../../contexts";
 
 const Reveal = ({ applyTo }) => {

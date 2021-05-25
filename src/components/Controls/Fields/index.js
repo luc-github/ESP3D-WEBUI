@@ -23,5 +23,6 @@ import Boolean from "./Boolean";
 import FormGroup from "./FormGroup";
 import Input from "./Input";
 import Select from "./Select";
+import PickUp from "./PickUp";
 
-export { Boolean, FormGroup, Input, Select };
+export { Boolean, FormGroup, Input, Select, PickUp };

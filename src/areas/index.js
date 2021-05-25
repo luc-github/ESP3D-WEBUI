@@ -64,9 +64,9 @@ const ContentContainer = () => {
   useEffect(() => {
     //To init settings
     //to get language first
-    getInterfaceSettings();
+    getInterfaceSettings(null, getConnectionSettings);
     //to get communication connection
-    getConnectionSettings();
+    //getConnectionSettings();
   }, []);
   return <ViewContainer />;
 };

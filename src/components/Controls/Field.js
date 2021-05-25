@@ -18,13 +18,19 @@ Field.js - ESP3D WebUI component file
 */
 
 import { h } from "preact";
-import { FormGroup, Input, Select, Boolean } from "./Fields";
+import { FormGroup, Input, Select, Boolean, PickUp } from "./Fields";
 
 const Field = (props) => {
   const { type, id } = props;
   switch (type) {
     case "list":
       return <span>List for {id} (TODO)</span>;
+    case "pickup":
+      return (
+        <FormGroup {...props}>
+          <PickUp {...props} />
+        </FormGroup>
+      );
     case "select":
       return (
         <FormGroup {...props}>

@@ -1,8 +1,8 @@
 {
  "settings": {
-  "language": "en",
+  "language": "default",
   "autoload": true,
-  "mobileview": true,
+  "mobileview": false,
   "showsensorspanel": false,
   "enablepolling": false,
   "pollingrefresh": "3000",

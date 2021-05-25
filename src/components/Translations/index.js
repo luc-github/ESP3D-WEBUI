@@ -15,14 +15,19 @@
 */
 import { h } from "preact";
 import { useTranslationsContext } from "../../contexts";
+import listLanguagePacks from "./languages.json";
 
 /*
  * Give text from id according language selection
  * give language base text if no corresponding id
  */
-function T(id) {
+function T(id, base = false, ressourcelanguage = null) {
   const { currentLanguage, baseLangRessource } = useTranslationsContext();
-  let translatedText = currentLanguage[id];
+  let translatedText = base
+    ? baseLangRessource[id]
+    : ressourcelanguage
+    ? ressourcelanguage[id]
+    : currentLanguage[id];
   if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
     return id;
   if (typeof translatedText === "undefined") {
@@ -34,4 +39,13 @@ function T(id) {
   return translatedText;
 }
 
-export { T };
+function getLanguageName(languagePack) {
+  const id = languagePack.replace("lang-", "").replace(".json", "");
+  let lang = listLanguagePacks[id];
+  if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
+    return id;
+  if (typeof lang === "undefined") return languagePack;
+  return lang;
+}
+
+export { T, getLanguageName };
