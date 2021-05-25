@@ -1,6 +1,7 @@
 {
  "settings": {
   "language": "default",
+  "theme": "default",
   "autoload": true,
   "mobileview": false,
   "showsensorspanel": false,

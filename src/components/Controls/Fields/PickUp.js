@@ -21,7 +21,7 @@ import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { Search } from "preact-feather";
 import { showModal } from "../../Modal";
-import { ScanLanguagesList } from "../ScanLanguagesList";
+import { ScanPacksList } from "../ScanPacksList";
 import { useUiContext } from "../../../contexts";
 import { T, getLanguageName } from "../../Translations";
 
@@ -30,24 +30,39 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
     id,
     name: id,
   };
-  const [language, setLanguage] = useState(T("lang"));
-  const { modals, toasts } = useUiContext();
-  const defaultlang = T("lang", true);
+  const [displayValue, setDisplayValue] = useState(
+    id == "language" ? T("lang") : T("none")
+  );
+  const { modals } = useUiContext();
+  const defaultDisplayValue = id == "language" ? T("lang", true) : T("none");
   const onChange = (value) => {
     if (setValue) setValue(value);
-    setLanguage(value == "default" ? defaultlang : getLanguageName(value));
+
+    setDisplayValue(
+      value == "default"
+        ? defaultDisplayValue
+        : id == "language"
+        ? getLanguageName(value)
+        : value.replace("theme-", "").replace(".gz", "")
+    );
   };
-  const title = T("S177");
+  const title = id == "language" ? T("S177") : T("S182");
   const closeTxt = T("S24");
   const refreshTxt = T("S50");
-  let ScanLanguages = null;
+  let ScanPacks = null;
   const refreshList = () => {
-    if (ScanLanguages) ScanLanguages();
+    if (ScanPacks) ScanPacks();
   };
   useEffect(() => {
     //to update state
     if (setValue) setValue(null, true);
-    setLanguage(value == "default" ? defaultlang : getLanguageName(value));
+    setDisplayValue(
+      value == "default"
+        ? defaultDisplayValue
+        : id == "language"
+        ? getLanguageName(value)
+        : value.replace("theme-", "").replace(".gz", "")
+    );
   }, [value]);
 
   return (
@@ -56,10 +71,10 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
         class="form-input"
         style="cursor: pointer;"
         readonly
-        value={T("lang")}
+        value={id == "language" ? T("lang") : T("none")}
         onClick={(e) => {
           e.target.blur();
-          const modalId = "langagePickup";
+          const modalId = `${id}Pickup`;
           showModal({
             modals,
             title,
@@ -68,16 +83,16 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
             icon: <Search />,
             id: modalId,
             content: (
-              <ScanLanguagesList
+              <ScanPacksList
                 id={modalId}
                 setValue={onChange}
-                refreshfn={(scanlanguages) => (ScanLanguages = scanlanguages)}
+                refreshfn={(scanpacks) => (ScanPacks = scanpacks)}
               />
             ),
           });
         }}
       >
-        {language}
+        {displayValue}
       </span>
     </div>
   );

@@ -1,5 +1,5 @@
 /*
-ScanLanguagesList.js - ESP3D WebUI component file
+ScanPacksList.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
@@ -25,13 +25,13 @@ import { useUiContext } from "../../contexts";
 import { T, getLanguageName } from "./../Translations";
 import { CheckCircle } from "preact-feather";
 
-const ScanLanguagesList = ({ id, setValue, refreshfn }) => {
+const ScanPacksList = ({ id, setValue, refreshfn }) => {
   const { modals, toasts } = useUiContext();
   const [isLoading, setIsLoading] = useState(true);
 
-  const [languageList, setLanguageList] = useState([]);
+  const [packsList, setPacksList] = useState([]);
   const { createNewRequest } = useHttpQueue();
-  const ScanLanguages = () => {
+  const ScanPacks = () => {
     setIsLoading(true);
     createNewRequest(
       espHttpURL("files", { path: "/" }).toString(),
@@ -40,19 +40,19 @@ const ScanLanguagesList = ({ id, setValue, refreshfn }) => {
         onSuccess: (result) => {
           setIsLoading(false);
           const listFiles = JSON.parse(result);
-          setLanguageList(listFiles.files);
+          setPacksList(listFiles.files);
         },
         onFail: (error) => {
           setIsLoading(false);
           toasts.addToast({ content: error, type: "error" });
-          setLanguageList([]);
+          setPacksList([]);
         },
       }
     );
   };
   useEffect(() => {
-    ScanLanguages();
-    refreshfn(ScanLanguages);
+    ScanPacks();
+    refreshfn(ScanPacks);
   }, []);
   return (
     <Fragment>
@@ -62,19 +62,19 @@ const ScanLanguagesList = ({ id, setValue, refreshfn }) => {
         <table class="table">
           <thead class="hide-low">
             <tr>
-              <th>{T("S67")}</th>
+              <th>{id == "languagePickup" ? T("S67") : T("S183")}</th>
               <th>{T("S178")}</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>{T("lang", true)}</td>
+              <td>{id == "languagePickup" ? T("lang", true) : T("none")}</td>
 
               <td>
                 <ButtonImg
                   m2
                   ltooltip
-                  data-tooltip={T("S179")}
+                  data-tooltip={id == "languagePickup" ? T("S179") : T("S180")}
                   icon={<CheckCircle />}
                   onClick={() => {
                     setValue("default");
@@ -83,11 +83,19 @@ const ScanLanguagesList = ({ id, setValue, refreshfn }) => {
                 />
               </td>
             </tr>
-            {languageList.map((e) => {
-              if (e.name.match(/^lang-\w*.json(.gz)*/g))
+            {packsList.map((e) => {
+              if (
+                (id == "languagePickup" &&
+                  e.name.match(/^lang-\w*.json(.gz)*/g)) ||
+                (id == "themePickup" && e.name.match(/^theme-\w*(.gz)*/g))
+              )
                 return (
                   <tr>
-                    <td>{getLanguageName(e.name.replace(".gz", ""))}</td>
+                    <td>
+                      {id == "languagePickup"
+                        ? getLanguageName(e.name.replace(".gz", ""))
+                        : e.name.replace(".gz", "").replace("theme-", "")}
+                    </td>
 
                     <td>
                       <ButtonImg
@@ -110,4 +118,4 @@ const ScanLanguagesList = ({ id, setValue, refreshfn }) => {
     </Fragment>
   );
 };
-export { ScanLanguagesList };
+export { ScanPacksList };

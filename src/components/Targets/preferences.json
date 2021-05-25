@@ -8,6 +8,12 @@
           "value": "default"
         },
         {
+          "id": "theme",
+          "type": "pickup",
+          "label": "S181",
+          "value": "default"
+        },
+        {
           "id": "autoload",
           "type": "boolean",
           "label": "S64",
