@@ -87,14 +87,14 @@ const useSettings = () => {
     interfaceSettings.current = defaultPreferences;
     function loadTheme() {
       const themepack = getInterfaceValue("theme");
-      console.log(themepack);
+      const elem = document.getElementById("themestyle");
+      if (elem) elem.parentNode.removeChild(elem);
       if (themepack != "default") {
         createNewRequest(
           espHttpURL(themepack).toString(),
           { method: "GET" },
           {
             onSuccess: (result) => {
-              console.log(result);
               var styleItem = document.createElement("style");
               styleItem.type = "text/css";
               styleItem.id = "themestyle";
