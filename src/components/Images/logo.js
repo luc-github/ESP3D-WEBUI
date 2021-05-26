@@ -53,6 +53,7 @@ const ESP3DLogo = ({
         viewBox="22 56 240 180"
         fill={bgcolor}
         stroke={color}
+        class="esp3dlogo"
       >
         <path d="m 227,91.9 -97,-0.3 0,100.4 83,0 c 20,0 46,-6 47,-36 l 0,-24 c 1,-20 -13,-40 -33,-40.1 z" />
         <path
