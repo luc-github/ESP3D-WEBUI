@@ -528,17 +528,25 @@ function canDelete(entry) {
  * Check if can print file
  */
 function canPrint(entry) {
+    console.log("checking can print for ", entry)
     if (
         currentFilesType == "FS" ||
         entry.size == -1 ||
-        currentFilesType == "SDDirect"
+        (currentFilesType == "SDDirect" &&
+            esp3dSettings.SDConnection != "shared")
     ) {
+        console.log("currentFilesType", currentFilesType)
+        console.log("entry.size", entry.size)
+        console.log("currentFilesType", currentFilesType)
+        console.log("Cannot be printed")
         return false
     }
     let filefilter = prefs.filesfilter.trim()
+    console.log("Filters:", filefilter)
     if (filefilter != "*" && filefilter.length > 0) {
         let tfilters = filefilter.split(";")
         for (let p of tfilters) {
+            console.log("Check :", p)
             if (entry.name.endsWith("." + p)) return true
         }
         return false
@@ -749,6 +757,7 @@ function startJobFile(source, filename) {
         case "TFTSD":
         case "TFTUSB":
         case "TARGETSD":
+        case "SDDirect":
             switch (esp3dSettings.FWTarget) {
                 case "repetier":
                 case "marlin":
@@ -810,6 +819,12 @@ function processPrint(entry) {
             path = currentPath[currentFilesType]
             if (!path.endsWith("/")) path += "/"
             path += entry.name
+            break
+        case "SDDirect":
+            console.log("Shortname:", entry.shortname)
+            path = currentPath[currentFilesType]
+            if (!path.endsWith("/")) path += "/"
+            path += entry.shortname
             break
         default:
             console.log(currentFilesType + " is not a valid file system")
