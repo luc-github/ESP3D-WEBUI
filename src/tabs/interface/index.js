@@ -19,11 +19,7 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import {
-  useUiContext,
-  useSettingsContext,
-  useDatasContext,
-} from "../../contexts";
+import { useUiContext, useSettingsContext } from "../../contexts";
 
 import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue, useSettings } from "../../hooks";
@@ -37,7 +33,6 @@ import { importPreferences } from "./importHelper";
 
 const InterfaceTab = () => {
   const { toasts, modals } = useUiContext();
-  const { datas } = useDatasContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { getInterfaceSettings } = useSettings();
   const { interfaceSettings } = useSettingsContext();
@@ -45,7 +40,7 @@ const InterfaceTab = () => {
   const [showSave, setShowSave] = useState(true);
   const inputFile = useRef(null);
   const errorValidationMsg = T("S42");
-
+  console.log("Interface");
   const generateValidation = (fieldData) => {
     const validation = {
       message: <Flag size="1rem" />,
@@ -190,7 +185,7 @@ const InterfaceTab = () => {
       <h2>{T("S17")}</h2>
       {isLoading && <Loading large />}
 
-      {!isLoading && interfaceSettings.current && (
+      {!isLoading && (
         <Fragment>
           {interfaceSettings.current.settings && (
             <div class="flex-wrap">
@@ -209,12 +204,8 @@ const InterfaceTab = () => {
                           <div class="panel-body panel-body-features">
                             {Object.keys(section).map((subsectionId) => {
                               const fieldData = section[subsectionId];
-                              const {
-                                label,
-                                initial,
-                                type,
-                                ...rest
-                              } = fieldData;
+                              const { label, initial, type, ...rest } =
+                                fieldData;
                               const [validation, setvalidation] = useState();
                               return (
                                 <Field

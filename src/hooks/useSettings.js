@@ -196,11 +196,9 @@ const useSettings = () => {
       }
     );
   };
-
   return {
     getInterfaceSettings,
     getConnectionSettings,
-    getInterfaceValue: getInterfaceValue,
   };
 };
 

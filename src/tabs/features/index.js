@@ -309,6 +309,7 @@ const FeaturesTab = () => {
   };
 
   useEffect(() => {
+    console.log("refresh");
     if (
       featuresSettings.current &&
       Object.keys(featuresSettings.current).length != 0
@@ -321,7 +322,7 @@ const FeaturesTab = () => {
       } else setIsLoading(false);
     }
   }, []);
-
+  console.log("feature");
   return (
     <div id="features">
       <input
@@ -365,12 +366,8 @@ const FeaturesTab = () => {
                             <div class="panel-body panel-body-features">
                               {subSection.map((fieldData) => {
                                 const [validation, setvalidation] = useState();
-                                const {
-                                  label,
-                                  options,
-                                  initial,
-                                  ...rest
-                                } = fieldData;
+                                const { label, options, initial, ...rest } =
+                                  fieldData;
                                 const Options = options
                                   ? options.reduce((acc, curval) => {
                                       return [

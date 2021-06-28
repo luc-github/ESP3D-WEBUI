@@ -24,5 +24,6 @@ import FormGroup from "./FormGroup";
 import Input from "./Input";
 import Select from "./Select";
 import PickUp from "./PickUp";
+import ItemsList from "./ItemsList";
 
-export { Boolean, FormGroup, Input, Select, PickUp };
+export { Boolean, FormGroup, Input, Select, PickUp, ItemsList };
