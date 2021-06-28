@@ -486,7 +486,7 @@ function files_serial_M20_list_success(response_text) {
         var fsize = "";
         var d = "";
         line = line.replace("\r", "");
-        if (!((line.length == 0) || (line.indexOf("egin file list") > 0) || (line.indexOf("nd file list") > 0) || (line.indexOf(":") > 0) || (line == "ok") || (line == "wait"))) {
+        if (!((line.length == 0) || (line.indexOf("egin file list") > 0) || (line.indexOf("nd file list") > 0) || (line.startsWith("ok ") > 0)|| (line.indexOf(":") > 0) || (line == "ok")  || (line == "wait"))) {
             //for marlin
             if (line.startsWith("/")) {
                 line = line.substring(1);
