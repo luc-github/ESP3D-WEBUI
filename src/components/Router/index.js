@@ -90,13 +90,20 @@ const Router = ({ children, routesList, localDefault }) => {
   }, []);
 
   useEffect(() => {
+    if (activeRoute.startsWith("/settings/")) {
+      activeTab.current = activeRoute;
+      setActiveRouteAndComp();
+    }
+  }, [activeRoute]);
+
+  useEffect(() => {
     setActiveRouteAndComp();
     if (activeRoute.startsWith("/settings/")) {
       activeTab.current = activeRoute;
     }
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, [handleHashChange, activeRoute]);
+  }, []);
 
   return isLoading ? (
     <Loading large />
