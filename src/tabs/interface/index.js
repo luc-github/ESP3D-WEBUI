@@ -36,7 +36,7 @@ const InterfaceTab = () => {
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { getInterfaceSettings } = useSettings();
   const { interfaceSettings } = useSettingsContext();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showSave, setShowSave] = useState(true);
   const inputFile = useRef(null);
   const errorValidationMsg = T("S42");
@@ -170,9 +170,6 @@ const InterfaceTab = () => {
     );
   };
 
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
   return (
     <div id="interface">
       <input
