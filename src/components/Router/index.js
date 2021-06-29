@@ -37,7 +37,7 @@ const Router = ({ children, routesList, localDefault }) => {
       const location = window.location.hash.slice(1).toLowerCase();
       if (location == "/settings") {
         window.location.href = "/#" + activeTab.current;
-        return "/settings/features";
+        return activeTab.current;
       } else {
         return location;
       }
@@ -91,8 +91,10 @@ const Router = ({ children, routesList, localDefault }) => {
 
   useEffect(() => {
     if (activeRoute.startsWith("/settings/")) {
-      activeTab.current = activeRoute;
-      setActiveRouteAndComp();
+      if (activeTab.current != activeRoute) {
+        activeTab.current = activeRoute;
+        setActiveRouteAndComp();
+      }
     }
   }, [activeRoute]);
 
