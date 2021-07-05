@@ -21,12 +21,26 @@ import { Fragment, h } from "preact";
 import { useEffect } from "preact/hooks";
 import { ButtonImg } from "../../Spectre";
 import { T } from "../../Translations";
+import { iconsList } from "../../Images";
 import { Plus } from "preact-feather";
 
 /*
  * Local const
  *
  */
+const ItemControl = ({ itemData, index, completeList, idList }) => {
+  const { icon, id, name, color, textcolor, ...rest } = itemData;
+  const controlIcon = iconsList[icon];
+  return (
+    <div>
+      <div class="btn feather-icon-container m-1">
+        <div style="display:inline-block">{controlIcon}</div>
+        <label>{name}</label>
+      </div>
+    </div>
+  );
+};
+
 const ItemsList = ({
   id,
   label,
@@ -40,6 +54,7 @@ const ItemsList = ({
   const addItem = () => {
     console.log("add clicked");
   };
+  const idList = id;
   return (
     <Fragment>
       <ButtonImg
@@ -50,6 +65,17 @@ const ItemsList = ({
         icon={<Plus />}
         onClick={addItem}
       />
+      {value &&
+        value.map((element, index, completeList) => {
+          return (
+            <ItemControl
+              itemData={element}
+              index={index}
+              completeList={completeList}
+              idList={idList}
+            />
+          );
+        })}
     </Fragment>
   );
 };

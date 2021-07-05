@@ -20,7 +20,7 @@
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext } from "../../contexts";
-
+import { iconsList } from "../../components/Images";
 import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";

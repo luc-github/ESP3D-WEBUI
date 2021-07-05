@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Target, Parser, fwUrl, Name } from "SubTargetPath";
+import { Target, Parser, fwUrl, Name, iconsTarget } from "SubTargetPath";
 import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
@@ -35,4 +35,12 @@ const defaultPreferences = mergeJSON(
 
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0";
 
-export { Target, defaultPreferences, Parser, fwUrl, webUiUrl, Name };
+export {
+  Target,
+  defaultPreferences,
+  Parser,
+  fwUrl,
+  webUiUrl,
+  Name,
+  iconsTarget,
+};

@@ -1,0 +1,9 @@
+{
+  "id": "id",
+  "name": "Macro",
+  "color": "#C0C0C0",
+  "textcolor": "#000000",
+  "icon": "Globe",
+  "action": "",
+  "type": "URI"
+ }

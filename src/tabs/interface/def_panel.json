@@ -1,0 +1,12 @@
+
+{
+  "id": "id",
+  "name": "Panel",
+  "color": "#C0C0C0",
+  "textcolor": "#000000",
+  "icon": "Globe",
+  "ui": "page",
+  "source": "",
+  "refreshtime": "0",
+  "type": "image"
+ }

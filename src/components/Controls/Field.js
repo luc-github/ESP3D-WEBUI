@@ -24,7 +24,6 @@ const Field = (props) => {
   const { type, id } = props;
   switch (type) {
     case "list":
-      console.log("list");
       return <ItemsList {...props} />;
     case "pickup":
       return (
