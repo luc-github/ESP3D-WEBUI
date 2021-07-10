@@ -47,6 +47,11 @@ const InterfaceTab = () => {
       valid: true,
       modified: true,
     };
+    if (fieldData.type == "list") {
+      console.log(fieldData);
+      //TODO
+      //return;
+    }
     if (fieldData.type == "text") {
       if (typeof fieldData.min != undefined) {
         if (fieldData.value.trim().length < fieldData.min) {

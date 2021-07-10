@@ -126,7 +126,7 @@ import {
 } from "preact-feather";
 
 const iconsFeather = {
-  None: <div style="min-width:1.5em;min-height:1.4em"></div>,
+  None: null,
   Activity: <Activity />,
   AlertCircle: <AlertCircle />,
   Anchor: <Anchor />,

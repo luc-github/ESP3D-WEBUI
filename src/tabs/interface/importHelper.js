@@ -23,8 +23,11 @@ function formatPreferences(settings) {
   for (let key in settings) {
     if (Array.isArray(settings[key])) {
       for (let index = 0; index < settings[key].length; index++) {
-        if (settings[key][index].id)
-          settings[key][index].initial = settings[key][index].value;
+        if (settings[key][index].id) console.log(settings[key][index]);
+        if (settings[key][index].type == "list") {
+          settings[key][index].initial = [...settings[key][index].value];
+          //TODO:format the list items
+        } else settings[key][index].initial = settings[key][index].value;
       }
     }
   }

@@ -27,6 +27,15 @@
   "expandmacrosbuttonsonstart": true,
   "macros": [
    {
+    "id": "x6r8olvph",
+    "name": "Macro",
+    "color": "#C0C0C0",
+    "textcolor": "#000000",
+    "icon": "Globe",
+    "action": "",
+    "type": "URI"
+   },
+   {
     "id": "id1",
     "name": "Macro1",
     "color": "#C0C0C0",
@@ -34,40 +43,20 @@
     "icon": "Globe",
     "action": "http://google.com",
     "type": "URI"
-   },
-   {
-    "id": "id2",
-    "name": "Macro2",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
-    "icon": "Globe",
-    "action": "/macro2.gco",
-    "type": "flash"
    }
   ],
   "showextrapanels": true,
   "extrapanels": [
    {
-    "id": 1603307186211,
-    "name": "Page1 de la mort",
+    "id": "dk93rqf58",
+    "name": "Panel",
     "color": "#C0C0C0",
     "textcolor": "#000000",
     "icon": "Globe",
-    "target": "page",
-    "source": "http://192.168.1.61/snap?framesize=9",
+    "ui": "page",
+    "source": "",
     "refreshtime": "0",
     "type": "image"
-   },
-   {
-    "id": 1604059348627,
-    "name": "Panel2",
-    "color": "#C0C0C0",
-    "textcolor": "red",
-    "icon": "Globe",
-    "target": "panel",
-    "source": "http://127.0.0.1",
-    "refreshtime": "0",
-    "type": "content"
    },
    {
     "id": 1604059351918,
@@ -89,7 +78,7 @@
   "chambermax": "140",
   "chamberpreheat": "50;90;110",
   "showextruderspanel": true,
-  "ismixedextruder": false,
+  "ismixedextruder": true,
   "ecolors": "blue;red;green;#FF00FF",
   "efeedrate": "400",
   "enumber": "1",

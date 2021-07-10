@@ -17,14 +17,19 @@ Field.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { FormGroup, Input, Select, Boolean, PickUp, ItemsList } from "./Fields";
 
 const Field = (props) => {
   const { type, id } = props;
   switch (type) {
     case "list":
-      return <ItemsList {...props} />;
+      return (
+        <Fragment>
+          <ItemsList {...props} />
+          <FormGroup {...props} />
+        </Fragment>
+      );
     case "pickup":
       return (
         <FormGroup {...props}>

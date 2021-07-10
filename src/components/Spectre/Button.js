@@ -40,15 +40,25 @@ const modifiers = {
   ltooltip: "tooltip tooltip-left",
   mx2: "mx-2",
   m2: "m-2",
+  m1: "m-1",
 };
 const Button = createComponent("button", "btn", modifiers);
 
-const ButtonImg = ({ label, icon, ...rest }) => {
+const ButtonImg = ({ label, icon, width, ...rest }) => {
   return (
     <Button class="feather-icon-container" {...rest}>
       {icon}
       {label && (
-        <label class="hide-low" style="pointer-events: none;">
+        <label
+          class="hide-low"
+          style={
+            "pointer-events: none;" + width
+              ? "display:inline-block;max-width:" +
+                width +
+                ";overflow:clip;text-overflow: ellipsis!important;"
+              : ""
+          }
+        >
           {label}
         </label>
       )}
