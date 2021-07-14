@@ -1,8 +1,7 @@
 /*
- Boolean.js - ESP3D WebUI component file
+ ItemsList.js - ESP3D WebUI component file
 
- Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
- Modified by Luc LEBOSSE 2021
+ Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -23,7 +22,7 @@ import { ButtonImg } from "../../Spectre";
 import { T } from "../../Translations";
 import { iconsList } from "../../Images";
 import { generateUID } from "../../Helpers";
-import { Plus, ArrowUp, ArrowDown, Trash2 } from "preact-feather";
+import { Plus, ArrowUp, ArrowDown, Trash2, Minimize } from "preact-feather";
 import defaultPanel from "./def_panel.json";
 import defaultMacro from "./def_macro.json";
 
@@ -31,22 +30,117 @@ import defaultMacro from "./def_macro.json";
  * Local const
  *
  */
-const ItemControl = ({ itemData, index, completeList, idList }) => {
-  const { icon, id, name, color, textcolor, ...rest } = itemData;
+const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
+  const { icon, id, name, color, textcolor, editionMode, ...rest } = itemData;
   const controlIcon = iconsList[icon] ? iconsList[icon] : "";
   const onClick = () => {
-    console.log(id);
+    completeList[index].editionMode = !completeList[index].editionMode;
+    setValue(completeList);
+  };
+  const downItem = (e) => {
+    e.target.blur();
+    const item = completeList[index];
+    completeList.splice(index, 1);
+    completeList.splice(index + 1, 0, item);
+    setValue(completeList);
+  };
+  const upItem = (e) => {
+    e.target.blur();
+    const item = completeList[index];
+    completeList.splice(index, 1);
+    completeList.splice(index - 1, 0, item);
+    setValue(completeList);
+  };
+  const removeItem = (e) => {
+    e.target.blur();
+    completeList.splice(index, 1);
+    setValue(completeList);
   };
   return (
-    <div style="align-self: center">
-      <ButtonImg
-        m2
-        label={name}
-        icon={controlIcon}
-        onClick={onClick}
-        width="100px"
-      />
-    </div>
+    <Fragment>
+      {!editionMode && (
+        <Fragment>
+          <div style="place-self: center;">
+            {index > 0 && completeList.length > 1 && (
+              <ButtonImg
+                m1
+                tooltip
+                data-tooltip={T("Move up")}
+                icon={<ArrowUp />}
+                onClick={upItem}
+              />
+            )}
+            {completeList.length != 1 && index < completeList.length - 1 && (
+              <ButtonImg
+                m1
+                tooltip
+                data-tooltip={T("Move down")}
+                icon={<ArrowDown />}
+                onClick={downItem}
+              />
+            )}
+          </div>
+          <ButtonImg
+            m2
+            label={name}
+            icon={controlIcon}
+            width="100px"
+            onClick={onClick}
+          />
+          <div style="place-self: center">
+            <ButtonImg
+              m2
+              tooltip
+              data-tooltip={T("Trash")}
+              icon={<Trash2 />}
+              onClick={removeItem}
+            />
+          </div>
+        </Fragment>
+      )}
+      {editionMode && (
+        <div
+          class="m-1"
+          style="grid-column-start: 1;grid-column-end:4; border: 0.05rem solid #dadee4;"
+        >
+          <ButtonImg
+            sm
+            icon=<Minimize />
+            onClick={onClick}
+            class="float-right"
+          />
+          <div style="place-self: center;">
+            {index > 0 && completeList.length > 1 && (
+              <ButtonImg
+                m1
+                tooltip
+                data-tooltip={T("Move up")}
+                icon={<ArrowUp />}
+                onClick={upItem}
+              />
+            )}
+            {completeList.length != 1 && index < completeList.length - 1 && (
+              <ButtonImg
+                m1
+                tooltip
+                data-tooltip={T("Move down")}
+                icon={<ArrowDown />}
+                onClick={downItem}
+              />
+            )}
+
+            <ButtonImg
+              m2
+              tooltip
+              data-tooltip={T("Trash")}
+              icon={<Trash2 />}
+              onClick={removeItem}
+            />
+          </div>
+          <ButtonImg m2 label="Edition Mode" icon={controlIcon} width="100px" />
+        </div>
+      )}
+    </Fragment>
   );
 };
 
@@ -67,29 +161,12 @@ const ItemsList = ({
     );
     newItem.id = generateUID();
     newItem.name += " " + newItem.id;
+    newItem.editionMode = false;
     value.unshift(newItem);
     setValue(value);
   };
-  const removeItem = (e, index) => {
-    e.target.blur();
-    value.splice(index, 1);
-    setValue(value);
-  };
-  const upItem = (e, index) => {
-    e.target.blur();
-    const item = value[index];
-    value.splice(index, 1);
-    value.splice(index - 1, 0, item);
-    setValue(value);
-  };
-  const downItem = (e, index) => {
-    e.target.blur();
-    const item = value[index];
-    value.splice(index, 1);
-    value.splice(index + 1, 0, item);
-    setValue(value);
-  };
 
+  if (id == "macros") console.log("refresh macro");
   return (
     <div>
       <ButtonImg
@@ -104,49 +181,13 @@ const ItemsList = ({
         {value &&
           value.map((element, index, completeList) => {
             return (
-              <Fragment>
-                <div style="place-self: center;">
-                  {index > 0 && completeList.length > 1 && (
-                    <ButtonImg
-                      m1
-                      tooltip
-                      data-tooltip={T("Move up")}
-                      icon={<ArrowUp />}
-                      onClick={(e) => {
-                        upItem(e, index);
-                      }}
-                    />
-                  )}
-                  {completeList.length != 1 && index < completeList.length - 1 && (
-                    <ButtonImg
-                      m1
-                      tooltip
-                      data-tooltip={T("Move down")}
-                      icon={<ArrowDown />}
-                      onClick={(e) => {
-                        downItem(e, index);
-                      }}
-                    />
-                  )}
-                </div>
-                <ItemControl
-                  itemData={element}
-                  index={index}
-                  completeList={completeList}
-                  idList={id}
-                />
-                <div style="place-self: center">
-                  <ButtonImg
-                    m2
-                    tooltip
-                    data-tooltip={T("Trash")}
-                    icon={<Trash2 />}
-                    onClick={(e) => {
-                      removeItem(e, index);
-                    }}
-                  />
-                </div>
-              </Fragment>
+              <ItemControl
+                itemData={element}
+                index={index}
+                completeList={completeList}
+                idList={id}
+                setValue={setValue}
+              />
             );
           })}
       </div>
