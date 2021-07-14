@@ -52,11 +52,12 @@ const ButtonImg = ({ label, icon, width, ...rest }) => {
         <label
           class="hide-low"
           style={
-            "pointer-events: none;" + width
+            "cursor: pointer;pointer-events: none;" +
+            (width
               ? "display:inline-block;max-width:" +
                 width +
                 ";overflow:clip;text-overflow: ellipsis!important;"
-              : ""
+              : "")
           }
         >
           {label}
