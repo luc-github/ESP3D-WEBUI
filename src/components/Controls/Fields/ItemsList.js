@@ -22,7 +22,7 @@ import { ButtonImg } from "../../Spectre";
 import { T } from "../../Translations";
 import { iconsList } from "../../Images";
 import { generateUID } from "../../Helpers";
-import { Plus, ArrowUp, ArrowDown, Trash2, Minimize } from "preact-feather";
+import { Plus, ArrowUp, ArrowDown, Trash2, Minimize2 } from "preact-feather";
 import defaultPanel from "./def_panel.json";
 import defaultMacro from "./def_macro.json";
 
@@ -65,7 +65,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               <ButtonImg
                 m1
                 tooltip
-                data-tooltip={T("Move up")}
+                data-tooltip={T("S38")}
                 icon={<ArrowUp />}
                 onClick={upItem}
               />
@@ -74,7 +74,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               <ButtonImg
                 m1
                 tooltip
-                data-tooltip={T("Move down")}
+                data-tooltip={T("S39")}
                 icon={<ArrowDown />}
                 onClick={downItem}
               />
@@ -82,6 +82,8 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
           </div>
           <ButtonImg
             m2
+            tooltip
+            data-tooltip={T("S94")}
             label={name}
             icon={controlIcon}
             width="100px"
@@ -91,7 +93,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
             <ButtonImg
               m2
               tooltip
-              data-tooltip={T("Trash")}
+              data-tooltip={T("S37")}
               icon={<Trash2 />}
               onClick={removeItem}
             />
@@ -105,7 +107,9 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
         >
           <ButtonImg
             sm
-            icon=<Minimize />
+            tooltip
+            data-tooltip={T("S95")}
+            icon={<Minimize2 />}
             onClick={onClick}
             class="float-right"
           />
@@ -114,7 +118,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               <ButtonImg
                 m1
                 tooltip
-                data-tooltip={T("Move up")}
+                data-tooltip={T("S38")}
                 icon={<ArrowUp />}
                 onClick={upItem}
               />
@@ -123,7 +127,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               <ButtonImg
                 m1
                 tooltip
-                data-tooltip={T("Move down")}
+                data-tooltip={T("S39")}
                 icon={<ArrowDown />}
                 onClick={downItem}
               />
@@ -132,7 +136,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
             <ButtonImg
               m2
               tooltip
-              data-tooltip={T("Trash")}
+              data-tooltip={T("S37")}
               icon={<Trash2 />}
               onClick={removeItem}
             />
