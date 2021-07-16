@@ -34,13 +34,13 @@ import defaultMacro from "./def_macro.json";
 const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
   const { id, value, editionMode, ...rest } = itemData;
   const icon =
-    value[value.findIndex((element) => element.id == id + "-icon")].initial;
+    value[value.findIndex((element) => element.id == id + "-icon")].value;
   const name =
-    value[value.findIndex((element) => element.id == id + "-name")].initial;
+    value[value.findIndex((element) => element.id == id + "-name")].value;
   const controlIcon = iconsList[icon] ? iconsList[icon] : "";
-  const onClick = () => {
-    completeList[index].editionMode = !completeList[index].editionMode;
-    setValue(completeList);
+  const onEdit = (state) => {
+    completeList[index].editionMode = state;
+    setValue([...completeList]);
   };
   const downItem = (e) => {
     e.target.blur();
@@ -65,6 +65,18 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
     //to update state when import- but why ?
     if (setValue) setValue(null, true);
   }, [completeList]);
+  let colorStyle;
+  if (
+    JSON.stringify(value).includes('"hasmodified":true') ||
+    JSON.stringify(itemData).includes('"newItem":true')
+  )
+    colorStyle =
+      "box-shadow: 0 0 0 .2rem rgba(255, 183, 0, .4);margin-right:0.5rem!important";
+
+  if (JSON.stringify(value).includes('"haserror":true'))
+    colorStyle =
+      "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important";
+
   return (
     <Fragment>
       {!editionMode && (
@@ -89,15 +101,22 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               />
             )}
           </div>
-          <ButtonImg
-            m2
-            tooltip
-            data-tooltip={T("S94")}
-            label={name}
-            icon={controlIcon}
-            width="100px"
-            onClick={onClick}
-          />
+          <div style="place-self: center;">
+            <ButtonImg
+              m2
+              tooltip
+              data-tooltip={T("S94")}
+              style={colorStyle}
+              label={name}
+              icon={controlIcon}
+              width="100px"
+              onClick={(e) => {
+                e.target.blur();
+                onEdit(true);
+              }}
+            />
+          </div>
+
           <div style="place-self: center">
             <ButtonImg
               m2
@@ -110,16 +129,16 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
         </Fragment>
       )}
       {editionMode && (
-        <div
-          class="m-1"
-          style="grid-column-start: 1;grid-column-end:4; border: 0.05rem solid #dadee4;"
-        >
+        <div style="grid-column-start: 1;grid-column-end:4; border: 0.05rem solid #dadee4;">
           <ButtonImg
             sm
             tooltip
             data-tooltip={T("S95")}
             icon={<Minimize2 />}
-            onClick={onClick}
+            onClick={(e) => {
+              e.target.blur();
+              onEdit(false);
+            }}
             class="float-right"
           />
           <div style="place-self: center;">
@@ -150,7 +169,14 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               onClick={removeItem}
             />
           </div>
-          <ButtonImg m2 label="Edition Mode" icon={controlIcon} width="100px" />
+          {
+            <ButtonImg
+              m2
+              label="Edition Mode"
+              icon={controlIcon}
+              width="100px"
+            />
+          }
         </div>
       )}
     </Fragment>

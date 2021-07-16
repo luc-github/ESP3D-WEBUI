@@ -44,9 +44,9 @@ const modifiers = {
 };
 const Button = createComponent("button", "btn", modifiers);
 
-const ButtonImg = ({ label, icon, width, ...rest }) => {
+const ButtonImg = ({ label, icon, width, style, ...rest }) => {
   return (
-    <Button class="feather-icon-container" {...rest}>
+    <Button class="feather-icon-container" {...rest} style={style}>
       {icon}
       {label && (
         <label

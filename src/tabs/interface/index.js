@@ -108,7 +108,11 @@ const InterfaceTab = () => {
       }
     }
     setShowSave(checkSaveStatus());
-    if (!fieldData.hasmodified && !fieldData.haserror) return null;
+    if (!fieldData.hasmodified && !fieldData.haserror) {
+      validation.message = null;
+      validation.valid = true;
+      validation.modified = false;
+    }
     return validation;
   };
 

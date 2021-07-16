@@ -29,8 +29,6 @@
    {
     "id": "id2",
     "name": "Macro2",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
     "icon": "Globe",
     "action": "http://google.com",
     "type": "URI"
@@ -38,8 +36,6 @@
    {
     "id": "id1",
     "name": "Macro1",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
     "icon": "Globe",
     "action": "",
     "type": "URI"
@@ -50,8 +46,6 @@
    {
     "id": 1604059351918,
     "name": "Panel3",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
     "icon": "Globe",
     "target": "page",
     "source": "/hello.html",
@@ -61,8 +55,6 @@
    {
     "id": "dk93rqf58",
     "name": "Panel",
-    "color": "#C0C0C0",
-    "textcolor": "#000000",
     "icon": "Globe",
     "ui": "page",
     "source": "",

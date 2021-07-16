@@ -33,10 +33,6 @@ function formatItem(itemData, index = -1) {
       newItem.value = itemData[key];
       newItem.initial = itemData[key];
       switch (key) {
-        case "color":
-        case "text-color":
-          newItem.type = "color";
-          break;
         case "source":
         case "type":
           newItem.type = "select";

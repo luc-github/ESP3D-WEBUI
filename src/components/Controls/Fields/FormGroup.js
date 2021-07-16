@@ -30,7 +30,7 @@ const FormGroup = ({
   const getValidationClass = (validation) => {
     if (validation !== null && validation.valid) {
       if (validation.modified) return `form-group has-modification`;
-      else return `form-group has-success`;
+      if (validation.success) return `form-group has-success`;
     }
     if (validation !== null && !validation.valid) return `form-group has-error`;
     return `form-group`;
