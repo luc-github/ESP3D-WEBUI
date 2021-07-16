@@ -22,6 +22,7 @@ import { ButtonImg } from "../../Spectre";
 import { T } from "../../Translations";
 import { iconsList } from "../../Images";
 import { generateUID } from "../../Helpers";
+import { formatItem } from "../../../tabs/interface/importHelper";
 import { Plus, ArrowUp, ArrowDown, Trash2, Minimize2 } from "preact-feather";
 import defaultPanel from "./def_panel.json";
 import defaultMacro from "./def_macro.json";
@@ -31,7 +32,11 @@ import defaultMacro from "./def_macro.json";
  *
  */
 const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
-  const { icon, id, name, color, textcolor, editionMode, ...rest } = itemData;
+  const { id, value, editionMode, ...rest } = itemData;
+  const icon =
+    value[value.findIndex((element) => element.id == id + "-icon")].initial;
+  const name =
+    value[value.findIndex((element) => element.id == id + "-name")].initial;
   const controlIcon = iconsList[icon] ? iconsList[icon] : "";
   const onClick = () => {
     completeList[index].editionMode = !completeList[index].editionMode;
@@ -56,6 +61,10 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
     completeList.splice(index, 1);
     setValue(completeList);
   };
+  useEffect(() => {
+    //to update state when import- but why ?
+    if (setValue) setValue(null, true);
+  }, [completeList]);
   return (
     <Fragment>
       {!editionMode && (
@@ -165,12 +174,16 @@ const ItemsList = ({
     );
     newItem.id = generateUID();
     newItem.name += " " + newItem.id;
-    newItem.editionMode = false;
-    value.unshift(newItem);
+    const formatedNewItem = formatItem(newItem);
+    formatedNewItem.editionMode = true;
+    formatedNewItem.newItem = true;
+    value.unshift(formatedNewItem);
     setValue(value);
   };
-
-  if (id == "macros") console.log("refresh macro");
+  useEffect(() => {
+    //to update state when import- but why ?
+    if (setValue) setValue(null, true);
+  }, [value]);
   return (
     <div>
       <ButtonImg

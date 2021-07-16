@@ -29,7 +29,7 @@ import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
 import { showConfirmationModal } from "../../components/Modal";
 import { Field } from "../../components/Controls";
 import { exportPreferences } from "./exportHelper";
-import { importPreferences } from "./importHelper";
+import { importPreferences, formatPreferences } from "./importHelper";
 
 const InterfaceTab = () => {
   const { toasts, modals } = useUiContext();
@@ -48,9 +48,15 @@ const InterfaceTab = () => {
       modified: true,
     };
     if (fieldData.type == "list") {
-      console.log(fieldData);
-      //TODO
-      //return;
+      const stringified = JSON.stringify(fieldData.value);
+      //check new item or modified item
+      if (stringified.includes('"newItem":true')) fieldData.hasmodified = true;
+      else fieldData.hasmodified = stringified.includes('"hasmodified":true');
+      //check order change
+      fieldData.value.forEach((element, index) => {
+        if (element.index != index) fieldData.hasmodified = true;
+      });
+      validation.valid = !stringified.includes('"haserror":true');
     }
     if (fieldData.type == "text") {
       if (typeof fieldData.min != undefined) {
@@ -94,10 +100,12 @@ const InterfaceTab = () => {
       validation.message = errorValidationMsg;
     }
     fieldData.haserror = !validation.valid;
-    if (fieldData.value == fieldData.initial) {
-      fieldData.hasmodified = false;
-    } else {
-      fieldData.hasmodified = true;
+    if (fieldData.type != "list") {
+      if (fieldData.value == fieldData.initial) {
+        fieldData.hasmodified = false;
+      } else {
+        fieldData.hasmodified = true;
+      }
     }
     setShowSave(checkSaveStatus());
     if (!fieldData.hasmodified && !fieldData.haserror) return null;
@@ -106,9 +114,8 @@ const InterfaceTab = () => {
 
   function checkSaveStatus() {
     let stringified = JSON.stringify(interfaceSettings.current.settings);
-    let hasmodified =
-      stringified.indexOf('"hasmodified":true') == -1 ? false : true;
-    let haserrors = stringified.indexOf('"haserror":true') == -1 ? false : true;
+    let hasmodified = stringified.includes('"hasmodified":true');
+    let haserrors = stringified.includes('"haserror":true');
     if (haserrors || !hasmodified) return false;
     return true;
   }
@@ -131,6 +138,7 @@ const InterfaceTab = () => {
             interfaceSettings.current,
             importData
           );
+          formatPreferences(interfaceSettings.current.settings);
           if (haserrors) {
             toasts.addToast({ content: "S56", type: "error" });
           }
@@ -216,7 +224,9 @@ const InterfaceTab = () => {
                                   inline={type == "boolean" ? true : false}
                                   {...rest}
                                   setValue={(val, update) => {
-                                    if (!update) fieldData.value = val;
+                                    if (!update) {
+                                      fieldData.value = val;
+                                    }
                                     setvalidation(
                                       generateValidation(fieldData)
                                     );

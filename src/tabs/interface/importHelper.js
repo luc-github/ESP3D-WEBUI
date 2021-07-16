@@ -19,14 +19,56 @@ importHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+function formatItem(itemData, index = -1) {
+  const itemFormated = {};
+  itemFormated.id = itemData.id;
+  //to track any change in order
+  itemFormated.index = index;
+  itemFormated.value = [];
+  Object.keys(itemData).forEach((key) => {
+    if (key != "id") {
+      const newItem = {};
+      newItem.id = itemData.id + "-" + key;
+      newItem.label = key;
+      newItem.value = itemData[key];
+      newItem.initial = itemData[key];
+      switch (key) {
+        case "color":
+        case "text-color":
+          newItem.type = "color";
+          break;
+        case "source":
+        case "type":
+          newItem.type = "select";
+          break;
+        case "icon":
+          newItem.type = "icon";
+          break;
+        default:
+          newItem.type = "text";
+      }
+      itemFormated.value.push(newItem);
+    }
+  });
+  return itemFormated;
+}
+
+function formatItemsList(itemsList) {
+  const formatedItems = [];
+  itemsList.forEach((element, index) => {
+    formatedItems.push(formatItem(element, index));
+  });
+  return formatedItems;
+}
+
 function formatPreferences(settings) {
   for (let key in settings) {
     if (Array.isArray(settings[key])) {
       for (let index = 0; index < settings[key].length; index++) {
-        if (settings[key][index].id) console.log(settings[key][index]);
         if (settings[key][index].type == "list") {
-          settings[key][index].initial = [...settings[key][index].value];
-          //TODO:format the list items
+          settings[key][index].value = formatItemsList([
+            ...settings[key][index].value,
+          ]);
         } else settings[key][index].initial = settings[key][index].value;
       }
     }
@@ -65,7 +107,8 @@ function importPreferences(currentPreferencesData, importedPreferences) {
       }
     }
   }
+  //console.log(currentPreferences.settings.extrapanels);
   return [currentPreferences, haserrors];
 }
 
-export { importPreferences, formatPreferences };
+export { importPreferences, formatPreferences, formatItem };

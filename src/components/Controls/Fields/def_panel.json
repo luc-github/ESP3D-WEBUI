@@ -5,7 +5,7 @@
   "color": "#C0C0C0",
   "textcolor": "#000000",
   "icon": "None",
-  "ui": "page",
+  "target": "page",
   "source": "",
   "refreshtime": "0",
   "type": "image"

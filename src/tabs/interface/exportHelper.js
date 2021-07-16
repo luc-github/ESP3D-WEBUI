@@ -28,11 +28,24 @@ function exportPreferences(preferencesSettings, asFile = true) {
   for (let key in preferencesSettings.settings) {
     for (let subkey in preferencesSettings.settings[key]) {
       if (preferencesSettings.settings[key][subkey].id) {
-        preferences.settings[
-          preferencesSettings.settings[key][subkey].id
-        ] = asFile
-          ? preferencesSettings.settings[key][subkey].initial
-          : preferencesSettings.settings[key][subkey].value;
+        if (preferencesSettings.settings[key][subkey].type == "list") {
+          const itemsList = [];
+          preferencesSettings.settings[key][subkey].value.forEach((element) => {
+            const item = {};
+            item.id = element.id;
+            element.value.forEach((setting) => {
+              item[setting.label] = asFile ? setting.initial : setting.value;
+            });
+            itemsList.push(item);
+          });
+          preferences.settings[preferencesSettings.settings[key][subkey].id] =
+            itemsList;
+        } else {
+          preferences.settings[preferencesSettings.settings[key][subkey].id] =
+            asFile
+              ? preferencesSettings.settings[key][subkey].initial
+              : preferencesSettings.settings[key][subkey].value;
+        }
       }
     }
   }
