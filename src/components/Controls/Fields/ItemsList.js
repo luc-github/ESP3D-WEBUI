@@ -201,7 +201,7 @@ const ItemControl = ({
                     label={T(label)}
                     type={type}
                     options={Options}
-                    inline={type == "boolean" ? true : false}
+                    inline={type == "boolean" || type == "icon" ? true : false}
                     {...rest}
                     setValue={(val, update) => {
                       if (!update) item.value = val;

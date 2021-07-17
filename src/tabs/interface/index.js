@@ -20,7 +20,6 @@
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext } from "../../contexts";
-import { iconsList } from "../../components/Images";
 import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
 import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
@@ -231,7 +230,11 @@ const InterfaceTab = () => {
                                   validationfn={
                                     type == "list" ? generateValidation : null
                                   }
-                                  inline={type == "boolean" ? true : false}
+                                  inline={
+                                    type == "boolean" || type == "icon"
+                                      ? true
+                                      : false
+                                  }
                                   {...rest}
                                   setValue={(val, update) => {
                                     if (!update) {

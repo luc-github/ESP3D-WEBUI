@@ -18,7 +18,15 @@ Field.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact";
-import { FormGroup, Input, Select, Boolean, PickUp, ItemsList } from "./Fields";
+import {
+  FormGroup,
+  Input,
+  Select,
+  Boolean,
+  PickUp,
+  ItemsList,
+  IconSelect,
+} from "./Fields";
 
 const Field = (props) => {
   const { type, id } = props;
@@ -36,7 +44,12 @@ const Field = (props) => {
           <PickUp {...props} />
         </FormGroup>
       );
-
+    case "icon":
+      return (
+        <FormGroup {...props}>
+          <IconSelect {...props} />
+        </FormGroup>
+      );
     case "select":
       return (
         <FormGroup {...props}>
