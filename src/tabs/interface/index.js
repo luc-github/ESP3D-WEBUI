@@ -196,7 +196,7 @@ const InterfaceTab = () => {
         accept=".json"
         onChange={fileSelected}
       />
-      <h2>{T("S17")}</h2>
+      <h4>{T("S17")}</h4>
       {isLoading && <Loading large />}
 
       {!isLoading && (

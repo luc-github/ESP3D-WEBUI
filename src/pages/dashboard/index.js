@@ -22,7 +22,7 @@ import { h } from "preact";
 const Dashboard = () => {
   return (
     <div id="dashboard">
-      <h2>Dashboard</h2>
+      <h4>Dashboard</h4>
     </div>
   );
 };

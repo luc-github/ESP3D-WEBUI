@@ -281,7 +281,7 @@ const About = () => {
 
   return (
     <div id="about" class="container">
-      <h2>
+      <h4>
         {T("S12").replace(
           "%s",
           interfaceSettings.current &&
@@ -290,7 +290,7 @@ const About = () => {
             ? interfaceSettings.current.custom.name
             : Name
         )}
-      </h2>
+      </h4>
       {isLoading && <Loading />}
 
       {!isLoading && props && (

@@ -332,7 +332,7 @@ const FeaturesTab = () => {
         accept=".json"
         onChange={fileSelected}
       />
-      <h2>{T("S36")}</h2>
+      <h4>{T("S36")}</h4>
       {isLoading && <Loading large />}
 
       {!isLoading && (

@@ -23,7 +23,7 @@ import { Target } from "../../components/Targets";
 const MachineTab = () => {
   return (
     <div id="machine">
-      <h2>Machine</h2>
+      <h4>Machine</h4>
       The firmware target is {Target}
     </div>
   );
