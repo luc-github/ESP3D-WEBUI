@@ -2,6 +2,6 @@
   "id": "id",
   "name": "Macro",
   "icon": "Meh",
-  "target": "",
-  "type": "URI"
+  "action": "",
+  "type": "FS"
  }

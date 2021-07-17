@@ -221,6 +221,7 @@ const InterfaceTab = () => {
                               const { label, initial, type, ...rest } =
                                 fieldData;
                               const [validation, setvalidation] = useState();
+                              //console.log(fieldData);
                               return (
                                 <Field
                                   label={T(label)}

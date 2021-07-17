@@ -49,17 +49,17 @@
     "icon": "Globe",
     "target": "page",
     "source": "/hello.html",
-    "refreshtime": "0",
-    "type": "content"
+    "type": "content",
+    "refreshtime": "0"
    },
    {
     "id": "dk93rqf58",
     "name": "Panel",
     "icon": "Globe",
-    "ui": "page",
+    "target": "page",
     "source": "",
-    "refreshtime": "0",
-    "type": "image"
+    "type": "image",
+    "refreshtime": "0"
    }
   ],
   "showtemperaturespanel": true,

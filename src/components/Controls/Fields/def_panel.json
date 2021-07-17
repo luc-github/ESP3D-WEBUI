@@ -5,6 +5,6 @@
   "icon": "Meh",
   "target": "page",
   "source": "",
-  "refreshtime": "0",
-  "type": "image"
+  "type": "image",
+  "refreshtime": "0"
  }

@@ -19,7 +19,7 @@ importHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-function formatItem(itemData, index = -1) {
+function formatItem(itemData, index = -1, origineId = "extrapanels") {
   const itemFormated = {};
   itemFormated.id = itemData.id;
   //to track any change in order
@@ -29,19 +29,62 @@ function formatItem(itemData, index = -1) {
     if (key != "id") {
       const newItem = {};
       newItem.id = itemData.id + "-" + key;
-      newItem.label = key;
+
       newItem.value = itemData[key];
       newItem.initial = itemData[key];
       switch (key) {
-        case "source":
-        case "type":
-          newItem.type = "select";
+        case "name":
+          newItem.type = "text";
+          newItem.label = "S129";
           break;
         case "icon":
           newItem.type = "icon";
+          newItem.label = "S132";
+          break;
+        case "refreshtime":
+          newItem.type = "number";
+          newItem.min = 0;
+          newItem.append = "S114";
+          newItem.label = "S113";
+          break;
+        case "type":
+          newItem.type = "select";
+          newItem.label = "S135";
+          if (origineId == "macros") {
+            newItem.options = [
+              { label: "S137", value: "FS" },
+              { label: "S138", value: "SD" },
+              { label: "S139", value: "URI" },
+              { label: "S140", value: "CMD" },
+            ];
+          } else {
+            newItem.options = [
+              { label: "S160", value: "image" },
+              { label: "S161", value: "content" },
+              { label: "S162", value: "camera" },
+            ];
+          }
+
+          break;
+        case "target":
+          newItem.type = "select";
+          newItem.label = "S136";
+          newItem.options = [
+            { label: "S158", value: "page" },
+            { label: "S157", value: "panel" },
+          ];
+          break;
+        case "source":
+          newItem.type = "text";
+          newItem.label = "S139";
+          break;
+        case "action":
+          newItem.type = "text";
+          newItem.label = "S159";
           break;
         default:
           newItem.type = "text";
+          newItem.label = key;
       }
       itemFormated.value.push(newItem);
     }
@@ -49,10 +92,10 @@ function formatItem(itemData, index = -1) {
   return itemFormated;
 }
 
-function formatItemsList(itemsList) {
+function formatItemsList(itemsList, origineId) {
   const formatedItems = [];
   itemsList.forEach((element, index) => {
-    formatedItems.push(formatItem(element, index));
+    formatedItems.push(formatItem(element, index, origineId));
   });
   return formatedItems;
 }
@@ -62,9 +105,10 @@ function formatPreferences(settings) {
     if (Array.isArray(settings[key])) {
       for (let index = 0; index < settings[key].length; index++) {
         if (settings[key][index].type == "list") {
-          settings[key][index].value = formatItemsList([
-            ...settings[key][index].value,
-          ]);
+          settings[key][index].value = formatItemsList(
+            [...settings[key][index].value],
+            settings[key][index].id
+          );
         } else settings[key][index].initial = settings[key][index].value;
       }
     }

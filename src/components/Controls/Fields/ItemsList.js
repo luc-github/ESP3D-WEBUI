@@ -22,8 +22,16 @@ import { ButtonImg } from "../../Spectre";
 import { T } from "../../Translations";
 import { iconsList } from "../../Images";
 import { generateUID } from "../../Helpers";
+import { Field } from "../../Controls";
 import { formatItem } from "../../../tabs/interface/importHelper";
-import { Plus, ArrowUp, ArrowDown, Trash2, Minimize2 } from "preact-feather";
+import {
+  Plus,
+  ArrowUp,
+  ArrowDown,
+  Trash2,
+  Minimize2,
+  Flag,
+} from "preact-feather";
 import defaultPanel from "./def_panel.json";
 import defaultMacro from "./def_macro.json";
 
@@ -169,14 +177,41 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
               onClick={removeItem}
             />
           </div>
-          {
-            <ButtonImg
-              m2
-              label="Edition Mode"
-              icon={controlIcon}
-              width="100px"
-            />
-          }
+          <div class="m-1">
+            {value &&
+              value.map((item) => {
+                const { type, label, initial, options, ...rest } = item;
+                const [validation, setvalidation] = useState({});
+                //Do translation if necessary
+                const Options = options
+                  ? [...options].reduce((acc, curr) => {
+                      acc.push({ label: T(curr.label), value: curr.value });
+                      return acc;
+                    }, [])
+                  : null;
+                return (
+                  <Field
+                    label={T(label)}
+                    type={type}
+                    options={Options}
+                    inline={type == "boolean" ? true : false}
+                    {...rest}
+                    setValue={(val, update) => {
+                      if (!update) item.value = val;
+                      setvalidation(
+                        {
+                          message: <Flag size="1rem" />,
+                          valid: true,
+                          modified: true,
+                        }
+                        // generateValidation(fieldData)
+                      );
+                    }}
+                    validation={validation}
+                  />
+                );
+              })}
+          </div>
         </div>
       )}
     </Fragment>
@@ -200,7 +235,7 @@ const ItemsList = ({
     );
     newItem.id = generateUID();
     newItem.name += " " + newItem.id;
-    const formatedNewItem = formatItem(newItem);
+    const formatedNewItem = formatItem(newItem, -1, id);
     formatedNewItem.editionMode = true;
     formatedNewItem.newItem = true;
     value.unshift(formatedNewItem);
