@@ -34,7 +34,7 @@ function exportPreferences(preferencesSettings, asFile = true) {
             const item = {};
             item.id = element.id;
             element.value.forEach((setting) => {
-              item[setting.label] = asFile ? setting.initial : setting.value;
+              item[setting.name] = asFile ? setting.initial : setting.value;
             });
             itemsList.push(item);
           });

@@ -29,9 +29,10 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
     if (key != "id") {
       const newItem = {};
       newItem.id = itemData.id + "-" + key;
-
+      newItem.name = key;
       newItem.value = itemData[key];
       newItem.initial = itemData[key];
+      if (index == -1) newItem.newItem = true;
       switch (key) {
         case "name":
           newItem.type = "text";

@@ -39,7 +39,14 @@ import defaultMacro from "./def_macro.json";
  * Local const
  *
  */
-const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
+const ItemControl = ({
+  itemData,
+  index,
+  completeList,
+  idList,
+  setValue,
+  validationfn,
+}) => {
   const { id, value, editionMode, ...rest } = itemData;
   const icon =
     value[value.findIndex((element) => element.id == id + "-icon")].value;
@@ -198,14 +205,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
                     {...rest}
                     setValue={(val, update) => {
                       if (!update) item.value = val;
-                      setvalidation(
-                        {
-                          message: <Flag size="1rem" />,
-                          valid: true,
-                          modified: true,
-                        }
-                        // generateValidation(fieldData)
-                      );
+                      setvalidation(validationfn(item));
                     }}
                     validation={validation}
                   />
@@ -221,6 +221,7 @@ const ItemControl = ({ itemData, index, completeList, idList, setValue }) => {
 const ItemsList = ({
   id,
   label,
+  validationfn,
   validation,
   value,
   type,
@@ -264,6 +265,7 @@ const ItemsList = ({
                 index={index}
                 completeList={completeList}
                 idList={id}
+                validationfn={validationfn}
                 setValue={setValue}
               />
             );

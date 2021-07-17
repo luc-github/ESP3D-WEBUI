@@ -90,7 +90,9 @@ const InterfaceTab = () => {
       }
     } else if (fieldData.type == "select") {
       const index = fieldData.options.findIndex(
-        (element) => element.value == parseInt(fieldData.value)
+        (element) =>
+          element.value == parseInt(fieldData.value) ||
+          element.value == fieldData.value
       );
       if (index == -1) {
         validation.valid = false;
@@ -106,6 +108,7 @@ const InterfaceTab = () => {
       } else {
         fieldData.hasmodified = true;
       }
+      if (fieldData.newItem) fieldData.hasmodified = true;
     }
     setShowSave(checkSaveStatus());
     if (!fieldData.hasmodified && !fieldData.haserror) {
@@ -221,11 +224,13 @@ const InterfaceTab = () => {
                               const { label, initial, type, ...rest } =
                                 fieldData;
                               const [validation, setvalidation] = useState();
-                              //console.log(fieldData);
                               return (
                                 <Field
                                   label={T(label)}
                                   type={type}
+                                  validationfn={
+                                    type == "list" ? generateValidation : null
+                                  }
                                   inline={type == "boolean" ? true : false}
                                   {...rest}
                                   setValue={(val, update) => {
