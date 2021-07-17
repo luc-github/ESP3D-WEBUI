@@ -46,7 +46,11 @@ const Button = createComponent("button", "btn", modifiers);
 
 const ButtonImg = ({ label, icon, width, style, ...rest }) => {
   return (
-    <Button class="feather-icon-container" {...rest} style={style}>
+    <Button
+      class="feather-icon-container"
+      {...rest}
+      style={"min-width:2rem;" + style}
+    >
       {icon}
       {label && (
         <label
