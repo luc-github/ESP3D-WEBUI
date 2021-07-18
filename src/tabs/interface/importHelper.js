@@ -78,10 +78,12 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
         case "source":
           newItem.type = "text";
           newItem.label = "S139";
+          newItem.min = "10";
           break;
         case "action":
           newItem.type = "text";
           newItem.label = "S159";
+          newItem.min = "2";
           break;
         default:
           newItem.type = "text";
