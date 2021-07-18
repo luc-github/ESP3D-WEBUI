@@ -47,6 +47,34 @@ const IconSelect = ({
   const title = T("S134");
   const closeTxt = T("S24");
   const showList = (e) => {
+    const content = (
+      <div>
+        {Object.keys(iconsList).map((element) => {
+          const displayIcon = iconsList[element] ? iconsList[element] : "";
+          const onSelect = (e) => {
+            setValue(element);
+            modals.removeModal(modals.getModalIndex(modalId));
+          };
+          if (value == element)
+            return (
+              <ButtonImg
+                primary
+                icon={displayIcon}
+                onclick={onSelect}
+                style="max-width:2rem;"
+              />
+            );
+          else
+            return (
+              <ButtonImg
+                icon={displayIcon}
+                onclick={onSelect}
+                style="max-width:2rem;"
+              />
+            );
+        })}
+      </div>
+    );
     const modalId = "iconSelection";
     //TODO generate icon list and current selected
     //modals.removeModal(modals.getModalIndex(modalId));
@@ -56,7 +84,7 @@ const IconSelect = ({
       button2: { text: closeTxt },
       icon: <Search />,
       id: modalId,
-      content: <div> test</div>,
+      content,
     });
   };
   const controlIcon = iconsList[value] ? iconsList[value] : "";
