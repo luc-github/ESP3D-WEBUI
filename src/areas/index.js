@@ -65,8 +65,6 @@ const ContentContainer = () => {
     //To init settings
     //to get language first
     getInterfaceSettings(null, getConnectionSettings);
-    //to get communication connection
-    //getConnectionSettings();
   }, []);
   return <ViewContainer />;
 };

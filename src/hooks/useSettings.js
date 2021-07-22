@@ -40,7 +40,7 @@ import { Frown } from "preact-feather";
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
   const { toasts, connection } = useUiContext();
-  const { interfaceSettings, connectionSettings, getInterfaceValue } =
+  const { interfaceSettings, connectionSettings, getInterfaceValue, activity } =
     useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
   const { currentLanguage, baseLangRessource, setCurrentLanguage } =
@@ -57,6 +57,7 @@ const useSettings = () => {
           const jsonResult = JSON.parse(result);
           connectionSettings.current = jsonResult;
           document.title = jsonResult.Hostname;
+          //SetupWs
           connection.setConnectionState({
             connected: true,
             authenticate: true,
@@ -149,6 +150,32 @@ const useSettings = () => {
             });
           }
           interfaceSettings.current = preferences;
+          //polling commands
+          activity.startPolling(() => {
+            const cmdsString = getInterfaceValue("pollingcommands").trim();
+            if (cmdsString.length > 0) {
+              let cmdsList = cmdsString.split(";");
+              for (let cmd of cmdsList) {
+                cmd = cmd.trim();
+                if (cmd.length > 0) {
+                  createNewRequest(
+                    espHttpURL("command", { cmd }).toString(),
+                    { method: "GET" },
+                    {
+                      onSuccess: (result) => {
+                        //TODO:TBD
+                      },
+                      onFail: (error) => {
+                        toasts.addToast({ content: error, type: "error" });
+                        console.log("error");
+                      },
+                    }
+                  );
+                }
+              }
+            }
+          });
+
           //Mobile view
           if (getInterfaceValue("mobileview"))
             document.getElementById("app").classList.add("mobile-view");

@@ -30,6 +30,7 @@ const SettingsContextProvider = ({ children }) => {
   const interfaceValues = useRef({});
   const connectionValues = useRef({});
   const featuresValues = useRef({});
+  const pollingInterval = useRef({});
   //TODO: this should be more generic !!!
   const getInterfaceValue = (Id) => {
     if (interfaceValues.current) {
@@ -64,12 +65,33 @@ const SettingsContextProvider = ({ children }) => {
     return undefined;
   };
 
+  function startPolling(pollingFunction) {
+    stopPolling();
+    if (getInterfaceValue("enablepolling")) {
+      if (pollingFunction)
+        pollingInterval.current = setInterval(
+          pollingFunction,
+          getInterfaceValue("pollingrefresh")
+        );
+    }
+  }
+
+  /*
+   * Stop polling query
+   */
+  function stopPolling() {
+    if (pollingInterval.current != null) {
+      clearInterval(pollingInterval.current);
+    }
+    pollingInterval.current = null;
+  }
+
   const store = {
-    settings: interfaceValues,
     interfaceSettings: interfaceValues,
     connectionSettings: connectionValues,
     featuresSettings: featuresValues,
     getInterfaceValue,
+    activity: { startPolling, stopPolling },
   };
 
   return (

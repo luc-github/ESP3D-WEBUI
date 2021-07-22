@@ -309,7 +309,6 @@ const FeaturesTab = () => {
   };
 
   useEffect(() => {
-    console.log("refresh");
     if (
       featuresSettings.current &&
       Object.keys(featuresSettings.current).length != 0

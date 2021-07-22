@@ -94,6 +94,7 @@ const CustomEntry = () => {
 };
 
 const About = () => {
+  console.log("about");
   const { toasts, modals } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();

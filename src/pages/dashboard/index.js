@@ -20,6 +20,7 @@
 import { h } from "preact";
 
 const Dashboard = () => {
+  console.log("Dashboard");
   return (
     <div id="dashboard">
       <h4>Dashboard</h4>

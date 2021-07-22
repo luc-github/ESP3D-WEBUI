@@ -69,7 +69,7 @@ const WsContextProvider = ({ children }) => {
   const { removeAllRequests } = useHttpQueueContext();
   const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
-  const { connectionSettings } = useSettingsContext();
+  const { connectionSettings, activity } = useSettingsContext();
   const parser = useRef(new Parser());
   const wsConnection = useRef();
   const [isPingPaused, setIsPingPaused] = useState(false);
@@ -158,7 +158,8 @@ const WsContextProvider = ({ children }) => {
         dispatch(parsedRes);
       }
     }
-    setWsData(dataBuffer.current);
+    //TODO:FIXME data are not supposed to be stored in WS Context
+    //setWsData(dataBuffer.current);
   };
 
   const Disconnect = (reason) => {
@@ -173,6 +174,8 @@ const WsContextProvider = ({ children }) => {
     if (wsConnection.current) {
       wsConnection.current.close();
     }
+    //stop polling if any
+    activity.stopPolling();
     //Abort  / Remove all queries
     removeAllRequests();
     //Clear all opened modals
@@ -219,6 +222,7 @@ const WsContextProvider = ({ children }) => {
       connectionSettings.current.WebCommunication === "Synchronous"
         ? ""
         : "/ws";
+
     wsConnection.current = new WebSocket(
       `ws://${connectionSettings.current.WebSocketIP}:${connectionSettings.current.WebSocketport}${path}`,
       ["arduino"]
@@ -238,11 +242,13 @@ const WsContextProvider = ({ children }) => {
     }
   }, [connectionSettings.current]);
 
+  //TODO: Not yet Used
   const addData = (cmdLine) => {
     const newWsData = [...wsData, cmdLine];
     dataBuffer.current = newWsData;
     setWsData(newWsData);
   };
+  //TODO: Not yet Used
   const setData = (cmdLine) => {
     dataBuffer.current = cmdLine;
     setWsData(cmdLine);
@@ -250,7 +256,7 @@ const WsContextProvider = ({ children }) => {
 
   const store = {
     ws: wsConnection.current,
-    data: wsData,
+    //data: wsData,
     parsedValues,
     setData,
     addData,

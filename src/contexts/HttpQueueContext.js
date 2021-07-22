@@ -74,22 +74,12 @@ const HttpQueueContextProvider = ({ children }) => {
   //Process query in queue
   const executeHttpCall = async () => {
     if (!isBusy.current) isBusy.current = true;
-    const {
-      url,
-      params,
-      onSuccess,
-      onFail,
-      onProgress,
-    } = requestQueue.current[0];
+    const { url, params, onSuccess, onFail, onProgress } =
+      requestQueue.current[0];
     let is401Error = false;
     try {
       currentRequest.current = httpAdapter(url, params, onProgress);
       const response = await currentRequest.current.response;
-      connection.setConnectionState({
-        connected: connection.connectionState.connected,
-        authenticate: true,
-        page: "connecting",
-      });
       onSuccess(response);
     } catch (e) {
       if (e.code == 401) {

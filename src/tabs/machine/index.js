@@ -21,6 +21,7 @@ import { h } from "preact";
 import { Target } from "../../components/Targets";
 
 const MachineTab = () => {
+  console.log("Machine");
   return (
     <div id="machine">
       <h4>Machine</h4>
