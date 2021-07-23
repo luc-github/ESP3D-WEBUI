@@ -44,21 +44,30 @@
   "showextrapanels": true,
   "extrapanels": [
    {
-    "id": 1604059351918,
-    "name": "Panel3",
+    "id": "dk93rqf58",
+    "name": "Panel test",
     "icon": "Globe",
+    "target": "panel",
+    "source": "http://google.fr",
+    "type": "image",
+    "refreshtime": "0"
+   },
+   {
+    "id": 1604059351918,
+    "name": "Page test",
+    "icon": "File",
     "target": "page",
     "source": "/hello.html",
     "type": "content",
     "refreshtime": "0"
    },
    {
-    "id": "dk93rqf58",
-    "name": "Panel",
-    "icon": "Globe",
+    "id": "x6fu4dpuc",
+    "name": "Page 2",
+    "icon": "Meh",
     "target": "page",
-    "source": "",
-    "type": "image",
+    "source": "http://www.gmail.com",
+    "type": "content",
     "refreshtime": "0"
    }
   ],

@@ -21,7 +21,7 @@
 */
 import { h } from "preact";
 import { useState, useEffect } from "preact/hooks";
-import { ESP3DLogo } from "../Images/logo";
+import { ESP3DLogo, iconsList } from "../Images";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import {
@@ -47,12 +47,14 @@ const defaultLinks = [
 ];
 
 const Navbar = () => {
-  const { connectionSettings } = useSettingsContext();
+  const { connectionSettings, interfaceSettings, getInterfaceValue } =
+    useSettingsContext();
   const { defaultRoute, activeRoute } = useRouterContext();
   const { modals } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { Disconnect } = useWsContext();
+
   function onResize() {
     //if infopage is visible but we are not in mobile view
     if (
@@ -88,6 +90,7 @@ const Navbar = () => {
   useEffect(() => {
     new ResizeObserver(onResize).observe(document.getElementById("app"));
   }, []);
+
   if (showConfirmation) {
     const title = T("S26");
     const content = T("S152");
@@ -109,11 +112,36 @@ const Navbar = () => {
   };
 
   if (Object.keys(connectionSettings.current).length > 0) {
+    const menuLinks = [...defaultLinks];
+    if (getInterfaceValue("showextrapanels")) {
+      const extraPanels = getInterfaceValue("extrapanels");
+
+      const extraPages = extraPanels.reduce((acc, curr) => {
+        const item = curr.value.reduce((accumulator, current) => {
+          accumulator[current.name] = current.initial;
+          return accumulator;
+        }, {});
+
+        if (item.target == "page") {
+          const pageIcon = iconsList[item.icon] ? iconsList[item.icon] : "";
+          acc.push({
+            label: item.name,
+            icon: pageIcon,
+            href: "/extrapage/" + curr.id,
+            id: curr.id,
+          });
+        }
+
+        return acc;
+      }, []);
+      menuLinks.push(...extraPages);
+    }
+
     return (
       <header class="navbar">
         <section class="navbar-section">
-          {defaultLinks &&
-            defaultLinks.map(({ label, icon, href, id }) => (
+          {menuLinks &&
+            menuLinks.map(({ label, icon, href, id }) => (
               <Link
                 id={id}
                 className={

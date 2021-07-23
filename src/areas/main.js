@@ -20,12 +20,14 @@
 */
 import { h } from "preact";
 import { Router } from "../components/Router";
+import { useSettingsContext } from "../contexts";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
+import ExtraPage from "../pages/extrapages";
 import { Informations } from "../areas/informations";
 
-const routes = {
+const defRoutes = {
   DASHBOARD: {
     component: <Dashboard />,
     path: "/dashboard",
@@ -45,6 +47,33 @@ const routes = {
 };
 
 const MainContainer = () => {
+  const { connectionSettings, getInterfaceValue } = useSettingsContext();
+  const routes = { ...defRoutes };
+  if (getInterfaceValue("showextrapanels")) {
+    const extraPanels = getInterfaceValue("extrapanels");
+    const extraPages = extraPanels.reduce((acc, curr) => {
+      const item = curr.value.reduce((accumulator, current) => {
+        accumulator[current.name] = current.initial;
+        return accumulator;
+      }, {});
+
+      if (item.target == "page") {
+        acc["EXTRA-" + curr.id] = {
+          component: (
+            <ExtraPage
+              id={curr.id}
+              label={item.name}
+              source={item.source}
+              refreshtime={item.refreshtime}
+            />
+          ),
+          path: "/extrapage/" + curr.id,
+        };
+      }
+      return acc;
+    }, routes);
+  }
+
   return (
     <div id="main" class="main-page-container">
       <Router routesList={routes} />

@@ -85,7 +85,7 @@ const useSettings = () => {
   };
 
   const getInterfaceSettings = (setLoading, next) => {
-    interfaceSettings.current = defaultPreferences;
+    interfaceSettings.current = { ...defaultPreferences };
     function loadTheme() {
       const themepack = getInterfaceValue("theme");
       const elem = document.getElementById("themestyle");

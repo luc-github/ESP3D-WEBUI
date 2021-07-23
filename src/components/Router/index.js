@@ -70,7 +70,10 @@ const Router = ({ children, routesList, localDefault }) => {
       for (const key in routesList) {
         if (Object.prototype.hasOwnProperty.call(routesList, key)) {
           const element = routesList[key];
-          if (element.path === subLocation) {
+          if (
+            element.path === subLocation ||
+            subLocation.startsWith(element.path)
+          ) {
             setActiveRoute(element.path);
             setActiveComponent(element.component);
             found = true;

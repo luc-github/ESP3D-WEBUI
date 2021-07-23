@@ -18,6 +18,7 @@
 */
 import { h, createContext } from "preact";
 import { useRef, useContext } from "preact/hooks";
+import { useUiContext } from "./UiContext";
 
 /*
  * Local const

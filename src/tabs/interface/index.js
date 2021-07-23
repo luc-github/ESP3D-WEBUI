@@ -31,7 +31,7 @@ import { exportPreferences } from "./exportHelper";
 import { importPreferences, formatPreferences } from "./importHelper";
 
 const InterfaceTab = () => {
-  const { toasts, modals } = useUiContext();
+  const { toasts, modals, connection } = useUiContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { getInterfaceSettings } = useSettings();
   const { interfaceSettings } = useSettingsContext();
@@ -180,6 +180,12 @@ const InterfaceTab = () => {
       { method: "POST", id: "preferences", body: formData },
       {
         onSuccess: (result) => {
+          //refresh whole UI
+          connection.setConnectionState({
+            connected: connection.connectionState.connected,
+            authenticate: connection.connectionState.authenticate,
+            page: "connecting",
+          });
           setTimeout(getInterface, 1000);
         },
         onFail: (error) => {
