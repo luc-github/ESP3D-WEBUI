@@ -19,8 +19,18 @@
 
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
+import { useSettingsContext } from "../../../contexts";
 
-const Option = ({ label, ...props }) => <option {...props}>{label}</option>;
+const Option = ({ label, ...props }) => {
+  const { connectionSettings } = useSettingsContext();
+  //Condition for camera - no need to display if none setup
+  if (props.value == "camera") {
+    if (connectionSettings.current.Cam_name) {
+      return <option {...props}>{connectionSettings.current.Cam_name}</option>;
+    } else return null;
+  }
+  return <option {...props}>{label}</option>;
+};
 
 const Select = ({
   label = "",
