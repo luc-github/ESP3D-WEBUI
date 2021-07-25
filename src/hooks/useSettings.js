@@ -150,6 +150,13 @@ const useSettings = () => {
             });
           }
           interfaceSettings.current = preferences;
+          //to force refresh of full UI
+          connection.setConnectionState({
+            connected: connection.connectionState.connected,
+            authenticate: connection.connectionState.authenticate,
+            page: connection.connectionState.page,
+            updating: true,
+          });
           //polling commands
           activity.startPolling(() => {
             const cmdsString = getInterfaceValue("pollingcommands").trim();

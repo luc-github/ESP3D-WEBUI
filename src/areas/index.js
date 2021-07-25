@@ -44,7 +44,8 @@ const ViewContainer = () => {
   }
   if (
     connection.connectionState.connected &&
-    connection.connectionState.authenticate
+    connection.connectionState.authenticate &&
+    !connection.connectionState.updating
   )
     return (
       <Fragment>

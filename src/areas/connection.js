@@ -49,8 +49,10 @@ const ConnectionContainer = () => {
 
   if (
     !connection.connectionState.connected ||
-    !connection.connectionState.authenticate
+    !connection.connectionState.authenticate ||
+    connection.connectionState.updating
   ) {
+    console.log("Show");
     const refreshTimer = () => {
       if (intervalTimer > 0) {
         intervalTimer--;
@@ -170,14 +172,24 @@ const ConnectionContainer = () => {
         contentAction = "";
         break;
       default:
-        document.title =
-          (connectionSettings.current
-            ? connectionSettings.current.Hostname
-            : "ESP3D") +
-          "(" +
-          T("S2") +
-          ")";
-        contentTitle = T("S2"); //"Connecting";
+        if (connection.connectionState.updating) {
+          contentTitle = T("S35"); //"restarting";
+          connection.setConnectionState({
+            connected: connection.connectionState.connected,
+            authenticate: connection.connectionState.authenticate,
+            page: connection.connectionState.page,
+            updating: false,
+          });
+        } else {
+          document.title =
+            (connectionSettings.current
+              ? connectionSettings.current.Hostname
+              : "ESP3D") +
+            "(" +
+            T("S2") +
+            ")";
+          contentTitle = T("S2"); //"Connecting";
+        }
         contentIcon = (
           <div class="d-inline-block" style="padding:0 20px">
             <Loading large />
