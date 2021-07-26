@@ -61,9 +61,8 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
     }
   };
   useEffect(() => {
+    //load using internal http manager
     if (!source.startsWith("http")) loadContent();
-  }, []);
-  useEffect(() => {
     //init timer if any
     let timerid = 0;
     if (refreshtime != 0) {
