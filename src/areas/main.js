@@ -65,6 +65,7 @@ const MainContainer = () => {
               label={item.name}
               source={item.source}
               refreshtime={item.refreshtime}
+              type={item.type}
             />
           ),
           path: "/extrapage/" + curr.id,

@@ -18,15 +18,103 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { useRef, useEffect } from "preact/hooks";
+import { espHttpURL } from "../../components/Helpers";
+import { useHttpQueue } from "../../hooks";
 
-const ExtraPage = ({ id, source, refreshtime, label }) => {
-  console.log("extra page", label);
-  return (
-    <div id={id}>
-      <h4>{label}</h4>
-      target is {source}
-    </div>
-  );
+const ExtraPage = ({ id, source, refreshtime, label, type }) => {
+  const { createNewRequest } = useHttpQueue();
+  const element = useRef(null);
+  const loadContent = () => {
+    if (source.startsWith("http")) {
+      switch (type) {
+        case "image":
+          if (element.current) element.current.src = source;
+          break;
+        default:
+          if (element.current) element.current.src = source;
+      }
+    } else {
+      const idquery = type == "content" ? type : "download";
+      createNewRequest(
+        espHttpURL(source).toString(),
+        { method: "GET", id: idquery },
+        {
+          onSuccess: (result) => {
+            switch (type) {
+              case "image":
+                if (element.current)
+                  element.current.src = URL.createObjectURL(result);
+                break;
+              default:
+                if (element.current && element.current.contentWindow)
+                  element.current.contentWindow.document.body.innerHTML =
+                    result;
+            }
+          },
+          onFail: (error) => {
+            //TODO:Need to do something ? TBD
+            console.log("Error", error);
+          },
+        }
+      );
+    }
+  };
+  useEffect(() => {
+    if (!source.startsWith("http")) loadContent();
+  }, []);
+  useEffect(() => {
+    //init timer if any
+    let timerid = 0;
+    if (refreshtime != 0) {
+      timerid = setInterval(loadContent, refreshtime);
+    }
+
+    return () => {
+      //cleanup
+      if (refreshtime != 0) {
+        clearInterval(timerid);
+      }
+    };
+  }, [id]);
+  switch (type) {
+    case "camera":
+      return (
+        <div class="container">
+          <img
+            ref={element}
+            id={"page_content_" + id}
+            style="border:none;width:100%"
+            src={source.startsWith("http") ? source : ""}
+            alt={label}
+          />
+        </div>
+      );
+    case "image":
+      return (
+        <div class="container">
+          <img
+            ref={element}
+            id={"page_content_" + id}
+            style="border:none;width:100%"
+            src={source.startsWith("http") ? source : ""}
+            alt={label}
+          />
+        </div>
+      );
+    default:
+      return (
+        <iframe
+          ref={element}
+          id={"page_content_" + id}
+          style="border:none; display: block;"
+          height="100%"
+          width="100%"
+          src={source.startsWith("http") ? source : ""}
+          alt={label}
+        ></iframe>
+      );
+  }
 };
 
 export default ExtraPage;

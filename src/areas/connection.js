@@ -52,7 +52,6 @@ const ConnectionContainer = () => {
     !connection.connectionState.authenticate ||
     connection.connectionState.updating
   ) {
-    console.log("Show");
     const refreshTimer = () => {
       if (intervalTimer > 0) {
         intervalTimer--;

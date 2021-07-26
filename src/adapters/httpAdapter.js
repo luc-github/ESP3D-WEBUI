@@ -31,10 +31,12 @@
  * @returns {XHR} return.xhr
  */
 const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
-  const { method = "GET", headers = {}, body = null } = params;
+  const { method = "GET", headers = {}, body = null, id = null } = params;
   const sanitizedMethod = method.trim().toUpperCase();
   const xhr = new XMLHttpRequest();
-
+  if (id == "download") {
+    xhr.responseType = "blob";
+  }
   xhr.upload.addEventListener("progress", (e) => {
     const done = e.position || e.loaded;
     const total = e.totalSize || e.total;

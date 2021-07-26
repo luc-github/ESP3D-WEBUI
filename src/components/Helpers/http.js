@@ -35,7 +35,14 @@ function getCookie(cname) {
 //generate an URL with server host and base address
 //args is array of argumments: [{'cmd':'[ESP800]},...]
 const espHttpURL = (base = "", args) => {
-  const url = new URL("http://" + window.location.host + "/" + base);
+  const url = base.startsWith("http")
+    ? new URL(base)
+    : new URL(
+        "http://" +
+          window.location.host +
+          (base.startsWith("/") ? "" : "/") +
+          base
+      );
   if (args)
     Object.keys(args).forEach((key) => {
       url.searchParams.append(key, args[key]);
