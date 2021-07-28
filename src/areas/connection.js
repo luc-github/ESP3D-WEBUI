@@ -203,9 +203,9 @@ const ConnectionContainer = () => {
           <div class="empty-icon">
             <div class="d-flex p-centered" style="flex-wrap:nowrap!important">
               <ESP3DLogo />
-              <Minus size="50px" />
+              <Minus size="50px" class="hide-low" />
               {contentIcon}
-              <Minus size="50px" />
+              <Minus size="50px" class="hide-low" />
               <HardDrive size="50px" />
             </div>
           </div>

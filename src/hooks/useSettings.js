@@ -226,6 +226,7 @@ const useSettings = () => {
             type: "error",
           });
           console.log("No valid preferences.json");
+          loadTheme();
         },
       }
     );
