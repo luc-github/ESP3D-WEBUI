@@ -49,7 +49,11 @@ const InterfaceTab = () => {
     if (fieldData.type == "list") {
       const stringified = JSON.stringify(fieldData.value);
       //check new item or modified item
-      if (stringified.includes('"newItem":true')) fieldData.hasmodified = true;
+      if (
+        stringified.includes('"newItem":true') ||
+        fieldData.nb != fieldData.value.length
+      )
+        fieldData.hasmodified = true;
       else fieldData.hasmodified = stringified.includes('"hasmodified":true');
       //check order change
       fieldData.value.forEach((element, index) => {

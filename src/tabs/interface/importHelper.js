@@ -108,6 +108,7 @@ function formatPreferences(settings) {
     if (Array.isArray(settings[key])) {
       for (let index = 0; index < settings[key].length; index++) {
         if (settings[key][index].type == "list") {
+          settings[key][index].nb = settings[key][index].value.length;
           settings[key][index].value = formatItemsList(
             [...settings[key][index].value],
             settings[key][index].id
