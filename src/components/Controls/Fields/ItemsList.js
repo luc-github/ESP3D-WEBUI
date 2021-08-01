@@ -83,7 +83,7 @@ const ItemControl = ({
   let colorStyle;
   if (
     JSON.stringify(value).includes('"hasmodified":true') ||
-    JSON.stringify(itemData).includes('"newItem":true')
+    JSON.stringify(itemData).includes('"newitem":true')
   )
     colorStyle =
       "box-shadow: 0 0 0 .2rem rgba(255, 183, 0, .4);margin-right:0.5rem!important";

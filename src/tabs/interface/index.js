@@ -246,7 +246,7 @@ const InterfaceTab = () => {
                                       : false
                                   }
                                   {...rest}
-                                  setValue={(val, update) => {
+                                  setValue={(val, update = false) => {
                                     if (!update) {
                                       fieldData.value = val;
                                     }

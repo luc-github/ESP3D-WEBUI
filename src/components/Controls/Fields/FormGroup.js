@@ -28,11 +28,12 @@ const FormGroup = ({
   type,
 }) => {
   const getValidationClass = (validation) => {
-    if (validation !== null && validation.valid) {
+    if (validation !== null && validation.valid == true) {
       if (validation.modified) return `form-group has-modification`;
       if (validation.success) return `form-group has-success`;
     }
-    if (validation !== null && !validation.valid) return `form-group has-error`;
+    if (validation != null && validation.valid == false)
+      return `form-group has-error`;
     return `form-group`;
   };
   return (
