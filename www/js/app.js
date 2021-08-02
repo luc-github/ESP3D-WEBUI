@@ -652,7 +652,7 @@ var socket_is_settings = false;
 
 function process_socket_response(msg) {
 
-    if (target_firmware == "grbl-embedded") {
+    if ((target_firmware == "grbl-embedded") || (target_firmware == "grbl")) {
         if (msg.startsWith("<")) {
             grbl_process_status(msg);
         } else if (msg.startsWith("[PRB:")) {
