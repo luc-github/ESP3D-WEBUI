@@ -151,9 +151,11 @@ const InterfaceTab = () => {
           formatPreferences(interfaceSettings.current.settings);
           if (haserrors) {
             toasts.addToast({ content: "S56", type: "error" });
+            console.log("Error");
           }
         } catch (e) {
           console.log(e);
+          console.log("Error");
           toasts.addToast({ content: "S56", type: "error" });
         } finally {
           setIsLoading(false);

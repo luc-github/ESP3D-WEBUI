@@ -42,10 +42,10 @@ import { exportFeatures } from "./exportHelper";
 import { importFeatures } from "./importHelper";
 
 const FeaturesTab = () => {
-  const { toasts, modals } = useUiContext();
+  const { toasts, modals, uisettings } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { featuresSettings, getInterfaceValue } = useSettingsContext();
+  const { featuresSettings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
   const progressValue = useRef(0);
@@ -84,7 +84,7 @@ const FeaturesTab = () => {
             featuresSettings.current = { ...feat };
             setFeatures(featuresSettings.current);
           } catch (e) {
-            console.log(e);
+            console.log(e, errorMsg);
             toasts.addToast({ content: errorMsg, type: "error" });
           } finally {
             setIsLoading(false);
@@ -232,6 +232,7 @@ const FeaturesTab = () => {
           setFeatures(featuresSettings.current);
         } catch (e) {
           console.log(e);
+          console.log("Error");
           toasts.addToast({ content: "S56", type: "error" });
         } finally {
           setIsLoading(false);
@@ -316,7 +317,7 @@ const FeaturesTab = () => {
       setFeatures(featuresSettings.current);
       setIsLoading(false);
     } else {
-      if (getInterfaceValue("autoload")) {
+      if (uisettings.getValue("autoload")) {
         getFeatures();
       } else setIsLoading(false);
     }

@@ -39,8 +39,8 @@ import { Frown } from "preact-feather";
  */
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
-  const { toasts, connection } = useUiContext();
-  const { interfaceSettings, connectionSettings, getInterfaceValue, activity } =
+  const { toasts, connection, uisettings } = useUiContext();
+  const { interfaceSettings, connectionSettings, activity } =
     useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
   const { currentLanguage, baseLangRessource, setCurrentLanguage } =
@@ -77,8 +77,10 @@ const useSettings = () => {
             authenticate: false,
             page: "error",
           });
-          if (!error.startsWith("401"))
+          if (!error.startsWith("401")) {
             toasts.addToast({ content: error, type: "error" });
+            console.log("Error");
+          }
         },
       }
     );
@@ -87,7 +89,7 @@ const useSettings = () => {
   const getInterfaceSettings = (setLoading, next) => {
     interfaceSettings.current = { ...defaultPreferences };
     function loadTheme() {
-      const themepack = getInterfaceValue("theme");
+      const themepack = uisettings.getValue("theme");
       const elem = document.getElementById("themestyle");
       if (elem) elem.parentNode.removeChild(elem);
       if (themepack != "default") {
@@ -111,6 +113,7 @@ const useSettings = () => {
               if (setLoading) {
                 setLoading(false);
               }
+              console.log("error");
               toasts.addToast({
                 content: error + " " + themepack,
                 type: "error",
@@ -138,6 +141,7 @@ const useSettings = () => {
             jsonResult
           );
           formatPreferences(preferences.settings);
+          uisettings.set(JSON.parse(JSON.stringify(preferences.settings)));
           if (haserrors) {
             toasts.addToast({
               content: (
@@ -148,18 +152,21 @@ const useSettings = () => {
               ),
               type: "error",
             });
+            console.log("error");
           }
           interfaceSettings.current = preferences;
           //to force refresh of full UI
-          connection.setConnectionState({
+          /*connection.setConnectionState({
             connected: connection.connectionState.connected,
             authenticate: connection.connectionState.authenticate,
             page: connection.connectionState.page,
             updating: true,
-          });
+          });*/
           //polling commands
           activity.startPolling(() => {
-            const cmdsString = getInterfaceValue("pollingcommands").trim();
+            const cmdsString = uisettings
+              .getValue("pollingcommands", preferences.settings)
+              .trim();
             if (cmdsString.length > 0) {
               let cmdsList = cmdsString.split(";");
               for (let cmd of cmdsList) {
@@ -184,14 +191,17 @@ const useSettings = () => {
           });
 
           //Mobile view
-          if (getInterfaceValue("mobileview"))
+          if (uisettings.getValue("mobileview", preferences.settings))
             document.getElementById("app").classList.add("mobile-view");
           else document.getElementById("app").classList.remove("mobile-view");
           //language
-          const languagepack = getInterfaceValue("language");
+          const languagepack = uisettings.getValue(
+            "language",
+            preferences.settings
+          );
           //set default first
           setCurrentLanguage(baseLangRessource);
-          if (languagepack != "default") {
+          if (!(languagepack == "default" || languagepack == undefined)) {
             if (setLoading) {
               setLoading(false);
             }
@@ -206,6 +216,7 @@ const useSettings = () => {
                 },
                 onFail: (error) => {
                   loadTheme();
+                  console.log("Error");
                   toasts.addToast({
                     content: error + " " + languagepack,
                     type: "error",

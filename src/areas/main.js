@@ -20,7 +20,7 @@
 */
 import { h } from "preact";
 import { Router } from "../components/Router";
-import { useSettingsContext } from "../contexts";
+import { useUiContext } from "../contexts";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
@@ -47,10 +47,10 @@ const defRoutes = {
 };
 
 const MainContainer = () => {
-  const { connectionSettings, getInterfaceValue } = useSettingsContext();
+  const { uisettings } = useUiContext();
   const routes = { ...defRoutes };
-  if (getInterfaceValue("showextrapanels")) {
-    const extraPanels = getInterfaceValue("extrapanels");
+  if (uisettings.getValue("showextrapanels")) {
+    const extraPanels = uisettings.getValue("extrapanels");
     const extraPages = extraPanels.reduce((acc, curr) => {
       const item = curr.value.reduce((accumulator, current) => {
         accumulator[current.name] = current.initial;

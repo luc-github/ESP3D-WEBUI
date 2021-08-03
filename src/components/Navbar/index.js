@@ -69,10 +69,9 @@ const defaultLinks = [
 ];
 
 const Navbar = () => {
-  const { connectionSettings, interfaceSettings, getInterfaceValue } =
-    useSettingsContext();
+  const { connectionSettings } = useSettingsContext();
   const { defaultRoute, activeRoute } = useRouterContext();
-  const { modals } = useUiContext();
+  const { modals, uisettings } = useUiContext();
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { Disconnect } = useWsContext();
@@ -120,9 +119,9 @@ const Navbar = () => {
     );
   };
   const menuLinks = [];
-  if (Object.keys(connectionSettings.current).length > 0) {
-    if (getInterfaceValue("showextrapanels")) {
-      const extraPanels = getInterfaceValue("extrapanels");
+  if (uisettings.current) {
+    if (uisettings.getValue("showextrapanels")) {
+      const extraPanels = uisettings.getValue("extrapanels");
 
       const extraPages = extraPanels.reduce((acc, curr) => {
         const item = curr.value.reduce((accumulator, current) => {
@@ -185,7 +184,7 @@ const Navbar = () => {
     setShowConfirmation(true);
   };
 
-  if (Object.keys(connectionSettings.current).length > 0) {
+  if (uisettings.current) {
     return (
       <header class="navbar">
         <section class="navbar-section">

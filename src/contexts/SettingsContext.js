@@ -28,51 +28,19 @@ const SettingsContext = createContext("SettingsContext");
 const useSettingsContext = () => useContext(SettingsContext);
 
 const SettingsContextProvider = ({ children }) => {
+  const { uisettings } = useUiContext();
   const interfaceValues = useRef({});
   const connectionValues = useRef({});
   const featuresValues = useRef({});
   const pollingInterval = useRef({});
-  //TODO: this should be more generic !!!
-  const getInterfaceValue = (Id) => {
-    if (interfaceValues.current) {
-      for (let key in interfaceValues.current) {
-        if (Array.isArray(interfaceValues.current[key])) {
-          for (
-            let index = 0;
-            index < interfaceValues.current[key].length;
-            index++
-          ) {
-            if (interfaceValues.current[key][index].id == Id) {
-              return interfaceValues.current[key][index].value;
-            }
-          }
-        } else {
-          for (let subkey in interfaceValues.current[key]) {
-            if (Array.isArray(interfaceValues.current[key][subkey])) {
-              for (
-                let index = 0;
-                index < interfaceValues.current[key][subkey].length;
-                index++
-              ) {
-                if (interfaceValues.current[key][subkey][index].id == Id) {
-                  return interfaceValues.current[key][subkey][index].value;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    return undefined;
-  };
 
   function startPolling(pollingFunction) {
     stopPolling();
-    if (getInterfaceValue("enablepolling")) {
+    if (uisettings.getValue("enablepolling")) {
       if (pollingFunction)
         pollingInterval.current = setInterval(
           pollingFunction,
-          getInterfaceValue("pollingrefresh")
+          uisettings.getValue("pollingrefresh")
         );
     }
   }
@@ -91,7 +59,6 @@ const SettingsContextProvider = ({ children }) => {
     interfaceSettings: interfaceValues,
     connectionSettings: connectionValues,
     featuresSettings: featuresValues,
-    getInterfaceValue,
     activity: { startPolling, stopPolling },
   };
 

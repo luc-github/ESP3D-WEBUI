@@ -23,6 +23,7 @@ import {
   removeEntriesByIDs,
   disableNode,
 } from "../components/Helpers";
+import { useSettings } from "../hooks";
 
 /*
  * Local const
@@ -32,6 +33,7 @@ const UiContext = createContext("uiContext");
 const useUiContext = () => useContext(UiContext);
 const UiContextProvider = ({ children }) => {
   const [data, setData] = useState();
+  const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
   const [needLogin, setNeedLogin] = useState(false);
@@ -75,7 +77,38 @@ const UiContextProvider = ({ children }) => {
     setModal([]);
   };
 
+  const getValue = (Id, base = null) => {
+    const settingsobject = base ? base : uiSettings;
+    if (settingsobject) {
+      for (let key in settingsobject) {
+        if (Array.isArray(settingsobject[key])) {
+          for (let index = 0; index < settingsobject[key].length; index++) {
+            if (settingsobject[key][index].id == Id) {
+              return settingsobject[key][index].value;
+            }
+          }
+        } else {
+          for (let subkey in settingsobject[key]) {
+            if (Array.isArray(settingsobject[key][subkey])) {
+              for (
+                let index = 0;
+                index < settingsobject[key][subkey].length;
+                index++
+              ) {
+                if (settingsobject[key][subkey][index].id == Id) {
+                  return settingsobject[key][subkey][index].value;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return undefined;
+  };
+
   const store = {
+    uisettings: { current: uiSettings, set: setUISettings, getValue },
     data: [data, setData],
     modals: {
       modalList: modals,

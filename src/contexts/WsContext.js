@@ -205,6 +205,7 @@ const WsContextProvider = ({ children }) => {
   const onErrorCB = (e) => {
     reconnectCounter.current++;
     toasts.addToast({ content: "S6", type: "error" });
+    console.log("Error");
   };
   const setupWS = () => {
     if (!connectionSettings.current.WebCommunication) {
@@ -215,6 +216,7 @@ const WsContextProvider = ({ children }) => {
         return;
       } else {
         toasts.addToast({ content: "S6", type: "error" });
+        console.log("Error");
         return;
       }
     }

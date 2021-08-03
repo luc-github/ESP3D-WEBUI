@@ -95,10 +95,10 @@ const CustomEntry = () => {
 
 const About = () => {
   console.log("about");
-  const { toasts, modals } = useUiContext();
+  const { toasts, modals, uisettings } = useUiContext();
   const { Disconnect } = useWsContext();
   const { createNewRequest, abortRequest } = useHttpQueue();
-  const { interfaceSettings, getInterfaceValue } = useSettingsContext();
+  const { interfaceSettings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
@@ -275,7 +275,7 @@ const About = () => {
       setProps([...datas.current.about]);
       setIsLoading(false);
     } else {
-      if (getInterfaceValue("autoload")) getProps();
+      if (uisettings.getValue("autoload")) getProps();
       else setIsLoading(false);
     }
   }, []);
