@@ -206,6 +206,7 @@ const ItemControl = ({
                     setValue={(val, update) => {
                       if (!update) item.value = val;
                       setvalidation(validationfn(item));
+                      setValue(completeList, update);
                     }}
                     validation={validation}
                   />
