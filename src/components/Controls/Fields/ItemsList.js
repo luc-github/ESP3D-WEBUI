@@ -91,7 +91,6 @@ const ItemControl = ({
   if (JSON.stringify(value).includes('"haserror":true'))
     colorStyle =
       "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important";
-
   return (
     <Fragment>
       {!editionMode && (
@@ -187,8 +186,10 @@ const ItemControl = ({
           <div class="m-1">
             {value &&
               value.map((item) => {
-                const { type, label, initial, options, ...rest } = item;
-                const [validation, setvalidation] = useState({});
+                const { id, type, label, initial, options, ...rest } = item;
+                const [validation, setvalidation] = useState(
+                  validationfn(item)
+                );
                 //Do translation if necessary
                 const Options = options
                   ? [...options].reduce((acc, curr) => {
@@ -198,6 +199,7 @@ const ItemControl = ({
                   : null;
                 return (
                   <Field
+                    id={item.id}
                     label={T(label)}
                     type={type}
                     options={Options}
