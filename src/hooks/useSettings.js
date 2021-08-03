@@ -229,6 +229,10 @@ const useSettings = () => {
           }
         },
         onFail: (error) => {
+          formatPreferences(defaultPreferences.settings);
+          uisettings.set(
+            JSON.parse(JSON.stringify(defaultPreferences.settings))
+          );
           if (setLoading) {
             setLoading(false);
           }
