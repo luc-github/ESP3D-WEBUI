@@ -19,6 +19,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+
+import { useState, useEffect, useRef } from "preact/hooks";
 import { Router } from "../components/Router";
 import { useUiContext } from "../contexts";
 import About from "../pages/about";
@@ -48,32 +50,40 @@ const defRoutes = {
 
 const MainContainer = () => {
   const { uisettings } = useUiContext();
-  const routes = { ...defRoutes };
-  if (uisettings.getValue("showextrapanels")) {
-    const extraPanels = uisettings.getValue("extrapanels");
-    const extraPages = extraPanels.reduce((acc, curr) => {
-      const item = curr.value.reduce((accumulator, current) => {
-        accumulator[current.name] = current.initial;
-        return accumulator;
-      }, {});
+  const [routes, setRoutes] = useState({ ...defRoutes });
 
-      if (item.target == "page") {
-        acc["EXTRA-" + curr.id] = {
-          component: (
-            <ExtraPage
-              id={curr.id}
-              label={item.name}
-              source={item.source}
-              refreshtime={item.refreshtime}
-              type={item.type}
-            />
-          ),
-          path: "/extrapage/" + curr.id,
-        };
-      }
-      return acc;
-    }, routes);
-  }
+  const newroutes = () => {
+    if (uisettings.getValue("showextrapanels")) {
+      const extraPanels = uisettings.getValue("extrapanels");
+      const extraPages = extraPanels.reduce((acc, curr) => {
+        const item = curr.value.reduce((accumulator, current) => {
+          accumulator[current.name] = current.initial;
+          return accumulator;
+        }, {});
+
+        if (item.target == "page") {
+          acc["EXTRA-" + curr.id] = {
+            component: (
+              <ExtraPage
+                id={curr.id}
+                label={item.name}
+                source={item.source}
+                refreshtime={item.refreshtime}
+                type={item.type}
+              />
+            ),
+            path: "/extrapage/" + curr.id,
+          };
+        }
+        return acc;
+      }, routes);
+      return extraPages;
+    }
+  };
+
+  useEffect(() => {
+    setRoutes(newroutes);
+  }, [uisettings]);
 
   return (
     <div id="main" class="main-page-container">
