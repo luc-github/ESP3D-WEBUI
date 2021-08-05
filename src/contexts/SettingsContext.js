@@ -34,13 +34,14 @@ const SettingsContextProvider = ({ children }) => {
   const featuresValues = useRef({});
   const pollingInterval = useRef({});
 
-  function startPolling(pollingFunction) {
+  function startPolling(pollingFunction, parameters) {
+    const settings = parameters != undefined ? parameters : uisettings;
     stopPolling();
-    if (uisettings.getValue("enablepolling")) {
+    if (uisettings.getValue("enablepolling", settings)) {
       if (pollingFunction)
         pollingInterval.current = setInterval(
           pollingFunction,
-          uisettings.getValue("pollingrefresh")
+          uisettings.getValue("pollingrefresh", settings)
         );
     }
   }

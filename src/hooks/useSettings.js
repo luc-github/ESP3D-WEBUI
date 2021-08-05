@@ -163,18 +163,21 @@ const useSettings = () => {
             updating: true,
           });*/
           //polling commands
+
           activity.startPolling(() => {
             const cmdsString = uisettings
               .getValue("pollingcommands", preferences.settings)
               .trim();
             if (cmdsString.length > 0) {
               let cmdsList = cmdsString.split(";");
+              let index = 0;
               for (let cmd of cmdsList) {
+                const idpolling = "polling" + index;
                 cmd = cmd.trim();
                 if (cmd.length > 0) {
                   createNewRequest(
                     espHttpURL("command", { cmd }).toString(),
-                    { method: "GET" },
+                    { method: "GET", id: idpolling, max: 1 },
                     {
                       onSuccess: (result) => {
                         //TODO:TBD
@@ -186,9 +189,10 @@ const useSettings = () => {
                     }
                   );
                 }
+                index++;
               }
             }
-          });
+          }, preferences.settings);
 
           //Mobile view
           if (uisettings.getValue("mobileview", preferences.settings))

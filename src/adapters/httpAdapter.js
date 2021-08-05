@@ -34,7 +34,7 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
   const { method = "GET", headers = {}, body = null, id = null } = params;
   const sanitizedMethod = method.trim().toUpperCase();
   const xhr = new XMLHttpRequest();
-  if (id == "download") {
+  if (id && id.startsWith("download")) {
     xhr.responseType = "blob";
   }
   xhr.upload.addEventListener("progress", (e) => {

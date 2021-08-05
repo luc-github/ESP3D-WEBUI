@@ -17,34 +17,51 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { useRef, useEffect } from "preact/hooks";
+import { Fragment, h } from "preact";
+import { useRef, useEffect, useState } from "preact/hooks";
 import { espHttpURL } from "../../components/Helpers";
+import { useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
+import { Play, Pause, Aperture } from "preact-feather";
+import { ButtonImg } from "../../components/Spectre";
+import { T } from "../../components/Translations";
 
 const ExtraPage = ({ id, source, refreshtime, label, type }) => {
   const { createNewRequest } = useHttpQueue();
+  const { uisettings } = useUiContext();
+  const [refreshPaused, setRefreshPaused] = useState(
+    uisettings.refreshPaused.id
+  );
   const element = useRef(null);
-  const loadContent = () => {
-    if (source.startsWith("http")) {
+  const imageCache = useRef(null);
+  const pageSource = type == "camera" ? "/snap" : source;
+  const loadContent = (init = false) => {
+    if (!init && uisettings.refreshPaused.id) {
+      return;
+    }
+    if (pageSource.startsWith("http")) {
       switch (type) {
         case "image":
-          if (element.current) element.current.src = source;
+          if (element.current) element.current.src = pageSource;
           break;
         default:
-          if (element.current) element.current.src = source;
+          if (element.current) element.current.src = pageSource;
       }
     } else {
-      const idquery = type == "content" ? type : "download";
+      const idquery = type == "content" ? type + id : "download" + id;
       createNewRequest(
-        espHttpURL(source).toString(),
-        { method: "GET", id: idquery },
+        espHttpURL(pageSource).toString(),
+        { method: "GET", id: idquery, max: 2 },
         {
           onSuccess: (result) => {
             switch (type) {
+              case "camera":
               case "image":
-                if (element.current)
+                if (element.current) {
+                  imageCache.current = result;
                   element.current.src = URL.createObjectURL(result);
+                }
+
                 break;
               default:
                 if (element.current && element.current.contentWindow)
@@ -60,9 +77,63 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
       );
     }
   };
+  const ControlButtons = () => {
+    return (
+      <Fragment>
+        {parseInt(refreshtime) > 0 && (
+          <div class="m-2 image-button-bar">
+            <ButtonImg
+              m1
+              tooltip
+              data-tooltip={refreshPaused ? T("S185") : T("S184")}
+              icon={refreshPaused ? <Play /> : <Pause />}
+              onclick={() => {
+                setRefreshPaused(!refreshPaused);
+                uisettings.refreshPaused.id = !refreshPaused;
+              }}
+              style="max-width:2rem;"
+            />
+            {type != "content" && (
+              <ButtonImg
+                m1
+                tooltip
+                data-tooltip={T("S186")}
+                icon={<Aperture />}
+                onclick={() => {
+                  const typeImage =
+                    type == "camera" ? "image/jpeg" : imageCache.current.type;
+                  const filename = "snap." + typeImage.split("/")[1];
+                  const file = new Blob([imageCache.current], {
+                    type: typeImage,
+                  });
+                  if (window.navigator.msSaveOrOpenBlob)
+                    // IE10+
+                    window.navigator.msSaveOrOpenBlob(file, filename);
+                  else {
+                    // Others
+                    const a = document.createElement("a");
+                    const url = URL.createObjectURL(file);
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function () {
+                      document.body.removeChild(a);
+                      window.URL.revokeObjectURL(url);
+                    }, 0);
+                  }
+                }}
+                style="max-width:2rem;"
+              />
+            )}
+          </div>
+        )}
+      </Fragment>
+    );
+  };
   useEffect(() => {
     //load using internal http manager
-    if (!source.startsWith("http")) loadContent();
+    if (!pageSource.startsWith("http")) loadContent(true);
     //init timer if any
     let timerid = 0;
     if (refreshtime != 0) {
@@ -84,9 +155,10 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
             ref={element}
             id={"page_content_" + id}
             style="border:none;width:100%"
-            src={source.startsWith("http") ? source : ""}
+            src={pageSource.startsWith("http") ? pageSource : ""}
             alt={label}
           />
+          <ControlButtons />
         </div>
       );
     case "image":
@@ -96,22 +168,26 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
             ref={element}
             id={"page_content_" + id}
             style="border:none;width:100%"
-            src={source.startsWith("http") ? source : ""}
+            src={pageSource.startsWith("http") ? pageSource : ""}
             alt={label}
           />
+          <ControlButtons />
         </div>
       );
     default:
       return (
-        <iframe
-          ref={element}
-          id={"page_content_" + id}
-          style="border:none; display: block;"
-          height="100%"
-          width="100%"
-          src={source.startsWith("http") ? source : ""}
-          alt={label}
-        ></iframe>
+        <Fragment>
+          <iframe
+            ref={element}
+            id={"page_content_" + id}
+            style="border:none; display: block;"
+            height="100%"
+            width="100%"
+            src={pageSource.startsWith("http") ? pageSource : ""}
+            alt={label}
+          ></iframe>
+          <ControlButtons />
+        </Fragment>
       );
   }
 };

@@ -35,7 +35,7 @@ const useHttpQueue = () => {
   } = useHttpQueueContext();
   const [data, setData] = useState();
   const [killOnUnmount, setKillOnUnmount] = useState(true);
-  const _localRequests = useRef([]);
+  const localRequests = useRef([]);
 
   useEffect(() => {
     // return () => killOnUnmount && removeRequests(_localRequests.current);
@@ -48,7 +48,7 @@ const useHttpQueue = () => {
       onProgress: onProgressCb,
     } = callbacks;
     const id = params.id ? params.id : generateUID();
-    _localRequests.current = [..._localRequests.current, id];
+    localRequests.current = [...localRequests.current, id];
     addInTopQueue({
       id,
       url,
@@ -75,24 +75,31 @@ const useHttpQueue = () => {
       onProgress: onProgressCb,
     } = callbacks;
     const id = params.id ? params.id : generateUID();
-    //TODO: reject if has params maxid and number inside is already over
-    _localRequests.current = [..._localRequests.current, id];
+
+    if (params.max != undefined) {
+      const totalInQueue = localRequests.current.reduce((total, current) => {
+        if (id == current) return total + 1;
+        else return total;
+      }, 0);
+      if (totalInQueue >= params.max) return;
+    }
+    localRequests.current = [...localRequests.current, id];
     addInQueue({
       id,
       url,
       params,
       onSuccess: (result) => {
-        setData(result);
+        //setData(result);
         if (onSuccessCb) onSuccessCb(result);
+        localRequests.current.splice(localRequests.current.indexOf(id), 1);
       },
       onProgress: (e) => {
         if (onProgressCb) onProgressCb(e);
       },
-      onFail: onFailCb
-        ? (error) => {
-            if (onFailCb) onFailCb(error);
-          }
-        : null,
+      onFail: (error) => {
+        localRequests.current.splice(localRequests.current.indexOf(id), 1);
+        if (onFailCb) onFailCb(error);
+      },
     });
   };
 

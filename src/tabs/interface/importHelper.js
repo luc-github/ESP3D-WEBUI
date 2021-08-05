@@ -45,6 +45,8 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
         case "refreshtime":
           newItem.type = "number";
           newItem.min = 0;
+          newItem.minsecondary = 100;
+          newItem.step = 100;
           newItem.append = "S114";
           newItem.label = "S113";
           break;
@@ -78,7 +80,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
         case "source":
           newItem.type = "text";
           newItem.label = "S139";
-          newItem.min = "10";
+          newItem.min = "2";
           break;
         case "action":
           newItem.type = "text";

@@ -81,17 +81,53 @@ const InterfaceTab = () => {
         }
       }
     } else if (fieldData.type == "number") {
-      if (fieldData.max) {
+      if (fieldData.max != undefined) {
         if (fieldData.value > parseInt(fieldData.max)) {
           validation.valid = false;
         }
       }
-      if (fieldData.min) {
-        if (fieldData.value < parseInt(fieldData.min)) {
+      if (fieldData.min != undefined) {
+        if (typeof fieldData.minSecondary != undefined) {
+          if (
+            fieldData.value != parseInt(fieldData.min) &&
+            fieldData.value < parseInt(fieldData.minsecondary)
+          ) {
+            validation.valid = false;
+          }
+        } else if (fieldData.value < parseInt(fieldData.min)) {
           validation.valid = false;
         }
       }
     } else if (fieldData.type == "select") {
+      if (fieldData.name == "type" && fieldData.value == "camera") {
+        //Update camera source automaticaly
+        //Note: is there a less complexe way to do ?
+        const sourceId = fieldData.id.split("-")[0];
+        const extraList = interfaceSettings.current.settings.extrapanels;
+        //look for extra panels entry
+        const subextraList =
+          extraList[
+            extraList.findIndex((element) => {
+              return element.id == "extrapanels";
+            })
+          ].value;
+        //look for extra panel specific id
+        const datavalue =
+          subextraList[
+            subextraList.findIndex((element) => {
+              return element.id == sourceId;
+            })
+          ].value;
+        //get source item
+        const sourceItemValue =
+          datavalue[
+            datavalue.findIndex((element) => {
+              return element.id == sourceId + "-source";
+            })
+          ];
+        //force /snap as source
+        sourceItemValue.value = "/snap";
+      }
       const index = fieldData.options.findIndex(
         (element) =>
           element.value == parseInt(fieldData.value) ||

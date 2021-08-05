@@ -33,6 +33,7 @@ const UiContext = createContext("uiContext");
 const useUiContext = () => useContext(UiContext);
 const UiContextProvider = ({ children }) => {
   const [data, setData] = useState();
+  const uiRefreshPaused = useRef({});
   const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
@@ -108,7 +109,12 @@ const UiContextProvider = ({ children }) => {
   };
 
   const store = {
-    uisettings: { current: uiSettings, set: setUISettings, getValue },
+    uisettings: {
+      current: uiSettings,
+      set: setUISettings,
+      getValue,
+      refreshPaused: uiRefreshPaused.current,
+    },
     data: [data, setData],
     modals: {
       modalList: modals,
