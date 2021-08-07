@@ -171,7 +171,8 @@ function get_status() {
     var command = "?";
     if ((target_firmware == "grbl") || (target_firmware == "grbl-embedded")) command = "?";
     //ID 114 is same as M114 as '?' cannot be an ID
-    SendPrinterCommand(command, false, null, null, 114, 1);
+    if (target_firmware == "grbl")SendPrinterSilentCommand(command, null, null, 114, 1);
+    else SendPrinterCommand(command, false, null, null, 114, 1);
 }
 
 function process_grbl_position(response) {
