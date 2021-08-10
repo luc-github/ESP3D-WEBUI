@@ -8,3 +8,9 @@
 * Fix for sass div warning
 >npm install -g sass-migrator
 >sass-migrator division **/*.scss
+Note:
+on windows need change script policy first: 
+> Get-ExecutionPolicy -List
+>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+then when done, put back default (the one got by initial Get-ExecutionPolicy -List)
+>Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope CurrentUser

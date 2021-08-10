@@ -88,8 +88,7 @@ const useSettings = () => {
 
   const getInterfaceSettings = (setLoading, next) => {
     interfaceSettings.current = { ...defaultPreferences };
-    function loadTheme() {
-      const themepack = uisettings.getValue("theme");
+    function loadTheme(themepack) {
       const elem = document.getElementById("themestyle");
       if (elem) elem.parentNode.removeChild(elem);
       if (themepack != "default") {
@@ -203,6 +202,7 @@ const useSettings = () => {
             "language",
             preferences.settings
           );
+          const themepack = uisettings.getValue("theme", preferences.settings);
           //set default first
           setCurrentLanguage(baseLangRessource);
           if (!(languagepack == "default" || languagepack == undefined)) {
@@ -216,10 +216,10 @@ const useSettings = () => {
                 onSuccess: (result) => {
                   const langjson = JSON.parse(result);
                   setCurrentLanguage(langjson);
-                  loadTheme();
+                  loadTheme(themepack);
                 },
                 onFail: (error) => {
-                  loadTheme();
+                  loadTheme(themepack);
                   console.log("Error");
                   toasts.addToast({
                     content: error + " " + languagepack,
@@ -229,7 +229,7 @@ const useSettings = () => {
               }
             );
           } else {
-            loadTheme();
+            loadTheme(themepack);
           }
         },
         onFail: (error) => {
