@@ -38,7 +38,7 @@ import {
   LifeBuoy,
   Info,
 } from "preact-feather";
-import { webUiUrl, fwUrl, Name } from "../../components/Targets";
+import { webUiUrl, fwUrl, Name, restartdelay } from "../../components/Targets";
 import {
   showConfirmationModal,
   showProgressModal,
@@ -202,7 +202,7 @@ const About = () => {
           if (isFwUpdate) {
             setTimeout(() => {
               window.location.reload();
-            }, 40000);
+            }, restartdelay * 1000);
           } else window.location.reload();
         },
         onFail: (error) => {

@@ -18,7 +18,14 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Target, Parser, fwUrl, Name, iconsTarget } from "SubTargetPath";
+import {
+  Target,
+  Parser,
+  fwUrl,
+  Name,
+  iconsTarget,
+  restartdelay,
+} from "SubTargetPath";
 import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
 import defaultPreferencesTarget from "TargetPath/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
@@ -43,4 +50,5 @@ export {
   webUiUrl,
   Name,
   iconsTarget,
+  restartdelay,
 };

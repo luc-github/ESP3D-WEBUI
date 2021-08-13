@@ -40,6 +40,7 @@ import { Field } from "../../components/Controls";
 import { formatStructure } from "./formatHelper";
 import { exportFeatures } from "./exportHelper";
 import { importFeatures } from "./importHelper";
+import { restartdelay } from "../../components/Targets";
 
 const FeaturesTab = () => {
   const { toasts, modals, uisettings } = useUiContext();
@@ -209,7 +210,7 @@ const FeaturesTab = () => {
     Disconnect("restart");
     setTimeout(() => {
       window.location.reload();
-    }, 40000);
+    }, restartdelay * 1000);
     console.log("restart");
   }
 

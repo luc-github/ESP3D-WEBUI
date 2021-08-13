@@ -32,6 +32,7 @@ import {
 } from "preact-feather";
 import { T } from "../components/Translations";
 import { espHttpURL } from "../components/Helpers";
+import { restartdelay } from "../components/Targets";
 
 /*
  * Local const
@@ -146,7 +147,7 @@ const ConnectionContainer = () => {
         break;
       //restart
       case "restart":
-        intervalTimer = 40;
+        intervalTimer = restartdelay;
         setTimeout(refreshTimer, 1000);
         document.title =
           (connectionSettings.current
@@ -164,8 +165,8 @@ const ConnectionContainer = () => {
         contentSubtitle = (
           <span>
             {T("S60")}
-            <span ref={timerCtrl}>40</span>
-            {T("S114")}
+            <span ref={timerCtrl}>{restartdelay}</span>
+            {T("S119")}
           </span>
         );
         contentAction = "";

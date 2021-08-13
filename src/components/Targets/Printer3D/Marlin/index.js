@@ -32,4 +32,6 @@ const iconsTarget = {
   Extruder: <Extruder />,
 };
 
-export { Target, Parser, fwUrl, Name, iconsTarget };
+const restartdelay = 30;
+
+export { Target, Parser, fwUrl, Name, iconsTarget, restartdelay };
