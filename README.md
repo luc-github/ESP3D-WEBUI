@@ -26,13 +26,12 @@ So I came with a full rewrite using pure javascript and resized resources:
 The result is a monolitic file with a minimal size allowing almost full control of ESP3D board and your 3D printer
 
 ## Sponsors 
-[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/FYSETC/LOGO.png">](https://www.fysetc.com/)  
-<hr/>
-<a href="https://github.com//bdring" style="border: solid 4px red" ><div class="CircleBadge CircleBadge--medium bg-gray-dark">
-  <img height="60" width="60" alt="@bdring" class="CircleBadge-icon" src="https://user-images.githubusercontent.com/8822552/84999946-1078ac80-b152-11ea-84ce-84803b1ab02e.png"></div></a>
+[<img width="200px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/FYSETC/LOGO.png" title="FYSETC">](https://www.fysetc.com/)&nbsp;&nbsp;
+[<img width="80px" src="https://user-images.githubusercontent.com/8822552/84999946-1078ac80-b152-11ea-84ce-84803b1ab02e.png" title="Bart Dring">](https://github.com//bdring)
+[<img width="80px" src="https://avatars.githubusercontent.com/u/8650709?v=4" title="Spark-Concepts">](http://www.spark-concepts.com/)
 
 ## Supporters
-[<img src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/PanucattDevices/Panucatt.jpg" />](http://www.panucatt.com/)
+[<img height="80px" src="https://raw.githubusercontent.com/luc-github/ESP3D/3.0/images/sponsors-supporters/PanucattDevices/Panucatt.jpg" title="Panucatt Devices" />](http://www.panucatt.com/)
 
 
 ## Become a sponsor or a supporter
