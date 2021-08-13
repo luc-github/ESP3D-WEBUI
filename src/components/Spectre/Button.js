@@ -38,6 +38,7 @@ const modifiers = {
   loading: "loading",
   tooltip: "tooltip",
   ltooltip: "tooltip tooltip-left",
+  rtooltip: "tooltip tooltip-right",
   mx2: "mx-2",
   m2: "m-2",
   m1: "m-1",

@@ -28,6 +28,7 @@ import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
 import ExtraPage from "../pages/extrapages";
 import { Informations } from "../areas/informations";
+import { FooterContainer } from "./footer";
 
 const defRoutes = {
   DASHBOARD: {
@@ -88,6 +89,7 @@ const MainContainer = () => {
   return (
     <div id="main" class="main-page-container">
       <Router routesList={routes} />
+      <FooterContainer />
     </div>
   );
 };

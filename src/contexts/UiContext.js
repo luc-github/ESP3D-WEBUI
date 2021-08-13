@@ -32,7 +32,8 @@ import { useSettings } from "../hooks";
 const UiContext = createContext("uiContext");
 const useUiContext = () => useContext(UiContext);
 const UiContextProvider = ({ children }) => {
-  const [data, setData] = useState();
+  const [panelsList, setPanelsList] = useState([]);
+  const [visiblePanelsList, setVisiblePanelsList] = useState([]);
   const uiRefreshPaused = useRef({});
   const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
@@ -46,6 +47,19 @@ const UiContextProvider = ({ children }) => {
   });
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
+
+  const removeFromVisibles = (id) => {
+    setVisiblePanelsList(
+      visiblePanelsList.filter((element) => element.id != id)
+    );
+  };
+
+  const addToVisibles = (id) => {
+    setVisiblePanelsList([
+      ...panelsList.filter((element) => element.id == id),
+      ...visiblePanelsList.filter((element) => element.id != id),
+    ]);
+  };
 
   const addToast = (newToast) => {
     setToasts([...toastsRef.current, { ...newToast, id: generateUID() }]);
@@ -109,13 +123,21 @@ const UiContextProvider = ({ children }) => {
   };
 
   const store = {
+    panels: {
+      list: panelsList,
+      set: setPanelsList,
+      visibles: visiblePanelsList,
+      setVisibles: setVisiblePanelsList,
+      hide: removeFromVisibles,
+      show: addToVisibles,
+    },
     uisettings: {
       current: uiSettings,
       set: setUISettings,
       getValue,
       refreshPaused: uiRefreshPaused.current,
     },
-    data: [data, setData],
+    //data: [data, setData],
     modals: {
       modalList: modals,
       addModal,

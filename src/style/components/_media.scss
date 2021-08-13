@@ -1,0 +1,12 @@
+@media (max-width: 480px) {
+  .hide-low {
+    display: none !important;
+  }
+  .show-low {
+    display: block !important;
+  }
+  section .active,
+  li .active {
+    background-color: rgba(100, 100, 100, 0.1) !important;
+  }
+}
