@@ -13,8 +13,15 @@
 }
 
 .btn-close {
+  padding-left: 3px !important;
 }
 
+.btn-header {
+  background-color: #f1f1fc;
+}
+
+.mobile-view .btn-header,
+.btn-header:hover,
 .mobile-view .btn-close,
 .btn-close:hover {
   color: white !important;

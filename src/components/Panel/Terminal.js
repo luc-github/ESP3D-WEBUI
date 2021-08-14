@@ -19,7 +19,7 @@
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { T } from "../Translations";
-import { MoreVertical, Terminal } from "preact-feather";
+import { ChevronDown, Terminal } from "preact-feather";
 import { useUiContext } from "../../contexts";
 
 /*
@@ -40,6 +40,24 @@ const TerminalPanel = () => {
           </span>
           <span class="navbar-section">
             <span style="height: 100%;">
+              <div class="dropdown dropdown-right">
+                <button
+                  class="dropdown-toggle btn btn-xs btn-header m-1"
+                  onclick={(e) => {}}
+                >
+                  <ChevronDown size="0.8rem" />
+                </button>
+
+                <ul class="menu">
+                  <li class="menu-item">
+                    <div class="menu-entry">Verbose</div>
+                  </li>
+                  <li class="menu-item">
+                    <div class="menu-entry">Clear</div>
+                  </li>
+                </ul>
+              </div>
+
               <button
                 class="btn btn-clear btn-close m-1"
                 aria-label="Close"
