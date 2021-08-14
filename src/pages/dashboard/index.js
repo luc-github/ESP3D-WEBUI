@@ -25,6 +25,8 @@ import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
 import { iconsList } from "../../components/Images";
 import { TerminalPanelElement } from "../../components/Panel/Terminal";
+import { FilesPanelElement } from "../../components/Panel/Files";
+import { MacrosPanelElement } from "../../components/Panel/Macros";
 
 const Dashboard = () => {
   console.log("Dashboard");
@@ -32,7 +34,7 @@ const Dashboard = () => {
   const menuPanelsList = useRef();
   //TODO this need to be done in target not here
   useEffect(() => {
-    panels.set([TerminalPanelElement]);
+    panels.set([TerminalPanelElement, FilesPanelElement, MacrosPanelElement]);
   }, []);
   return (
     <div id="dashboard">
@@ -90,9 +92,9 @@ const Dashboard = () => {
                       }}
                     >
                       <div class="menu-panel-item">
-                        <span class="menu-panel-item">
+                        <span class="menu-panel-item feather-icon-container">
                           {displayIcon}
-                          <span class="text-menu-item ">{T(panel.name)}</span>
+                          <span class="text-menu-item">{T(panel.name)}</span>
                         </span>
                         {isVisible && (
                           <button class="btn btn-clear" aria-label="Close" />

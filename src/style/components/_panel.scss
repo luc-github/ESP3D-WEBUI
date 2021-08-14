@@ -1,9 +1,10 @@
 .panel-dashboard,
+.panel-interface,
 .panel-features {
   min-height: 300px;
 }
 .panel-body-dashboard,
-.panel-body-features {
+.panel-body-interface .panel-body-features {
   @media (min-width: $size-sm) {
     max-height: 400px;
   }

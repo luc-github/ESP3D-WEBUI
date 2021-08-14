@@ -252,20 +252,22 @@ const InterfaceTab = () => {
       {!isLoading && (
         <Fragment>
           {interfaceSettings.current.settings && (
-            <div class="flex-wrap">
+            <div class="panels-container">
               {Object.keys(interfaceSettings.current.settings).map(
                 (sectionId) => {
                   const section = interfaceSettings.current.settings[sectionId];
                   return (
                     <Fragment>
                       <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-                        <div class="panel mb-2 panel-features">
-                          <span class="navbar-section label label-secondary text-ellipsis">
-                            <strong class="text-ellipsis">
-                              {T(sectionId)}
-                            </strong>
-                          </span>
-                          <div class="panel-body panel-body-features">
+                        <div class="panel mb-2 panel-interface">
+                          <div class="navbar">
+                            <span class="navbar-section label label-secondary text-ellipsis">
+                              <strong class="text-ellipsis">
+                                {T(sectionId)}
+                              </strong>
+                            </span>
+                          </div>
+                          <div class="panel-body panel-body-interface">
                             {Object.keys(section).map((subsectionId) => {
                               const fieldData = section[subsectionId];
                               const { label, initial, type, ...rest } =

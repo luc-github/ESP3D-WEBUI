@@ -15,7 +15,6 @@ body {
   height: 100vh;
 }
 
-.panels-container,
 .menu-container,
 .information-container {
   flex: 0 1 auto;
@@ -77,6 +76,7 @@ body {
   display: none;
 }
 
+.panels-container,
 .flex-wrap {
   display: -ms-flexbox;
   display: flex;

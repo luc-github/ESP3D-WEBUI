@@ -14,8 +14,10 @@
 
 .btn-close {
 }
+
+.mobile-view .btn-close,
 .btn-close:hover {
-  color: white;
+  color: white !important;
   background-color: blue !important;
 }
 
@@ -50,6 +52,8 @@ a label {
   margin-right: 10px;
 }
 
+.feather-icon-container .text-menu-item,
+.feather-icon-container .text-ellipsis,
 .feather-icon-container label {
   vertical-align: top;
   margin-left: 0.25rem;

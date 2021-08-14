@@ -1,5 +1,5 @@
 /*
- Terminal.js - ESP3D WebUI component file
+Files.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
@@ -19,24 +19,24 @@
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { T } from "../Translations";
-import { MoreVertical, Terminal } from "preact-feather";
+import { MoreVertical, HardDrive } from "preact-feather";
 import { useUiContext } from "../../contexts";
 
 /*
  * Local const
  *
  */
-const TerminalPanel = () => {
+const FilesPanel = () => {
   const { panels } = useUiContext();
-  const id = "terminalPanel";
+  const id = "filesPanel";
   useEffect(() => {}, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
         <div class="navbar">
           <span class="navbar-section label label-secondary feather-icon-container">
-            <Terminal />
-            <strong class="text-ellipsis">{T("Terminal")}</strong>
+            <HardDrive />
+            <strong class="text-ellipsis">{T("S65")}</strong>
           </span>
           <span class="navbar-section">
             <span style="height: 100%;">
@@ -50,17 +50,17 @@ const TerminalPanel = () => {
             </span>
           </span>
         </div>
-        <div class="panel-body panel-body-dashboard">Terminal</div>
+        <div class="panel-body panel-body-dashboard">Files sytem</div>
       </div>
     </div>
   );
 };
 
-const TerminalPanelElement = {
-  id: "terminalPanel",
-  content: <TerminalPanel />,
-  name: "S75",
-  icon: "Terminal",
+const FilesPanelElement = {
+  id: "filesPanel",
+  content: <FilesPanel />,
+  name: "S65",
+  icon: "HardDrive",
 };
 
-export { TerminalPanel, TerminalPanelElement };
+export { FilesPanel, FilesPanelElement };

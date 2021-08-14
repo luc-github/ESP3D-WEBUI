@@ -337,7 +337,7 @@ const FeaturesTab = () => {
       {isLoading && <Loading large />}
 
       {!isLoading && (
-        <Fragment>
+        <div class="panels-container">
           {Object.keys(features).length != 0 && (
             <div class="flex-wrap">
               {Object.keys(features).map((sectionId) => {
@@ -479,7 +479,7 @@ const FeaturesTab = () => {
               </Fragment>
             )}
           </center>
-        </Fragment>
+        </div>
       )}
       <br />
     </div>
