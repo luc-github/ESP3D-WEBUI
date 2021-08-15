@@ -49,9 +49,11 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
             element.current.src = pageSource;
             element.current.onload = () => {
               const doc = element.current.contentWindow.document;
-              const css = document.querySelector("style");
+              const css = document.querySelectorAll("style");
               //inject css
-              doc.head.appendChild(css.cloneNode(true));
+              css.forEach((element) => {
+                doc.head.appendChild(element.cloneNode(true));
+              });
               //to avoid the flickering when apply css
               element.current.classList.remove("d-none");
               element.current.classList.add("d-block");
