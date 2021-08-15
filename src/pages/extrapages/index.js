@@ -39,16 +39,30 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
     if (!init && uisettings.refreshPaused.id) {
       return;
     }
-    if (pageSource.startsWith("http")) {
+    if (pageSource.startsWith("http") || type == "extension") {
       switch (type) {
         case "image":
           if (element.current) element.current.src = pageSource;
           break;
+        case "extension":
+          if (element.current) {
+            element.current.src = pageSource;
+            element.current.onload = () => {
+              const doc = element.current.contentWindow.document;
+              const css = document.querySelector("style");
+              //inject css
+              doc.head.appendChild(css.cloneNode(true));
+              //to avoid the flickering when apply css
+              element.current.classList.remove("d-none");
+              element.current.classList.add("d-block");
+            };
+          }
         default:
           if (element.current) element.current.src = pageSource;
       }
     } else {
-      const idquery = type == "content" ? type + id : "download" + id;
+      const idquery =
+        type == "content" || type == "extension" ? type + id : "download" + id;
       createNewRequest(
         espHttpURL(pageSource).toString(),
         { method: "GET", id: idquery, max: 2 },
@@ -62,6 +76,18 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
                   element.current.src = URL.createObjectURL(result);
                 }
 
+                break;
+                //cannot be used because this way disable javascript in iframe
+                /* case "extension":
+                if (element.current && element.current.contentWindow) {
+                  const doc = element.current.contentWindow.document;
+                  const css = document.querySelector("style");
+                  doc.body.innerHTML = result;
+                  //inject css
+                  doc.head.appendChild(css.cloneNode(true));
+                }*/
+
+                //todo inject css
                 break;
               default:
                 if (element.current && element.current.contentWindow)
@@ -80,7 +106,7 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
   const ControlButtons = () => {
     return (
       <Fragment>
-        {parseInt(refreshtime) > 0 && (
+        {parseInt(refreshtime) > 0 && type != "extension" && (
           <div class="m-2 image-button-bar">
             <ButtonImg
               m1
@@ -91,7 +117,6 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
                 setRefreshPaused(!refreshPaused);
                 uisettings.refreshPaused.id = !refreshPaused;
               }}
-              style="max-width:2rem;"
             />
             {type != "content" && (
               <ButtonImg
@@ -123,7 +148,6 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
                     }, 0);
                   }
                 }}
-                style="max-width:2rem;"
               />
             )}
           </div>
@@ -136,13 +160,13 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
     if (!pageSource.startsWith("http")) loadContent(true);
     //init timer if any
     let timerid = 0;
-    if (refreshtime != 0) {
+    if (refreshtime != 0 && type != "extension") {
       timerid = setInterval(loadContent, refreshtime);
     }
 
     return () => {
       //cleanup
-      if (refreshtime != 0) {
+      if (refreshtime != 0 && type != "extension") {
         clearInterval(timerid);
       }
     };
@@ -150,11 +174,10 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
   switch (type) {
     case "camera":
       return (
-        <div class="container">
+        <div class="camera-container">
           <img
             ref={element}
             id={"page_content_" + id}
-            style="border:none;width:100%"
             src={pageSource.startsWith("http") ? pageSource : ""}
             alt={label}
           />
@@ -163,11 +186,10 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
       );
     case "image":
       return (
-        <div class="container">
+        <div class="image-container">
           <img
             ref={element}
             id={"page_content_" + id}
-            style="border:none;width:100%"
             src={pageSource.startsWith("http") ? pageSource : ""}
             alt={label}
           />
@@ -178,12 +200,18 @@ const ExtraPage = ({ id, source, refreshtime, label, type }) => {
       return (
         <Fragment>
           <iframe
+            class={
+              type == "extension"
+                ? "extensionContainer d-none"
+                : "content-container d-block"
+            }
             ref={element}
             id={"page_content_" + id}
-            style="border:none; display: block;"
-            height="100%"
-            width="100%"
-            src={pageSource.startsWith("http") ? pageSource : ""}
+            src={
+              pageSource.startsWith("http") || type == "extension"
+                ? pageSource
+                : ""
+            }
             alt={label}
           ></iframe>
           <ControlButtons />

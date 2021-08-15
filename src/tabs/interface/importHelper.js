@@ -64,6 +64,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
             newItem.options = [
               { label: "S160", value: "image" },
               { label: "S161", value: "content" },
+              { label: "S121", value: "extension" },
               { label: "S162", value: "camera" },
             ];
           }

@@ -61,6 +61,8 @@
   padding: $control-padding-y $control-padding-x;
   font-family: $mono-font-family;
   font-size: $font-size-sm;
+  white-space: pre-wrap;
+  word-break: break-all;
   overflow-y: scroll;
   scrollbar-color: rebeccapurple green;
   scrollbar-width: thin;

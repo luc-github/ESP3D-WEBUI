@@ -23,10 +23,10 @@ import { Informations } from "./informations";
 import { ConnectionContainer } from "./connection";
 import { MainContainer } from "./main";
 import { useUiContext } from "../contexts/UiContext";
-import { useSettings } from "../hooks";
+import { useSettings, useHttpQueue } from "../hooks";
 import { useEffect } from "preact/hooks";
 import { showLogin, showKeepConnected } from "../components/Modal";
-
+import { espHttpURL } from "../components/Helpers";
 /*
  * Local const
  *
@@ -61,11 +61,47 @@ const ViewContainer = () => {
 
 const ContentContainer = () => {
   const { getConnectionSettings, getInterfaceSettings } = useSettings();
+  const { createNewRequest } = useHttpQueue();
+
+  const processMessage = (eventMsg) => {
+    if (eventMsg.data.type && eventMsg.data.content) {
+      switch (eventMsg.data.type) {
+        case "response":
+          //TBD: if need real both way communication
+          break;
+        case "cmd":
+          createNewRequest(
+            espHttpURL("command", { cmd: eventMsg.data.content }).toString(),
+            { method: "GET" },
+            {
+              onSuccess: (result) => {
+                const iframeList = document.querySelectorAll(
+                  "iframe.extensionContainer"
+                );
+                iframeList.forEach((element) => {
+                  element.contentWindow.postMessage(
+                    { type: "response", content: result },
+                    "*"
+                  );
+                });
+              },
+              onFail: (error) => {
+                console.log(error);
+              },
+            }
+          );
+          break;
+        default:
+          return;
+      }
+    }
+  };
 
   useEffect(() => {
     //To init settings
     //to get language first
     getInterfaceSettings(null, getConnectionSettings);
+    window.addEventListener("message", processMessage, false);
   }, []);
   return <ViewContainer />;
 };

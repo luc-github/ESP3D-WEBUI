@@ -20,6 +20,19 @@
   background-color: #f1f1fc;
 }
 
+.image-container,
+.camera-container {
+  border: none;
+  width: 100%;
+}
+
+.content-container,
+.extensionContainer {
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+
 .mobile-view .btn-header,
 .btn-header:hover,
 .mobile-view .btn-close,

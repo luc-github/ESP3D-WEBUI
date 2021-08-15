@@ -1,0 +1,25 @@
+<script type="text/javascript">
+    function sendMessage(msg){
+            const resultPanel = document.getElementById("terminal");
+        resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + msg.content.replace("\n", "<br/>")  ;
+        window.parent.postMessage(msg, '*');
+    };
+    function processMessage(eventMsg){
+        let line
+        if (eventMsg.data.type && eventMsg.data.content){
+            line =  eventMsg.data.content
+            const resultPanel = document.getElementById("terminal");
+            resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + line.replace("\n", "<br/>") ;
+        }
+    }
+    window.addEventListener("message", processMessage, false)
+</script>
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'cmd', content:'G0 X100.0 F100'});">Gcode</button>
+    <button class="btn m-1" onclick="sendMessage({type:'cmd', content:'[ESP800]'});">[ESP800]</button>
+    <button class="btn m-1" onclick="sendMessage({type:'cmd', content:'[ESP111]'});">[ESP111]</button>
+    <div class="container m-2">
+    <pre id="terminal" class="bg-primary p-2" style="min-height: 200px;"></pre>
+    </div>
+</div>
+

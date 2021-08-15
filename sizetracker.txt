@@ -7,4 +7,5 @@ UI update               : 3.0.0.a4 : 30.6KB        |        | 35.7KB
 Features                : 3.0.0.a5 : 36KB          |        | 41.2KB
 Interface               : 3.0.0.a6 : 36.6KB        |        | 42KB
 UI language pack        : 3.0.0.a7 : 37.3KB        |        | 42.6KB
-Theme pack              : 3.0.0.a8 : 37.5KB        |        | 
+Theme pack              : 3.0.0.a8 : 37.5KB        |        | N/A 
+Extra Panels / Macros   : 3.0.0.a.11:47.6KB	   |	    | 42.6KB + 10KB = 52.6KB

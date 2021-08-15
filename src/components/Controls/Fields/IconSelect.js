@@ -56,22 +56,8 @@ const IconSelect = ({
             modals.removeModal(modals.getModalIndex(modalId));
           };
           if (value == element)
-            return (
-              <ButtonImg
-                primary
-                icon={displayIcon}
-                onclick={onSelect}
-                style="max-width:2rem;"
-              />
-            );
-          else
-            return (
-              <ButtonImg
-                icon={displayIcon}
-                onclick={onSelect}
-                style="max-width:2rem;"
-              />
-            );
+            return <ButtonImg primary icon={displayIcon} onclick={onSelect} />;
+          else return <ButtonImg icon={displayIcon} onclick={onSelect} />;
         })}
       </div>
     );
