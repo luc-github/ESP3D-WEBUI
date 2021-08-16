@@ -79,6 +79,8 @@ const MainContainer = () => {
         return acc;
       }, routes);
       return extraPages;
+    } else {
+      return defRoutes;
     }
   };
 

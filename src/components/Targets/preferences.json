@@ -134,7 +134,7 @@
           "id": "showextrapanels",
           "type": "boolean",
           "label": "S63",
-          "value": true
+          "value": false
         },
         {
           "id": "openextrapanelsonstart",
