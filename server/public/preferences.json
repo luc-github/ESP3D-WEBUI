@@ -6,8 +6,8 @@
   "mobileview": false,
   "showsensorspanel": false,
   "enablepolling": false,
-  "pollingrefresh": "3000",
-  "pollingcommands": "M105",
+  "pollingrefresh": "1000",
+  "pollingcommands": "M105;M114",
   "showterminalpanel": true,
   "openterminalonstart": false,
   "verbose": true,
@@ -19,12 +19,13 @@
   "tftusb": false,
   "printersd": false,
   "showjogpanel": true,
+  "openjogonstart": true,
   "xyfeedrate": "1000",
   "zfeedrate": "1000",
   "xpos": "100",
   "ypos": "100",
-  "showmacros": true,
-  "expandmacrosbuttonsonstart": true,
+  "showmacrospanel": true,
+  "openmacrosonstart": true,
   "macros": [
    {
     "id": "id2",
@@ -42,24 +43,25 @@
    }
   ],
   "showextrapanels": true,
+  "openextrapanelsonstart": true,
   "extrapanels": [
    {
     "id": "dk93rqf58",
-    "name": "Panel test",
-    "icon": "Globe",
-    "target": "panel",
-    "source": "http://google.fr",
-    "type": "image",
+    "name": "Extension",
+    "icon": "Grid",
+    "target": "page",
+    "source": "/extension.html",
+    "type": "extension",
     "refreshtime": "0"
    },
    {
     "id": 1604059351918,
-    "name": "Page test",
+    "name": "image page avec super long nom",
     "icon": "File",
     "target": "page",
-    "source": "/hello.html",
-    "type": "content",
-    "refreshtime": "0"
+    "source": "/image.jpg",
+    "type": "image",
+    "refreshtime": "100"
    },
    {
     "id": "x6fu4dpuc",
@@ -68,10 +70,11 @@
     "target": "page",
     "source": "http://www.gmail.com",
     "type": "content",
-    "refreshtime": "0"
+    "refreshtime": "100"
    }
   ],
   "showtemperaturespanel": true,
+  "opentemperaturesonstart": true,
   "extrudermax": "300",
   "extruderpreheat": "190;220;230",
   "bedmax": "140",
@@ -79,12 +82,16 @@
   "chambermax": "140",
   "chamberpreheat": "50;90;110",
   "showextruderspanel": true,
+  "openextrudersonstart": true,
   "ismixedextruder": true,
   "ecolors": "blue;red;green;#FF00FF",
   "efeedrate": "400",
   "enumber": "1",
   "showfanspanel": true,
-  "showspeedpanel": false,
-  "showflowratepanel": false
+  "openfansonstart": false,
+  "showspeedpanel": true,
+  "openspeedonstart": false,
+  "showflowratepanel": true,
+  "openflowrateonstart": false
  }
 }

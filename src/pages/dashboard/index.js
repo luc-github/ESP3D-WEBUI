@@ -24,17 +24,33 @@ import { ButtonImg } from "../../components/Spectre";
 import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
 import { iconsList } from "../../components/Images";
-import { TerminalPanelElement } from "../../components/Panel/Terminal";
-import { FilesPanelElement } from "../../components/Panel/Files";
-import { MacrosPanelElement } from "../../components/Panel/Macros";
+import { defaultPanelsList } from "../../components/Targets/Printer3D/Marlin";
 
 const Dashboard = () => {
   console.log("Dashboard");
-  const { panels } = useUiContext();
+  const { panels, uisettings } = useUiContext();
   const menuPanelsList = useRef();
-  //TODO this need to be done in target not here
   useEffect(() => {
-    panels.set([TerminalPanelElement, FilesPanelElement, MacrosPanelElement]);
+    if (!panels.initDone && panels.list.length != 0) {
+      panels.setVisibles(
+        panels.list.reduce((acc, curr) => {
+          if (
+            uisettings.getValue(curr.onstart) &&
+            uisettings.getValue(curr.show)
+          )
+            acc.push(curr);
+          return acc;
+        }, [])
+      );
+      panels.setInitDone(true);
+    }
+  });
+  useEffect(() => {
+    panels.set([...defaultPanelsList]);
+    //now remove if any visible that is not in list
+    panels.visibles.forEach((element) => {
+      if (!uisettings.getValue(element.show)) panels.hide(element.id);
+    });
   }, []);
   return (
     <div id="dashboard">
@@ -64,6 +80,7 @@ const Dashboard = () => {
                 </div>
               </li>
               {panels.list.map((panel) => {
+                if (!uisettings.getValue(panel.show)) return;
                 const displayIcon = iconsList[panel.icon]
                   ? iconsList[panel.icon]
                   : "";

@@ -35,6 +35,7 @@ const UiContextProvider = ({ children }) => {
   const [panelsList, setPanelsList] = useState([]);
   const [visiblePanelsList, setVisiblePanelsList] = useState([]);
   const uiRefreshPaused = useRef({});
+  const [initPanelsVisibles, setInitPanelsVisibles] = useState(false);
   const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
@@ -130,6 +131,8 @@ const UiContextProvider = ({ children }) => {
       setVisibles: setVisiblePanelsList,
       hide: removeFromVisibles,
       show: addToVisibles,
+      initDone: initPanelsVisibles,
+      setInitDone: setInitPanelsVisibles,
     },
     uisettings: {
       current: uiSettings,

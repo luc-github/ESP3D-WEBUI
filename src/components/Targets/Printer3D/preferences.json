@@ -8,6 +8,12 @@
           "value": true
         },
         {
+          "id": "opentemperaturesonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        },
+        {
           "id": "extrudermax",
           "type": "number",
           "label": "P48",
@@ -63,6 +69,12 @@
           "value": true
         },
         {
+          "id": "openextrudersonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        },
+        {
           "id": "ismixedextruder",
           "type": "boolean",
           "label": "P49",
@@ -99,16 +111,34 @@
           "value": true
         },
         {
+          "id": "openfansonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        },
+        {
           "id": "showspeedpanel",
           "type": "boolean",
           "label": "P46",
           "value": false
         },
         {
+          "id": "openspeedonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        },
+        {
           "id": "showflowratepanel",
           "type": "boolean",
           "label": "P47",
           "value": false
+        },
+        {
+          "id": "openflowrateonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
         }
       ],
       "files": [

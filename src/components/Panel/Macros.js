@@ -61,6 +61,8 @@ const MacrosPanelElement = {
   content: <MacrosPanel />,
   name: "macros",
   icon: "Cast",
+  show: "showmacrospanel",
+  onstart: "openmacrosonstart",
 };
 
 export { MacrosPanel, MacrosPanelElement };

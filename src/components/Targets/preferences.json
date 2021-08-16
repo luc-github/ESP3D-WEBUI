@@ -102,19 +102,25 @@
           "type": "boolean",
           "label": "S63",
           "value": true
+        },
+        {
+          "id": "openjogonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
         }
       ],
       "macros": [
         {
-          "id": "showmacros",
+          "id": "showmacrospanel",
           "type": "boolean",
           "label": "S63",
           "value": true
         },
         {
-          "id": "expandmacrosbuttonsonstart",
+          "id": "openmacrosonstart",
           "type": "boolean",
-          "label": "S120",
+          "label": "S93",
           "value": true
         },
         {
@@ -128,6 +134,12 @@
           "id": "showextrapanels",
           "type": "boolean",
           "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openextrapanelsonstart",
+          "type": "boolean",
+          "label": "S93",
           "value": true
         },
         {

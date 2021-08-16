@@ -20,6 +20,9 @@
 import { h } from "preact";
 import { Parser } from "./parser";
 import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
+import { FilesPanelElement } from "../../../Panel/Files";
+import { MacrosPanelElement } from "../../../Panel/Macros";
+import { TerminalPanelElement } from "../../../Panel/Terminal";
 
 const Target = "Marlin";
 const Name = "ESP3D";
@@ -32,6 +35,20 @@ const iconsTarget = {
   Extruder: <Extruder />,
 };
 
+const defaultPanelsList = [
+  FilesPanelElement,
+  TerminalPanelElement,
+  MacrosPanelElement,
+];
+
 const restartdelay = 30;
 
-export { Target, Parser, fwUrl, Name, iconsTarget, restartdelay };
+export {
+  Target,
+  Parser,
+  fwUrl,
+  Name,
+  iconsTarget,
+  restartdelay,
+  defaultPanelsList,
+};

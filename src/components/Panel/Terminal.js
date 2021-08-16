@@ -79,6 +79,8 @@ const TerminalPanelElement = {
   content: <TerminalPanel />,
   name: "S75",
   icon: "Terminal",
+  show: "showterminalpanel",
+  onstart: "openterminalonstart",
 };
 
 export { TerminalPanel, TerminalPanelElement };

@@ -61,6 +61,8 @@ const FilesPanelElement = {
   content: <FilesPanel />,
   name: "S65",
   icon: "HardDrive",
+  show: "showfilespanel",
+  onstart: "openfilesonstart",
 };
 
 export { FilesPanel, FilesPanelElement };

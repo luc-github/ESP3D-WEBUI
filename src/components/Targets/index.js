@@ -19,6 +19,7 @@
 */
 import { h } from "preact";
 import {
+  defaultPanelsList,
   Target,
   Parser,
   fwUrl,
