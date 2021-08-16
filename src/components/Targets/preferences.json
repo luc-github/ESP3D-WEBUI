@@ -107,7 +107,7 @@
           "id": "openjogonstart",
           "type": "boolean",
           "label": "S93",
-          "value": true
+          "value": false
         }
       ],
       "macros": [
@@ -121,7 +121,7 @@
           "id": "openmacrosonstart",
           "type": "boolean",
           "label": "S93",
-          "value": true
+          "value": false
         },
         {
           "id": "macros",
@@ -140,7 +140,7 @@
           "id": "openextrapanelsonstart",
           "type": "boolean",
           "label": "S93",
-          "value": true
+          "value": false
         },
         {
           "id": "extrapanels",
