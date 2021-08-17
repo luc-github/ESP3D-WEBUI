@@ -46,6 +46,18 @@ const limitArr = (arr, limit) =>
     arr.length
   );
 
+const splitArrayByLines = (arrayBuffer) => {
+  const bytes = new Uint8Array(arrayBuffer);
+  return bytes.reduce(
+    (acc, curr) => {
+      if (curr == 10 || curr == 13) return [...acc, []];
+      const i = Number(acc.length - 1);
+      return [...acc.slice(0, i), [...acc[i], curr]];
+    },
+    [[]]
+  );
+};
+
 //Merge 2 JSON in generic way
 //based on https://gist.github.com/sinemetu1/1732896#gistcomment-2571586
 function mergeJSON(o1, o2) {
@@ -80,4 +92,10 @@ function mergeJSON(o1, o2) {
   return tempNewObj;
 }
 
-export { limitArr, mergeJSON, mergeFlatPrefToNestedSchema, removeEntriesByIDs };
+export {
+  limitArr,
+  mergeJSON,
+  mergeFlatPrefToNestedSchema,
+  removeEntriesByIDs,
+  splitArrayByLines,
+};

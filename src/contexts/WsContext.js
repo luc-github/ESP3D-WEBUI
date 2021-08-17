@@ -25,13 +25,13 @@ import {
   useContext,
 } from "preact/hooks";
 import { Parser } from "../components/Targets";
-import { limitArr } from "../components/Helpers";
+import { dispatchData, limitArr } from "../components/Helpers";
 import {
   useUiContext,
   useSettingsContext,
   useHttpQueueContext,
 } from "../contexts";
-import { getCookie } from "../components/Helpers";
+import { getCookie, splitArrayByLines } from "../components/Helpers";
 
 /*
  * Local const
@@ -41,33 +41,10 @@ const WsContext = createContext("wsContext");
 const useWsContext = () => useContext(WsContext);
 const pingDelay = 5000;
 const maxReconnections = 4;
-const INITIAL_STATE = {
-  temp: [],
-  files: [],
-};
-
-const reducer = (state, action) => {
-  if (!action) return INITIAL_STATE;
-  switch (action.type) {
-    case "temp":
-      return {
-        ...state,
-        temp: limitArr([...state.temp, action.values], 400),
-      };
-    case "files":
-      return {
-        ...state,
-        files: action.values,
-      };
-    default:
-      return { ...INITIAL_STATE, ...state };
-  }
-};
 
 const WsContextProvider = ({ children }) => {
   const { toasts, connection, dialogs, modals } = useUiContext();
   const { removeAllRequests } = useHttpQueueContext();
-  const [parsedValues, dispatch] = useReducer(reducer, INITIAL_STATE);
   const dataBuffer = useRef([]);
   const { connectionSettings, activity } = useSettingsContext();
   const parser = useRef(new Parser());
@@ -77,18 +54,6 @@ const WsContextProvider = ({ children }) => {
   const isLogOff = useRef(false);
   const reconnectCounter = useRef(0);
   const [wsData, setWsData] = useState([]);
-
-  const splitArrayBufferByLine = (arrayBuffer) => {
-    const bytes = new Uint8Array(arrayBuffer);
-    return bytes.reduce(
-      (acc, curr) => {
-        if (curr == 10 || curr == 13) return [...acc, []];
-        const i = Number(acc.length - 1);
-        return [...acc.slice(0, i), [...acc[i], curr]];
-      },
-      [[]]
-    );
-  };
 
   const ping = (start = false) => {
     if (isLogOff.current) return;
@@ -114,16 +79,15 @@ const WsContextProvider = ({ children }) => {
     //for binary messages used for terminal
     const stdOutData = e.data;
     if (stdOutData instanceof ArrayBuffer) {
-      const newLines = splitArrayBufferByLine(stdOutData).map((line) => ({
-        std: "out",
-        value: line.reduce((acc, curr) => acc + String.fromCharCode(curr), ""),
-      }));
-      dataBuffer.current = [...dataBuffer.current, ...newLines];
-      [...newLines].forEach((line) => {
-        dispatch(parse(line.value));
-      });
+      const bytes = new Uint8Array(stdOutData);
+      dispatchData("stream", new TextDecoder("utf-8").decode(stdOutData));
+      //TODO: Send to Terminal
+      //TODO: Send to extensions as response
+      //TODO: Send to dispatch
     } else {
       //others txt messages
+      //TODO: Send to dispatch (e.g: sensor)
+      dispatchData("core", stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {
@@ -148,14 +112,6 @@ const WsContextProvider = ({ children }) => {
             //unknow event
             break;
         }
-      }
-      dataBuffer.current = [
-        ...dataBuffer.current,
-        { std: "out", value: stdOutData },
-      ];
-      const parsedRes = parse(stdOutData);
-      if (parsedRes) {
-        dispatch(parsedRes);
       }
     }
     //TODO:FIXME data are not supposed to be stored in WS Context
@@ -258,8 +214,6 @@ const WsContextProvider = ({ children }) => {
 
   const store = {
     ws: wsConnection.current,
-    //data: wsData,
-    parsedValues,
     setData,
     addData,
     setIsPingPaused, //to be used in HTTP queries

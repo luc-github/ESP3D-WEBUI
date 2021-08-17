@@ -26,7 +26,7 @@ import { useUiContext } from "../contexts/UiContext";
 import { useSettings, useHttpQueue } from "../hooks";
 import { useEffect } from "preact/hooks";
 import { showLogin, showKeepConnected } from "../components/Modal";
-import { espHttpURL } from "../components/Helpers";
+import { espHttpURL, dispatchData } from "../components/Helpers";
 /*
  * Local const
  *
@@ -75,15 +75,7 @@ const ContentContainer = () => {
             { method: "GET" },
             {
               onSuccess: (result) => {
-                const iframeList = document.querySelectorAll(
-                  "iframe.extensionContainer"
-                );
-                iframeList.forEach((element) => {
-                  element.contentWindow.postMessage(
-                    { type: "response", content: result },
-                    "*"
-                  );
-                });
+                dispatchData("response", result);
               },
               onFail: (error) => {
                 console.log(error);

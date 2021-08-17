@@ -31,7 +31,9 @@ import {
   mergeJSON,
   mergeFlatPrefToNestedSchema,
   removeEntriesByIDs,
+  splitArrayByLines,
 } from "./arrays";
+import { dispatchData } from "./html";
 
 export {
   capitalize,
@@ -48,4 +50,6 @@ export {
   mergeFlatPrefToNestedSchema,
   parseFileSizeString,
   removeEntriesByIDs,
+  splitArrayByLines,
+  dispatchData,
 };
