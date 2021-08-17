@@ -79,6 +79,7 @@ const ContentContainer = () => {
               },
               onFail: (error) => {
                 console.log(error);
+                dispatchData("error", error);
               },
             }
           );
