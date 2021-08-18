@@ -337,150 +337,153 @@ const FeaturesTab = () => {
       {isLoading && <Loading large />}
 
       {!isLoading && (
-        <div class="panels-container">
-          {Object.keys(features).length != 0 && (
-            <div class="flex-wrap">
-              {Object.keys(features).map((sectionId) => {
-                const section = features[sectionId];
-                return (
-                  <Fragment>
-                    {Object.keys(section).map((subsectionId) => {
-                      const subSection = section[subsectionId];
-                      return (
-                        <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-                          <div class="panel mb-2 panel-features">
-                            <div class="navbar">
-                              <span class="navbar-section label label-secondary text-ellipsis">
-                                <strong class="text-ellipsis">
-                                  {T(subsectionId)}
-                                </strong>
-                              </span>
-                              <span class="navbar-section">
-                                <span style="height: 100%;">
-                                  <span class="label label-primary align-top">
-                                    {T(sectionId)}
+        <Fragment>
+          <div class="panels-container">
+            {Object.keys(features).length != 0 && (
+              <div class="flex-wrap">
+                {Object.keys(features).map((sectionId) => {
+                  const section = features[sectionId];
+                  return (
+                    <Fragment>
+                      {Object.keys(section).map((subsectionId) => {
+                        const subSection = section[subsectionId];
+                        return (
+                          <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
+                            <div class="panel mb-2 panel-features">
+                              <div class="navbar">
+                                <span class="navbar-section label label-secondary text-ellipsis">
+                                  <strong class="text-ellipsis">
+                                    {T(subsectionId)}
+                                  </strong>
+                                </span>
+                                <span class="navbar-section">
+                                  <span style="height: 100%;">
+                                    <span class="label label-primary align-top">
+                                      {T(sectionId)}
+                                    </span>
                                   </span>
                                 </span>
-                              </span>
-                            </div>
+                              </div>
 
-                            <div class="panel-body panel-body-features">
-                              {subSection.map((fieldData) => {
-                                const [validation, setvalidation] = useState();
-                                const { label, options, initial, ...rest } =
-                                  fieldData;
-                                const Options = options
-                                  ? options.reduce((acc, curval) => {
-                                      return [
-                                        ...acc,
-                                        {
-                                          label: T(curval.label),
-                                          value: curval.value,
-                                        },
-                                      ];
-                                    }, [])
-                                  : null;
-                                return (
-                                  <Field
-                                    label={T(label)}
-                                    options={Options}
-                                    extra={
-                                      subsectionId == "sta" && label == "SSID"
-                                        ? "scan"
-                                        : null
-                                    }
-                                    {...rest}
-                                    setValue={(val, update) => {
-                                      if (!update) fieldData.value = val;
-                                      setvalidation(
-                                        generateValidation(fieldData)
-                                      );
-                                    }}
-                                    validation={validation}
-                                  />
-                                );
-                              })}
+                              <div class="panel-body panel-body-features">
+                                {subSection.map((fieldData) => {
+                                  const [validation, setvalidation] =
+                                    useState();
+                                  const { label, options, initial, ...rest } =
+                                    fieldData;
+                                  const Options = options
+                                    ? options.reduce((acc, curval) => {
+                                        return [
+                                          ...acc,
+                                          {
+                                            label: T(curval.label),
+                                            value: curval.value,
+                                          },
+                                        ];
+                                      }, [])
+                                    : null;
+                                  return (
+                                    <Field
+                                      label={T(label)}
+                                      options={Options}
+                                      extra={
+                                        subsectionId == "sta" && label == "SSID"
+                                          ? "scan"
+                                          : null
+                                      }
+                                      {...rest}
+                                      setValue={(val, update) => {
+                                        if (!update) fieldData.value = val;
+                                        setvalidation(
+                                          generateValidation(fieldData)
+                                        );
+                                      }}
+                                      validation={validation}
+                                    />
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </Fragment>
-                );
-              })}
-            </div>
-          )}
-          <center>
-            <br />
+                        );
+                      })}
+                    </Fragment>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </Fragment>
+      )}
+      <center>
+        <br />
+        <ButtonImg
+          m2
+          label={T("S50")}
+          tooltip
+          data-tooltip={T("S23")}
+          icon={<RefreshCcw />}
+          onClick={getFeatures}
+        />
+        {Object.keys(features).length != 0 && (
+          <Fragment>
             <ButtonImg
               m2
-              label={T("S50")}
+              label={T("S54")}
               tooltip
-              data-tooltip={T("S23")}
-              icon={<RefreshCcw />}
-              onClick={getFeatures}
+              data-tooltip={T("S55")}
+              icon={<Download />}
+              onClick={(e) => {
+                e.target.blur();
+                inputFile.current.value = "";
+                inputFile.current.click();
+              }}
             />
-            {Object.keys(features).length != 0 && (
-              <Fragment>
-                <ButtonImg
-                  m2
-                  label={T("S54")}
-                  tooltip
-                  data-tooltip={T("S55")}
-                  icon={<Download />}
-                  onClick={(e) => {
-                    e.target.blur();
-                    inputFile.current.value = "";
-                    inputFile.current.click();
-                  }}
-                />
-                <ButtonImg
-                  m2
-                  label={T("S52")}
-                  tooltip
-                  data-tooltip={T("S53")}
-                  icon={<ExternalLink />}
-                  onClick={(e) => {
-                    e.target.blur();
-                    exportFeatures(featuresSettings.current);
-                  }}
-                />
-                {showSave && (
-                  <ButtonImg
-                    m2
-                    tooltip
-                    data-tooltip={T("S62")}
-                    label={T("S61")}
-                    icon={<Save />}
-                    onClick={(e) => {
-                      e.target.blur();
-                      SaveSettings();
-                    }}
-                  />
-                )}
-
-                <ButtonImg
-                  m2
-                  tooltip
-                  data-tooltip={T("S59")}
-                  label={T("S58")}
-                  icon={<RotateCcw />}
-                  onClick={(e) => {
-                    e.target.blur();
-                    showConfirmationModal({
-                      modals,
-                      title,
-                      content,
-                      button1: { cb: reStartBoard, text: yes },
-                      button2: { text: cancel },
-                    });
-                  }}
-                />
-              </Fragment>
+            <ButtonImg
+              m2
+              label={T("S52")}
+              tooltip
+              data-tooltip={T("S53")}
+              icon={<ExternalLink />}
+              onClick={(e) => {
+                e.target.blur();
+                exportFeatures(featuresSettings.current);
+              }}
+            />
+            {showSave && (
+              <ButtonImg
+                m2
+                tooltip
+                data-tooltip={T("S62")}
+                label={T("S61")}
+                icon={<Save />}
+                onClick={(e) => {
+                  e.target.blur();
+                  SaveSettings();
+                }}
+              />
             )}
-          </center>
-        </div>
-      )}
+
+            <ButtonImg
+              m2
+              tooltip
+              data-tooltip={T("S59")}
+              label={T("S58")}
+              icon={<RotateCcw />}
+              onClick={(e) => {
+                e.target.blur();
+                showConfirmationModal({
+                  modals,
+                  title,
+                  content,
+                  button1: { cb: reStartBoard, text: yes },
+                  button2: { text: cancel },
+                });
+              }}
+            />
+          </Fragment>
+        )}
+      </center>
       <br />
     </div>
   );
