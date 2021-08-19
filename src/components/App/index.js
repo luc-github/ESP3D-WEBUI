@@ -28,6 +28,7 @@ import {
   DatasContextProvider,
   WsContextProvider,
 } from "../../contexts";
+import { TargetContextProvider } from "../../targets";
 import { ToastsContainer } from "../Toast";
 import { Modal } from "../Modal";
 import { ContentContainer } from "../../areas";
@@ -36,21 +37,23 @@ const App = () => {
   return (
     <div id="app">
       <DatasContextProvider>
-        <RouterContextProvider>
-          <UiContextProvider>
-            <HttpQueueContextProvider>
-              <TranslationsContextProvider>
-                <SettingsContextProvider>
-                  <WsContextProvider>
-                    <ToastsContainer />
-                    <Modal />
-                    <ContentContainer />
-                  </WsContextProvider>
-                </SettingsContextProvider>
-              </TranslationsContextProvider>
-            </HttpQueueContextProvider>
-          </UiContextProvider>
-        </RouterContextProvider>
+        <TargetContextProvider>
+          <RouterContextProvider>
+            <UiContextProvider>
+              <HttpQueueContextProvider>
+                <TranslationsContextProvider>
+                  <SettingsContextProvider>
+                    <WsContextProvider>
+                      <ToastsContainer />
+                      <Modal />
+                      <ContentContainer />
+                    </WsContextProvider>
+                  </SettingsContextProvider>
+                </TranslationsContextProvider>
+              </HttpQueueContextProvider>
+            </UiContextProvider>
+          </RouterContextProvider>
+        </TargetContextProvider>
       </DatasContextProvider>
     </div>
   );

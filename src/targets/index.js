@@ -26,7 +26,8 @@ import {
   Name,
   iconsTarget,
   restartdelay,
-  processData,
+  TargetContextProvider,
+  useTargetContext,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -49,10 +50,11 @@ export {
   defaultPreferences,
   Parser,
   defaultPanelsList,
-  processData,
   fwUrl,
   webUiUrl,
   Name,
   iconsTarget,
   restartdelay,
+  TargetContextProvider,
+  useTargetContext,
 };

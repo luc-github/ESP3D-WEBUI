@@ -15,7 +15,9 @@ let currentID = 0;
 const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
-
+let subtarget = process.env.SUBTARGET_ENV
+  ? process.env.SUBTARGET_ENV
+  : "Marlin";
 const enableAuthentication = false;
 let lastconnection = Date.now();
 let logindone = false;
@@ -98,6 +100,35 @@ app.get("/config", function (req, res) {
   return;
 });
 
+function sendTemperatures() {
+  let T = Number(Math.floor(Math.random() * 215).toFixed(2));
+  let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
+  let B = Number(Math.floor(Math.random() * 45).toFixed(2));
+  switch (subtarget) {
+    case "Marlin":
+      SendBinary(
+        "ok T:" +
+          T +
+          " /200 R:" +
+          T * 1.1 +
+          " /200 B:" +
+          B +
+          " / 0 B1:" +
+          T +
+          " / 0 P:" +
+          B * 1.3 +
+          " / 0 C:" +
+          B * 2 +
+          " / 0 T1:" +
+          T1 +
+          " / 0 @1:0\n"
+      );
+      break;
+    default:
+      break;
+  }
+}
+
 app.get("/command", function (req, res) {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
@@ -108,6 +139,12 @@ app.get("/command", function (req, res) {
     res.status(200);
     res.send("ok");
     console.log(commandcolor(`[server]/command :PING`));
+    return;
+  }
+
+  if (url.indexOf("M105") != -1) {
+    sendTemperatures();
+    res.send("");
     return;
   }
 

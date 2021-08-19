@@ -21,9 +21,9 @@ import { useEffect, useRef } from "preact/hooks";
 import { T } from "../Translations";
 import { ChevronDown, Terminal, Send } from "preact-feather";
 import { useUiContext, useDatasContext } from "../../contexts";
+import { useTargetContext } from "../../targets";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL, dispatchData } from "../Helpers";
-//import { processData } from "../../targets";
 import { ButtonImg } from "../Controls";
 
 /*
@@ -33,6 +33,7 @@ import { ButtonImg } from "../Controls";
 const TerminalPanel = () => {
   const { panels } = useUiContext();
   const { terminal } = useDatasContext();
+  const { processData } = useTargetContext();
   const { createNewRequest } = useHttpQueue();
   const inputRef = useRef();
   const id = "terminalPanel";
@@ -82,12 +83,12 @@ const TerminalPanel = () => {
         {
           onSuccess: (result) => {
             terminal.add({ type: "response", content: result });
-            ///processData("response", result, terminal);
-            ///dispatchData("response", result);
+            processData("response", result);
+            dispatchData("response", result);
           },
           onFail: (error) => {
             console.log(error);
-            //processData("error", error, terminal);
+            processData("error", error);
           },
         }
       );

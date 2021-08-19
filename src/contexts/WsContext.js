@@ -18,7 +18,7 @@
 */
 import { h, createContext } from "preact";
 import { useState, useEffect, useRef, useContext } from "preact/hooks";
-import { processData } from "../targets";
+import { useTargetContext } from "../targets";
 import { dispatchData } from "../components/Helpers";
 import {
   useUiContext,
@@ -47,6 +47,7 @@ const WsContextProvider = ({ children }) => {
   const isLogOff = useRef(false);
   const reconnectCounter = useRef(0);
   const [wsData, setWsData] = useState([]);
+  const { processData } = useTargetContext();
 
   const ping = (start = false) => {
     if (isLogOff.current) return;
@@ -76,7 +77,6 @@ const WsContextProvider = ({ children }) => {
       processData("stream", new TextDecoder("utf-8").decode(stdOutData));
     } else {
       //others txt messages
-      //TODO: Send to dispatch (e.g: sensor)
       dispatchData("core", stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {

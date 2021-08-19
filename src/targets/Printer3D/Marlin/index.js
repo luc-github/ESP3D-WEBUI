@@ -23,6 +23,7 @@ import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
 import { TerminalPanelElement } from "../../../components/Panel/Terminal";
+import { TargetContextProvider, useTargetContext } from "./TargetContext";
 
 const Target = "Marlin";
 const Name = "ESP3D";
@@ -43,11 +44,6 @@ const defaultPanelsList = [
 
 const restartdelay = 30;
 
-const processData = (type, content) => {
-  //the parser need to be here
-  console.log(type, ":", content);
-};
-
 export {
   Target,
   Parser,
@@ -56,5 +52,6 @@ export {
   iconsTarget,
   restartdelay,
   defaultPanelsList,
-  processData,
+  TargetContextProvider,
+  useTargetContext,
 };

@@ -9,7 +9,7 @@
   "pollingrefresh": "1000",
   "pollingcommands": "M105;M114",
   "showterminalpanel": true,
-  "openterminalonstart": false,
+  "openterminalonstart": true,
   "verbose": true,
   "autoscroll": true,
   "showfilespanel": true,
@@ -25,7 +25,7 @@
   "xpos": "100",
   "ypos": "100",
   "showmacrospanel": true,
-  "openmacrosonstart": true,
+  "openmacrosonstart": false,
   "macros": [
    {
     "id": "id2",
