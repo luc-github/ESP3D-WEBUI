@@ -28,14 +28,11 @@
 }
 
 .terminal {
-  font-family: $mono-font-family;
-  font-size: $font-size-sm;
   white-space: pre-wrap;
   word-break: break-all;
   height: calc(100% - 3rem);
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
-  color: black;
   overflow-y: scroll;
   overflow-x: hidden;
   .echo {
