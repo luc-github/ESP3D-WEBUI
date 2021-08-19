@@ -4,8 +4,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin");
-const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin")
-  .default;
+const HTMLInlineCSSWebpackPlugin =
+  require("html-inline-css-webpack-plugin").default;
 const Compression = require("compression-webpack-plugin");
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D";
 let subtarget = process.env.SUBTARGET_ENV
@@ -15,21 +15,17 @@ let subtarget = process.env.SUBTARGET_ENV
 module.exports = {
   resolve: {
     alias: {
+      TargetDir: path.resolve(__dirname, "../src/targets", target),
+      SubTargetDir: path.resolve(
+        __dirname,
+        "../src/targets",
+        target,
+        subtarget
+      ),
       TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
       SubTargetPath: path.resolve(
         __dirname,
         "../src/components/Targets",
-        target,
-        subtarget
-      ),
-      TranslateTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Translations",
-        target
-      ),
-      TranslateSubTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Translations",
         target,
         subtarget
       ),

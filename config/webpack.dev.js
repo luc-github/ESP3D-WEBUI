@@ -9,21 +9,17 @@ console.log("Target:", target, " Subtarget:", subtarget);
 module.exports = {
   resolve: {
     alias: {
+      TargetDir: path.resolve(__dirname, "../src/targets", target),
+      SubTargetDir: path.resolve(
+        __dirname,
+        "../src/targets",
+        target,
+        subtarget
+      ),
       TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
       SubTargetPath: path.resolve(
         __dirname,
         "../src/components/Targets",
-        target,
-        subtarget
-      ),
-      TranslateTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Translations",
-        target
-      ),
-      TranslateSubTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Translations",
         target,
         subtarget
       ),

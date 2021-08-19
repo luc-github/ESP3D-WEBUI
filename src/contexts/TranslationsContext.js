@@ -17,9 +17,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import LangRessourceSubTarget from "TranslateSubTargetPath/en.json";
-import LangRessourceTarget from "TranslateTargetPath/en.json";
-import LangRessourceBase from "../components/Translations/en.json";
+import LangRessourceSubTarget from "SubTargetDir/Translations/en.json";
+import LangRessourceTarget from "TargetDir/Translations/en.json";
+import LangRessourceBase from "../targets/Translations/en.json";
 import { useContext, useState } from "preact/hooks";
 
 /*
