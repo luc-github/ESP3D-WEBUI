@@ -19,7 +19,7 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { Loading, ButtonImg } from "../../components/Spectre";
+import { ButtonImg, Loading } from "../../components/Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";

@@ -21,10 +21,10 @@ import { useEffect, useRef } from "preact/hooks";
 import { T } from "../Translations";
 import { ChevronDown, Terminal, Send } from "preact-feather";
 import { useUiContext, useDatasContext } from "../../contexts";
-import { ButtonImg } from "../Spectre";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL, dispatchData } from "../Helpers";
-import { processData } from "../Targets";
+//import { processData } from "../Targets";
+import ButtonImg from "../Controls/ButtonImg";
 
 /*
  * Local const
@@ -87,7 +87,7 @@ const TerminalPanel = () => {
           },
           onFail: (error) => {
             console.log(error);
-            processData("error", error, terminal);
+            //processData("error", error, terminal);
           },
         }
       );
@@ -110,12 +110,12 @@ const TerminalPanel = () => {
           <span class="navbar-section">
             <span style="height: 100%;">
               <div class="dropdown dropdown-right">
-                <button
+                <span
                   class="dropdown-toggle btn btn-xs btn-header m-1"
                   onclick={(e) => {}}
                 >
                   <ChevronDown size="0.8rem" />
-                </button>
+                </span>
 
                 <ul class="menu">
                   <li class="menu-item">
@@ -130,7 +130,7 @@ const TerminalPanel = () => {
                 </ul>
               </div>
 
-              <button
+              <span
                 class="btn btn-clear btn-close m-1"
                 aria-label="Close"
                 onclick={(e) => {

@@ -18,7 +18,7 @@
 
 import { Fragment, h } from "preact";
 import { useState, useEffect } from "preact/hooks";
-import { ButtonImg } from "../../Spectre";
+import { ButtonImg } from "../../Controls";
 import { T } from "../../Translations";
 import { iconsList } from "../../Images";
 import { generateUID } from "../../Helpers";

@@ -17,7 +17,7 @@
 */
 import { h } from "preact";
 import { useUiContext } from "../../contexts";
-import { Modal as SpectreModal } from "../Spectre";
+import { Modal as SpectreModal } from "../Controls";
 import { disableNode } from "../Helpers";
 import { showConfirmationModal } from "./confirmModal";
 import { showKeepConnected } from "./keepConnectedModal";

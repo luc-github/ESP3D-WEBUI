@@ -23,7 +23,7 @@ import { espHttpURL } from "../../components/Helpers";
 import { useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { Play, Pause, Aperture } from "preact-feather";
-import { ButtonImg } from "../../components/Spectre";
+import { ButtonImg } from "../../components/Controls";
 import { T } from "../../components/Translations";
 
 const ExtraPage = ({ id, source, refreshtime, label, type }) => {

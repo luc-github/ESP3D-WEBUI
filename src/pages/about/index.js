@@ -20,7 +20,7 @@
 */
 import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
+import { ButtonImg, Loading, CenterLeft } from "../../components/Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";

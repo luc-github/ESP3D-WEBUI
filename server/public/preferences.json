@@ -61,7 +61,7 @@
     "target": "page",
     "source": "/image.jpg",
     "type": "image",
-    "refreshtime": "100"
+    "refreshtime": "0"
    },
    {
     "id": "x6fu4dpuc",

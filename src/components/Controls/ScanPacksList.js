@@ -18,7 +18,7 @@ ScanPacksList.js - ESP3D WebUI component file
 
 import { Fragment, h } from "preact";
 import { useState, useEffect } from "preact/hooks";
-import { Loading, ButtonImg } from "./../Spectre";
+import { ButtonImg, Loading } from "./../Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { useUiContext } from "../../contexts";

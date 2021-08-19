@@ -18,14 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact";
-import { useEffect, useState, useRef } from "preact/hooks";
+import { useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext } from "../../contexts";
-import { Loading, ButtonImg, CenterLeft } from "../../components/Spectre";
+import { ButtonImg, Loading } from "../../components/Controls";
 import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
-import { showConfirmationModal } from "../../components/Modal";
 import { Field } from "../../components/Controls";
 import { exportPreferences } from "./exportHelper";
 import { importPreferences, formatPreferences } from "./importHelper";

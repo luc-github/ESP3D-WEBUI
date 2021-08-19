@@ -19,8 +19,9 @@
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
-import { ButtonImg } from "../../Spectre";
+
 import { iconsList } from "../../Images";
+import { ButtonImg } from "../../Controls";
 import { T } from "./../../Translations";
 
 /*

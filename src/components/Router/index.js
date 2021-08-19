@@ -18,7 +18,7 @@
 */
 import { h, Fragment } from "preact";
 import { useState, useEffect, useCallback } from "preact/hooks";
-import { Loading } from "../Spectre";
+import { Loading } from "../Controls";
 import { useRouterContext } from "../../contexts";
 
 const Router = ({ children, routesList, localDefault }) => {

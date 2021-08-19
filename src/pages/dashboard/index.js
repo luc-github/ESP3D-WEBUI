@@ -20,7 +20,7 @@
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext } from "../../contexts";
-import { ButtonImg } from "../../components/Spectre";
+import { ButtonImg } from "../../components/Controls";
 import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
 import { iconsList } from "../../components/Images";

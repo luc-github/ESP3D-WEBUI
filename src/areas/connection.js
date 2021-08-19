@@ -20,7 +20,7 @@
 import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext } from "../contexts";
-import { Loading } from "../components/Spectre";
+import { Loading } from "../components/Controls";
 import { ESP3DLogo } from "../components/Images/logo";
 import {
   Minus,

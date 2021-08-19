@@ -19,7 +19,7 @@
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
-import { ButtonImg } from "../../Spectre";
+import { ButtonImg } from "../../Controls";
 import { iconsList } from "../../Images";
 import { showModal } from "../../Modal";
 import { Search } from "preact-feather";
