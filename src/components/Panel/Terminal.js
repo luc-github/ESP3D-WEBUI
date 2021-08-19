@@ -24,7 +24,7 @@ import { useUiContext, useDatasContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL, dispatchData } from "../Helpers";
 //import { processData } from "../Targets";
-import ButtonImg from "../Controls/ButtonImg";
+import { ButtonImg } from "../Controls";
 
 /*
  * Local const

@@ -23,11 +23,13 @@ import { useUiContext } from "../../contexts";
 import { ButtonImg } from "../../components/Controls";
 import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
-import { iconsList } from "../../components/Images";
+import { iconsFeather } from "../../components/Images";
+import { iconsTarget } from "../../components/Targets";
 import { defaultPanelsList } from "../../components/Targets";
 
 const Dashboard = () => {
   console.log("Dashboard");
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const { panels, uisettings } = useUiContext();
   const menuPanelsList = useRef();
   useEffect(() => {

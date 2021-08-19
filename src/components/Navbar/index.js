@@ -21,7 +21,8 @@
 */
 import { Fragment, h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
-import { ESP3DLogo, iconsList } from "../Images";
+import { ESP3DLogo, iconsFeather } from "../Images";
+import { iconsTarget } from "../Targets";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import {
@@ -77,6 +78,7 @@ const Navbar = () => {
   const buttonExtraPage = useRef();
   const menuExtraPage = useRef();
   const buttontext = T("S155");
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const [textbutton, setTextButton] = useState(
     <Fragment>
       <Trello />

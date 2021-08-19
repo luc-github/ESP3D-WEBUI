@@ -20,7 +20,8 @@ import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
 import { ButtonImg } from "../../Controls";
-import { iconsList } from "../../Images";
+import { iconsFeather } from "../../Images";
+import { iconsTarget } from "../../Targets";
 import { showModal } from "../../Modal";
 import { Search } from "preact-feather";
 
@@ -44,6 +45,7 @@ const IconSelect = ({
     //if (setValue) setValue(e.target.checked);
   };
   const { modals } = useUiContext();
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const title = T("S134");
   const closeTxt = T("S24");
   const showList = (e) => {

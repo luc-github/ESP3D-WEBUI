@@ -236,7 +236,4 @@ const iconsFeather = {
   Zap: <Zap />,
 };
 
-import { iconsTarget } from "../Targets";
-
-const iconsList = { ...iconsTarget, ...iconsFeather };
-export { iconsList };
+export { iconsFeather };

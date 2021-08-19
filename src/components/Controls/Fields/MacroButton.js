@@ -19,8 +19,8 @@
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
-
-import { iconsList } from "../../Images";
+import { iconsFeather } from "../../Images";
+import { iconsTarget } from "../../Targets";
 import { ButtonImg } from "../../Controls";
 import { T } from "./../../Translations";
 
@@ -32,7 +32,7 @@ const MacroButton = ({ itemData }) => {
   const onClick = (e) => {
     console.log("Click");
   };
-
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const controlIcon = iconsList[itemData.icon] ? iconsList[itemData.icon] : "";
   useEffect(() => {}, []);
   return (

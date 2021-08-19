@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { iconsList } from "./icons";
+import { iconsFeather } from "./icons";
 import { ESP3DLogo } from "./logo";
 
-export { iconsList, ESP3DLogo };
+export { iconsFeather, ESP3DLogo };

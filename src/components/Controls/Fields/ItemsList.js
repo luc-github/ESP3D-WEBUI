@@ -20,7 +20,8 @@ import { Fragment, h } from "preact";
 import { useState, useEffect } from "preact/hooks";
 import { ButtonImg } from "../../Controls";
 import { T } from "../../Translations";
-import { iconsList } from "../../Images";
+import { iconsFeather } from "../../Images";
+import { iconsTarget } from "../../Targets";
 import { generateUID } from "../../Helpers";
 import { Field } from "../../Controls";
 import { formatItem } from "../../../tabs/interface/importHelper";
@@ -47,6 +48,7 @@ const ItemControl = ({
   setValue,
   validationfn,
 }) => {
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const { id, value, editionMode, ...rest } = itemData;
   const icon =
     value[value.findIndex((element) => element.id == id + "-icon")].value;
