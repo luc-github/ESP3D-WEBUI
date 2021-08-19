@@ -16,13 +16,14 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { hslToHex } from "../../../Helpers";
+import { hslToHex } from "../../../components/Helpers";
 
 /*
  * Local const
  *
  */
-const temperatureRegHex = /([a-zA-Z]{1}-?\d*){1}:(-?\d+\.?\d*){1} *\/? *(\d*\.*\d*)?/gim;
+const temperatureRegHex =
+  /([a-zA-Z]{1}-?\d*){1}:(-?\d+\.?\d*){1} *\/? *(\d*\.*\d*)?/gim;
 const gcode = /([a-zA-Z]{1}\d+\.?\d*)[^: ]/gim;
 const fullRegHex = /([\w-\/~\d]+.[\d\w]+)\s(\d+)/gim;
 const isBlank = (line) =>

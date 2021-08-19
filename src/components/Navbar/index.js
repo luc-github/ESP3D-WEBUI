@@ -22,7 +22,7 @@
 import { Fragment, h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 import { ESP3DLogo, iconsFeather } from "../Images";
-import { iconsTarget } from "../Targets";
+import { iconsTarget } from "../../targets";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import {

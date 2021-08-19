@@ -21,7 +21,7 @@ import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
 import { ButtonImg } from "../../Controls";
 import { iconsFeather } from "../../Images";
-import { iconsTarget } from "../../Targets";
+import { iconsTarget } from "../../../targets";
 import { showModal } from "../../Modal";
 import { Search } from "preact-feather";
 

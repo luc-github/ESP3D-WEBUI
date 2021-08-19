@@ -16,13 +16,6 @@ module.exports = {
         target,
         subtarget
       ),
-      TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
-      SubTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Targets",
-        target,
-        subtarget
-      ),
     },
   },
   mode: "development", // this will trigger some webpack default stuffs for dev

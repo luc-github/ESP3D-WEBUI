@@ -32,7 +32,7 @@ import {
 } from "preact-feather";
 import { T } from "../components/Translations";
 import { espHttpURL } from "../components/Helpers";
-import { restartdelay } from "../components/Targets";
+import { restartdelay } from "../targets";
 
 /*
  * Local const

@@ -21,7 +21,7 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { Target } from "../Targets";
+import { Target } from "../../targets";
 import { useSettingsContext } from "../../contexts";
 import { Eye, Tool } from "preact-feather";
 import { ESP3DLogo } from "../../components/Images/logo";

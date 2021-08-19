@@ -18,7 +18,7 @@
 */
 import { h, createContext } from "preact";
 import { useState, useEffect, useRef, useContext } from "preact/hooks";
-import { processData } from "../components/Targets";
+import { processData } from "../targets";
 import { dispatchData } from "../components/Helpers";
 import {
   useUiContext,

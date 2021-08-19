@@ -38,7 +38,7 @@ import {
   LifeBuoy,
   Info,
 } from "preact-feather";
-import { webUiUrl, fwUrl, Name, restartdelay } from "../../components/Targets";
+import { webUiUrl, fwUrl, Name, restartdelay } from "../../targets";
 import {
   showConfirmationModal,
   showProgressModal,

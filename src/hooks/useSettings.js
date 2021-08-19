@@ -26,7 +26,7 @@ import {
   useRouterContext,
   useTranslationsContext,
 } from "../contexts";
-import { defaultPreferences } from "../components/Targets";
+import { defaultPreferences } from "../targets";
 import {
   importPreferences,
   formatPreferences,

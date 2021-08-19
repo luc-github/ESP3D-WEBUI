@@ -20,9 +20,9 @@
 import { h } from "preact";
 import { Parser } from "./parser";
 import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
-import { FilesPanelElement } from "../../../Panel/Files";
-import { MacrosPanelElement } from "../../../Panel/Macros";
-import { TerminalPanelElement } from "../../../Panel/Terminal";
+import { FilesPanelElement } from "../../../components/Panel/Files";
+import { MacrosPanelElement } from "../../../components/Panel/Macros";
+import { TerminalPanelElement } from "../../../components/Panel/Terminal";
 
 const Target = "Marlin";
 const Name = "ESP3D";

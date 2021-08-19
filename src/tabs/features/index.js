@@ -40,7 +40,7 @@ import { Field } from "../../components/Controls";
 import { formatStructure } from "./formatHelper";
 import { exportFeatures } from "./exportHelper";
 import { importFeatures } from "./importHelper";
-import { restartdelay } from "../../components/Targets";
+import { restartdelay } from "../../targets";
 
 const FeaturesTab = () => {
   const { toasts, modals, uisettings } = useUiContext();

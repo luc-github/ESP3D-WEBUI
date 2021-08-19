@@ -20,7 +20,7 @@ import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useUiContext } from "../../../contexts";
 import { iconsFeather } from "../../Images";
-import { iconsTarget } from "../../Targets";
+import { iconsTarget } from "../../../targets";
 import { ButtonImg } from "../../Controls";
 import { T } from "./../../Translations";
 

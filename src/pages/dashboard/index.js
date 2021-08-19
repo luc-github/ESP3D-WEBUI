@@ -24,8 +24,7 @@ import { ButtonImg } from "../../components/Controls";
 import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
 import { iconsFeather } from "../../components/Images";
-import { iconsTarget } from "../../components/Targets";
-import { defaultPanelsList } from "../../components/Targets";
+import { defaultPanelsList, iconsTarget } from "../../targets";
 
 const Dashboard = () => {
   console.log("Dashboard");

@@ -22,13 +22,6 @@ module.exports = {
         target,
         subtarget
       ),
-      TargetPath: path.resolve(__dirname, "../src/components/Targets", target),
-      SubTargetPath: path.resolve(
-        __dirname,
-        "../src/components/Targets",
-        target,
-        subtarget
-      ),
     },
   },
   mode: "production", // this trigger webpack out-of-box prod optimizations

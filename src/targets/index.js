@@ -27,11 +27,11 @@ import {
   iconsTarget,
   restartdelay,
   processData,
-} from "SubTargetPath";
-import defaultPreferencesSubTarget from "SubTargetPath/preferences.json";
-import defaultPreferencesTarget from "TargetPath/preferences.json";
+} from "SubTargetDir";
+import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
+import defaultPreferencesTarget from "TargetDir/preferences.json";
 import defaultPreferencesBase from "./preferences.json";
-import { mergeJSON } from "../Helpers";
+import { mergeJSON } from "../components/Helpers";
 
 /*
  * Local const
