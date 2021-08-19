@@ -19,7 +19,7 @@
 import { h, createContext } from "preact";
 import { Terminal } from "preact-feather";
 import { useRef, useContext, useState } from "preact/hooks";
-import { limitArr } from "../../../components/Helpers";
+import { limitArr, dispatchData } from "../../../components/Helpers";
 import { useDatasContext } from "../../../contexts";
 
 /*
@@ -35,8 +35,14 @@ const TargetContextProvider = ({ children }) => {
     if (data.length > 0) {
       if (type == "stream") {
         //need to handle \r \n and even not having some
-        terminal.add({ type, content: data });
+        dispatchData(type, data);
       }
+      if (type == "response") {
+        //need to handle \r \n and even not having some
+        dispatchData(type, data);
+      }
+      terminal.add({ type, content: data });
+
       console.log("Processing:", type, ":", data);
     }
   };

@@ -73,11 +73,9 @@ const WsContextProvider = ({ children }) => {
     const stdOutData = e.data;
     if (stdOutData instanceof ArrayBuffer) {
       const bytes = new Uint8Array(stdOutData);
-      dispatchData("stream", new TextDecoder("utf-8").decode(stdOutData));
       processData("stream", new TextDecoder("utf-8").decode(stdOutData));
     } else {
       //others txt messages
-      dispatchData("core", stdOutData);
       const eventLine = stdOutData.split(":");
       if (eventLine.length > 1) {
         switch (eventLine[0].toUpperCase()) {

@@ -23,7 +23,7 @@ import { ChevronDown, Terminal, Send } from "preact-feather";
 import { useUiContext, useDatasContext } from "../../contexts";
 import { useTargetContext } from "../../targets";
 import { useHttpQueue } from "../../hooks";
-import { espHttpURL, dispatchData } from "../Helpers";
+import { espHttpURL } from "../Helpers";
 import { ButtonImg } from "../Controls";
 
 /*
@@ -76,15 +76,13 @@ const TerminalPanel = () => {
       }
 
       inputHistoryIndex = terminal.inputHistory.length - 1;
-      terminal.add({ type: "echo", content: cmd });
+      processData("echo", cmd);
       createNewRequest(
         espHttpURL("command", { cmd }).toString(),
         { method: "GET" },
         {
           onSuccess: (result) => {
-            terminal.add({ type: "response", content: result });
             processData("response", result);
-            dispatchData("response", result);
           },
           onFail: (error) => {
             console.log(error);

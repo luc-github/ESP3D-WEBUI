@@ -68,6 +68,7 @@ const ContentContainer = () => {
       switch (eventMsg.data.type) {
         case "response":
           //TBD: if need real both way communication
+          //between iFrame and Main UI
           break;
         case "cmd":
           createNewRequest(
