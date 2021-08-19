@@ -1,7 +1,7 @@
 /*
  Button.js - ESP3D WebUI component file
 
- Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -16,34 +16,37 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { createComponent } from "../Helpers";
+import Button from "./Button";
 
 /*
  * Local const
  *
  */
-
-const modifiers = {
-  group: "input-group-btn",
-  link: "btn-link",
-  primary: "btn-primary",
-  error: "btn-error",
-  success: "btn-success",
-  lg: "btn-lg",
-  sm: "btn-sm",
-  block: "btn-block",
-  action: "btn-action",
-  circle: "s-circle",
-  active: "active",
-  disable: "disable",
-  loading: "loading",
-  tooltip: "tooltip",
-  ltooltip: "tooltip tooltip-left",
-  rtooltip: "tooltip tooltip-right",
-  mx2: "mx-2",
-  m2: "m-2",
-  m1: "m-1",
+const ButtonImg = ({ label, icon, width, style, ...rest }) => {
+  return (
+    <Button
+      class="feather-icon-container"
+      {...rest}
+      style={"min-width:2rem;" + style}
+    >
+      {icon}
+      {label && (
+        <label
+          class="hide-low"
+          style={
+            "cursor: pointer;pointer-events: none;" +
+            (width
+              ? "display:inline-block;max-width:" +
+                width +
+                ";overflow:clip;text-overflow: ellipsis!important;"
+              : "")
+          }
+        >
+          {label}
+        </label>
+      )}
+    </Button>
+  );
 };
-const Button = createComponent("button", "btn", modifiers);
 
-export default Button;
+export default ButtonImg;

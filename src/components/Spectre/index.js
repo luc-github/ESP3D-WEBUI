@@ -16,7 +16,8 @@
 import Loading from "./Loading";
 import Modal from "./Modal";
 import Toast from "./Toast";
-import { Button, ButtonImg } from "./Button";
+import Button from "./Button";
+import ButtonImg from "./ButtonImg";
 import Progress from "./Progress";
 import CenterLeft from "./CenterLeft";
 
