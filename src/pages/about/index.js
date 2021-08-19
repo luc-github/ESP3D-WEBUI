@@ -106,7 +106,7 @@ const About = () => {
   const [isFwUpdate, setIsFwUpdate] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showProgression, setShowProgression] = useState(false);
-  const { datas } = useDatasContext();
+  const { about } = useDatasContext();
   const inputFiles = useRef(null);
   const getProps = () => {
     setIsLoading(true);
@@ -117,12 +117,13 @@ const About = () => {
         onSuccess: (result) => {
           const { Status } = JSON.parse(result);
           setProps([...Status]);
-          datas.current.about = [...Status];
+          about.current = [...Status];
           setIsLoading(false);
         },
         onFail: (error) => {
           setIsLoading(false);
           toasts.addToast({ content: error, type: "error" });
+          console.log(error);
         },
       }
     );
@@ -271,8 +272,8 @@ const About = () => {
   }
 
   useEffect(() => {
-    if (datas.current.about.length != 0) {
-      setProps([...datas.current.about]);
+    if (about.current.length != 0) {
+      setProps([...about.current]);
       setIsLoading(false);
     } else {
       if (uisettings.getValue("autoload")) getProps();

@@ -17,15 +17,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import {
-  useState,
-  useEffect,
-  useRef,
-  useReducer,
-  useContext,
-} from "preact/hooks";
-import { Parser } from "../components/Targets";
-import { dispatchData, limitArr } from "../components/Helpers";
+import { useState, useEffect, useRef, useContext } from "preact/hooks";
+import { processData } from "../components/Targets";
+import { dispatchData } from "../components/Helpers";
 import {
   useUiContext,
   useSettingsContext,
@@ -47,7 +41,6 @@ const WsContextProvider = ({ children }) => {
   const { removeAllRequests } = useHttpQueueContext();
   const dataBuffer = useRef([]);
   const { connectionSettings, activity } = useSettingsContext();
-  const parser = useRef(new Parser());
   const wsConnection = useRef();
   const [isPingPaused, setIsPingPaused] = useState(false);
   const [isPingStarted, setIsPingStarted] = useState(false);
@@ -75,15 +68,12 @@ const WsContextProvider = ({ children }) => {
 
   const onMessageCB = (e) => {
     if (isLogOff.current) return;
-    const { parse } = parser.current;
     //for binary messages used for terminal
     const stdOutData = e.data;
     if (stdOutData instanceof ArrayBuffer) {
       const bytes = new Uint8Array(stdOutData);
       dispatchData("stream", new TextDecoder("utf-8").decode(stdOutData));
-      //TODO: Send to Terminal
-      //TODO: Send to extensions as response
-      //TODO: Send to dispatch
+      processData("stream", new TextDecoder("utf-8").decode(stdOutData));
     } else {
       //others txt messages
       //TODO: Send to dispatch (e.g: sensor)
@@ -109,13 +99,11 @@ const WsContextProvider = ({ children }) => {
             }
             break;
           default:
-            //unknow event
+            processData("core", stdOutData);
             break;
         }
       }
     }
-    //TODO:FIXME data are not supposed to be stored in WS Context
-    //setWsData(dataBuffer.current);
   };
 
   const Disconnect = (reason) => {

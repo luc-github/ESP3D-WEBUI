@@ -29,7 +29,6 @@ import {
   useUiContext,
   useWsContext,
   useRouterContext,
-  useDatasContext,
 } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
@@ -75,7 +74,6 @@ const Navbar = () => {
   const { createNewRequest } = useHttpQueue();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { Disconnect } = useWsContext();
-  const { testUI } = useDatasContext();
   const buttonExtraPage = useRef();
   const menuExtraPage = useRef();
   const buttontext = T("S155");

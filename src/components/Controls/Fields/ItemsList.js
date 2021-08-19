@@ -143,7 +143,7 @@ const ItemControl = ({
         </Fragment>
       )}
       {editionMode && (
-        <div style="grid-column-start: 1;grid-column-end:4; border: 0.05rem solid #dadee4;">
+        <div class="itemEditor">
           <ButtonImg
             sm
             tooltip

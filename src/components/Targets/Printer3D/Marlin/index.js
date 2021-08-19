@@ -43,6 +43,11 @@ const defaultPanelsList = [
 
 const restartdelay = 30;
 
+const processData = (type, content) => {
+  //the parser need to be here
+  console.log(type, ":", content);
+};
+
 export {
   Target,
   Parser,
@@ -51,4 +56,5 @@ export {
   iconsTarget,
   restartdelay,
   defaultPanelsList,
+  processData,
 };

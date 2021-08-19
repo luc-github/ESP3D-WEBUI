@@ -24,6 +24,7 @@ import { createComponent } from "../Helpers";
  */
 
 const modifiers = {
+  group: "input-group-btn",
   link: "btn-link",
   primary: "btn-primary",
   error: "btn-error",

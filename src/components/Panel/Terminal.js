@@ -17,10 +17,14 @@
 */
 
 import { h } from "preact";
-import { useEffect } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import { T } from "../Translations";
-import { ChevronDown, Terminal } from "preact-feather";
-import { useUiContext } from "../../contexts";
+import { ChevronDown, Terminal, Send } from "preact-feather";
+import { useUiContext, useDatasContext } from "../../contexts";
+import { ButtonImg } from "../Spectre";
+import { useHttpQueue } from "../../hooks";
+import { espHttpURL, dispatchData } from "../Helpers";
+import { processData } from "../Targets";
 
 /*
  * Local const
@@ -28,7 +32,72 @@ import { useUiContext } from "../../contexts";
  */
 const TerminalPanel = () => {
   const { panels } = useUiContext();
+  const { terminal } = useDatasContext();
+  const { createNewRequest } = useHttpQueue();
+  const inputRef = useRef();
   const id = "terminalPanel";
+  let inputHistoryIndex = terminal.inputHistory.length - 1;
+  const onKeyUp = (e) => {
+    switch (e.keyCode) {
+      case 13:
+        onSend(e);
+        break;
+      case 38: //prev
+        if (terminal.inputHistory.length > 0 && inputHistoryIndex >= 0) {
+          inputRef.current.value = terminal.inputHistory[inputHistoryIndex];
+          terminal.input.current = inputRef.current.value;
+          inputHistoryIndex--;
+        }
+        break;
+      case 40: //next
+        if (
+          terminal.inputHistory.length > 0 &&
+          inputHistoryIndex < terminal.inputHistory.length - 1
+        ) {
+          inputHistoryIndex++;
+          inputRef.current.value = terminal.inputHistory[inputHistoryIndex];
+          terminal.input.current = inputRef.current.value;
+        } else {
+          inputRef.current.value = "";
+          terminal.input.current = inputRef.current.value;
+        }
+        break;
+      default:
+      //ignore
+    }
+  };
+  const onSend = (e) => {
+    inputRef.current.focus();
+    if (terminal.input.current && terminal.input.current.trim().length > 0) {
+      const cmd = terminal.input.current.trim();
+      if (terminal.inputHistory[terminal.inputHistory.length - 1] != cmd) {
+        terminal.addInputHistory(cmd);
+      }
+
+      inputHistoryIndex = terminal.inputHistory.length - 1;
+      terminal.add({ type: "echo", content: cmd });
+      createNewRequest(
+        espHttpURL("command", { cmd }).toString(),
+        { method: "GET" },
+        {
+          onSuccess: (result) => {
+            terminal.add({ type: "response", content: result });
+            ///processData("response", result, terminal);
+            ///dispatchData("response", result);
+          },
+          onFail: (error) => {
+            console.log(error);
+            processData("error", error, terminal);
+          },
+        }
+      );
+    }
+    terminal.input.current = "";
+    inputRef.current.value = "";
+  };
+  const onInput = (e) => {
+    terminal.input.current = e.target.value;
+  };
   useEffect(() => {}, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
@@ -50,6 +119,9 @@ const TerminalPanel = () => {
 
                 <ul class="menu">
                   <li class="menu-item">
+                    <div class="menu-entry">AutoScoll</div>
+                  </li>
+                  <li class="menu-item">
                     <div class="menu-entry">Verbose</div>
                   </li>
                   <li class="menu-item">
@@ -68,7 +140,44 @@ const TerminalPanel = () => {
             </span>
           </span>
         </div>
-        <div class="panel-body panel-body-dashboard">Terminal</div>
+        <div class="panel-body panel-body-dashboard">
+          <div class="input-group mt-2">
+            <input
+              type="text"
+              class="form-input"
+              onInput={onInput}
+              onkeyup={onKeyUp}
+              ref={inputRef}
+              value={terminal.input.current}
+              placeholder={T("S80")}
+            />
+            <ButtonImg
+              group
+              ltooltip
+              data-tooltip={T("S82")}
+              label={T("S81")}
+              icon={<Send />}
+              onClick={onSend}
+            />
+          </div>
+          <div class="terminal mt-2">
+            {terminal.content &&
+              terminal.content.map((line) => {
+                let className = "";
+                switch (line.type) {
+                  case "echo":
+                    className = "echo";
+                    break;
+                  case "error":
+                    className = "error";
+                    break;
+                  default:
+                  //do nothing
+                }
+                return <pre class={className}>{line.content}</pre>;
+              })}
+          </div>
+        </div>
       </div>
     </div>
   );

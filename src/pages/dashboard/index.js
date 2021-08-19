@@ -24,7 +24,7 @@ import { ButtonImg } from "../../components/Spectre";
 import { T } from "../../components/Translations";
 import { List, X } from "preact-feather";
 import { iconsList } from "../../components/Images";
-import { defaultPanelsList } from "../../components/Targets/Printer3D/Marlin";
+import { defaultPanelsList } from "../../components/Targets";
 
 const Dashboard = () => {
   console.log("Dashboard");

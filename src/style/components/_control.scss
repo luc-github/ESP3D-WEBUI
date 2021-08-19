@@ -20,6 +20,37 @@
   background-color: #f1f1fc;
 }
 
+.itemEditor {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  border: 0.05rem solid #dadee4;
+  border-radius: $border-radius;
+}
+
+.terminal {
+  font-family: $mono-font-family;
+  font-size: $font-size-sm;
+  white-space: pre-wrap;
+  word-break: break-all;
+  height: calc(100% - 3rem);
+  border: 0.05rem solid #dadee4;
+  border-radius: $border-radius;
+  color: black;
+  overflow-y: scroll;
+  .echo {
+    color: blue;
+  }
+  .error {
+    color: red;
+    font-weight: bolder;
+  }
+  pre {
+    margin: 0px 5px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+}
+
 .image-container,
 .camera-container {
   border: none;

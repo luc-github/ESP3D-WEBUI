@@ -17,7 +17,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { useRef, useContext } from "preact/hooks";
+import { useRef, useContext, useState } from "preact/hooks";
+import { limitArr } from "../components/Helpers";
 
 /*
  * Local const
@@ -27,10 +28,31 @@ const DatasContext = createContext("DatasContext");
 const useDatasContext = () => useContext(DatasContext);
 
 const DatasContextProvider = ({ children }) => {
-  const dataValues = useRef({ about: [] });
+  const about = useRef([]);
+  const terminalBuffer = useRef([]);
+  const [terminalContent, setTerminalContent] = useState([]);
+  const [terminalInputHistory, setTerminalInputHistory] = useState([]);
+  const terminalInput = useRef();
+
+  const addTerminalContent = (element) => {
+    const newData = limitArr([...terminalBuffer.current, element], 300);
+    terminalBuffer.current = newData;
+    setTerminalContent(newData);
+  };
+
+  const addTerminalInputHistory = (element) => {
+    setTerminalInputHistory(limitArr([...terminalInputHistory, element], 50));
+  };
 
   const store = {
-    datas: dataValues,
+    about,
+    terminal: {
+      input: terminalInput,
+      content: terminalContent,
+      add: addTerminalContent,
+      inputHistory: terminalInputHistory,
+      addInputHistory: addTerminalInputHistory,
+    },
   };
 
   return (
