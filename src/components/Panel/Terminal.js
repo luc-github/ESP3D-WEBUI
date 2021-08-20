@@ -102,7 +102,7 @@ const TerminalPanel = () => {
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
         <div class="navbar">
-          <span class="navbar-section label label-secondary feather-icon-container">
+          <span class="navbar-section feather-icon-container">
             <Terminal />
             <strong class="text-ellipsis">{T("Terminal")}</strong>
           </span>

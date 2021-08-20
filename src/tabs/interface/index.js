@@ -260,7 +260,7 @@ const InterfaceTab = () => {
                       <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
                         <div class="panel mb-2 panel-interface">
                           <div class="navbar">
-                            <span class="navbar-section label label-secondary text-ellipsis">
+                            <span class="navbar-section text-ellipsis">
                               <strong class="text-ellipsis">
                                 {T(sectionId)}
                               </strong>
