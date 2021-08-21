@@ -33,10 +33,10 @@
   word-break: break-all;
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
-  flex: 1 1 auto;
-  margin-bottom: 5px;
-  overflow-y: scroll;
+  padding: 5px 5px !important;
+  margin-top: 0px !important;
   overflow-x: hidden;
+  overflow-y: scroll !important;
   .echo {
     color: blue;
   }

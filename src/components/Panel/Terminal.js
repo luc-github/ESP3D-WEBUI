@@ -139,43 +139,41 @@ const TerminalPanel = () => {
             </span>
           </span>
         </div>
-        <div class="panel-body panel-body-dashboard">
-          <div class="input-group mt-2 panel-item">
-            <input
-              type="text"
-              class="form-input"
-              onInput={onInput}
-              onkeyup={onKeyUp}
-              ref={inputRef}
-              value={terminal.input.current}
-              placeholder={T("S80")}
-            />
-            <ButtonImg
-              group
-              ltooltip
-              data-tooltip={T("S82")}
-              label={T("S81")}
-              icon={<Send />}
-              onClick={onSend}
-            />
-          </div>
-          <div class="terminal mt-2">
-            {terminal.content &&
-              terminal.content.map((line) => {
-                let className = "";
-                switch (line.type) {
-                  case "echo":
-                    className = "echo";
-                    break;
-                  case "error":
-                    className = "error";
-                    break;
-                  default:
-                  //do nothing
-                }
-                return <pre class={className}>{line.content}</pre>;
-              })}
-          </div>
+        <div class="input-group m-2">
+          <input
+            type="text"
+            class="form-input"
+            onInput={onInput}
+            onkeyup={onKeyUp}
+            ref={inputRef}
+            value={terminal.input.current}
+            placeholder={T("S80")}
+          />
+          <ButtonImg
+            group
+            ltooltip
+            data-tooltip={T("S82")}
+            label={T("S81")}
+            icon={<Send />}
+            onClick={onSend}
+          />
+        </div>
+        <div class="panel-body panel-body-dashboard terminal m-2">
+          {terminal.content &&
+            terminal.content.map((line) => {
+              let className = "";
+              switch (line.type) {
+                case "echo":
+                  className = "echo";
+                  break;
+                case "error":
+                  className = "error";
+                  break;
+                default:
+                //do nothing
+              }
+              return <pre class={className}>{line.content}</pre>;
+            })}
         </div>
       </div>
     </div>
