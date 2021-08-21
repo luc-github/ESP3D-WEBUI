@@ -46,8 +46,13 @@ const TerminalPanel = () => {
     terminal.isAutoScroll.current
   );
   const inputRef = useRef();
+  const messagesEndRef = useRef(null);
   const id = "terminalPanel";
   let inputHistoryIndex = terminal.inputHistory.length - 1;
+  const scrollToBottom = () => {
+    if (terminal.isAutoScroll.current)
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
   const onKeyUp = (e) => {
     switch (e.keyCode) {
       case 13:
@@ -107,7 +112,9 @@ const TerminalPanel = () => {
   const onInput = (e) => {
     terminal.input.current = e.target.value;
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    scrollToBottom();
+  }, [terminal.content]);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
@@ -166,6 +173,7 @@ const TerminalPanel = () => {
                       onclick={(e) => {
                         terminal.isAutoScroll.current = !isAutoScroll;
                         setIsAutoScroll(!isAutoScroll);
+                        scrollToBottom();
                       }}
                     >
                       <div class="menu-panel-item">
@@ -229,6 +237,7 @@ const TerminalPanel = () => {
               if (isVerbose || isVerbose == line.isverbose)
                 return <pre class={className}>{line.content}</pre>;
             })}
+          <div ref={messagesEndRef} />
         </div>
       </div>
     </div>

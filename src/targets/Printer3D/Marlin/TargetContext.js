@@ -39,10 +39,12 @@ const TargetContextProvider = ({ children }) => {
   const processData = (type, data) => {
     if (data.length > 0) {
       if (type == "stream") {
+        //TODO
         //need to handle \r \n and even not having some
         dispatchData(type, data);
       }
       if (type == "response") {
+        //TODO
         //need to handle \r \n and even not having some
         dispatchData(type, data);
       }
