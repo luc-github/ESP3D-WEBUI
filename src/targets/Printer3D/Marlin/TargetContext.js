@@ -31,6 +31,11 @@ const useTargetContext = () => useContext(TargetContext);
 
 const TargetContextProvider = ({ children }) => {
   const { terminal } = useDatasContext();
+
+  const isVerbose = (type, data) => {
+    if (data.startsWith("ok") || data.startsWith("M105")) return true;
+    else return false;
+  };
   const processData = (type, data) => {
     if (data.length > 0) {
       if (type == "stream") {
@@ -41,7 +46,8 @@ const TargetContextProvider = ({ children }) => {
         //need to handle \r \n and even not having some
         dispatchData(type, data);
       }
-      terminal.add({ type, content: data });
+      const isverbose = isVerbose(type, data);
+      terminal.add({ type, content: data, isverbose });
 
       console.log("Processing:", type, ":", data);
     }

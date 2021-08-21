@@ -19,10 +19,9 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { useUiContext } from "../../contexts";
-import { ButtonImg } from "../../components/Controls";
+import { useUiContext, useDatasContext } from "../../contexts";
 import { T } from "../../components/Translations";
-import { List, X } from "preact-feather";
+import { List } from "preact-feather";
 import { iconsFeather } from "../../components/Images";
 import { defaultPanelsList, iconsTarget } from "../../targets";
 
@@ -30,6 +29,7 @@ const Dashboard = () => {
   console.log("Dashboard");
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const { panels, uisettings } = useUiContext();
+  const { terminal } = useDatasContext();
   const menuPanelsList = useRef();
   useEffect(() => {
     if (!panels.initDone && panels.list.length != 0) {
@@ -43,6 +43,8 @@ const Dashboard = () => {
           return acc;
         }, [])
       );
+      terminal.isVerbose.current = uisettings.getValue("verbose");
+      terminal.isAutoScroll.current = uisettings.getValue("autoscroll");
       panels.setInitDone(true);
     }
   });
@@ -75,7 +77,7 @@ const Dashboard = () => {
                 >
                   <div class="menu-panel-item">
                     <span class="text-menu-item">{T("S117")}</span>
-                    <button class="btn btn-clear" aria-label="Close" />
+                    <span class="btn btn-clear" aria-label="Close" />
                   </div>
                 </div>
               </li>
@@ -114,7 +116,7 @@ const Dashboard = () => {
                           <span class="text-menu-item">{T(panel.name)}</span>
                         </span>
                         {isVisible && (
-                          <button class="btn btn-clear" aria-label="Close" />
+                          <span class="btn btn-clear" aria-label="Close" />
                         )}
                       </div>
                     </div>

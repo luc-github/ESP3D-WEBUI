@@ -17,9 +17,15 @@
 */
 
 import { h } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { T } from "../Translations";
-import { ChevronDown, Terminal, Send } from "preact-feather";
+import {
+  ChevronDown,
+  Terminal,
+  Send,
+  CheckCircle,
+  Circle,
+} from "preact-feather";
 import { useUiContext, useDatasContext } from "../../contexts";
 import { useTargetContext } from "../../targets";
 import { useHttpQueue } from "../../hooks";
@@ -35,6 +41,10 @@ const TerminalPanel = () => {
   const { terminal } = useDatasContext();
   const { processData } = useTargetContext();
   const { createNewRequest } = useHttpQueue();
+  const [isVerbose, setIsVerbose] = useState(terminal.isVerbose.current);
+  const [isAutoScroll, setIsAutoScroll] = useState(
+    terminal.isAutoScroll.current
+  );
   const inputRef = useRef();
   const id = "terminalPanel";
   let inputHistoryIndex = terminal.inputHistory.length - 1;
@@ -118,13 +128,57 @@ const TerminalPanel = () => {
 
                 <ul class="menu">
                   <li class="menu-item">
-                    <div class="menu-entry">AutoScoll</div>
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        terminal.clear();
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("S79")}</span>
+                        <span class="btn btn-clear" aria-label="Close" />
+                      </div>
+                    </div>
                   </li>
                   <li class="menu-item">
-                    <div class="menu-entry">Verbose</div>
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        terminal.isVerbose.current = !isVerbose;
+                        setIsVerbose(!isVerbose);
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("S76")}</span>
+                        <span class="feather-icon-container">
+                          {isVerbose ? (
+                            <CheckCircle size="0.8rem" />
+                          ) : (
+                            <Circle size="0.8rem" />
+                          )}
+                        </span>
+                      </div>
+                    </div>
                   </li>
                   <li class="menu-item">
-                    <div class="menu-entry">Clear</div>
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        terminal.isAutoScroll.current = !isAutoScroll;
+                        setIsAutoScroll(!isAutoScroll);
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("S77")}</span>
+                        <span class="feather-icon-container">
+                          {isAutoScroll ? (
+                            <CheckCircle size="0.8rem" />
+                          ) : (
+                            <Circle size="0.8rem" />
+                          )}
+                        </span>
+                      </div>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -172,7 +226,8 @@ const TerminalPanel = () => {
                 default:
                 //do nothing
               }
-              return <pre class={className}>{line.content}</pre>;
+              if (isVerbose || isVerbose == line.isverbose)
+                return <pre class={className}>{line.content}</pre>;
             })}
         </div>
       </div>
