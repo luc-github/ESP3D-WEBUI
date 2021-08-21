@@ -32,13 +32,11 @@ const ButtonImg = ({ label, icon, width, style, ...rest }) => {
       {icon}
       {label && (
         <label
-          class="hide-low"
+          class={width ? "hide-low text-ellipsis" : "hide-low"}
           style={
             "cursor: pointer;pointer-events: none;" +
             (width
-              ? "display:inline-block;max-width:" +
-                width +
-                ";overflow:clip;text-overflow: ellipsis!important;"
+              ? "display:inline-block;max-width:" + width + ";overflow:clip;"
               : "")
           }
         >
