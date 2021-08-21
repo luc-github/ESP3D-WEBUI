@@ -30,6 +30,7 @@ const useDatasContext = () => useContext(DatasContext);
 const DatasContextProvider = ({ children }) => {
   const about = useRef([]);
   const isAutoScroll = useRef(true);
+  const isAutoScrollPaused = useRef(false);
   const isVerbose = useRef(true);
   const terminalBuffer = useRef([]);
   const [terminalContent, setTerminalContent] = useState([]);
@@ -42,7 +43,10 @@ const DatasContextProvider = ({ children }) => {
   };
 
   const addTerminalContent = (element) => {
-    const newData = limitArr([...terminalBuffer.current, element], 300);
+    const newData = limitArr(
+      [...terminalBuffer.current, element],
+      isAutoScrollPaused.current ? 600 : isAutoScroll.current ? 300 : 400
+    );
     terminalBuffer.current = newData;
     setTerminalContent(newData);
   };
@@ -62,6 +66,7 @@ const DatasContextProvider = ({ children }) => {
       addInputHistory: addTerminalInputHistory,
       isAutoScroll,
       isVerbose,
+      isAutoScrollPaused,
     },
   };
 

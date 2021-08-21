@@ -25,6 +25,7 @@ import {
   Send,
   CheckCircle,
   Circle,
+  PauseCircle,
 } from "preact-feather";
 import { useUiContext, useDatasContext } from "../../contexts";
 import { useTargetContext } from "../../targets";
@@ -45,13 +46,15 @@ const TerminalPanel = () => {
   const [isAutoScroll, setIsAutoScroll] = useState(
     terminal.isAutoScroll.current
   );
+  const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(false);
+  let lastPos = 0;
   const inputRef = useRef();
   const messagesEndRef = useRef(null);
   const id = "terminalPanel";
   let inputHistoryIndex = terminal.inputHistory.length - 1;
   const scrollToBottom = () => {
-    if (terminal.isAutoScroll.current)
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (terminal.isAutoScroll.current && !terminal.isAutoScrollPaused.current)
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
   const onKeyUp = (e) => {
     switch (e.keyCode) {
@@ -171,8 +174,12 @@ const TerminalPanel = () => {
                     <div
                       class="menu-entry"
                       onclick={(e) => {
-                        terminal.isAutoScroll.current = !isAutoScroll;
-                        setIsAutoScroll(!isAutoScroll);
+                        if (!isAutoScrollPaused) {
+                          terminal.isAutoScroll.current = !isAutoScroll;
+                          setIsAutoScroll(!isAutoScroll);
+                        }
+                        terminal.isAutoScrollPaused.current = false;
+                        setIsAutoScrollPaused(false);
                         scrollToBottom();
                       }}
                     >
@@ -180,7 +187,11 @@ const TerminalPanel = () => {
                         <span class="text-menu-item">{T("S77")}</span>
                         <span class="feather-icon-container">
                           {isAutoScroll ? (
-                            <CheckCircle size="0.8rem" />
+                            isAutoScrollPaused ? (
+                              <PauseCircle size="0.8rem" />
+                            ) : (
+                              <CheckCircle size="0.8rem" />
+                            )
                           ) : (
                             <Circle size="0.8rem" />
                           )}
@@ -220,7 +231,27 @@ const TerminalPanel = () => {
             onClick={onSend}
           />
         </div>
-        <div class="panel-body panel-body-dashboard terminal m-2">
+        <div
+          class="panel-body panel-body-dashboard terminal m-2"
+          onScroll={(e) => {
+            if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
+              terminal.isAutoScrollPaused.current = true;
+              setIsAutoScrollPaused(true);
+            }
+            if (
+              terminal.isAutoScrollPaused.current &&
+              Math.abs(
+                e.target.scrollTop +
+                  e.target.offsetHeight -
+                  e.target.scrollHeight
+              ) < 5
+            ) {
+              terminal.isAutoScrollPaused.current = false;
+              setIsAutoScrollPaused(false);
+            }
+            lastPos = e.target.scrollTop;
+          }}
+        >
           {terminal.content &&
             terminal.content.map((line) => {
               let className = "";
