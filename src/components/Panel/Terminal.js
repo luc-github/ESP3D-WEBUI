@@ -140,7 +140,7 @@ const TerminalPanel = () => {
           </span>
         </div>
         <div class="panel-body panel-body-dashboard">
-          <div class="input-group mt-2">
+          <div class="input-group mt-2 panel-item">
             <input
               type="text"
               class="form-input"

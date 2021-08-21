@@ -9,11 +9,17 @@
   @media (min-width: $size-sm) {
     max-height: 400px;
   }
+  display: flex;
+  flex-flow: column;
 }
 .panel .navbar,
 .panel .navbar-section {
   background: #f1f1fc;
   color: #5755d9;
+}
+
+.panel-item {
+  flex: 0 1 auto;
 }
 
 .column {
