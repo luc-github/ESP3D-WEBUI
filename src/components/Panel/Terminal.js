@@ -111,7 +111,7 @@ const TerminalPanel = () => {
               <div class="dropdown dropdown-right">
                 <span
                   class="dropdown-toggle btn btn-xs btn-header m-1"
-                  onclick={(e) => {}}
+                  tabindex="0"
                 >
                   <ChevronDown size="0.8rem" />
                 </span>

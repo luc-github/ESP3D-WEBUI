@@ -58,14 +58,13 @@ const Dashboard = () => {
       <div class="buttons-bar m-2">
         {panels.list.length > 0 && (
           <div class="dropdown">
-            <ButtonImg
-              class="dropdown-toggle"
-              m1
-              icon={<List />}
-              rtooltip
+            <span
+              class="dropdown-toggle btn tooltip tooltip-right m-1"
+              tabindex="0"
               data-tooltip={T("S187")}
-              onclick={(e) => {}}
-            />
+            >
+              <List />
+            </span>
             <ul class="menu" ref={menuPanelsList}>
               <li class="menu-item">
                 <div
