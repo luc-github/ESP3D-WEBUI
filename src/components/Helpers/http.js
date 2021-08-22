@@ -50,4 +50,33 @@ const espHttpURL = (base = "", args) => {
   return url;
 };
 
-export { espHttpURL, getCookie };
+function isLimitedEnvironment(mode) {
+  let sitesList = [
+    "clients3.google.com", //Android Captive Portal Detection
+    "connectivitycheck.",
+    //Apple iPhone, iPad with iOS 6 Captive Portal Detection
+    "apple.com",
+    ".akamaitechnologies.com",
+    //Apple iPhone, iPad with iOS 7, 8, 9 and recent versions of OS X
+    "www.appleiphonecell.com",
+    "www.itools.info",
+    "www.ibook.info",
+    "www.airport.us",
+    "www.thinkdifferent.us",
+    ".akamaiedge.net",
+    //Windows
+    ".msftncsi.com",
+    "microsoft.com",
+  ];
+  if (mode != "AP") return false;
+  sitesList.forEach((element) => {
+    if (document.location.host.indexOf(element) != -1) return true;
+  });
+  return false;
+}
+
+function autoscroll() {
+  if (isAutoScroll) consoleContent.scrollTop = consoleContent.scrollHeight;
+}
+
+export { espHttpURL, getCookie, isLimitedEnvironment };

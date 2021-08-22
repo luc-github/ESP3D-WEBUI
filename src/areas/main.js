@@ -22,13 +22,17 @@ import { h } from "preact";
 
 import { useState, useEffect, useRef } from "preact/hooks";
 import { Router } from "../components/Router";
-import { useUiContext } from "../contexts";
+import { useUiContext, useSettingsContext } from "../contexts";
 import About from "../pages/about";
 import Dashboard from "../pages/dashboard";
 import Settings from "../pages/settings";
 import ExtraPage from "../pages/extrapages";
 import { Informations } from "../areas/informations";
 import { FooterContainer } from "./footer";
+import { isLimitedEnvironment } from "../components/Helpers";
+import { T } from "../components/Translations";
+import { showModal } from "../components/Modal";
+import { Info } from "preact-feather";
 
 const defRoutes = {
   DASHBOARD: {
@@ -50,8 +54,12 @@ const defRoutes = {
 };
 
 const MainContainer = () => {
-  const { uisettings } = useUiContext();
+  const { uisettings, modals } = useUiContext();
+  const { connectionSettings } = useSettingsContext();
   const [routes, setRoutes] = useState({ ...defRoutes });
+  const title = T("S123");
+  const closeTxt = T("S24");
+  let content = T("S124");
 
   const newroutes = () => {
     if (uisettings.getValue("showextrapanels")) {
@@ -83,6 +91,27 @@ const MainContainer = () => {
       return defRoutes;
     }
   };
+
+  useEffect(() => {
+    console.log("Connection", connectionSettings);
+    if (connectionSettings.current && connectionSettings.current.WiFiMode) {
+      if (isLimitedEnvironment(connectionSettings.current.WiFiMode))
+        showModal({
+          modals,
+          title,
+          button1: { text: closeTxt },
+          icon: <Info />,
+          id: "notification",
+          content: content.replace(
+            "%s",
+            connectionSettings.current.WebSocketIP +
+              (connectionSettings.current.WebSocketport != "81"
+                ? ":" + (parseInt(connectionSettings.current.WebSocketport) - 1)
+                : "")
+          ),
+        });
+    }
+  }, [connectionSettings.current]);
 
   useEffect(() => {
     setRoutes(newroutes);

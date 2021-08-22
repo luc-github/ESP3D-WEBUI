@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { espHttpURL, getCookie } from "./http";
+import { espHttpURL, getCookie, isLimitedEnvironment } from "./http";
 import { getBrowserTime } from "./time";
 import {
   createComponent,
@@ -39,17 +39,18 @@ export {
   capitalize,
   createComponent,
   disableNode,
+  dispatchData,
   espHttpURL,
   generateUID,
   getBrowserTime,
   getColClasses,
   getCookie,
   hslToHex,
+  isLimitedEnvironment,
   limitArr,
   mergeJSON,
   mergeFlatPrefToNestedSchema,
   parseFileSizeString,
   removeEntriesByIDs,
   splitArrayByLines,
-  dispatchData,
 };
