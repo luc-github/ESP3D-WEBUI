@@ -17,9 +17,12 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { Terminal } from "preact-feather";
 import { useRef, useContext, useState } from "preact/hooks";
-import { limitArr, dispatchData } from "../../../components/Helpers";
+import {
+  limitArr,
+  dispatchToExtensions,
+  beautifyJSONString,
+} from "../../../components/Helpers";
 import { useDatasContext } from "../../../contexts";
 
 /*
@@ -31,27 +34,100 @@ const useTargetContext = () => useContext(TargetContext);
 
 const TargetContextProvider = ({ children }) => {
   const { terminal } = useDatasContext();
-
+  const dataBuffer = useRef({
+    stream: "",
+    core: "",
+    response: "",
+    error: "",
+    echo: "",
+  });
   const isVerbose = (type, data) => {
-    if (data.startsWith("ok") || data.startsWith("M105")) return true;
+    if (
+      data.startsWith("ok") ||
+      data.startsWith("M105") ||
+      (data.startsWith("{") && data.endsWith("}"))
+    )
+      return true;
     else return false;
+  };
+  const dispatchInternally = (type, data) => {
+    //temperature
+    //sensors
+    //positions
+    //etc...
   };
   const processData = (type, data) => {
     if (data.length > 0) {
       if (type == "stream") {
         //TODO
         //need to handle \r \n and even not having some
-        dispatchData(type, data);
-      }
-      if (type == "response") {
-        //TODO
-        //need to handle \r \n and even not having some
-        dispatchData(type, data);
-      }
-      const isverbose = isVerbose(type, data);
-      terminal.add({ type, content: data, isverbose });
+        data.split("").forEach((element, index) => {
+          if (element == "\n" || element == "\r") {
+            if (dataBuffer.current[type].length > 0) {
+              const isverbose = isVerbose(type, dataBuffer.current[type]);
+              dispatchInternally(type, dataBuffer.current[type]);
+              //format the output if needed
+              if (dataBuffer.current[type].startsWith("{")) {
+                const newbuffer = beautifyJSONString(dataBuffer.current[type]);
+                if (newbuffer == "error")
+                  terminal.add({
+                    type,
+                    content: dataBuffer.current[type],
+                    isverbose,
+                  });
+                else {
+                  terminal.add({
+                    type,
+                    content: newbuffer,
+                    isverbose,
+                  });
+                }
+              } else {
+                terminal.add({
+                  type,
+                  content: dataBuffer.current[type],
+                  isverbose,
+                });
+              }
 
-      console.log("Processing:", type, ":", data);
+              dataBuffer.current[type] = "";
+            }
+          } else {
+            dataBuffer.current[type] += element;
+          }
+        });
+      } else if (type == "response") {
+        const isverbose = isVerbose(type, data);
+        dispatchInternally(type, data);
+        //format the output if needed
+        if (data.startsWith("{")) {
+          const newbuffer = beautifyJSONString(data);
+          if (newbuffer == "error")
+            terminal.add({
+              type,
+              content: data,
+              isverbose,
+            });
+          else {
+            terminal.add({
+              type,
+              content: newbuffer,
+              isverbose,
+            });
+          }
+        } else {
+          terminal.add({
+            type,
+            content: data,
+            isverbose,
+          });
+        }
+      } else {
+        const isverbose = isVerbose(type, data);
+        terminal.add({ type, content: data, isverbose });
+        dispatchInternally(type, data);
+      }
+      dispatchToExtensions(type, data);
     }
   };
 

@@ -25,7 +25,12 @@ import {
   generateUID,
   getColClasses,
 } from "./components";
-import { capitalize, hslToHex, parseFileSizeString } from "./strings";
+import {
+  beautifyJSONString,
+  capitalize,
+  hslToHex,
+  parseFileSizeString,
+} from "./strings";
 import {
   limitArr,
   mergeJSON,
@@ -33,13 +38,14 @@ import {
   removeEntriesByIDs,
   splitArrayByLines,
 } from "./arrays";
-import { dispatchData } from "./html";
+import { dispatchToExtensions } from "./html";
 
 export {
+  beautifyJSONString,
   capitalize,
   createComponent,
   disableNode,
-  dispatchData,
+  dispatchToExtensions,
   espHttpURL,
   generateUID,
   getBrowserTime,

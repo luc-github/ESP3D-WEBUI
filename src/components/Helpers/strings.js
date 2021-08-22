@@ -53,4 +53,12 @@ const hslToHex = (h, s, l) => {
   return `#${f(0)}${f(8)}${f(4)}`;
 };
 
-export { capitalize, hslToHex, parseFileSizeString };
+const beautifyJSONString = (jsonstring) => {
+  try {
+    return JSON.stringify(JSON.parse(jsonstring), null, " ");
+  } catch (e) {
+    return "error";
+  }
+};
+
+export { capitalize, hslToHex, parseFileSizeString, beautifyJSONString };

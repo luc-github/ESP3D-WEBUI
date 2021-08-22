@@ -26,7 +26,7 @@ import { useUiContext } from "../contexts/UiContext";
 import { useSettings, useHttpQueue } from "../hooks";
 import { useEffect } from "preact/hooks";
 import { showLogin, showKeepConnected } from "../components/Modal";
-import { espHttpURL, dispatchData } from "../components/Helpers";
+import { espHttpURL, dispatchToExtensions } from "../components/Helpers";
 /*
  * Local const
  *
@@ -76,11 +76,11 @@ const ContentContainer = () => {
             { method: "GET" },
             {
               onSuccess: (result) => {
-                dispatchData("response", result);
+                dispatchToExtensions("response", result);
               },
               onFail: (error) => {
                 console.log(error);
-                dispatchData("error", error);
+                dispatchToExtensions("error", error);
               },
             }
           );

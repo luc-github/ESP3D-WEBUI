@@ -93,7 +93,6 @@ const MainContainer = () => {
   };
 
   useEffect(() => {
-    console.log("Connection", connectionSettings);
     if (connectionSettings.current && connectionSettings.current.WiFiMode) {
       if (isLimitedEnvironment(connectionSettings.current.WiFiMode))
         showModal({
