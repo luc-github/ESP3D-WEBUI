@@ -265,7 +265,7 @@ const TerminalPanel = () => {
                 default:
                 //do nothing
               }
-              if (isVerbose || isVerbose == line.isverbose)
+              if (isVerbose || isVerbose == line.isverboseOnly)
                 return <pre class={className}>{line.content}</pre>;
             })}
           <div ref={messagesEndRef} />

@@ -41,7 +41,7 @@ const TargetContextProvider = ({ children }) => {
     error: "",
     echo: "",
   });
-  const isVerbose = (type, data) => {
+  const isVerboseOnly = (type, data) => {
     const line = data.trim();
     if (
       line.startsWith("ok") ||
@@ -65,7 +65,10 @@ const TargetContextProvider = ({ children }) => {
         data.split("").forEach((element, index) => {
           if (element == "\n" || element == "\r") {
             if (dataBuffer.current[type].length > 0) {
-              const isverbose = isVerbose(type, dataBuffer.current[type]);
+              const isverboseOnly = isVerboseOnly(
+                type,
+                dataBuffer.current[type]
+              );
               dispatchInternally(type, dataBuffer.current[type]);
               //format the output if needed
               if (dataBuffer.current[type].startsWith("{")) {
@@ -74,20 +77,20 @@ const TargetContextProvider = ({ children }) => {
                   terminal.add({
                     type,
                     content: dataBuffer.current[type],
-                    isverbose,
+                    isverboseOnly,
                   });
                 else {
                   terminal.add({
                     type,
                     content: newbuffer,
-                    isverbose,
+                    isverboseOnly,
                   });
                 }
               } else {
                 terminal.add({
                   type,
                   content: dataBuffer.current[type],
-                  isverbose,
+                  isverboseOnly,
                 });
               }
 
@@ -98,7 +101,7 @@ const TargetContextProvider = ({ children }) => {
           }
         });
       } else if (type == "response") {
-        const isverbose = isVerbose(type, data);
+        const isverboseOnly = isVerboseOnly(type, data);
         dispatchInternally(type, data);
         //format the output if needed
         if (data.startsWith("{")) {
@@ -107,25 +110,25 @@ const TargetContextProvider = ({ children }) => {
             terminal.add({
               type,
               content: data,
-              isverbose,
+              isverboseOnly,
             });
           else {
             terminal.add({
               type,
               content: newbuffer,
-              isverbose,
+              isverboseOnly,
             });
           }
         } else {
           terminal.add({
             type,
             content: data,
-            isverbose,
+            isverboseOnly,
           });
         }
       } else {
-        const isverbose = isVerbose(type, data);
-        terminal.add({ type, content: data, isverbose });
+        const isverboseOnly = isVerboseOnly(type, data);
+        terminal.add({ type, content: data, isverboseOnly });
         dispatchInternally(type, data);
       }
       dispatchToExtensions(type, data);
