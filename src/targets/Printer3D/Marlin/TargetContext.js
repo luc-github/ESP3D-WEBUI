@@ -42,10 +42,11 @@ const TargetContextProvider = ({ children }) => {
     echo: "",
   });
   const isVerbose = (type, data) => {
+    const line = data.trim();
     if (
-      data.startsWith("ok") ||
-      data.startsWith("M105") ||
-      (data.startsWith("{") && data.endsWith("}"))
+      line.startsWith("ok") ||
+      line.startsWith("M105") ||
+      (line.startsWith("{") && line.endsWith("}"))
     )
       return true;
     else return false;
