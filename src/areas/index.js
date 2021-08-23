@@ -63,7 +63,7 @@ const ContentContainer = () => {
   const { getConnectionSettings, getInterfaceSettings } = useSettings();
   const { createNewRequest } = useHttpQueue();
 
-  const processMessage = (eventMsg) => {
+  const processExtensionMessage = (eventMsg) => {
     if (eventMsg.data.type && eventMsg.data.content) {
       switch (eventMsg.data.type) {
         case "response":
@@ -86,6 +86,7 @@ const ContentContainer = () => {
           );
           break;
         default:
+          //core and stream are only supposed to come from ESP3D or main FW
           return;
       }
     }
@@ -95,7 +96,7 @@ const ContentContainer = () => {
     //To init settings
     //to get language first
     getInterfaceSettings(null, getConnectionSettings);
-    window.addEventListener("message", processMessage, false);
+    window.addEventListener("message", processExtensionMessage, false);
   }, []);
   return <ViewContainer />;
 };

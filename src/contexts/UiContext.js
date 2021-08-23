@@ -35,6 +35,7 @@ const UiContextProvider = ({ children }) => {
   const [panelsList, setPanelsList] = useState([]);
   const [visiblePanelsList, setVisiblePanelsList] = useState([]);
   const uiRefreshPaused = useRef({});
+  const timersList = useRef({});
   const [initPanelsVisibles, setInitPanelsVisibles] = useState(false);
   const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
@@ -124,6 +125,7 @@ const UiContextProvider = ({ children }) => {
   };
 
   const store = {
+    timerIDs: timersList,
     panels: {
       list: panelsList,
       set: setPanelsList,

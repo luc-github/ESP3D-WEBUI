@@ -24,6 +24,7 @@ import { T } from "../../components/Translations";
 import { List } from "preact-feather";
 import { iconsFeather } from "../../components/Images";
 import { defaultPanelsList, iconsTarget } from "../../targets";
+import { ExtraPanelElement } from "../../components/Panel/ExtraPanel";
 
 const Dashboard = () => {
   console.log("Dashboard");
@@ -31,6 +32,7 @@ const Dashboard = () => {
   const { panels, uisettings } = useUiContext();
   const { terminal } = useDatasContext();
   const menuPanelsList = useRef();
+
   useEffect(() => {
     if (!panels.initDone && panels.list.length != 0) {
       panels.setVisibles(
@@ -46,15 +48,39 @@ const Dashboard = () => {
       terminal.isVerbose.current = uisettings.getValue("verbose");
       terminal.isAutoScroll.current = uisettings.getValue("autoscroll");
       panels.setInitDone(true);
+    } else {
+      //now remove if any visible that is not in list
+      panels.visibles.forEach((element) => {
+        if (!panels.list.find((panel) => panel.id == element.id))
+          panels.hide(element.id);
+      });
     }
   });
+
   useEffect(() => {
-    panels.set([...defaultPanelsList]);
+    if (uisettings.getValue("showextrapanels")) {
+      const extraPanels = uisettings.getValue("extrapanels");
+      const extraPanelsList = extraPanels.reduce((acc, curr) => {
+        const item = curr.value.reduce((accumulator, current) => {
+          accumulator[current.name] = current.initial;
+          return accumulator;
+        }, {});
+
+        if (item.target == "panel") {
+          acc.push(ExtraPanelElement(item, "EXTRAPANEL-" + curr.id));
+        }
+        return acc;
+      }, []);
+      return panels.set([...defaultPanelsList, ...extraPanelsList]);
+    } else {
+      return panels.set([...defaultPanelsList]);
+    }
     //now remove if any visible that is not in list
     panels.visibles.forEach((element) => {
       if (!uisettings.getValue(element.show)) panels.hide(element.id);
     });
   }, []);
+
   return (
     <div id="dashboard">
       <div class="buttons-bar m-2">
@@ -116,7 +142,7 @@ const Dashboard = () => {
                           <span class="text-menu-item">{T(panel.name)}</span>
                         </span>
                         {isVisible && (
-                          <span class="btn btn-clear" aria-label="Close" />
+                          <span class="btn btn-clear mt-2" aria-label="Close" />
                         )}
                       </div>
                     </div>

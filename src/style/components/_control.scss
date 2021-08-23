@@ -64,6 +64,10 @@
   width: 100%;
 }
 
+.body-extension {
+  overflow-y: auto !important;
+}
+
 .mobile-view .btn-header,
 .btn-header:hover,
 .mobile-view .btn-close,
