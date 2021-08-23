@@ -221,13 +221,7 @@ const InterfaceTab = () => {
       { method: "POST", id: "preferences", body: formData },
       {
         onSuccess: (result) => {
-          //refresh whole UI
-          connection.setConnectionState({
-            connected: connection.connectionState.connected,
-            authenticate: connection.connectionState.authenticate,
-            page: "connecting",
-          });
-          setTimeout(getInterface, 1000);
+          window.location.reload();
         },
         onFail: (error) => {
           setIsLoading(false);

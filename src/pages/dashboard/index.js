@@ -71,9 +71,9 @@ const Dashboard = () => {
         }
         return acc;
       }, []);
-      return panels.set([...defaultPanelsList, ...extraPanelsList]);
+      panels.set([...defaultPanelsList, ...extraPanelsList]);
     } else {
-      return panels.set([...defaultPanelsList]);
+      panels.set([...defaultPanelsList]);
     }
     //now remove if any visible that is not in list
     panels.visibles.forEach((element) => {
@@ -112,14 +112,13 @@ const Dashboard = () => {
                 const displayIcon = iconsList[panel.icon]
                   ? iconsList[panel.icon]
                   : "";
-                const [isVisible, setVisible] = useState(
-                  panels.visibles.find((element) => element.id == panel.id) !=
-                    undefined
+                const isvisible = panels.visibles.find(
+                  (element) => element.id == panel.id
                 );
+                const [isVisible, setVisible] = useState(isvisible);
                 useEffect(() => {
                   setVisible(
-                    panels.visibles.find((element) => element.id == panel.id) !=
-                      undefined
+                    panels.visibles.find((element) => element.id == panel.id)
                   );
                 }, [panels.visibles]);
                 return (
@@ -127,13 +126,12 @@ const Dashboard = () => {
                     <div
                       class="menu-entry"
                       onclick={(e) => {
-                        setVisible(!isVisible);
                         if (isVisible) {
                           panels.hide(panel.id);
                         } else {
-                          console.log(panel.id);
                           panels.show(panel.id);
                         }
+                        setVisible(!isVisible);
                       }}
                     >
                       <div class="menu-panel-item">
