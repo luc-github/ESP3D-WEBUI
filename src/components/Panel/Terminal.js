@@ -54,15 +54,13 @@ const TerminalPanel = () => {
   let lastPos = 0;
   const inputRef = useRef();
   const messagesEndRef = useRef(null);
+  const terminalOutput = useRef(null);
   const id = "terminalPanel";
   let inputHistoryIndex = terminal.inputHistory.length - 1;
   const scrollToBottom = () => {
-    if (terminal.isAutoScroll.current && !terminal.isAutoScrollPaused.current)
-      messagesEndRef.current.scrollIntoView({
-        block: "end",
-        inline: "nearest",
-        behavior: "smooth",
-      });
+    if (terminal.isAutoScroll.current && !terminal.isAutoScrollPaused.current) {
+      terminalOutput.current.scrollTop = terminalOutput.current.scrollHeight;
+    }
   };
   const onKeyUp = (e) => {
     switch (e.keyCode) {
@@ -240,6 +238,7 @@ const TerminalPanel = () => {
           />
         </div>
         <div
+          ref={terminalOutput}
           class="panel-body panel-body-dashboard terminal m-2"
           onScroll={(e) => {
             if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
