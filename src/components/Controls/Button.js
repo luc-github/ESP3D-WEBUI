@@ -31,6 +31,7 @@ const modifiers = {
   success: "btn-success",
   lg: "btn-lg",
   sm: "btn-sm",
+  xs: "btn-xs",
   block: "btn-block",
   action: "btn-action",
   circle: "s-circle",

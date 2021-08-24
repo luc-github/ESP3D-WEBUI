@@ -22,7 +22,7 @@ import { useRef, useEffect, useState } from "preact/hooks";
 import { espHttpURL } from "../Helpers";
 import { useUiContext } from "../../contexts";
 import { useHttpQueue } from "../../hooks";
-import { Play, Pause, Aperture } from "preact-feather";
+import { Play, Pause, Aperture, RefreshCcw } from "preact-feather";
 import { ButtonImg } from "../Controls";
 import { T } from "../Translations";
 import { iconsFeather } from "../Images";
@@ -127,6 +127,17 @@ const ExtraContent = ({
   const ControlButtons = () => {
     return (
       <Fragment>
+        {parseInt(refreshtime) == 0 && target == "page" && (
+          <div class="m-2 image-button-bar">
+            <ButtonImg
+              m1
+              icon={<RefreshCcw size="0.8rem" />}
+              onclick={() => {
+                loadContent();
+              }}
+            />
+          </div>
+        )}
         {parseInt(refreshtime) > 0 && type != "extension" && (
           <div class="m-2 image-button-bar">
             <ButtonImg
@@ -256,6 +267,17 @@ const ExtraContent = ({
               <strong class="text-ellipsis">{T(label)}</strong>
             </span>
             <span class="navbar-section">
+              {refreshtime == 0 && (
+                <ButtonImg
+                  xs
+                  m1
+                  nomin="yes"
+                  icon={<RefreshCcw size="0.8rem" />}
+                  onclick={() => {
+                    loadContent();
+                  }}
+                />
+              )}
               <span style="height: 100%;">
                 <button
                   class="btn btn-clear btn-close m-1"
