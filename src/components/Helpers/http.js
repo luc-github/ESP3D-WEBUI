@@ -75,8 +75,4 @@ function isLimitedEnvironment(mode) {
   return false;
 }
 
-function autoscroll() {
-  if (isAutoScroll) consoleContent.scrollTop = consoleContent.scrollHeight;
-}
-
 export { espHttpURL, getCookie, isLimitedEnvironment };
