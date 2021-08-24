@@ -38,10 +38,14 @@ import { ButtonImg } from "../Controls";
  *
  */
 const TerminalPanel = () => {
-  const { panels } = useUiContext();
+  const { panels, uisettings } = useUiContext();
   const { terminal } = useDatasContext();
   const { processData } = useTargetContext();
   const { createNewRequest } = useHttpQueue();
+  if (terminal.isVerbose.current == undefined)
+    terminal.isVerbose.current = uisettings.getValue("verbose");
+  if (terminal.isAutoScroll.current == undefined)
+    terminal.isAutoScroll.current = uisettings.getValue("autoscroll");
   const [isVerbose, setIsVerbose] = useState(terminal.isVerbose.current);
   const [isAutoScroll, setIsAutoScroll] = useState(
     terminal.isAutoScroll.current
@@ -54,7 +58,11 @@ const TerminalPanel = () => {
   let inputHistoryIndex = terminal.inputHistory.length - 1;
   const scrollToBottom = () => {
     if (terminal.isAutoScroll.current && !terminal.isAutoScrollPaused.current)
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView({
+        block: "end",
+        inline: "nearest",
+        behavior: "smooth",
+      });
   };
   const onKeyUp = (e) => {
     switch (e.keyCode) {

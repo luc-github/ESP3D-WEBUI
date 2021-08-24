@@ -29,6 +29,7 @@ import { useUiContext } from "../../contexts";
 const MacrosPanel = () => {
   const { panels } = useUiContext();
   const id = "macrosPanel";
+  console.log(id);
   useEffect(() => {}, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">

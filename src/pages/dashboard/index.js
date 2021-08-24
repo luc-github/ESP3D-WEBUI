@@ -19,7 +19,7 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { useUiContext, useDatasContext } from "../../contexts";
+import { useUiContext } from "../../contexts";
 import { T } from "../../components/Translations";
 import { List } from "preact-feather";
 import { iconsFeather } from "../../components/Images";
@@ -30,7 +30,6 @@ const Dashboard = () => {
   console.log("Dashboard");
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const { panels, uisettings } = useUiContext();
-  const { terminal } = useDatasContext();
   const menuPanelsList = useRef();
 
   useEffect(() => {
@@ -45,8 +44,7 @@ const Dashboard = () => {
           return acc;
         }, [])
       );
-      terminal.isVerbose.current = uisettings.getValue("verbose");
-      terminal.isAutoScroll.current = uisettings.getValue("autoscroll");
+
       panels.setInitDone(true);
     } else {
       //now remove if any visible that is not in list
@@ -56,7 +54,7 @@ const Dashboard = () => {
       });
     }
   });
-
+  console.log("Refresh");
   useEffect(() => {
     if (uisettings.getValue("showextrapanels")) {
       const extraPanels = uisettings.getValue("extrapanels");

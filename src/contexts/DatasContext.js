@@ -30,8 +30,8 @@ const useDatasContext = () => useContext(DatasContext);
 const DatasContextProvider = ({ children }) => {
   const about = useRef([]);
   const isAutoScroll = useRef(true);
-  const isAutoScrollPaused = useRef(false);
-  const isVerbose = useRef(true);
+  const isAutoScrollPaused = useRef(undefined);
+  const isVerbose = useRef(undefined);
   const terminalBuffer = useRef([]);
   const [terminalContent, setTerminalContent] = useState([]);
   const [terminalInputHistory, setTerminalInputHistory] = useState([]);
