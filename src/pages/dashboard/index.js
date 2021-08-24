@@ -87,6 +87,7 @@ const Dashboard = () => {
             <span
               class="dropdown-toggle btn tooltip tooltip-right m-1"
               tabindex="0"
+              style="z-index: 10000"
               data-tooltip={T("S187")}
             >
               <List />
