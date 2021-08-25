@@ -62,9 +62,9 @@ const MainContainer = () => {
   let content = T("S124");
 
   const newroutes = () => {
-    if (uisettings.getValue("showextrapanels")) {
-      const extraPanels = uisettings.getValue("extrapanels");
-      const extraPages = extraPanels.reduce((acc, curr) => {
+    if (uisettings.getValue("showextracontents")) {
+      const extraContents = uisettings.getValue("extracontents");
+      const extraPages = extraContents.reduce((acc, curr) => {
         const item = curr.value.reduce((accumulator, current) => {
           accumulator[current.name] = current.initial;
           return accumulator;

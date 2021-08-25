@@ -56,9 +56,9 @@ const Dashboard = () => {
   });
   console.log("Refresh");
   useEffect(() => {
-    if (uisettings.getValue("showextrapanels")) {
-      const extraPanels = uisettings.getValue("extrapanels");
-      const extraPanelsList = extraPanels.reduce((acc, curr) => {
+    if (uisettings.getValue("showextracontents")) {
+      const extraContents = uisettings.getValue("extracontents");
+      const extraPanelsList = extraContents.reduce((acc, curr) => {
         const item = curr.value.reduce((accumulator, current) => {
           accumulator[current.name] = current.initial;
           return accumulator;

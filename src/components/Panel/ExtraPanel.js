@@ -52,7 +52,7 @@ const ExtraPanelElement = (element, id) => {
     ),
     name: element.name,
     icon: element.icon,
-    show: "showextrapanels",
+    show: "showextracontents",
     onstart: "openextrapanelsonstart",
   };
 };

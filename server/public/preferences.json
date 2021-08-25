@@ -42,9 +42,9 @@
     "type": "URI"
    }
   ],
-  "showextrapanels": true,
+  "showextracontents": true,
   "openextrapanelsonstart": true,
-  "extrapanels": [
+  "extracontents": [
    {
     "id": "dk93rqf58",
     "name": "Extension",
@@ -65,12 +65,12 @@
    },
    {
     "id": "x6fu4dpuc",
-    "name": "Page 2",
-    "icon": "Meh",
-    "target": "page",
-    "source": "http://www.gmail.com",
+    "name": "Kiri:slicer",
+    "icon": "Scissors",
+    "target": "panel",
+    "source": "https://grid.space/kiri/",
     "type": "content",
-    "refreshtime": "100"
+    "refreshtime": "0"
    }
   ],
   "showtemperaturespanel": true,

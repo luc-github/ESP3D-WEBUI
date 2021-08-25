@@ -120,10 +120,10 @@ const Navbar = () => {
   };
   const menuLinks = [];
   if (uisettings.current) {
-    if (uisettings.getValue("showextrapanels")) {
-      const extraPanels = uisettings.getValue("extrapanels");
+    if (uisettings.getValue("showextracontents")) {
+      const extraContents = uisettings.getValue("extracontents");
 
-      const extraPages = extraPanels.reduce((acc, curr) => {
+      const extraPages = extraContents.reduce((acc, curr) => {
         const item = curr.value.reduce((accumulator, current) => {
           accumulator[current.name] = current.initial;
           return accumulator;

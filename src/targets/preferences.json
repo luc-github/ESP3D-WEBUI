@@ -129,9 +129,9 @@
           "value": []
         }
       ],
-      "extrapanels": [
+      "extracontents": [
         {
-          "id": "showextrapanels",
+          "id": "showextracontents",
           "type": "boolean",
           "label": "S63",
           "value": false
@@ -143,7 +143,7 @@
           "value": false
         },
         {
-          "id": "extrapanels",
+          "id": "extracontents",
           "type": "list",
           "value": []
         }
