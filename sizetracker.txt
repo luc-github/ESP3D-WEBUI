@@ -1,11 +1,12 @@
 
-                                    printer         grbl      size in 3.0
-Base code               : 3.0.0.a1 : 21.2KB        |        | 27KB
-WS/Http/Auth/Menu       : 3.0.0.a2 : 28.4KB        |        | 34.15KB
-Icons & Mobile view     : 3.0.0.a3 : 29.8KB        |        |
-UI update               : 3.0.0.a4 : 30.6KB        |        | 35.7KB
-Features                : 3.0.0.a5 : 36KB          |        | 41.2KB
-Interface               : 3.0.0.a6 : 36.6KB        |        | 42KB
-UI language pack        : 3.0.0.a7 : 37.3KB        |        | 42.6KB
-Theme pack              : 3.0.0.a8 : 37.5KB        |        | N/A 
-Extra Panels / Macros   : 3.0.0.a.11:47.6KB	   |	    | 42.6KB + 10KB = 52.6KB
+                                        printer         grbl      size in 3.0
+Base code               : 3.0.0.a1      : 21.2KB        |        | 27KB
+WS/Http/Auth/Menu       : 3.0.0.a2      : 28.4KB        |        | 34.15KB
+Icons & Mobile view     : 3.0.0.a3      : 29.8KB        |        |
+UI update               : 3.0.0.a4      : 30.6KB        |        | 35.7KB
+Features                : 3.0.0.a5      : 36KB          |        | 41.2KB
+Interface               : 3.0.0.a6      : 36.6KB        |        | 42KB
+UI language pack        : 3.0.0.a7      : 37.3KB        |        | 42.6KB
+Theme pack              : 3.0.0.a8      : 37.5KB        |        | N/A 
+Extra Panels / Macros / :               	            |	     | 
+Terminal                : 3.0.0.a.12    : 50.4KB	    |	     | 42.6KB + 10.2KB + 1.1KB = 53.9KB

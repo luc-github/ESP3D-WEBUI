@@ -3,6 +3,15 @@
 .panel-features {
   min-height: 300px;
 }
+
+.macro-buttons-panel {
+  display: -ms-flexbox;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-content: stretch;
+}
+
 .panel-body-dashboard,
 .panel-body-interface,
 .panel-body-features {

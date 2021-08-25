@@ -20,7 +20,7 @@ import { h, createContext } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { httpAdapter } from "../adapters";
 import { useUiContext } from "./UiContext";
-
+import { useTargetContext } from "../targets";
 /*
  * Local const
  *
@@ -29,6 +29,7 @@ const HttpQueueContext = createContext("HttpQueueContext");
 const useHttpQueueContext = () => useContext(HttpQueueContext);
 
 const HttpQueueContextProvider = ({ children }) => {
+  const { processData } = useTargetContext();
   const requestQueue = useRef([]); // Http queue for every components
   const isBusy = useRef(false);
   const currentRequest = useRef();
@@ -79,6 +80,9 @@ const HttpQueueContextProvider = ({ children }) => {
     let is401Error = false;
     try {
       currentRequest.current = httpAdapter(url, params, onProgress);
+      if (params.echo) {
+        processData("echo", params.echo);
+      }
       const response = await currentRequest.current.response;
       onSuccess(response);
     } catch (e) {

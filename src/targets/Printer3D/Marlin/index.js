@@ -44,6 +44,17 @@ const defaultPanelsList = [
 
 const restartdelay = 30;
 
+const startJobCmd = (target, filename) => {
+  switch (target) {
+    case "SD":
+      return "M23 " + filename + "\nM24";
+      break;
+    default:
+      console.log("no idea sorry");
+      break;
+  }
+};
+
 export {
   Target,
   Parser,
@@ -54,4 +65,5 @@ export {
   defaultPanelsList,
   TargetContextProvider,
   useTargetContext,
+  startJobCmd,
 };

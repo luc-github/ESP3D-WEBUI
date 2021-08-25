@@ -17,13 +17,14 @@ Macros.js - ESP3D WebUI component file
 */
 
 import { h } from "preact";
-import { useEffect } from "preact/hooks";
 import { T } from "../Translations";
 import { Cast } from "preact-feather";
 import { useUiContext } from "../../contexts";
 import { ButtonImg } from "../Controls";
+import { useHttpQueue } from "../../hooks";
+import { espHttpURL } from "../Helpers";
 import { iconsFeather } from "../Images";
-import { iconsTarget } from "../../targets";
+import { iconsTarget, useTargetContext, startJobCmd } from "../../targets";
 
 /*
  * Local const
@@ -31,9 +32,26 @@ import { iconsTarget } from "../../targets";
  */
 const MacrosPanel = () => {
   const { panels, uisettings } = useUiContext();
+  const { processData } = useTargetContext();
+  const { createNewRequest } = useHttpQueue();
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const id = "macrosPanel";
   console.log(id);
+  const sendCommand = (cmd) => {
+    createNewRequest(
+      espHttpURL("command", { cmd }).toString(),
+      { method: "GET", echo: cmd },
+      {
+        onSuccess: (result) => {
+          processData("response", result);
+        },
+        onFail: (error) => {
+          console.log(error);
+          processData("error", error);
+        },
+      }
+    );
+  };
 
   const macroList = uisettings.getValue("macros");
   const macroButtons = macroList.reduce((acc, curr) => {
@@ -48,21 +66,46 @@ const MacrosPanel = () => {
     switch (type) {
       case "FS":
         //[ESP700] //ESP700 should send status to telnet / websocket
-        console.log("type:", type, " action:", action);
+        sendCommand("[ESP700]" + action);
         break;
       case "SD":
-        //M23/M24 depending of target FW
-        console.log("type:", type, " action:", action);
+        //get command accoring target FW
+        const cmds = startJobCmd("SD", action).split("\n");
+        cmds.forEach((cmd) => {
+          sendCommand(cmd);
+        });
+
         break;
+      //TODO:
       //TFT SD ? same as above
       //TFT USB ? same as above
       case "URI":
         //open new page or silent command
-        console.log("type:", type, " action:", action);
+        const uri = action.trim().replace("[SILENT]", "");
+        if (action.trim().startsWith("[SILENT]")) {
+          const uri = action.trim().replace("[SILENT]", "");
+          var myInit = { method: "GET", mode: "cors", cache: "default" };
+          fetch(uri, myInit)
+            .then(function (response) {
+              if (response.ok) {
+                console.log("Request succeeded");
+              } else {
+                console.log("Request failed");
+              }
+            })
+            .catch(function (error) {
+              console.log("Request failed: " + error.message);
+            });
+        } else {
+          window.open(action);
+        }
         break;
       case "CMD":
         //split by ; and show in terminal
-        console.log("type:", type, " action:", action);
+        const commandsList = action.trim().split(";");
+        commandsList.forEach((element) => {
+          sendCommand(element);
+        });
         break;
       default:
         console.log("type:", type, " action:", action);
@@ -70,9 +113,6 @@ const MacrosPanel = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(macroButtons);
-  }, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
@@ -94,7 +134,7 @@ const MacrosPanel = () => {
           </span>
         </div>
         <div class="panel-body panel-body-dashboard">
-          <div class="flex-wrap">
+          <div class="macro-buttons-panel">
             {macroButtons.map((element) => {
               const displayIcon = iconsList[element.icon]
                 ? iconsList[element.icon]

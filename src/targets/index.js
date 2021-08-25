@@ -28,6 +28,7 @@ import {
   restartdelay,
   TargetContextProvider,
   useTargetContext,
+  startJobCmd,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -57,4 +58,5 @@ export {
   restartdelay,
   TargetContextProvider,
   useTargetContext,
+  startJobCmd,
 };
