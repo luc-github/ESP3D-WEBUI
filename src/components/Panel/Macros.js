@@ -19,18 +19,60 @@ Macros.js - ESP3D WebUI component file
 import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { T } from "../Translations";
-import { MoreVertical, Cast } from "preact-feather";
+import { Cast } from "preact-feather";
 import { useUiContext } from "../../contexts";
+import { ButtonImg } from "../Controls";
+import { iconsFeather } from "../Images";
+import { iconsTarget } from "../../targets";
 
 /*
  * Local const
  *
  */
 const MacrosPanel = () => {
-  const { panels } = useUiContext();
+  const { panels, uisettings } = useUiContext();
+  const iconsList = { ...iconsTarget, ...iconsFeather };
   const id = "macrosPanel";
   console.log(id);
-  useEffect(() => {}, []);
+
+  const macroList = uisettings.getValue("macros");
+  const macroButtons = macroList.reduce((acc, curr) => {
+    const item = curr.value.reduce((accumulator, current) => {
+      accumulator[current.name] = current.initial;
+      return accumulator;
+    }, {});
+    acc.push(item);
+    return acc;
+  }, []);
+  const processMacro = (action, type) => {
+    switch (type) {
+      case "FS":
+        //[ESP700] //ESP700 should send status to telnet / websocket
+        console.log("type:", type, " action:", action);
+        break;
+      case "SD":
+        //M23/M24 depending of target FW
+        console.log("type:", type, " action:", action);
+        break;
+      //TFT SD ? same as above
+      //TFT USB ? same as above
+      case "URI":
+        //open new page or silent command
+        console.log("type:", type, " action:", action);
+        break;
+      case "CMD":
+        //split by ; and show in terminal
+        console.log("type:", type, " action:", action);
+        break;
+      default:
+        console.log("type:", type, " action:", action);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    console.log(macroButtons);
+  }, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
@@ -51,7 +93,25 @@ const MacrosPanel = () => {
             </span>
           </span>
         </div>
-        <div class="panel-body panel-body-dashboard">Macros panel</div>
+        <div class="panel-body panel-body-dashboard">
+          <div class="flex-wrap">
+            {macroButtons.map((element) => {
+              const displayIcon = iconsList[element.icon]
+                ? iconsList[element.icon]
+                : "";
+              return (
+                <ButtonImg
+                  m1
+                  label={element.name}
+                  icon={displayIcon}
+                  onclick={(e) => {
+                    processMacro(element.action, element.type);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
