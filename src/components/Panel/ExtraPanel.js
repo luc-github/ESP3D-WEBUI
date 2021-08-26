@@ -38,6 +38,7 @@ const ExtraPanel = ({ id, source, refreshtime, label, type, icon }) => {
 };
 
 const ExtraPanelElement = (element, id) => {
+  console.log("Panel ", id);
   return {
     id,
     content: (

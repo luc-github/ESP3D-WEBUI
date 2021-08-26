@@ -17,8 +17,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useState, useEffect, useRef } from "preact/hooks";
-import { useHttpQueueContext, useUiContext } from "../contexts";
+import { useState, useRef } from "preact/hooks";
+import { useHttpQueueContext } from "../contexts";
 import { generateUID } from "../components/Helpers";
 
 /*
@@ -36,10 +36,6 @@ const useHttpQueue = () => {
   const [data, setData] = useState();
   const [killOnUnmount, setKillOnUnmount] = useState(true);
   const localRequests = useRef([]);
-
-  useEffect(() => {
-    // return () => killOnUnmount && removeRequests(_localRequests.current);
-  }, []);
 
   const createNewTopRequest = (url, params, callbacks = {}) => {
     const {
