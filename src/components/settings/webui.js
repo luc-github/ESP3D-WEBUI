@@ -439,7 +439,7 @@ function loadConfigSuccess(responseText) {
         if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
             setupWebSocket(
                 data.WebCommunication,
-                data.WebSocketIP,
+                document.location.hostname,
                 data.WebSocketport
             )
         }
@@ -464,7 +464,7 @@ function loadConfigError(errorCode, responseText) {
 function loadImportFile() {
     let importFile = document.getElementById("importPControl").files
     let reader = new FileReader()
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         var contents = e.target.result
         console.log(contents)
         try {
@@ -683,7 +683,7 @@ function exportSettings() {
         a.download = filename
         document.body.appendChild(a)
         a.click()
-        setTimeout(function() {
+        setTimeout(function () {
             document.body.removeChild(a)
             window.URL.revokeObjectURL(url)
         }, 0)
@@ -908,7 +908,7 @@ function updateState(entry, index = null, target = "macro") {
  * Check box control
  */
 const CheckboxControl = ({ entry, title, label }) => {
-    const toggleCheckbox = e => {
+    const toggleCheckbox = (e) => {
         prefs[entry] = e.target.checked
         showDialog({ displayDialog: false, refreshPage: true })
     }
@@ -934,7 +934,7 @@ const CheckboxControl = ({ entry, title, label }) => {
  */
 const LanguageSelection = () => {
     let optionList = []
-    const onChange = e => {
+    const onChange = (e) => {
         prefs.language = e.target.value
         loadLanguage(prefs.language)
     }
@@ -1070,7 +1070,7 @@ function addPanel() {
  * Icon Macro for selection
  */
 const IconUIEntry = ({ index, name, target }) => {
-    const selectControlIcon = e => {
+    const selectControlIcon = (e) => {
         if (target == "panel") {
             prefs.extrapanels[index].icon = name
         } else {
@@ -1089,16 +1089,16 @@ const IconUIEntry = ({ index, name, target }) => {
  * MacroUISelectTarget
  */
 const MacroUISelectTarget = ({ index, id, label }) => {
-    const onChange = e => {
+    const onChange = (e) => {
         macros[index][id] = e.target.value
         updateState(id, index)
     }
-    const onFocus = e => {
+    const onFocus = (e) => {
         document
             .getElementById(id + "_" + index + "-UI-label")
             .classList.remove("d-none")
     }
-    const onFocusOut = e => {
+    const onFocusOut = (e) => {
         document
             .getElementById(id + "_" + index + "-UI-label")
             .classList.add("d-none")
@@ -1178,7 +1178,7 @@ const MacroUISelectTarget = ({ index, id, label }) => {
  * PanelUISelectControl
  */
 const PanelUISelectControl = ({ index, id, label, options }) => {
-    const onChange = e => {
+    const onChange = (e) => {
         prefs.extrapanels[index][id] = e.target.value
         if (id == "type" && e.target.value == "camera") {
             if (!prefs.extrapanels[index]["source"].startsWith("/snap")) {
@@ -1190,12 +1190,12 @@ const PanelUISelectControl = ({ index, id, label, options }) => {
         }
         updateState(id, index, "panel")
     }
-    const onFocus = e => {
+    const onFocus = (e) => {
         document
             .getElementById("panel_" + id + "_" + index + "-UI-label")
             .classList.remove("d-none")
     }
-    const onFocusOut = e => {
+    const onFocusOut = (e) => {
         document
             .getElementById("panel_" + id + "_" + index + "-UI-label")
             .classList.add("d-none")
@@ -1240,21 +1240,21 @@ const PanelUISelectControl = ({ index, id, label, options }) => {
  * MacroUIEntry
  */
 const MacroUIEntry = ({ index, id, label }) => {
-    const onInput = e => {
+    const onInput = (e) => {
         macros[index][id] = e.target.value
         updateState(id, index)
     }
-    const onFocus = e => {
+    const onFocus = (e) => {
         document
             .getElementById(id + "_" + index + "-UI-label")
             .classList.remove("d-none")
     }
-    const onFocusOut = e => {
+    const onFocusOut = (e) => {
         document
             .getElementById(id + "_" + index + "-UI-label")
             .classList.add("d-none")
     }
-    const showListIcons = e => {
+    const showListIcons = (e) => {
         let list = []
         let message = []
         let allkey = Object.keys(iconsList)
@@ -1361,21 +1361,21 @@ const MacroUIEntry = ({ index, id, label }) => {
  * PanelUIEntry
  */
 const PanelUIEntry = ({ index, id, label }) => {
-    const onInput = e => {
+    const onInput = (e) => {
         prefs.extrapanels[index][id] = e.target.value
         updateState(id, index, "panel")
     }
-    const onFocus = e => {
+    const onFocus = (e) => {
         document
             .getElementById("panel_" + id + "_" + index + "-UI-label")
             .classList.remove("d-none")
     }
-    const onFocusOut = e => {
+    const onFocusOut = (e) => {
         document
             .getElementById("panel_" + id + "_" + index + "-UI-label")
             .classList.add("d-none")
     }
-    const showListIcons = e => {
+    const showListIcons = (e) => {
         let list = []
         let message = []
         let allkey = Object.keys(iconsList)
@@ -1496,7 +1496,7 @@ const PanelUIEntry = ({ index, id, label }) => {
  */
 const ControlListLine = ({ data, index, target }) => {
     let border_bottom = ""
-    const deleteControlLine = e => {
+    const deleteControlLine = (e) => {
         let newlinetmp = []
         let listsize
         if (target == "panel") {
@@ -1520,7 +1520,7 @@ const ControlListLine = ({ data, index, target }) => {
         }
         showDialog({ displayDialog: false, refreshPage: true })
     }
-    const upControlLine = e => {
+    const upControlLine = (e) => {
         let newlinetmp = []
         let listsize
         if (target == "panel") {
@@ -1552,7 +1552,7 @@ const ControlListLine = ({ data, index, target }) => {
         }
         showDialog({ displayDialog: false, refreshPage: true })
     }
-    const downControlLine = e => {
+    const downControlLine = (e) => {
         let newlinetmp = []
         let listsize
         if (target == "panel") {
