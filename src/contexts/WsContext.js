@@ -168,7 +168,7 @@ const WsContextProvider = ({ children }) => {
         : "/ws";
 
     wsConnection.current = new WebSocket(
-      `ws://${connectionSettings.current.WebSocketIP}:${connectionSettings.current.WebSocketport}${path}`,
+      `ws://${document.location.hostname}:${connectionSettings.current.WebSocketport}${path}`,
       ["arduino"]
     );
     wsConnection.current.binaryType = "arraybuffer";
