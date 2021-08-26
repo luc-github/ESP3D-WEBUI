@@ -186,22 +186,9 @@ const WsContextProvider = ({ children }) => {
     }
   }, [connectionSettings.current]);
 
-  //TODO: Not yet Used
-  const addData = (cmdLine) => {
-    const newWsData = [...wsData, cmdLine];
-    dataBuffer.current = newWsData;
-    setWsData(newWsData);
-  };
-  //TODO: Not yet Used
-  const setData = (cmdLine) => {
-    dataBuffer.current = cmdLine;
-    setWsData(cmdLine);
-  };
-
   const store = {
     ws: wsConnection.current,
-    setData,
-    addData,
+
     setIsPingPaused, //to be used in HTTP queries
     Disconnect,
   };

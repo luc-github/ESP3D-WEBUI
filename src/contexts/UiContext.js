@@ -23,7 +23,6 @@ import {
   removeEntriesByIDs,
   disableNode,
 } from "../components/Helpers";
-import { useSettings } from "../hooks";
 
 /*
  * Local const
@@ -142,7 +141,7 @@ const UiContextProvider = ({ children }) => {
       getValue,
       refreshPaused: uiRefreshPaused.current,
     },
-    //data: [data, setData],
+
     modals: {
       modalList: modals,
       addModal,

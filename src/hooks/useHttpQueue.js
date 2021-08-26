@@ -33,7 +33,6 @@ const useHttpQueue = () => {
     getCurrentRequest,
     processRequests,
   } = useHttpQueueContext();
-  const [data, setData] = useState();
   const [killOnUnmount, setKillOnUnmount] = useState(true);
   const localRequests = useRef([]);
 
@@ -50,7 +49,6 @@ const useHttpQueue = () => {
       url,
       params,
       onSuccess: (result) => {
-        setData(result);
         if (onSuccessCb) onSuccessCb(result);
       },
       onProgress: (e) => {
@@ -85,7 +83,6 @@ const useHttpQueue = () => {
       url,
       params,
       onSuccess: (result) => {
-        //setData(result);
         if (onSuccessCb) onSuccessCb(result);
         localRequests.current.splice(localRequests.current.indexOf(id), 1);
       },
@@ -116,8 +113,6 @@ const useHttpQueue = () => {
   };
 
   return {
-    data,
-    setData,
     createNewRequest,
     processRequestsNow,
     createNewTopRequest,
