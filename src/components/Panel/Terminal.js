@@ -148,19 +148,6 @@ const TerminalPanel = () => {
                     <div
                       class="menu-entry"
                       onclick={(e) => {
-                        terminal.clear();
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("S79")}</span>
-                        <span class="btn btn-clear" aria-label="Close" />
-                      </div>
-                    </div>
-                  </li>
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
                         terminal.isVerbose.current = !isVerbose;
                         setIsVerbose(!isVerbose);
                       }}
@@ -203,6 +190,20 @@ const TerminalPanel = () => {
                             <Circle size="0.8rem" />
                           )}
                         </span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="divider" />
+                  <li class="menu-item">
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        terminal.clear();
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("S79")}</span>
+                        <span class="btn btn-clear" aria-label="Close" />
                       </div>
                     </div>
                   </li>

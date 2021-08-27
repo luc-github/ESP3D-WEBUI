@@ -249,7 +249,6 @@ const Navbar = () => {
                                 </Fragment>
                               );
                               setHrefButton(href.replace("#/", ""));
-                              console.log(href);
                             }}
                           >
                             {icon}
