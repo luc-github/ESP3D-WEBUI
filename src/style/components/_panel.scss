@@ -2,6 +2,10 @@
 .panel-interface,
 .panel-features {
   min-height: 300px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .macro-buttons-panel {
@@ -29,6 +33,10 @@
 
 .panel-item {
   flex: 0 1 auto;
+}
+
+.files-list-footer {
+  padding: 0.2rem 0.8rem !important;
 }
 
 .column {

@@ -27,6 +27,16 @@
   border-radius: $border-radius;
 }
 
+.files-list {
+  border: 0.05rem solid #dadee4;
+  border-radius: $border-radius;
+  padding: 5px 5px !important;
+  margin-top: 0px !important;
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+  max-height: 600px;
+}
+
 .terminal {
   font-size: $font-size-sm;
   white-space: pre-wrap;
@@ -37,6 +47,10 @@
   margin-top: 0px !important;
   overflow-x: hidden;
   overflow-y: scroll !important;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
   max-height: 600px;
   .echo {
     color: blue;
@@ -108,10 +122,6 @@ a label {
   margin-right: 10px;
 }
 
-.menu-panel-item .feather-icon-container {
-  vertical-align: middle;
-  margin-top: 0.2rem;
-}
 .feather-icon-container .text-menu-item,
 .feather-icon-container .text-ellipsis,
 .feather-icon-container label {
