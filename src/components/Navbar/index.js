@@ -215,7 +215,7 @@ const Navbar = () => {
                 </Link>
               )}
 
-              <div class="dropdown">
+              <div class="dropdown dropdown-right">
                 <a
                   class="btn btn-link no-box dropdown-toggle feather-icon-container"
                   ref={buttonExtraPage}
