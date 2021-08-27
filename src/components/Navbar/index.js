@@ -85,6 +85,7 @@ const Navbar = () => {
       <label class="hide-low">{buttontext}</label>
     </Fragment>
   );
+  const [hrefbutton, setHrefButton] = useState();
 
   function onResize() {
     //if infopage is visible but we are not in mobile view
@@ -148,22 +149,6 @@ const Navbar = () => {
     new ResizeObserver(onResize).observe(document.getElementById("app"));
   }, []);
 
-  useEffect(() => {
-    if (activeRoute.includes("extrapage")) {
-      if (buttonExtraPage.current)
-        buttonExtraPage.current.classList.add("active");
-      menuLinks.map(({ label, icon, href, id }) => {
-        if (href.includes(activeRoute))
-          setTextButton(
-            <Fragment>
-              {icon}
-              <label class="hide-low">{label}</label>
-            </Fragment>
-          );
-      });
-    }
-  }, [activeRoute]);
-
   if (showConfirmation) {
     const title = T("S26");
     const content = T("S152");
@@ -193,12 +178,6 @@ const Navbar = () => {
               return (
                 <Link
                   onclick={(e) => {
-                    setTextButton(
-                      <Fragment>
-                        <Trello />
-                        <label class="hide-low">{buttontext}</label>
-                      </Fragment>
-                    );
                     if (buttonExtraPage.current)
                       buttonExtraPage.current.classList.remove("active");
                   }}
@@ -224,49 +203,64 @@ const Navbar = () => {
               );
             })}
           {menuLinks && menuLinks.length > 0 && (
-            <div class="dropdown">
-              <a
-                class="btn btn-link no-box dropdown-toggle feather-icon-container"
-                ref={buttonExtraPage}
-                onclick={(e) => {
-                  if (menuExtraPage.current)
-                    menuExtraPage.current.classList.remove("d-none");
-                }}
-                tabindex="0"
-              >
-                {textbutton}
-                <ChevronDown />
-              </a>
-              <ul class="menu" ref={menuExtraPage}>
-                {menuLinks &&
-                  menuLinks.map(({ label, icon, href, id }) => {
-                    return (
-                      <li class="menu-item">
-                        <a
-                          id={id}
-                          class="feather-icon-container"
-                          href={href}
-                          onclick={(e) => {
-                            if (menuExtraPage.current)
-                              menuExtraPage.current.classList.add("d-none");
-                            if (buttonExtraPage.current)
-                              buttonExtraPage.current.classList.add("active");
-                            setTextButton(
-                              <Fragment>
-                                {icon}
-                                <label class="hide-low">{label}</label>
-                              </Fragment>
-                            );
-                          }}
-                        >
-                          {icon}
-                          <label>{label}</label>
-                        </a>
-                      </li>
-                    );
-                  })}
-              </ul>
-            </div>
+            <Fragment>
+              {hrefbutton && (
+                <Link
+                  id="extrapagebutton"
+                  className="btn btn-link no-box feather-icon-container"
+                  activeClassName="active"
+                  href={hrefbutton}
+                >
+                  {textbutton}
+                </Link>
+              )}
+
+              <div class="dropdown">
+                <a
+                  class="btn btn-link no-box dropdown-toggle feather-icon-container"
+                  ref={buttonExtraPage}
+                  onclick={(e) => {
+                    if (menuExtraPage.current)
+                      menuExtraPage.current.classList.remove("d-none");
+                  }}
+                  tabindex="0"
+                >
+                  {!hrefbutton && <label class="hide-low">{T("S155")}</label>}
+                  <ChevronDown />
+                </a>
+                <ul class="menu" ref={menuExtraPage}>
+                  {menuLinks &&
+                    menuLinks.map(({ label, icon, href, id }) => {
+                      return (
+                        <li class="menu-item">
+                          <a
+                            id={id}
+                            class="feather-icon-container"
+                            href={href}
+                            onclick={(e) => {
+                              if (menuExtraPage.current)
+                                menuExtraPage.current.classList.add("d-none");
+                              if (buttonExtraPage.current)
+                                buttonExtraPage.current.classList.add("active");
+                              setTextButton(
+                                <Fragment>
+                                  {icon}
+                                  <label class="hide-low">{label}</label>
+                                </Fragment>
+                              );
+                              setHrefButton(href.replace("#/", ""));
+                              console.log(href);
+                            }}
+                          >
+                            {icon}
+                            <label>{label}</label>
+                          </a>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
+            </Fragment>
           )}
         </section>
         <section class="navbar-section">
