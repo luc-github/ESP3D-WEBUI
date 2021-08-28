@@ -21,7 +21,7 @@ import { h } from "preact";
 import {
   defaultPanelsList,
   Target,
-  Parser,
+  files,
   fwUrl,
   Name,
   iconsTarget,
@@ -49,7 +49,7 @@ const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0";
 export {
   Target,
   defaultPreferences,
-  Parser,
+  files,
   defaultPanelsList,
   fwUrl,
   webUiUrl,

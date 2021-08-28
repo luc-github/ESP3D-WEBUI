@@ -18,7 +18,6 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Parser } from "./parser";
 import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
@@ -55,11 +54,110 @@ const startJobCmd = (target, filename) => {
   }
 };
 
+const getFSCommand = (command, filesystem, path, filename) => {
+  console.log(
+    "Command:",
+    command,
+    " Filesystem:",
+    filesystem,
+    " Path:",
+    path,
+    "Filename:",
+    filename
+  );
+  switch (filesystem) {
+    case "FLASH":
+      switch (command) {
+        case "list":
+          return { type: "url", cmd: "/files?path=" + path + "&action=list" };
+        default:
+          console.log("Wrong command");
+          return { type: "error" };
+      }
+      return { type: "url", cmd: "/files?path=" + path + "&action=list" };
+    default:
+      console.log("Wrong filesystem");
+      return { type: "error" };
+  }
+};
+
+const canProcess = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+    default:
+      return false;
+  }
+};
+
+const canUpload = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+      return { upload: true, type: "multiple" };
+    default:
+      return { upload: false };
+  }
+};
+
+const canDownload = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+      return true;
+    default:
+      return false;
+  }
+};
+
+const canDeleteFile = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+      return true;
+    default:
+      return false;
+  }
+};
+
+const canDeleteDir = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+      return true;
+    default:
+      return false;
+  }
+};
+
+const canCreateDir = (filesystem, path, filename) => {
+  switch (filesystem) {
+    case "FLASH":
+      return true;
+    default:
+      return false;
+  }
+};
+
+const supportedFileSystems = [
+  { value: "FLASH", name: "S137", depend: "showfilespanel" },
+  { value: "SD", name: "S190", depend: "sd" },
+  { value: "SDEXT", name: "S191", depend: "sdext" },
+  { value: "TFTSD", name: "S188", depend: "tftsd" },
+  { value: "TFTUSB", name: "S189", depend: "tftusb" },
+];
+
+const files = {
+  getFSCommand,
+  canProcess,
+  canUpload,
+  canDownload,
+  canDeleteFile,
+  canDeleteDir,
+  canCreateDir,
+  supported: supportedFileSystems,
+};
+
 export {
   Target,
-  Parser,
   fwUrl,
   Name,
+  files,
   iconsTarget,
   restartdelay,
   defaultPanelsList,

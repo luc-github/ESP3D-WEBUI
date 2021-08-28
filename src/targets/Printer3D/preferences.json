@@ -152,19 +152,25 @@
         {
           "id": "tftsd",
           "type": "boolean",
-          "label": "P23",
+          "label": "S188",
           "value": false
         },
         {
           "id": "tftusb",
           "type": "boolean",
-          "label": "P24",
+          "label": "S189",
           "value": false
         },
         {
-          "id": "printersd",
+          "id": "sd",
           "type": "boolean",
-          "label": "P26",
+          "label": "S190",
+          "value": false
+        },
+        {
+          "id": "sdext",
+          "type": "boolean",
+          "label": "S191",
           "value": false
         }
       ],
