@@ -24,12 +24,7 @@ import { ButtonImg, Loading, CenterLeft } from "../../components/Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
-import {
-  useUiContext,
-  useDatasContext,
-  useWsContext,
-  useSettingsContext,
-} from "../../contexts";
+import { useUiContext, useWsContext, useSettingsContext } from "../../contexts";
 import { Esp3dVersion } from "../../components/App/version";
 import {
   Github,
@@ -43,6 +38,7 @@ import {
   showConfirmationModal,
   showProgressModal,
 } from "../../components/Modal";
+let about = [];
 
 /*
  * Local const
@@ -102,11 +98,10 @@ const About = () => {
   const [isLoading, setIsLoading] = useState(true);
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
-  const [props, setProps] = useState([]);
+  const [props, setProps] = useState([...about]);
   const [isFwUpdate, setIsFwUpdate] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showProgression, setShowProgression] = useState(false);
-  const { about } = useDatasContext();
   const inputFiles = useRef(null);
   const getProps = () => {
     setIsLoading(true);
@@ -117,7 +112,7 @@ const About = () => {
         onSuccess: (result) => {
           const { Status } = JSON.parse(result);
           setProps([...Status]);
-          about.current = [...Status];
+          about = [...Status];
           setIsLoading(false);
         },
         onFail: (error) => {
@@ -272,8 +267,8 @@ const About = () => {
   }
 
   useEffect(() => {
-    if (about.current.length != 0) {
-      setProps([...about.current]);
+    if (about.length != 0) {
+      setProps([...about]);
       setIsLoading(false);
     } else {
       if (uisettings.getValue("autoload")) getProps();

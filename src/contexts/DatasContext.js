@@ -28,7 +28,6 @@ const DatasContext = createContext("DatasContext");
 const useDatasContext = () => useContext(DatasContext);
 
 const DatasContextProvider = ({ children }) => {
-  const about = useRef([]);
   const isAutoScroll = useRef(true);
   const isAutoScrollPaused = useRef(undefined);
   const isVerbose = useRef(undefined);
@@ -56,7 +55,6 @@ const DatasContextProvider = ({ children }) => {
   };
 
   const store = {
-    about,
     terminal: {
       input: terminalInput,
       content: terminalContent,
