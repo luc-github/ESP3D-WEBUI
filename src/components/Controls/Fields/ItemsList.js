@@ -251,16 +251,29 @@ const ItemsList = ({
     //to update state when import- but why ?
     if (setValue) setValue(null, true);
   }, [value]);
+  const content = (
+    <ButtonImg
+      m2
+      label={id == "macros" ? T("S128") : T("S156")}
+      tooltip
+      data-tooltip={id == "macros" ? T("S128") : T("S156")}
+      icon={<Plus />}
+      onClick={addItem}
+    />
+  );
   return (
-    <div>
-      <ButtonImg
-        m2
-        label={id == "macros" ? T("S128") : T("S156")}
-        tooltip
-        data-tooltip={id == "macros" ? T("S128") : T("S156")}
-        icon={<Plus />}
-        onClick={addItem}
-      />
+    <fieldset class="fieldset-top-separator">
+      <legend>
+        <ButtonImg
+          m2
+          label={id == "macros" ? T("S128") : T("S156")}
+          tooltip
+          data-tooltip={id == "macros" ? T("S128") : T("S156")}
+          icon={<Plus />}
+          onClick={addItem}
+        />
+      </legend>
+
       <div style="display: grid;grid-template-columns: 30% auto 15%; grid-template-rows: auto;">
         {value &&
           value.map((element, index, completeList) => {
@@ -276,7 +289,7 @@ const ItemsList = ({
             );
           })}
       </div>
-    </div>
+    </fieldset>
   );
 };
 

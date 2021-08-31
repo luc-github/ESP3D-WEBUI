@@ -25,6 +25,7 @@
   grid-column-end: 4;
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
+  margin-bottom: 0.4rem;
 }
 
 .files-list {
@@ -35,6 +36,11 @@
   overflow-x: hidden;
   overflow-y: scroll !important;
   max-height: 600px;
+}
+
+.fieldset-top-separator {
+  border-bottom: 0.05rem solid #dadee4;
+  border-top: 0.05rem solid #dadee4;
 }
 
 .terminal {
