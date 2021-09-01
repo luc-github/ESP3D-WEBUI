@@ -94,6 +94,9 @@ const ExtraContent = ({
               case "image":
                 if (element.current) {
                   imageCache.current = result;
+                  element.current.onload = () => {
+                    URL.revokeObjectURL(element.current.src);
+                  };
                   element.current.src = URL.createObjectURL(result);
                 }
 
@@ -172,6 +175,9 @@ const ExtraContent = ({
                     const url = URL.createObjectURL(file);
                     a.href = url;
                     a.download = filename;
+                    a.onload = () => {
+                      URL.revokeObjectURL(a.href);
+                    };
                     document.body.appendChild(a);
                     a.click();
                     setTimeout(function () {
