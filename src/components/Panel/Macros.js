@@ -145,6 +145,7 @@ const MacrosPanel = () => {
                   label={element.name}
                   icon={displayIcon}
                   onclick={(e) => {
+                    e.target.blur();
                     processMacro(element.action, element.type);
                   }}
                 />

@@ -17,7 +17,8 @@
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
   "tftsd": false,
   "tftusb": false,
-  "printersd": false,
+  "sd": false,
+  "sdext": false,
   "showjogpanel": true,
   "openjogonstart": true,
   "xyfeedrate": "1000",
@@ -25,7 +26,7 @@
   "xpos": "100",
   "ypos": "100",
   "showmacrospanel": true,
-  "openmacrosonstart": false,
+  "openmacrosonstart": true,
   "macros": [
    {
     "id": "id2",
@@ -49,7 +50,7 @@
     "id": "dk93rqf58",
     "name": "Extension",
     "icon": "Grid",
-    "target": "page",
+    "target": "panel",
     "source": "/extension.html",
     "type": "extension",
     "refreshtime": "0"
@@ -58,7 +59,7 @@
     "id": 1604059351918,
     "name": "image page avec super long nom",
     "icon": "File",
-    "target": "page",
+    "target": "panel",
     "source": "/image.jpg",
     "type": "image",
     "refreshtime": "0"
@@ -67,7 +68,7 @@
     "id": "x6fu4dpuc",
     "name": "Kiri:slicer",
     "icon": "Scissors",
-    "target": "panel",
+    "target": "page",
     "source": "https://grid.space/kiri/",
     "type": "content",
     "refreshtime": "0"
