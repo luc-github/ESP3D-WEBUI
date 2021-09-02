@@ -21,10 +21,10 @@ import { T } from "../Translations";
 import { Cast } from "preact-feather";
 import { useUiContext } from "../../contexts";
 import { ButtonImg } from "../Controls";
-import { useHttpQueue } from "../../hooks";
+import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { iconsFeather } from "../Images";
-import { iconsTarget, useTargetContext, startJobCmd } from "../../targets";
+import { iconsTarget, useTargetContextFn, startJobCmd } from "../../targets";
 
 /*
  * Local const
@@ -32,8 +32,8 @@ import { iconsTarget, useTargetContext, startJobCmd } from "../../targets";
  */
 const MacrosPanel = () => {
   const { panels, uisettings } = useUiContext();
-  const { processData } = useTargetContext();
-  const { createNewRequest } = useHttpQueue();
+  const { processData } = useTargetContextFn;
+  const { createNewRequest } = useHttpFn;
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const id = "macrosPanel";
   console.log(id);

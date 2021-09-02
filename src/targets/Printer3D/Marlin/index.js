@@ -22,7 +22,11 @@ import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
 import { TerminalPanelElement } from "../../../components/Panel/Terminal";
-import { TargetContextProvider, useTargetContext } from "./TargetContext";
+import {
+  TargetContextProvider,
+  useTargetContext,
+  useTargetContextFn,
+} from "./TargetContext";
 
 const Target = "Marlin";
 const Name = "ESP3D";
@@ -163,5 +167,6 @@ export {
   defaultPanelsList,
   TargetContextProvider,
   useTargetContext,
+  useTargetContextFn,
   startJobCmd,
 };

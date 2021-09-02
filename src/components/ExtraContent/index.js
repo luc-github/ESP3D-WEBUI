@@ -21,7 +21,7 @@ import { Fragment, h } from "preact";
 import { useRef, useEffect, useState } from "preact/hooks";
 import { espHttpURL } from "../Helpers";
 import { useUiContext } from "../../contexts";
-import { useHttpQueue } from "../../hooks";
+import { useHttpFn } from "../../hooks";
 import { Play, Pause, Aperture, RefreshCcw } from "preact-feather";
 import { ButtonImg } from "../Controls";
 import { T } from "../Translations";
@@ -37,7 +37,7 @@ const ExtraContent = ({
   target,
   icon,
 }) => {
-  const { createNewRequest } = useHttpQueue();
+  const { createNewRequest } = useHttpFn;
   const { uisettings, panels, timerIDs } = useUiContext();
   const [refreshPaused, setRefreshPaused] = useState(
     uisettings.refreshPaused.id

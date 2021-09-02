@@ -21,6 +21,8 @@ import { useState, useRef } from "preact/hooks";
 import { useHttpQueueContext } from "../contexts";
 import { generateUID } from "../components/Helpers";
 
+const useHttpFn = {};
+
 /*
  * Local const
  *
@@ -112,6 +114,8 @@ const useHttpQueue = () => {
     processRequests();
   };
 
+  useHttpFn.createNewRequest = createNewRequest;
+
   return {
     createNewRequest,
     processRequestsNow,
@@ -121,4 +125,4 @@ const useHttpQueue = () => {
   };
 };
 
-export { useHttpQueue };
+export { useHttpQueue, useHttpFn };

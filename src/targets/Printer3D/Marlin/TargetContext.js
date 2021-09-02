@@ -32,6 +32,8 @@ import { useDatasContext } from "../../../contexts";
 const TargetContext = createContext("TargetContext");
 const useTargetContext = () => useContext(TargetContext);
 
+const useTargetContextFn = {};
+
 const TargetContextProvider = ({ children }) => {
   const { terminal } = useDatasContext();
   const dataBuffer = useRef({
@@ -135,6 +137,8 @@ const TargetContextProvider = ({ children }) => {
     }
   };
 
+  useTargetContextFn.processData = processData;
+
   const store = {
     processData,
   };
@@ -144,4 +148,4 @@ const TargetContextProvider = ({ children }) => {
   );
 };
 
-export { TargetContextProvider, useTargetContext };
+export { TargetContextProvider, useTargetContext, useTargetContextFn };
