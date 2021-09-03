@@ -77,7 +77,7 @@ const FilesPanel = () => {
                   </span>
 
                   <ul class="menu">
-                    {files.canCreateDir(fileSystem) && (
+                    {files.capability(fileSystem, "CreateDir") && (
                       <li class="menu-item">
                         <div
                           class="menu-entry"
@@ -94,7 +94,7 @@ const FilesPanel = () => {
                         </div>
                       </li>
                     )}
-                    {files.canUpload(fileSystem).upload && (
+                    {files.capability(fileSystem, "Upload") && (
                       <li class="menu-item">
                         <div
                           class="menu-entry"
@@ -111,8 +111,10 @@ const FilesPanel = () => {
                         </div>
                       </li>
                     )}
-                    {(files.canUpload(fileSystem).upload ||
-                      files.canCreateDir(fileSystem)) && <li class="divider" />}
+                    {(files.capability(fileSystem, "Upload") ||
+                      files.capability(fileSystem, "CreateDir")) && (
+                      <li class="divider" />
+                    )}
                     <li class="menu-item">
                       <div
                         class="menu-entry"

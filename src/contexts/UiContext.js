@@ -24,6 +24,8 @@ import {
   disableNode,
 } from "../components/Helpers";
 
+const useUiContextFn = {};
+
 /*
  * Local const
  *
@@ -46,6 +48,7 @@ const UiContextProvider = ({ children }) => {
     authenticate: true,
     page: "connecting",
   });
+
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
 
@@ -123,6 +126,8 @@ const UiContextProvider = ({ children }) => {
     return undefined;
   };
 
+  useUiContextFn.getValue = getValue;
+
   const store = {
     timerIDs: timersList,
     panels: {
@@ -166,4 +171,4 @@ const UiContextProvider = ({ children }) => {
   return <UiContext.Provider value={store}>{children}</UiContext.Provider>;
 };
 
-export { UiContextProvider, useUiContext };
+export { UiContextProvider, useUiContext, useUiContextFn };

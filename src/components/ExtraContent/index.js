@@ -88,7 +88,6 @@ const ExtraContent = ({
                   css.forEach((csstag) => {
                     doc.head.appendChild(csstag.cloneNode(true));
                   });
-                  console.log(element.current.src);
                   //to avoid the flickering when apply css
                   element.current.classList.remove("d-none");
                   element.current.classList.add("d-block");

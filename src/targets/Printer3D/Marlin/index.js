@@ -27,6 +27,7 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import { useUiContextFn } from "../../../contexts";
 
 const Target = "Marlin";
 const Name = "ESP3D";
@@ -58,84 +59,12 @@ const startJobCmd = (target, filename) => {
   }
 };
 
-const getFSCommand = (command, filesystem, path, filename) => {
-  console.log(
-    "Command:",
-    command,
-    " Filesystem:",
-    filesystem,
-    " Path:",
-    path,
-    "Filename:",
-    filename
-  );
-  switch (filesystem) {
-    case "FLASH":
-      switch (command) {
-        case "list":
-          return { type: "url", cmd: "/files?path=" + path + "&action=list" };
-        default:
-          console.log("Wrong command");
-          return { type: "error" };
-      }
-      return { type: "url", cmd: "/files?path=" + path + "&action=list" };
-    default:
-      console.log("Wrong filesystem");
-      return { type: "error" };
-  }
-};
-
-const canProcess = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-    default:
-      return false;
-  }
-};
-
-const canUpload = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-      return { upload: true, type: "multiple" };
-    default:
-      return { upload: false };
-  }
-};
-
-const canDownload = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-      return true;
-    default:
-      return false;
-  }
-};
-
-const canDeleteFile = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-      return true;
-    default:
-      return false;
-  }
-};
-
-const canDeleteDir = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-      return true;
-    default:
-      return false;
-  }
-};
-
-const canCreateDir = (filesystem, path, filename) => {
-  switch (filesystem) {
-    case "FLASH":
-      return true;
-    default:
-      return false;
-  }
+const canProcess = (filename) => {
+  const filters = useUiContextFn.getValue("filesfilter").split(";");
+  filters.forEach((element) => {
+    if (element == "*" || filename.endsWith("." + element)) return true;
+  });
+  return false;
 };
 
 const supportedFileSystems = [
@@ -146,14 +75,113 @@ const supportedFileSystems = [
   { value: "TFTUSB", name: "S189", depend: "tftusb" },
 ];
 
+const capabilities = {
+  FLASH: {
+    canProcess: false,
+    Upload: (path, filename) => {
+      return true;
+    },
+    UploadMultiple: (path, filename) => {
+      return true;
+    },
+    Download: (path, filename) => {
+      return true;
+    },
+    DeleteFile: (path, filename) => {
+      return true;
+    },
+    DeleteDir: (path, filename) => {
+      return true;
+    },
+    CreateDir: (path, filename) => {
+      return true;
+    },
+  },
+
+  SD: {
+    Process: (path, filename) => {
+      return canProcess(filename);
+    },
+    Upload: (path, filename) => {
+      return true;
+    },
+    UploadMultiple: (path, filename) => {
+      return true;
+    },
+    Download: (path, filename) => {
+      return true;
+    },
+    DeleteFile: (path, filename) => {
+      return true;
+    },
+    DeleteDir: (path, filename) => {
+      return true;
+    },
+    CreateDir: (path, filename) => {
+      console.log("Here");
+      return true;
+    },
+  },
+  SDEXT: {
+    Process: (path, filename) => {
+      return canProcess(filename);
+    },
+  },
+  TFTUSB: {
+    Process: (path, filename) => {
+      return canProcess(filename);
+    },
+  },
+  TFTSD: {
+    Process: (path, filename) => {
+      return canProcess(filename);
+    },
+  },
+};
+
+const commands = {
+  FLASH: {
+    list: (path, filename) => {
+      return { type: "url", cmd: "/files?path=" + path + "&action=list" };
+    },
+  },
+  SD: {
+    list: (path, filename) => {
+      return { type: "cmd", cmd: "M20 " + path };
+    },
+  },
+  SDEXT: {
+    list: (path, filename) => {
+      return { type: "cmd", cmd: "M20 " + path };
+    },
+  },
+  TFTUSB: {
+    list: (path, filename) => {
+      return { type: "cmd", cmd: "M20 USB:" + path };
+    },
+  },
+  TFTSD: {
+    list: (path, filename) => {
+      return { type: "cmd", cmd: "M20 SD:" + path };
+    },
+  },
+};
+
+const capability = (filesystem, cap, path, filename) => {
+  if (capabilities[filesystem] && capabilities[filesystem][cap])
+    return capabilities[filesystem][cap](path, filename);
+  return false;
+};
+
+const command = (filesystem, cmd, path, filename) => {
+  if (commands[filesystem] && capabilities[filesystem][cmd])
+    return commands[filesystem][cmd](path, filename);
+  return undefined;
+};
+
 const files = {
-  getFSCommand,
-  canProcess,
-  canUpload,
-  canDownload,
-  canDeleteFile,
-  canDeleteDir,
-  canCreateDir,
+  command,
+  capability,
   supported: supportedFileSystems,
 };
 

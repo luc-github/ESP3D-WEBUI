@@ -27,7 +27,7 @@ import {
   HttpQueueContextProvider,
   useHttpQueueContext,
 } from "./HttpQueueContext";
-import { UiContextProvider, useUiContext } from "./UiContext";
+import { UiContextProvider, useUiContext, useUiContextFn } from "./UiContext";
 import { SettingsContextProvider, useSettingsContext } from "./SettingsContext";
 import { DatasContextProvider, useDatasContext } from "./DatasContext";
 import { WsContextProvider, useWsContext } from "./WsContext";
@@ -41,6 +41,7 @@ export {
   useHttpQueueContext,
   UiContextProvider,
   useUiContext,
+  useUiContextFn,
   SettingsContextProvider,
   useSettingsContext,
   DatasContextProvider,
