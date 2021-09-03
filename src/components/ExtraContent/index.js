@@ -50,40 +50,16 @@ const ExtraContent = ({
     if (!init && uisettings.refreshPaused.id) {
       return;
     }
-    if (pageSource.startsWith("http") || type == "extension") {
+    if (pageSource.startsWith("http")) {
       switch (type) {
         case "image":
           if (element.current) element.current.src = pageSource;
           break;
-        case "extension":
-          if (element.current) {
-            element.current.src = pageSource;
-            element.current.onError = () => {
-              console.log("Got error");
-            };
-            element.current.onAbort = () => {
-              console.log("Got abort");
-            };
-            element.current.onload = () => {
-              const doc = element.current.contentWindow.document;
-              const body = doc.querySelector("body");
-              body.classList.add("body-extension");
-              const css = document.querySelectorAll("style");
-              //inject css
-              css.forEach((element) => {
-                doc.head.appendChild(element.cloneNode(true));
-              });
-              //to avoid the flickering when apply css
-              element.current.classList.remove("d-none");
-              element.current.classList.add("d-block");
-            };
-          }
         default:
           if (element.current) element.current.src = pageSource;
       }
     } else {
-      const idquery =
-        type == "content" || type == "extension" ? type + id : "download" + id;
+      const idquery = type == "content" ? type + id : "download" + id;
       createNewRequest(
         espHttpURL(pageSource).toString(),
         { method: "GET", id: idquery, max: 2 },
@@ -99,18 +75,25 @@ const ExtraContent = ({
                   };
                   element.current.src = URL.createObjectURL(result);
                 }
-
                 break;
-                //cannot be used because this way disable javascript in iframe
-                /* case "extension":
-                if (element.current && element.current.contentWindow) {
+              //cannot be used because this way disable javascript in iframe
+              case "extension":
+                element.current.onload = () => {
+                  URL.revokeObjectURL(element.current.src);
                   const doc = element.current.contentWindow.document;
-                  const css = document.querySelector("style");
-                  doc.body.innerHTML = result;
+                  const body = doc.querySelector("body");
+                  body.classList.add("body-extension");
+                  const css = document.querySelectorAll("style");
                   //inject css
-                  doc.head.appendChild(css.cloneNode(true));
-                }*/
-
+                  css.forEach((csstag) => {
+                    doc.head.appendChild(csstag.cloneNode(true));
+                  });
+                  console.log(element.current.src);
+                  //to avoid the flickering when apply css
+                  element.current.classList.remove("d-none");
+                  element.current.classList.add("d-block");
+                };
+                element.current.src = URL.createObjectURL(result);
                 //todo inject css
                 break;
               default:
@@ -227,11 +210,7 @@ const ExtraContent = ({
             }
             ref={element}
             id={"page_content_" + id}
-            src={
-              pageSource.startsWith("http") || type == "extension"
-                ? pageSource
-                : ""
-            }
+            src={pageSource.startsWith("http") ? pageSource : ""}
             alt={label}
           ></iframe>
         );
