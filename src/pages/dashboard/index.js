@@ -54,7 +54,6 @@ const Dashboard = () => {
       });
     }
   });
-  console.log("Dashboard");
   useEffect(() => {
     if (uisettings.getValue("showextracontents")) {
       const extraContents = uisettings.getValue("extracontents");

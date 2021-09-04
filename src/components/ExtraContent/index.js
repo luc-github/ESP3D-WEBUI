@@ -28,6 +28,8 @@ import { T } from "../Translations";
 import { iconsFeather } from "../Images";
 import { iconsTarget } from "../../targets";
 
+const contentCache = {};
+
 const ExtraContent = ({
   id,
   source,
@@ -59,54 +61,80 @@ const ExtraContent = ({
           if (element.current) element.current.src = pageSource;
       }
     } else {
-      const idquery = type == "content" ? type + id : "download" + id;
-      createNewRequest(
-        espHttpURL(pageSource).toString(),
-        { method: "GET", id: idquery, max: 2 },
-        {
-          onSuccess: (result) => {
-            switch (type) {
-              case "camera":
-              case "image":
-                if (element.current) {
-                  imageCache.current = result;
+      if (
+        (type == "image" || type == "extension") &&
+        contentCache[id] != undefined
+      ) {
+        element.current.classList.remove("d-block");
+        element.current.classList.add("d-none");
+        element.current.onload = () => {
+          URL.revokeObjectURL(element.current.src);
+          if (type == "extension") {
+            const doc = element.current.contentWindow.document;
+            const body = doc.querySelector("body");
+            body.classList.add("body-extension");
+            const css = document.querySelectorAll("style");
+            //inject css
+            css.forEach((csstag) => {
+              doc.head.appendChild(csstag.cloneNode(true));
+            }); //to avoid the flickering when apply css
+          }
+          element.current.classList.remove("d-none");
+          element.current.classList.add("d-block");
+        };
+        element.current.src = URL.createObjectURL(contentCache[id]);
+      } else {
+        const idquery = type == "content" ? type + id : "download" + id;
+        createNewRequest(
+          espHttpURL(pageSource).toString(),
+          { method: "GET", id: idquery, max: 2 },
+          {
+            onSuccess: (result) => {
+              switch (type) {
+                case "camera":
+                case "image":
+                  if (element.current) {
+                    imageCache.current = result;
+                    element.current.onload = () => {
+                      URL.revokeObjectURL(element.current.src);
+                    };
+                    contentCache[id] = result;
+                    element.current.src = URL.createObjectURL(contentCache[id]);
+                  }
+                  break;
+                //cannot be used because this way disable javascript in iframe
+                case "extension":
                   element.current.onload = () => {
                     URL.revokeObjectURL(element.current.src);
+                    const doc = element.current.contentWindow.document;
+                    const body = doc.querySelector("body");
+                    body.classList.add("body-extension");
+                    const css = document.querySelectorAll("style");
+                    //inject css
+                    css.forEach((csstag) => {
+                      doc.head.appendChild(csstag.cloneNode(true));
+                    });
+                    //to avoid the flickering when apply css
+                    element.current.classList.remove("d-none");
+                    element.current.classList.add("d-block");
                   };
-                  element.current.src = URL.createObjectURL(result);
-                }
-                break;
-              //cannot be used because this way disable javascript in iframe
-              case "extension":
-                element.current.onload = () => {
-                  URL.revokeObjectURL(element.current.src);
-                  const doc = element.current.contentWindow.document;
-                  const body = doc.querySelector("body");
-                  body.classList.add("body-extension");
-                  const css = document.querySelectorAll("style");
-                  //inject css
-                  css.forEach((csstag) => {
-                    doc.head.appendChild(csstag.cloneNode(true));
-                  });
-                  //to avoid the flickering when apply css
-                  element.current.classList.remove("d-none");
-                  element.current.classList.add("d-block");
-                };
-                element.current.src = URL.createObjectURL(result);
-                //todo inject css
-                break;
-              default:
-                if (element.current && element.current.contentWindow)
-                  element.current.contentWindow.document.body.innerHTML =
-                    result;
-            }
-          },
-          onFail: (error) => {
-            //TODO:Need to do something ? TBD
-            console.log("Error", error);
-          },
-        }
-      );
+                  contentCache[id] = result;
+                  element.current.src = URL.createObjectURL(contentCache[id]);
+                  //todo inject css
+                  break;
+                default:
+                  if (element.current && element.current.contentWindow)
+                    element.current.contentWindow.document.body.innerHTML =
+                      result;
+              }
+            },
+            onFail: (error) => {
+              //TODO:Need to do something ? TBD
+              console.log("Error", error);
+            },
+          }
+        );
+      }
     }
   };
   const ControlButtons = () => {
@@ -258,6 +286,7 @@ const ExtraContent = ({
                   nomin="yes"
                   icon={<RefreshCcw size="0.8rem" />}
                   onclick={() => {
+                    if (contentCache[id]) contentCache[id] = undefined;
                     loadContent();
                   }}
                 />
