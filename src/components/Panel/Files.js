@@ -31,6 +31,7 @@ import {
   RefreshCcw,
   FolderPlus,
   CornerRightUp,
+  Edit3,
 } from "preact-feather";
 import { files } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
@@ -53,6 +54,43 @@ const FilesPanel = () => {
   const { createNewRequest } = useHttpFn;
   const { modals } = useUiContext();
 
+  const sendURLCmd = (cmd) => {
+    createNewRequest(
+      espHttpURL(cmd.url, cmd.args).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          filesListCache[currentFS] = files.command(
+            currentFS,
+            "formatResult",
+            result
+          );
+          setFilesList(filesListCache[currentFS]);
+          setIsLoading(false);
+        },
+        onFail: (error) => {
+          console.log(error);
+          setIsLoading(false);
+          //TODO:Need to do something ? TBD
+          //toast ?
+        },
+      }
+    );
+  };
+
+  const createDirectory = (name) => {
+    console.log("Create ", name);
+    const cmd = files.command(
+      currentFS,
+      "createdir",
+      currentPath[currentFS],
+      name
+    );
+    if (cmd.type == "url") {
+      sendURLCmd(cmd);
+    }
+  };
+
   const deleteCommand = (element) => {
     console.log("Delete ", element.name);
     const cmd = files.command(
@@ -62,27 +100,7 @@ const FilesPanel = () => {
       element.name
     );
     if (cmd.type == "url") {
-      createNewRequest(
-        espHttpURL(cmd.url, cmd.args).toString(),
-        { method: "GET" },
-        {
-          onSuccess: (result) => {
-            filesListCache[currentFS] = files.command(
-              currentFS,
-              "formatResult",
-              result
-            );
-            setFilesList(filesListCache[currentFS]);
-            setIsLoading(false);
-            //TODO:Need to do something ? TBD
-          },
-          onFail: (error) => {
-            console.log(error);
-            setIsLoading(false);
-            //TODO:Need to do something ? TBD
-          },
-        }
-      );
+      sendURLCmd(cmd);
     }
   };
   const onSelectFS = (e) => {
@@ -98,9 +116,10 @@ const FilesPanel = () => {
     if (line.size == -1) {
       console.log("You clicked folder:", line.name);
       currentPath[currentFS] =
-        currentPath[currentFS] + currentPath[currentFS] == "/"
-          ? ""
-          : "/" + line.name;
+        currentPath[currentFS] +
+        (currentPath[currentFS] == "/" ? "" : "/") +
+        line.name;
+      console.log("now path is ", currentPath[currentFS]);
       onRefresh(e);
     } else {
       console.log("You clicked file:", line.name);
@@ -124,12 +143,12 @@ const FilesPanel = () => {
             );
             setFilesList(filesListCache[currentFS]);
             setIsLoading(false);
-            //TODO:Need to do something ? TBD
           },
           onFail: (error) => {
             console.log(error);
             setIsLoading(false);
             //TODO:Need to do something ? TBD
+            //Toast ?
           },
         }
       );
@@ -141,6 +160,9 @@ const FilesPanel = () => {
   const deleteDirText = T("S101");
   const yes = T("S27");
   const cancel = T("S28");
+  const createtxt = T("S106");
+  const titleCreateDir = T("S104");
+  const labelCreateDir = T("S105");
 
   useEffect(() => {
     //show current FS
@@ -174,6 +196,31 @@ const FilesPanel = () => {
                           class="menu-entry"
                           onclick={(e) => {
                             console.log("Create directory");
+                            let name;
+                            showModal({
+                              modals,
+                              title: titleCreateDir,
+                              button2: { text: cancel },
+                              button1: {
+                                cb: () => {
+                                  if (name.length > 0) createDirectory(name);
+                                },
+                                text: createtxt,
+                              },
+                              icon: <Edit3 />,
+                              id: "inputName",
+                              content: (
+                                <Fragment>
+                                  <div>{labelCreateDir}</div>
+                                  <input
+                                    class="form-input"
+                                    onInput={(e) => {
+                                      name = e.target.value.trim();
+                                    }}
+                                  />
+                                </Fragment>
+                              ),
+                            });
                           }}
                         >
                           <div class="menu-panel-item">

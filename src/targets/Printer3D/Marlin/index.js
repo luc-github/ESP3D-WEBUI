@@ -177,6 +177,13 @@ const commands = {
         args: { path, action: "delete", filename },
       };
     },
+    createdir: (path, filename) => {
+      return {
+        type: "url",
+        url: "files",
+        args: { path, action: "createdir", filename },
+      };
+    },
   },
   SD: {
     list: (path, filename) => {
