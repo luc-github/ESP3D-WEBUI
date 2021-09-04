@@ -30,7 +30,7 @@
   "macros": [
    {
     "id": "id2",
-    "name": "Macro2",
+    "name": "Google",
     "icon": "Globe",
     "action": "http://google.com",
     "type": "URI"
@@ -39,8 +39,8 @@
     "id": "id1",
     "name": "Macro1",
     "icon": "Globe",
-    "action": "",
-    "type": "URI"
+    "action": "/myfile.gco",
+    "type": "SD"
    }
   ],
   "showextracontents": true,

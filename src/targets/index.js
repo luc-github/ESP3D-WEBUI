@@ -29,7 +29,6 @@ import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
-  startJobCmd,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -60,5 +59,4 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
-  startJobCmd,
 };

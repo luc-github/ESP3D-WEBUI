@@ -24,7 +24,7 @@ import { ButtonImg } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { iconsFeather } from "../Images";
-import { iconsTarget, useTargetContextFn, startJobCmd } from "../../targets";
+import { iconsTarget, useTargetContextFn, files } from "../../targets";
 
 /*
  * Local const
@@ -70,7 +70,8 @@ const MacrosPanel = () => {
         break;
       case "SD":
         //get command accoring target FW
-        const cmds = startJobCmd("SD", action).split("\n");
+        const response = files.command("SD", "play", "", action);
+        const cmds = response.cmd.split("\n");
         cmds.forEach((cmd) => {
           sendCommand(cmd);
         });

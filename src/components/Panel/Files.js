@@ -28,6 +28,7 @@ import {
   Upload,
   RefreshCcw,
   FolderPlus,
+  CornerRightUp,
 } from "preact-feather";
 import { useUiContext } from "../../contexts";
 import { files } from "../../targets";
@@ -54,14 +55,26 @@ const FilesPanel = () => {
     setFileSystem(currentFS);
     if (!currentPath[currentFS]) {
       currentPath[currentFS] = "/";
-      setFilePath(currentPath[currentFS]);
     }
     onRefresh(e);
-    console.log(e.target.value, "Path:", currentPath[currentFS]);
+  };
+
+  const ElementClicked = (e, line) => {
+    if (line.size == -1) {
+      console.log("You clicked folder:", line.name);
+      currentPath[currentFS] =
+        currentPath[currentFS] + currentPath[currentFS] == "/"
+          ? ""
+          : "/" + line.name;
+      onRefresh(e);
+    } else {
+      console.log("You clicked file:", line.name);
+    }
   };
 
   const onRefresh = (e) => {
     setIsLoading(true);
+    setFilePath(currentPath[currentFS]);
     const cmd = files.command(currentFS, "list", currentPath[currentFS]);
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
@@ -84,7 +97,6 @@ const FilesPanel = () => {
         },
       }
     );
-    console.log("List:", cmd);
   };
 
   useEffect(() => {
@@ -190,58 +202,113 @@ const FilesPanel = () => {
         <div class="panel-body panel-body-dashboard files-list m-2">
           {isLoading && fileSystem != "" && <Loading />}
 
-          {!isLoading &&
-            fileSystem != "" &&
-            filesList &&
-            filesList.files.map((line) => {
-              return (
+          {!isLoading && fileSystem != "" && filesList && (
+            <Fragment>
+              {currentPath[currentFS] != "/" && (
                 <div
-                  style=" display: -ms-flexbox;
-  display: flex; justify-content:space-between; align-items:center;flex-wrap:wrap"
+                  class="file-line file-line-name"
+                  onclick={(e) => {
+                    console.log("Up ");
+                    const newpath = currentPath[currentFS].substring(
+                      0,
+                      currentPath[currentFS].lastIndexOf("/")
+                    );
+
+                    currentPath[currentFS] =
+                      newpath.length == 0 ? "/" : newpath;
+                    onRefresh(e);
+                  }}
                 >
                   <div
-                    class="feather-icon-container"
-                    style="display: flex; flex-wrap:nowrap"
+                    class="form-control  file-line-name"
+                    style="height:2rem!important"
                   >
-                    {line.size == -1 ? <Folder /> : <File />}
-                    <label>{line.name}</label>
-                  </div>
-                  <div style="display: flex; flex-wrap:nowrap; align-items:center">
-                    {line.size != -1 && (
-                      <Fragment>
-                        <span>{line.size}</span>
-
-                        <ButtonImg
-                          m1
-                          ltooltip
-                          data-tooltip={T("S74")}
-                          icon={<Play />}
-                          onClick={(e) => {
-                            e.target.blur();
-                          }}
-                        />
-                      </Fragment>
-                    )}
-                    <ButtonImg
-                      m1
-                      ltooltip
-                      data-tooltip={line.size == -1 ? T("S101") : T("S100")}
-                      icon={<Trash2 />}
-                      onClick={(e) => {
-                        e.target.blur();
-                      }}
-                    />
+                    <CornerRightUp /> <label class="p-2">...</label>
                   </div>
                 </div>
-              );
-            })}
+              )}
+              {filesList.files.map((line) => {
+                return (
+                  <div class="file-line">
+                    <div
+                      class="feather-icon-container file-line-name"
+                      onclick={(e) => {
+                        ElementClicked(e, line);
+                      }}
+                    >
+                      {line.size == -1 ? <Folder /> : <File />}
+                      <label>{line.name}</label>
+                    </div>
+                    <div class="file-line-controls">
+                      {line.size != -1 && (
+                        <Fragment>
+                          <span>{line.size}</span>
+                          {files.capability(
+                            currentFS,
+                            "canProcess",
+                            currentPath[currentFS],
+                            line.name
+                          ) && (
+                            <ButtonImg
+                              m1
+                              ltooltip
+                              data-tooltip={T("S74")}
+                              icon={<Play />}
+                              onClick={(e) => {
+                                e.target.blur();
+                              }}
+                            />
+                          )}
+                          {!files.capability(
+                            currentFS,
+                            "canProcess",
+                            currentPath[currentFS],
+                            line.name
+                          ) && <div style="width:2rem" />}
+                        </Fragment>
+                      )}
+                      <ButtonImg
+                        m1
+                        ltooltip
+                        data-tooltip={line.size == -1 ? T("S101") : T("S100")}
+                        icon={<Trash2 />}
+                        onClick={(e) => {
+                          e.target.blur();
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </Fragment>
+          )}
         </div>
         <div class="panel-footer files-list-footer">
           {!isLoading && filesList && filesList.occupation && (
-            <div>{filesList.occupation}</div>
+            <div style=" display: flex; align-items:center; flex-wrap: wrap; justify-content: space-between;">
+              <div class="flex-pack">
+                {T("S98")}:{filesList.total}
+              </div>
+              <div class="m-1">-</div>
+              <div class="flex-pack m-2">
+                {T("S99")}:{filesList.used}
+              </div>
+              <div class="flex-pack hide-low m-1">
+                <meter
+                  style="width:3rem;height:0.5rem"
+                  class="meter"
+                  value={filesList.occupation}
+                  min="0"
+                  max="100"
+                  low="30"
+                  high="80"
+                />
+                <span class="m-1">{filesList.occupation}%</span>
+              </div>
+            </div>
           )}
           {!isLoading && filesList && filesList.status && (
-            <div>{filesList.status}</div>
+            <div class="file-status">{T(filesList.status)}</div>
           )}
         </div>
       </div>

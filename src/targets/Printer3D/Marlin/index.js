@@ -49,17 +49,6 @@ const defaultPanelsList = [
 
 const restartdelay = 30;
 
-const startJobCmd = (target, filename) => {
-  switch (target) {
-    case "SD":
-      return "M23 " + filename + "\nM24";
-      break;
-    default:
-      console.log("no idea sorry");
-      break;
-  }
-};
-
 const canProcessFile = (filename) => {
   const filters = useUiContextFn.getValue("filesfilter").split(";");
   filters.forEach((element) => {
@@ -81,6 +70,11 @@ const sortedFilesList = (filesList) => {
       : 0;
   });
   return filesList;
+};
+
+const formatStatus = (status) => {
+  if (status == "ok") return "S126";
+  return status;
 };
 
 const supportedFileSystems = [
@@ -166,6 +160,7 @@ const commands = {
     formatResult: (resultTxT) => {
       const res = JSON.parse(resultTxT);
       res.files = sortedFilesList(res.files);
+      res.status = formatStatus(res.status);
       return res;
     },
   },
@@ -175,6 +170,9 @@ const commands = {
     },
     formatResult: (resultTxT) => {
       return { status: "ok" };
+    },
+    play: (path, filename) => {
+      return { type: "cmd", cmd: "M23 " + path + filename + "\nM24" };
     },
   },
   SDEXT: {
@@ -232,5 +230,4 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
-  startJobCmd,
 };

@@ -72,6 +72,44 @@
   }
 }
 
+.files-list-footer {
+  color: #5755d9;
+}
+.flex-pack,
+.file-line-controls,
+.file-line-name {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+}
+.file-line-controls {
+  align-items: center;
+}
+
+.file-line-name label,
+.file-line-name {
+  cursor: pointer;
+}
+
+.file-line-name:active {
+  color: blue;
+  font-weight: bolder;
+}
+
+.file-line {
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.file-line:hover {
+  color: #5755d9;
+  background-color: #f1f1fc;
+  border-radius: $border-radius;
+}
+
 .image-container,
 .camera-container {
   border: none;
