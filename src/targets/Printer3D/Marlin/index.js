@@ -163,6 +163,20 @@ const commands = {
       res.status = formatStatus(res.status);
       return res;
     },
+    deletedir: (path, filename) => {
+      return {
+        type: "url",
+        url: "files",
+        args: { path, action: "deletedir", filename },
+      };
+    },
+    delete: (path, filename) => {
+      return {
+        type: "url",
+        url: "files",
+        args: { path, action: "delete", filename },
+      };
+    },
   },
   SD: {
     list: (path, filename) => {

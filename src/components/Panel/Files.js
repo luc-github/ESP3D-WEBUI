@@ -22,6 +22,8 @@ import { T } from "../Translations";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { Loading, ButtonImg } from "../Controls";
+import { useUiContext } from "../../contexts";
+import { showModal, showConfirmationModal } from "../Modal";
 import {
   ChevronDown,
   HardDrive,
@@ -30,7 +32,6 @@ import {
   FolderPlus,
   CornerRightUp,
 } from "preact-feather";
-import { useUiContext } from "../../contexts";
 import { files } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
 
@@ -50,6 +51,40 @@ const FilesPanel = () => {
   const [fileSystem, setFileSystem] = useState(currentFS);
   const [filesList, setFilesList] = useState(filesListCache[currentFS]);
   const { createNewRequest } = useHttpFn;
+  const { modals } = useUiContext();
+
+  const deleteCommand = (element) => {
+    console.log("Delete ", element.name);
+    const cmd = files.command(
+      currentFS,
+      element.size == -1 ? "deletedir" : "delete",
+      currentPath[currentFS],
+      element.name
+    );
+    if (cmd.type == "url") {
+      createNewRequest(
+        espHttpURL(cmd.url, cmd.args).toString(),
+        { method: "GET" },
+        {
+          onSuccess: (result) => {
+            filesListCache[currentFS] = files.command(
+              currentFS,
+              "formatResult",
+              result
+            );
+            setFilesList(filesListCache[currentFS]);
+            setIsLoading(false);
+            //TODO:Need to do something ? TBD
+          },
+          onFail: (error) => {
+            console.log(error);
+            setIsLoading(false);
+            //TODO:Need to do something ? TBD
+          },
+        }
+      );
+    }
+  };
   const onSelectFS = (e) => {
     currentFS = e.target.value;
     setFileSystem(currentFS);
@@ -76,28 +111,36 @@ const FilesPanel = () => {
     setIsLoading(true);
     setFilePath(currentPath[currentFS]);
     const cmd = files.command(currentFS, "list", currentPath[currentFS]);
-    createNewRequest(
-      espHttpURL(cmd.url, cmd.args).toString(),
-      { method: "GET" },
-      {
-        onSuccess: (result) => {
-          filesListCache[currentFS] = files.command(
-            currentFS,
-            "formatResult",
-            result
-          );
-          setFilesList(filesListCache[currentFS]);
-          setIsLoading(false);
-          //TODO:Need to do something ? TBD
-        },
-        onFail: (error) => {
-          console.log(error);
-          setIsLoading(false);
-          //TODO:Need to do something ? TBD
-        },
-      }
-    );
+    if (cmd.type == "url") {
+      createNewRequest(
+        espHttpURL(cmd.url, cmd.args).toString(),
+        { method: "GET" },
+        {
+          onSuccess: (result) => {
+            filesListCache[currentFS] = files.command(
+              currentFS,
+              "formatResult",
+              result
+            );
+            setFilesList(filesListCache[currentFS]);
+            setIsLoading(false);
+            //TODO:Need to do something ? TBD
+          },
+          onFail: (error) => {
+            console.log(error);
+            setIsLoading(false);
+            //TODO:Need to do something ? TBD
+          },
+        }
+      );
+    }
   };
+
+  const title = T("S26");
+  const deleteFileText = T("S100");
+  const deleteDirText = T("S101");
+  const yes = T("S27");
+  const cancel = T("S28");
 
   useEffect(() => {
     //show current FS
@@ -274,6 +317,31 @@ const FilesPanel = () => {
                         icon={<Trash2 />}
                         onClick={(e) => {
                           e.target.blur();
+                          const content = (
+                            <Fragment>
+                              <div>
+                                {line.size == -1
+                                  ? deleteDirText
+                                  : deleteFileText}
+                                :
+                              </div>
+                              <center>
+                                <li>{line.name}</li>
+                              </center>
+                            </Fragment>
+                          );
+                          showConfirmationModal({
+                            modals,
+                            title,
+                            content,
+                            button1: {
+                              cb: () => {
+                                deleteCommand(line);
+                              },
+                              text: yes,
+                            },
+                            button2: { text: cancel },
+                          });
                         }}
                       />
                     </div>
