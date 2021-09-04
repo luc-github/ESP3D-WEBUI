@@ -22,6 +22,7 @@ import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
 import { TerminalPanelElement } from "../../../components/Panel/Terminal";
+import { compareStrings } from "../../../components/Helpers";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -59,12 +60,27 @@ const startJobCmd = (target, filename) => {
   }
 };
 
-const canProcess = (filename) => {
+const canProcessFile = (filename) => {
   const filters = useUiContextFn.getValue("filesfilter").split(";");
   filters.forEach((element) => {
     if (element == "*" || filename.endsWith("." + element)) return true;
   });
   return false;
+};
+
+const sortedFilesList = (filesList) => {
+  //files alphabeticaly then folders alphabeticaly
+  filesList.sort(function (a, b) {
+    return compareStrings(a.name, b.name);
+  });
+  filesList.sort(function (a, b) {
+    return a.size == -1 && b.size != -1
+      ? 1
+      : a.size != -1 && b.size == -1
+      ? -1
+      : 0;
+  });
+  return filesList;
 };
 
 const supportedFileSystems = [
@@ -100,7 +116,7 @@ const capabilities = {
 
   SD: {
     Process: (path, filename) => {
-      return canProcess(filename);
+      return canProcessFile(filename);
     },
     Upload: (path, filename) => {
       return true;
@@ -118,23 +134,22 @@ const capabilities = {
       return true;
     },
     CreateDir: (path, filename) => {
-      console.log("Here");
       return true;
     },
   },
   SDEXT: {
     Process: (path, filename) => {
-      return canProcess(filename);
+      return canProcessFile(filename);
     },
   },
   TFTUSB: {
     Process: (path, filename) => {
-      return canProcess(filename);
+      return canProcessFile(filename);
     },
   },
   TFTSD: {
     Process: (path, filename) => {
-      return canProcess(filename);
+      return canProcessFile(filename);
     },
   },
 };
@@ -142,27 +157,48 @@ const capabilities = {
 const commands = {
   FLASH: {
     list: (path, filename) => {
-      return { type: "url", cmd: "/files?path=" + path + "&action=list" };
+      return {
+        type: "url",
+        url: "files",
+        args: { path, action: "list" },
+      };
+    },
+    formatResult: (resultTxT) => {
+      const res = JSON.parse(resultTxT);
+      res.files = sortedFilesList(res.files);
+      return res;
     },
   },
   SD: {
     list: (path, filename) => {
       return { type: "cmd", cmd: "M20 " + path };
     },
+    formatResult: (resultTxT) => {
+      return { status: "ok" };
+    },
   },
   SDEXT: {
     list: (path, filename) => {
       return { type: "cmd", cmd: "M20 " + path };
+    },
+    formatResult: (resultTxT) => {
+      return { status: "ok" };
     },
   },
   TFTUSB: {
     list: (path, filename) => {
       return { type: "cmd", cmd: "M20 USB:" + path };
     },
+    formatResult: (resultTxT) => {
+      return { status: "ok" };
+    },
   },
   TFTSD: {
     list: (path, filename) => {
       return { type: "cmd", cmd: "M20 SD:" + path };
+    },
+    formatResult: (resultTxT) => {
+      return { status: "ok" };
     },
   },
 };
@@ -174,7 +210,7 @@ const capability = (filesystem, cap, path, filename) => {
 };
 
 const command = (filesystem, cmd, path, filename) => {
-  if (commands[filesystem] && capabilities[filesystem][cmd])
+  if (commands[filesystem] && commands[filesystem][cmd])
     return commands[filesystem][cmd](path, filename);
   return undefined;
 };

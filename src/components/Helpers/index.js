@@ -30,6 +30,7 @@ import {
   capitalize,
   hslToHex,
   parseFileSizeString,
+  compareStrings,
 } from "./strings";
 import {
   limitArr,
@@ -43,6 +44,7 @@ import { dispatchToExtensions } from "./html";
 export {
   beautifyJSONString,
   capitalize,
+  compareStrings,
   createComponent,
   disableNode,
   dispatchToExtensions,

@@ -21,6 +21,13 @@ import { h } from "preact";
 const capitalize = (s) =>
   typeof s === "string" ? s.charAt(0).toUpperCase() + s.slice(1) : "";
 
+function compareStrings(a, b) {
+  // case-insensitive comparison
+  a = a.toLowerCase();
+  b = b.toLowerCase();
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
 const parseFileSizeString = (sizeString) => {
   const [size, unit] = sizeString.split(" ");
   const parsedSize = parseFloat(size);
@@ -61,4 +68,10 @@ const beautifyJSONString = (jsonstring) => {
   }
 };
 
-export { capitalize, hslToHex, parseFileSizeString, beautifyJSONString };
+export {
+  capitalize,
+  hslToHex,
+  parseFileSizeString,
+  beautifyJSONString,
+  compareStrings,
+};

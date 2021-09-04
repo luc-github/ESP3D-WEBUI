@@ -16,9 +16,12 @@ Files.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { T } from "../Translations";
+import { useHttpFn } from "../../hooks";
+import { espHttpURL } from "../Helpers";
+import { Loading, ButtonImg } from "../Controls";
 import {
   ChevronDown,
   HardDrive,
@@ -28,9 +31,11 @@ import {
 } from "preact-feather";
 import { useUiContext } from "../../contexts";
 import { files } from "../../targets";
+import { Folder, File, Trash2, Play } from "preact-feather";
 
 let currentFS = "";
-let currentPath = {};
+const currentPath = {};
+const filesListCache = {};
 
 /*
  * Local const
@@ -40,7 +45,10 @@ const FilesPanel = () => {
   const { panels, uisettings } = useUiContext();
   const id = "filesPanel";
   const [filePath, setFilePath] = useState(currentPath[currentFS]);
+  const [isLoading, setIsLoading] = useState(false);
   const [fileSystem, setFileSystem] = useState(currentFS);
+  const [filesList, setFilesList] = useState(filesListCache[currentFS]);
+  const { createNewRequest } = useHttpFn;
   const onSelectFS = (e) => {
     currentFS = e.target.value;
     setFileSystem(currentFS);
@@ -48,7 +56,35 @@ const FilesPanel = () => {
       currentPath[currentFS] = "/";
       setFilePath(currentPath[currentFS]);
     }
+    onRefresh(e);
     console.log(e.target.value, "Path:", currentPath[currentFS]);
+  };
+
+  const onRefresh = (e) => {
+    setIsLoading(true);
+    const cmd = files.command(currentFS, "list", currentPath[currentFS]);
+    createNewRequest(
+      espHttpURL(cmd.url, cmd.args).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          filesListCache[currentFS] = files.command(
+            currentFS,
+            "formatResult",
+            result
+          );
+          setFilesList(filesListCache[currentFS]);
+          setIsLoading(false);
+          //TODO:Need to do something ? TBD
+        },
+        onFail: (error) => {
+          console.log(error);
+          setIsLoading(false);
+          //TODO:Need to do something ? TBD
+        },
+      }
+    );
+    console.log("List:", cmd);
   };
 
   useEffect(() => {
@@ -67,7 +103,7 @@ const FilesPanel = () => {
 
           <span class="navbar-section">
             <span style="height: 100%;">
-              {fileSystem != "" && (
+              {fileSystem != "" && !isLoading && (
                 <div class="dropdown dropdown-right">
                   <span
                     class="dropdown-toggle btn btn-xs btn-header m-1"
@@ -116,12 +152,7 @@ const FilesPanel = () => {
                       <li class="divider" />
                     )}
                     <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          console.log("Refresh clicked");
-                        }}
-                      >
+                      <div class="menu-entry" onclick={onRefresh}>
                         <div class="menu-panel-item">
                           <span class="text-menu-item">{T("S50")}</span>
                           <span class="feather-icon-container">
@@ -157,9 +188,62 @@ const FilesPanel = () => {
           <span class="form-control m-1">{filePath ? filePath : ""}</span>
         </div>
         <div class="panel-body panel-body-dashboard files-list m-2">
-          Files system
+          {isLoading && fileSystem != "" && <Loading />}
+
+          {!isLoading &&
+            fileSystem != "" &&
+            filesList &&
+            filesList.files.map((line) => {
+              return (
+                <div
+                  style=" display: -ms-flexbox;
+  display: flex; justify-content:space-between; align-items:center;flex-wrap:wrap"
+                >
+                  <div
+                    class="feather-icon-container"
+                    style="display: flex; flex-wrap:nowrap"
+                  >
+                    {line.size == -1 ? <Folder /> : <File />}
+                    <label>{line.name}</label>
+                  </div>
+                  <div style="display: flex; flex-wrap:nowrap; align-items:center">
+                    {line.size != -1 && (
+                      <Fragment>
+                        <span>{line.size}</span>
+
+                        <ButtonImg
+                          m1
+                          ltooltip
+                          data-tooltip={T("S74")}
+                          icon={<Play />}
+                          onClick={(e) => {
+                            e.target.blur();
+                          }}
+                        />
+                      </Fragment>
+                    )}
+                    <ButtonImg
+                      m1
+                      ltooltip
+                      data-tooltip={line.size == -1 ? T("S101") : T("S100")}
+                      icon={<Trash2 />}
+                      onClick={(e) => {
+                        e.target.blur();
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
         </div>
-        <div class="panel-footer files-list-footer">status</div>
+        <div class="panel-footer files-list-footer">
+          {!isLoading && filesList && filesList.occupation && (
+            <div>{filesList.occupation}</div>
+          )}
+          {!isLoading && filesList && filesList.status && (
+            <div>{filesList.status}</div>
+          )}
+        </div>
       </div>
     </div>
   );
