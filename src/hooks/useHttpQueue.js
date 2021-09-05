@@ -115,6 +115,7 @@ const useHttpQueue = () => {
   };
 
   useHttpFn.createNewRequest = createNewRequest;
+  useHttpFn.abortRequest = abortRequest;
 
   return {
     createNewRequest,

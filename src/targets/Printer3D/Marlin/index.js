@@ -184,6 +184,13 @@ const commands = {
         args: { path, action: "createdir", filename },
       };
     },
+    download: (path, filename) => {
+      return {
+        type: "url",
+        url: path + (path.endsWith("/") ? "" : "/") + filename,
+        args: {},
+      };
+    },
   },
   SD: {
     list: (path, filename) => {

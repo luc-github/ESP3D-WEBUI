@@ -23,7 +23,7 @@ import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { Loading, ButtonImg } from "../Controls";
 import { useUiContext } from "../../contexts";
-import { showModal, showConfirmationModal } from "../Modal";
+import { showModal, showConfirmationModal, showProgressModal } from "../Modal";
 import {
   ChevronDown,
   HardDrive,
@@ -51,9 +51,11 @@ const FilesPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fileSystem, setFileSystem] = useState(currentFS);
   const [filesList, setFilesList] = useState(filesListCache[currentFS]);
-  const { createNewRequest } = useHttpFn;
-  const { modals } = useUiContext();
+  const { createNewRequest, abortRequest } = useHttpFn;
+  const { modals, toasts } = useUiContext();
   const fileref = useRef();
+  const progressValue = useRef(0);
+  const progressValueDisplay = useRef(0);
   const sendURLCmd = (cmd) => {
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
@@ -71,15 +73,80 @@ const FilesPanel = () => {
         onFail: (error) => {
           console.log(error);
           setIsLoading(false);
-          //TODO:Need to do something ? TBD
-          //toast ?
+          toasts.addToast({ content: error, type: "error" });
         },
       }
     );
   };
 
-  const download = (element) => {
+  const updateProgress = (value) => {
+    progressValue.current.value = value;
+    progressValueDisplay.current.innerHTML = value + "%";
+  };
+
+  const downloadTitle = T("S108");
+
+  const downloadFile = (element) => {
     console.log("Download ", element.name);
+    const cmd = files.command(
+      currentFS,
+      "download",
+      currentPath[currentFS],
+      element.name
+    );
+    showProgressModal({
+      modals,
+      title: downloadTitle,
+      button1: {
+        cb: abortRequest,
+        text: cancel,
+      },
+      content: (
+        <center>
+          <progress ref={progressValue} value="0" max="100" />
+          <label style="margin-left:15px" ref={progressValueDisplay}></label>
+        </center>
+      ),
+    });
+    createNewRequest(
+      espHttpURL(cmd.url, cmd.args).toString(),
+      { method: "GET", id: "download" },
+      {
+        onSuccess: (result) => {
+          updateProgress(100);
+          console.log(result);
+          setTimeout(() => {
+            modals.removeModal(modals.getModalIndex("progression"));
+          }, 2000);
+
+          const file = new Blob([result], { type: "application/octet-stream" });
+          if (window.navigator.msSaveOrOpenBlob)
+            // IE10+
+            window.navigator.msSaveOrOpenBlob(file, element.name);
+          else {
+            // Others
+            let a = document.createElement("a"),
+              url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = element.name;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function () {
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);
+            }, 0);
+          }
+        },
+        onFail: (error) => {
+          modals.removeModal(modals.getModalIndex("progression"));
+          toasts.addToast({ content: error, type: "error" });
+        },
+        onProgress: (e) => {
+          console.log(e);
+          updateProgress(e);
+        },
+      }
+    );
   };
 
   const createDirectory = (name) => {
@@ -134,14 +201,13 @@ const FilesPanel = () => {
           content,
           button1: {
             cb: () => {
-              download(line);
+              downloadFile(line);
             },
             text: yes,
           },
           button2: { text: cancel },
         });
       }
-      console.log("You clicked file:", line.name);
     }
   };
 
@@ -166,8 +232,7 @@ const FilesPanel = () => {
           onFail: (error) => {
             console.log(error);
             setIsLoading(false);
-            //TODO:Need to do something ? TBD
-            //Toast ?
+            toasts.addToast({ content: error, type: "error" });
           },
         }
       );
