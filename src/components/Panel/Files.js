@@ -17,7 +17,7 @@ Files.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../Translations";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
@@ -53,7 +53,7 @@ const FilesPanel = () => {
   const [filesList, setFilesList] = useState(filesListCache[currentFS]);
   const { createNewRequest } = useHttpFn;
   const { modals } = useUiContext();
-
+  const fileref = useRef();
   const sendURLCmd = (cmd) => {
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
@@ -76,6 +76,10 @@ const FilesPanel = () => {
         },
       }
     );
+  };
+
+  const download = (element) => {
+    console.log("Download ", element.name);
   };
 
   const createDirectory = (name) => {
@@ -105,6 +109,7 @@ const FilesPanel = () => {
   };
   const onSelectFS = (e) => {
     currentFS = e.target.value;
+    fileref.current.multiple = files.capability(currentFS, "UploadMultiple");
     setFileSystem(currentFS);
     if (!currentPath[currentFS]) {
       currentPath[currentFS] = "/";
@@ -119,9 +124,23 @@ const FilesPanel = () => {
         currentPath[currentFS] +
         (currentPath[currentFS] == "/" ? "" : "/") +
         line.name;
-      console.log("now path is ", currentPath[currentFS]);
       onRefresh(e);
     } else {
+      if (files.capability(fileSystem, "Download")) {
+        const content = <li>{line.name}</li>;
+        showConfirmationModal({
+          modals,
+          title: downloadtitle,
+          content,
+          button1: {
+            cb: () => {
+              download(line);
+            },
+            text: yes,
+          },
+          button2: { text: cancel },
+        });
+      }
       console.log("You clicked file:", line.name);
     }
   };
@@ -155,13 +174,14 @@ const FilesPanel = () => {
     }
   };
 
-  const title = T("S26");
+  const downloadtitle = T("S87");
+  const deletetitle = T("S26");
   const deleteFileText = T("S100");
   const deleteDirText = T("S101");
   const yes = T("S27");
   const cancel = T("S28");
   const createtxt = T("S106");
-  const titleCreateDir = T("S104");
+  const createdirtitle = T("S104");
   const labelCreateDir = T("S105");
 
   useEffect(() => {
@@ -199,7 +219,7 @@ const FilesPanel = () => {
                             let name;
                             showModal({
                               modals,
-                              title: titleCreateDir,
+                              title: createdirtitle,
                               button2: { text: cancel },
                               button1: {
                                 cb: () => {
@@ -290,6 +310,7 @@ const FilesPanel = () => {
           <span class="form-control m-1">{filePath ? filePath : ""}</span>
         </div>
         <div class="panel-body panel-body-dashboard files-list m-2">
+          <input type="file" ref={fileref} class="d-none" />
           {isLoading && fileSystem != "" && <Loading />}
 
           {!isLoading && fileSystem != "" && filesList && (
@@ -321,7 +342,12 @@ const FilesPanel = () => {
                 return (
                   <div class="file-line">
                     <div
-                      class="feather-icon-container file-line-name"
+                      class={`feather-icon-container ${
+                        files.capability(fileSystem, "Download") ||
+                        line.size == -1
+                          ? "file-line-name"
+                          : ""
+                      }`}
                       onclick={(e) => {
                         ElementClicked(e, line);
                       }}
@@ -335,7 +361,7 @@ const FilesPanel = () => {
                           <span>{line.size}</span>
                           {files.capability(
                             currentFS,
-                            "canProcess",
+                            "Process",
                             currentPath[currentFS],
                             line.name
                           ) && (
@@ -351,7 +377,7 @@ const FilesPanel = () => {
                           )}
                           {!files.capability(
                             currentFS,
-                            "canProcess",
+                            "Process",
                             currentPath[currentFS],
                             line.name
                           ) && <div style="width:2rem" />}
@@ -379,7 +405,7 @@ const FilesPanel = () => {
                           );
                           showConfirmationModal({
                             modals,
-                            title,
+                            title: deletetitle,
                             content,
                             button1: {
                               cb: () => {

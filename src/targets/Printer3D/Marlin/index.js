@@ -87,7 +87,7 @@ const supportedFileSystems = [
 
 const capabilities = {
   FLASH: {
-    canProcess: false,
+    Process: (path, filename) => false,
     Upload: (path, filename) => {
       return true;
     },
@@ -116,10 +116,10 @@ const capabilities = {
       return true;
     },
     UploadMultiple: (path, filename) => {
-      return true;
+      return false;
     },
     Download: (path, filename) => {
-      return true;
+      return false;
     },
     DeleteFile: (path, filename) => {
       return true;

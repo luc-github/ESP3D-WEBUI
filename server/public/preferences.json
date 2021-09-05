@@ -17,7 +17,7 @@
   "filesfilter": "g;G;gco;GCO;gcode;GCODE;nc",
   "tftsd": false,
   "tftusb": false,
-  "sd": false,
+  "sd": true,
   "sdext": false,
   "showjogpanel": true,
   "openjogonstart": true,

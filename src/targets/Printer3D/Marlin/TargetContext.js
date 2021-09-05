@@ -31,8 +31,11 @@ import { useDatasContext } from "../../../contexts";
  */
 const TargetContext = createContext("TargetContext");
 const useTargetContext = () => useContext(TargetContext);
-
 const useTargetContextFn = {};
+
+const filesPanelProcessor = (type, data) => {
+  console.log("got ", type, ":", data);
+};
 
 const TargetContextProvider = ({ children }) => {
   const { terminal } = useDatasContext();
@@ -54,6 +57,8 @@ const TargetContextProvider = ({ children }) => {
     else return false;
   };
   const dispatchInternally = (type, data) => {
+    //files
+    filesPanelProcessor(type, data);
     //temperature
     //sensors
     //positions

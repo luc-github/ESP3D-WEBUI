@@ -76,6 +76,26 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   lastconnection = Date.now();
+  if (url.indexOf("M20") != -1) {
+    SendBinary(
+      "Begin file list\n" +
+        "COOL_V~1.GCO 66622272\n" +
+        "415%VA~1.GCO 66622272\n" +
+        "/ARCHIEVE/TWISTY~1.GCO 1040\n" +
+        "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
+        "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
+        "/ARCHIEVE/RET229~1.GCO 2050\n" +
+        "/ARCHIEVE/FILE__~1.GCO 1050\n" +
+        "/ARCHIEVE/FILE__~2.GCO 1050\n" +
+        "/ARCHIEVE/FILE__~3.GCO 1050\n" +
+        "/ARCHIEVE/FILE__~4.GCO 1050\n" +
+        "/ARCHIEVE/FILE__~5.GCO 1050\n" +
+        "End file list\n" +
+        "ok\n"
+    );
+    res.send("");
+    return;
+  }
 
   if (url.indexOf("M105") != -1) {
     SendBinary(sendTemperatures());
