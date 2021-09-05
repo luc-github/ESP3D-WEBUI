@@ -409,12 +409,17 @@ const FilesPanel = () => {
                 {T("S99")}:{filesList.used}
               </div>
               <div class="flex-pack hide-low m-1">
-                <meter
-                  style="width:3rem;"
-                  value={filesList.occupation}
-                  min="0"
-                  max="100"
-                />
+                <div class="bar bar-sm" style="width:4rem">
+                  <div
+                    class="bar-item"
+                    role="progressbar"
+                    style={`width:${filesList.occupation}%`}
+                    aria-valuenow={filesList.occupation}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+
                 <span class="m-1">{filesList.occupation}%</span>
               </div>
             </div>
