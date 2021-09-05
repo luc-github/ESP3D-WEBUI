@@ -175,7 +175,7 @@ const FilesPanel = () => {
     }
   };
   const onSelectFS = (e) => {
-    currentFS = e.target.value;
+    if (e) currentFS = e.target.value;
     fileref.current.multiple = files.capability(currentFS, "UploadMultiple");
     setFileSystem(currentFS);
     if (!currentPath[currentFS]) {
@@ -250,7 +250,10 @@ const FilesPanel = () => {
   const labelCreateDir = T("S105");
 
   useEffect(() => {
-    //show current FS
+    if (uisettings.getValue("autoload") && currentFS == "") {
+      currentFS = "FLASH";
+      onSelectFS();
+    }
   }, []);
 
   console.log(id);
