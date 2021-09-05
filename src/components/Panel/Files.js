@@ -80,8 +80,8 @@ const FilesPanel = () => {
   };
 
   const updateProgress = (value) => {
-    progressValue.current.value = value;
-    progressValueDisplay.current.innerHTML = value + "%";
+    progressValue.current.value = value.toFixed(2);
+    progressValueDisplay.current.innerHTML = value.toFixed(2) + "%";
   };
 
   const downloadTitle = T("S108");

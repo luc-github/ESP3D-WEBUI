@@ -206,8 +206,8 @@ const About = () => {
           toasts.addToast({ content: error, type: "error" });
         },
         onProgress: (e) => {
-          progressValue.current.value = e;
-          progressValueDisplay.current.innerHTML = e + "%";
+          progressValue.current.value = e.toFixed(2);
+          progressValueDisplay.current.innerHTML = e.toFixed(2) + "%";
         },
       }
     );
