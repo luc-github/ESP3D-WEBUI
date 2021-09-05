@@ -410,13 +410,10 @@ const FilesPanel = () => {
               </div>
               <div class="flex-pack hide-low m-1">
                 <meter
-                  style="width:3rem;height:0.5rem"
-                  class="meter"
+                  style="width:3rem;"
                   value={filesList.occupation}
                   min="0"
                   max="100"
-                  low="30"
-                  high="80"
                 />
                 <span class="m-1">{filesList.occupation}%</span>
               </div>
