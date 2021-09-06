@@ -28,14 +28,29 @@
   margin-bottom: 0.4rem;
 }
 
+.drop-zone {
+  height: 100%;
+}
+
 .files-list {
+  height: calc(100% - 0.5rem);
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
   padding: 5px 5px !important;
-  margin-top: 0px !important;
   overflow-x: hidden;
   overflow-y: scroll !important;
   max-height: 600px;
+}
+
+.drop-zone--over {
+  border-radius: 10px;
+  background: linear-gradient(90deg, blue 50%, transparent 50%),
+    linear-gradient(90deg, blue 50%, transparent 50%),
+    linear-gradient(0deg, blue 50%, transparent 50%),
+    linear-gradient(0deg, blue 50%, transparent 50%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 15px 4px, 15px 4px, 4px 15px, 4px 15px;
+  animation: border-dance 4s infinite linear;
 }
 
 .fieldset-top-separator {
@@ -70,6 +85,18 @@
     white-space: pre-wrap;
     word-break: break-all;
   }
+}
+
+@keyframes border-dance {
+  0% {
+    background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+  }
+  100% {
+    background-position: 100% 0, 0 100%, 0 0, 100% 100%;
+  }
+}
+
+.drop-zone-over {
 }
 
 .files-list-footer {

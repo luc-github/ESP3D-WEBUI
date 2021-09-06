@@ -54,6 +54,7 @@ const FilesPanel = () => {
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts } = useUiContext();
   const fileref = useRef();
+  const dropRef = useRef();
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
   const sendURLCmd = (cmd) => {
@@ -377,120 +378,141 @@ const FilesPanel = () => {
           </span>
           <span class="form-control m-1">{filePath ? filePath : ""}</span>
         </div>
-        <div class="panel-body panel-body-dashboard files-list m-2">
-          <input type="file" ref={fileref} class="d-none" />
-          {isLoading && fileSystem != "" && <Loading />}
+        <div
+          ref={dropRef}
+          class="drop-zone m-2"
+          onDragOver={(e) => {
+            e.preventDefault();
+            dropRef.current.classList.add("drop-zone--over");
+          }}
+          onDragLeave={(e) => {
+            dropRef.current.classList.remove("drop-zone--over");
+            e.preventDefault();
+          }}
+          onDragEnd={(e) => {
+            dropRef.current.classList.remove("drop-zone--over");
+            e.preventDefault();
+          }}
+          onDrop={(e) => {
+            dropRef.current.classList.remove("drop-zone--over");
+            e.preventDefault();
+          }}
+        >
+          <div class="panel-body panel-body-dashboard files-list m-1" disabled>
+            <input type="file" ref={fileref} class="d-none" />
+            {isLoading && fileSystem != "" && <Loading />}
 
-          {!isLoading && fileSystem != "" && filesList && (
-            <Fragment>
-              {currentPath[currentFS] != "/" && (
-                <div
-                  class="file-line file-line-name"
-                  onclick={(e) => {
-                    console.log("Up ");
-                    const newpath = currentPath[currentFS].substring(
-                      0,
-                      currentPath[currentFS].lastIndexOf("/")
-                    );
-
-                    currentPath[currentFS] =
-                      newpath.length == 0 ? "/" : newpath;
-                    onRefresh(e);
-                  }}
-                >
+            {!isLoading && fileSystem != "" && filesList && (
+              <Fragment>
+                {currentPath[currentFS] != "/" && (
                   <div
-                    class="form-control  file-line-name"
-                    style="height:2rem!important"
+                    class="file-line file-line-name"
+                    onclick={(e) => {
+                      console.log("Up ");
+                      const newpath = currentPath[currentFS].substring(
+                        0,
+                        currentPath[currentFS].lastIndexOf("/")
+                      );
+
+                      currentPath[currentFS] =
+                        newpath.length == 0 ? "/" : newpath;
+                      onRefresh(e);
+                    }}
                   >
-                    <CornerRightUp /> <label class="p-2">...</label>
-                  </div>
-                </div>
-              )}
-              {filesList.files.map((line) => {
-                return (
-                  <div class="file-line">
                     <div
-                      class={`feather-icon-container ${
-                        files.capability(fileSystem, "Download") ||
-                        line.size == -1
-                          ? "file-line-name"
-                          : ""
-                      }`}
-                      onclick={(e) => {
-                        ElementClicked(e, line);
-                      }}
+                      class="form-control  file-line-name"
+                      style="height:2rem!important"
                     >
-                      {line.size == -1 ? <Folder /> : <File />}
-                      <label>{line.name}</label>
-                    </div>
-                    <div class="file-line-controls">
-                      {line.size != -1 && (
-                        <Fragment>
-                          <span>{line.size}</span>
-                          {files.capability(
-                            currentFS,
-                            "Process",
-                            currentPath[currentFS],
-                            line.name
-                          ) && (
-                            <ButtonImg
-                              m1
-                              ltooltip
-                              data-tooltip={T("S74")}
-                              icon={<Play />}
-                              onClick={(e) => {
-                                e.target.blur();
-                              }}
-                            />
-                          )}
-                          {!files.capability(
-                            currentFS,
-                            "Process",
-                            currentPath[currentFS],
-                            line.name
-                          ) && <div style="width:2rem" />}
-                        </Fragment>
-                      )}
-                      <ButtonImg
-                        m1
-                        ltooltip
-                        data-tooltip={line.size == -1 ? T("S101") : T("S100")}
-                        icon={<Trash2 />}
-                        onClick={(e) => {
-                          e.target.blur();
-                          const content = (
-                            <Fragment>
-                              <div>
-                                {line.size == -1
-                                  ? deleteDirText
-                                  : deleteFileText}
-                                :
-                              </div>
-                              <center>
-                                <li>{line.name}</li>
-                              </center>
-                            </Fragment>
-                          );
-                          showConfirmationModal({
-                            modals,
-                            title: deletetitle,
-                            content,
-                            button1: {
-                              cb: () => {
-                                deleteCommand(line);
-                              },
-                              text: yes,
-                            },
-                            button2: { text: cancel },
-                          });
-                        }}
-                      />
+                      <CornerRightUp /> <label class="p-2">...</label>
                     </div>
                   </div>
-                );
-              })}
-            </Fragment>
-          )}
+                )}
+                {filesList.files.map((line) => {
+                  return (
+                    <div class="file-line">
+                      <div
+                        class={`feather-icon-container ${
+                          files.capability(fileSystem, "Download") ||
+                          line.size == -1
+                            ? "file-line-name"
+                            : ""
+                        }`}
+                        onclick={(e) => {
+                          ElementClicked(e, line);
+                        }}
+                      >
+                        {line.size == -1 ? <Folder /> : <File />}
+                        <label>{line.name}</label>
+                      </div>
+                      <div class="file-line-controls">
+                        {line.size != -1 && (
+                          <Fragment>
+                            <span>{line.size}</span>
+                            {files.capability(
+                              currentFS,
+                              "Process",
+                              currentPath[currentFS],
+                              line.name
+                            ) && (
+                              <ButtonImg
+                                m1
+                                ltooltip
+                                data-tooltip={T("S74")}
+                                icon={<Play />}
+                                onClick={(e) => {
+                                  e.target.blur();
+                                }}
+                              />
+                            )}
+                            {!files.capability(
+                              currentFS,
+                              "Process",
+                              currentPath[currentFS],
+                              line.name
+                            ) && <div style="width:2rem" />}
+                          </Fragment>
+                        )}
+                        <ButtonImg
+                          m1
+                          ltooltip
+                          data-tooltip={line.size == -1 ? T("S101") : T("S100")}
+                          icon={<Trash2 />}
+                          onClick={(e) => {
+                            e.target.blur();
+                            const content = (
+                              <Fragment>
+                                <div>
+                                  {line.size == -1
+                                    ? deleteDirText
+                                    : deleteFileText}
+                                  :
+                                </div>
+                                <center>
+                                  <li>{line.name}</li>
+                                </center>
+                              </Fragment>
+                            );
+                            showConfirmationModal({
+                              modals,
+                              title: deletetitle,
+                              content,
+                              button1: {
+                                cb: () => {
+                                  deleteCommand(line);
+                                },
+                                text: yes,
+                              },
+                              button2: { text: cancel },
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </Fragment>
+            )}
+          </div>
         </div>
         <div class="panel-footer files-list-footer">
           {!isLoading && filesList && filesList.occupation && (
