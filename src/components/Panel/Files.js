@@ -127,10 +127,20 @@ const FilesPanel = () => {
       formData.append("path", currentPath[currentFS]);
       for (let i = 0; i < list.length; i++) {
         const file = list[i];
-        const arg = "/" + file.name + "S";
+        const arg =
+          currentPath[currentFS] +
+          (currentPath[currentFS] == "/" ? "" : "/") +
+          file.name +
+          "S";
         //append file size first to check updload is complete
         formData.append(arg, file.size);
-        formData.append("myfiles", file, "/" + file.name);
+        formData.append(
+          "myfiles",
+          file,
+          currentPath[currentFS] +
+            (currentPath[currentFS] == "/" ? "" : "/") +
+            file.name
+        );
       }
       //now do request
       createNewRequest(
