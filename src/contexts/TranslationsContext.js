@@ -31,10 +31,13 @@ const baseLangRessource = {
   ...LangRessourceTarget,
   ...LangRessourceBase,
 };
+const useTranslationsReferences = {};
 const TranslationsContext = createContext("TranslationsContext");
 const useTranslationsContext = () => useContext(TranslationsContext);
 const TranslationsContextProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(baseLangRessource);
+  useTranslationsReferences.currentLanguage = currentLanguage;
+  useTranslationsReferences.baseLangRessource = baseLangRessource;
   const store = {
     currentLanguage,
     setCurrentLanguage,
@@ -47,4 +50,8 @@ const TranslationsContextProvider = ({ children }) => {
   );
 };
 
-export { TranslationsContextProvider, useTranslationsContext };
+export {
+  TranslationsContextProvider,
+  useTranslationsContext,
+  useTranslationsReferences,
+};

@@ -21,6 +21,7 @@ import { h } from "preact";
 import {
   TranslationsContextProvider,
   useTranslationsContext,
+  useTranslationsReferences,
 } from "./TranslationsContext";
 import { RouterContextProvider, useRouterContext } from "./RouterContext";
 import {
@@ -35,6 +36,7 @@ import { WsContextProvider, useWsContext } from "./WsContext";
 export {
   TranslationsContextProvider,
   useTranslationsContext,
+  useTranslationsReferences,
   RouterContextProvider,
   useRouterContext,
   HttpQueueContextProvider,

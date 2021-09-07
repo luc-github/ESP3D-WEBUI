@@ -21,8 +21,8 @@ import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../Translations";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { Loading, ButtonImg } from "../Controls";
-import { useUiContext } from "../../contexts";
+import { Loading, ButtonImg, CenterLeft } from "../Controls";
+import { useUiContext, useUiContextFn } from "../../contexts";
 import { showModal, showConfirmationModal, showProgressModal } from "../Modal";
 import {
   ChevronDown,
@@ -57,6 +57,18 @@ const FilesPanel = () => {
   const dropRef = useRef();
   const progressValue = useRef(0);
   const progressValueDisplay = useRef(0);
+  const downloadtitle = T("S87");
+  const deletetitle = T("S26");
+  const deleteFileText = T("S100");
+  const deleteDirText = T("S101");
+  const yes = T("S27");
+  const cancel = T("S28");
+  const createtxt = T("S106");
+  const createdirtitle = T("S104");
+  const labelCreateDir = T("S105");
+  const errorMultipleFiles = T("S193");
+  const errorDirectory = T("S192");
+  const uploadtitle = T("S31");
   const sendURLCmd = (cmd) => {
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
@@ -78,6 +90,47 @@ const FilesPanel = () => {
         },
       }
     );
+  };
+
+  const uploadFiles = () => {
+    console.log("Start upload");
+  };
+
+  const filesSelected = (e) => {
+    console.log("got files:", fileref.current.files);
+    const content = [];
+    const length = fileref.current.files.length;
+    for (let index = 0; index < length; index++) {
+      content.push(<li>{fileref.current.files[index].name}</li>);
+      if (
+        !files.capability(
+          currentFS,
+          "Upload",
+          currentPath[currentFS],
+          fileref.current.files[index].name
+        )
+      ) {
+        const eMsg = files.capability(
+          currentFS,
+          "Upload",
+          currentPath[currentFS],
+          fileref.current.files[index].name,
+          true
+        );
+        toasts.add({ content: T(eMsg), type: "error" });
+      }
+    }
+
+    showConfirmationModal({
+      modals,
+      title: uploadtitle,
+      content: <CenterLeft>{content}</CenterLeft>,
+      button1: {
+        cb: uploadFiles,
+        text: yes,
+      },
+      button2: { text: cancel },
+    });
   };
 
   const updateProgress = (value) => {
@@ -175,9 +228,22 @@ const FilesPanel = () => {
       sendURLCmd(cmd);
     }
   };
+  const setupFileInput = () => {
+    if (currentFS == "") return;
+    fileref.current.multiple = files.capability(currentFS, "UploadMultiple");
+    if (files.capability(currentFS, "UseFilters")) {
+      let f = useUiContextFn.getValue("filesfilter").trim();
+      if (f.length > 0 && f != "*") {
+        f = "." + f.replace(/;/g, ",.");
+      } else f = "*";
+      fileref.current.accept = f;
+    } else {
+      fileref.current.accept = "*";
+    }
+  };
   const onSelectFS = (e) => {
     if (e) currentFS = e.target.value;
-    fileref.current.multiple = files.capability(currentFS, "UploadMultiple");
+    setupFileInput();
     setFileSystem(currentFS);
     if (!currentPath[currentFS]) {
       currentPath[currentFS] = "/";
@@ -240,21 +306,12 @@ const FilesPanel = () => {
     }
   };
 
-  const downloadtitle = T("S87");
-  const deletetitle = T("S26");
-  const deleteFileText = T("S100");
-  const deleteDirText = T("S101");
-  const yes = T("S27");
-  const cancel = T("S28");
-  const createtxt = T("S106");
-  const createdirtitle = T("S104");
-  const labelCreateDir = T("S105");
-
   useEffect(() => {
     if (uisettings.getValue("autoload") && currentFS == "") {
       currentFS = "FLASH";
       onSelectFS();
     }
+    setupFileInput();
   }, []);
 
   console.log(id);
@@ -327,6 +384,8 @@ const FilesPanel = () => {
                           class="menu-entry"
                           onclick={(e) => {
                             console.log("Upload clicked");
+                            fileref.current.value = "";
+                            fileref.current.click();
                           }}
                         >
                           <div class="menu-panel-item">
@@ -382,8 +441,8 @@ const FilesPanel = () => {
           ref={dropRef}
           class="drop-zone m-2"
           onDragOver={(e) => {
-            e.preventDefault();
             dropRef.current.classList.add("drop-zone--over");
+            e.preventDefault();
           }}
           onDragLeave={(e) => {
             dropRef.current.classList.remove("drop-zone--over");
@@ -395,11 +454,45 @@ const FilesPanel = () => {
           }}
           onDrop={(e) => {
             dropRef.current.classList.remove("drop-zone--over");
+            if (e.dataTransfer.files.length) {
+              const length = e.dataTransfer.items.length;
+              if (!fileref.current.multiple && length > 1) {
+                toasts.addToast({ content: errorMultipleFiles, type: "error" });
+                console.log("Multiple detected abort");
+                e.preventDefault();
+                return;
+              }
+              //webkitGetAsEntry seems experimental
+              if (
+                e.dataTransfer.items &&
+                e.dataTransfer.items[0].webkitGetAsEntry()
+              ) {
+                for (let i = 0; i < length; i++) {
+                  const entry = e.dataTransfer.items[i].webkitGetAsEntry();
+                  console.log("entry", e.dataTransfer.items[i]);
+                  if (entry.isDirectory) {
+                    toasts.addToast({ content: errorDirectory, type: "error" });
+                    console.log("Directory detected abort");
+                    e.preventDefault();
+                    return;
+                  }
+                }
+              }
+            }
+
+            fileref.current.files = e.dataTransfer.files;
+
+            filesSelected(e);
             e.preventDefault();
           }}
         >
           <div class="panel-body panel-body-dashboard files-list m-1" disabled>
-            <input type="file" ref={fileref} class="d-none" />
+            <input
+              type="file"
+              ref={fileref}
+              class="d-none"
+              onChange={filesSelected}
+            />
             {isLoading && fileSystem != "" && <Loading />}
 
             {!isLoading && fileSystem != "" && filesList && (

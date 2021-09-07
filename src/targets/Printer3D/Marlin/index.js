@@ -88,6 +88,7 @@ const supportedFileSystems = [
 const capabilities = {
   FLASH: {
     Process: (path, filename) => false,
+    UseFilters: (path, filename) => false,
     Upload: (path, filename) => {
       return true;
     },
@@ -112,12 +113,16 @@ const capabilities = {
     Process: (path, filename) => {
       return canProcessFile(filename);
     },
-    Upload: (path, filename) => {
+    Upload: (path, filename, eMsg = false) => {
+      //TODO
+      //check 8.1
+      if (eMsg) return "E1";
       return true;
     },
     UploadMultiple: (path, filename) => {
       return false;
     },
+    UseFilters: (path, filename) => true,
     Download: (path, filename) => {
       return false;
     },
@@ -229,9 +234,9 @@ const commands = {
   },
 };
 
-const capability = (filesystem, cap, path, filename) => {
+const capability = (filesystem, cap, path, filename, flag) => {
   if (capabilities[filesystem] && capabilities[filesystem][cap])
-    return capabilities[filesystem][cap](path, filename);
+    return capabilities[filesystem][cap](path, filename, flag);
   return false;
 };
 
