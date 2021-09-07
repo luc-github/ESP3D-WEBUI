@@ -162,6 +162,13 @@ const commands = {
         args: { path, action: "list" },
       };
     },
+    Upload: (path, filename) => {
+      return {
+        type: "url",
+        url: "files",
+        args: { path },
+      };
+    },
     formatResult: (resultTxT) => {
       const res = JSON.parse(resultTxT);
       res.files = sortedFilesList(res.files);

@@ -69,6 +69,9 @@ const FilesPanel = () => {
   const errorMultipleFiles = T("S193");
   const errorDirectory = T("S192");
   const uploadtitle = T("S31");
+  const uploadingtitle = T("S32");
+  const downloadTitle = T("S108");
+
   const sendURLCmd = (cmd) => {
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
@@ -92,8 +95,69 @@ const FilesPanel = () => {
     );
   };
 
+  const Progression = () => {
+    useEffect(() => {
+      updateProgress(0);
+    }, []);
+    return (
+      <center>
+        <progress ref={progressValue} value="0" max="100" />
+        <label style="margin-left:15px" ref={progressValueDisplay}></label>
+      </center>
+    );
+  };
+
   const uploadFiles = () => {
     console.log("Start upload");
+    setIsLoading(true);
+    const cmd = files.command(currentFS, "Upload", currentPath[currentFS]);
+    const list = fileref.current.files;
+    if (list.length > 0) {
+      showProgressModal({
+        modals,
+        title: uploadingtitle,
+        button1: {
+          cb: abortRequest,
+          text: cancel,
+        },
+        content: <Progression />,
+      });
+      //prepare POST data
+      const formData = new FormData();
+      formData.append("path", currentPath[currentFS]);
+      for (let i = 0; i < list.length; i++) {
+        const file = list[i];
+        const arg = "/" + file.name + "S";
+        //append file size first to check updload is complete
+        formData.append(arg, file.size);
+        formData.append("myfiles", file, "/" + file.name);
+      }
+      //now do request
+      createNewRequest(
+        espHttpURL(cmd.url),
+        { method: "POST", id: "upload", body: formData },
+        {
+          onSuccess: (result) => {
+            modals.removeModal(modals.getModalIndex("upload"));
+            filesListCache[currentFS] = files.command(
+              currentFS,
+              "formatResult",
+              result
+            );
+            setFilesList(filesListCache[currentFS]);
+            setIsLoading(false);
+          },
+          onFail: (error) => {
+            modals.removeModal(modals.getModalIndex("upload"));
+            toasts.addToast({ content: error, type: "error" });
+            setIsLoading(false);
+          },
+          onProgress: (e) => {
+            updateProgress(e);
+          },
+        }
+      );
+    }
   };
 
   const filesSelected = (e) => {
@@ -138,8 +202,6 @@ const FilesPanel = () => {
     progressValueDisplay.current.innerHTML = value.toFixed(2) + "%";
   };
 
-  const downloadTitle = T("S108");
-
   const downloadFile = (element) => {
     console.log("Download ", element.name);
     const cmd = files.command(
@@ -155,12 +217,7 @@ const FilesPanel = () => {
         cb: abortRequest,
         text: cancel,
       },
-      content: (
-        <center>
-          <progress ref={progressValue} value="0" max="100" />
-          <label style="margin-left:15px" ref={progressValueDisplay}></label>
-        </center>
-      ),
+      content: <Progression />,
     });
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
