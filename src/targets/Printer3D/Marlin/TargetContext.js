@@ -24,6 +24,7 @@ import {
   beautifyJSONString,
 } from "../../../components/Helpers";
 import { useDatasContext } from "../../../contexts";
+import { filesPanelProcessor } from "./index";
 
 /*
  * Local const
@@ -32,10 +33,6 @@ import { useDatasContext } from "../../../contexts";
 const TargetContext = createContext("TargetContext");
 const useTargetContext = () => useContext(TargetContext);
 const useTargetContextFn = {};
-
-const filesPanelProcessor = (type, data) => {
-  console.log("got ", type, ":", data);
-};
 
 const TargetContextProvider = ({ children }) => {
   const { terminal } = useDatasContext();

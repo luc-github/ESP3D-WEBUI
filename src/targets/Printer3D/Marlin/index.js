@@ -49,6 +49,39 @@ const defaultPanelsList = [
 
 const restartdelay = 30;
 
+//only one query at once
+const onGoingQuery = {
+  fs: "",
+  command: "",
+  started: false,
+  content: [],
+  feedback: null,
+  startTime: 0,
+};
+const catchResponse = (fs, command, feedbackfn) => {
+  console.log("init catch");
+  onGoingQuery.fs = fs;
+  onGoingQuery.command = command;
+  onGoingQuery.startTime = window.performance.now();
+  onGoingQuery.started = false;
+  onGoingQuery.ended = false;
+  onGoingQuery.content = [];
+  onGoingQuery.feedback = feedbackfn;
+};
+
+//steps
+const querySteps = {
+  SD: {
+    list: {
+      start: (data) => data.startsWith("Begin file list"),
+      end: (data) => data.startsWith("End file list"),
+      error: (data) => {
+        return data.indexOf("error") != -1;
+      },
+    },
+  },
+};
+
 const canProcessFile = (filename) => {
   const filters = useUiContextFn.getValue("filesfilter").split(";");
   filters.forEach((element) => {
@@ -91,6 +124,9 @@ const capabilities = {
     UseFilters: (path, filename) => false,
     Upload: (path, filename) => {
       return true;
+    },
+    Mount: (path, filename) => {
+      return false;
     },
     UploadMultiple: (path, filename) => {
       return true;
@@ -162,7 +198,7 @@ const commands = {
         args: { path, action: "list" },
       };
     },
-    Upload: (path, filename) => {
+    upload: (path, filename) => {
       return {
         type: "url",
         url: "files",
@@ -206,7 +242,7 @@ const commands = {
   },
   SD: {
     list: (path, filename) => {
-      return { type: "cmd", cmd: "M20 " + path };
+      return { type: "cmd", cmd: "M21\nM20 " + path };
     },
     formatResult: (resultTxT) => {
       return { status: "ok" };
@@ -244,19 +280,65 @@ const commands = {
 const capability = (filesystem, cap, path, filename, flag) => {
   if (capabilities[filesystem] && capabilities[filesystem][cap])
     return capabilities[filesystem][cap](path, filename, flag);
+  console.log("Unknow capability ", cmd, " for ", filesystem);
   return false;
 };
 
 const command = (filesystem, cmd, path, filename) => {
   if (commands[filesystem] && commands[filesystem][cmd])
     return commands[filesystem][cmd](path, filename);
-  return undefined;
+  console.log("Unknow command ", cmd, " for ", filesystem);
+  return { type: "error" };
 };
 
 const files = {
   command,
   capability,
+  catchResponse,
   supported: supportedFileSystems,
+};
+
+const filesPanelProcessor = (type, data) => {
+  if (onGoingQuery.fs != "" && onGoingQuery.command != "" && type == "stream") {
+    const step = querySteps[onGoingQuery.fs][onGoingQuery.command];
+    if (!onGoingQuery.started) {
+      //allow 30s for start answer
+      if (window.performance.now() - onGoingQuery.startTime > 30000) {
+        onGoingQuery.feedback({ status: "error", content: "timeout" });
+        console.log("timeout wait for start");
+        catchResponse("", "", null);
+        return;
+      }
+      if (step.start(data)) {
+        console.log("got a start");
+        onGoingQuery.started = true;
+        onGoingQuery.startTime = window.performance.now();
+      }
+    } else {
+      if (step.end(data)) {
+        onGoingQuery.feedback({
+          status: "ok",
+          content: [...onGoingQuery.content],
+        });
+        catchResponse("", "", null);
+      } else {
+        if (step.error(data)) {
+          if (onGoingQuery.feedback)
+            onGoingQuery.feedback({ status: "error", content: data });
+          catchResponse("", "", null);
+        } else {
+          //4 min Timeout if answer started but no end
+          if (window.performance.now() - onGoingQuery.startTime > 4 * 60000) {
+            onGoingQuery.feedback({ status: "error", content: "timeout" });
+            catchResponse("", "", null);
+            console.log("timeout wait for end");
+          } else {
+            onGoingQuery.content.push(data);
+          }
+        }
+      }
+    }
+  }
 };
 
 export {
@@ -270,4 +352,5 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  filesPanelProcessor,
 };

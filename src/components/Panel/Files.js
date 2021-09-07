@@ -33,7 +33,7 @@ import {
   CornerRightUp,
   Edit3,
 } from "preact-feather";
-import { files } from "../../targets";
+import { files, useTargetContextFn } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
 
 let currentFS = "";
@@ -52,6 +52,7 @@ const FilesPanel = () => {
   const [fileSystem, setFileSystem] = useState(currentFS);
   const [filesList, setFilesList] = useState(filesListCache[currentFS]);
   const { createNewRequest, abortRequest } = useHttpFn;
+  const { processData } = useTargetContextFn;
   const { modals, toasts } = useUiContext();
   const fileref = useRef();
   const dropRef = useRef();
@@ -71,6 +72,23 @@ const FilesPanel = () => {
   const uploadtitle = T("S31");
   const uploadingtitle = T("S32");
   const downloadTitle = T("S108");
+
+  const sendSerialCmd = (cmd) => {
+    createNewRequest(
+      espHttpURL("command", cmd).toString(),
+      { method: "GET", echo: cmd.cmd },
+      {
+        onSuccess: (result) => {
+          //Result is handled on ws so just do nothing
+        },
+        onFail: (error) => {
+          console.log(error);
+          setIsLoading(false);
+          toasts.addToast({ content: error, type: "error" });
+        },
+      }
+    );
+  };
 
   const sendURLCmd = (cmd) => {
     createNewRequest(
@@ -95,6 +113,23 @@ const FilesPanel = () => {
     );
   };
 
+  const processFeedback = (feedback) => {
+    console.log("got:", feedback);
+    if (feedback.status) {
+      console.log("Query:", feedback.status);
+      console.log("data:", feedback.content);
+      /*filesListCache[currentFS] = files.command(
+        currentFS,
+        "formatResult",
+        result
+      );*/
+      filesListCache[currentFS] = { files: [], status: "ok" };
+      setFilesList(filesListCache[currentFS]);
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  };
+
   const Progression = () => {
     useEffect(() => {
       updateProgress(0);
@@ -108,9 +143,8 @@ const FilesPanel = () => {
   };
 
   const uploadFiles = () => {
-    console.log("Start upload");
     setIsLoading(true);
-    const cmd = files.command(currentFS, "Upload", currentPath[currentFS]);
+    const cmd = files.command(currentFS, "upload", currentPath[currentFS]);
     const list = fileref.current.files;
     if (list.length > 0) {
       showProgressModal({
@@ -171,7 +205,6 @@ const FilesPanel = () => {
   };
 
   const filesSelected = (e) => {
-    console.log("got files:", fileref.current.files);
     const content = [];
     const length = fileref.current.files.length;
     for (let index = 0; index < length; index++) {
@@ -213,7 +246,6 @@ const FilesPanel = () => {
   };
 
   const downloadFile = (element) => {
-    console.log("Download ", element.name);
     const cmd = files.command(
       currentFS,
       "download",
@@ -235,7 +267,6 @@ const FilesPanel = () => {
       {
         onSuccess: (result) => {
           updateProgress(100);
-          console.log(result);
           setTimeout(() => {
             modals.removeModal(modals.getModalIndex("progression"));
           }, 2000);
@@ -271,7 +302,6 @@ const FilesPanel = () => {
   };
 
   const createDirectory = (name) => {
-    console.log("Create ", name);
     const cmd = files.command(
       currentFS,
       "createdir",
@@ -280,11 +310,12 @@ const FilesPanel = () => {
     );
     if (cmd.type == "url") {
       sendURLCmd(cmd);
+    } else if (cmd.type == "cmd") {
+      //TODO
     }
   };
 
   const deleteCommand = (element) => {
-    console.log("Delete ", element.name);
     const cmd = files.command(
       currentFS,
       element.size == -1 ? "deletedir" : "delete",
@@ -293,6 +324,8 @@ const FilesPanel = () => {
     );
     if (cmd.type == "url") {
       sendURLCmd(cmd);
+    } else if (cmd.type == "cmd") {
+      //TODO
     }
   };
   const setupFileInput = () => {
@@ -320,7 +353,6 @@ const FilesPanel = () => {
 
   const ElementClicked = (e, line) => {
     if (line.size == -1) {
-      console.log("You clicked folder:", line.name);
       currentPath[currentFS] =
         currentPath[currentFS] +
         (currentPath[currentFS] == "/" ? "" : "/") +
@@ -370,6 +402,9 @@ const FilesPanel = () => {
           },
         }
       );
+    } else if (cmd.type == "cmd") {
+      files.catchResponse(currentFS, "list", processFeedback);
+      sendSerialCmd({ cmd: cmd.cmd });
     }
   };
 
@@ -408,7 +443,6 @@ const FilesPanel = () => {
                         <div
                           class="menu-entry"
                           onclick={(e) => {
-                            console.log("Create directory");
                             let name;
                             showModal({
                               modals,
@@ -450,7 +484,6 @@ const FilesPanel = () => {
                         <div
                           class="menu-entry"
                           onclick={(e) => {
-                            console.log("Upload clicked");
                             fileref.current.value = "";
                             fileref.current.click();
                           }}
@@ -536,7 +569,6 @@ const FilesPanel = () => {
               ) {
                 for (let i = 0; i < length; i++) {
                   const entry = e.dataTransfer.items[i].webkitGetAsEntry();
-                  console.log("entry", e.dataTransfer.items[i]);
                   if (entry.isDirectory) {
                     toasts.addToast({ content: errorDirectory, type: "error" });
                     console.log("Directory detected abort");
@@ -568,7 +600,6 @@ const FilesPanel = () => {
                   <div
                     class="file-line file-line-name"
                     onclick={(e) => {
-                      console.log("Up ");
                       const newpath = currentPath[currentFS].substring(
                         0,
                         currentPath[currentFS].lastIndexOf("/")
@@ -701,7 +732,12 @@ const FilesPanel = () => {
             </div>
           )}
           {!isLoading && filesList && filesList.status && (
-            <div class="file-status">{T(filesList.status)}</div>
+            <div
+              class="file-status"
+              style={!filesList.occupation ? "margin-bottom: 2rem" : ""}
+            >
+              {T(filesList.status)}
+            </div>
           )}
         </div>
       </div>
