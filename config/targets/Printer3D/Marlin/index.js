@@ -79,6 +79,17 @@ const commandsQuery = (req, res, SendBinary) => {
   if (url.indexOf("M20") != -1) {
     SendBinary(
       "Begin file list\n" +
+        "CUBE.GCO 210240\n" +
+        "CUBE01.GCO 2089832\n" +
+        "SUPPORT2.GCO 4613256\n" +
+        "ARCHIVE/CUBE.GCO 210240\n" +
+        "ARCHIVE/CUBE-C~1.GCO 210240\n" +
+        "NEWFOL~1/SUPPORT2.GCO 4613256\n" +
+        "End file list\n" +
+        "ok\n"
+    );
+    /* SendBinary(
+      "Begin file list\n" +
         "COOL_V~1.GCO 66622272\n" +
         "415%VA~1.GCO 66622272\n" +
         "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
@@ -92,7 +103,7 @@ const commandsQuery = (req, res, SendBinary) => {
         "/ARCHIEVE/FILE__~5.GCO 1050\n" +
         "End file list\n" +
         "ok\n"
-    );
+    );*/
     res.send("");
     return;
   }

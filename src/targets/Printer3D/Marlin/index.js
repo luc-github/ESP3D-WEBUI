@@ -126,10 +126,13 @@ const filterResultFiles = (files, path) => {
   return files.reduce((acc, element) => {
     //TODO filter according  path
     if (path == "/") {
-      if (!element.name.startsWith("/")) acc.push(element);
+      if (element.name.indexOf("/") == -1) acc.push(element);
       else {
         //it is directory
-        const name = element.name.substring(1, element.name.indexOf("/", 1));
+        const name = element.name.substring(
+          element.name[0] == "/" ? 1 : 0,
+          element.name.indexOf("/", 1)
+        );
         if (!folderList.includes(name)) {
           folderList.push(name);
           acc.push({ name, size: "-1" });
@@ -137,13 +140,16 @@ const filterResultFiles = (files, path) => {
       }
     } else {
       //it is sub file
-      if (element.name.startsWith(path + "/")) {
-        let newpath = element.name.substring(path.length + 1);
+      const p = path.substring(1);
+      const name = element.name.substring(element.name[0] == "/" ? 1 : 0);
+      if (name.startsWith(p + "/")) {
+        let newpath = name.substring(p.length + 1);
         //it is file or subfile ?
         if (newpath.indexOf("/") == -1) {
           //file
           acc.push({ name: newpath, size: element.size });
         } else {
+          //subdir
           const foldername = newpath.substring(0, newpath.indexOf("/"));
           if (!folderList.includes(foldername)) {
             folderList.push(foldername);
@@ -220,12 +226,13 @@ const capabilities = {
       return true;
     },
     DeleteDir: () => {
-      return true;
+      return false;
     },
     CreateDir: () => {
-      return true;
+      return false;
     },
   },
+
   SDEXT: {
     Process: (path, filename) => {
       return canProcessFile(filename);
@@ -297,7 +304,7 @@ const commands = {
   },
   SD: {
     list: (path, filename) => {
-      return { type: "cmd", cmd: "M21\nM20 " + path };
+      return { type: "cmd", cmd: "M21\nM20" };
     },
     formatResult: (result) => {
       const res = {};
@@ -315,12 +322,21 @@ const commands = {
       return res;
     },
     play: (path, filename) => {
-      return { type: "cmd", cmd: "M23 " + path + filename + "\nM24" };
+      return {
+        type: "cmd",
+        cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+      };
+    },
+    delete: (path, filename) => {
+      return {
+        type: "cmd",
+        cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+      };
     },
   },
   SDEXT: {
     list: (path, filename) => {
-      return { type: "cmd", cmd: "M20 " + path };
+      return { type: "cmd", cmd: "M20" };
     },
     formatResult: (resultTxT) => {
       return { status: "ok" };

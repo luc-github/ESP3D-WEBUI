@@ -677,7 +677,7 @@ const FilesPanel = () => {
                                 icon={<Play />}
                                 onClick={(e) => {
                                   e.target.blur();
-                                  //TODO printe file
+                                  //TODO print file
                                 }}
                               />
                             )}
