@@ -22,7 +22,10 @@ import { Fan, Bed, FeedRate, FlowRate, Extruder } from "./icons";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
 import { TerminalPanelElement } from "../../../components/Panel/Terminal";
-import { compareStrings } from "../../../components/Helpers";
+import {
+  compareStrings,
+  formatFileSizeToString,
+} from "../../../components/Helpers";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -84,9 +87,14 @@ const querySteps = {
 
 const canProcessFile = (filename) => {
   const filters = useUiContextFn.getValue("filesfilter").split(";");
-  filters.forEach((element) => {
-    if (element == "*" || filename.endsWith("." + element)) return true;
-  });
+  for (let index = 0; index < filters.length; index++) {
+    if (
+      filters[index] == "*" ||
+      filename.trim().endsWith("." + filters[index])
+    ) {
+      return true;
+    }
+  }
   return false;
 };
 
@@ -105,6 +113,50 @@ const sortedFilesList = (filesList) => {
   return filesList;
 };
 
+const formatSerialLine = (acc, line) => {
+  const elements = line.split(" ");
+  if (elements.length != 2) return acc;
+  //TODO check it is valid file name / size
+  acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) });
+  return acc;
+};
+
+const filterResultFiles = (files, path) => {
+  const folderList = [];
+  return files.reduce((acc, element) => {
+    //TODO filter according  path
+    if (path == "/") {
+      if (!element.name.startsWith("/")) acc.push(element);
+      else {
+        //it is directory
+        const name = element.name.substring(1, element.name.indexOf("/", 1));
+        if (!folderList.includes(name)) {
+          folderList.push(name);
+          acc.push({ name, size: "-1" });
+        }
+      }
+    } else {
+      //it is sub file
+      if (element.name.startsWith(path + "/")) {
+        let newpath = element.name.substring(path.length + 1);
+        //it is file or subfile ?
+        if (newpath.indexOf("/") == -1) {
+          //file
+          acc.push({ name: newpath, size: element.size });
+        } else {
+          const foldername = newpath.substring(0, newpath.indexOf("/"));
+          if (!folderList.includes(foldername)) {
+            folderList.push(foldername);
+            acc.push({ name: foldername, size: "-1" });
+          }
+        }
+      }
+    }
+
+    return acc;
+  }, []);
+};
+
 const formatStatus = (status) => {
   if (status == "ok") return "S126";
   return status;
@@ -120,27 +172,28 @@ const supportedFileSystems = [
 
 const capabilities = {
   FLASH: {
-    Process: (path, filename) => false,
-    UseFilters: (path, filename) => false,
-    Upload: (path, filename) => {
+    Process: () => false,
+    UseFilters: () => false,
+    IsFlatFS: () => false,
+    Upload: () => {
       return true;
     },
-    Mount: (path, filename) => {
+    Mount: () => {
       return false;
     },
-    UploadMultiple: (path, filename) => {
+    UploadMultiple: () => {
       return true;
     },
-    Download: (path, filename) => {
+    Download: () => {
       return true;
     },
-    DeleteFile: (path, filename) => {
+    DeleteFile: () => {
       return true;
     },
-    DeleteDir: (path, filename) => {
+    DeleteDir: () => {
       return true;
     },
-    CreateDir: (path, filename) => {
+    CreateDir: () => {
       return true;
     },
   },
@@ -149,26 +202,27 @@ const capabilities = {
     Process: (path, filename) => {
       return canProcessFile(filename);
     },
+    UseFilters: () => true,
+    IsFlatFS: () => true,
     Upload: (path, filename, eMsg = false) => {
-      //TODO
-      //check 8.1
       if (eMsg) return "E1";
-      return true;
-    },
-    UploadMultiple: (path, filename) => {
+      //TODO
+      //check 8.1 if become true
       return false;
     },
-    UseFilters: (path, filename) => true,
-    Download: (path, filename) => {
+    UploadMultiple: () => {
       return false;
     },
-    DeleteFile: (path, filename) => {
+    Download: () => {
+      return false;
+    },
+    DeleteFile: () => {
       return true;
     },
-    DeleteDir: (path, filename) => {
+    DeleteDir: () => {
       return true;
     },
-    CreateDir: (path, filename) => {
+    CreateDir: () => {
       return true;
     },
   },
@@ -211,6 +265,7 @@ const commands = {
       res.status = formatStatus(res.status);
       return res;
     },
+
     deletedir: (path, filename) => {
       return {
         type: "url",
@@ -244,8 +299,20 @@ const commands = {
     list: (path, filename) => {
       return { type: "cmd", cmd: "M21\nM20 " + path };
     },
-    formatResult: (resultTxT) => {
-      return { status: "ok" };
+    formatResult: (result) => {
+      const res = {};
+      const files = result.content.reduce((acc, line) => {
+        return formatSerialLine(acc, line);
+      }, []);
+      res.files = sortedFilesList(files);
+      res.status = formatStatus(result.status);
+      return res;
+    },
+    filterResult: (data, path) => {
+      const res = {};
+      res.files = sortedFilesList(filterResultFiles(data.files, path));
+      res.status = formatStatus(data.status);
+      return res;
     },
     play: (path, filename) => {
       return { type: "cmd", cmd: "M23 " + path + filename + "\nM24" };
@@ -277,19 +344,21 @@ const commands = {
   },
 };
 
-const capability = (filesystem, cap, path, filename, flag) => {
+function capability() {
+  const [filesystem, cap, ...rest] = arguments;
   if (capabilities[filesystem] && capabilities[filesystem][cap])
-    return capabilities[filesystem][cap](path, filename, flag);
+    return capabilities[filesystem][cap](...rest);
   console.log("Unknow capability ", cmd, " for ", filesystem);
   return false;
-};
+}
 
-const command = (filesystem, cmd, path, filename) => {
+function command() {
+  const [filesystem, cmd, ...rest] = arguments;
   if (commands[filesystem] && commands[filesystem][cmd])
-    return commands[filesystem][cmd](path, filename);
+    return commands[filesystem][cmd](...rest);
   console.log("Unknow command ", cmd, " for ", filesystem);
   return { type: "error" };
-};
+}
 
 const files = {
   command,
@@ -310,7 +379,6 @@ const filesPanelProcessor = (type, data) => {
         return;
       }
       if (step.start(data)) {
-        console.log("got a start");
         onGoingQuery.started = true;
         onGoingQuery.startTime = window.performance.now();
       }

@@ -81,7 +81,7 @@ const commandsQuery = (req, res, SendBinary) => {
       "Begin file list\n" +
         "COOL_V~1.GCO 66622272\n" +
         "415%VA~1.GCO 66622272\n" +
-        "/ARCHIEVE/TWISTY~1.GCO 1040\n" +
+        "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
         "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
         "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
         "/ARCHIEVE/RET229~1.GCO 2050\n" +

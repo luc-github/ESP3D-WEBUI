@@ -28,24 +28,24 @@ function compareStrings(a, b) {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
-const parseFileSizeString = (sizeString) => {
-  const [size, unit] = sizeString.split(" ");
-  const parsedSize = parseFloat(size);
-  switch (unit) {
-    case "B":
-      return parsedSize;
-    case "KB":
-      return parsedSize * 1e3;
-    case "MB":
-      return parsedSize * 1e6;
-    case "GB":
-      return parsedSize * 1e9;
-    case "TB":
-      return parsedSize * 1e12;
-    default:
-      return undefined;
+function formatFileSizeToString(size) {
+  var lsize = parseInt(size);
+  var value = 0.0;
+  var tsize = "";
+  if (lsize < 1024) {
+    tsize = lsize + " B";
+  } else if (lsize < 1024 * 1024) {
+    value = lsize / 1024.0;
+    tsize = value.toFixed(2) + " KB";
+  } else if (lsize < 1024 * 1024 * 1024) {
+    value = lsize / 1024.0 / 1024.0;
+    tsize = value.toFixed(2) + " MB";
+  } else {
+    value = lsize / 1024.0 / 1024.0 / 1024.0;
+    tsize = value.toFixed(2) + " GB";
   }
-};
+  return tsize;
+}
 
 const hslToHex = (h, s, l) => {
   l /= 100;
@@ -71,7 +71,7 @@ const beautifyJSONString = (jsonstring) => {
 export {
   capitalize,
   hslToHex,
-  parseFileSizeString,
   beautifyJSONString,
   compareStrings,
+  formatFileSizeToString,
 };

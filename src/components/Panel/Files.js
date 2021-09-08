@@ -114,17 +114,26 @@ const FilesPanel = () => {
   };
 
   const processFeedback = (feedback) => {
-    console.log("got:", feedback);
     if (feedback.status) {
-      console.log("Query:", feedback.status);
-      console.log("data:", feedback.content);
-      /*filesListCache[currentFS] = files.command(
+      filesListCache[currentFS] = files.command(
         currentFS,
         "formatResult",
-        result
-      );*/
-      filesListCache[currentFS] = { files: [], status: "ok" };
-      setFilesList(filesListCache[currentFS]);
+        feedback
+      );
+      //check if flatFS and filter if necessary
+      if (files.capability(currentFS, "IsFlatFS")) {
+        setFilesList(
+          files.command(
+            currentFS,
+            "filterResult",
+            filesListCache[currentFS],
+            currentPath[currentFS]
+          )
+        );
+      } else {
+        setFilesList(filesListCache[currentFS]);
+      }
+
       setIsLoading(false);
     }
     setIsLoading(false);
@@ -311,7 +320,7 @@ const FilesPanel = () => {
     if (cmd.type == "url") {
       sendURLCmd(cmd);
     } else if (cmd.type == "cmd") {
-      //TODO
+      //TODO Create directory
     }
   };
 
@@ -325,7 +334,7 @@ const FilesPanel = () => {
     if (cmd.type == "url") {
       sendURLCmd(cmd);
     } else if (cmd.type == "cmd") {
-      //TODO
+      //TODO Delete file
     }
   };
   const setupFileInput = () => {
@@ -348,7 +357,7 @@ const FilesPanel = () => {
     if (!currentPath[currentFS]) {
       currentPath[currentFS] = "/";
     }
-    onRefresh(e);
+    onRefresh(e, true);
   };
 
   const ElementClicked = (e, line) => {
@@ -357,9 +366,9 @@ const FilesPanel = () => {
         currentPath[currentFS] +
         (currentPath[currentFS] == "/" ? "" : "/") +
         line.name;
-      onRefresh(e);
+      onRefresh(e, files.capability(currentFS, "IsFlatFS"));
     } else {
-      if (files.capability(fileSystem, "Download")) {
+      if (files.capability(currentFS, "Download")) {
         const content = <li>{line.name}</li>;
         showConfirmationModal({
           modals,
@@ -377,34 +386,50 @@ const FilesPanel = () => {
     }
   };
 
-  const onRefresh = (e) => {
+  const onRefresh = (e, usecache = false) => {
     setIsLoading(true);
     setFilePath(currentPath[currentFS]);
-    const cmd = files.command(currentFS, "list", currentPath[currentFS]);
-    if (cmd.type == "url") {
-      createNewRequest(
-        espHttpURL(cmd.url, cmd.args).toString(),
-        { method: "GET" },
-        {
-          onSuccess: (result) => {
-            filesListCache[currentFS] = files.command(
-              currentFS,
-              "formatResult",
-              result
-            );
-            setFilesList(filesListCache[currentFS]);
-            setIsLoading(false);
-          },
-          onFail: (error) => {
-            console.log(error);
-            setIsLoading(false);
-            toasts.addToast({ content: error, type: "error" });
-          },
-        }
-      );
-    } else if (cmd.type == "cmd") {
-      files.catchResponse(currentFS, "list", processFeedback);
-      sendSerialCmd({ cmd: cmd.cmd });
+    if (usecache && filesListCache[currentFS]) {
+      if (files.capability(currentFS, "IsFlatFS")) {
+        setFilesList(
+          files.command(
+            currentFS,
+            "filterResult",
+            filesListCache[currentFS],
+            currentPath[currentFS]
+          )
+        );
+      } else {
+        setFilesList(filesListCache[currentFS]);
+      }
+      setIsLoading(false);
+    } else {
+      const cmd = files.command(currentFS, "list", currentPath[currentFS]);
+      if (cmd.type == "url") {
+        createNewRequest(
+          espHttpURL(cmd.url, cmd.args).toString(),
+          { method: "GET" },
+          {
+            onSuccess: (result) => {
+              filesListCache[currentFS] = files.command(
+                currentFS,
+                "formatResult",
+                result
+              );
+              setFilesList(filesListCache[currentFS]);
+              setIsLoading(false);
+            },
+            onFail: (error) => {
+              console.log(error);
+              setIsLoading(false);
+              toasts.addToast({ content: error, type: "error" });
+            },
+          }
+        );
+      } else if (cmd.type == "cmd") {
+        files.catchResponse(currentFS, "list", processFeedback);
+        sendSerialCmd({ cmd: cmd.cmd });
+      }
     }
   };
 
@@ -607,7 +632,7 @@ const FilesPanel = () => {
 
                       currentPath[currentFS] =
                         newpath.length == 0 ? "/" : newpath;
-                      onRefresh(e);
+                      onRefresh(e, files.capability(currentFS, "IsFlatFS"));
                     }}
                   >
                     <div
@@ -652,6 +677,7 @@ const FilesPanel = () => {
                                 icon={<Play />}
                                 onClick={(e) => {
                                   e.target.blur();
+                                  //TODO printe file
                                 }}
                               />
                             )}

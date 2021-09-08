@@ -29,7 +29,7 @@ import {
   beautifyJSONString,
   capitalize,
   hslToHex,
-  parseFileSizeString,
+  formatFileSizeToString,
   compareStrings,
 } from "./strings";
 import {
@@ -58,7 +58,7 @@ export {
   limitArr,
   mergeJSON,
   mergeFlatPrefToNestedSchema,
-  parseFileSizeString,
+  formatFileSizeToString,
   removeEntriesByIDs,
   splitArrayByLines,
 };
