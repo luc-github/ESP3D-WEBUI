@@ -29,17 +29,15 @@
 }
 
 .drop-zone {
-  height: 100%;
+  border: none;
 }
 
 .files-list {
-  height: calc(100% - 0.5rem);
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
   padding: 5px 5px !important;
   overflow-x: hidden;
   overflow-y: scroll !important;
-  max-height: 350px !important;
 }
 
 .drop-zone--over {
@@ -72,7 +70,7 @@
   -moz-user-select: text;
   -webkit-user-select: text;
   -ms-user-select: text;
-  max-height: 500px;
+
   .echo {
     color: blue;
   }

@@ -571,7 +571,7 @@ const FilesPanel = () => {
           </span>
         </div>
         <div class="input-group m-2">
-          <span>
+          <div>
             <select class="form-select" onchange={onSelectFS} value={currentFS}>
               {files.supported.map((element) => {
                 if (uisettings.getValue(element.depend))
@@ -580,12 +580,13 @@ const FilesPanel = () => {
                   );
               })}
             </select>
-          </span>
-          <span class="form-control m-1">{filePath ? filePath : ""}</span>
+          </div>
+          <div class="form-control m-1">{filePath ? filePath : ""}</div>
         </div>
+
         <div
           ref={dropRef}
-          class="drop-zone m-2"
+          class="panel drop-zone panel-body-dashboard"
           onDragOver={(e) => {
             dropRef.current.classList.add("drop-zone--over");
             e.preventDefault();
@@ -631,7 +632,7 @@ const FilesPanel = () => {
             e.preventDefault();
           }}
         >
-          <div class="panel-body panel-body-dashboard files-list m-1" disabled>
+          <div class="panel-body panel-body-dashboard files-list m-1">
             <input
               type="file"
               ref={fileref}
@@ -759,7 +760,7 @@ const FilesPanel = () => {
             )}
           </div>
         </div>
-        <div class="panel-footer files-list-footer">
+        <div class="files-list-footer">
           {!isLoading && filesList && filesList.occupation && (
             <div style=" display: flex; align-items:center; flex-wrap: wrap; justify-content: space-between;">
               <div class="flex-pack">
@@ -786,12 +787,7 @@ const FilesPanel = () => {
             </div>
           )}
           {!isLoading && filesList && filesList.status && (
-            <div
-              class="file-status"
-              style={!filesList.occupation ? "margin-bottom: 2rem" : ""}
-            >
-              {T(filesList.status)}
-            </div>
+            <div class="file-status">{T(filesList.status)}</div>
           )}
         </div>
       </div>

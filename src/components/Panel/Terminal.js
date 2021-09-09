@@ -241,7 +241,7 @@ const TerminalPanel = () => {
         </div>
         <div
           ref={terminalOutput}
-          class="panel-body panel-body-dashboard terminal m-2"
+          class="panel-body panel-body-dashboard terminal m-1"
           onScroll={(e) => {
             if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
               terminal.isAutoScrollPaused.current = true;
