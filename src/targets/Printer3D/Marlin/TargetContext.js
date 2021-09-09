@@ -24,7 +24,7 @@ import {
   beautifyJSONString,
 } from "../../../components/Helpers";
 import { useDatasContext } from "../../../contexts";
-import { filesPanelProcessor } from "./index";
+import { processor } from "./processor";
 
 /*
  * Local const
@@ -55,7 +55,7 @@ const TargetContextProvider = ({ children }) => {
   };
   const dispatchInternally = (type, data) => {
     //files
-    filesPanelProcessor(type, data);
+    processor.handle(type, data);
     //temperature
     //sensors
     //positions

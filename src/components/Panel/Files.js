@@ -33,7 +33,7 @@ import {
   CornerRightUp,
   Edit3,
 } from "preact-feather";
-import { files, useTargetContextFn } from "../../targets";
+import { files, processor, useTargetContextFn } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
 
 let currentFS = "";
@@ -349,7 +349,7 @@ const FilesPanel = () => {
     } else if (cmd.type == "cmd") {
       //do the catching
       setIsLoading(true);
-      files.startCatchResponse(
+      processor.startCatchResponse(
         currentFS,
         "delete",
         processFeedback,
@@ -448,7 +448,7 @@ const FilesPanel = () => {
           }
         );
       } else if (cmd.type == "cmd") {
-        files.startCatchResponse(currentFS, "list", processFeedback);
+        processor.startCatchResponse(currentFS, "list", processFeedback);
         sendSerialCmd({ cmd: cmd.cmd });
       }
     }

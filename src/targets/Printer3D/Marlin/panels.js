@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI Target file
+ panels.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,32 +18,14 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { iconsTarget } from "./icons";
-import { files } from "./files";
-import { processor } from "./processor";
-import { defaultPanelsList } from "./panels";
-import {
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-} from "./TargetContext";
+import { FilesPanelElement } from "../../../components/Panel/Files";
+import { MacrosPanelElement } from "../../../components/Panel/Macros";
+import { TerminalPanelElement } from "../../../components/Panel/Terminal";
 
-const Target = "Marlin";
-const Name = "ESP3D";
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
+const defaultPanelsList = [
+  FilesPanelElement,
+  TerminalPanelElement,
+  MacrosPanelElement,
+];
 
-const restartdelay = 30;
-
-export {
-  Target,
-  fwUrl,
-  Name,
-  files,
-  iconsTarget,
-  processor,
-  restartdelay,
-  defaultPanelsList,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-};
+export { defaultPanelsList };

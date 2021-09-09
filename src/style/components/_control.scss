@@ -39,7 +39,7 @@
   padding: 5px 5px !important;
   overflow-x: hidden;
   overflow-y: scroll !important;
-  max-height: 450px !important;
+  max-height: 350px !important;
 }
 
 .drop-zone--over {
@@ -72,7 +72,7 @@
   -moz-user-select: text;
   -webkit-user-select: text;
   -ms-user-select: text;
-  max-height: 600px;
+  max-height: 500px;
   .echo {
     color: blue;
   }
