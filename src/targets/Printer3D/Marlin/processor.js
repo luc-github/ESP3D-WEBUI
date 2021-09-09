@@ -18,6 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { SD } from "./SD-source";
 
 //only one query at once
 const onGoingQuery = {
@@ -48,23 +49,9 @@ const stopCatchResponse = () => {
 
 //steps
 const responseSteps = {
-  SD: {
-    list: {
-      start: (data) => data.startsWith("Begin file list"),
-      end: (data) => data.startsWith("End file list"),
-      error: (data) => {
-        return data.indexOf("error") != -1;
-      },
-    },
-    delete: {
-      start: (data) => data.startsWith("File deleted"),
-      end: (data) => data.startsWith("ok"),
-      error: (data) => {
-        return data.startsWith("Deletion failed");
-      },
-    },
-  },
+  SD: SD.responseSteps,
 };
+
 const processStream = (type, data) => {
   if (
     onGoingQuery.source != "" &&
