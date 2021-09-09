@@ -61,15 +61,18 @@ const onGoingQuery = {
   feedback: null,
   startTime: 0,
 };
-const catchResponse = (fs, command, feedbackfn) => {
-  console.log("init catch");
+const startCatchResponse = (fs, command, feedbackfn, arg) => {
   onGoingQuery.fs = fs;
   onGoingQuery.command = command;
+  onGoingQuery.arg = arg;
   onGoingQuery.startTime = window.performance.now();
   onGoingQuery.started = false;
   onGoingQuery.ended = false;
   onGoingQuery.content = [];
   onGoingQuery.feedback = feedbackfn;
+};
+const stopCatchResponse = () => {
+  onGoingQuery.fs = "";
 };
 
 //steps
@@ -80,6 +83,13 @@ const querySteps = {
       end: (data) => data.startsWith("End file list"),
       error: (data) => {
         return data.indexOf("error") != -1;
+      },
+    },
+    delete: {
+      start: (data) => data.startsWith("File deleted"),
+      end: (data) => data.startsWith("ok"),
+      error: (data) => {
+        return data.startsWith("Deletion failed");
       },
     },
   },
@@ -379,7 +389,7 @@ function command() {
 const files = {
   command,
   capability,
-  catchResponse,
+  startCatchResponse,
   supported: supportedFileSystems,
 };
 
@@ -389,9 +399,24 @@ const filesPanelProcessor = (type, data) => {
     if (!onGoingQuery.started) {
       //allow 30s for start answer
       if (window.performance.now() - onGoingQuery.startTime > 30000) {
-        onGoingQuery.feedback({ status: "error", content: "timeout" });
-        console.log("timeout wait for start");
-        catchResponse("", "", null);
+        stopCatchResponse();
+        onGoingQuery.feedback({
+          status: "error",
+          command: onGoingQuery.command,
+          arg: onGoingQuery.arg,
+          content: "timeout",
+        });
+        return;
+      }
+      if (step.error(data)) {
+        stopCatchResponse();
+        if (onGoingQuery.feedback)
+          onGoingQuery.feedback({
+            status: "error",
+            command: onGoingQuery.command,
+            arg: onGoingQuery.arg,
+            content: data,
+          });
         return;
       }
       if (step.start(data)) {
@@ -400,25 +425,25 @@ const filesPanelProcessor = (type, data) => {
       }
     } else {
       if (step.end(data)) {
+        stopCatchResponse();
         onGoingQuery.feedback({
           status: "ok",
+          command: onGoingQuery.command,
+          arg: onGoingQuery.arg,
           content: [...onGoingQuery.content],
         });
-        catchResponse("", "", null);
       } else {
-        if (step.error(data)) {
-          if (onGoingQuery.feedback)
-            onGoingQuery.feedback({ status: "error", content: data });
-          catchResponse("", "", null);
+        //4 min Timeout if answer started but no end
+        if (window.performance.now() - onGoingQuery.startTime > 4 * 60000) {
+          stopCatchResponse();
+          onGoingQuery.feedback({
+            status: "error",
+            command: onGoingQuery.command,
+            arg: onGoingQuery.arg,
+            content: "timeout",
+          });
         } else {
-          //4 min Timeout if answer started but no end
-          if (window.performance.now() - onGoingQuery.startTime > 4 * 60000) {
-            onGoingQuery.feedback({ status: "error", content: "timeout" });
-            catchResponse("", "", null);
-            console.log("timeout wait for end");
-          } else {
-            onGoingQuery.content.push(data);
-          }
+          onGoingQuery.content.push(data);
         }
       }
     }

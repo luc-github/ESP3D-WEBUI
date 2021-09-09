@@ -115,25 +115,38 @@ const FilesPanel = () => {
 
   const processFeedback = (feedback) => {
     if (feedback.status) {
-      filesListCache[currentFS] = files.command(
-        currentFS,
-        "formatResult",
-        feedback
-      );
-      //check if flatFS and filter if necessary
-      if (files.capability(currentFS, "IsFlatFS")) {
-        setFilesList(
-          files.command(
-            currentFS,
-            "filterResult",
-            filesListCache[currentFS],
-            currentPath[currentFS]
-          )
+      if (feedback.command == "list") {
+        filesListCache[currentFS] = files.command(
+          currentFS,
+          "formatResult",
+          feedback
         );
+        //check if flatFS and filter if necessary
+        if (files.capability(currentFS, "IsFlatFS")) {
+          setFilesList(
+            files.command(
+              currentFS,
+              "filterResult",
+              filesListCache[currentFS],
+              currentPath[currentFS]
+            )
+          );
+        } else {
+          setFilesList(filesListCache[currentFS]);
+        }
       } else {
-        setFilesList(filesListCache[currentFS]);
+        if (feedback.command == "delete") {
+          if (feedback.status == "error") {
+            const error = T("S85").replace("%s", feedback.arg);
+            console.log("got error");
+            toasts.addToast({ content: error, type: "error" });
+          } else {
+            //Success now refresh content"
+            onRefresh(null, false);
+            return;
+          }
+        }
       }
-
       setIsLoading(false);
     }
     setIsLoading(false);
@@ -334,7 +347,15 @@ const FilesPanel = () => {
     if (cmd.type == "url") {
       sendURLCmd(cmd);
     } else if (cmd.type == "cmd") {
-      //TODO Delete file
+      //do the catching
+      setIsLoading(true);
+      files.startCatchResponse(
+        currentFS,
+        "delete",
+        processFeedback,
+        element.name
+      );
+      sendSerialCmd({ cmd: cmd.cmd });
     }
   };
   const setupFileInput = () => {
@@ -427,7 +448,7 @@ const FilesPanel = () => {
           }
         );
       } else if (cmd.type == "cmd") {
-        files.catchResponse(currentFS, "list", processFeedback);
+        files.startCatchResponse(currentFS, "list", processFeedback);
         sendSerialCmd({ cmd: cmd.cmd });
       }
     }
@@ -678,6 +699,13 @@ const FilesPanel = () => {
                                 onClick={(e) => {
                                   e.target.blur();
                                   //TODO print file
+                                  const cmd = files.command(
+                                    currentFS,
+                                    "play",
+                                    currentPath[currentFS],
+                                    line.name
+                                  );
+                                  sendSerialCmd({ cmd: cmd.cmd });
                                 }}
                               />
                             )}

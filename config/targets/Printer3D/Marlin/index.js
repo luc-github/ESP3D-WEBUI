@@ -108,6 +108,17 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
 
+  if (url.indexOf("M30") != -1) {
+    const name = url.split(" ");
+    SendBinary(
+      //"Deletion failed, File:" + name[1].substring(1) + ".\n" + "ok\n"
+      "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
+    );
+
+    res.send("");
+    return;
+  }
+
   if (url.indexOf("M105") != -1) {
     SendBinary(sendTemperatures());
     res.send("");
