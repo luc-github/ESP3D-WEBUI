@@ -42,6 +42,7 @@ const modifiers = {
   ltooltip: "tooltip tooltip-left",
   rtooltip: "tooltip tooltip-right",
   mx2: "mx-2",
+  m05: "m-05",
   m2: "m-2",
   m1: "m-1",
 };

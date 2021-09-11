@@ -37,8 +37,9 @@ const InterfaceTab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSave, setShowSave] = useState(true);
   const inputFile = useRef(null);
-  const errorValidationMsg = T("S42");
+
   console.log("Interface");
+
   const generateValidation = (fieldData) => {
     const validation = {
       message: <Flag size="1rem" />,
@@ -137,7 +138,7 @@ const InterfaceTab = () => {
       }
     }
     if (!validation.valid) {
-      validation.message = errorValidationMsg;
+      validation.message = T("S42");
     }
     fieldData.haserror = !validation.valid;
     if (fieldData.type != "list") {

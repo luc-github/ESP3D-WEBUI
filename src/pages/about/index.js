@@ -105,10 +105,6 @@ const About = () => {
   const [props, setProps] = useState([...about]);
   const [isFwUpdate, setIsFwUpdate] = useState(false);
   const inputFilesRef = useRef(0);
-  const titleProgress = T("S32");
-  const cancelTxt = T("S28");
-  const yesTxt = T("S27");
-
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(
@@ -195,8 +191,8 @@ const About = () => {
     }
     showProgressModal({
       modals,
-      title: titleProgress,
-      button1: { cb: abortRequest, text: cancelTxt },
+      title: T("S32"),
+      button1: { cb: abortRequest, text: T("S28") },
       content: <Progress progressBar={progressBar} max="100" />,
     });
     createNewRequest(
@@ -245,10 +241,10 @@ const About = () => {
           cb: () => {
             uploadFiles();
           },
-          text: yesTxt,
+          text: T("S27"),
         },
         button2: {
-          text: cancelTxt,
+          text: T("S28"),
         },
       });
     }

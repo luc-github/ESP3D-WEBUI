@@ -97,9 +97,6 @@ const Input = ({
       </div>
     );
   else if (extra == "scan") {
-    const title = T("S45");
-    const closeTxt = T("S24");
-    const refreshTxt = T("S50");
     return (
       <div class={`input-group ${inline ? "column" : ""} `}>
         <input
@@ -121,9 +118,9 @@ const Input = ({
             const modalId = "scan";
             showModal({
               modals,
-              title,
-              button2: { text: closeTxt },
-              button1: { cb: refreshList, text: refreshTxt, noclose: true },
+              title: T("S45"),
+              button2: { text: T("S24") },
+              button1: { cb: refreshList, text: T("S50"), noclose: true },
               icon: <Search />,
               id: modalId,
               content: (

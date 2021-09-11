@@ -45,9 +45,7 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
         : value.replace("theme-", "").replace(".gz", "")
     );
   };
-  const title = id == "language" ? T("S177") : T("S182");
-  const closeTxt = T("S24");
-  const refreshTxt = T("S50");
+
   let ScanPacks = null;
   const refreshList = () => {
     if (ScanPacks) ScanPacks();
@@ -76,9 +74,9 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
           const modalId = `${id}Pickup`;
           showModal({
             modals,
-            title,
-            button2: { text: closeTxt },
-            button1: { cb: refreshList, text: refreshTxt, noclose: true },
+            title: id == "language" ? T("S177") : T("S182"),
+            button2: { text: T("S24") },
+            button1: { cb: refreshList, text: T("S50"), noclose: true },
             icon: <Search />,
             id: modalId,
             content: (

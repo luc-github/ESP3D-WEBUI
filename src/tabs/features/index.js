@@ -52,15 +52,6 @@ const FeaturesTab = () => {
   const progressBar = {};
   const [features, setFeatures] = useState(featuresSettings.current);
   const inputFile = useRef(null);
-  const errorMsg = T("S21");
-  const errorValidationMsg = T("S42");
-  const title = T("S58");
-  const yes = T("S27");
-  const cancel = T("S28");
-  const content = T("S59");
-  const titleupdate = T("S91");
-  const contentrestart = T("S174");
-  const usercancel = T("S175");
 
   const getFeatures = () => {
     setIsLoading(true);
@@ -75,8 +66,8 @@ const FeaturesTab = () => {
             featuresSettings.current = { ...feat };
             setFeatures(featuresSettings.current);
           } catch (e) {
-            console.log(e, errorMsg);
-            toasts.addToast({ content: errorMsg, type: "error" });
+            console.log(e, T("S21"));
+            toasts.addToast({ content: T("S21"), type: "error" });
           } finally {
             setIsLoading(false);
           }
@@ -92,7 +83,7 @@ const FeaturesTab = () => {
 
   function abortSave() {
     abortRequest("ESP401");
-    toasts.addToast({ content: usercancel, type: "error" });
+    toasts.addToast({ content: T("S175"), type: "error" });
     endProgression(false);
   }
 
@@ -102,10 +93,10 @@ const FeaturesTab = () => {
     if (needrestart) {
       showConfirmationModal({
         modals,
-        title,
-        content: contentrestart,
-        button1: { cb: reStartBoard, text: yes },
-        button2: { text: cancel },
+        title: T("S58"),
+        content: T("S174"),
+        button1: { cb: reStartBoard, text: T("S27") },
+        button2: { text: T("S28") },
       });
     }
   }
@@ -161,8 +152,8 @@ const FeaturesTab = () => {
     });
     showProgressModal({
       modals,
-      title: titleupdate,
-      button1: { cb: abortSave, text: cancel },
+      title: T("S91"),
+      button1: { cb: abortSave, text: T("S28") },
       content: <Progress progressBar={progressBar} max={total} />,
     });
     Object.keys(features).map((sectionId) => {
@@ -280,7 +271,7 @@ const FeaturesTab = () => {
       }
     }
     if (!validation.valid) {
-      validation.message = errorValidationMsg;
+      validation.message = T("S42");
     }
     fieldData.haserror = !validation.valid;
     if (fieldData.value == fieldData.initial) {
@@ -457,10 +448,10 @@ const FeaturesTab = () => {
                 e.target.blur();
                 showConfirmationModal({
                   modals,
-                  title,
-                  content,
-                  button1: { cb: reStartBoard, text: yes },
-                  button2: { text: cancel },
+                  title: T("S58"),
+                  content: T("S59"),
+                  button1: { cb: reStartBoard, text: T("S27") },
+                  button2: { text: T("S28") },
                 });
               }}
             />

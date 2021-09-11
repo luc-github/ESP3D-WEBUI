@@ -57,9 +57,6 @@ const MainContainer = () => {
   const { uisettings, modals } = useUiContext();
   const { connectionSettings } = useSettingsContext();
   const [routes, setRoutes] = useState({ ...defRoutes });
-  const title = T("S123");
-  const closeTxt = T("S24");
-  let content = T("S124");
 
   const newroutes = () => {
     if (uisettings.getValue("showextracontents")) {
@@ -97,11 +94,11 @@ const MainContainer = () => {
       if (isLimitedEnvironment(connectionSettings.current.WiFiMode))
         showModal({
           modals,
-          title,
-          button1: { text: closeTxt },
+          title: T("S123"),
+          button1: { text: T("S24") },
           icon: <Info />,
           id: "notification",
-          content: content.replace(
+          content: T("S124").replace(
             "%s",
             connectionSettings.current.WebSocketIP +
               (connectionSettings.current.WebSocketport != "81"

@@ -73,16 +73,14 @@ const Navbar = () => {
   const { defaultRoute, activeRoute } = useRouterContext();
   const { modals, uisettings } = useUiContext();
   const { createNewRequest } = useHttpQueue();
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const { Disconnect } = useWsContext();
   const buttonExtraPage = useRef();
   const menuExtraPage = useRef();
-  const buttontext = T("S155");
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const [textbutton, setTextButton] = useState(
     <Fragment>
       <Trello />
-      <label class="hide-low">{buttontext}</label>
+      <label class="hide-low">{T("S155")}</label>
     </Fragment>
   );
   const [hrefbutton, setHrefButton] = useState();
@@ -149,24 +147,14 @@ const Navbar = () => {
     new ResizeObserver(onResize).observe(document.getElementById("app"));
   }, []);
 
-  if (showConfirmation) {
-    const title = T("S26");
-    const content = T("S152");
-    const yes = T("S27");
-    const cancel = T("S28");
-
+  const onDisconnect = () => {
     showConfirmationModal({
       modals,
-      title,
-      content,
-      button1: { cb: disconnectNow, text: yes },
-      button2: { text: cancel },
+      title: T("S26"),
+      content: T("S152"),
+      button1: { cb: disconnectNow, text: T("S27") },
+      button2: { text: T("S28") },
     });
-    setShowConfirmation(false);
-  }
-
-  const onDisconnect = () => {
-    setShowConfirmation(true);
   };
 
   if (uisettings.current) {

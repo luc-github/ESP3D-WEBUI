@@ -56,21 +56,6 @@ const FilesPanel = () => {
   const { modals, toasts } = useUiContext();
   const fileref = useRef();
   const dropRef = useRef();
-  const downloadtitle = T("S87");
-  const deletetitle = T("S26");
-  const deleteFileText = T("S100");
-  const deleteDirText = T("S101");
-  const yes = T("S27");
-  const cancel = T("S28");
-  const createtxt = T("S106");
-  const createdirtitle = T("S104");
-  const labelCreateDir = T("S105");
-  const errorMultipleFiles = T("S193");
-  const errorDirectory = T("S192");
-  const uploadtitle = T("S31");
-  const uploadingtitle = T("S32");
-  const downloadTitle = T("S108");
-
   const progressBar = {};
 
   const sendSerialCmd = (cmd) => {
@@ -137,9 +122,11 @@ const FilesPanel = () => {
       } else {
         if (feedback.command == "delete") {
           if (feedback.status == "error") {
-            const error = T("S85").replace("%s", feedback.arg);
             console.log("got error");
-            toasts.addToast({ content: error, type: "error" });
+            toasts.addToast({
+              content: T("S85").replace("%s", feedback.arg),
+              type: "error",
+            });
           } else {
             //Success now refresh content"
             onRefresh(null, false);
@@ -159,10 +146,10 @@ const FilesPanel = () => {
     if (list.length > 0) {
       showProgressModal({
         modals,
-        title: uploadingtitle,
+        title: T("S32"),
         button1: {
           cb: abortRequest,
-          text: cancel,
+          text: T("S28"),
         },
         content: <Progress progressBar={progressBar} max="100" />,
       });
@@ -240,13 +227,13 @@ const FilesPanel = () => {
 
     showConfirmationModal({
       modals,
-      title: uploadtitle,
+      title: T("S31"),
       content: <CenterLeft>{content}</CenterLeft>,
       button1: {
         cb: uploadFiles,
-        text: yes,
+        text: T("S27"),
       },
-      button2: { text: cancel },
+      button2: { text: T("S28") },
     });
   };
 
@@ -259,10 +246,10 @@ const FilesPanel = () => {
     );
     showProgressModal({
       modals,
-      title: downloadTitle,
+      title: T("S108"),
       button1: {
         cb: abortRequest,
-        text: cancel,
+        text: T("S28"),
       },
       content: <Progress progressBar={progressBar} max="100" />,
     });
@@ -375,15 +362,15 @@ const FilesPanel = () => {
         const content = <li>{line.name}</li>;
         showConfirmationModal({
           modals,
-          title: downloadtitle,
+          title: T("S87"),
           content,
           button1: {
             cb: () => {
               downloadFile(line);
             },
-            text: yes,
+            text: T("S27"),
           },
-          button2: { text: cancel },
+          button2: { text: T("S28") },
         });
       }
     }
@@ -480,19 +467,19 @@ const FilesPanel = () => {
                             let name;
                             showModal({
                               modals,
-                              title: createdirtitle,
-                              button2: { text: cancel },
+                              title: T("S104"),
+                              button2: { text: T("S28") },
                               button1: {
                                 cb: () => {
                                   if (name.length > 0) createDirectory(name);
                                 },
-                                text: createtxt,
+                                text: T("S106"),
                               },
                               icon: <Edit3 />,
                               id: "inputName",
                               content: (
                                 <Fragment>
-                                  <div>{labelCreateDir}</div>
+                                  <div>{T("S105")}</div>
                                   <input
                                     class="form-input"
                                     onInput={(e) => {
@@ -592,7 +579,7 @@ const FilesPanel = () => {
             if (e.dataTransfer.files.length) {
               const length = e.dataTransfer.items.length;
               if (!fileref.current.multiple && length > 1) {
-                toasts.addToast({ content: errorMultipleFiles, type: "error" });
+                toasts.addToast({ content: T("S193"), type: "error" });
                 console.log("Multiple detected abort");
                 e.preventDefault();
                 return;
@@ -605,7 +592,7 @@ const FilesPanel = () => {
                 for (let i = 0; i < length; i++) {
                   const entry = e.dataTransfer.items[i].webkitGetAsEntry();
                   if (entry.isDirectory) {
-                    toasts.addToast({ content: errorDirectory, type: "error" });
+                    toasts.addToast({ content: T("S192"), type: "error" });
                     console.log("Directory detected abort");
                     e.preventDefault();
                     return;
@@ -710,10 +697,7 @@ const FilesPanel = () => {
                             const content = (
                               <Fragment>
                                 <div>
-                                  {line.size == -1
-                                    ? deleteDirText
-                                    : deleteFileText}
-                                  :
+                                  {line.size == -1 ? T("S101") : T("S100")}:
                                 </div>
                                 <center>
                                   <li>{line.name}</li>
@@ -722,15 +706,15 @@ const FilesPanel = () => {
                             );
                             showConfirmationModal({
                               modals,
-                              title: deletetitle,
+                              title: T("S26"),
                               content,
                               button1: {
                                 cb: () => {
                                   deleteCommand(line);
                                 },
-                                text: yes,
+                                text: T("S27"),
                               },
-                              button2: { text: cancel },
+                              button2: { text: T("S28") },
                             });
                           }}
                         />

@@ -46,8 +46,6 @@ const IconSelect = ({
   };
   const { modals } = useUiContext();
   const iconsList = { ...iconsTarget, ...iconsFeather };
-  const title = T("S134");
-  const closeTxt = T("S24");
   const showList = (e) => {
     const content = (
       <div>
@@ -58,8 +56,16 @@ const IconSelect = ({
             modals.removeModal(modals.getModalIndex(modalId));
           };
           if (value == element)
-            return <ButtonImg primary icon={displayIcon} onclick={onSelect} />;
-          else return <ButtonImg icon={displayIcon} onclick={onSelect} />;
+            return (
+              <ButtonImg
+                m05
+                primary
+                btn-xs
+                icon={displayIcon}
+                onclick={onSelect}
+              />
+            );
+          else return <ButtonImg m05 icon={displayIcon} onclick={onSelect} />;
         })}
       </div>
     );
@@ -68,8 +74,8 @@ const IconSelect = ({
     //modals.removeModal(modals.getModalIndex(modalId));
     showModal({
       modals,
-      title,
-      button2: { text: closeTxt },
+      title: T("S134"),
+      button2: { text: T("S24") },
       icon: <Search />,
       id: modalId,
       content,
