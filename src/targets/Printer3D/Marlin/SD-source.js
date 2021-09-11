@@ -105,7 +105,9 @@ const responseSteps = {
     start: (data) => data.startsWith("Begin file list"),
     end: (data) => data.startsWith("End file list"),
     error: (data) => {
-      return data.indexOf("error") != -1;
+      return (
+        data.indexOf("error") != -1 || data.indexOf("echo:No SD card") != -1
+      );
     },
   },
   delete: {

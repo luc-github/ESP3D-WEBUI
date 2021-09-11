@@ -59,56 +59,56 @@ const processStream = (type, data) => {
     type == "stream"
   ) {
     const step = responseSteps[onGoingQuery.source][onGoingQuery.command];
-    if (!onGoingQuery.started) {
-      //allow 30s for start answer
-      if (window.performance.now() - onGoingQuery.startTime > 30000) {
-        stopCatchResponse();
+    //time out
+    if (
+      window.performance.now() - onGoingQuery.startTime >
+      (onGoingQuery.started ? 4 * 60000 : 30000)
+    ) {
+      stopCatchResponse();
+      onGoingQuery.feedback({
+        status: "error",
+        command: onGoingQuery.command,
+        arg: onGoingQuery.arg,
+        content: "timeout",
+      });
+      return;
+    }
+
+    //started trigger detected set started flag
+    if (step.start(data)) {
+      onGoingQuery.started = true;
+      onGoingQuery.startTime = window.performance.now();
+    }
+
+    //Got final trigger on catched stream
+    //it catch start trigger = start trigger
+    if (step.end(data) && onGoingQuery.started) {
+      stopCatchResponse();
+      onGoingQuery.feedback({
+        status: "ok",
+        command: onGoingQuery.command,
+        arg: onGoingQuery.arg,
+        content:
+          onGoingQuery.content.length > 0 ? [...onGoingQuery.content] : [data],
+      });
+      return;
+    }
+
+    //error or got end without start
+    if (step.error(data) || (step.end(data) && !onGoingQuery.started)) {
+      stopCatchResponse();
+      if (onGoingQuery.feedback)
         onGoingQuery.feedback({
           status: "error",
           command: onGoingQuery.command,
           arg: onGoingQuery.arg,
-          content: "timeout",
+          content: data,
         });
-        return;
-      }
-      if (step.error(data)) {
-        stopCatchResponse();
-        if (onGoingQuery.feedback)
-          onGoingQuery.feedback({
-            status: "error",
-            command: onGoingQuery.command,
-            arg: onGoingQuery.arg,
-            content: data,
-          });
-        return;
-      }
-      if (step.start(data)) {
-        onGoingQuery.started = true;
-        onGoingQuery.startTime = window.performance.now();
-      }
-    } else {
-      if (step.end(data)) {
-        stopCatchResponse();
-        onGoingQuery.feedback({
-          status: "ok",
-          command: onGoingQuery.command,
-          arg: onGoingQuery.arg,
-          content: [...onGoingQuery.content],
-        });
-      } else {
-        //4 min Timeout if answer started but no end
-        if (window.performance.now() - onGoingQuery.startTime > 4 * 60000) {
-          stopCatchResponse();
-          onGoingQuery.feedback({
-            status: "error",
-            command: onGoingQuery.command,
-            arg: onGoingQuery.arg,
-            content: "timeout",
-          });
-        } else {
-          onGoingQuery.content.push(data);
-        }
-      }
+      return;
+    }
+    //No error and no end detected so save stream data
+    if (onGoingQuery.started) {
+      onGoingQuery.content.push(data);
     }
   }
 };
