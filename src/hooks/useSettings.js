@@ -21,11 +21,11 @@ import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
 import { espHttpURL, getBrowserTime } from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
+import { useUiContext, useRouterContext } from "../contexts";
 import {
-  useUiContext,
-  useRouterContext,
-  useTranslationsContext,
-} from "../contexts";
+  baseLangRessource,
+  setCurrentLanguage,
+} from "../components/Translations";
 import { defaultPreferences } from "../targets";
 import {
   importPreferences,
@@ -43,8 +43,6 @@ const useSettings = () => {
   const { interfaceSettings, connectionSettings, activity } =
     useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
-  const { currentLanguage, baseLangRessource, setCurrentLanguage } =
-    useTranslationsContext();
   const getConnectionSettings = (next) => {
     createNewRequest(
       espHttpURL("command", {

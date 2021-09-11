@@ -100,23 +100,28 @@
 .files-list-footer {
   color: #5755d9;
 }
+
+.file-line-controls {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-items: center;
+}
 .flex-pack,
-.file-line-controls,
 .file-line-name {
   align-items: center;
+  justify-content: flex-start;
   display: flex;
   flex-wrap: nowrap;
 }
-.file-line-controls {
-  align-items: center;
-}
 
-.file-line-name label,
-.file-line-name {
+.file-line-action label,
+.file-line-action {
   cursor: pointer;
 }
 
-.file-line-name:active {
+.file-line-action:active {
   color: blue;
   font-weight: bolder;
 }
@@ -124,9 +129,9 @@
 .file-line {
   display: -ms-flexbox;
   display: flex;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .file-line:hover {

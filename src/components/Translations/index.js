@@ -14,15 +14,30 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useTranslationsReferences } from "../../contexts";
+import LangRessourceSubTarget from "SubTargetDir/Translations/en.json";
+import LangRessourceTarget from "TargetDir/Translations/en.json";
+import LangRessourceBase from "TargetDir/../Translations/en.json";
 import listLanguagePacks from "./languages.json";
+
+/*
+ * Local const
+ *
+ */
+const baseLangRessource = {
+  ...LangRessourceSubTarget,
+  ...LangRessourceTarget,
+  ...LangRessourceBase,
+};
+
+let currentLanguage = baseLangRessource;
+
+const setCurrentLanguage = (lang) => (currentLanguage = lang);
 
 /*
  * Give text from id according language selection
  * give language base text if no corresponding id
  */
 function T(id, base = false, ressourcelanguage = null) {
-  const { currentLanguage, baseLangRessource } = useTranslationsReferences;
   let translatedText = base
     ? baseLangRessource[id]
     : ressourcelanguage
@@ -48,4 +63,4 @@ function getLanguageName(languagePack) {
   return lang;
 }
 
-export { T, getLanguageName };
+export { T, getLanguageName, setCurrentLanguage, baseLangRessource };

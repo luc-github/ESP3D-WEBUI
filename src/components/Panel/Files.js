@@ -21,7 +21,7 @@ import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../Translations";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { Loading, ButtonImg, CenterLeft } from "../Controls";
+import { Loading, ButtonImg, CenterLeft, Progress } from "../Controls";
 import { useUiContext, useUiContextFn } from "../../contexts";
 import { showModal, showConfirmationModal, showProgressModal } from "../Modal";
 import {
@@ -56,8 +56,6 @@ const FilesPanel = () => {
   const { modals, toasts } = useUiContext();
   const fileref = useRef();
   const dropRef = useRef();
-  const progressValue = useRef(0);
-  const progressValueDisplay = useRef(0);
   const downloadtitle = T("S87");
   const deletetitle = T("S26");
   const deleteFileText = T("S100");
@@ -72,6 +70,8 @@ const FilesPanel = () => {
   const uploadtitle = T("S31");
   const uploadingtitle = T("S32");
   const downloadTitle = T("S108");
+
+  const progressBar = {};
 
   const sendSerialCmd = (cmd) => {
     createNewRequest(
@@ -152,18 +152,6 @@ const FilesPanel = () => {
     setIsLoading(false);
   };
 
-  const Progression = () => {
-    useEffect(() => {
-      updateProgress(0);
-    }, []);
-    return (
-      <center>
-        <progress ref={progressValue} value="0" max="100" />
-        <label style="margin-left:15px" ref={progressValueDisplay}></label>
-      </center>
-    );
-  };
-
   const uploadFiles = () => {
     setIsLoading(true);
     const cmd = files.command(currentFS, "upload", currentPath[currentFS]);
@@ -176,7 +164,7 @@ const FilesPanel = () => {
           cb: abortRequest,
           text: cancel,
         },
-        content: <Progression />,
+        content: <Progress progressBar={progressBar} max="100" />,
       });
       //prepare POST data
       const formData = new FormData();
@@ -219,7 +207,7 @@ const FilesPanel = () => {
             setIsLoading(false);
           },
           onProgress: (e) => {
-            updateProgress(e);
+            progressBar.update(e);
           },
         }
       );
@@ -262,11 +250,6 @@ const FilesPanel = () => {
     });
   };
 
-  const updateProgress = (value) => {
-    progressValue.current.value = value.toFixed(2);
-    progressValueDisplay.current.innerHTML = value.toFixed(2) + "%";
-  };
-
   const downloadFile = (element) => {
     const cmd = files.command(
       currentFS,
@@ -281,14 +264,14 @@ const FilesPanel = () => {
         cb: abortRequest,
         text: cancel,
       },
-      content: <Progression />,
+      content: <Progress progressBar={progressBar} max="100" />,
     });
     createNewRequest(
       espHttpURL(cmd.url, cmd.args).toString(),
       { method: "GET", id: "download" },
       {
         onSuccess: (result) => {
-          updateProgress(100);
+          progressBar.update(100);
           setTimeout(() => {
             modals.removeModal(modals.getModalIndex("progression"));
           }, 2000);
@@ -316,8 +299,7 @@ const FilesPanel = () => {
           toasts.addToast({ content: error, type: "error" });
         },
         onProgress: (e) => {
-          console.log(e);
-          updateProgress(e);
+          progressBar.update(e);
         },
       }
     );
@@ -465,6 +447,12 @@ const FilesPanel = () => {
   console.log(id);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
+      <input
+        type="file"
+        ref={fileref}
+        class="d-none"
+        onChange={filesSelected}
+      />
       <div class="panel mb-2 panel-dashboard">
         <div class="navbar">
           <span class="navbar-section  feather-icon-container">
@@ -633,12 +621,6 @@ const FilesPanel = () => {
           }}
         >
           <div class="panel-body panel-body-dashboard files-list m-1">
-            <input
-              type="file"
-              ref={fileref}
-              class="d-none"
-              onChange={filesSelected}
-            />
             {isLoading && fileSystem != "" && <Loading />}
 
             {!isLoading && fileSystem != "" && filesList && (
@@ -658,7 +640,7 @@ const FilesPanel = () => {
                     }}
                   >
                     <div
-                      class="form-control  file-line-name"
+                      class="form-control  file-line-name file-line-action"
                       style="height:2rem!important"
                     >
                       <CornerRightUp /> <label class="p-2">...</label>
@@ -667,12 +649,12 @@ const FilesPanel = () => {
                 )}
                 {filesList.files.map((line) => {
                   return (
-                    <div class="file-line">
+                    <div class="file-line form-control">
                       <div
-                        class={`feather-icon-container ${
+                        class={`feather-icon-container file-line-name ${
                           files.capability(fileSystem, "Download") ||
                           line.size == -1
-                            ? "file-line-name"
+                            ? "file-line-action"
                             : ""
                         }`}
                         onclick={(e) => {
@@ -685,7 +667,7 @@ const FilesPanel = () => {
                       <div class="file-line-controls">
                         {line.size != -1 && (
                           <Fragment>
-                            <span>{line.size}</span>
+                            <div>{line.size}</div>
                             {files.capability(
                               currentFS,
                               "Process",

@@ -20,7 +20,12 @@
 */
 import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { ButtonImg, Loading, CenterLeft } from "../../components/Controls";
+import {
+  ButtonImg,
+  Loading,
+  CenterLeft,
+  Progress,
+} from "../../components/Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
@@ -96,13 +101,14 @@ const About = () => {
   const { createNewRequest, abortRequest } = useHttpQueue();
   const { interfaceSettings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
-  const progressValue = useRef(0);
-  const progressValueDisplay = useRef(0);
+  const progressBar = {};
   const [props, setProps] = useState([...about]);
   const [isFwUpdate, setIsFwUpdate] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showProgression, setShowProgression] = useState(false);
-  const inputFiles = useRef(null);
+  const inputFilesRef = useRef(0);
+  const titleProgress = T("S32");
+  const cancelTxt = T("S28");
+  const yesTxt = T("S27");
+
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(
@@ -147,10 +153,10 @@ const About = () => {
   const onFWUpdate = (e) => {
     e.target.blur();
     setIsFwUpdate(true);
-    inputFiles.current.value = "";
-    inputFiles.current.setAttribute("accept", ".bin, .bin.gz");
-    inputFiles.current.setAttribute("multiple", "false");
-    inputFiles.current.click();
+    inputFilesRef.current.value = "";
+    inputFilesRef.current.accept = ".bin, .bin.gz";
+    inputFilesRef.current.multiple = false;
+    inputFilesRef.current.click();
   };
   const onFWGit = (e) => {
     window.open(
@@ -162,20 +168,20 @@ const About = () => {
     e.target.blur();
   };
   const onWebUiUpdate = (e) => {
-    setIsFwUpdate(false);
-    inputFiles.current.value = "";
-    inputFiles.current.setAttribute("accept", "*");
-    inputFiles.current.setAttribute("multiple", "true");
-    inputFiles.current.click();
     e.target.blur();
+    setIsFwUpdate(false);
+    inputFilesRef.current.value = "";
+    inputFilesRef.current.accept = "*";
+    inputFilesRef.current.multiple = true;
+    inputFilesRef.current.click();
   };
   const onWebUiGit = (e) => {
     window.open(webUiUrl, "_blank");
     e.target.blur();
   };
 
-  const uploadFiles = () => {
-    const list = inputFiles.current.files;
+  const uploadFiles = (e) => {
+    const list = inputFilesRef.current.files;
     const formData = new FormData();
     formData.append("path", "/");
     if (list.length > 0) {
@@ -187,12 +193,18 @@ const About = () => {
         formData.append("myfiles", file, "/" + file.name);
       }
     }
-
+    showProgressModal({
+      modals,
+      title: titleProgress,
+      button1: { cb: abortRequest, text: cancelTxt },
+      content: <Progress progressBar={progressBar} max="100" />,
+    });
     createNewRequest(
       isFwUpdate ? espHttpURL("updatefw") : espHttpURL("files"),
       { method: "POST", id: "upload", body: formData },
       {
         onSuccess: (result) => {
+          progressBar.update(100);
           modals.removeModal(modals.getModalIndex("upload"));
           Disconnect(isFwUpdate ? "restart" : "connecting");
           if (isFwUpdate) {
@@ -206,65 +218,41 @@ const About = () => {
           toasts.addToast({ content: error, type: "error" });
         },
         onProgress: (e) => {
-          progressValue.current.value = e.toFixed(2);
-          progressValueDisplay.current.innerHTML = e.toFixed(2) + "%";
+          progressBar.update(e);
         },
       }
     );
-
-    setShowProgression(true);
   };
 
-  const filesSelected = () => {
-    if (inputFiles.current.files.length > 0) {
-      setShowConfirmation(true);
+  const filesSelected = (e) => {
+    if (inputFilesRef.current.files.length > 0) {
+      const titleConfirmation = isFwUpdate ? T("S30") : T("S31");
+      const list = [...inputFilesRef.current.files];
+      const content = (
+        <CenterLeft>
+          <ul>
+            {list.reduce((accumulator, currentElement) => {
+              return [...accumulator, <li>{currentElement.name}</li>];
+            }, [])}
+          </ul>
+        </CenterLeft>
+      );
+      showConfirmationModal({
+        modals,
+        title: titleConfirmation,
+        content,
+        button1: {
+          cb: () => {
+            uploadFiles();
+          },
+          text: yesTxt,
+        },
+        button2: {
+          text: cancelTxt,
+        },
+      });
     }
   };
-
-  const Progression = () => {
-    return (
-      <CenterLeft>
-        <progress ref={progressValue} value="0" max="100" />
-        <label style="margin-left:15px" ref={progressValueDisplay}></label>
-      </CenterLeft>
-    );
-  };
-
-  if (showProgression) {
-    const title = T("S32");
-    const cancel = T("S28");
-    showProgressModal({
-      modals,
-      title,
-      button1: { cb: abortRequest, text: cancel },
-      content: <Progression />,
-    });
-    setShowProgression(false);
-  }
-
-  if (showConfirmation) {
-    const title = isFwUpdate ? T("S30") : T("S31");
-    const yes = T("S27");
-    const cancel = T("S28");
-    const list = [...inputFiles.current.files];
-    const content = (
-      <CenterLeft>
-        <ul>
-          {list.reduce((accumulator, currentElement) => {
-            return [...accumulator, <li>{currentElement.name}</li>];
-          }, [])}
-        </ul>
-      </CenterLeft>
-    );
-    showConfirmationModal({
-      modals,
-      title,
-      content,
-      button1: { cb: uploadFiles, text: yes },
-      button2: { text: cancel },
-    });
-    setShowConfirmation(false);
-  }
 
   useEffect(() => {
     if (about.length != 0) {
@@ -278,6 +266,12 @@ const About = () => {
 
   return (
     <div id="about" class="container">
+      <input
+        ref={inputFilesRef}
+        type="file"
+        class="d-none"
+        onChange={filesSelected}
+      />
       <h4>
         {T("S12").replace(
           "%s",
@@ -292,12 +286,6 @@ const About = () => {
 
       {!isLoading && props && (
         <div>
-          <input
-            ref={inputFiles}
-            type="file"
-            class="d-none"
-            onChange={filesSelected}
-          />
           <hr />
           <CenterLeft>
             <ul>

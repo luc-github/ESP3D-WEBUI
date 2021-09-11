@@ -20,7 +20,6 @@
 */
 import { h } from "preact";
 import {
-  TranslationsContextProvider,
   RouterContextProvider,
   HttpQueueContextProvider,
   UiContextProvider,
@@ -41,15 +40,13 @@ const App = () => {
           <RouterContextProvider>
             <UiContextProvider>
               <HttpQueueContextProvider>
-                <TranslationsContextProvider>
-                  <SettingsContextProvider>
-                    <WsContextProvider>
-                      <ToastsContainer />
-                      <Modal />
-                      <ContentContainer />
-                    </WsContextProvider>
-                  </SettingsContextProvider>
-                </TranslationsContextProvider>
+                <SettingsContextProvider>
+                  <WsContextProvider>
+                    <ToastsContainer />
+                    <Modal />
+                    <ContentContainer />
+                  </WsContextProvider>
+                </SettingsContextProvider>
               </HttpQueueContextProvider>
             </UiContextProvider>
           </RouterContextProvider>

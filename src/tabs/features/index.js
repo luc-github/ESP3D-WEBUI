@@ -19,7 +19,7 @@
 */
 import { Fragment, h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { ButtonImg, Loading } from "../../components/Controls";
+import { ButtonImg, Loading, Progress } from "../../components/Controls";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
@@ -49,8 +49,7 @@ const FeaturesTab = () => {
   const { featuresSettings } = useSettingsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [showSave, setShowSave] = useState(true);
-  const progressValue = useRef(0);
-  const progressValueDisplay = useRef(0);
+  const progressBar = {};
   const [features, setFeatures] = useState(featuresSettings.current);
   const inputFile = useRef(null);
   const errorMsg = T("S21");
@@ -62,15 +61,6 @@ const FeaturesTab = () => {
   const titleupdate = T("S91");
   const contentrestart = T("S174");
   const usercancel = T("S175");
-
-  const Progression = () => {
-    return (
-      <center>
-        <progress ref={progressValue} value="0" max="100" />
-        <label style="margin-left:15px" ref={progressValueDisplay}></label>
-      </center>
-    );
-  };
 
   const getFeatures = () => {
     setIsLoading(true);
@@ -106,13 +96,6 @@ const FeaturesTab = () => {
     endProgression(false);
   }
 
-  function updateProgression(index, total) {
-    if (typeof progressValue.current.value != undefined) {
-      progressValue.current.value = (((index + 1) * 100) / total).toFixed(0);
-      progressValueDisplay.current.innerHTML = index + 1 + " / " + total;
-    }
-  }
-
   function endProgression(needrestart) {
     modals.removeModal(modals.getModalIndex("progression"));
     setIsLoading(false);
@@ -135,7 +118,7 @@ const FeaturesTab = () => {
       { method: "GET", id: "ESP401" },
       {
         onSuccess: (result) => {
-          updateProgression(index, total);
+          progressBar.update(index + 1);
           try {
             entry.initial = entry.value;
           } catch (e) {
@@ -148,7 +131,7 @@ const FeaturesTab = () => {
           }
         },
         onFail: (error) => {
-          updateProgression(index, total);
+          progressBar.update(index + 1);
           console.log(error);
           toasts.addToast({ content: error, type: "error" });
           if (index == total - 1) {
@@ -164,12 +147,6 @@ const FeaturesTab = () => {
     let index = 0;
     let total = 0;
     setIsLoading(true);
-    showProgressModal({
-      modals,
-      title: titleupdate,
-      button1: { cb: abortSave, text: cancel },
-      content: <Progression />,
-    });
 
     Object.keys(features).map((sectionId) => {
       const section = features[sectionId];
@@ -181,6 +158,12 @@ const FeaturesTab = () => {
           if (entry.needRestart == "1") needrestart = true;
         });
       });
+    });
+    showProgressModal({
+      modals,
+      title: titleupdate,
+      button1: { cb: abortSave, text: cancel },
+      content: <Progress progressBar={progressBar} max={total} />,
     });
     Object.keys(features).map((sectionId) => {
       const section = features[sectionId];

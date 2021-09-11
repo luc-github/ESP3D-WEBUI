@@ -43,7 +43,12 @@ const Modal = () => {
     modals.modalList.map((modal, index) => {
       const modalSize = modal.size || "sm";
       return (
-        <SpectreModal class={`active`} id={"modal-" + modal.id} key={index}>
+        <SpectreModal
+          class={`active`}
+          id={"modal-" + modal.id}
+          style="z-index:20000"
+          key={index}
+        >
           <SpectreModal.Overlay
             aria-label="Close"
             onClick={() => {

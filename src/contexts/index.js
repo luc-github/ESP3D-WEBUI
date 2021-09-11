@@ -18,11 +18,6 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import {
-  TranslationsContextProvider,
-  useTranslationsContext,
-  useTranslationsReferences,
-} from "./TranslationsContext";
 import { RouterContextProvider, useRouterContext } from "./RouterContext";
 import {
   HttpQueueContextProvider,
@@ -34,9 +29,6 @@ import { DatasContextProvider, useDatasContext } from "./DatasContext";
 import { WsContextProvider, useWsContext } from "./WsContext";
 
 export {
-  TranslationsContextProvider,
-  useTranslationsContext,
-  useTranslationsReferences,
   RouterContextProvider,
   useRouterContext,
   HttpQueueContextProvider,
