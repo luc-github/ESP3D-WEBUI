@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact";
-import { useContext, useState, useRef } from "preact/hooks";
+import { useContext, useState, useRef, useEffect } from "preact/hooks";
 import {
   generateUID,
   removeEntriesByIDs,
@@ -48,7 +48,7 @@ const UiContextProvider = ({ children }) => {
     authenticate: true,
     page: "connecting",
   });
-
+  const audio = {};
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
 
@@ -127,6 +127,66 @@ const UiContextProvider = ({ children }) => {
   };
 
   useUiContextFn.getValue = getValue;
+
+  const initAudio = () => {
+    if (typeof window.AudioContext !== "undefined") {
+      audio.context = new window.AudioContext();
+    } else if (typeof window.webkitAudioContext() !== "undefined") {
+      audio.context = new window.webkitAudioContext();
+    } else if (typeof window.audioContext !== "undefined") {
+      audio.context = new window.audioContext();
+    }
+  };
+  audio.list = [];
+  const play = (sequence) => {
+    if (getValue("audio")) {
+      if (!audio.context) initAudio();
+      if (sequence) audio.list = [...sequence];
+      if (audio.list.length > 0 && audio.context) {
+        if (audio.context.state === "suspended") audio.context.resume();
+        audio.oscillator = audio.context.createOscillator();
+        audio.oscillator.type = "square";
+        audio.oscillator.frequency.setValueAtTime(
+          200,
+          audio.context.currentTime
+        ); // value in hertz
+        audio.oscillator.connect(audio.context.destination);
+        const current = audio.list.shift();
+        audio.oscillator.frequency.setValueAtTime(
+          current.f,
+          audio.context.currentTime
+        ); // value in hertz
+        audio.oscillator.start();
+        setTimeout(() => {
+          audio.oscillator.stop();
+          play();
+        }, current.d);
+      }
+    }
+  };
+
+  //play sequence
+  useUiContextFn.playSound = play;
+  //beep
+  useUiContextFn.beep = () => {
+    play([
+      { f: 1046, d: 150 },
+      { f: 1318, d: 150 },
+      { f: 1567, d: 150 },
+    ]);
+  };
+  //beep error
+  useUiContextFn.beepError = () => {
+    play([
+      { f: 400, d: 150 },
+      { f: 200, d: 200 },
+      { f: 100, d: 300 },
+    ]);
+  };
+
+  useEffect(() => {
+    initAudio();
+  }, []);
 
   const store = {
     timerIDs: timersList,

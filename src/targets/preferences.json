@@ -26,6 +26,12 @@
           "value": false
         },
         {
+          "id": "audio",
+          "type": "boolean",
+          "label": "S170",
+          "value": false
+        },
+        {
           "id": "showsensorspanel",
           "type": "boolean",
           "label": "S176",
