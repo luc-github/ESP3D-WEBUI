@@ -4,7 +4,7 @@
   "theme": "default",
   "autoload": true,
   "mobileview": false,
-  "audio": true,
+  "audio": false,
   "showsensorspanel": false,
   "enablepolling": false,
   "pollingrefresh": "1000",

@@ -19,7 +19,7 @@
 */
 import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
-import { useUiContext, useSettingsContext } from "../contexts";
+import { useUiContext, useSettingsContext, useUiContextFn } from "../contexts";
 import { Loading } from "../components/Controls";
 import { ESP3DLogo } from "../components/Images/logo";
 import {
@@ -70,6 +70,7 @@ const ConnectionContainer = () => {
     };
     switch (connection.connectionState.page) {
       case "notauthenticated":
+        useUiContextFn.beepError();
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <Lock size="50px" />;
         contentSubtitle = T("S145"); //"Authentication required"
@@ -88,6 +89,7 @@ const ConnectionContainer = () => {
         break;
       //No connection
       case "error":
+        useUiContextFn.beepError();
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
@@ -108,6 +110,7 @@ const ConnectionContainer = () => {
       case "sessiontimeout":
       //Error connection lost
       case "connectionlost":
+        useUiContextFn.beepError();
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <AlertTriangle size="50px" />;
         contentSubtitle =
@@ -129,6 +132,7 @@ const ConnectionContainer = () => {
         break;
       //Disconnected
       case "already connected":
+        useUiContextFn.beep();
         contentTitle = T("S9");
         contentIcon = <Slash size="50px" />;
         contentSubtitle = T("S3");
