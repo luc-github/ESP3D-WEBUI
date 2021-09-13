@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI Target file
+ stream.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,34 +18,18 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { iconsTarget } from "./icons";
-import { files } from "./files";
-import { processor } from "./processor";
-import { defaultPanelsList } from "./panels";
-import { MachineSettings } from "./MachineSettings";
-import {
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-} from "./TargetContext";
 
-const Target = "Marlin";
-const Name = "ESP3D";
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
-
-const restartdelay = 30;
-
-export {
-  MachineSettings,
-  Target,
-  fwUrl,
-  Name,
-  files,
-  iconsTarget,
-  processor,
-  restartdelay,
-  defaultPanelsList,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
+const isVerboseOnly = (type, data) => {
+  const line = data.trim();
+  if (
+    line.trim().length == 0 ||
+    line.startsWith("echo:") ||
+    line.startsWith("ok") ||
+    line.startsWith("M105") ||
+    (line.startsWith("{") && line.endsWith("}"))
+  )
+    return true;
+  else return false;
 };
+
+export { isVerboseOnly };

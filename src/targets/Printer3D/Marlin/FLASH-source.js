@@ -1,5 +1,5 @@
 /*
- files.js - ESP3D WebUI Target file
+ FLASH-source.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 

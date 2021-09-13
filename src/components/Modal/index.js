@@ -18,7 +18,7 @@
 import { h } from "preact";
 import { useUiContext } from "../../contexts";
 import { Modal as SpectreModal } from "../Controls";
-import { disableNode } from "../Helpers";
+import { disableUI } from "../Helpers";
 import { showConfirmationModal } from "./confirmModal";
 import { showKeepConnected } from "./keepConnectedModal";
 import { showLogin } from "./logginModal";
@@ -32,9 +32,7 @@ import { showModal } from "./genericModal";
 const Modal = () => {
   const { modals } = useUiContext();
   if (modals.modalList && modals.modalList.length > 0) {
-    disableNode(document.getElementById("main"), true);
-    disableNode(document.getElementById("info"), true);
-    disableNode(document.getElementById("menu"), true);
+    disableUI(true);
   }
 
   return (

@@ -21,7 +21,7 @@ import { useContext, useState, useRef, useEffect } from "preact/hooks";
 import {
   generateUID,
   removeEntriesByIDs,
-  disableNode,
+  disableUI,
 } from "../components/Helpers";
 
 const useUiContextFn = {};
@@ -86,10 +86,7 @@ const UiContextProvider = ({ children }) => {
   const removeModal = (modalIndex) => {
     const newModalList = modals.filter((modal, index) => index !== modalIndex);
     setModal(newModalList);
-    if (newModalList.length == 0)
-      disableNode(document.getElementById("main"), false);
-    disableNode(document.getElementById("info"), false);
-    disableNode(document.getElementById("menu"), false);
+    if (newModalList.length == 0) disableUI(false);
   };
 
   const clearModals = () => {

@@ -24,6 +24,7 @@ import { createComponent } from "../Helpers";
  */
 
 const modifiers = {
+  donotdisable: "do-not-disable",
   group: "input-group-btn",
   link: "btn-link",
   primary: "btn-primary",
@@ -39,6 +40,7 @@ const modifiers = {
   disable: "disable",
   loading: "loading",
   tooltip: "tooltip",
+  btooltip: "tooltip-bottom",
   ltooltip: "tooltip tooltip-left",
   rtooltip: "tooltip tooltip-right",
   mx2: "mx-2",

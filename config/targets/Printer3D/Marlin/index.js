@@ -66,7 +66,7 @@ const commandsQuery = (req, res, SendBinary) => {
   if (url.indexOf("PING") != -1) {
     lastconnection = Date.now();
     res.status(200);
-    res.send("ok");
+    res.send("ok\n");
     console.log(commandcolor(`[server]/command :PING`));
     return;
   }
@@ -79,7 +79,7 @@ const commandsQuery = (req, res, SendBinary) => {
   if (url.indexOf("M20") != -1) {
     SendBinary(
       "Begin file list\n" +
-        "CUBE.GCO 210240\n" +
+        "CUBE2.GCO 210240\n" +
         "CUBE01.GCO 2089832\n" +
         "SUPPORT2.GCO 4613256\n" +
         "ARCHIVE/CUBE.GCO 210240\n" +
@@ -115,6 +115,70 @@ const commandsQuery = (req, res, SendBinary) => {
       "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
     );
 
+    res.send("");
+    return;
+  }
+  if (url.indexOf("M115") != -1) {
+    SendBinary(
+      "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +
+        "Cap:SERIAL_XON_XOFF:0\n" +
+        "Cap:BINARY_FILE_TRANSFER:0\n" +
+        "Cap:EEPROM:0\n" +
+        "Cap:VOLUMETRIC:1\n" +
+        "Cap:AUTOREPORT_POS:0\n" +
+        "Cap:AUTOREPORT_TEMP:1\n" +
+        "Cap:PROGRESS:0\n" +
+        "Cap:PRINT_JOB:1\n" +
+        "Cap:AUTOLEVEL:0\n" +
+        "Cap:RUNOUT:0\n" +
+        "Cap:Z_PROBE:0\n" +
+        "Cap:LEVELING_DATA:0\n" +
+        "Cap:BUILD_PERCENT:0\n" +
+        "Cap:SOFTWARE_POWER:0\n" +
+        "Cap:TOGGLE_LIGHTS:0\n" +
+        "Cap:CASE_LIGHT_BRIGHTNESS:0\n" +
+        "Cap:EMERGENCY_PARSER:0\n" +
+        "Cap:HOST_ACTION_COMMANDS:0\n" +
+        "Cap:PROMPT_SUPPORT:0\n" +
+        "Cap:SDCARD:1\n" +
+        "Cap:REPEAT:0\n" +
+        "Cap:SD_WRITE:1\n" +
+        "Cap:AUTOREPORT_SD_STATUS:0\n" +
+        "Cap:LONG_FILENAME:1\n" +
+        "Cap:THERMAL_PROTECTION:1\n" +
+        "Cap:MOTION_MODES:0\n" +
+        "Cap:ARCS:1\n" +
+        "Cap:BABYSTEPPING:0\n" +
+        "Cap:CHAMBER_TEMPERATURE:0\n" +
+        "Cap:COOLER_TEMPERATURE:0\n" +
+        "Cap:MEATPACK:0\n" +
+        "ok\n"
+    );
+    res.send("");
+    return;
+  }
+  if (url.indexOf("M503") != -1) {
+    SendBinary(
+      "echo:  G21    ; Units in mm (mm)\n" +
+        "      \n" +
+        "echo:; Filament settings: Disabled\n" +
+        "echo:  M200 S0 D1.75\n" +
+        "echo:; Steps per unit:\n" +
+        "echo: M92 X80.00 Y80.00 Z400.00 E500.00\n" +
+        "echo:; Maximum feedrates (units/s):\n" +
+        "echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n" +
+        "echo:; Maximum Acceleration (units/s2):\n" +
+        "echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n" +
+        "echo:; Acceleration (units/s2): P<print_accel> R<retract_accel> T<travel_accel>\n" +
+        "echo:  M204 P3000.00 R3000.00 T3000.00\n" +
+        "echo:; Advanced: B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> J<junc_dev>\n" +
+        "echo:  M205 B20000.00 S0.00 T0.00 J0.01\n" +
+        "echo:; Home offset:\n" +
+        "echo:  M206 X0.00 Y0.00 Z0.00\n" +
+        "echo:; PID settings:\n" +
+        "echo:  M301 P22.20 I1.08 D114.00\n" +
+        "ok\n"
+    );
     res.send("");
     return;
   }

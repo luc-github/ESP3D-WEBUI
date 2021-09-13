@@ -18,16 +18,11 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { Target } from "../../targets";
+import { MachineSettings } from "../../targets";
 
 const MachineTab = () => {
   console.log("Machine");
-  return (
-    <div id="machine">
-      <h4>Machine</h4>
-      The firmware target is {Target}
-    </div>
-  );
+  return <MachineSettings />;
 };
 
 export { MachineTab };

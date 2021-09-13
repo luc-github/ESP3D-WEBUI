@@ -33,6 +33,7 @@ import { isLimitedEnvironment } from "../components/Helpers";
 import { T } from "../components/Translations";
 import { showModal } from "../components/Modal";
 import { Info } from "preact-feather";
+import { processor } from "../targets";
 
 const defRoutes = {
   DASHBOARD: {
@@ -112,6 +113,13 @@ const MainContainer = () => {
   useEffect(() => {
     setRoutes(newroutes);
   }, [uisettings]);
+
+  useEffect(() => {
+    setInterval(() => {
+      console.log("check time out");
+      processor.handle();
+    }, 10000);
+  }, []);
 
   return (
     <div id="main" class="main-page-container">

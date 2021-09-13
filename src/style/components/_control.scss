@@ -94,6 +94,12 @@
   }
 }
 
+.comment {
+  background: #f1f1fc;
+  color: #5755d9;
+  padding-left: 0.5rem;
+}
+
 .drop-zone-over {
 }
 
@@ -132,6 +138,11 @@
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
+}
+
+.bordered {
+  border: 0.05rem solid #dadee4;
+  border-radius: $border-radius;
 }
 
 .file-line:hover {

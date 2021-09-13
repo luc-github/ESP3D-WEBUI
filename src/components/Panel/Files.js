@@ -32,6 +32,7 @@ import {
   FolderPlus,
   CornerRightUp,
   Edit3,
+  XCircle,
 } from "preact-feather";
 import { files, processor, useTargetContextFn } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
@@ -58,6 +59,14 @@ const FilesPanel = () => {
   const dropRef = useRef();
   const progressBar = {};
 
+  const onCancel = () => {
+    processor.stopCatchResponse();
+    setIsLoading(false);
+    toasts.addToast({ content: T("S175"), type: "error" });
+    filesListCache[currentFS] = { files: [], status: "S22" };
+    setFilesList(filesListCache[currentFS]);
+  };
+
   const sendSerialCmd = (cmd) => {
     createNewRequest(
       espHttpURL("command", cmd).toString(),
@@ -68,6 +77,7 @@ const FilesPanel = () => {
         },
         onFail: (error) => {
           console.log(error);
+          processor.startCatchResponse();
           setIsLoading(false);
           toasts.addToast({ content: error, type: "error" });
         },
@@ -101,23 +111,34 @@ const FilesPanel = () => {
   const processFeedback = (feedback) => {
     if (feedback.status) {
       if (feedback.command == "list") {
-        filesListCache[currentFS] = files.command(
-          currentFS,
-          "formatResult",
-          feedback
-        );
-        //check if flatFS and filter if necessary
-        if (files.capability(currentFS, "IsFlatFS")) {
-          setFilesList(
-            files.command(
-              currentFS,
-              "filterResult",
-              filesListCache[currentFS],
-              currentPath[currentFS]
-            )
-          );
-        } else {
+        if (feedback.status == "error") {
+          console.log("got error");
+          toasts.addToast({
+            content: T("S4"),
+            type: "error",
+          });
+          filesListCache[currentFS] = { files: [], status: "S22" };
           setFilesList(filesListCache[currentFS]);
+        } else {
+          filesListCache[currentFS] = files.command(
+            currentFS,
+            "formatResult",
+            feedback
+          );
+          console.log(filesListCache[currentFS]);
+          //check if flatFS and filter if necessary
+          if (files.capability(currentFS, "IsFlatFS")) {
+            setFilesList(
+              files.command(
+                currentFS,
+                "filterResult",
+                filesListCache[currentFS],
+                currentPath[currentFS]
+              )
+            );
+          } else {
+            setFilesList(filesListCache[currentFS]);
+          }
         }
       } else {
         if (feedback.command == "delete") {
@@ -317,14 +338,18 @@ const FilesPanel = () => {
       sendURLCmd(cmd);
     } else if (cmd.type == "cmd") {
       //do the catching
-      setIsLoading(true);
-      processor.startCatchResponse(
-        currentFS,
-        "delete",
-        processFeedback,
-        element.name
-      );
-      sendSerialCmd({ cmd: cmd.cmd });
+
+      if (
+        processor.startCatchResponse(
+          currentFS,
+          "delete",
+          processFeedback,
+          element.name
+        )
+      ) {
+        setIsLoading(true);
+        sendSerialCmd({ cmd: cmd.cmd });
+      }
     }
   };
   const setupFileInput = () => {
@@ -417,8 +442,8 @@ const FilesPanel = () => {
           }
         );
       } else if (cmd.type == "cmd") {
-        processor.startCatchResponse(currentFS, "list", processFeedback);
-        sendSerialCmd({ cmd: cmd.cmd });
+        if (processor.startCatchResponse(currentFS, "list", processFeedback))
+          sendSerialCmd({ cmd: cmd.cmd });
       }
     }
   };
@@ -608,7 +633,22 @@ const FilesPanel = () => {
           }}
         >
           <div class="panel-body panel-body-dashboard files-list m-1">
-            {isLoading && fileSystem != "" && <Loading />}
+            {isLoading && fileSystem != "" && (
+              <Fragment>
+                <center>
+                  <Loading class="m-2" />
+
+                  <ButtonImg
+                    donotdisable
+                    icon={<XCircle />}
+                    label={T("S28")}
+                    btooltip
+                    data-tooltip={T("S28")}
+                    onClick={onCancel}
+                  />
+                </center>
+              </Fragment>
+            )}
 
             {!isLoading && fileSystem != "" && filesList && (
               <Fragment>

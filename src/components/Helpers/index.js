@@ -22,6 +22,7 @@ import { getBrowserTime } from "./time";
 import {
   createComponent,
   disableNode,
+  disableUI,
   generateUID,
   getColClasses,
 } from "./components";
@@ -47,6 +48,7 @@ export {
   compareStrings,
   createComponent,
   disableNode,
+  disableUI,
   dispatchToExtensions,
   espHttpURL,
   generateUID,

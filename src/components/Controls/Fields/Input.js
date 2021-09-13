@@ -58,6 +58,7 @@ const Input = ({
   inline,
   append,
   help,
+  button,
   ...rest
 }) => {
   const inputref = useRef();
@@ -96,7 +97,7 @@ const Input = ({
         <Reveal applyTo={inputref} />
       </div>
     );
-  else if (extra == "scan") {
+  if (extra == "scan") {
     return (
       <div class={`input-group ${inline ? "column" : ""} `}>
         <input
@@ -143,6 +144,7 @@ const Input = ({
     >
       <input class="form-input" {...props} {...rest} onInput={onInput} />
       {append && <span class="input-group-addon">{T(append)}</span>}
+      {button}
     </div>
   );
 };

@@ -19,6 +19,7 @@
 */
 import { h } from "preact";
 import {
+  MachineSettings,
   defaultPanelsList,
   Target,
   files,
@@ -48,6 +49,7 @@ const defaultPreferences = mergeJSON(
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0";
 
 export {
+  MachineSettings,
   Target,
   defaultPreferences,
   files,

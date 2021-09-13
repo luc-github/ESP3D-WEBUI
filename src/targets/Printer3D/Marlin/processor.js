@@ -19,6 +19,8 @@
 */
 import { h } from "preact";
 import { SD } from "./SD-source";
+import { CMD } from "./CMD-source";
+import { disableUI } from "../../../components/Helpers";
 
 //only one query at once
 const onGoingQuery = {
@@ -26,12 +28,18 @@ const onGoingQuery = {
   command: "",
   started: false,
   content: [],
+  size: 0,
   feedback: null,
   startTime: 0,
+  cb: null,
 };
 
 //set parameter for starting a catch in stream
-const startCatchResponse = (source, command, feedbackfn, arg) => {
+const startCatchResponse = (source, command, feedbackfn, arg, cbfn) => {
+  if (onGoingQuery.source != "") {
+    return false;
+  }
+  disableUI(true);
   onGoingQuery.source = source;
   onGoingQuery.command = command;
   onGoingQuery.arg = arg;
@@ -40,19 +48,24 @@ const startCatchResponse = (source, command, feedbackfn, arg) => {
   onGoingQuery.ended = false;
   onGoingQuery.content = [];
   onGoingQuery.feedback = feedbackfn;
+  onGoingQuery.cb = cbfn;
+  onGoingQuery.size = 0;
+  return true;
 };
 
 //stop the catch in stream
 const stopCatchResponse = () => {
   onGoingQuery.source = "";
+  disableUI(false);
 };
 
 //steps
 const responseSteps = {
   SD: SD.responseSteps,
+  CMD: CMD.responseSteps,
 };
 
-const processStream = (type, data) => {
+const processStream = (type = "stream", data = "") => {
   if (
     onGoingQuery.source != "" &&
     onGoingQuery.command != "" &&
@@ -62,9 +75,10 @@ const processStream = (type, data) => {
     //time out
     if (
       window.performance.now() - onGoingQuery.startTime >
-      (onGoingQuery.started ? 4 * 60000 : 30000)
+      (onGoingQuery.started ? 60000 : 30000)
     ) {
       stopCatchResponse();
+      console.log("got timeout");
       onGoingQuery.feedback({
         status: "error",
         command: onGoingQuery.command,
@@ -78,11 +92,13 @@ const processStream = (type, data) => {
     if (step.start(data)) {
       onGoingQuery.started = true;
       onGoingQuery.startTime = window.performance.now();
+      console.log("got start");
     }
 
     //Got final trigger on catched stream
     //it catch start trigger = start trigger
     if (step.end(data) && onGoingQuery.started) {
+      console.log("got end");
       stopCatchResponse();
       onGoingQuery.feedback({
         status: "ok",
@@ -97,6 +113,7 @@ const processStream = (type, data) => {
     //error or got end without start
     if (step.error(data) || (step.end(data) && !onGoingQuery.started)) {
       stopCatchResponse();
+      console.log("got error");
       if (onGoingQuery.feedback)
         onGoingQuery.feedback({
           status: "error",
@@ -107,14 +124,19 @@ const processStream = (type, data) => {
       return;
     }
     //No error and no end detected so save stream data
-    if (onGoingQuery.started) {
+    if (onGoingQuery.started && data.length > 0) {
+      console.log("Add content", data);
       onGoingQuery.content.push(data);
+      onGoingQuery.size += data.length;
+      //callback for data stream for update
+      if (onGoingQuery.cb) onGoingQuery.cb(data, onGoingQuery.size);
     }
   }
 };
 
 const processor = {
   startCatchResponse,
+  stopCatchResponse,
   handle: processStream,
 };
 

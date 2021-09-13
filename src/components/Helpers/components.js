@@ -60,11 +60,18 @@ function disableNode(node, state) {
   let nodeList = node.children;
   if (nodeList) {
     for (var i = 0; i < nodeList.length; i++) {
-      disableNode(nodeList[i], state);
+      if (!nodeList[i].classList.contains("do-not-disable"))
+        disableNode(nodeList[i], state);
     }
   }
   if (state) node.setAttribute("disabled", "true");
   else node.removeAttribute("disabled");
 }
 
-export { createComponent, disableNode, generateUID, getColClasses };
+function disableUI(state = true) {
+  disableNode(document.getElementById("main"), state);
+  disableNode(document.getElementById("info"), state);
+  disableNode(document.getElementById("menu"), state);
+}
+
+export { createComponent, disableNode, disableUI, generateUID, getColClasses };

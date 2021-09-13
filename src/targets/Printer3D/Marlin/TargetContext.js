@@ -25,6 +25,7 @@ import {
 } from "../../../components/Helpers";
 import { useDatasContext } from "../../../contexts";
 import { processor } from "./processor";
+import { isVerboseOnly } from "./stream";
 
 /*
  * Local const
@@ -43,16 +44,7 @@ const TargetContextProvider = ({ children }) => {
     error: "",
     echo: "",
   });
-  const isVerboseOnly = (type, data) => {
-    const line = data.trim();
-    if (
-      line.startsWith("ok") ||
-      line.startsWith("M105") ||
-      (line.startsWith("{") && line.endsWith("}"))
-    )
-      return true;
-    else return false;
-  };
+
   const dispatchInternally = (type, data) => {
     //files
     processor.handle(type, data);
