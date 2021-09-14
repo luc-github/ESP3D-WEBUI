@@ -240,7 +240,8 @@ const InterfaceTab = () => {
         accept=".json"
         onChange={fileSelected}
       />
-      <h4>{T("S17")}</h4>
+      <h4 class="show-low title">{T("S17")}</h4>
+      <div class="m-2" />
       {isLoading && <Loading large />}
 
       {!isLoading && (

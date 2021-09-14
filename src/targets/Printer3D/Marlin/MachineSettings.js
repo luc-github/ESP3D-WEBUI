@@ -138,6 +138,8 @@ const MachineSettings = () => {
 
   return (
     <div class="container">
+      <h4 class="show-low title">Marlin</h4>
+      <div class="m-2" />
       <center>
         {isLoading && (
           <Fragment>
@@ -156,8 +158,8 @@ const MachineSettings = () => {
         {!isLoading && (
           <center class="m-2">
             {machineSetting.cache.length > 0 && (
-              <div class="m-2 bordered">
-                <CenterLeft>
+              <div>
+                <CenterLeft bordered>
                   {machineSetting.cache.map((element) => {
                     if (element.type == "comment")
                       return <div class="comment m-1  ">{element.data}</div>;

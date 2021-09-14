@@ -21,10 +21,15 @@ import { h } from "preact";
  * Local const
  *
  */
-const CenterLeft = ({ children }) => {
+const CenterLeft = ({ bordered, children }) => {
   return (
     <center>
-      <div style="display: inline-block;text-align: left;">{children}</div>
+      <div
+        class={bordered ? "bordered m-2" : ""}
+        style="display: inline-block;text-align: left;"
+      >
+        {children}
+      </div>
     </center>
   );
 };
