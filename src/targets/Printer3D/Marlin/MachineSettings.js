@@ -30,12 +30,13 @@ import {
   formatFileSizeToString,
 } from "../../../components/Helpers";
 import {
+  Field,
   Loading,
   ButtonImg,
   CenterLeft,
   Progress,
 } from "../../../components/Controls";
-import { RefreshCcw, XCircle, Send } from "preact-feather";
+import { RefreshCcw, XCircle, Send, Flag } from "preact-feather";
 import { CMD } from "./CMD-source";
 
 const machineSetting = {};
@@ -115,12 +116,45 @@ const MachineSettings = () => {
     }
   };
 
+  const sendCommand = (element) => {
+    //TODO:Send command
+    //update UI
+    console.log("Send ", element.value);
+  };
+
   const generateValidation = (fieldData) => {
     const validation = {
       message: <Flag size="1rem" />,
       valid: true,
       modified: true,
     };
+    if (fieldData.type == "text") {
+      if (fieldData.value == fieldData.initial) {
+        fieldData.hasmodified = false;
+      } else {
+        fieldData.hasmodified = true;
+      }
+      //TODO: Use Regex for validation
+      if (
+        fieldData.value.trim().length < 3 ||
+        !(
+          fieldData.value.trim().startsWith("G") ||
+          fieldData.value.trim().startsWith("M")
+        )
+      )
+        validation.valid = false;
+    }
+    if (!validation.valid) {
+      validation.message = T("S42");
+    }
+    fieldData.haserror = !validation.valid;
+    //setShowSave(checkSaveStatus());
+    if (!fieldData.hasmodified && !fieldData.haserror) {
+      validation.message = null;
+      validation.valid = true;
+      validation.modified = false;
+    }
+    return validation;
   };
   useEffect(() => {
     if (uisettings.getValue("autoload") && machineSetting.cache == "") {
@@ -155,20 +189,34 @@ const MachineSettings = () => {
                 <CenterLeft bordered>
                   {machineSetting.cache.map((element) => {
                     if (element.type == "comment")
-                      return <div class="comment m-1  ">{element.data}</div>;
+                      return <div class="comment m-1  ">{element.value}</div>;
+                    const [validation, setvalidation] = useState();
+                    const button = (
+                      <ButtonImg
+                        className="submitBtn"
+                        group
+                        icon={<Send />}
+                        label={T("S81")}
+                        tooltip
+                        data-tooltip={T("S82")}
+                        onclick={() => {
+                          sendCommand(element);
+                        }}
+                      />
+                    );
                     return (
-                      <div class="input-group m-1">
-                        <input
-                          type="text"
-                          class="form-input"
-                          value={element.data}
-                        />
-                        <ButtonImg
-                          group
-                          icon={<Send />}
-                          label={T("S81")}
-                          tooltip
-                          data-tooltip={T("S82")}
+                      <div class="m-1">
+                        <Field
+                          type={element.type}
+                          value={element.value}
+                          setValue={(val, update = false) => {
+                            if (!update) {
+                              element.value = val;
+                            }
+                            setvalidation(generateValidation(element));
+                          }}
+                          validation={validation}
+                          button={button}
                         />
                       </div>
                     );

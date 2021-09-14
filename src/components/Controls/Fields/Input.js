@@ -139,7 +139,9 @@ const Input = ({
   }
   return (
     <div
-      class={`input-group ${inline ? "column" : ""} ${help ? "tooltip" : ""}`}
+      class={`input-group ${inline ? "column" : ""} ${
+        button ? "has-button-submit" : "no-button-submit"
+      } ${help ? "tooltip" : ""}`}
       data-tooltip={T(help)}
     >
       <input class="form-input" {...props} {...rest} onInput={onInput} />

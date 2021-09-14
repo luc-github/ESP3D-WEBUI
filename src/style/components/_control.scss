@@ -100,6 +100,14 @@
   padding-left: 0.5rem;
 }
 
+.submitBtn {
+  display: none;
+}
+
+.has-modification .submitBtn {
+  display: block;
+}
+
 .drop-zone-over {
 }
 
@@ -295,4 +303,15 @@ a label {
 .form-checkbox.is-modified input:indeterminate + .form-icon {
   background: $warning-color;
   border-color: $warning-color;
+}
+
+.has-button-submit .form-input {
+  border-radius: 0.2rem !important;
+}
+
+.has-modification {
+  .has-button-submit .form-input {
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+  }
 }

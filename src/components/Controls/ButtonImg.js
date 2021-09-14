@@ -22,10 +22,18 @@ import Button from "./Button";
  * Local const
  *
  */
-const ButtonImg = ({ label, icon, width, nomin, style, ...rest }) => {
+const ButtonImg = ({
+  label,
+  icon,
+  width,
+  nomin,
+  style,
+  className,
+  ...rest
+}) => {
   return (
     <Button
-      class="feather-icon-container"
+      class={`feather-icon-container ${className}`}
       {...rest}
       style={nomin ? style : "min-width:2rem;" + style}
     >

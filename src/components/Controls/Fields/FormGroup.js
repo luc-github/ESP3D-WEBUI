@@ -20,6 +20,7 @@
 import { h } from "preact";
 
 const FormGroup = ({
+  className,
   inline,
   validation = null,
   children,
@@ -37,18 +38,20 @@ const FormGroup = ({
     return `form-group`;
   };
   return (
-    <div class={`${getValidationClass(validation)}`}>
+    <div class={`${className} ${getValidationClass(validation)}`}>
       <div class={inline ? "columns mt-2" : "flex-cols"}>
-        <label
-          class={
-            inline && type == "boolean"
-              ? "d-none"
-              : `form-label text-dark ${inline ? "column col-auto" : ""}`
-          }
-          htmlFor={id}
-        >
-          {label}
-        </label>
+        {label && (
+          <label
+            class={
+              inline && type == "boolean"
+                ? "d-none"
+                : `form-label text-dark ${inline ? "column col-auto" : ""}`
+            }
+            htmlFor={id}
+          >
+            {label}
+          </label>
+        )}
 
         {children}
       </div>

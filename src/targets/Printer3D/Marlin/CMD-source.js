@@ -40,8 +40,8 @@ const formatEepromLine = (acc, line) => {
       line.indexOf(";") != -1
         ? line.substring(line.indexOf(";") + 1).trim()
         : "";
-    if (extra.length > 0) acc.push({ type: "comment", data: extra });
-    if (data.length > 0) acc.push({ type: "setting", data });
+    if (extra.length > 0) acc.push({ type: "comment", value: extra });
+    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
   }
 
   return acc;
