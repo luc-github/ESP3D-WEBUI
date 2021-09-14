@@ -23,6 +23,7 @@ import { T } from "../../../components/Translations";
 import { processor } from "./processor";
 import { useHttpFn } from "../../../hooks";
 import { useUiContext, useUiContextFn } from "../../../contexts";
+import { Target } from "./index";
 import {
   espHttpURL,
   disableUI,
@@ -138,7 +139,7 @@ const MachineSettings = () => {
 
   return (
     <div class="container">
-      <h4 class="show-low title">Marlin</h4>
+      <h4 class="show-low title">{Target}</h4>
       <div class="m-2" />
       <center>
         {isLoading && (
