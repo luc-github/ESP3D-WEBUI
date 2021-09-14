@@ -49,13 +49,14 @@ const MachineSettings = () => {
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
   const id = "Machine Tab";
-  const sendSerialCmd = (cmd) => {
+  const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
       espHttpURL("command", cmd).toString(),
       { method: "GET", echo: cmd.cmd },
       {
         onSuccess: (result) => {
           //Result is handled on ws so just do nothing
+          if (updateUI) updateUI(result);
         },
         onFail: (error) => {
           console.log("Error:", error);
@@ -116,10 +117,14 @@ const MachineSettings = () => {
     }
   };
 
-  const sendCommand = (element) => {
-    //TODO:Send command
-    //update UI
+  const sendCommand = (element, setvalidation) => {
     console.log("Send ", element.value);
+    sendSerialCmd(element.value.trim(), () => {
+      element.initial = element.value;
+      setvalidation(generateValidation(element));
+    });
+
+    //TODO: Should answer be checked ?
   };
 
   const generateValidation = (fieldData) => {
@@ -200,7 +205,7 @@ const MachineSettings = () => {
                         tooltip
                         data-tooltip={T("S82")}
                         onclick={() => {
-                          sendCommand(element);
+                          sendCommand(element, setvalidation);
                         }}
                       />
                     );
