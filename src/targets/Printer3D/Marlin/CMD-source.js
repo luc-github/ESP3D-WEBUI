@@ -56,22 +56,18 @@ const commands = {
     return { type: "cmd", cmd: "M115" };
   },
   formatCapabilities: (result) => {
-    console.log(result);
     const capabilityList = result.reduce((acc, line) => {
       return formatCapabilityLine(acc, line);
     }, []);
-    console.log(capabilityList);
     return capabilityList;
   },
   eeprom: () => {
     return { type: "cmd", cmd: "M503" };
   },
   formatEeprom: (result) => {
-    console.log(result);
     const res = result.reduce((acc, line) => {
       return formatEepromLine(acc, line);
     }, []);
-    console.log("Formated:\n", res);
     return res;
   },
 };

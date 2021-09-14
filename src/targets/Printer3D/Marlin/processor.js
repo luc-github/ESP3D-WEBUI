@@ -78,7 +78,6 @@ const processStream = (type = "stream", data = "") => {
       (onGoingQuery.started ? 60000 : 30000)
     ) {
       stopCatchResponse();
-      console.log("got timeout");
       onGoingQuery.feedback({
         status: "error",
         command: onGoingQuery.command,
@@ -92,13 +91,11 @@ const processStream = (type = "stream", data = "") => {
     if (step.start(data)) {
       onGoingQuery.started = true;
       onGoingQuery.startTime = window.performance.now();
-      console.log("got start");
     }
 
     //Got final trigger on catched stream
     //it catch start trigger = start trigger
     if (step.end(data) && onGoingQuery.started) {
-      console.log("got end");
       stopCatchResponse();
       onGoingQuery.feedback({
         status: "ok",
@@ -113,7 +110,6 @@ const processStream = (type = "stream", data = "") => {
     //error or got end without start
     if (step.error(data) || (step.end(data) && !onGoingQuery.started)) {
       stopCatchResponse();
-      console.log("got error");
       if (onGoingQuery.feedback)
         onGoingQuery.feedback({
           status: "error",
@@ -125,7 +121,6 @@ const processStream = (type = "stream", data = "") => {
     }
     //No error and no end detected so save stream data
     if (onGoingQuery.started && data.length > 0) {
-      console.log("Add content", data);
       onGoingQuery.content.push(data);
       onGoingQuery.size += data.length;
       //callback for data stream for update

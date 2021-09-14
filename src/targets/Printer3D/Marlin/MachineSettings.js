@@ -71,14 +71,9 @@ const MachineSettings = () => {
   };
 
   const processFeedback = (feedback) => {
-    console.log("Feedback\n", feedback);
-
     if (feedback.status) {
       if (feedback.command == "eeprom") {
         machineSetting.cache = CMD.command("formatEeprom", feedback.content);
-        console.log(machineSetting.cache);
-        // setSettings([...machineSetting.cache]);
-        console.log(machineSetting.cache);
       }
       if (feedback.status == "error") {
         console.log("got error");
@@ -92,7 +87,6 @@ const MachineSettings = () => {
   };
 
   const onCancel = (e) => {
-    console.log("Cancel");
     toasts.addToast({
       content: T("S175"),
       type: "error",
@@ -103,8 +97,6 @@ const MachineSettings = () => {
   };
 
   const onRefresh = (e) => {
-    console.log("Refresh");
-
     //get command
     const response = CMD.command("eeprom");
     //send query
