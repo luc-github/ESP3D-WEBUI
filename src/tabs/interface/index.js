@@ -87,7 +87,7 @@ const InterfaceTab = () => {
         }
       }
       if (fieldData.min != undefined) {
-        if (typeof fieldData.minSecondary != undefined) {
+        if (fieldData.minSecondary != undefined) {
           if (
             fieldData.value != parseInt(fieldData.min) &&
             fieldData.value < parseInt(fieldData.minsecondary)
