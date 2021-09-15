@@ -18,7 +18,34 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { iconsTarget } from "./icons";
+import { files } from "./files";
+import { processor } from "./processor";
+import { defaultPanelsList } from "./panels";
+import { MachineSettings } from "./MachineSettings";
+import {
+  TargetContextProvider,
+  useTargetContext,
+  useTargetContextFn,
+} from "./TargetContext";
 
 const Target = "Marlin";
+const Name = "ESP3D";
+const fwUrl = "https://github.com/MarlinFirmware/Marlin";
 
-export { Target };
+const restartdelay = 30;
+
+export {
+  MachineSettings,
+  Target,
+  fwUrl,
+  Name,
+  files,
+  iconsTarget,
+  processor,
+  restartdelay,
+  defaultPanelsList,
+  TargetContextProvider,
+  useTargetContext,
+  useTargetContextFn,
+};

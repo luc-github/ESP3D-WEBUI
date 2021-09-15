@@ -156,7 +156,7 @@ const About = () => {
   };
   const onFWGit = (e) => {
     window.open(
-      interfaceSettings.current.custom.fwurl
+      interfaceSettings.current.custom && interfaceSettings.current.custom.fwurl
         ? interfaceSettings.current.custom.fwurl
         : fwUrl,
       "_blank"

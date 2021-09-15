@@ -1,5 +1,13 @@
 {
   "settings": {
-    "pollingcommands": "?"
+    "polling": [
+      {
+        "id": "pollingcommands",
+        "type": "text",
+        "label": "S115",
+        "help": "S97",
+        "value": "M105"
+      }
+    ]
   }
 }
