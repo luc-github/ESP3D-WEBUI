@@ -63,7 +63,7 @@ const capabilities = {
     return false;
   },
   CreateDir: () => {
-    return false;
+    return true;
   },
 };
 
@@ -98,6 +98,12 @@ const commands = {
       cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
     };
   },
+  createdir: (path, filename) => {
+    return {
+      type: "cmd",
+      cmd: "M32 " + path + (path == "/" ? "" : "/") + filename,
+    };
+  },
 };
 
 const responseSteps = {
@@ -115,6 +121,13 @@ const responseSteps = {
     end: (data) => data.startsWith("ok"),
     error: (data) => {
       return data.startsWith("Deletion failed");
+    },
+  },
+  createdir: {
+    start: (data) => data.startsWith("Directory created"),
+    end: (data) => data.startsWith("Directory created"),
+    error: (data) => {
+      return data.startsWith("Creation failed");
     },
   },
 };

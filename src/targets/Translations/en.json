@@ -83,6 +83,7 @@
   "S81": "Send",
   "S82": "Send command",
   "S83": "There is an error, fix problem first",
+  "S84": "Creation failed %s",
   "S85": "Deletion failed %s",
   "S86": "Close panel",
   "S87": "Download file?",

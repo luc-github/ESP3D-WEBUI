@@ -141,11 +141,14 @@ const FilesPanel = () => {
           }
         }
       } else {
-        if (feedback.command == "delete") {
+        if (feedback.command == "delete" || feedback.command == "createdir") {
           if (feedback.status == "error") {
             console.log("got error");
             toasts.addToast({
-              content: T("S85").replace("%s", feedback.arg),
+              content:
+                feedback.command == "delete"
+                  ? T("S85").replace("%s", feedback.arg)
+                  : T("S84").replace("%s", feedback.arg),
               type: "error",
             });
           } else {
@@ -323,7 +326,17 @@ const FilesPanel = () => {
     if (cmd.type == "url") {
       sendURLCmd(cmd);
     } else if (cmd.type == "cmd") {
-      //TODO Create directory
+      if (
+        processor.startCatchResponse(
+          currentFS,
+          "createdir",
+          processFeedback,
+          name
+        )
+      ) {
+        setIsLoading(true);
+        sendSerialCmd({ cmd: cmd.cmd });
+      }
     }
   };
 

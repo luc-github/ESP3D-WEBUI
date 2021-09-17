@@ -236,6 +236,17 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
 
+  if (url.indexOf("M32") != -1) {
+    const name = url.split(" ");
+    SendBinary(
+      //"Creation failed\n"
+      "Directory created\n"
+    );
+
+    res.send("");
+    return;
+  }
+
   if (url.indexOf("M30") != -1) {
     const name = url.split(" ");
     SendBinary(
