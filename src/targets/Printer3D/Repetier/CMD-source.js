@@ -29,19 +29,27 @@ const formatCapabilityLine = (acc, line) => {
 };
 
 const formatEepromLine = (acc, line) => {
-  //format G20 / G21
-  //it is comment
-  if (line.startsWith("echo:")) {
+  if (line.startsWith("EPR:")) {
     //it is setting
-    const data = line
-      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
-      .trim();
-    const extra =
-      line.indexOf(";") != -1
-        ? line.substring(line.indexOf(";") + 1).trim()
-        : "";
-    if (extra.length > 0) acc.push({ type: "comment", value: extra });
-    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
+    const data = line.substring(4).trim().split(" ");
+    const etype = data[0];
+    const position = data[1];
+    const value = data[2];
+    const label = data.reduce((accu, currentValue, currentIndex) => {
+      if (currentIndex > 2) accu += " " + currentValue;
+      return accu;
+    }, "");
+
+    acc.push({ type: "comment", value: label });
+
+    acc.push({
+      type: "number",
+      value,
+      initial: value,
+      etype,
+      position,
+      step: "any",
+    });
   }
 
   return acc;
@@ -62,7 +70,15 @@ const commands = {
     return capabilityList;
   },
   eeprom: () => {
-    return { type: "cmd", cmd: "M503" };
+    return { type: "cmd", cmd: "M205" };
+  },
+  eepromset: (element) => {
+    return {
+      type: "cmd",
+      cmd: `M206 P${element.position} T${element.etype} ${
+        element.etype == 3 ? "X" : "S"
+      }${element.value.replace(",", ".")}`,
+    };
   },
   formatEeprom: (result) => {
     const res = result.reduce((acc, line) => {
@@ -82,8 +98,8 @@ const responseSteps = {
     },
   },
   eeprom: {
-    start: (data) => data.startsWith("echo:") && data.indexOf("G2") != -1,
-    end: (data) => data.startsWith("ok"),
+    start: (data) => data.startsWith("EPR:"),
+    end: (data) => data.startsWith("wait"),
     error: (data) => {
       return (
         data.indexOf("Unknown command") != -1 || data.indexOf("error") != -1

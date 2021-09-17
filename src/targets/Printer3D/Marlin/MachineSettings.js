@@ -51,8 +51,8 @@ const MachineSettings = () => {
   const id = "Machine Tab";
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
-      espHttpURL("command", cmd).toString(),
-      { method: "GET", echo: cmd.cmd },
+      espHttpURL("command", { cmd }).toString(),
+      { method: "GET", echo: cmd },
       {
         onSuccess: (result) => {
           //Result is handled on ws so just do nothing
@@ -113,7 +113,8 @@ const MachineSettings = () => {
     ) {
       setCollected("O B");
       setIsLoading(true);
-      sendSerialCmd({ cmd: response.cmd });
+      console.log(response.cmd);
+      sendSerialCmd(response.cmd);
     }
   };
 

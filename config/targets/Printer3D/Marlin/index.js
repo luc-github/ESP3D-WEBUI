@@ -35,7 +35,7 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-function sendTemperatures() {
+function Temperatures() {
   let T = Number(Math.floor(Math.random() * 215).toFixed(2));
   let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
   let B = Number(Math.floor(Math.random() * 45).toFixed(2));
@@ -184,7 +184,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+    SendBinary(Temperatures());
     res.send("");
     return;
   }
@@ -615,7 +615,7 @@ const configURI = (req, res) => {
       "mac: 80:7D:3A:C4:4E:DD<br/>" +
       "serial: ON<br/>" +
       "notification: OFF<br/>" +
-      "Target Fw: repetier<br/>" +
+      "Target Fw: marlin<br/>" +
       "FW ver: 3.0.0.a91<br/>" +
       "FW arch: ESP32 "
   );

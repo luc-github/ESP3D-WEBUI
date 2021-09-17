@@ -51,8 +51,8 @@ const MachineSettings = () => {
   const id = "Machine Tab";
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
-      espHttpURL("command", cmd).toString(),
-      { method: "GET", echo: cmd.cmd },
+      espHttpURL("command", { cmd }).toString(),
+      { method: "GET", echo: cmd },
       {
         onSuccess: (result) => {
           //Result is handled on ws so just do nothing
@@ -113,13 +113,13 @@ const MachineSettings = () => {
     ) {
       setCollected("O B");
       setIsLoading(true);
-      sendSerialCmd({ cmd: response.cmd });
+      sendSerialCmd(response.cmd);
     }
   };
 
   const sendCommand = (element, setvalidation) => {
-    console.log("Send ", element.value);
-    sendSerialCmd(element.value.trim(), () => {
+    const response = CMD.command("eepromset", element);
+    sendSerialCmd(response.cmd, () => {
       element.initial = element.value;
       setvalidation(generateValidation(element));
     });
@@ -139,15 +139,13 @@ const MachineSettings = () => {
       } else {
         fieldData.hasmodified = true;
       }
-      //TODO: Use Regex for validation
-      if (
-        fieldData.value.trim().length < 3 ||
-        !(
-          fieldData.value.trim().startsWith("G") ||
-          fieldData.value.trim().startsWith("M")
-        )
-      )
-        validation.valid = false;
+    }
+    if (fieldData.type == "number") {
+      if (fieldData.value == fieldData.initial) {
+        fieldData.hasmodified = false;
+      } else {
+        fieldData.hasmodified = true;
+      }
     }
     if (!validation.valid) {
       validation.message = T("S42");

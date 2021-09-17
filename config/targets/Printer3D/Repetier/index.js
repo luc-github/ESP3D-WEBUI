@@ -35,26 +35,20 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-function sendTemperatures() {
+function Temperatures() {
   let T = Number(Math.floor(Math.random() * 215).toFixed(2));
   let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
   let B = Number(Math.floor(Math.random() * 45).toFixed(2));
   return (
-    "ok T:" +
+    "T:" +
     T +
-    " /200 R:" +
-    (T * 1.1).toFixed(2) +
     " /200 B:" +
     B +
-    " / 0 B1:" +
+    " / 0 B@:0 @:0 T0:" +
     T +
-    " / 0 P:" +
-    (B * 1.3).toFixed(2) +
-    " / 0 C:" +
-    B * 2 +
-    " / 0 T1:" +
+    " / 0 @0:0 T1:" +
     T1 +
-    " / 0 @1:0\n"
+    " / 0 @1:0\nok\n"
   );
 }
 
@@ -75,35 +69,169 @@ const commandsQuery = (req, res, SendBinary) => {
     res.status(401);
     return;
   }
+
   lastconnection = Date.now();
+
+  if (url.indexOf("M205") != -1) {
+    SendBinary(
+      "EPR:0 1028 0 Language\n" +
+        "EPR:2 75 230400 Baudrate\n" +
+        "EPR:0 1125 1 Display Mode:\n" +
+        "EPR:0 1119 1 Light On:\n" +
+        "EPR:0 1127 1 Keep Light On:\n" +
+        "EPR:0 1126 0 Filament Sensor On:\n" +
+        "EPR:0 1176 0 Top Sensor On:\n" +
+        "EPR:0 1120 1 Sound On:\n" +
+        "EPR:0 1177 1 Wifi On:\n" +
+        "EPR:3 129 16.065 Filament printed [m]\n" +
+        "EPR:2 125 21576 Printer active [s]\n" +
+        "EPR:2 79 0 Max. inactive time [ms,0=off]\n" +
+        "EPR:2 83 360000 Stop stepper after inactivity [ms,0=off]\n" +
+        "EPR:2 1121 0 Powersave after [ms,0=off]:\n" +
+        "EPR:3 1160 180.000 Temp Ext PLA:\n" +
+        "EPR:3 1164 230.000 Temp Ext ABS:\n" +
+        "EPR:3 1168 60.000 Temp Bed PLA:\n" +
+        "EPR:3 1172 90.000 Temp Bed ABS:\n" +
+        "EPR:3 1179 2.000 Load Feed Rate:\n" +
+        "EPR:3 1183 4.000 Unload Feed Rate:\n" +
+        "EPR:3 1187 60.000 Unload/Load Distance:\n" +
+        "EPR:3 3 80.0000 X-axis steps per mm\n" +
+        "EPR:3 7 80.0000 Y-axis steps per mm\n" +
+        "EPR:3 11 2560.0000 Z-axis steps per mm\n" +
+        "EPR:3 15 200.000 X-axis max. feedrate [mm/s]\n" +
+        "EPR:3 19 200.000 Y-axis max. feedrate [mm/s]\n" +
+        "EPR:3 23 5.000 Z-axis max. feedrate [mm/s]\n" +
+        "EPR:3 27 40.000 X-axis homing feedrate [mm/s]\n" +
+        "EPR:3 31 40.000 Y-axis homing feedrate [mm/s]\n" +
+        "EPR:3 35 4.000 Z-axis homing feedrate [mm/s]\n" +
+        "EPR:3 39 20.000 Max. jerk [mm/s]\n" +
+        "EPR:3 47 0.342 Max. Z-jerk [mm/s]\n" +
+        "EPR:3 133 0.000 X min pos [mm]\n" +
+        "EPR:3 137 0.000 Y min pos [mm]\n" +
+        "EPR:3 141 0.000 Z min pos [mm]\n" +
+        "EPR:3 145 199.000 X max length [mm]\n" +
+        "EPR:3 149 204.000 Y max length [mm]\n" +
+        "EPR:3 153 200.000 Z max length [mm]\n" +
+        "EPR:3 51 1000.000 X-axis acceleration [mm/s^2]\n" +
+        "EPR:3 55 1000.000 Y-axis acceleration [mm/s^2]\n" +
+        "EPR:3 59 100.000 Z-axis acceleration [mm/s^2]\n" +
+        "EPR:3 63 1000.000 X-axis travel acceleration [mm/s^2]\n" +
+        "EPR:3 67 1000.000 Y-axis travel acceleration [mm/s^2]\n" +
+        "EPR:3 71 150.000 Z-axis travel acceleration [mm/s^2]\n" +
+        "EPR:3 1024 0.000 Coating thickness [mm]\n" +
+        "EPR:3 1128 100.000 Manual-probe X1 [mm]\n" +
+        "EPR:3 1132 180.000 Manual-probe Y1 [mm]\n" +
+        "EPR:3 1136 100.000 Manual-probe X2 [mm]\n" +
+        "EPR:3 1140 10.000 Manual-probe Y2 [mm]\n" +
+        "EPR:3 1144 50.000 Manual-probe X3 [mm]\n" +
+        "EPR:3 1148 95.000 Manual-probe Y3 [mm]\n" +
+        "EPR:3 1152 150.000 Manual-probe X4 [mm]\n" +
+        "EPR:3 1156 95.000 Manual-probe Y4 [mm]\n" +
+        "EPR:3 808 0.280 Z-probe height [mm]\n" +
+        "EPR:3 929 5.000 Max. z-probe - bed dist. [mm]\n" +
+        "EPR:3 812 1.000 Z-probe speed [mm/s]\n" +
+        "EPR:3 840 30.000 Z-probe x-y-speed [mm/s]\n" +
+        "EPR:3 800 0.000 Z-probe offset x [mm]\n" +
+        "EPR:3 804 0.000 Z-probe offset y [mm]\n" +
+        "EPR:3 816 36.000 Z-probe X1 [mm]\n" +
+        "EPR:3 820 -7.000 Z-probe Y1 [mm]\n" +
+        "EPR:3 824 36.000 Z-probe X2 [mm]\n" +
+        "EPR:3 828 203.000 Z-probe Y2 [mm]\n" +
+        "EPR:3 832 171.000 Z-probe X3 [mm]\n" +
+        "EPR:3 836 203.000 Z-probe Y3 [mm]\n" +
+        "EPR:3 1036 0.000 Z-probe bending correction A [mm]\n" +
+        "EPR:3 1040 0.000 Z-probe bending correction B [mm]\n" +
+        "EPR:3 1044 0.000 Z-probe bending correction C [mm]\n" +
+        "EPR:0 880 0 Autolevel active (1/0)\n" +
+        "EPR:0 106 2 Bed Heat Manager [0-3]\n" +
+        "EPR:0 107 255 Bed PID drive max\n" +
+        "EPR:0 124 80 Bed PID drive min\n" +
+        "EPR:3 108 196.000 Bed PID P-gain\n" +
+        "EPR:3 112 33.000 Bed PID I-gain\n" +
+        "EPR:3 116 290.000 Bed PID D-gain\n" +
+        "EPR:0 120 255 Bed PID max value [0-255]\n" +
+        "EPR:0 1020 0 Enable retraction conversion [0/1]\n" +
+        "EPR:3 992 3.000 Retraction length [mm]\n" +
+        "EPR:3 996 13.000 Retraction length extruder switch [mm]\n" +
+        "EPR:3 1000 40.000 Retraction speed [mm/s]\n" +
+        "EPR:3 1004 0.000 Retraction z-lift [mm]\n" +
+        "EPR:3 1008 0.000 Extra extrusion on undo retract [mm]\n" +
+        "EPR:3 1012 0.000 Extra extrusion on undo switch retract [mm]\n" +
+        "EPR:3 1016 20.000 Retraction undo speed\n" +
+        "EPR:3 200 99.000 Extr.1 steps per mm\n" +
+        "EPR:3 204 50.000 Extr.1 max. feedrate [mm/s]\n" +
+        "EPR:3 208 20.000 Extr.1 start feedrate [mm/s]\n" +
+        "EPR:3 212 5000.000 Extr.1 acceleration [mm/s^2]\n" +
+        "EPR:0 216 1 Extr.1 heat manager [0-3]\n" +
+        "EPR:0 217 230 Extr.1 PID drive max\n" +
+        "EPR:0 245 40 Extr.1 PID drive min\n" +
+        "EPR:3 218 3.0000 Extr.1 PID P-gain/dead-time\n" +
+        "EPR:3 222 2.0000 Extr.1 PID I-gain\n" +
+        "EPR:3 226 40.0000 Extr.1 PID D-gain\n" +
+        "EPR:0 230 255 Extr.1 PID max value [0-255]\n" +
+        "EPR:2 231 0 Extr.1 X-offset [steps]\n" +
+        "EPR:2 235 0 Extr.1 Y-offset [steps]\n" +
+        "EPR:2 290 0 Extr.1 Z-offset [steps]\n" +
+        "EPR:1 239 1 Extr.1 temp. stabilize time [s]\n" +
+        "EPR:1 250 150 Extr.1 temp. for retraction when heating [C]\n" +
+        "EPR:1 252 0 Extr.1 distance to retract when heating [mm]\n" +
+        "EPR:0 254 255 Extr.1 extruder cooler speed [0-255]\n" +
+        "EPR:3 246 0.000 Extr.1 advance L [0=off]\n" +
+        "EPR:3 300 99.000 Extr.2 steps per mm\n" +
+        "EPR:3 304 50.000 Extr.2 max. feedrate [mm/s]\n" +
+        "EPR:3 308 20.000 Extr.2 start feedrate [mm/s]\n" +
+        "EPR:3 312 5000.000 Extr.2 acceleration [mm/s^2]\n" +
+        "EPR:0 316 3 Extr.2 heat manager [0-3]\n" +
+        "EPR:0 317 230 Extr.2 PID drive max\n" +
+        "EPR:0 345 40 Extr.2 PID drive min\n" +
+        "EPR:3 318 3.0000 Extr.2 PID P-gain/dead-time\n" +
+        "EPR:3 322 2.0000 Extr.2 PID I-gain\n" +
+        "EPR:3 326 40.0000 Extr.2 PID D-gain\n" +
+        "EPR:0 330 255 Extr.2 PID max value [0-255]\n" +
+        "EPR:2 331 -2852 Extr.2 X-offset [steps]\n" +
+        "EPR:2 335 12 Extr.2 Y-offset [steps]\n" +
+        "EPR:2 390 0 Extr.2 Z-offset [steps]\n" +
+        "EPR:1 339 1 Extr.2 temp. stabilize time [s]\n" +
+        "EPR:1 350 150 Extr.2 temp. for retraction when heating [C]\n" +
+        "EPR:1 352 0 Extr.2 distance to retract when heating [mm]\n" +
+        "EPR:0 354 255 Extr.2 extruder cooler speed [0-255]\n" +
+        "EPR:3 346 0.000 Extr.2 advance L [0=off]\n" +
+        "wait\n"
+    );
+    res.send("");
+    return;
+  }
+
+  if (url.indexOf("M206") != -1) {
+    SendBinary("wait\n");
+    res.send("");
+    return;
+  }
+
   if (url.indexOf("M20") != -1) {
     SendBinary(
-      "Begin file list\n" +
-        "CUBE2.GCO 210240\n" +
-        "CUBE01.GCO 2089832\n" +
-        "SUPPORT2.GCO 4613256\n" +
-        "ARCHIVE/CUBE.GCO 210240\n" +
-        "ARCHIVE/CUBE-C~1.GCO 210240\n" +
-        "NEWFOL~1/SUPPORT2.GCO 4613256\n" +
+      "ok 0\n" +
+        "Begin file list\n" +
+        "TEST.ZIP 66622272\n" +
+        "ad_check_0001 2400\n" +
+        "Machine_Life.dat 0\n" +
+        "SOUND8.G 992\n" +
+        "eeprom.bin 4096\n" +
+        "FW_upgrade.dat 0\n" +
+        "MYFOLDER/\n" +
+        "MYFOLDER/sound.g 1040\n" +
+        "MYFOLDER/Lucdir/\n" +
+        "M33.G 90\n" +
+        "M3.G 90\n" +
+        "SUPPOR~1.GCO 1226740\n" +
+        "TEST1~1.GCO 113\n" +
+        "T1.G 21\n" +
+        "smal.gco 81\n" +
+        "testgcode.gco 14\n" +
+        "fr.json 0\n" +
         "End file list\n" +
-        "ok\n"
+        "wait\n"
     );
-    /* SendBinary(
-      "Begin file list\n" +
-        "COOL_V~1.GCO 66622272\n" +
-        "415%VA~1.GCO 66622272\n" +
-        "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
-        "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
-        "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
-        "/ARCHIEVE/RET229~1.GCO 2050\n" +
-        "/ARCHIEVE/FILE__~1.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~2.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~3.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~4.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~5.GCO 1050\n" +
-        "End file list\n" +
-        "ok\n"
-    );*/
     res.send("");
     return;
   }
@@ -120,64 +248,12 @@ const commandsQuery = (req, res, SendBinary) => {
   }
   if (url.indexOf("M115") != -1) {
     SendBinary(
-      "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +
-        "Cap:SERIAL_XON_XOFF:0\n" +
-        "Cap:BINARY_FILE_TRANSFER:0\n" +
-        "Cap:EEPROM:0\n" +
-        "Cap:VOLUMETRIC:1\n" +
-        "Cap:AUTOREPORT_POS:0\n" +
+      "FIRMWARE_NAME:Repetier_0.92.10 FIRMWARE_URL:https://github.com/luc-github/Repetier-Firmware-0.92/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:DaVinci EXTRUDER_COUNT:2 REPETIER_PROTOCOL:3\n" +
+        "Cap:PROGRESS:1\n" +
         "Cap:AUTOREPORT_TEMP:1\n" +
-        "Cap:PROGRESS:0\n" +
-        "Cap:PRINT_JOB:1\n" +
-        "Cap:AUTOLEVEL:0\n" +
-        "Cap:RUNOUT:0\n" +
-        "Cap:Z_PROBE:0\n" +
-        "Cap:LEVELING_DATA:0\n" +
-        "Cap:BUILD_PERCENT:0\n" +
-        "Cap:SOFTWARE_POWER:0\n" +
-        "Cap:TOGGLE_LIGHTS:0\n" +
-        "Cap:CASE_LIGHT_BRIGHTNESS:0\n" +
-        "Cap:EMERGENCY_PARSER:0\n" +
-        "Cap:HOST_ACTION_COMMANDS:0\n" +
-        "Cap:PROMPT_SUPPORT:0\n" +
-        "Cap:SDCARD:1\n" +
-        "Cap:REPEAT:0\n" +
-        "Cap:SD_WRITE:1\n" +
-        "Cap:AUTOREPORT_SD_STATUS:0\n" +
-        "Cap:LONG_FILENAME:1\n" +
-        "Cap:THERMAL_PROTECTION:1\n" +
-        "Cap:MOTION_MODES:0\n" +
-        "Cap:ARCS:1\n" +
-        "Cap:BABYSTEPPING:0\n" +
-        "Cap:CHAMBER_TEMPERATURE:0\n" +
-        "Cap:COOLER_TEMPERATURE:0\n" +
-        "Cap:MEATPACK:0\n" +
-        "ok\n"
-    );
-    res.send("");
-    return;
-  }
-  if (url.indexOf("M503") != -1) {
-    SendBinary(
-      "echo:  G21    ; Units in mm (mm)\n" +
-        "      \n" +
-        "echo:; Filament settings: Disabled\n" +
-        "echo:  M200 S0 D1.75\n" +
-        "echo:; Steps per unit:\n" +
-        "echo: M92 X80.00 Y80.00 Z400.00 E500.00\n" +
-        "echo:; Maximum feedrates (units/s):\n" +
-        "echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n" +
-        "echo:; Maximum Acceleration (units/s2):\n" +
-        "echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n" +
-        "echo:; Acceleration (units/s2): P<print_accel> R<retract_accel> T<travel_accel>\n" +
-        "echo:  M204 P3000.00 R3000.00 T3000.00\n" +
-        "echo:; Advanced: B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> J<junc_dev>\n" +
-        "echo:  M205 B20000.00 S0.00 T0.00 J0.01\n" +
-        "echo:; Home offset:\n" +
-        "echo:  M206 X0.00 Y0.00 Z0.00\n" +
-        "echo:; PID settings:\n" +
-        "echo:  M301 P22.20 I1.08 D114.00\n" +
-        "ok\n"
+        "Cap:EEPROM:0\n" +
+        "Cap:TOGGLE_LIGHTS:1\n" +
+        "Printed filament:19.23m Printing time:0 days 6 hours 43 min\n"
     );
     res.send("");
     return;
@@ -517,7 +593,7 @@ const commandsQuery = (req, res, SendBinary) => {
           F: "system/system",
           P: "461",
           T: "B",
-          V: "40",
+          V: "50",
           H: "targetfw",
           O: [
             { repetier: "50" },

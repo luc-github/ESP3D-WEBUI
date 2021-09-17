@@ -61,6 +61,7 @@ const Input = ({
   button,
   ...rest
 }) => {
+  const { step } = rest;
   const inputref = useRef();
   const onInput = (e) => {
     if (setValue) {
@@ -73,6 +74,7 @@ const Input = ({
     id,
     name: id,
     value,
+    step: step ? step : "any",
   };
   let ScanNetworks = null;
   const refreshList = () => {
