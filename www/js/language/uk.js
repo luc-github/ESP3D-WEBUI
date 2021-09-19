@@ -46,7 +46,7 @@ var ukrtrans = {
 "Controls": "Управління",
 "Credits": "Подяки",
 "Dashboard": "Панель управління",
-"Data mofified": "Дані змінено",
+"Data modified": "Дані змінено",
 "Do you want to save?": "Зберегти?",
 "Enable second extruder controls": "Увімкнути керування другим екструдером",
 "Error": "Помилка",

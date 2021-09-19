@@ -46,7 +46,7 @@ var polishtrans = {
 "Controls":"Sterowanie",
 "Credits":"Informacje",
 "Dashboard":"Panel g&lstrok;&oacute;wny",
-"Data mofified":"Dane zmodyfikowane",
+"Data modified":"Dane zmodyfikowane",
 "Do you want to save?":"Czy zapisa&cacute;?",
 "Enable second extruder controls":"Enable second extruder controls",
 "Error":"B&lstrok;&aogon;d",

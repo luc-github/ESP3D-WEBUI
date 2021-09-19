@@ -49,7 +49,7 @@ var turkishtrans = {
 "Controls":"Kontroller",
 "Credits":"Credits",
 "Dashboard":"G&ouml;sterge paneli",
-"Data mofified":"Data de&gbreve;i&scedil;tirildi",
+"Data modified":"Data de&gbreve;i&scedil;tirildi",
 "Do you want to save?":"Kaydetmek istiyor musunuz?",
 "Enable second extruder controls":"&Idot;kinci ekstruder kontrol&uuml;n&uuml; etkinle&scedil;tir",
 "Error":"Hata",

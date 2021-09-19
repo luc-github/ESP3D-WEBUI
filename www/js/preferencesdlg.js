@@ -818,7 +818,7 @@ function closePreferencesDialog() {
     } else modified = true;
     if (language_save != language) modified = true;
     if (modified) {
-        confirmdlg(translate_text_item("Data mofified"), translate_text_item("Do you want to save?"), process_preferencesCloseDialog)
+        confirmdlg(translate_text_item("Data modified"), translate_text_item("Do you want to save?"), process_preferencesCloseDialog)
     } else {
         closeModal('cancel');
     }

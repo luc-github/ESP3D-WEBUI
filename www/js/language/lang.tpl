@@ -47,7 +47,7 @@ var langtrans = {
 "Controls":"Controls",
 "Credits":"Credits",
 "Dashboard":"Dashboard",
-"Data mofified":"Data mofified",
+"Data modified":"Data modified",
 "Do you want to save?":"Do you want to save?",
 "Enable second extruder controls":"Enable second extruder controls",
 "Error":"Error",

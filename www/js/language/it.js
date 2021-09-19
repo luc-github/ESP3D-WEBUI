@@ -46,7 +46,7 @@ var italiantrans = {
 "Controls":"Controlli",
 "Credits":"Crediti",
 "Dashboard":"Dashboard",
-"Data mofified":"Dati modificati",
+"Data modified":"Dati modificati",
 "Do you want to save?":"Vuoi salvare?",
 "Enable second extruder controls":"Attiva controlli per il secondo estrusore",
 "Error":"Errore",

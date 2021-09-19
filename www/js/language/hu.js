@@ -50,7 +50,7 @@ var hungariantrans = {
 "Controls":"Irányítás",
 "Credits":"Köszönet",
 "Dashboard":"Alaplap",
-"Data mofified":"Az adatok frissítve",
+"Data modified":"Az adatok frissítve",
 "Do you want to save?":"Meg kell menteni?",
 "Enable second extruder controls":"Aktiválja a második extrudert",
 "Error":"Hiba",

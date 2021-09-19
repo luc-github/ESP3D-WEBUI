@@ -45,7 +45,7 @@ var frenchtrans = {
 "Controls":"Controles",
 "Credits":"Cr&eacute;dits",
 "Dashboard":"Tableau de bord",
-"Data mofified":"Donn&eacute;es modifi&eacute;es",
+"Data modified":"Donn&eacute;es modifi&eacute;es",
 "Do you want to save?":"Voulez-vous enregister?",
 "Enable second extruder controls":"Activer le controle du second extrudeur",
 "Error":"Erreur",

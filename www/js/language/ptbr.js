@@ -55,7 +55,7 @@ var ptbrtrans = {
 "Controls":"Controles",
 "Credits":"Cr&eacute;ditos",
 "Dashboard":"Painel de Controle",
-"Data mofified":"Data da modifica&ccedil;&atilde;o",
+"Data modified":"Data da modifica&ccedil;&atilde;o",
 "Do you want to save?":"Voc&ecirc; quer salvar?",
 "Enable second extruder controls":"Habilita controle do segundo extrusor",
 "Error":"Erro",
