@@ -46,6 +46,7 @@ const formatOverrideLine = (acc, line) => {
 };
 
 const formatConfigLine = (acc, line) => {
+  if (line.trim().length == 0) return acc;
   if (line.trim().startsWith("#")) {
     //commented line
     if (line.startsWith("               "))
@@ -66,20 +67,6 @@ const formatConfigLine = (acc, line) => {
     acc.push({ type: "text", label, value, initial: value, append: help });
     acc.push({ type: "help", value: help });
   }
-  //TODO:
-  /*
-    //it is setting
-    const data = line
-      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
-      .trim();
-    const extra =
-      line.indexOf(";") != -1
-        ? line.substring(line.indexOf(";") + 1).trim()
-        : "";
-    if (extra.length > 0) acc.push({ type: "comment", value: extra });
-    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
-*/
-
   return acc;
 };
 

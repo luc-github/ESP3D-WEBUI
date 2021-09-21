@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../../../components/Translations";
 import { processor } from "./processor";
 import { useHttpFn } from "../../../hooks";
@@ -33,21 +33,24 @@ import {
   Field,
   Loading,
   ButtonImg,
-  CenterLeft,
   Progress,
 } from "../../../components/Controls";
 import { RefreshCcw, XCircle, Send, Flag } from "preact-feather";
 import { CMD } from "./CMD-source";
 
-const machineSetting = {};
-machineSetting.cache = [];
+const machineSettings = {};
+machineSettings.cache = [];
+machineSettings.override = [];
+let configSelected = true;
 
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [settings, setSettings] = useState(machineSetting.cache);
+  const [settings, setSettings] = useState(machineSettings.cache);
   const [collected, setCollected] = useState("0 B");
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
+  const configTab = useRef();
+  const overrideTab = useRef();
   const id = "Machine Tab";
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
@@ -75,7 +78,7 @@ const MachineSettings = () => {
   const processFeedback = (feedback) => {
     if (feedback.status) {
       if (feedback.command == "config") {
-        machineSetting.cache = CMD.command("formatConfig", feedback.content);
+        machineSettings.cache = CMD.command("formatConfig", feedback.content);
       }
       if (feedback.status == "error") {
         console.log("got error");
@@ -94,7 +97,7 @@ const MachineSettings = () => {
       type: "error",
     });
     processor.stopCatchResponse();
-    machineSetting.cache = [];
+    machineSettings.cache = [];
     setIsLoading(false);
   };
 
@@ -120,12 +123,18 @@ const MachineSettings = () => {
     }
   };
 
-  const sendCommand = (element, setvalidation) => {
+  const sendCommand = (element, setvalidation, isOverride) => {
     console.log("Send ", element.value);
-    sendSerialCmd(element.value.trim(), () => {
-      element.initial = element.value;
-      setvalidation(generateValidation(element));
-    });
+
+    sendSerialCmd(
+      isOverride
+        ? element.value.trim()
+        : `config-set sd ${element.label} ${element.value}`,
+      () => {
+        element.initial = element.value;
+        setvalidation(generateValidation(element));
+      }
+    );
 
     //TODO: Should answer be checked ?
   };
@@ -157,7 +166,7 @@ const MachineSettings = () => {
     return validation;
   };
   useEffect(() => {
-    if (uisettings.getValue("autoload") && machineSetting.cache == "") {
+    if (uisettings.getValue("autoload") && machineSettings.cache == "") {
       //load settings
       onRefresh();
     }
@@ -184,71 +193,105 @@ const MachineSettings = () => {
       )}
       {!isLoading && (
         <center>
-          {machineSetting.cache.length > 0 && (
-            <div class="bordered">
-              {machineSetting.cache.map((element, index) => {
-                if (element.type == "comment")
-                  return (
-                    <div class="comment m-1 text-left">{element.value}</div>
-                  );
-                if (element.type == "disabled")
-                  return (
-                    <div class="text-secondary m-1 text-left">
-                      {element.value}
-                    </div>
-                  );
-                if (element.type == "help")
-                  return (
-                    <div
-                      class="text-small text-gray text-italic text-left"
-                      style={`margin-left:2rem;${
-                        machineSetting.cache[index + 1]
-                          ? machineSetting.cache[index + 1].type == "help"
-                            ? ""
-                            : "margin-bottom:1rem"
-                          : "margin-bottom:1rem"
-                      }`}
-                    >
-                      {element.value}
-                    </div>
-                  );
-
-                const [validation, setvalidation] = useState();
-                const button = (
-                  <ButtonImg
-                    className="submitBtn"
-                    group
-                    icon={<Send />}
-                    label={T("S81")}
-                    tooltip
-                    data-tooltip={T("S82")}
-                    onclick={() => {
-                      sendCommand(element, setvalidation);
-                    }}
-                  />
-                );
-                return (
-                  <div class="m-1">
-                    <Field
-                      style="max-width:10rem;"
-                      inline
-                      label={element.label}
-                      type={element.type}
-                      value={element.value}
-                      setValue={(val, update = false) => {
-                        if (!update) {
-                          element.value = val;
-                        }
-                        setvalidation(generateValidation(element));
-                      }}
-                      validation={validation}
-                      button={button}
-                    />
-                  </div>
-                );
-              })}
+          <div class="text-primary m-2">
+            <div class="form-group">
+              <label class="form-radio form-inline">
+                <input
+                  type="radio"
+                  name="configtype"
+                  checked={configSelected}
+                  onclick={(e) => {
+                    configSelected = true;
+                    configTab.current.classList.remove("d-none");
+                    //overrideTab.classList.add("d-none")
+                  }}
+                />
+                <i class="form-icon"></i>{" "}
+                {uisettings.getValue("configfilename")}
+              </label>
+              <label class="form-radio form-inline">
+                <input
+                  type="radio"
+                  name="configtype"
+                  checked={!configSelected}
+                  onclick={(e) => {
+                    configSelected = false;
+                    configTab.current.classList.add("d-none");
+                    //overrideTab.classList.remove("d-none")
+                  }}
+                />
+                <i class="form-icon"></i>
+                {T("SM1")}
+              </label>
             </div>
-          )}
+          </div>
+          <div ref={configTab} class={!configSelected ? "d-none" : ""}>
+            {machineSettings.cache.length > 0 && (
+              <div class="bordered ">
+                {machineSettings.cache.map((element, index) => {
+                  if (element.type == "comment")
+                    return (
+                      <div class="comment m-1 text-left">{element.value}</div>
+                    );
+                  if (element.type == "disabled")
+                    return (
+                      <div class="text-secondary m-1 text-left">
+                        {element.value}
+                      </div>
+                    );
+                  if (element.type == "help")
+                    return (
+                      <div
+                        class="text-small text-gray text-italic text-left"
+                        style={`margin-left:2rem;${
+                          machineSettings.cache[index + 1]
+                            ? machineSettings.cache[index + 1].type == "help"
+                              ? ""
+                              : "margin-bottom:1rem"
+                            : "margin-bottom:1rem"
+                        }`}
+                      >
+                        {element.value}
+                      </div>
+                    );
+
+                  const [validation, setvalidation] = useState();
+                  const button = (
+                    <ButtonImg
+                      className="submitBtn"
+                      group
+                      icon={<Send />}
+                      label={T("S81")}
+                      tooltip
+                      data-tooltip={T("S82")}
+                      onclick={() => {
+                        sendCommand(element, setvalidation, false);
+                      }}
+                    />
+                  );
+                  return (
+                    <div class="m-1">
+                      <Field
+                        style="max-width:10rem;"
+                        inline
+                        label={element.label}
+                        type={element.type}
+                        value={element.value}
+                        setValue={(val, update = false) => {
+                          if (!update) {
+                            element.value = val;
+                          }
+                          setvalidation(generateValidation(element));
+                        }}
+                        validation={validation}
+                        button={button}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div class="m-2" />
           <ButtonImg
             icon={<RefreshCcw />}
