@@ -29,12 +29,21 @@ import {
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
-  const elements = line.split(" ");
-  if (elements.length != 2) return acc;
-  //TODO: check it is valid file name / size
-  //check size is number ?
-  //filename ?
-  acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) });
+  if (line.endsWith("/")) {
+    acc.push({ name: line.substring(0, line.length - 1), size: -1 });
+  } else {
+    const pos = line.lastIndexOf(" ");
+    if (pos != -1) {
+      //TODO: check it is valid file name / size
+      //check size is number ?
+      //filename ?
+      acc.push({
+        name: line.substring(0, pos),
+        size: formatFileSizeToString(line.substring(pos + 1)),
+      });
+    }
+  }
+
   return acc;
 };
 
@@ -43,7 +52,7 @@ const capabilities = {
     return canProcessFile(filename);
   },
   UseFilters: () => true,
-  IsFlatFS: () => true,
+  IsFlatFS: () => false,
   Upload: (path, filename, eMsg = false) => {
     if (eMsg) return "E1";
     //TODO
@@ -69,11 +78,15 @@ const capabilities = {
 
 const commands = {
   list: (path, filename) => {
-    return { type: "cmd", cmd: "M21\nM20" };
+    return {
+      type: "cmd",
+      cmd: `echo BeginFiles\nls -s /sd${path}\necho EndFiles\n`,
+    };
   },
   formatResult: (result) => {
     const res = {};
     const files = result.content.reduce((acc, line) => {
+      if (line.startsWith("echo:")) return acc;
       return formatFileSerialLine(acc, line);
     }, []);
     res.files = sortedFilesList(files);
@@ -102,11 +115,11 @@ const commands = {
 
 const responseSteps = {
   list: {
-    start: (data) => data.startsWith("Begin file list"),
-    end: (data) => data.startsWith("End file list"),
+    start: (data) => data.startsWith("echo: BeginFiles"),
+    end: (data) => data.startsWith("echo: EndFiles"),
     error: (data) => {
       return (
-        data.indexOf("error") != -1 || data.indexOf("echo:No SD card") != -1
+        data.indexOf("error") != -1 || data.indexOf("echo: No SD card") != -1
       );
     },
   },

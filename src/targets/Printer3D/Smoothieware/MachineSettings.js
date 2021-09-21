@@ -74,8 +74,8 @@ const MachineSettings = () => {
 
   const processFeedback = (feedback) => {
     if (feedback.status) {
-      if (feedback.command == "eeprom") {
-        machineSetting.cache = CMD.command("formatEeprom", feedback.content);
+      if (feedback.command == "config") {
+        machineSetting.cache = CMD.command("formatConfig", feedback.content);
       }
       if (feedback.status == "error") {
         console.log("got error");
@@ -100,12 +100,15 @@ const MachineSettings = () => {
 
   const onRefresh = (e) => {
     //get command
-    const response = CMD.command("eeprom");
+    const response = CMD.command(
+      "config",
+      uisettings.getValue("configfilename")
+    );
     //send query
     if (
       processor.startCatchResponse(
         "CMD",
-        "eeprom",
+        "config",
         processFeedback,
         null,
         processCallBack
@@ -140,14 +143,6 @@ const MachineSettings = () => {
         fieldData.hasmodified = true;
       }
       //TODO: Use Regex for validation
-      if (
-        fieldData.value.trim().length < 3 ||
-        !(
-          fieldData.value.trim().startsWith("G") ||
-          fieldData.value.trim().startsWith("M")
-        )
-      )
-        validation.valid = false;
     }
     if (!validation.valid) {
       validation.message = T("S42");
@@ -169,77 +164,101 @@ const MachineSettings = () => {
   }, []);
 
   return (
-    <div class="container">
+    <div class="container" style="max-width:600px">
       <h4 class="show-low title">{Target}</h4>
       <div class="m-2" />
-      <center>
-        {isLoading && (
-          <Fragment>
-            <Loading class="m-2" />
-            <div>{collected}</div>
-            <ButtonImg
-              donotdisable
-              icon={<XCircle />}
-              label={T("S28")}
-              tooltip
-              data-tooltip={T("S28")}
-              onClick={onCancel}
-            />
-          </Fragment>
-        )}
-        {!isLoading && (
-          <center class="m-2">
-            {machineSetting.cache.length > 0 && (
-              <div>
-                <CenterLeft bordered>
-                  {machineSetting.cache.map((element) => {
-                    if (element.type == "comment")
-                      return <div class="comment m-1  ">{element.value}</div>;
-                    const [validation, setvalidation] = useState();
-                    const button = (
-                      <ButtonImg
-                        className="submitBtn"
-                        group
-                        icon={<Send />}
-                        label={T("S81")}
-                        tooltip
-                        data-tooltip={T("S82")}
-                        onclick={() => {
-                          sendCommand(element, setvalidation);
-                        }}
-                      />
-                    );
-                    return (
-                      <div class="m-1">
-                        <Field
-                          type={element.type}
-                          value={element.value}
-                          setValue={(val, update = false) => {
-                            if (!update) {
-                              element.value = val;
-                            }
-                            setvalidation(generateValidation(element));
-                          }}
-                          validation={validation}
-                          button={button}
-                        />
-                      </div>
-                    );
-                  })}
-                </CenterLeft>
-              </div>
-            )}
 
-            <ButtonImg
-              icon={<RefreshCcw />}
-              label={T("S50")}
-              tooltip
-              data-tooltip={T("S23")}
-              onClick={onRefresh}
-            />
-          </center>
-        )}
-      </center>
+      {isLoading && (
+        <Fragment>
+          <Loading class="m-2" />
+          <div>{collected}</div>
+          <ButtonImg
+            donotdisable
+            icon={<XCircle />}
+            label={T("S28")}
+            tooltip
+            data-tooltip={T("S28")}
+            onClick={onCancel}
+          />
+        </Fragment>
+      )}
+      {!isLoading && (
+        <center>
+          {machineSetting.cache.length > 0 && (
+            <div class="bordered">
+              {machineSetting.cache.map((element, index) => {
+                if (element.type == "comment")
+                  return (
+                    <div class="comment m-1 text-left">{element.value}</div>
+                  );
+                if (element.type == "disabled")
+                  return (
+                    <div class="text-secondary m-1 text-left">
+                      {element.value}
+                    </div>
+                  );
+                if (element.type == "help")
+                  return (
+                    <div
+                      class="text-small text-gray text-italic text-left"
+                      style={`margin-left:2rem;${
+                        machineSetting.cache[index + 1]
+                          ? machineSetting.cache[index + 1].type == "help"
+                            ? ""
+                            : "margin-bottom:1rem"
+                          : "margin-bottom:1rem"
+                      }`}
+                    >
+                      {element.value}
+                    </div>
+                  );
+
+                const [validation, setvalidation] = useState();
+                const button = (
+                  <ButtonImg
+                    className="submitBtn"
+                    group
+                    icon={<Send />}
+                    label={T("S81")}
+                    tooltip
+                    data-tooltip={T("S82")}
+                    onclick={() => {
+                      sendCommand(element, setvalidation);
+                    }}
+                  />
+                );
+                return (
+                  <div class="m-1">
+                    <Field
+                      style="max-width:10rem;"
+                      inline
+                      label={element.label}
+                      type={element.type}
+                      value={element.value}
+                      setValue={(val, update = false) => {
+                        if (!update) {
+                          element.value = val;
+                        }
+                        setvalidation(generateValidation(element));
+                      }}
+                      validation={validation}
+                      button={button}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <div class="m-2" />
+          <ButtonImg
+            icon={<RefreshCcw />}
+            label={T("S50")}
+            tooltip
+            data-tooltip={T("S23")}
+            onClick={onRefresh}
+          />
+        </center>
+      )}
     </div>
   );
 };

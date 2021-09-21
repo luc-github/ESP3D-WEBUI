@@ -8,6 +8,16 @@
         "help": "S97",
         "value": "M105"
       }
+    ],
+    "Smoothieware":[ 
+      {
+        "id": "configfilename",
+        "type": "text",
+        "min":6,
+        "label": "SM2",
+        "help": "SM2",
+        "value": "config.txt"
+      }
     ]
   }
 }

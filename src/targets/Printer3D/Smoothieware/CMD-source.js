@@ -46,6 +46,26 @@ const formatOverrideLine = (acc, line) => {
 };
 
 const formatConfigLine = (acc, line) => {
+  if (line.trim().startsWith("#")) {
+    //commented line
+    if (line.startsWith("               "))
+      //multilined comment of value
+      acc.push({ type: "help", value: line.trim().substring(1).trim() });
+    else if (line.trim().substring(1).indexOf("#") != -1) {
+      //value commented
+      acc.push({ type: "disabled", value: line.trim().substring(1).trim() });
+    } //title of section
+    else acc.push({ type: "comment", value: line.trim().substring(1).trim() });
+  } else {
+    const p1 = line.trim().indexOf(" ");
+    const label = line.trim().substring(0, p1).trim();
+    const part2 = line.trim().substring(p1).trim();
+    const p2 = part2.indexOf("#");
+    const value = p2 == -1 ? part2.trim() : part2.substring(0, p2).trim();
+    const help = p2 == -1 ? "" : part2.substring(p2 + 1).trim();
+    acc.push({ type: "text", label, value, initial: value, append: help });
+    acc.push({ type: "help", value: help });
+  }
   //TODO:
   /*
     //it is setting
@@ -78,13 +98,14 @@ const commands = {
     return capabilityList;
   },
   config: (name) => {
-    return { type: "cmd", cmd: `cat sd/${name}\necho configDone` };
+    return { type: "cmd", cmd: `cat /sd/${name}\necho configDone` };
   },
   override: () => {
     return { type: "cmd", cmd: "M503\necho overrrideDone" };
   },
   formatConfig: (result) => {
     const res = result.reduce((acc, line) => {
+      if (line == "ok") return acc;
       return formatConfigLine(acc, line);
     }, []);
     return res;

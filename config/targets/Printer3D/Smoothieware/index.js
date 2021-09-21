@@ -76,38 +76,60 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   lastconnection = Date.now();
-  if (url.indexOf("M20") != -1) {
+
+  if (url.indexOf("ls -s /sd") != -1) {
+    if (url.indexOf("echo BeginFiles") != -1) SendBinary("echo: BeginFiles\n");
     SendBinary(
-      "Begin file list\n" +
-        "CUBE2.GCO 210240\n" +
-        "CUBE01.GCO 2089832\n" +
-        "SUPPORT2.GCO 4613256\n" +
-        "ARCHIVE/CUBE.GCO 210240\n" +
-        "ARCHIVE/CUBE-C~1.GCO 210240\n" +
-        "NEWFOL~1/SUPPORT2.GCO 4613256\n" +
-        "End file list\n" +
-        "ok\n"
+      "found.000/\n" +
+        "t2.g 112023\n" +
+        "calibration/\n" +
+        "firmware.cur 391256\n" +
+        "config-override 1010\n" +
+        "pattern-holder.gcode 9754891\n" +
+        "system volume information/\n" +
+        "pattern-holder2.gcode 9754891\n" +
+        "config.txt 23136\n" +
+        "webif/\n" +
+        "acerlogo.jpeg 6257\n" +
+        "a.dat 6257\n" +
+        "firmware.cur.printer 389776\n"
     );
-    /* SendBinary(
-      "Begin file list\n" +
-        "COOL_V~1.GCO 66622272\n" +
-        "415%VA~1.GCO 66622272\n" +
-        "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
-        "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
-        "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
-        "/ARCHIEVE/RET229~1.GCO 2050\n" +
-        "/ARCHIEVE/FILE__~1.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~2.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~3.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~4.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~5.GCO 1050\n" +
-        "End file list\n" +
-        "ok\n"
-    );*/
+    if (url.indexOf("echo EndFiles") != -1) SendBinary("echo: EndFiles\n");
     res.send("");
     return;
   }
 
+  if (url.indexOf("M20") != -1) {
+    SendBinary(
+      "Begin file list\n" +
+        "found.000/\n" +
+        "t2.g\n" +
+        "calibration/\n" +
+        "firmware.cur\n" +
+        "config-override\n" +
+        "pattern-holder.gcode\n" +
+        "system volume information/\n" +
+        "pattern-holder2.gcode\n" +
+        "config.txt\n" +
+        "webif/\n" +
+        "acerlogo.jpeg\n" +
+        "a.dat\n" +
+        "firmware.cur.printer\n" +
+        "End file list\n" +
+        "ok\n"
+    );
+    res.send("");
+    return;
+  }
+
+  if (url.startsWith("echo ")) {
+    console.log("yes");
+    const response = url.replace("echo ", "echo: ");
+    console.log("Resp:", response);
+    SendBinary(response + "\n");
+    res.send("");
+    return;
+  }
   if (url.indexOf("M30") != -1) {
     const name = url.split(" ");
     SendBinary(
@@ -182,7 +204,7 @@ const commandsQuery = (req, res, SendBinary) => {
         "extruder.hotend.enable                          true             # Whether to activate the extruder module at all. All configuration is ignored if false\n" +
         "#extruder.hotend.steps_per_mm                    140              # Steps per mm for extruder stepper\n" +
         "#extruder.hotend.default_feed_rate               600              # Default rate ( mm/minute ) for moves where only the extruder moves\n" +
-        "#extruder.hotend.acceleration                    500              # Acceleration for the stepper motor mm/sec²\n" +
+        "#extruder.hotend.acceleration                    500              # Acceleration for the stepper motor mm/sec2\n" +
         "#extruder.hotend.max_speed                       50               # mm/s\n" +
         "\n" +
         "#extruder.hotend.step_pin                        2.0              # Pin for extruder step signal\n" +
@@ -275,7 +297,6 @@ const commandsQuery = (req, res, SendBinary) => {
         "\n" +
         "# Switch module for led control\n" +
         "switch.led.enable                            true             #\n" +
-        "switch.led.\n" +
         "switch.led.input_on_command                  M800            #\n" +
         "switch.led.input_off_command                 M801             #\n" +
         "switch.led.output_pin                        2.5              #\n" +

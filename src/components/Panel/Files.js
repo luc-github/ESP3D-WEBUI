@@ -69,8 +69,8 @@ const FilesPanel = () => {
 
   const sendSerialCmd = (cmd) => {
     createNewRequest(
-      espHttpURL("command", cmd).toString(),
-      { method: "GET", echo: cmd.cmd },
+      espHttpURL("command", { cmd: cmd }).toString(),
+      { method: "GET", echo: cmd },
       {
         onSuccess: (result) => {
           //Result is handled on ws so just do nothing
@@ -335,7 +335,7 @@ const FilesPanel = () => {
         )
       ) {
         setIsLoading(true);
-        sendSerialCmd({ cmd: cmd.cmd });
+        sendSerialCmd(cmd.cmd);
       }
     }
   };
@@ -361,7 +361,7 @@ const FilesPanel = () => {
         )
       ) {
         setIsLoading(true);
-        sendSerialCmd({ cmd: cmd.cmd });
+        sendSerialCmd(cmd.cmd);
       }
     }
   };
@@ -456,7 +456,7 @@ const FilesPanel = () => {
         );
       } else if (cmd.type == "cmd") {
         if (processor.startCatchResponse(currentFS, "list", processFeedback))
-          sendSerialCmd({ cmd: cmd.cmd });
+          sendSerialCmd(cmd.cmd);
       }
     }
   };
@@ -728,7 +728,7 @@ const FilesPanel = () => {
                                     currentPath[currentFS],
                                     line.name
                                   );
-                                  sendSerialCmd({ cmd: cmd.cmd });
+                                  sendSerialCmd(cmd.cmd);
                                 }}
                               />
                             )}
