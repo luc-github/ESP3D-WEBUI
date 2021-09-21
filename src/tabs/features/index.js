@@ -181,10 +181,22 @@ const FeaturesTab = () => {
   }
 
   function reStartBoard() {
-    Disconnect("restart");
-    setTimeout(() => {
-      window.location.reload();
-    }, restartdelay * 1000);
+    createNewRequest(
+      espHttpURL("command", { cmd: "[ESP444]RESTART" }).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          Disconnect("restart");
+          setTimeout(() => {
+            window.location.reload();
+          }, restartdelay * 1000);
+        },
+        onFail: (error) => {
+          console.log(error);
+          toasts.addToast({ content: error, type: "error" });
+        },
+      }
+    );
     console.log("restart");
   }
 
