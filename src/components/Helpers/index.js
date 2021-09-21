@@ -31,16 +31,17 @@ import {
   capitalize,
   hslToHex,
   formatFileSizeToString,
+  formatStatus,
   compareStrings,
 } from "./strings";
 import {
   limitArr,
   mergeJSON,
-  mergeFlatPrefToNestedSchema,
   removeEntriesByIDs,
   splitArrayByLines,
 } from "./arrays";
 import { dispatchToExtensions } from "./html";
+import { sortedFilesList, filterResultFiles } from "./filters";
 
 export {
   beautifyJSONString,
@@ -51,6 +52,8 @@ export {
   disableUI,
   dispatchToExtensions,
   espHttpURL,
+  filterResultFiles,
+  formatStatus,
   generateUID,
   getBrowserTime,
   getColClasses,
@@ -59,8 +62,8 @@ export {
   isLimitedEnvironment,
   limitArr,
   mergeJSON,
-  mergeFlatPrefToNestedSchema,
   formatFileSizeToString,
   removeEntriesByIDs,
+  sortedFilesList,
   splitArrayByLines,
 };

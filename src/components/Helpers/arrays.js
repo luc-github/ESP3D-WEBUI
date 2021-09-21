@@ -21,25 +21,6 @@ import { h } from "preact";
 const removeEntriesByIDs = (src, uid) =>
   src.filter(({ id }) => !uid.includes(id));
 
-//TODO: Is this function necessary ?
-const mergeFlatPrefToNestedSchema = (settings, schema) => {
-  return Object.keys(schema).reduce(
-    (acc, key) => {
-      if ("fields" in schema[key])
-        return {
-          ...acc,
-          [key]: {
-            ...schema[key],
-            value: settings[key],
-            fields: mergeFlatPrefToNestedSchema(settings, schema[key].fields),
-          },
-        };
-      return { ...acc, [key]: { ...schema[key], value: settings[key] } };
-    },
-    { ...schema }
-  );
-};
-
 const limitArr = (arr, limit) =>
   arr.slice(
     arr.length - (arr.length <= limit ? arr.length : limit),
@@ -92,10 +73,4 @@ function mergeJSON(o1, o2) {
   return tempNewObj;
 }
 
-export {
-  limitArr,
-  mergeJSON,
-  mergeFlatPrefToNestedSchema,
-  removeEntriesByIDs,
-  splitArrayByLines,
-};
+export { limitArr, mergeJSON, removeEntriesByIDs, splitArrayByLines };

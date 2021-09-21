@@ -22,16 +22,32 @@ import { h } from "preact";
 const formatCapabilityLine = (acc, line) => {
   //TODO:
   //isolate description
+  //update http encoded
   //sort enabled
   //sort disabled
   acc.push({ data: line });
   return acc;
 };
 
-const formatEepromLine = (acc, line) => {
-  //format G20 / G21
-  //it is comment
-  if (line.startsWith("echo:")) {
+const formatOverrideLine = (acc, line) => {
+  //TODO:
+  //it is setting
+  /*const data = line
+      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
+      .trim();
+    const extra =
+      line.indexOf(";") != -1
+        ? line.substring(line.indexOf(";") + 1).trim()
+        : "";
+    if (extra.length > 0) acc.push({ type: "comment", value: extra });
+    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
+*/
+  return acc;
+};
+
+const formatConfigLine = (acc, line) => {
+  //TODO:
+  /*
     //it is setting
     const data = line
       .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
@@ -42,7 +58,7 @@ const formatEepromLine = (acc, line) => {
         : "";
     if (extra.length > 0) acc.push({ type: "comment", value: extra });
     if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
-  }
+*/
 
   return acc;
 };
@@ -61,12 +77,15 @@ const commands = {
     }, []);
     return capabilityList;
   },
-  eeprom: () => {
-    return { type: "cmd", cmd: "M503" };
+  config: (name) => {
+    return { type: "cmd", cmd: `cat sd/${name}\necho configDone` };
   },
-  formatEeprom: (result) => {
+  override: () => {
+    return { type: "cmd", cmd: "M503\necho overrrideDone" };
+  },
+  formatConfig: (result) => {
     const res = result.reduce((acc, line) => {
-      return formatEepromLine(acc, line);
+      return formatConfigLine(acc, line);
     }, []);
     return res;
   },
@@ -75,18 +94,26 @@ const commands = {
 const responseSteps = {
   capabilities: {
     start: (data) => data.startsWith("FIRMWARE_NAME:"),
-    end: (data) =>
-      !(data.startsWith("Cap:") || data.startsWith("FIRMWARE_NAME:")),
+    end: (data) => data.startsWith("FIRMWARE_NAME:"),
     error: (data) => {
-      return data.indexOf("error") != -1;
+      return data.indexOf("error:") != -1;
     },
   },
-  eeprom: {
-    start: (data) => data.startsWith("echo:") && data.indexOf("G2") != -1,
-    end: (data) => data.startsWith("ok"),
+  config: {
+    start: (data) => data.startsWith("#"),
+    end: (data) => data.startsWith("echo: configDone"),
     error: (data) => {
       return (
-        data.indexOf("Unknown command") != -1 || data.indexOf("error") != -1
+        data.indexOf("error:") != -1 || data.indexOf("File not found:") != -1
+      );
+    },
+  },
+  override: {
+    start: (data) => data.startsWith(";"),
+    end: (data) => data.startsWith("echo: overrideDone"),
+    error: (data) => {
+      return (
+        data.indexOf("error:") != -1 || data.indexOf("File not found:") != -1
       );
     },
   },

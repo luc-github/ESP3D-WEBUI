@@ -68,10 +68,18 @@ const beautifyJSONString = (jsonstring) => {
   }
 };
 
+//Format status
+const formatStatus = (status) => {
+  if (status.toUpperCase().indexOf("OK") != -1) return "S126";
+  if (status.toUpperCase().indexOf("ERROR") != -1) return "S22";
+  return status;
+};
+
 export {
   capitalize,
   hslToHex,
   beautifyJSONString,
   compareStrings,
   formatFileSizeToString,
+  formatStatus,
 };

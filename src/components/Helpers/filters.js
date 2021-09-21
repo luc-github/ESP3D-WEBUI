@@ -1,5 +1,5 @@
 /*
- files.js - ESP3D WebUI Target file
+ filters.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,8 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { useUiContextFn } from "../../../contexts";
-import { compareStrings } from "../../../components/Helpers";
+import { compareStrings } from "./strings";
 
 //sort files alphabeticaly then folders alphabeticaly
 const sortedFilesList = (filesList) => {
@@ -34,20 +33,6 @@ const sortedFilesList = (filesList) => {
       : 0;
   });
   return filesList;
-};
-
-//Check if filename is a file to be processed based on extension
-const canProcessFile = (filename) => {
-  const filters = useUiContextFn.getValue("filesfilter").split(";");
-  for (let index = 0; index < filters.length; index++) {
-    if (
-      filters[index] == "*" ||
-      filename.trim().endsWith("." + filters[index])
-    ) {
-      return true;
-    }
-  }
-  return false;
 };
 
 //Filter array of flat FS file list based on path
@@ -92,11 +77,4 @@ const filterResultFiles = (files, path) => {
   }, []);
 };
 
-//Format status
-const formatStatus = (status) => {
-  if (status.toUpperCase().indexOf("OK") != -1) return "S126";
-  if (status.toUpperCase().indexOf("ERROR") != -1) return "S22";
-  return status;
-};
-
-export { canProcessFile, sortedFilesList, formatStatus, filterResultFiles };
+export { sortedFilesList, filterResultFiles };

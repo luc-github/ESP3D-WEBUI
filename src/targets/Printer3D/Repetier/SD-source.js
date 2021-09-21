@@ -18,14 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-
+import { canProcessFile } from "../../helpers";
 import {
+  formatFileSizeToString,
   sortedFilesList,
   formatStatus,
-  canProcessFile,
   filterResultFiles,
-} from "./helpers";
-import { formatFileSizeToString } from "../../../components/Helpers";
+} from "../../../components/Helpers";
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {

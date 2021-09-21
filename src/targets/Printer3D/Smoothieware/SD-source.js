@@ -19,13 +19,13 @@
 */
 import { h } from "preact";
 
+import { canProcessFile } from "../../helpers";
 import {
+  formatFileSizeToString,
   sortedFilesList,
   formatStatus,
-  canProcessFile,
   filterResultFiles,
-} from "./helpers";
-import { formatFileSizeToString } from "../../../components/Helpers";
+} from "../../../components/Helpers";
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {

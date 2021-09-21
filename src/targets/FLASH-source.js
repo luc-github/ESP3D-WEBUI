@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { sortedFilesList, formatStatus } from "./helpers";
+import { sortedFilesList, formatStatus } from "../components/Helpers";
 
 const capabilities = {
   Process: () => false,
