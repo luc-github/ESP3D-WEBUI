@@ -31,7 +31,6 @@ const formatCapabilityLine = (acc, line) => {
 
 const formatOverrideLine = (acc, line) => {
   if (line.startsWith(";")) {
-    console.log("�".charCodeAt(0));
     acc.push({
       type: "comment",
       value: line

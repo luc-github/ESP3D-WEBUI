@@ -154,7 +154,7 @@ const MachineSettings = () => {
     //TODO: Should answer be checked ?
   };
 
-  const generateValidation = (fieldData) => {
+  const generateValidation = (fieldData, isOverride) => {
     const validation = {
       message: <Flag size="1rem" />,
       valid: true,
@@ -166,7 +166,17 @@ const MachineSettings = () => {
       } else {
         fieldData.hasmodified = true;
       }
-      if (fieldData.value.trim().indexOf(" ") != -1) validation.valid = false;
+      if (isOverride) {
+        if (
+          !(
+            fieldData.value.trim().startsWith("M") ||
+            fieldData.value.trim().startsWith("G")
+          )
+        )
+          validation.valid = false;
+      } else {
+        if (fieldData.value.trim().indexOf(" ") != -1) validation.valid = false;
+      }
     }
     if (!validation.valid) {
       validation.message = T("S42");
@@ -310,7 +320,7 @@ const MachineSettings = () => {
                           if (!update) {
                             element.value = val;
                           }
-                          setvalidation(generateValidation(element));
+                          setvalidation(generateValidation(element, false));
                         }}
                         validation={validation}
                         button={button}
@@ -354,7 +364,7 @@ const MachineSettings = () => {
                           if (!update) {
                             element.value = val;
                           }
-                          setvalidation(generateValidation(element));
+                          setvalidation(generateValidation(element, true));
                         }}
                         validation={validation}
                         button={button}
