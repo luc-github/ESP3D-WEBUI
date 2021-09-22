@@ -30,18 +30,20 @@ const formatCapabilityLine = (acc, line) => {
 };
 
 const formatOverrideLine = (acc, line) => {
-  //TODO:
-  //it is setting
-  /*const data = line
-      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
-      .trim();
-    const extra =
-      line.indexOf(";") != -1
-        ? line.substring(line.indexOf(";") + 1).trim()
-        : "";
-    if (extra.length > 0) acc.push({ type: "comment", value: extra });
-    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
-*/
+  if (line.startsWith(";")) {
+    console.log("�".charCodeAt(0));
+    acc.push({
+      type: "comment",
+      value: line
+        .substring(1)
+        .replace(String.fromCharCode(65533), String.fromCharCode(178))
+        .trim(), //replace the 2 square
+    });
+  } else {
+    if (line.startsWith("M") || line.startsWith("G"))
+      acc.push({ type: "text", value: line.trim(), initial: line.trim() });
+  }
+
   return acc;
 };
 
@@ -88,12 +90,19 @@ const commands = {
     return { type: "cmd", cmd: `cat /sd/${name}\necho configDone` };
   },
   override: () => {
-    return { type: "cmd", cmd: "M503\necho overrrideDone" };
+    return { type: "cmd", cmd: "M503\necho overrideDone" };
   },
   formatConfig: (result) => {
     const res = result.reduce((acc, line) => {
       if (line == "ok") return acc;
       return formatConfigLine(acc, line);
+    }, []);
+    return res;
+  },
+  formatOverride: (result) => {
+    const res = result.reduce((acc, line) => {
+      if (line == "ok") return acc;
+      return formatOverrideLine(acc, line);
     }, []);
     return res;
   },

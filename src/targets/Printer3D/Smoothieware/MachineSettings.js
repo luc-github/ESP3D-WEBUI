@@ -80,6 +80,12 @@ const MachineSettings = () => {
       if (feedback.command == "config") {
         machineSettings.cache = CMD.command("formatConfig", feedback.content);
       }
+      if (feedback.command == "override") {
+        machineSettings.override = CMD.command(
+          "formatOverride",
+          feedback.content
+        );
+      }
       if (feedback.status == "error") {
         console.log("got error");
         toasts.addToast({
@@ -102,16 +108,25 @@ const MachineSettings = () => {
   };
 
   const onRefresh = (e) => {
-    //get command
-    const response = CMD.command(
-      "config",
-      uisettings.getValue("configfilename")
-    );
+    const refreshContext = { target: "", command: "" };
+    if (configSelected) {
+      refreshContext.target = "config";
+      //get command
+      refreshContext.command = CMD.command(
+        "config",
+        uisettings.getValue("configfilename")
+      );
+    } else {
+      refreshContext.target = "override";
+      //get command
+      refreshContext.command = CMD.command("override");
+    }
+
     //send query
     if (
       processor.startCatchResponse(
         "CMD",
-        "config",
+        refreshContext.target,
         processFeedback,
         null,
         processCallBack
@@ -119,7 +134,7 @@ const MachineSettings = () => {
     ) {
       setCollected("O B");
       setIsLoading(true);
-      sendSerialCmd(response.cmd);
+      sendSerialCmd(refreshContext.command.cmd);
     }
   };
 
@@ -146,12 +161,12 @@ const MachineSettings = () => {
       modified: true,
     };
     if (fieldData.type == "text") {
-      if (fieldData.value == fieldData.initial) {
+      if (fieldData.value.trim() == fieldData.initial.trim()) {
         fieldData.hasmodified = false;
       } else {
         fieldData.hasmodified = true;
       }
-      //TODO: Use Regex for validation
+      if (fieldData.value.trim().indexOf(" ") != -1) validation.valid = false;
     }
     if (!validation.valid) {
       validation.message = T("S42");
@@ -178,9 +193,9 @@ const MachineSettings = () => {
       <div class="m-2" />
 
       {isLoading && (
-        <Fragment>
+        <center>
           <Loading class="m-2" />
-          <div>{collected}</div>
+          <div class="m-2">{collected}</div>
           <ButtonImg
             donotdisable
             icon={<XCircle />}
@@ -189,7 +204,7 @@ const MachineSettings = () => {
             data-tooltip={T("S28")}
             onClick={onCancel}
           />
-        </Fragment>
+        </center>
       )}
       {!isLoading && (
         <center>
@@ -202,8 +217,15 @@ const MachineSettings = () => {
                   checked={configSelected}
                   onclick={(e) => {
                     configSelected = true;
+                    if (
+                      uisettings.getValue("autoload") &&
+                      machineSettings.cache == ""
+                    ) {
+                      //load settings
+                      onRefresh();
+                    }
                     configTab.current.classList.remove("d-none");
-                    //overrideTab.classList.add("d-none")
+                    overrideTab.current.classList.add("d-none");
                   }}
                 />
                 <i class="form-icon"></i>{" "}
@@ -216,8 +238,15 @@ const MachineSettings = () => {
                   checked={!configSelected}
                   onclick={(e) => {
                     configSelected = false;
+                    if (
+                      uisettings.getValue("autoload") &&
+                      machineSettings.override == ""
+                    ) {
+                      //load settings
+                      onRefresh();
+                    }
                     configTab.current.classList.add("d-none");
-                    //overrideTab.classList.remove("d-none")
+                    overrideTab.current.classList.remove("d-none");
                   }}
                 />
                 <i class="form-icon"></i>
@@ -292,6 +321,51 @@ const MachineSettings = () => {
               </div>
             )}
           </div>
+
+          <div ref={overrideTab} class={configSelected ? "d-none" : ""}>
+            {machineSettings.override.length > 0 && (
+              <div class="bordered ">
+                {machineSettings.override.map((element, index) => {
+                  if (element.type == "comment")
+                    return (
+                      <div class="comment m-1 text-left">{element.value}</div>
+                    );
+
+                  const [validation, setvalidation] = useState();
+                  const button = (
+                    <ButtonImg
+                      className="submitBtn"
+                      group
+                      icon={<Send />}
+                      label={T("S81")}
+                      tooltip
+                      data-tooltip={T("S82")}
+                      onclick={() => {
+                        sendCommand(element, setvalidation, true);
+                      }}
+                    />
+                  );
+                  return (
+                    <div class="m-1">
+                      <Field
+                        type={element.type}
+                        value={element.value}
+                        setValue={(val, update = false) => {
+                          if (!update) {
+                            element.value = val;
+                          }
+                          setvalidation(generateValidation(element));
+                        }}
+                        validation={validation}
+                        button={button}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           <div class="m-2" />
           <ButtonImg
             icon={<RefreshCcw />}

@@ -135,7 +135,7 @@ const MachineSettings = () => {
       modified: true,
     };
     if (fieldData.type == "text") {
-      if (fieldData.value == fieldData.initial) {
+      if (fieldData.value.trim() == fieldData.initial.trim()) {
         fieldData.hasmodified = false;
       } else {
         fieldData.hasmodified = true;
