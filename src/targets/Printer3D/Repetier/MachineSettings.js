@@ -133,6 +133,7 @@ const MachineSettings = () => {
       valid: true,
       modified: true,
     };
+    if (fieldData.value.trim().length == 0) validation.valid = false;
     if (fieldData.type == "text") {
       if (fieldData.value == fieldData.initial) {
         fieldData.hasmodified = false;
