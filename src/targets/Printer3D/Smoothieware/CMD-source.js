@@ -88,6 +88,18 @@ const commands = {
   config: (name) => {
     return { type: "cmd", cmd: `cat /sd/${name}\necho configDone` };
   },
+  configset: (element) => {
+    return {
+      type: "cmd",
+      cmd: `config-set sd ${element.label} ${element.value}`,
+    };
+  },
+  overrideset: (element) => {
+    return {
+      type: "cmd",
+      cmd: element.value,
+    };
+  },
   override: () => {
     return { type: "cmd", cmd: "M503\necho overrideDone" };
   },

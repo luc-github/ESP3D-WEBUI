@@ -36,18 +36,25 @@ import {
   CenterLeft,
   Progress,
 } from "../../../components/Controls";
-import { RefreshCcw, XCircle, Send, Flag } from "preact-feather";
+import { RefreshCcw, XCircle, Save, Flag } from "preact-feather";
 import { CMD } from "./CMD-source";
+import {
+  showConfirmationModal,
+  showProgressModal,
+} from "../../../components/Modal";
 
 const machineSetting = {};
 machineSetting.cache = [];
+machineSetting.toSave = [];
+machineSetting.totalToSave = 0;
 
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [settings, setSettings] = useState(machineSetting.cache);
   const [collected, setCollected] = useState("0 B");
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
+  const [showSave, setShowSave] = useState(false);
+  const progressBar = {};
   const id = "Machine Tab";
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
@@ -67,6 +74,90 @@ const MachineSettings = () => {
       }
     );
   };
+
+  const saveEntry = (entry, index, total) => {
+    const cmd = entry.value.trim();
+    createNewRequest(
+      espHttpURL("command", { cmd }).toString(),
+      { method: "GET", id: "saveMachineSetting" },
+      {
+        onSuccess: (result) => {
+          if (progressBar.update) progressBar.update(index + 1);
+          try {
+            entry.initial = entry.value.trim();
+          } catch (e) {
+            console.log(e);
+            toasts.addToast({ content: e, type: "error" });
+          } finally {
+            entry.generateValidation();
+            processSaving();
+          }
+        },
+        onFail: (error) => {
+          if (progressBar.update) progressBar.update(index + 1);
+          console.log(error);
+          toasts.addToast({ content: error, type: "error" });
+          processSaving();
+        },
+      }
+    );
+  };
+
+  function abortSave() {
+    abortRequest("saveMachineSetting");
+    toasts.addToast({ content: T("S175"), type: "error" });
+    endProgression();
+  }
+
+  function endProgression() {
+    modals.removeModal(modals.getModalIndex("progression"));
+  }
+
+  const processSaving = () => {
+    if (machineSetting.toSave.length > 0) {
+      const index = machineSetting.toSave.pop();
+      saveEntry(
+        machineSetting.cache[index],
+        machineSetting.totalToSave - machineSetting.toSave.length - 1,
+        machineSetting.totalToSave
+      );
+    } else {
+      endProgression();
+    }
+  };
+
+  const saveSettings = () => {
+    machineSetting.totalToSave = 0;
+    machineSetting.toSave = [];
+    machineSetting.cache.map((entry, index) => {
+      console.log(entry);
+      if (entry.type != "comment") {
+        if (entry.initial.trim() != entry.value.trim()) {
+          machineSetting.totalToSave++;
+          machineSetting.toSave.push(index);
+        }
+      }
+    });
+
+    showProgressModal({
+      modals,
+      title: T("S91"),
+      button1: { cb: abortSave, text: T("S28") },
+      content: (
+        <Progress progressBar={progressBar} max={machineSetting.totalToSave} />
+      ),
+    });
+    processSaving();
+  };
+
+  function checkSaveStatus() {
+    let stringified = JSON.stringify(machineSetting.cache);
+    let hasmodified =
+      stringified.indexOf('"hasmodified":true') == -1 ? false : true;
+    let haserrors = stringified.indexOf('"haserror":true') == -1 ? false : true;
+    if (haserrors || !hasmodified) return false;
+    return true;
+  }
 
   const processCallBack = (data, total) => {
     setCollected(formatFileSizeToString(total));
@@ -118,16 +209,6 @@ const MachineSettings = () => {
     }
   };
 
-  const sendCommand = (element, setvalidation) => {
-    console.log("Send ", element.value);
-    sendSerialCmd(element.value.trim(), () => {
-      element.initial = element.value;
-      setvalidation(generateValidation(element));
-    });
-
-    //TODO: Should answer be checked ?
-  };
-
   const generateValidation = (fieldData) => {
     const validation = {
       message: <Flag size="1rem" />,
@@ -154,7 +235,7 @@ const MachineSettings = () => {
       validation.message = T("S42");
     }
     fieldData.haserror = !validation.valid;
-    //setShowSave(checkSaveStatus());
+    setShowSave(checkSaveStatus());
     if (!fieldData.hasmodified && !fieldData.haserror) {
       validation.message = null;
       validation.valid = true;
@@ -197,19 +278,9 @@ const MachineSettings = () => {
                     if (element.type == "comment")
                       return <div class="comment m-1  ">{element.value}</div>;
                     const [validation, setvalidation] = useState();
-                    const button = (
-                      <ButtonImg
-                        className="submitBtn"
-                        group
-                        icon={<Send />}
-                        label={T("S81")}
-                        tooltip
-                        data-tooltip={T("S82")}
-                        onclick={() => {
-                          sendCommand(element, setvalidation);
-                        }}
-                      />
-                    );
+                    element.generateValidation = () => {
+                      setvalidation(generateValidation(element));
+                    };
                     return (
                       <div class="m-1">
                         <Field
@@ -222,7 +293,6 @@ const MachineSettings = () => {
                             setvalidation(generateValidation(element));
                           }}
                           validation={validation}
-                          button={button}
                         />
                       </div>
                     );
@@ -232,12 +302,26 @@ const MachineSettings = () => {
             )}
 
             <ButtonImg
+              m2
               icon={<RefreshCcw />}
               label={T("S50")}
               tooltip
               data-tooltip={T("S23")}
               onClick={onRefresh}
             />
+            {showSave && (
+              <ButtonImg
+                m2
+                tooltip
+                data-tooltip={T("S62")}
+                label={T("S61")}
+                icon={<Save />}
+                onClick={(e) => {
+                  e.target.blur();
+                  saveSettings();
+                }}
+              />
+            )}
           </center>
         )}
       </center>
