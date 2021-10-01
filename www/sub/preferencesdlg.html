@@ -462,6 +462,168 @@
 
                         </div>
                     </div>
+                    <br>
+                    <div class="panel panel-default" id="grbl_pref_surface_tab">
+                        <div class="panel-heading">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="show_grbl_surface_tab" onclick="prefs_toggledisplay('show_grbl_surface_tab')" />
+                                    <span translate>Show surface panel</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="grbl_surface_preferences" class="panel-body">
+                            <div id="preferences_surfacewidth_group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span><span translate>Surface Width (X)</span>:&nbsp;</span>
+                                        </td>
+                                        <td>
+                                            <div class="input-group has-control">
+                                                <input class="form-control w8" type="number" min="1" max="99999" id="preferences_surfacewidth" onchange="Checkvalues('preferences_surfacewidth')" />
+                                                <span id="preferences_surfacewidth_icon" class="form-control-feedback ico_feedback"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input class="hide_it"></input>
+                                                <span class="input-group-addon form_control" translate>mm</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br>
+                            <div id="preferences_surfacelength_group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span><span translate>Surface Length (Y)</span>:&nbsp;</span>
+                                        </td>
+                                        <td>
+                                            <div class="input-group has-control">
+                                                <input class="form-control w8" type="number" min="1" max="99999" id="preferences_surfacelength" onchange="Checkvalues('preferences_surfacelength')" />
+                                                <span id="preferences_surfacelength_icon" class="form-control-feedback ico_feedback"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input class="hide_it"></input>
+                                                <span class="input-group-addon form_control" translate>mm</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="preferences_surfacezdepth_group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span><span translate>Skim Depth (-Z)</span>:&nbsp;</span>
+                                        </td>
+                                        <td>
+                                            <div class="input-group has-control">
+                                                <input class="form-control w8" type="number" min="0.1" max="9999" id="preferences_surfacezdepth" onchange="Checkvalues('preferences_surfacezdepth')" />
+                                                <span id="preferences_surfacezdepth_icon" class="form-control-feedback ico_feedback"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input class="hide_it"></input>
+                                                <span class="input-group-addon form_control" translate>mm</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="preferences_surfacebitdiam_group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span><span translate>Bit Diameter</span>:&nbsp;</span>
+                                        </td>
+                                        <td>
+                                            <div class="input-group has-control">
+                                                <input class="form-control w8" type="number" min="0.1" max="999" id="preferences_surfacebitdiam" onchange="Checkvalues('preferences_surfacebitdiam')" />
+                                                <span id="preferences_surfacebitdiam_icon" class="form-control-feedback ico_feedback"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input class="hide_it"></input>
+                                                <span class="input-group-addon form_control" translate>mm</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="preferences_surfacestepover_group">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span><span translate>Surfacing Stepover</span>:&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <div class="input-group has-control">
+                                            <input class="form-control w8" type="number" min="1" max="100" id="preferences_surfacestepover" onchange="Checkvalues('preferences_surfacestepover')" />
+                                            <span id="preferences_surfacestepover_icon" class="form-control-feedback ico_feedback"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="hide_it"></input>
+                                            <span class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="preferences_surfacefeedrate_group">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span><span translate>Surfacing Feedrate</span>:&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <div class="input-group has-control">
+                                            <input class="form-control w8" type="number" min="1" max="100" id="preferences_surfacefeedrate" onchange="Checkvalues('preferences_surfacefeedrate')" />
+                                            <span id="preferences_surfacefeedrate_icon" class="form-control-feedback ico_feedback"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="hide_it"></input>
+                                            <span class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="preferences_surfacespindle_group">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span><span translate>Surfacing Spindle RPM</span>:&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <div class="input-group has-control">
+                                            <input class="form-control w8" type="number" min="1" max="100" id="preferences_surfacespindle" onchange="Checkvalues('preferences_surfacespindle')" />
+                                            <span id="preferences_surfacespindle_icon" class="form-control-feedback ico_feedback"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="hide_it"></input>
+                                            <span class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">

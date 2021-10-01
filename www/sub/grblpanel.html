@@ -116,6 +116,9 @@
                 <button class="tablinks hide_it" onclick="opentab(event, 'grblprobetab', 'grbluitabscontent', 'grbluitablinks')" id="grblprobetablink">
                     <span translate>Probe</span>
                 </button>
+                <button class="tablinks hide_it" onclick="opentab(event, 'grblsurfacetab', 'grbluitabscontent', 'grbluitablinks')" id="grblsurfacetablink">
+                    <span translate>Surfacing Wizard</span>
+                </button>
             </div>
             <div class="panel panel-default">
                 <div class="panel-body panel-flex-main">
@@ -456,6 +459,91 @@
                                 </tr>
                             </table>
                         </div>
+                        <div id="grblsurfacetab" class="tabcontent" style="margin: auto;">
+                            <table class="table table-bordered table-striped table-hover table-responsive" style='width:auto;'>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Width (X)</span>:</span>
+                                            <input class="form-control" type="number" min="1" max="9999" id="surfacewidth" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Length (Y)</span>:</span>
+                                            <input class="form-control" type="number" min="1" max="9999" id="surfacelength" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Skim Depth (Z-)</span>:</span>
+                                            <input class="form-control" type="number" min="0.1" max="999" id="surfacezdepth" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Bit Diameter</span>:</span>
+                                            <input class="form-control" type="number" min="0.1" max="999" id="surfacebitdiam" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>mm</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Stepover</span>:</span>
+                                            <input class="form-control" type="number" min="0" max="99" id="surfacestepover" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Feedrate</span>:</span>
+                                            <input class="form-control" type="number" min="500" max="10000" id="surfacefeedrate" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>mm/min</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style='width:300px;'>
+                                        <div class = "input-group">
+                                            <span style='width:150px;' class="input-group-addon form_control"><span translate>Spindle RPM</span>:</span>
+                                            <input class="form-control" type="number" min="500" max="50000" id="surfacespindle" />
+                                            <span style='width:50px;' class="input-group-addon form_control" translate>RPM</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="hide_it" id="surfacingtext">
+                                            <table>
+                                                <tr>
+                                                    <td><span translate>Surfacing...</span></td>
+                                                    <td>
+                                                        <div class="loader" style="width:2em;height:2em;"></div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </span>
+                                        <button class="btn btn-primary" id="surfacebtn" onclick="StartSurfaceProcess();" translate>Start Surfacing</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>    
                     </div>
                 </div>
             </div>
