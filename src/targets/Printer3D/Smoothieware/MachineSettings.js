@@ -35,7 +35,7 @@ import {
   ButtonImg,
   Progress,
 } from "../../../components/Controls";
-import { RefreshCcw, XCircle, Save, Flag } from "preact-feather";
+import { RefreshCcw, XCircle, Save, Flag, RotateCw } from "preact-feather";
 import { CMD } from "./CMD-source";
 import {
   showConfirmationModal,
@@ -131,8 +131,26 @@ const MachineSettings = () => {
         machineSettings.totalToSave
       );
     } else {
+      //if overide do M500
+      if (!configSelected){
+        createNewRequest(
+          espHttpURL("command", { cmd:"M500" }).toString(),
+          { method: "GET", id: "saveMachineSetting" },
+          {
+            onSuccess: (result) => {
+              endProgression();
+            },
+            onFail: (error) => {
+              endProgression();
+              console.log(error);
+              toasts.addToast({ content: error, type: "error" });
+            },
+          }
+        );
+      } else {
       endProgression();
     }
+  }
   };
 
   const saveSettings = () => {
@@ -214,6 +232,32 @@ const MachineSettings = () => {
     machineSettings.cache = [];
     setIsLoading(false);
   };
+
+  const restartBoard = () => {
+    createNewRequest(
+      espHttpURL("command", { cmd:"reset" }).toString(),
+      { method: "GET", id: "saveMachineSetting" },
+      {
+        onSuccess: (result) => {
+          //TBD
+        },
+        onFail: (error) => {
+          console.log(error);
+          toasts.addToast({ content: error, type: "error" });
+        },
+      }
+    );
+  }
+
+  const onReset = (e) =>{
+    showConfirmationModal({
+      modals,
+      title: T("S26"),
+      content: T("S59"),
+      button1: { cb: restartBoard, text: T("S27") },
+      button2: { text: T("S28") },
+    });
+  }
 
   const onRefresh = (e) => {
     const refreshContext = { target: "", command: "" };
@@ -456,6 +500,14 @@ const MachineSettings = () => {
             tooltip
             data-tooltip={T("S23")}
             onClick={onRefresh}
+          />
+          <ButtonImg
+            m2
+            icon={<RotateCw />}
+            label={T("SM3")}
+            tooltip
+            data-tooltip={T("SM3")}
+            onClick={onReset}
           />
           {showSave && (
             <ButtonImg
