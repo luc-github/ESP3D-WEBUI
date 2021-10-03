@@ -1,11 +1,34 @@
 {
   "settings": {
-    "xyfeedrate": 1000,
-    "xpos": 100,
-    "ypos": 100,
-    "zfeedrate": 100,
-    "filesfilter": "g;G;gco;GCO;gcode;GCODE",
-    "tftsd": true,
-    "tftusb": true
+    "jog": [
+      {
+        "id": "xyfeedrate",
+        "type": "number",
+        "label": "CN2",
+        "min": "1",
+        "append": "CN1",
+        "value": "1000"
+      },
+      {
+        "id": "zfeedrate",
+        "type": "number",
+        "label": "CN3",
+        "append": "CN1",
+        "min": "1",
+        "value": "1000"
+      },
+      {
+        "id": "xpos",
+        "type": "number",
+        "label": "CN4",
+        "value": "100"
+      },
+      {
+        "id": "ypos",
+        "type": "number",
+        "label": "CN5",
+        "value": "100"
+      }
+    ]
   }
 }
