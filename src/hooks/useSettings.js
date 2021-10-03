@@ -19,19 +19,25 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
 import { useSettingsContext } from "../contexts/";
-import { espHttpURL, getBrowserTime } from "../components/Helpers";
+import {
+  espHttpURL,
+  getBrowserTime,
+  isLimitedEnvironment,
+} from "../components/Helpers";
 import { useHttpQueue } from "../hooks/";
 import { useUiContext, useRouterContext } from "../contexts";
 import {
   baseLangRessource,
   setCurrentLanguage,
+  T,
 } from "../components/Translations";
 import { defaultPreferences } from "../targets";
 import {
   importPreferences,
   formatPreferences,
 } from "../tabs/interface/importHelper";
-import { Frown } from "preact-feather";
+import { Frown, Info } from "preact-feather";
+import { showModal } from "../components/Modal";
 
 /*
  * Local const
@@ -39,7 +45,7 @@ import { Frown } from "preact-feather";
  */
 const useSettings = () => {
   const { createNewRequest } = useHttpQueue();
-  const { toasts, connection, uisettings } = useUiContext();
+  const { toasts, modals, connection, uisettings } = useUiContext();
   const { interfaceSettings, connectionSettings, activity } =
     useSettingsContext();
   const { defaultRoute, setActiveRoute } = useRouterContext();
@@ -55,6 +61,26 @@ const useSettings = () => {
           const jsonResult = JSON.parse(result);
           connectionSettings.current = jsonResult;
           document.title = jsonResult.Hostname;
+
+          if (isLimitedEnvironment(connectionSettings.current.WiFiMode)) {
+            showModal({
+              modals,
+              title: T("S123"),
+              icon: <Info />,
+              id: "notification",
+              content: T("S124").replace(
+                "%s",
+                connectionSettings.current.WebSocketIP +
+                  (connectionSettings.current.WebSocketport != "81"
+                    ? ":" +
+                      (parseInt(connectionSettings.current.WebSocketport) - 1)
+                    : "")
+              ),
+              hideclose: true,
+            });
+            return;
+          }
+
           //SetupWs
           connection.setConnectionState({
             connected: true,

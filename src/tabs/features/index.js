@@ -404,14 +404,16 @@ const FeaturesTab = () => {
       )}
       <center>
         <br />
-        <ButtonImg
-          m2
-          label={T("S50")}
-          tooltip
-          data-tooltip={T("S23")}
-          icon={<RefreshCcw />}
-          onClick={getFeatures}
-        />
+        {!isLoading && (
+          <ButtonImg
+            m2
+            label={T("S50")}
+            tooltip
+            data-tooltip={T("S23")}
+            icon={<RefreshCcw />}
+            onClick={getFeatures}
+          />
+        )}
         {Object.keys(features).length != 0 && (
           <Fragment>
             <ButtonImg

@@ -69,9 +69,9 @@ function isLimitedEnvironment(mode) {
     "microsoft.com",
   ];
   if (mode != "AP") return false;
-  sitesList.forEach((element) => {
-    if (document.location.host.indexOf(element) != -1) return true;
-  });
+  for (let i = 0; i < sitesList.length; i++) {
+    if (document.location.host.indexOf(sitesList[i]) != -1) return true;
+  }
   return false;
 }
 

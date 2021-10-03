@@ -29,10 +29,6 @@ import Settings from "../pages/settings";
 import ExtraPage from "../pages/extrapages";
 import { Informations } from "../areas/informations";
 import { FooterContainer } from "./footer";
-import { isLimitedEnvironment } from "../components/Helpers";
-import { T } from "../components/Translations";
-import { showModal } from "../components/Modal";
-import { Info } from "preact-feather";
 import { processor } from "../targets";
 
 const defRoutes = {
@@ -89,26 +85,6 @@ const MainContainer = () => {
       return defRoutes;
     }
   };
-
-  useEffect(() => {
-    if (connectionSettings.current && connectionSettings.current.WiFiMode) {
-      if (isLimitedEnvironment(connectionSettings.current.WiFiMode))
-        showModal({
-          modals,
-          title: T("S123"),
-          button1: { text: T("S24") },
-          icon: <Info />,
-          id: "notification",
-          content: T("S124").replace(
-            "%s",
-            connectionSettings.current.WebSocketIP +
-              (connectionSettings.current.WebSocketport != "81"
-                ? ":" + (parseInt(connectionSettings.current.WebSocketport) - 1)
-                : "")
-          ),
-        });
-    }
-  }, [connectionSettings.current]);
 
   useEffect(() => {
     setRoutes(newroutes);
