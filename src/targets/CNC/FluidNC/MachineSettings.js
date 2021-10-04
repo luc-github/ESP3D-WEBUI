@@ -133,21 +133,13 @@ const MachineSettings = () => {
       valid: true,
       modified: true,
     };
-    if (fieldData.type == "text") {
+
+    if (fieldData.type == "entry") {
       if (fieldData.value == fieldData.initial) {
         fieldData.hasmodified = false;
       } else {
         fieldData.hasmodified = true;
       }
-      //TODO: Use Regex for validation
-      if (
-        fieldData.value.trim().length < 3 ||
-        !(
-          fieldData.value.trim().startsWith("G") ||
-          fieldData.value.trim().startsWith("M")
-        )
-      )
-        validation.valid = false;
     }
     if (!validation.valid) {
       validation.message = T("S42");
@@ -193,26 +185,27 @@ const MachineSettings = () => {
               <div>
                 <CenterLeft bordered>
                   {machineSetting.cache.map((element) => {
-                    if (element.type == "comment")
-                      return <div class="comment m-1  ">{element.value}</div>;
+                    if (element.type == "newline") return <div />;
+                    if (element.type == "section")
+                      return (
+                        <div
+                          class="comment m-1"
+                          style={`margin-left:${element.identation}rem!important`}
+                        >
+                          {element.label}
+                        </div>
+                      );
                     const [validation, setvalidation] = useState();
-                    const button = (
-                      <ButtonImg
-                        className="submitBtn"
-                        group
-                        icon={<Send />}
-                        label={T("S81")}
-                        tooltip
-                        data-tooltip={T("S82")}
-                        onclick={() => {
-                          sendCommand(element, setvalidation);
-                        }}
-                      />
-                    );
+
                     return (
-                      <div class="m-1">
+                      <div
+                        class="m-1"
+                        style={`margin-left:${element.identation}rem!important`}
+                      >
                         <Field
-                          type={element.type}
+                          inline="true"
+                          type={"text"}
+                          label={element.label}
                           value={element.value}
                           setValue={(val, update = false) => {
                             if (!update) {
@@ -221,7 +214,6 @@ const MachineSettings = () => {
                             setvalidation(generateValidation(element));
                           }}
                           validation={validation}
-                          button={button}
                         />
                       </div>
                     );

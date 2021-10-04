@@ -35,29 +35,6 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-function sendTemperatures() {
-  let T = Number(Math.floor(Math.random() * 215).toFixed(2));
-  let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
-  let B = Number(Math.floor(Math.random() * 45).toFixed(2));
-  return (
-    "ok T:" +
-    T +
-    " /200 R:" +
-    (T * 1.1).toFixed(2) +
-    " /200 B:" +
-    B +
-    " / 0 B1:" +
-    T +
-    " / 0 P:" +
-    (B * 1.3).toFixed(2) +
-    " / 0 C:" +
-    B * 2 +
-    " / 0 T1:" +
-    T1 +
-    " / 0 @1:0\n"
-  );
-}
-
 const commandsQuery = (req, res, SendBinary) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
@@ -76,115 +53,124 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   lastconnection = Date.now();
-  if (url.indexOf("M20") != -1) {
+  if (url.indexOf("$CD") != -1 && url.indexOf("$CD=") == -1) {
     SendBinary(
-      "Begin file list\n" +
-        "CUBE2.GCO 210240\n" +
-        "CUBE01.GCO 2089832\n" +
-        "SUPPORT2.GCO 4613256\n" +
-        "ARCHIVE/CUBE.GCO 210240\n" +
-        "ARCHIVE/CUBE-C~1.GCO 210240\n" +
-        "NEWFOL~1/SUPPORT2.GCO 4613256\n" +
-        "End file list\n" +
+      "[MSG: BeginData]\n" +
+        "board: Bart Board\n" +
+        "name: Default (Test Drive with SD)\n" +
+        "stepping:\n" +
+        "  engine: RMT\n" +
+        "  idle_ms: 255\n" +
+        "  pulse_us: 4\n" +
+        "  dir_delay_us: 0\n" +
+        "  disable_delay_us: 0\n" +
+        "\n" +
+        "axes:\n" +
+        "  shared_stepper_disable: NO_PIN\n" +
+        "  x:\n" +
+        "    steps_per_mm: 320.000\n" +
+        "    max_rate: 1000.000\n" +
+        "    acceleration: 25.000\n" +
+        "    max_travel: 200.000\n" +
+        "    soft_limits: false\n" +
+        "\n" +
+        "  y:\n" +
+        "    steps_per_mm: 320.000\n" +
+        "    max_rate: 1000.000\n" +
+        "    acceleration: 25.000\n" +
+        "    max_travel: 200.000\n" +
+        "    soft_limits: false\n" +
+        "\n" +
+        "  z:\n" +
+        "    steps_per_mm: 320.000\n" +
+        "    max_rate: 1000.000\n" +
+        "    acceleration: 25.000\n" +
+        "    max_travel: 200.000\n" +
+        "    soft_limits: false\n" +
+        "\n" +
+        "spi:\n" +
+        "  miso: gpio.19\n" +
+        "  mosi: gpio.23\n" +
+        "  sck: gpio.18\n" +
+        "\n" +
+        "sdcard:\n" +
+        "  cs: gpio.5\n" +
+        "  card_detect: NO_PIN\n" +
+        "\n" +
+        "control:\n" +
+        "  safety_door: NO_PIN\n" +
+        "  reset: NO_PIN\n" +
+        "  feed_hold: NO_PIN\n" +
+        "  cycle_start: NO_PIN\n" +
+        "  macro0: NO_PIN\n" +
+        "  macro1: NO_PIN\n" +
+        "  macro2: NO_PIN\n" +
+        "  macro3: NO_PIN\n" +
+        "\n" +
+        "coolant:\n" +
+        "  flood: NO_PIN\n" +
+        "  mist: NO_PIN\n" +
+        "  delay_ms: 0\n" +
+        "\n" +
+        "probe:\n" +
+        "  pin: NO_PIN\n" +
+        "  check_mode_start: true\n" +
+        "\n" +
+        "macros:\n" +
+        "  n0: \n" +
+        "  n1: \n" +
+        "  macro0: \n" +
+        "  macro1: \n" +
+        "  macro2: \n" +
+        "  macro3: \n" +
+        "\n" +
+        "user_outputs:\n" +
+        "  analog0: NO_PIN\n" +
+        "  analog1: NO_PIN\n" +
+        "  analog2: NO_PIN\n" +
+        "  analog3: NO_PIN\n" +
+        "  analog_frequency0: 5000\n" +
+        "  analog_frequency1: 5000\n" +
+        "  analog_frequency2: 5000\n" +
+        "  analog_frequency3: 5000\n" +
+        "  digital0: NO_PIN\n" +
+        "  digital1: NO_PIN\n" +
+        "  digital2: NO_PIN\n" +
+        "  digital3: NO_PIN\n" +
+        "\n" +
+        "software_debounce_ms: 0\n" +
+        "laser_mode: false\n" +
+        "arc_tolerance: 0.002\n" +
+        "junction_deviation: 0.010\n" +
+        "verbose_errors: false\n" +
+        "report_inches: false\n" +
+        "homing_init_lock: true\n" +
+        "enable_parking_override_control: false\n" +
+        "deactivate_parking_upon_init: false\n" +
+        "check_limits_at_init: true\n" +
+        "limits_two_switches_on_axis: false\n" +
+        "disable_laser_during_hold: true\n" +
+        "use_line_numbers: false\n" +
+        "NoSpindle:\n" +
+        "\n" +
+        "[MSG: EndData]\n" +
         "ok\n"
     );
-    /* SendBinary(
-      "Begin file list\n" +
-        "COOL_V~1.GCO 66622272\n" +
-        "415%VA~1.GCO 66622272\n" +
-        "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
-        "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
-        "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
-        "/ARCHIEVE/RET229~1.GCO 2050\n" +
-        "/ARCHIEVE/FILE__~1.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~2.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~3.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~4.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~5.GCO 1050\n" +
-        "End file list\n" +
-        "ok\n"
-    );*/
+
     res.send("");
     return;
   }
 
-  if (url.indexOf("M30") != -1) {
-    const name = url.split(" ");
+  if (url.indexOf("?") != -1) {
     SendBinary(
-      //"Deletion failed, File:" + name[1].substring(1) + ".\n" + "ok\n"
-      "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
-    );
-
-    res.send("");
-    return;
-  }
-  if (url.indexOf("M115") != -1) {
-    SendBinary(
-      "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +
-        "Cap:SERIAL_XON_XOFF:0\n" +
-        "Cap:BINARY_FILE_TRANSFER:0\n" +
-        "Cap:EEPROM:0\n" +
-        "Cap:VOLUMETRIC:1\n" +
-        "Cap:AUTOREPORT_POS:0\n" +
-        "Cap:AUTOREPORT_TEMP:1\n" +
-        "Cap:PROGRESS:0\n" +
-        "Cap:PRINT_JOB:1\n" +
-        "Cap:AUTOLEVEL:0\n" +
-        "Cap:RUNOUT:0\n" +
-        "Cap:Z_PROBE:0\n" +
-        "Cap:LEVELING_DATA:0\n" +
-        "Cap:BUILD_PERCENT:0\n" +
-        "Cap:SOFTWARE_POWER:0\n" +
-        "Cap:TOGGLE_LIGHTS:0\n" +
-        "Cap:CASE_LIGHT_BRIGHTNESS:0\n" +
-        "Cap:EMERGENCY_PARSER:0\n" +
-        "Cap:HOST_ACTION_COMMANDS:0\n" +
-        "Cap:PROMPT_SUPPORT:0\n" +
-        "Cap:SDCARD:1\n" +
-        "Cap:REPEAT:0\n" +
-        "Cap:SD_WRITE:1\n" +
-        "Cap:AUTOREPORT_SD_STATUS:0\n" +
-        "Cap:LONG_FILENAME:1\n" +
-        "Cap:THERMAL_PROTECTION:1\n" +
-        "Cap:MOTION_MODES:0\n" +
-        "Cap:ARCS:1\n" +
-        "Cap:BABYSTEPPING:0\n" +
-        "Cap:CHAMBER_TEMPERATURE:0\n" +
-        "Cap:COOLER_TEMPERATURE:0\n" +
-        "Cap:MEATPACK:0\n" +
-        "ok\n"
-    );
-    res.send("");
-    return;
-  }
-  if (url.indexOf("M503") != -1) {
-    SendBinary(
-      "echo:  G21    ; Units in mm (mm)\n" +
-        "      \n" +
-        "echo:; Filament settings: Disabled\n" +
-        "echo:  M200 S0 D1.75\n" +
-        "echo:; Steps per unit:\n" +
-        "echo: M92 X80.00 Y80.00 Z400.00 E500.00\n" +
-        "echo:; Maximum feedrates (units/s):\n" +
-        "echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n" +
-        "echo:; Maximum Acceleration (units/s2):\n" +
-        "echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n" +
-        "echo:; Acceleration (units/s2): P<print_accel> R<retract_accel> T<travel_accel>\n" +
-        "echo:  M204 P3000.00 R3000.00 T3000.00\n" +
-        "echo:; Advanced: B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> J<junc_dev>\n" +
-        "echo:  M205 B20000.00 S0.00 T0.00 J0.01\n" +
-        "echo:; Home offset:\n" +
-        "echo:  M206 X0.00 Y0.00 Z0.00\n" +
-        "echo:; PID settings:\n" +
-        "echo:  M301 P22.20 I1.08 D114.00\n" +
-        "ok\n"
+      "<Idle|MPos:0.000,0.000,0.000|FS:0.000,0|WCO:0.000,0.000,0.000>\n"
     );
     res.send("");
     return;
   }
 
-  if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+  if (url.indexOf("$Config/Filename") != -1) {
+    SendBinary("$Config/Filename=config.yaml\n");
     res.send("");
     return;
   }
