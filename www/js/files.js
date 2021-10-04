@@ -812,7 +812,7 @@ function process_check_sd_presence(answer) {
 
 function files_start_upload() {
     var files = document.getElementById("files_input_file").files;
-    files_start_upload(files, files_currentPath)
+    files_start_upload2(files, files_currentPath)
 }
 
 function files_start_upload2(files, path) {
