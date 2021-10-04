@@ -1,5 +1,6 @@
 var interval_status = -1;
 var probe_progress_status = 0;
+var surface_progress_status = 0;
 var grbl_error_msg = "";
 var gotWCO = false;
 var WCOx = 0;
@@ -119,6 +120,24 @@ function onprobetouchplatethicknessChange() {
     var thickness = parseFloat(document.getElementById('probetouchplatethickness').value);
     if (thickness <= 0 || thickness > 999 || isNaN(thickness) || (thickness === null)) {
         alertdlg(translate_text_item("Out of range"), translate_text_item("Value of probe touch plate thickness must be between 0 mm and 9999 mm !"));
+        return false;
+    }
+    return true;
+}
+
+function onsurfacewidthChange() {
+    var travel = parseFloat(document.getElementById('surfacewidth').value);
+    if (travel > 9999 || travel <= 0 || isNaN(travel) || (travel === null)) {
+        alertdlg(translate_text_item("Out of range"), translate_text_item("Value of surface width must be between 1 mm and 9999 mm !"));
+        return false;
+    }
+    return true;
+}
+
+function onsurfacelengthChange() {
+    var travel = parseFloat(document.getElementById('surfacelength').value);
+    if (travel > 9999 || travel <= 0 || isNaN(travel) || (travel === null)) {
+        alertdlg(translate_text_item("Out of range"), translate_text_item("Value of surface length must be between 1 mm and 9999 mm !"));
         return false;
     }
     return true;
@@ -289,6 +308,9 @@ function process_grbl_status(response) {
             if (probe_progress_status != 0) {
                 probe_failed_notification();
             }
+            if (surface_progress_status != 0) {                
+                surface_failed_notification();
+            }
             //grbl_error_msg = "";
             //check we are printing or not 
             if (response.indexOf("|SD:") != -1) {
@@ -303,6 +325,10 @@ function process_grbl_status(response) {
             document.getElementById('sd_reset_btn').style.display = "none";
         }
         if (tab2.toLowerCase().startsWith("idle")) {
+
+            if(surface_progress_status == 100) {
+                finalize_surfacing();
+            }
             grbl_error_msg = "";
         }
         document.getElementById('grbl_status_text').innerHTML = translate_text_item(grbl_error_msg);
@@ -315,6 +341,16 @@ function finalize_probing() {
     probe_progress_status = 0;
     document.getElementById("probingbtn").style.display = "table-row";
     document.getElementById("probingtext").style.display = "none";
+    document.getElementById('sd_pause_btn').style.display = "none";
+    document.getElementById('sd_resume_btn').style.display = "none";
+    document.getElementById('sd_reset_btn').style.display = "none";    
+}
+
+function finalize_surfacing() {
+    surface_progress_status = 0;
+    grbl_error_msg = "";
+    document.getElementById("surfacebtn").style.display = "table-row";
+    document.getElementById("surfacingtext").style.display = "none";
     document.getElementById('sd_pause_btn').style.display = "none";
     document.getElementById('sd_resume_btn').style.display = "none";
     document.getElementById('sd_reset_btn').style.display = "none";
@@ -334,6 +370,9 @@ function process_grbl_SD(response) {
             progress = progress.replace(">", "");
         }
         document.getElementById('grbl_SD_status').innerHTML = sdname + "&nbsp;<progress id='print_prg' value=" + progress + " max='100'></progress>" + progress + "%";
+        if(progress == 100 & surface_progress_status != 0) {
+            surface_progress_status = progress;
+        }
     } else { //no SD printing
         //TODO     
         document.getElementById('grbl_SD_status').innerHTML = "";
@@ -375,6 +414,7 @@ function grbl_process_msg(response) {
 
 function grbl_reset() {
     if (probe_progress_status != 0) probe_failed_notification();
+    if (surface_progress_status != 0) surface_failed_notification();
     SendRealtimeCmd(String.fromCharCode(0x18));
 }
 
@@ -410,8 +450,15 @@ function probe_failed_notification() {
     beep(70, 261);
 }
 
+function surface_failed_notification() {
+    finalize_surfacing();
+    alertdlg(translate_text_item("Error"), translate_text_item("Surfacing failed !"));
+    beep(70, 261);
+}
+
 function StartProbeProcess() {
     var cmd = "G38.2 G91 Z-";
+
     if (!onprobemaxtravelChange() ||
         !onprobefeedrateChange() ||
         !onprobetouchplatethicknessChange()) {
@@ -426,4 +473,78 @@ function StartProbeProcess() {
     document.getElementById("probingtext").style.display = "table-row";
     grbl_error_msg = "";
     document.getElementById('grbl_status_text').innerHTML = grbl_error_msg;
+}
+
+function StartSurfaceProcess() {
+    var path = "/";
+    var dirname = "SurfaceWizard";    
+
+    var bitdiam = document.getElementById('surfacebitdiam').value;;
+    var stepover = document.getElementById('surfacestepover').value;;
+    var feedrate = document.getElementById('surfacefeedrate').value;;
+    var surfacewidth = document.getElementById('surfacewidth').value;
+    var surfacelength = document.getElementById('surfacelength').value;
+    var Zdepth = document.getElementById('surfacezdepth').value;;
+    var spindle = document.getElementById('surfacespindle').value;;
+
+    ncProg = CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surfacelength, Zdepth, spindle);
+
+    filename = "Surface" + "_X" + surfacewidth + "_Y" + surfacelength + "_Z-" + Zdepth + ".nc";
+
+    var blob = new Blob([ncProg], {type: "txt"});
+
+    files = [];
+    files.push(new File([blob], filename));
+    
+    files_create_dir2(dirname, path)
+    files_start_upload2(files, "/" + dirname + "/")
+    files_refreshFiles(path + dirname)
+
+    surface_progress_status = 1;
+    on_autocheck_status(true);
+    files_print_filename(path + dirname + "/" + filename);
+    document.getElementById("surfacebtn").style.display = "none";
+    document.getElementById("surfacingtext").style.display = "table-row";
+}
+
+function CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surfacelength, Zdepth, spindle) {
+    var crlf = "\n";
+
+    effectiveCuttingWidth = Math.round(1000 * (bitdiam * (1 - stepover/100))) / 1000;
+    nPasses = Math.floor(surfacelength / effectiveCuttingWidth);
+    lastPassWidth = surfacelength % effectiveCuttingWidth;
+    
+    ncProg = "G21" + crlf; // Unit = mm
+    ncProg += "G90" + crlf; // Absolute Positioning
+    ncProg += "G53 G0 Z-5" + crlf; // Move spindle to safe height
+    ncProg += "G54" + crlf; // Work Coordinates
+    ncProg += "M3 S" + spindle + crlf; // Set spindle speed
+    ncProg += "G4 P1.8" + crlf; // Spindle delay
+    ncProg += "G1 F" + feedrate + crlf; // Set feedrate
+    ncProg += "G0 X0 Y0" + crlf; // Move to XY origin at Z-safe height
+    ncProg += "G1 Z-" + Zdepth + crlf; // Move to Z origin (while starting to cut)
+
+    var Xend = 0;
+    for (var i = 0; i <= nPasses; i++) {
+        Xend == 0 ? Xend = surfacewidth : Xend = 0; // alternate X (passes are in X direction)
+        cmd = "G1 X" + Xend + " Y" + i * effectiveCuttingWidth + " Z-" + Zdepth;
+        ncProg += cmd + crlf;
+        if (i < nPasses) {
+            cmd = "G1 Y" + (i+1) * effectiveCuttingWidth; // increment Y at each pass
+            ncProg += cmd + crlf;
+        }
+    }
+
+    if(lastPassWidth > 0) {
+        Xend == 0 ? Xend = surfacewidth : Xend = 0;    // alternate X
+        cmd = "G1 Y" + surfacelength;
+        ncProg += cmd + crlf;
+        cmd = "G1 X" + Xend + " Y" + surfacelength + " Z-" + Zdepth;
+        ncProg += cmd + crlf;
+    }
+
+    ncProg += "G53 G0 Z-5" + crlf; // Move spindle to safe height
+    ncProg += "M5 S0" + crlf; // Spindle off
+
+    return ncProg;
 }

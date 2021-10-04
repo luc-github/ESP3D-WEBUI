@@ -182,20 +182,24 @@ function process_files_Createdir(answer) {
 }
 
 function files_create_dir(name) {
+    files_create_dir2(name, files_currentPath)
+}
+
+function files_create_dir2(name, path) {
     if (direct_sd && !((target_firmware == "smoothieware") && files_currentPath.startsWith(secondary_sd))) {
-        var cmdpath = files_currentPath;
-        if (target_firmware == "smoothieware") cmdpath = files_currentPath.substring(primary_sd.length);
+        var cmdpath = path;
+        if (target_firmware == "smoothieware") cmdpath = path.substring(primary_sd.length);
         var url = "/upload?path=" + encodeURIComponent(cmdpath) + "&action=createdir&filename=" + encodeURIComponent(name);
         document.getElementById('files_nav_loader').style.display = "block";
         SendGetHttp(url, files_directSD_list_success, files_directSD_list_failed);
     } else {
         var command = "";
         if (target_firmware == "smoothieware") {
-            command = "mkdir " + files_currentPath + name;
+            command = "mkdir " + path + name;
         } else {
-            command = "M32 " + files_currentPath + name;
+            command = "M32 " + path + name;
         }
-        SendPrinterCommand(command, true, files_proccess_and_update);
+        SendPrinterCommand(command, true, files_process_and_update);
     }
 }
 
@@ -234,11 +238,11 @@ function files_delete_file(index) {
             if ((current_source == tft_usb)|| (current_source == tft_sd))command +=current_source;
             command += files_currentPath + files_file_list[index].name;
         }
-        SendPrinterCommand(command, true, files_proccess_and_update);
+        SendPrinterCommand(command, true, files_process_and_update);
     }
 }
 
-function files_proccess_and_update(answer) {
+function files_process_and_update(answer) {
     document.getElementById('files_navigation_buttons').style.display = "block";
     if (answer.startsWith("{") && answer.endsWith("}")) {
         try {
@@ -807,25 +811,28 @@ function process_check_sd_presence(answer) {
 }
 
 function files_start_upload() {
+    var files = document.getElementById("files_input_file").files;
+    files_start_upload2(files, files_currentPath)
+}
+
+function files_start_upload2(files, path) {
     if (http_communication_locked) {
         alertdlg(translate_text_item("Busy..."), translate_text_item("Communications are currently locked, please wait and retry."));
         console.log("communication locked");
         return;
     }
     var url = "/upload";
-    var path = files_currentPath;
-    if (direct_sd && (target_firmware == "smoothieware") && (files_currentPath.startsWith(primary_sd))) {
-        path = files_currentPath.substring(primary_sd.length);
+    if (direct_sd && (target_firmware == "smoothieware") && (path.startsWith(primary_sd))) {
+        path = path.substring(primary_sd.length);
     }
-    if (!direct_sd || (target_firmware == "smoothieware" && files_currentPath.startsWith(secondary_sd))) {
+    if (!direct_sd || (target_firmware == "smoothieware" && path.startsWith(secondary_sd))) {
         url = "/upload_serial";
         if (target_firmware == "smoothieware") {
-            if (files_currentPath.startsWith(secondary_sd)) path = files_currentPath.substring(secondary_sd.length);
-            else path = files_currentPath.substring(primary_sd.length);
+            if (path.startsWith(secondary_sd)) path = path.substring(secondary_sd.length);
+            else path = path.substring(primary_sd.length);
         }
     }
     //console.log("upload from " + path );
-    var files = document.getElementById("files_input_file").files;
 
     if (files.value == "" || typeof files[0].name === 'undefined') {
         console.log("nothing to upload");
@@ -846,15 +853,14 @@ function files_start_upload() {
     document.getElementById('files_currentUpload_msg').innerHTML = file.name;
     document.getElementById('files_uploading_msg').style.display = "block";
     document.getElementById('files_navigation_buttons').style.display = "none";
-    if (direct_sd && !(target_firmware == "smoothieware" && files_currentPath.startsWith(secondary_sd))) {
+    if (direct_sd && !(target_firmware == "smoothieware" && path.startsWith(secondary_sd))) {
         SendFileHttp(url, formData, FilesUploadProgressDisplay, files_directSD_list_success, files_directSD_list_failed);
         //console.log("send file");
     } else {
-        SendFileHttp(url, formData, FilesUploadProgressDisplay, files_proccess_and_update, files_serial_M20_list_failed);
+        SendFileHttp(url, formData, FilesUploadProgressDisplay, files_process_and_update, files_serial_M20_list_failed);
     }
     document.getElementById("files_input_file").value = "";
 }
-
 
 function FilesUploadProgressDisplay(oEvent) {
     if (oEvent.lengthComputable) {
