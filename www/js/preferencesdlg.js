@@ -39,9 +39,17 @@ var defaultpreferenceslist = "[{\
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\",\
                                             \"enable_grbl_probe_panel\":\"false\",\
+                                            \"enable_grbl_surface_panel\":\"false\",\
                                             \"probemaxtravel\":\"40\",\
                                             \"probefeedrate\":\"100\",\
-                                            \"probetouchplatethickness\":\"0.5\"\
+                                            \"probetouchplatethickness\":\"0.5\",\
+                                            \"surfacewidth\":\"100\",\
+                                            \"surfacelength\":\"400\",\
+                                            \"surfacezdepth\":\"0\",\
+                                            \"surfacebitdiam\":\"12.7\",\
+                                            \"surfacestepover\":\"40\",\
+                                            \"surfacefeedrate\":\"1000\",\
+                                            \"surfacespindle\":\"10000\"\
                                             }]";
 var preferences_file_name = '/preferences.json';
 
@@ -84,9 +92,17 @@ function initpreferences() {
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\",\
                                             \"enable_grbl_probe_panel\":\"false\",\
+                                            \"enable_grbl_surface_panel\":\"false\",\
                                             \"probemaxtravel\":\"40\",\
                                             \"probefeedrate\":\"100\",\
-                                            \"probetouchplatethickness\":\"0.5\"\
+                                            \"probetouchplatethickness\":\"0.5\",\
+                                            \"surfacewidth\":\"100\",\
+                                            \"surfacelength\":\"400\",\
+                                            \"surfacezdepth\":\"0\",\
+                                            \"surfacebitdiam\":\"12.7\",\
+                                            \"surfacestepover\":\"40\",\
+                                            \"surfacefeedrate\":\"1000\",\
+                                            \"surfacespindle\":\"10000\"\
                                             }]";
 
         document.getElementById('DHT_pref_panel').style.display = 'none';
@@ -133,9 +149,17 @@ function initpreferences() {
                                             \"enable_autoscroll\":\"true\",\
                                             \"enable_verbose_mode\":\"true\",\
                                             \"enable_grbl_probe_panel\":\"false\",\
+                                            \"enable_grbl_surface_panel\":\"false\",\
                                             \"probemaxtravel\":\"40\",\
                                             \"probefeedrate\":\"100\",\
-                                            \"probetouchplatethickness\":\"0.5\"\
+                                            \"probetouchplatethickness\":\"0.5\",\
+                                            \"surfacewidth\":\"100\",\
+                                            \"surfacelength\":\"400\",\
+                                            \"surfacezdepth\":\"0\",\
+                                            \"surfacebitdiam\":\"12.7\",\
+                                            \"surfacestepover\":\"40\",\
+                                            \"surfacefeedrate\":\"1000\",\
+                                            \"surfacespindle\":\"10000\"\
                                             }]";
 
         if (target_firmware == "marlin-embedded") document.getElementById('DHT_pref_panel').style.display = 'none';
@@ -287,6 +311,11 @@ function applypreferenceslist() {
     } else {
         document.getElementById("grblcontroltablink").click();
         document.getElementById('grblprobetablink').style.display = 'none';
+    }
+    if (preferenceslist[0].enable_grbl_surface_panel === 'true') {
+        document.getElementById('grblsurfacetablink').style.display = 'block';
+    } else {
+        document.getElementById('grblsurfacetablink').style.display = 'none';
     }
 
     if (preferenceslist[0].enable_DHT === 'true') {
@@ -480,6 +509,13 @@ function applypreferenceslist() {
     document.getElementById('probemaxtravel').value = parseFloat(preferenceslist[0].probemaxtravel);
     document.getElementById('probefeedrate').value = parseInt(preferenceslist[0].probefeedrate);
     document.getElementById('probetouchplatethickness').value = parseFloat(preferenceslist[0].probetouchplatethickness);
+    document.getElementById('surfacewidth').value = parseFloat(preferenceslist[0].surfacewidth);
+    document.getElementById('surfacelength').value = parseFloat(preferenceslist[0].surfacelength);
+    document.getElementById('surfacezdepth').value = parseFloat(preferenceslist[0].surfacezdepth);
+    document.getElementById('surfacestepover').value = parseInt(preferenceslist[0].surfacestepover);
+    document.getElementById('surfacespindle').value = parseInt(preferenceslist[0].surfacespindle);
+    document.getElementById('surfacefeedrate').value = parseInt(preferenceslist[0].surfacefeedrate);
+    document.getElementById('surfacebitdiam').value = parseFloat(preferenceslist[0].surfacebitdiam);
     document.getElementById('tempInterval_check').value = parseInt(preferenceslist[0].interval_temperatures);
     document.getElementById('filament_length').value = parseInt(preferenceslist[0].e_distance);
     document.getElementById('extruder_velocity').value = parseInt(preferenceslist[0].e_feedrate);
@@ -568,6 +604,10 @@ function build_dlg_preferences_list() {
     if (typeof(preferenceslist[0].enable_grbl_probe_panel) !== 'undefined') {
         document.getElementById('show_grbl_probe_tab').checked = (preferenceslist[0].enable_grbl_probe_panel === 'true');
     } else document.getElementById('show_grbl_probe_tab').checked = false;
+    //grbl surface panel
+    if (typeof(preferenceslist[0].enable_grbl_surface_panel) !== 'undefined') {
+        document.getElementById('show_grbl_surface_tab').checked = (preferenceslist[0].enable_grbl_surface_panel === 'true');
+    } else document.getElementById('show_grbl_surface_tab').checked = false;
     //control panel
     if (typeof(preferenceslist[0].enable_control_panel) !== 'undefined') {
         document.getElementById('show_control_panel').checked = (preferenceslist[0].enable_control_panel === 'true');
@@ -648,6 +688,46 @@ function build_dlg_preferences_list() {
     if ((typeof(preferenceslist[0].probetouchplatethickness) !== 'undefined') && (preferenceslist[0].probetouchplatethickness.length != 0)) {
         document.getElementById('preferences_probetouchplatethickness').value = parseFloat(preferenceslist[0].probetouchplatethickness);
     } else document.getElementById('preferences_probetouchplatethickness').value = parseFloat(default_preferenceslist[0].probetouchplatethickness);
+    //surfacewidth
+    if ((typeof(preferenceslist[0].surfacewidth) !== 'undefined') && (preferenceslist[0].surfacewidth.length != 0)) {
+        document.getElementById('preferences_surfacewidth').value = parseFloat(preferenceslist[0].surfacewidth);
+    } else {
+        document.getElementById('preferences_surfacewidth').value = parseFloat(default_preferenceslist[0].surfacewidth);
+    }
+    //surfacelength
+    if ((typeof(preferenceslist[0].surfacelength) !== 'undefined') && (preferenceslist[0].surfacelength.length != 0)) {
+        document.getElementById('preferences_surfacelength').value = parseFloat(preferenceslist[0].surfacelength);
+    } else {
+        document.getElementById('preferences_surfacelength').value = parseFloat(default_preferenceslist[0].surfacelength);
+    }
+    //surfacezdepth
+    if ((typeof(preferenceslist[0].surfacezdepth) !== 'undefined') && (preferenceslist[0].surfacezdepth.length != 0)) {
+        document.getElementById('preferences_surfacezdepth').value = parseFloat(preferenceslist[0].surfacezdepth);
+    } else {
+        document.getElementById('preferences_surfacezdepth').value = parseFloat(default_preferenceslist[0].surfacezdepth);
+    }
+    //surfacebitdiam
+    if ((typeof(preferenceslist[0].surfacebitdiam) !== 'undefined') && (preferenceslist[0].surfacebitdiam.length != 0)) {
+        document.getElementById('preferences_surfacebitdiam').value = parseFloat(preferenceslist[0].surfacebitdiam);
+    } else document.getElementById('preferences_surfacebitdiam').value = parseFloat(default_preferenceslist[0].surfacebitdiam);
+    //surfacespindle
+    if ((typeof(preferenceslist[0].surfacespindle) !== 'undefined') && (preferenceslist[0].surfacespindle.length != 0)) {
+        document.getElementById('preferences_surfacespindle').value = parseInt(preferenceslist[0].surfacespindle);
+    } else {
+        document.getElementById('preferences_surfacespindle').value = parseInt(default_preferenceslist[0].surfacespindle);
+    }
+    //surfacestepover
+    if ((typeof(preferenceslist[0].surfacestepover) !== 'undefined') && (preferenceslist[0].surfacestepover.length != 0)) {
+        document.getElementById('preferences_surfacestepover').value = parseInt(preferenceslist[0].surfacestepover);
+    } else {
+        document.getElementById('preferences_surfacestepover').value = parseInt(default_preferenceslist[0].surfacestepover);
+    }
+    //surfacefeedrate
+    if ((typeof(preferenceslist[0].surfacefeedrate) !== 'undefined') && (preferenceslist[0].surfacefeedrate.length != 0)) {
+        document.getElementById('preferences_surfacefeedrate').value = parseInt(preferenceslist[0].surfacefeedrate);
+    } else {
+        document.getElementById('preferences_surfacefeedrate').value = parseInt(default_preferenceslist[0].surfacefeedrate);
+    }
     //interval temperatures
     if (typeof(preferenceslist[0].interval_temperatures) !== 'undefined') {
         document.getElementById('preferences_tempInterval_check').value = parseInt(preferenceslist[0].interval_temperatures);
@@ -712,10 +792,18 @@ function closePreferencesDialog() {
             (typeof(preferenceslist[0].enable_control_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_grbl_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_grbl_probe_panel) === 'undefined') ||
+            (typeof(preferenceslist[0].enable_grbl_surface_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_temperatures_panel) === 'undefined') ||
             (typeof(preferenceslist[0].probemaxtravel) === 'undefined') ||
             (typeof(preferenceslist[0].probefeedrate) === 'undefined') ||
             (typeof(preferenceslist[0].probetouchplatethickness) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacewidth) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacelength) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacezdepth) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacebitdiam) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacespindle) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacefeedrate) === 'undefined') ||
+            (typeof(preferenceslist[0].surfacestepover) === 'undefined') ||
             (typeof(preferenceslist[0].enable_extruder_panel) === 'undefined') ||
             (typeof(preferenceslist[0].enable_files_panel) === 'undefined') ||
             (typeof(preferenceslist[0].has_TFT_SD) === 'undefined') ||
@@ -762,6 +850,8 @@ function closePreferencesDialog() {
             if (document.getElementById('show_grbl_panel').checked != (preferenceslist[0].enable_grbl_panel === 'true')) modified = true;
             //grbl probe panel
             if (document.getElementById('show_grbl_probe_tab').checked != (preferenceslist[0].enable_grbl_probe_panel === 'true')) modified = true;
+            //grbl surface panel
+            if (document.getElementById('show_grbl_surface_tab').checked != (preferenceslist[0].enable_grbl_surface_panel === 'true')) modified = true;
             //extruder panel
             if (document.getElementById('show_extruder_panel').checked != (preferenceslist[0].enable_extruder_panel === 'true')) modified = true;
             //files panel
@@ -814,6 +904,20 @@ function closePreferencesDialog() {
             if (document.getElementById('preferences_probefeedrate').value != parseInt(preferenceslist[0].probefeedrate)) modified = true;
             //probetouchplatethickness
             if (document.getElementById('preferences_probetouchplatethickness').value != parseFloat(preferenceslist[0].probetouchplatethickness)) modified = true;
+            //surfacewidth
+            if (document.getElementById('preferences_surfacewidth').value != parseFloat(preferenceslist[0].surfacewidth)) modified = true;
+            //surfacelength
+            if (document.getElementById('preferences_surfacelength').value != parseFloat(preferenceslist[0].surfacelength)) modified = true;
+            //surfacezdepth
+            if (document.getElementById('preferences_surfacezdepth').value != parseFloat(preferenceslist[0].surfacezdepth)) modified = true;
+            //surfacebitdiam
+            if (document.getElementById('preferences_surfacebitdiam').value != parseFloat(preferenceslist[0].surfacebitdiam)) modified = true;
+            //surfacespindle
+            if (document.getElementById('preferences_surfacespindle').value != parseInt(preferenceslist[0].surfacespindle)) modified = true;
+            //surfacefeedrate
+            if (document.getElementById('preferences_surfacefeedrate').value != parseInt(preferenceslist[0].surfacefeedrate)) modified = true;
+            //surfacestepover
+            if (document.getElementById('preferences_surfacestepover').value != parseInt(preferenceslist[0].surfacestepover)) modified = true;
         }
     } else modified = true;
     if (language_save != language) modified = true;
@@ -851,7 +955,14 @@ function SavePreferences(current_preferences) {
             !Checkvalues("preferences_filament_length") ||
             !Checkvalues("preferences_probemaxtravel") ||
             !Checkvalues("preferences_probefeedrate") ||
-            !Checkvalues("preferences_probetouchplatethickness")
+            !Checkvalues("preferences_probetouchplatethickness") ||
+            !Checkvalues("preferences_surfacewidth") ||
+            !Checkvalues("preferences_surfacelength") ||
+            !Checkvalues("preferences_surfacebitdiam") ||
+            !Checkvalues("preferences_surfacespindle") ||
+            !Checkvalues("preferences_surfacefeedrate") ||
+            !Checkvalues("preferences_surfacestepover") ||
+            !Checkvalues("preferences_surfacezdepth")
         ) return;
         if ((target_firmware != "grbl-embedded") || (grblaxis > 2)) {
             if(!Checkvalues("preferences_control_z_velocity")) return;
@@ -878,6 +989,7 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"enable_fan\":\"" + document.getElementById('enable_fan_controls').checked;
         saveprefs += "\",\"enable_control_panel\":\"" + document.getElementById('show_control_panel').checked;
         saveprefs += "\",\"enable_grbl_probe_panel\":\"" + document.getElementById('show_grbl_probe_tab').checked;
+        saveprefs += "\",\"enable_grbl_surface_panel\":\"" + document.getElementById('show_grbl_surface_tab').checked;
         saveprefs += "\",\"enable_temperatures_panel\":\"" + document.getElementById('show_temperatures_panel').checked;
         saveprefs += "\",\"enable_extruder_panel\":\"" + document.getElementById('show_extruder_panel').checked;
         saveprefs += "\",\"enable_grbl_panel\":\"" + document.getElementById('show_grbl_panel').checked;
@@ -887,6 +999,13 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"probemaxtravel\":\"" + document.getElementById('preferences_probemaxtravel').value;
         saveprefs += "\",\"probefeedrate\":\"" + document.getElementById('preferences_probefeedrate').value;
         saveprefs += "\",\"probetouchplatethickness\":\"" + document.getElementById('preferences_probetouchplatethickness').value;
+        saveprefs += "\",\"surfacewidth\":\"" + document.getElementById('preferences_surfacewidth').value;
+        saveprefs += "\",\"surfacelength\":\"" + document.getElementById('preferences_surfacelength').value;
+        saveprefs += "\",\"surfacezdepth\":\"" + document.getElementById('preferences_surfacezdepth').value;
+        saveprefs += "\",\"surfacebitdiam\":\"" + document.getElementById('preferences_surfacebitdiam').value;
+        saveprefs += "\",\"surfacespindle\":\"" + document.getElementById('preferences_surfacespindle').value;
+        saveprefs += "\",\"surfacefeedrate\":\"" + document.getElementById('preferences_surfacefeedrate').value;
+        saveprefs += "\",\"surfacestepover\":\"" + document.getElementById('preferences_surfacestepover').value;
         saveprefs += "\",\"interval_positions\":\"" + document.getElementById('preferences_pos_Interval_check').value;
         saveprefs += "\",\"interval_status\":\"" + document.getElementById('preferences_status_Interval_check').value;
         saveprefs += "\",\"xy_feedrate\":\"" + document.getElementById('preferences_control_xy_velocity').value;
@@ -1017,9 +1136,58 @@ function Checkvalues(id_2_check) {
             }
             break;
         case "preferences_probetouchplatethickness":
-            value = parseInt(document.getElementById(id_2_check).value);
+            value = parseFloat(document.getElementById(id_2_check).value);
             if (!(!isNaN(value) && value >= 0 && value <= 9999)) {
                 error_message = translate_text_item("Value of probe touch plate thickness must be between 0 mm and 9999 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacewidth":
+            value = parseFloat(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1 && value <= 9999)) {
+                error_message = translate_text_item("Value of surface width must be between 1 mm and 9999 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacelength":
+            value = parseFloat(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1 && value <= 9999)) {
+                error_message = translate_text_item("Value of surface length must be between 1 mm and 9999 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacezdepth":
+            value = parseFloat(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 0 && value <= 100)) {
+                error_message = translate_text_item("Value of surface Zdepth must be between 0 mm and 100 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacebitdiam":
+            value = parseFloat(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 0 && value <= 9999)) {
+                error_message = translate_text_item("Value of bit diameter for surfacing must be between 0.1 mm and 999 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacespindle":
+            value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 1000 && value <= 50000)) {
+                error_message = translate_text_item("Value of surfacing spindle RPM must be between 1000 mm and 50000 mm !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacefeedrate":
+            value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 100 && value <= 10000)) {
+                error_message = translate_text_item("Value of surfacing feedrate must be between 100 mm/min and 10000 mm/min !");
+                status = false;
+            }
+            break;
+        case "preferences_surfacestepover":
+            value = parseInt(document.getElementById(id_2_check).value);
+            if (!(!isNaN(value) && value >= 10 && value <= 90)) {
+                error_message = translate_text_item("Value of surfacing stepover must be between 10 % and 90 % !");
                 status = false;
             }
             break;
