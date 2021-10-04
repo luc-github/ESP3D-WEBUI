@@ -101,6 +101,8 @@ function update_UI_setting() {
                 Set_page_title(setting_configList[i].defaultvalue);
                 break;
         }
+
+
     }
 }
 //to generate setting editor in setting or setup

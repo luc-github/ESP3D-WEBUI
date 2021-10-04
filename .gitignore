@@ -1,6 +1,3 @@
 node_modules
 dist
 src
-.DS_Store
-docs/.DS_Store
-www/.DS_Store
