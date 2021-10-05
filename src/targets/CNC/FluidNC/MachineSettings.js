@@ -126,6 +126,21 @@ const MachineSettings = () => {
 
   const onLoad = (e) => {
     if (e) e.target.blur();
+    createNewRequest(
+      espHttpURL(currentConfig).toString(),
+      { method: "GET" },
+      {
+        onSuccess: (result) => {
+          console.log(result);
+          setIsLoading(false);
+        },
+        onFail: (error) => {
+          console.log(error);
+          setIsLoading(false);
+          toasts.addToast({ content: error, type: "error" });
+        },
+      }
+    );
   };
 
   const onSet = (e) => {
