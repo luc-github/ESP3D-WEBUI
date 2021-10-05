@@ -484,8 +484,8 @@ function StartSurfaceProcess() {
     var feedrate = document.getElementById('surfacefeedrate').value;;
     var surfacewidth = document.getElementById('surfacewidth').value;
     var surfacelength = document.getElementById('surfacelength').value;
-    var Zdepth = document.getElementById('surfacezdepth').value;;
-    var spindle = document.getElementById('surfacespindle').value;;
+    var Zdepth = document.getElementById('surfacezdepth').value;
+    var spindle = document.getElementById('surfacespindle').value;
 
     ncProg = CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surfacelength, Zdepth, spindle);
 
@@ -495,8 +495,8 @@ function StartSurfaceProcess() {
 
     file = new File([blob], filename);
     
-    grbl_create_dir(path, dirname)
-    grbl_upload_file(file, "/" + dirname + "/")
+    grbl_create_dir(path, dirname);
+    grbl_upload_file(file, "/" + dirname + "/");
 
     surface_progress_status = 1;
     on_autocheck_status(true);
@@ -549,7 +549,8 @@ function CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surface
 
 function grbl_create_dir(path, name) {
     var url = "/upload?path=" + encodeURIComponent(path) + "&action=createdir&filename=" + encodeURIComponent(name);
-    SendGetHttp(url);
+    SendGetHttp(url, files_directSD_list_success, files_directSD_list_failed);
+    files_currentPath = path
 }
 
 function grbl_upload_file(file, path) {
@@ -560,10 +561,14 @@ function grbl_upload_file(file, path) {
     }
 
     var url = "/upload";
-    console.log("path + file.name ", path + file.name )
+    //console.log("path + file.name ", path + file.name);
     var formData = new FormData();
+    var arg = path + file.name + "S";
+    //append file size first to check updload is complete
+    formData.append(arg, file.size);
     formData.append('path', path);
     formData.append('myfile[]', file, path + file.name);
     formData.append('path', path);
-    SendFileHttp(url, formData);
+    SendFileHttp(url, formData, FilesUploadProgressDisplay, files_directSD_list_success, files_directSD_list_failed);
+    files_currentPath = path
 }
