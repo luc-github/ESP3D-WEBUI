@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { useEffect } from "preact/hooks";
 import { useSettingsContext } from "../../../contexts";
 
@@ -39,6 +39,7 @@ const Select = ({
   inline,
   setValue,
   value,
+  button,
   ...rest
 }) => {
   const optionList = options.map((option) => <Option {...option} />);
@@ -55,15 +56,18 @@ const Select = ({
   }, [value]);
 
   return (
-    <select
-      class={`form-select ${inline ? "column" : ""}`}
-      {...props}
-      {...rest}
-      value={value}
-      onChange={onChange}
-    >
-      {optionList}
-    </select>
+    <Fragment>
+      <select
+        class={`form-select ${inline ? "column" : ""}`}
+        {...props}
+        {...rest}
+        value={value}
+        onChange={onChange}
+      >
+        {optionList}
+      </select>
+      {button}
+    </Fragment>
   );
 };
 export default Select;

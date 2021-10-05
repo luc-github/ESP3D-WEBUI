@@ -19,12 +19,12 @@
       }],
     "FluidNC":[ 
       {
-        "id": "configfilename",
+        "id": "configfilenames",
         "type": "text",
         "min":6,
         "label": "FL1",
         "help": "S97",
-        "value": "config.txt"
+        "value": "config.yaml"
       }
     ]
   }

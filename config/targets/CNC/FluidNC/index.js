@@ -170,7 +170,9 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("$Config/Filename") != -1) {
-    SendBinary("$Config/Filename=config.yaml\n");
+    if (url.indexOf("$Config/Filename=") == -1)
+      SendBinary("$Config/Filename=config.yaml\n");
+    SendBinary("ok\n");
     res.send("");
     return;
   }

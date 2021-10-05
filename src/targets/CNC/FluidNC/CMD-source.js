@@ -18,82 +18,36 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-const getLineData = (fullline) => {
-  let s;
-  for (let p = 0; p < fullline.length; p++) {
-    if (fullline[p] != " ") {
-      s = p;
-      break;
-    }
-  }
-
-  const type =
-    fullline.trim().split(":").length == 1 ||
-    fullline.trim().split(":")[1].trim().length == 0
-      ? "section"
-      : "entry";
-  const label = fullline.trim().split(":")[0].trim();
-  const value = type == "entry" ? fullline.trim().split(":")[1].trim() : "";
-
-  return { type, identation: s, label, value, initial: value };
-};
 
 const formatYamlLine = (acc, line) => {
   console.log(line);
   if (line.indexOf(":") != -1 && !line.startsWith("[")) {
-    const prevLine = acc.length > 0 ? acc[acc.length - 1] : null;
-    const data = getLineData(line);
-    if (
-      prevLine &&
-      prevLine.type == "section" &&
-      prevLine.identation >= data.identation
-    ) {
-      prevLine.type = "entry";
-    }
-    if (
-      (prevLine && prevLine.identation > data.identation) ||
-      (data.identation == 0 && data.type == "section")
-    ) {
-      if (prevLine.type == "section") {
-        prevLine.type = "entry";
-      }
-      acc.push({ type: "newline", value: "", identation: 0 });
-    }
-    acc.push(data);
+    acc.push(line);
   }
 
   return acc;
 };
 
 const commands = {
-  eeprom: () => {
-    return { type: "cmd", cmd: "$CD" };
+  configFileName: () => {
+    return { type: "cmd", cmd: "$Config/Filename" };
   },
-  formatEeprom: (result) => {
-    const res = result.reduce((acc, line) => {
-      return formatYamlLine(acc, line);
-    }, []);
-    if (res.length > 0) {
-      if (res[res.length - 1].type != "newline")
-        if (res[res.length - 1].type == "section") {
-          res[res.length - 1].type = "entry";
-          if (
-            res.length > 3 &&
-            res[res.length - 2].type == "newline" &&
-            res[res.length - 2].indentation == res[res.length - 1].indentation
-          ) {
-            res.splice(res.length - 2, 1);
-          }
-        }
-    }
-    return res;
+  yamlFile: () => {
+    return { type: "cmd", cmd: "$CD" };
   },
 };
 
 const responseSteps = {
-  eeprom: {
+  yamlFile: {
     start: (data) => data.startsWith("[MSG: BeginData]"),
     end: (data) => data.startsWith("[MSG: EndData]"),
+    error: (data) => {
+      return data.startsWith("error:");
+    },
+  },
+  configFileName: {
+    start: (data) => data.startsWith("$Config/Filename="),
+    end: (data) => data.startsWith("$Config/Filename="),
     error: (data) => {
       return data.startsWith("error:");
     },

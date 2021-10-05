@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../../../components/Translations";
 import { processor } from "./processor";
 import { useHttpFn } from "../../../hooks";
@@ -36,19 +36,35 @@ import {
   CenterLeft,
   Progress,
 } from "../../../components/Controls";
-import { RefreshCcw, XCircle, Send, Flag } from "preact-feather";
+import {
+  HelpCircle,
+  XCircle,
+  Flag,
+  Download,
+  CheckCircle,
+} from "preact-feather";
 import { CMD } from "./CMD-source";
 
-const machineSetting = {};
-machineSetting.cache = [];
-
+let currentConfig = "";
+let activeConfig = "";
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [settings, setSettings] = useState(machineSetting.cache);
-  const [collected, setCollected] = useState("0 B");
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
+  const [activeConfigFilename, setActiveConfigFilename] =
+    useState(activeConfig);
   const id = "Machine Tab";
+
+  const configFilesList = uisettings
+    .getValue("configfilenames")
+    .trim()
+    .split(";")
+    .reduce((acc, curr) => {
+      if (curr.trim().length > 0)
+        acc.push({ label: curr.trim(), value: curr.trim() });
+      return acc;
+    }, []);
+
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
       espHttpURL("command", { cmd }).toString(),
@@ -68,17 +84,16 @@ const MachineSettings = () => {
     );
   };
 
-  const processCallBack = (data, total) => {
-    setCollected(formatFileSizeToString(total));
-  };
-
   const processFeedback = (feedback) => {
     if (feedback.status) {
-      if (feedback.command == "eeprom") {
-        machineSetting.cache = CMD.command("formatEeprom", feedback.content);
+      if (feedback.command == "configFileName") {
+        activeConfig = feedback.content[0].split("=")[1];
+
+        setActiveConfigFilename(activeConfig);
       }
       if (feedback.status == "error") {
         console.log("got error");
+        currentConfig;
         toasts.addToast({
           content: T("S4"),
           type: "error",
@@ -88,77 +103,64 @@ const MachineSettings = () => {
     setIsLoading(false);
   };
 
+  const getConfigFileName = (e) => {
+    if (e) e.target, blur();
+    const response = CMD.command("configFileName");
+    //send query
+    if (
+      processor.startCatchResponse("CMD", "configFileName", processFeedback)
+    ) {
+      setIsLoading(true);
+      sendSerialCmd(response.cmd);
+    }
+  };
+
   const onCancel = (e) => {
     toasts.addToast({
       content: T("S175"),
       type: "error",
     });
     processor.stopCatchResponse();
-    machineSetting.cache = [];
     setIsLoading(false);
   };
 
-  const onRefresh = (e) => {
-    //get command
-    const response = CMD.command("eeprom");
-    //send query
-    if (
-      processor.startCatchResponse(
-        "CMD",
-        "eeprom",
-        processFeedback,
-        null,
-        processCallBack
-      )
-    ) {
-      setCollected("O B");
-      setIsLoading(true);
-      sendSerialCmd(response.cmd);
-    }
+  const onLoad = (e) => {
+    if (e) e.target.blur();
   };
 
-  const sendCommand = (element, setvalidation) => {
-    console.log("Send ", element.value);
-    sendSerialCmd(element.value.trim(), () => {
-      element.initial = element.value;
-      setvalidation(generateValidation(element));
-    });
-
-    //TODO: Should answer be checked ?
+  const onSet = (e) => {
+    if (e) e.target.blur();
+    sendSerialCmd("$Config/Filename=" + currentConfig);
   };
 
-  const generateValidation = (fieldData) => {
-    const validation = {
-      message: <Flag size="1rem" />,
-      valid: true,
-      modified: true,
-    };
-
-    if (fieldData.type == "entry") {
-      if (fieldData.value == fieldData.initial) {
-        fieldData.hasmodified = false;
-      } else {
-        fieldData.hasmodified = true;
-      }
-    }
-    if (!validation.valid) {
-      validation.message = T("S42");
-    }
-    fieldData.haserror = !validation.valid;
-    //setShowSave(checkSaveStatus());
-    if (!fieldData.hasmodified && !fieldData.haserror) {
-      validation.message = null;
-      validation.valid = true;
-      validation.modified = false;
-    }
-    return validation;
-  };
   useEffect(() => {
-    if (uisettings.getValue("autoload") && machineSetting.cache == "") {
-      //load settings
-      onRefresh();
+    if (activeConfig == "") {
+      getConfigFileName();
     }
   }, []);
+
+  const button = (
+    <Fragment>
+      <ButtonImg
+        style="margin-left:5px; margin-right:5px"
+        icon={<Download />}
+        label={T("FL4")}
+        tooltip
+        data-tooltip={T("FL3")}
+        onclick={onLoad}
+      />
+
+      <ButtonImg
+        id="buttonSetConfigFileName"
+        className={currentConfig && currentConfig.length > 0 ? "" : "d-none"}
+        icon={<CheckCircle />}
+        label={T("FL9")}
+        tooltip
+        data-tooltip={T("FL8")}
+        onclick={onSet}
+      />
+    </Fragment>
+  );
 
   return (
     <div class="container">
@@ -168,67 +170,45 @@ const MachineSettings = () => {
         {isLoading && (
           <Fragment>
             <Loading class="m-2" />
-            <div>{collected}</div>
             <ButtonImg
               donotdisable
               icon={<XCircle />}
               label={T("S28")}
               tooltip
               data-tooltip={T("S28")}
-              onClick={onCancel}
+              onclick={onCancel}
             />
           </Fragment>
         )}
         {!isLoading && (
-          <center class="m-2">
-            {machineSetting.cache.length > 0 && (
-              <div>
-                <CenterLeft bordered>
-                  {machineSetting.cache.map((element) => {
-                    if (element.type == "newline") return <div />;
-                    if (element.type == "section")
-                      return (
-                        <div
-                          class="comment m-1"
-                          style={`margin-left:${element.identation}rem!important`}
-                        >
-                          {element.label}
-                        </div>
-                      );
-                    const [validation, setvalidation] = useState();
-
-                    return (
-                      <div
-                        class="m-1"
-                        style={`margin-left:${element.identation}rem!important`}
-                      >
-                        <Field
-                          inline="true"
-                          type={"text"}
-                          label={element.label}
-                          value={element.value}
-                          setValue={(val, update = false) => {
-                            if (!update) {
-                              element.value = val;
-                            }
-                            setvalidation(generateValidation(element));
-                          }}
-                          validation={validation}
-                        />
-                      </div>
-                    );
-                  })}
-                </CenterLeft>
-              </div>
-            )}
-
+          <center>
+            <span class="m-1">{T("FL6")}:</span>
+            <span class="m-1 form-input d-inline">{activeConfigFilename}</span>
             <ButtonImg
-              icon={<RefreshCcw />}
-              label={T("S50")}
+              icon={<HelpCircle />}
+              label={T("FL7")}
               tooltip
-              data-tooltip={T("S23")}
-              onClick={onRefresh}
+              data-tooltip={T("FL5")}
+              onclick={getConfigFileName}
             />
+            <div class="d-flex" style="justify-content:center">
+              <Field
+                type="select"
+                label={T("FL2")}
+                options={configFilesList}
+                inline
+                setValue={(value) => {
+                  currentConfig = value ? value : currentConfig;
+                  if (value && value.length > 0)
+                    if (document.getElementById("buttonSetConfigFileName"))
+                      document
+                        .getElementById("buttonSetConfigFileName")
+                        .classList.remove("d-none");
+                }}
+                value={currentConfig}
+                button={button}
+              />
+            </div>
           </center>
         )}
       </center>

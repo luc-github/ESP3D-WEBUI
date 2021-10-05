@@ -1,3 +1,14 @@
 {
-  "FL1": "Configuration files"
+  "FL1": "Configuration files",
+  "FL2": "Configuration file",
+  "FL3": "Load file",
+  "FL4": "Load",
+  "FL5": "Get active configuration file name",
+  "FL6": "Active configuration file name",
+  "FL7": "Get",
+  "FL8": "Set active configuration filename",
+  "FL9": "Set active"
+
+
+
 }
