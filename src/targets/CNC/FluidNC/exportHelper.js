@@ -20,7 +20,7 @@
 import { Fragment, h } from "preact";
 
 const formatArrayToYaml = (formatedArray) => {
-  const res = arrayData.reduce((acc, line) => {
+  const res = formatedArray.reduce((acc, line) => {
     if (line.type != "newline") {
       for (let i = 0; i < line.indentation; i++) acc += " ";
       acc += line.label + ":";
@@ -32,7 +32,7 @@ const formatArrayToYaml = (formatedArray) => {
   return res;
 };
 
-const saveArrayYamlToLocalFile = (formatedArray, filename) => {
+const saveArrayYamlToLocalFile = (formatedArray, filename = "config.yaml") => {
   const file = new Blob([formatArrayToYaml(formatedArray)], {
     type: "application/json",
   });
@@ -79,4 +79,4 @@ const saveArrayYamlToFS = (formatedArray, filename) => {
   );
 };
 
-export { formatArrayToYaml };
+export { formatArrayToYaml, saveArrayYamlToLocalFile };

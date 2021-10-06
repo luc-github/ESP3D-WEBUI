@@ -35,7 +35,7 @@ const getLineData = (fullline) => {
   const label = fullline.trim().split(":")[0].trim();
   const value = type == "entry" ? fullline.trim().split(":")[1].trim() : "";
 
-  return { type, identation: s, label, value, initial: value };
+  return { type, indentation: s, label, value, initial: value };
 };
 
 const formatYamlLine = (acc, line) => {
@@ -45,25 +45,26 @@ const formatYamlLine = (acc, line) => {
     if (
       prevLine &&
       prevLine.type == "section" &&
-      prevLine.identation >= data.identation
+      prevLine.indentation >= data.indentation
     ) {
       prevLine.type = "entry";
     }
     if (
-      (prevLine && prevLine.identation > data.identation) ||
-      (data.identation == 0 && data.type == "section")
+      (prevLine && prevLine.indentation > data.indentation) ||
+      (data.indentation == 0 && data.type == "section")
     ) {
       if (prevLine.type == "section") {
         prevLine.type = "entry";
       }
-      acc.push({ type: "newline", value: "", identation: 0 });
+      acc.push({ type: "newline", value: "", indentation: 0 });
     }
     acc.push(data);
   }
   return acc;
 };
 
-const formatYamlToArray = (arrayData) => {
+const formatArrayYamlToFormatedArray = (arrayData) => {
+  console.log(arrayData);
   const res = arrayData.reduce((acc, line) => {
     return formatYamlLine(acc, line);
   }, []);
@@ -83,4 +84,9 @@ const formatYamlToArray = (arrayData) => {
   return res;
 };
 
-export { formatYamlToArray };
+const formatYamlToFormatedArray = (stringYaml) => {
+  const ar = stringYaml.replaceAll("\r", "\n").split("\n");
+  return formatArrayYamlToFormatedArray(ar);
+};
+
+export { formatYamlToFormatedArray, formatArrayYamlToFormatedArray };

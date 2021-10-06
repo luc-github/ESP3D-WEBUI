@@ -44,9 +44,16 @@ import {
   CheckCircle,
 } from "preact-feather";
 import { CMD } from "./CMD-source";
+import {
+  formatArrayYamlToFormatedArray,
+  formatYamlToFormatedArray,
+} from "./importHelper";
+import { saveArrayYamlToLocalFile, formatArrayToYaml } from "./exportHelper";
 
 let currentConfig = "";
 let activeConfig = "";
+let currentFile = [];
+
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { createNewRequest, abortRequest } = useHttpFn;
@@ -132,6 +139,10 @@ const MachineSettings = () => {
       {
         onSuccess: (result) => {
           console.log(result);
+          const formatedFile = formatYamlToFormatedArray(result);
+          console.log(formatedFile);
+          console.log(formatArrayToYaml(formatedFile));
+          saveArrayYamlToLocalFile(formatedFile);
           setIsLoading(false);
         },
         onFail: (error) => {
