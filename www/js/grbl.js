@@ -495,14 +495,53 @@ function StartSurfaceProcess() {
 
     file = new File([blob], filename);
     
-    grbl_create_dir(path, dirname);
-    grbl_upload_file(file, "/" + dirname + "/");
+    grbl_wiz_step1_dir(path, dirname, file);
+}
 
+function grbl_wiz_step1_dir(path, dirname, file) {
+    var url = "/upload?path=" + encodeURIComponent(path) + "&action=createdir&filename=" + encodeURIComponent(dirname);
+    console.log("path " + path + " dirname " + dirname + " filename " + file.name)
+    SendGetHttp(url, function() { grbl_wiz_step2_upload(file, path + dirname + "/") }, function() { grbl_wiz_error_dir(path, dirname) });
+}
+
+function grbl_wiz_step2_upload(file, path) {
+    if (http_communication_locked) {
+        alertdlg(translate_text_item("Busy..."), translate_text_item("Communications are currently locked, please wait and retry."));
+        console.log("communication locked");
+        return;
+    }
+
+    var url = "/upload";
+    //console.log("path + file.name ", path + file.name);
+    var formData = new FormData();
+    var arg = path + file.name + "S";
+    //append file size first to check updload is complete
+    formData.append(arg, file.size);
+    formData.append('path', path);
+    formData.append('myfile[]', file, path + file.name);
+    formData.append('path', path);
+    SendFileHttp(url, formData, FilesUploadProgressDisplay, function() { grbl_wiz_step3_launch(path + filename) }, function() { grbl_wiz_error_upload(file, path)});
+}
+
+function grbl_wiz_step3_launch(filename) {
     surface_progress_status = 1;
+    SendPrinterCommand("?", false, null, null, 114, 1);
     on_autocheck_status(true);
-    files_print_filename(path + dirname + "/" + filename);
     document.getElementById("surfacebtn").style.display = "none";
     document.getElementById("surfacingtext").style.display = "table-row";
+    cmd = "[ESP220]" + filename;
+    SendPrinterCommand(cmd);
+}
+
+function grbl_wiz_error_dir(path, dirname) {
+    alert("ERROR : Wizard couldn't create dir " + dirname + " in path " + path);
+    alertdlg(translate_text_item("ERROR"), translate_text_item("Wizard couldn't create dir ") + dirname + translate_text_item(" in path ") + path);
+    finalize_surfacing();
+}
+
+function grbl_wiz_error_upload(file, path) {
+    alertdlg(translate_text_item("ERROR"), translate_text_item("Wizard couldn't create file ") + file.name + translate_text_item(" in path ") + path);
+    finalize_surfacing();
 }
 
 function CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surfacelength, Zdepth, spindle) {
@@ -545,30 +584,4 @@ function CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surface
     ncProg += "M5 S0" + crlf; // Spindle off
 
     return ncProg;
-}
-
-function grbl_create_dir(path, name) {
-    var url = "/upload?path=" + encodeURIComponent(path) + "&action=createdir&filename=" + encodeURIComponent(name);
-    SendGetHttp(url, files_directSD_list_success, files_directSD_list_failed);
-    files_currentPath = path
-}
-
-function grbl_upload_file(file, path) {
-    if (http_communication_locked) {
-        alertdlg(translate_text_item("Busy..."), translate_text_item("Communications are currently locked, please wait and retry."));
-        console.log("communication locked");
-        return;
-    }
-
-    var url = "/upload";
-    //console.log("path + file.name ", path + file.name);
-    var formData = new FormData();
-    var arg = path + file.name + "S";
-    //append file size first to check updload is complete
-    formData.append(arg, file.size);
-    formData.append('path', path);
-    formData.append('myfile[]', file, path + file.name);
-    formData.append('path', path);
-    SendFileHttp(url, formData, FilesUploadProgressDisplay, files_directSD_list_success, files_directSD_list_failed);
-    files_currentPath = path
 }
