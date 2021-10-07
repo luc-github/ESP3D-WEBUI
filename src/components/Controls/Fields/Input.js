@@ -89,6 +89,7 @@ const Input = ({
     return (
       <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
         <input
+          spellcheck="false"
           ref={inputref}
           class="form-input"
           {...props}
@@ -103,6 +104,7 @@ const Input = ({
     return (
       <div class={`input-group ${inline ? "column" : ""} `}>
         <input
+          spellcheck="false"
           ref={inputref}
           id="ssid_sta"
           class="form-input"
@@ -146,7 +148,13 @@ const Input = ({
       } ${help ? "tooltip" : ""}`}
       data-tooltip={T(help)}
     >
-      <input class="form-input" {...props} {...rest} onInput={onInput} />
+      <input
+        spellcheck="false"
+        class="form-input"
+        {...props}
+        {...rest}
+        onInput={onInput}
+      />
       {append && <span class="input-group-addon">{T(append)}</span>}
       {button}
     </div>

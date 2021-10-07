@@ -53,7 +53,7 @@ const formatYamlLine = (acc, line) => {
       (prevLine && prevLine.indentation > data.indentation) ||
       (data.indentation == 0 && data.type == "section")
     ) {
-      if (prevLine.type == "section") {
+      if (prevLine && prevLine.type == "section") {
         prevLine.type = "entry";
       }
       acc.push({ type: "newline", value: "", indentation: 0 });
@@ -64,7 +64,6 @@ const formatYamlLine = (acc, line) => {
 };
 
 const formatArrayYamlToFormatedArray = (arrayData) => {
-  console.log(arrayData);
   const res = arrayData.reduce((acc, line) => {
     return formatYamlLine(acc, line);
   }, []);
@@ -81,6 +80,7 @@ const formatArrayYamlToFormatedArray = (arrayData) => {
         }
       }
   }
+  if (res.length > 0 && res[0].type == "newline") res.splice(0, 1);
   return res;
 };
 

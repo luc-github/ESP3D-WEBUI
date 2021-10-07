@@ -222,7 +222,9 @@ const InterfaceTab = () => {
       { method: "POST", id: "preferences", body: formData },
       {
         onSuccess: (result) => {
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         },
         onFail: (error) => {
           setIsLoading(false);

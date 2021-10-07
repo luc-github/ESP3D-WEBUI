@@ -21,13 +21,13 @@
   "xyfeedrate": "1000",
   "zfeedrate": "1000",
   "xpos": "100",
-  "ypos": "100",
+  "ypos": "101",
   "showmacrospanel": true,
   "openmacrosonstart": false,
   "macros": [],
   "showextracontents": false,
   "openextrapanelsonstart": false,
   "extracontents": [],
-  "configfilenames": "my config.yaml"
+  "configfilenames": "config.yaml; my config.yaml;configsd.yml"
  }
 }

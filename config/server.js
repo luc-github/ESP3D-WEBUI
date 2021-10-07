@@ -36,6 +36,7 @@ app.use("/", express.static(serverpath));
 app.use(fileUpload({ preserveExtension: true, debug: false }));
 
 app.listen(port, () => console.log("Env:", subtarget, ":", target));
+app.timeout = 2000;
 
 //app.use(express.urlencoded({ extended: false }));
 

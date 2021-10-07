@@ -1,5 +1,6 @@
 board: None
 name: Default (Test Drive)
+
 stepping:
   engine: RMT
   idle_ms: 255
@@ -55,12 +56,12 @@ probe:
   check_mode_start: true
 
 macros:
-  n0:
-  n1:
-  macro0:
-  macro1:
-  macro2:
-  macro3:
+  n0: 
+  n1: 
+  macro0: 
+  macro1: 
+  macro2: 
+  macro3: 
 
 user_outputs:
   analog0: NO_PIN
@@ -93,4 +94,5 @@ check_limits_at_init: true
 limits_two_switches_on_axis: false
 disable_laser_during_hold: true
 use_line_numbers: false
-NoSpindle:
+NoSpindle: 
+

@@ -1,0 +1,230 @@
+board: ESP32 Dev Controller V4
+name: ESP32 Dev Controller V4
+
+stepping:
+  engine: RMT
+  idle_ms: 250
+  dir_delay_us: 1
+  pulse_us: 2
+  disable_delay_us: 0
+
+axes:
+  shared_stepper_disable: gpio.13
+  x:
+    steps_per_mm: 800
+    max_rate: 2000
+    acceleration: 25
+    max_travel: 1000
+    soft_limits: false
+    homing:
+      cycle: 2
+      positive_direction: false
+      mpos: 10.000
+      feed_rate: 50.000
+      seek_rate: 200.000
+      debounce_ms: 500
+      seek_scaler: 1.100
+      feed_scaler: 5.000
+
+    motor0:      
+      limit_neg: gpio.17:low:pu
+      limit_pos: no_pin
+      limit_all: no_pin
+      hard_limits: false
+      pulloff: 1.000
+
+      stepstick:
+        step: gpio.12
+        direction: gpio.14
+        disable: NO_PIN
+        ms1: NO_PIN
+        ms2: NO_PIN
+        ms3: NO_PIN
+        reset: NO_PIN
+
+    motor1:
+      null_motor:
+
+  y:
+    steps_per_mm: 800
+    max_rate: 2000
+    acceleration: 25
+    max_travel: 1000
+    soft_limits: false
+    homing:
+      cycle: 2
+      positive_direction: false
+      mpos: 10.000
+      feed_rate: 50.000
+      seek_rate: 600.000
+      debounce_ms: 500
+      seek_scaler: 1.100
+      feed_scaler: 5.000
+
+    motor0:      
+        limit_neg: gpio.4:low:pu
+        limit_pos: no_pin
+        limit_all: no_pin
+        hard_limits: false
+        pulloff: 1.000
+
+      stepstick:
+        step: gpio.26
+        direction: gpio.15
+        disable: NO_PIN
+        ms1: NO_PIN
+        ms2: NO_PIN
+        ms3: NO_PIN
+        reset: NO_PIN
+
+    motor1:
+      null_motor:
+
+  z:
+    steps_per_mm: 800
+    max_rate: 2000
+    acceleration: 25
+    max_travel: 1000
+    soft_limits: false
+    homing:
+      cycle: 1
+      positive_direction: true
+      mpos: 10.000
+      feed_rate: 30.000
+      seek_rate: 300.000
+      debounce_ms: 500
+      seek_scaler: 1.100
+      feed_scaler: 2.000
+
+    motor0:
+      limit_neg: gpio.16:low:pu
+      limit_pos: no_pin
+      limit_all: no_pin
+      hard_limits: true
+      pulloff: 1.000
+
+      stepstick:
+        step: gpio.27
+        direction: gpio.33
+        disable: NO_PIN
+        ms1: NO_PIN
+        ms2: NO_PIN
+        ms3: NO_PIN
+        reset: NO_PIN
+
+    motor1:
+      null_motor:
+
+  a:
+    steps_per_mm: 320
+    max_rate: 1000
+    acceleration: 25
+    max_travel: 200
+    soft_limits: false
+    motor0:
+      null_motor:
+
+    motor1:
+      null_motor:
+
+  b:
+    steps_per_mm: 320
+    max_rate: 1000
+    acceleration: 25
+    max_travel: 200
+    soft_limits: false
+    motor0:
+      null_motor:
+
+    motor1:
+      null_motor:
+
+  c:
+    steps_per_mm: 320
+    max_rate: 1000
+    acceleration: 25
+    max_travel: 200
+    soft_limits: false
+    motor0:
+      null_motor:
+
+    motor1:
+      null_motor:
+
+spi:
+  miso: gpio.19
+  mosi: gpio.23
+  sck: gpio.18
+
+sdcard:
+  card_detect: NO_PIN
+
+control:
+  safety_door: NO_PIN
+  reset: NO_PIN
+  feed_hold: NO_PIN
+  cycle_start: NO_PIN
+  macro0: NO_PIN
+  macro1: NO_PIN
+  macro2: NO_PIN
+  macro3: NO_PIN
+
+coolant:
+  flood: NO_PIN
+  mist: NO_PIN
+  delay_ms: 0
+
+probe:
+  pin: gpio.32:low:pu
+  check_mode_start: true
+
+macros:
+  n0:
+  n1:
+  macro0:
+  macro1:
+  macro2:
+  macro3:
+
+user_outputs:
+  analog0: NO_PIN
+  analog1: NO_PIN
+  analog2: NO_PIN
+  analog3: NO_PIN
+  analog_frequency0: 5000
+  analog_frequency1: 5000
+  analog_frequency2: 5000
+  analog_frequency3: 5000
+  digital0: NO_PIN
+  digital1: NO_PIN
+  digital2: NO_PIN
+  digital3: NO_PIN
+
+software_debounce_ms: 0
+laser_mode: false
+arc_tolerance: 0.002
+junction_deviation: 0.010
+verbose_errors: false
+report_inches: false
+homing_init_lock: false
+enable_parking_override_control: false
+deactivate_parking_upon_init: false
+check_limits_at_init: true
+limits_two_switches_on_axis: false
+disable_laser_during_hold: true
+use_line_numbers: false
+
+PWM:
+  pwm_freq: 5000
+  output_pin: gpio.2:low
+  enable_pin: gpio.21
+  direction_pin: NO_PIN
+  disable_with_zero_speed: false
+  zero_speed_with_disable: true
+  spinup_ms: 1000
+  spindown_ms: 1000
+  tool: 0
+  speeds: 0=0.000% 1000=100.000%
+
+
+

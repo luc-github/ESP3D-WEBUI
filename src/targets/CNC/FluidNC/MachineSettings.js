@@ -22,7 +22,8 @@ import { useEffect, useState, useRef } from "preact/hooks";
 import { T } from "../../../components/Translations";
 import { processor } from "./processor";
 import { useHttpFn } from "../../../hooks";
-import { useUiContext, useUiContextFn } from "../../../contexts";
+import { useUiContext, useUiContextFn, useWsContext } from "../../../contexts";
+import { restartdelay } from "./index";
 import { Target } from "./index";
 import {
   espHttpURL,
@@ -40,8 +41,14 @@ import {
   HelpCircle,
   XCircle,
   Flag,
+  ExternalLink,
   Download,
+  DownloadCloud,
   CheckCircle,
+  Edit,
+  Edit3,
+  Save,
+  RotateCcw,
 } from "preact-feather";
 import { CMD } from "./CMD-source";
 import {
@@ -49,17 +56,24 @@ import {
   formatYamlToFormatedArray,
 } from "./importHelper";
 import { saveArrayYamlToLocalFile, formatArrayToYaml } from "./exportHelper";
+import { showConfirmationModal } from "../../../components/Modal";
 
 let currentConfig = "";
 let activeConfig = "";
-let currentFile = [];
+let currentFileConfig = [];
+let editionMode = false;
 
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
+  const { Disconnect } = useWsContext();
+  const [currentConfigFilename, setCurrentConfigFileName] =
+    useState(currentConfig);
   const [activeConfigFilename, setActiveConfigFilename] =
     useState(activeConfig);
+  const [isEditionMode, setIsEditionMode] = useState(editionMode);
+  const inputFile = useRef(null);
   const id = "Machine Tab";
 
   const configFilesList = uisettings
@@ -71,6 +85,26 @@ const MachineSettings = () => {
         acc.push({ label: curr.trim(), value: curr.trim() });
       return acc;
     }, []);
+
+  const askReStartBoard = (ismanual = false) => {
+    showConfirmationModal({
+      modals,
+      title: T("S26"),
+      content: ismanual ? T("S59") : T("S174"),
+      button1: { cb: reStartBoard, text: T("S27") },
+      button2: { text: T("S28") },
+    });
+  };
+
+  const reStartBoard = () => {
+    sendSerialCmd("[ESP444]RESTART", () => {
+      Disconnect("restart");
+      setTimeout(() => {
+        window.location.reload();
+      }, restartdelay * 1000);
+    });
+    console.log("restart");
+  };
 
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(
@@ -100,7 +134,6 @@ const MachineSettings = () => {
       }
       if (feedback.status == "error") {
         console.log("got error");
-        currentConfig;
         toasts.addToast({
           content: T("S4"),
           type: "error",
@@ -133,19 +166,17 @@ const MachineSettings = () => {
 
   const onLoad = (e) => {
     if (e) e.target.blur();
+    setIsLoading(true);
     createNewRequest(
       espHttpURL(currentConfig).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {
-          console.log(result);
-          const formatedFile = formatYamlToFormatedArray(result);
-          console.log(formatedFile);
-          console.log(formatArrayToYaml(formatedFile));
-          saveArrayYamlToLocalFile(formatedFile);
+          currentFileConfig = formatYamlToFormatedArray(result);
           setIsLoading(false);
         },
         onFail: (error) => {
+          currentFileConfig = "";
           console.log(error);
           setIsLoading(false);
           toasts.addToast({ content: error, type: "error" });
@@ -159,6 +190,88 @@ const MachineSettings = () => {
     sendSerialCmd("$Config/Filename=" + currentConfig);
   };
 
+  const onSaveArrayYamlToFS = (formatedArray, filename) => {
+    const blob = new Blob([formatArrayToYaml(formatedArray)], {
+      type: "text/plain",
+    });
+
+    const formData = new FormData();
+    const file = new File([blob], filename);
+    formData.append("path", "/");
+    formData.append(filename + "S", filename.length);
+    formData.append("myfiles", file, filename);
+    setIsLoading(true);
+    createNewRequest(
+      espHttpURL("files").toString(),
+      { method: "POST", id: "yamlconfig", body: formData },
+      {
+        onSuccess: (result) => {
+          setIsLoading(false);
+          askReStartBoard();
+        },
+        onFail: (error) => {
+          setIsLoading(false);
+        },
+      }
+    );
+  };
+
+  const fileSelected = () => {
+    if (inputFile.current.files.length > 0) {
+      /*setIsLoading(true);
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const importFile = e.target.result;
+        try {
+          const importData = JSON.parse(importFile);
+          [interfaceSettings.current, haserrors] = importPreferences(
+            interfaceSettings.current,
+            importData
+          );
+          formatPreferences(interfaceSettings.current.settings);
+          if (haserrors) {
+            toasts.addToast({ content: "S56", type: "error" });
+            console.log("Error");
+          }
+        } catch (e) {
+          console.log(e);
+          console.log("Error");
+          toasts.addToast({ content: "S56", type: "error" });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      reader.readAsText(inputFile.current.files[0]);*/
+    }
+  };
+
+  const generateValidation = (fieldData) => {
+    const validation = {
+      message: <Flag size="1rem" />,
+      valid: true,
+      modified: true,
+    };
+
+    if (fieldData.type == "entry") {
+      if (fieldData.value == fieldData.initial) {
+        fieldData.hasmodified = false;
+      } else {
+        fieldData.hasmodified = true;
+      }
+    }
+    if (!validation.valid) {
+      validation.message = T("S42");
+    }
+    fieldData.haserror = !validation.valid;
+    //setShowSave(checkSaveStatus());
+    if (!fieldData.hasmodified && !fieldData.haserror) {
+      validation.message = null;
+      validation.valid = true;
+      validation.modified = false;
+    }
+    return validation;
+  };
+
   useEffect(() => {
     if (activeConfig == "") {
       getConfigFileName();
@@ -169,7 +282,7 @@ const MachineSettings = () => {
     <Fragment>
       <ButtonImg
         style="margin-left:5px; margin-right:5px"
-        icon={<Download />}
+        icon={<DownloadCloud />}
         label={T("FL4")}
         tooltip
         data-tooltip={T("FL3")}
@@ -190,6 +303,13 @@ const MachineSettings = () => {
 
   return (
     <div class="container">
+      <input
+        ref={inputFile}
+        type="file"
+        class="d-none"
+        accept=".yml,.yaml"
+        onChange={fileSelected}
+      />
       <h4 class="show-low title">{Target}</h4>
       <div class="m-2" />
       <center>
@@ -225,6 +345,7 @@ const MachineSettings = () => {
                 inline
                 setValue={(value) => {
                   currentConfig = value ? value : currentConfig;
+                  setCurrentConfigFileName(currentConfig);
                   if (value && value.length > 0)
                     if (document.getElementById("buttonSetConfigFileName"))
                       document
@@ -235,9 +356,133 @@ const MachineSettings = () => {
                 button={button}
               />
             </div>
+            {currentConfigFilename && isEditionMode && (
+              <textarea
+                spellcheck="false"
+                class="m-1 yaml-editor"
+                value={formatArrayToYaml(currentFileConfig)}
+                style="height:400px; width:90%; max-width:500px; border: 0.05rem solid #dadee4; border-radius: $border-radius;padding:0.5rem 0.5rem;"
+                onchange={(e) => {
+                  currentFileConfig = formatYamlToFormatedArray(e.target.value);
+                }}
+              ></textarea>
+            )}
+            {currentFileConfig.length > 0 && !isEditionMode && (
+              <div>
+                <CenterLeft bordered>
+                  {currentFileConfig.map((element) => {
+                    if (element.type == "newline") return <div />;
+                    if (element.type == "section")
+                      return (
+                        <div
+                          class="comment m-1"
+                          style={`margin-left:${element.indentation}rem!important`}
+                        >
+                          {element.label}
+                        </div>
+                      );
+                    const [validation, setvalidation] = useState();
+
+                    return (
+                      <div class="m-1">
+                        <div
+                          style={`margin-left:${element.indentation}rem!important`}
+                        >
+                          <Field
+                            inline="true"
+                            type={"text"}
+                            label={element.label}
+                            value={element.value}
+                            setValue={(val, update = false) => {
+                              if (!update) {
+                                element.value = val;
+                              }
+                              setvalidation(generateValidation(element));
+                            }}
+                            validation={validation}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CenterLeft>
+              </div>
+            )}
           </center>
         )}
       </center>
+      {!isLoading && currentConfigFilename && (
+        <center>
+          <ButtonImg
+            m2
+            icon={isEditionMode ? <Edit3 /> : <Edit />}
+            label={isEditionMode ? T("FL12") : T("FL11")}
+            tooltip
+            data-tooltip={T("FL10")}
+            onclick={(e) => {
+              e.target.blur();
+              editionMode = !editionMode;
+              setIsEditionMode(editionMode);
+            }}
+          />
+          {!isEditionMode && (
+            <ButtonImg
+              m2
+              icon={<Download />}
+              label={T("S54")}
+              tooltip
+              data-tooltip={T("S55")}
+              onclick={(e) => {
+                e.target.blur();
+                inputFile.current.value = "";
+                inputFile.current.click();
+              }}
+            />
+          )}
+          {!isEditionMode && (
+            <ButtonImg
+              m2
+              icon={<ExternalLink />}
+              label={T("S52")}
+              tooltip
+              data-tooltip={T("S53")}
+              onclick={(e) => {
+                e.target.blur();
+                saveArrayYamlToLocalFile(
+                  currentFileConfig,
+                  currentConfigFilename
+                );
+              }}
+            />
+          )}
+          {!isEditionMode && (
+            <ButtonImg
+              m2
+              icon={<Save />}
+              label={T("S61")}
+              tooltip
+              data-tooltip={T("S62")}
+              onclick={(e) => {
+                e.target.blur();
+                onSaveArrayYamlToFS(currentFileConfig, currentConfigFilename);
+              }}
+            />
+          )}
+          {!isEditionMode && (
+            <ButtonImg
+              m2
+              icon={<RotateCcw />}
+              label={T("S58")}
+              tooltip
+              data-tooltip={T("S59")}
+              onclick={(e) => {
+                e.target.blur();
+                askReStartBoard(true);
+              }}
+            />
+          )}
+        </center>
+      )}
     </div>
   );
 };

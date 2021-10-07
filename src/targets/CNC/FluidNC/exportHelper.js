@@ -29,6 +29,12 @@ const formatArrayToYaml = (formatedArray) => {
     acc += "\n";
     return acc;
   }, "");
+
+  if (
+    formatedArray.length > 0 &&
+    formatedArray[formatedArray.length - 1].type != "newline"
+  )
+    return res + "\n";
   return res;
 };
 
@@ -52,31 +58,6 @@ const saveArrayYamlToLocalFile = (formatedArray, filename = "config.yaml") => {
       window.URL.revokeObjectURL(url);
     }, 0);
   }
-};
-
-const saveArrayYamlToFS = (formatedArray, filename) => {
-  const blob = new Blob([formatArrayToYaml(formatedArray)], {
-    type: "text/plain",
-  });
-
-  const formData = new FormData();
-  const file = new File([blob], filename);
-  formData.append("path", "/");
-  formData.append(filename + "S", filename.length);
-  formData.append("myfiles", file, filename);
-  setIsLoading(true);
-  createNewRequest(
-    espHttpURL("files").toString(),
-    { method: "POST", id: "yamlconfig", body: formData },
-    {
-      onSuccess: (result) => {
-        setIsLoading(false);
-      },
-      onFail: (error) => {
-        setIsLoading(false);
-      },
-    }
-  );
 };
 
 export { formatArrayToYaml, saveArrayYamlToLocalFile };

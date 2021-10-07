@@ -75,7 +75,7 @@ const ConnectionContainer = () => {
         contentIcon = <Lock size="50px" />;
         contentSubtitle = T("S145"); //"Authentication required"
         document.title =
-          (connectionSettings.current
+          (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
@@ -94,7 +94,7 @@ const ConnectionContainer = () => {
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
         document.title =
-          (connectionSettings.current
+          (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
@@ -118,7 +118,7 @@ const ConnectionContainer = () => {
             ? T("S10")
             : T("S173"); //"Connection with board is lost"
         document.title =
-          (connectionSettings.current
+          (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
@@ -137,7 +137,7 @@ const ConnectionContainer = () => {
         contentIcon = <Slash size="50px" />;
         contentSubtitle = T("S3");
         document.title =
-          (connectionSettings.current
+          (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
@@ -154,7 +154,7 @@ const ConnectionContainer = () => {
         intervalTimer = restartdelay;
         setTimeout(refreshTimer, 1000);
         document.title =
-          (connectionSettings.current
+          (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
             : "ESP3D") +
           "(" +
@@ -186,7 +186,7 @@ const ConnectionContainer = () => {
           });
         } else {
           document.title =
-            (connectionSettings.current
+            (connectionSettings.current && connectionSettings.current.Hostname
               ? connectionSettings.current.Hostname
               : "ESP3D") +
             "(" +
