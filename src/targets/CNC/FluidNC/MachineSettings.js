@@ -62,6 +62,7 @@ let currentConfig = "";
 let activeConfig = "";
 let currentFileConfig = [];
 let editionMode = false;
+let isImport = false;
 
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -172,6 +173,7 @@ const MachineSettings = () => {
       { method: "GET" },
       {
         onSuccess: (result) => {
+          isImport = false;
           currentFileConfig = formatYamlToFormatedArray(result);
           setIsLoading(false);
         },
@@ -206,6 +208,11 @@ const MachineSettings = () => {
       { method: "POST", id: "yamlconfig", body: formData },
       {
         onSuccess: (result) => {
+          isImport = false;
+          for (let i = 0; i < currentFileConfig.length; i++) {
+            const element = currentFileConfig[i];
+            if (element.type == "entry") element.initial = element.value;
+          }
           setIsLoading(false);
           askReStartBoard();
         },
@@ -223,7 +230,13 @@ const MachineSettings = () => {
       reader.onload = function (e) {
         const importFile = e.target.result;
         try {
+          isImport = true;
           currentFileConfig = formatYamlToFormatedArray(importFile);
+          for (let i = 0; i < currentFileConfig.length; i++) {
+            const element = currentFileConfig[i];
+            if (element.type == "entry")
+              element.initial = element.value + "[newItem]";
+          }
         } catch (e) {
           console.log(e);
           console.log("Error");
@@ -250,6 +263,7 @@ const MachineSettings = () => {
       } else {
         fieldData.hasmodified = true;
       }
+      if (isImport) fieldData.hasmodified = true;
     }
     if (!validation.valid) {
       validation.message = T("S42");
