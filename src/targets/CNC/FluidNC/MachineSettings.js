@@ -218,30 +218,22 @@ const MachineSettings = () => {
 
   const fileSelected = () => {
     if (inputFile.current.files.length > 0) {
-      /*setIsLoading(true);
+      setIsLoading(true);
       const reader = new FileReader();
       reader.onload = function (e) {
         const importFile = e.target.result;
         try {
-          const importData = JSON.parse(importFile);
-          [interfaceSettings.current, haserrors] = importPreferences(
-            interfaceSettings.current,
-            importData
-          );
-          formatPreferences(interfaceSettings.current.settings);
-          if (haserrors) {
-            toasts.addToast({ content: "S56", type: "error" });
-            console.log("Error");
-          }
+          currentFileConfig = formatYamlToFormatedArray(importFile);
         } catch (e) {
           console.log(e);
           console.log("Error");
+          currentFileConfig = "";
           toasts.addToast({ content: "S56", type: "error" });
         } finally {
           setIsLoading(false);
         }
       };
-      reader.readAsText(inputFile.current.files[0]);*/
+      reader.readAsText(inputFile.current.files[0]);
     }
   };
 
