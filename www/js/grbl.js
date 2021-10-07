@@ -500,7 +500,7 @@ function StartSurfaceProcess() {
 
 function grbl_wiz_step1_dir(path, dirname, file) {
     var url = "/upload?path=" + encodeURIComponent(path) + "&action=createdir&filename=" + encodeURIComponent(dirname);
-    console.log("path " + path + " dirname " + dirname + " filename " + file.name)
+    //console.log("path " + path + " dirname " + dirname + " filename " + file.name)
     SendGetHttp(url, function() { grbl_wiz_step2_upload(file, path + dirname + "/") }, function() { grbl_wiz_error_dir(path, dirname) });
 }
 
@@ -545,7 +545,7 @@ function grbl_wiz_error_upload(file, path) {
 }
 
 function CreateSurfaceProgram(bitdiam, stepover, feedrate, surfacewidth, surfacelength, Zdepth, spindle) {
-    var crlf = "\n";
+    var crlf = "\r\n";
 
     effectiveCuttingWidth = Math.round(1000 * (bitdiam * (1 - stepover/100))) / 1000;
     nPasses = Math.floor(surfacelength / effectiveCuttingWidth);
