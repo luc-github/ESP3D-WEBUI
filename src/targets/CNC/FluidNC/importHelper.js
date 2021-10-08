@@ -80,6 +80,8 @@ const formatArrayYamlToFormatedArray = (arrayData) => {
     if (res[res.length - 1].type != "newline")
       if (res[res.length - 1].type == "section") {
         res[res.length - 1].type = "entry";
+        res[res.length - 1].value = "";
+        res[res.length - 1].initial = "";
         if (
           res.length > 3 &&
           res[res.length - 2].type == "newline" &&
