@@ -61,8 +61,10 @@ import { showConfirmationModal } from "../../../components/Modal";
 let currentConfig = "";
 let activeConfig = "";
 let currentFileConfig = [];
+let editedCurrentFileConfig = [];
 let editionMode = false;
 let isImport = false;
+let hasRemovedLines = false;
 
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +77,7 @@ const MachineSettings = () => {
     useState(activeConfig);
   const [isEditionMode, setIsEditionMode] = useState(editionMode);
   const inputFile = useRef(null);
+  const editorRef = useRef();
   const id = "Machine Tab";
 
   const configFilesList = uisettings
@@ -174,6 +177,7 @@ const MachineSettings = () => {
       {
         onSuccess: (result) => {
           isImport = false;
+          hasRemovedLines = false;
           currentFileConfig = formatYamlToFormatedArray(result);
           setIsLoading(false);
         },
@@ -209,6 +213,7 @@ const MachineSettings = () => {
       {
         onSuccess: (result) => {
           isImport = false;
+          hasRemovedLines = false;
           for (let i = 0; i < currentFileConfig.length; i++) {
             const element = currentFileConfig[i];
             if (element.type == "entry") element.initial = element.value;
@@ -231,6 +236,7 @@ const MachineSettings = () => {
         const importFile = e.target.result;
         try {
           isImport = true;
+          hasRemovedLines = true;
           currentFileConfig = formatYamlToFormatedArray(importFile);
           for (let i = 0; i < currentFileConfig.length; i++) {
             const element = currentFileConfig[i];
@@ -250,6 +256,45 @@ const MachineSettings = () => {
     }
   };
 
+  const syncChanges = () => {
+    //check existing value
+    editedCurrentFileConfig.forEach((entry) => {
+      const previousEntry = currentFileConfig.find((element) => {
+        if (
+          element.label == entry.label &&
+          element.path == entry.path &&
+          element.type == entry.type
+        )
+          return true;
+        return false;
+      });
+      //entry exists
+      if (previousEntry) entry.initial = previousEntry.initial;
+      else entry.initial = "[new entry]";
+    });
+    //check removed values
+
+    for (let p = 0; p < currentFileConfig.length; p++) {
+      const entry = currentFileConfig[p];
+
+      const hasEntry = editedCurrentFileConfig.find((element) => {
+        if (
+          element.label == entry.label &&
+          element.path == entry.path &&
+          element.type == entry.type
+        )
+          return true;
+        return false;
+      });
+
+      if (hasEntry == undefined) {
+        hasRemovedLines = true;
+        break;
+      } else hasRemovedLines = false;
+    }
+    currentFileConfig = editedCurrentFileConfig;
+  };
+
   const generateValidation = (fieldData) => {
     const validation = {
       message: <Flag size="1rem" />,
@@ -257,14 +302,14 @@ const MachineSettings = () => {
       modified: true,
     };
 
-    if (fieldData.type == "entry") {
+    if (fieldData.type == "entry" || fieldData.type == "section") {
       if (fieldData.value == fieldData.initial) {
         fieldData.hasmodified = false;
       } else {
         fieldData.hasmodified = true;
       }
-      if (isImport) fieldData.hasmodified = true;
     }
+    if (isImport) fieldData.hasmodified = true;
     if (!validation.valid) {
       validation.message = T("S42");
     }
@@ -365,30 +410,26 @@ const MachineSettings = () => {
             {currentConfigFilename && isEditionMode && (
               <textarea
                 spellcheck="false"
+                ref={editorRef}
                 class="m-1 yaml-editor"
                 value={formatArrayToYaml(currentFileConfig)}
                 style="height:400px; width:90%; max-width:500px; border: 0.05rem solid #dadee4; border-radius: $border-radius;padding:0.5rem 0.5rem;"
                 onchange={(e) => {
-                  currentFileConfig = formatYamlToFormatedArray(e.target.value);
+                  editedCurrentFileConfig = formatYamlToFormatedArray(
+                    e.target.value
+                  );
                 }}
               ></textarea>
             )}
             {currentFileConfig.length > 0 && !isEditionMode && (
               <div>
-                <CenterLeft bordered>
+                <CenterLeft
+                  bordered={isImport || hasRemovedLines ? "warning" : "normal"}
+                >
                   {currentFileConfig.map((element) => {
                     if (element.type == "newline") return <div />;
-                    if (element.type == "section")
-                      return (
-                        <div
-                          class="comment m-1"
-                          style={`margin-left:${element.indentation}rem!important`}
-                        >
-                          {element.label}
-                        </div>
-                      );
-                    const [validation, setvalidation] = useState();
 
+                    const [validation, setvalidation] = useState();
                     return (
                       <div class="m-1">
                         <div
@@ -396,7 +437,7 @@ const MachineSettings = () => {
                         >
                           <Field
                             inline="true"
-                            type={"text"}
+                            type={element.type == "section" ? "label" : "text"}
                             label={element.label}
                             value={element.value}
                             setValue={(val, update = false) => {
@@ -427,6 +468,12 @@ const MachineSettings = () => {
             data-tooltip={T("FL10")}
             onclick={(e) => {
               e.target.blur();
+              if (editionMode) {
+                editedCurrentFileConfig = formatYamlToFormatedArray(
+                  editorRef.current.value
+                );
+                syncChanges();
+              }
               editionMode = !editionMode;
               setIsEditionMode(editionMode);
             }}

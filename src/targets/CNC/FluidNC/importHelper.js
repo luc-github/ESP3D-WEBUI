@@ -33,9 +33,14 @@ const getLineData = (fullline) => {
       ? "section"
       : "entry";
   const label = fullline.trim().split(":")[0].trim();
-  const value = type == "entry" ? fullline.trim().split(":")[1].trim() : "";
+  const value =
+    type == "entry"
+      ? fullline.trim().split(":")[1].trim()
+      : type == "section"
+      ? label
+      : "";
 
-  return { type, indentation: s, label, value, initial: value };
+  return { type, indentation: s, label, value, initial: value, path: "" };
 };
 
 const formatYamlLine = (acc, line) => {
@@ -48,6 +53,8 @@ const formatYamlLine = (acc, line) => {
       prevLine.indentation >= data.indentation
     ) {
       prevLine.type = "entry";
+      prevLine.value = "";
+      prevLine.initial = "";
     }
     if (
       (prevLine && prevLine.indentation > data.indentation) ||
@@ -55,6 +62,8 @@ const formatYamlLine = (acc, line) => {
     ) {
       if (prevLine && prevLine.type == "section") {
         prevLine.type = "entry";
+        prevLine.value = "";
+        prevLine.initial = "";
       }
       acc.push({ type: "newline", value: "", indentation: 0 });
     }
@@ -81,6 +90,34 @@ const formatArrayYamlToFormatedArray = (arrayData) => {
       }
   }
   if (res.length > 0 && res[0].type == "newline") res.splice(0, 1);
+  //generate path
+  let path = [];
+  let currentIndentation = 0;
+  for (let i = 0; i < res.length; i++) {
+    if (res[i].type == "newline") continue;
+    if (currentIndentation <= res[i].indentation) {
+      if (res[i].type == "section") {
+        res[i].path = path.join(":");
+        path.push(res[i].label);
+      } else {
+        res[i].path = path.join(":");
+      }
+    } else {
+      while (currentIndentation > res[i].indentation) {
+        let p = path.pop();
+        currentIndentation -= 2;
+        if (currentIndentation < 0) currentIndentation = 0;
+      }
+      if (res[i].type == "section") {
+        res[i].path = path.join(":");
+        path.push(res[i].label);
+      } else {
+        res[i].path = path.join(":");
+      }
+    }
+
+    currentIndentation = res[i].indentation;
+  }
   return res;
 };
 

@@ -26,11 +26,18 @@ import {
   PickUp,
   ItemsList,
   IconSelect,
+  LabelCtrl,
 } from "./Fields";
 
 const Field = (props) => {
   const { type, id } = props;
   switch (type) {
+    case "label":
+      return (
+        <FormGroup {...props}>
+          <LabelCtrl {...props} />
+        </FormGroup>
+      );
     case "list":
       return (
         <Fragment>

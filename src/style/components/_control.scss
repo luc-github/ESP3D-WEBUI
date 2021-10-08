@@ -153,6 +153,11 @@
   border-radius: $border-radius;
 }
 
+.bordered_warning {
+  border: 0.1rem solid $warning-color;
+  border-radius: $border-radius;
+}
+
 .file-line:hover {
   color: #5755d9;
   background-color: #f1f1fc;

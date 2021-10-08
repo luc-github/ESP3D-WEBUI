@@ -1,7 +1,8 @@
 /*
- Button.js - ESP3D WebUI component file
+ Label.js - ESP3D WebUI component file
 
- Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
+ Copyright (c) 2021 Alexandre Aussourd. All rights reserved.
+ Modified by Luc LEBOSSE 2021
 
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -15,27 +16,16 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
 
-/*
- * Local const
- *
- */
-const CenterLeft = ({ bordered, children }) => {
-  return (
-    <center>
-      <div
-        class={
-          bordered
-            ? `${bordered == "warning" ? "bordered_warning" : "bordered "} m-2`
-            : ""
-        }
-        style="display: inline-block;text-align: left;"
-      >
-        {children}
-      </div>
-    </center>
-  );
+import { h } from "preact";
+import { useEffect } from "preact/hooks";
+
+const LabelCtrl = ({ label = "", id = "", value = "", setValue, ...rest }) => {
+  useEffect(() => {
+    //to update state when import or show first time as value will never change because it is a label not an input
+    if (setValue) setValue(null, true);
+  }, [value]);
+  return null;
 };
 
-export default CenterLeft;
+export default LabelCtrl;
