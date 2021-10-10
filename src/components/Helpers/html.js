@@ -16,10 +16,10 @@
 */
 import { h } from "preact";
 
-const dispatchToExtensions = (type, data) => {
+const dispatchToExtensions = (type, data, id) => {
   const iframeList = document.querySelectorAll("iframe.extensionContainer");
   iframeList.forEach((element) => {
-    element.contentWindow.postMessage({ type: type, content: data }, "*");
+    element.contentWindow.postMessage({ type: type, content: data, id }, "*");
   });
 };
 

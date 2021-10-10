@@ -166,6 +166,7 @@ const UiContextProvider = ({ children }) => {
   useUiContextFn.playSound = play;
   //beep
   useUiContextFn.beep = () => {
+    console.log("beep");
     play([
       { f: 1046, d: 150 },
       { f: 1318, d: 150 },
@@ -179,6 +180,11 @@ const UiContextProvider = ({ children }) => {
       { f: 200, d: 200 },
       { f: 100, d: 300 },
     ]);
+  };
+  //sequence
+  useUiContextFn.beepSeq = (seq) => {
+    if (!seq) return;
+    play(seq);
   };
 
   useEffect(() => {
