@@ -428,6 +428,16 @@ const MachineSettings = () => {
                 >
                   {currentFileConfig.map((element) => {
                     if (element.type == "newline") return <div />;
+                    if (element.type == "comment")
+                      return (
+                        <div class="m-1 text-primary text-italic">
+                          <div
+                            style={`margin-left:${element.indentation}rem!important`}
+                          >
+                            {element.value}
+                          </div>
+                        </div>
+                      );
 
                     const [validation, setvalidation] = useState();
                     return (

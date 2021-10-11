@@ -43,9 +43,23 @@ const getLineData = (fullline) => {
   return { type, indentation: s, label, value, initial: value, path: "" };
 };
 
+const getPreviousData = (acc) => {
+  if (acc.length == 0) return null;
+  for (let i = acc.length - 1; i >= 0; i--) {
+    if (!(acc[i].type == "comment" || acc[i].type == "newline")) return acc[i];
+  }
+  return null;
+};
+
 const formatYamlLine = (acc, line) => {
-  const prevLine = acc.length > 0 ? acc[acc.length - 1] : null;
-  if (line.indexOf(":") != -1) {
+  const prevLine = getPreviousData(acc);
+  if (line.trim().startsWith("#")) {
+    acc.push({
+      type: "comment",
+      value: line.trim().substring(1),
+      indentation: 0,
+    });
+  } else if (line.indexOf(":") != -1) {
     const data = getLineData(line);
     if (
       prevLine &&
@@ -96,7 +110,7 @@ const formatArrayYamlToFormatedArray = (arrayData) => {
   let path = [];
   let currentIndentation = 0;
   for (let i = 0; i < res.length; i++) {
-    if (res[i].type == "newline") continue;
+    if (res[i].type == "newline" || res[i].type == "comment") continue;
     if (currentIndentation <= res[i].indentation) {
       if (res[i].type == "section") {
         res[i].path = path.join(":");

@@ -21,11 +21,12 @@ import { Fragment, h } from "preact";
 
 const formatArrayToYaml = (formatedArray) => {
   const res = formatedArray.reduce((acc, line) => {
-    if (line.type != "newline") {
+    if (!(line.type == "newline" || line.type == "comment")) {
       for (let i = 0; i < line.indentation; i++) acc += " ";
       acc += line.label + ":";
       if (line.type == "entry") acc += " " + line.value;
     }
+    if (line.type == "comment") acc += "#" + line.value;
     acc += "\n";
     return acc;
   }, "");
