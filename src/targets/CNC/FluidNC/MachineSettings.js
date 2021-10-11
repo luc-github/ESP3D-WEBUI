@@ -431,11 +431,7 @@ const MachineSettings = () => {
                     if (element.type == "comment")
                       return (
                         <div class="m-1 text-primary text-italic">
-                          <div
-                            style={`margin-left:${element.indentation}rem!important`}
-                          >
-                            {element.value}
-                          </div>
+                          <div style={`white-space: pre;`}>{element.value}</div>
                         </div>
                       );
 
