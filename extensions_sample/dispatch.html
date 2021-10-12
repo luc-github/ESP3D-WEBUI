@@ -1,0 +1,28 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+        if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="panel")){
+            if (eventMsg.data.type=="dispatch"){
+                const line =  eventMsg.data.content
+                const resultPanel = document.getElementById("output");
+                resultPanel.innerHTML = resultPanel.innerHTML + "<br> this messsage is from "+ line.initiator.id+ " <span class='text-primary'>"+ line.response+"</span><br><hr />";
+                           
+            }
+        }
+    }
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  }
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'dispatch', target:'webui', id:'panel', targetid:'panel',content:'this is a broadcasted message'});">Dispatch</button>
+    <div class="container m-2" id="output">
+    </div>
+</div>
+

@@ -23,11 +23,12 @@ import { Informations } from "./informations";
 import { ConnectionContainer } from "./connection";
 import { MainContainer } from "./main";
 import { useUiContext, useUiContextFn } from "../contexts/UiContext";
+import { useSettingsContext } from "../contexts/SettingsContext";
 import { useSettings, useHttpQueue } from "../hooks";
 import { useEffect } from "preact/hooks";
 import { showLogin, showKeepConnected, showModal } from "../components/Modal";
 import { espHttpURL, dispatchToExtensions } from "../components/Helpers";
-import { T } from "../components/Translations";
+import { T, baseLangRessource } from "../components/Translations";
 import { HelpCircle, Layout } from "preact-feather";
 /*
  * Local const
@@ -63,6 +64,7 @@ const ViewContainer = () => {
 
 const ContentContainer = () => {
   const { getConnectionSettings, getInterfaceSettings } = useSettings();
+  const { connectionSettings } = useSettingsContext();
   const { createNewRequest } = useHttpQueue();
   const { toasts, modals } = useUiContext();
 
@@ -81,8 +83,12 @@ const ContentContainer = () => {
               onSuccess: (result) => {
                 if (!eventMsg.data.noDispatch)
                   dispatchToExtensions(
-                    "response",
-                    { response: result, cmd: eventMsg.data.content },
+                    "cmd",
+                    {
+                      status: "success",
+                      response: result,
+                      initiator: eventMsg.data,
+                    },
                     eventMsg.data.id
                   );
               },
@@ -91,8 +97,12 @@ const ContentContainer = () => {
                 console.log(error);
                 if (!eventMsg.data.noDispatch)
                   dispatchToExtensions(
-                    "error",
-                    { error, cmd: eventMsg.data.content },
+                    "cmd",
+                    {
+                      status: "error",
+                      error: error,
+                      initiator: eventMsg.data,
+                    },
                     eventMsg.data.id
                   );
               },
@@ -111,7 +121,7 @@ const ContentContainer = () => {
                     {
                       status: "success",
                       response: result,
-                      query: eventMsg.data.url,
+                      initiator: eventMsg.data,
                     },
                     eventMsg.data.id
                   );
@@ -122,7 +132,11 @@ const ContentContainer = () => {
                 if (!eventMsg.data.noDispatch)
                   dispatchToExtensions(
                     "query",
-                    { status: "error", error, query: eventMsg.data.url },
+                    {
+                      status: "error",
+                      error: error,
+                      initiator: eventMsg.data,
+                    },
                     eventMsg.data.id
                   );
               },
@@ -135,12 +149,24 @@ const ContentContainer = () => {
             [eventMsg.data.content],
             eventMsg.data.filename
           );
+          const initiator = {
+            type: "upload",
+            id: eventMsg.data.id,
+            url: eventMsg.data.url,
+            target: eventMsg.data.target,
+            path: eventMsg.data.path,
+            filename: eventMsg.data.filename,
+            size: eventMsg.data.size,
+            args: eventMsg.data.args,
+            noDispatch: eventMsg.data.noDispatch,
+          };
+          //TODO add support for additional POST arguments if needed
           formData.append("path", eventMsg.data.path);
           formData.append(eventMsg.data.filename + "S", eventMsg.data.size);
           formData.append("myfiles", file, eventMsg.data.filename);
           createNewRequest(
-            espHttpURL("files").toString(),
-            { method: "POST", id: "preferences", body: formData },
+            espHttpURL(eventMsg.data.url, eventMsg.data.args).toString(),
+            { method: "POST", id: eventMsg.data.id, body: formData },
             {
               onSuccess: (result) => {
                 if (!eventMsg.data.noDispatch)
@@ -149,7 +175,7 @@ const ContentContainer = () => {
                     {
                       status: "success",
                       response: result,
-                      filename: eventMsg.data.filename,
+                      initiator: initiator,
                     },
                     eventMsg.data.id
                   );
@@ -162,7 +188,7 @@ const ContentContainer = () => {
                     {
                       status: "error",
                       error,
-                      filename: eventMsg.data.filename,
+                      finitiator: initiator,
                     },
                     eventMsg.data.id
                   );
@@ -174,7 +200,7 @@ const ContentContainer = () => {
                     {
                       status: "progress",
                       progress: e,
-                      filename: eventMsg.data.filename,
+                      initiator: initiator,
                     },
                     eventMsg.data.id
                   );
@@ -182,7 +208,6 @@ const ContentContainer = () => {
             }
           );
           break;
-
         case "download":
           createNewRequest(
             espHttpURL(eventMsg.data.url, eventMsg.data.args).toString(),
@@ -194,8 +219,8 @@ const ContentContainer = () => {
                     "download",
                     {
                       status: "success",
-                      blob: result,
-                      url: eventMsg.data.url,
+                      response: result,
+                      initiator: eventMsg.data,
                     },
                     eventMsg.data.id
                   );
@@ -205,7 +230,11 @@ const ContentContainer = () => {
                 if (!eventMsg.data.noDispatch)
                   dispatchToExtensions(
                     "download",
-                    { status: "error", error, url: eventMsg.data.url },
+                    {
+                      status: "error",
+                      error: error,
+                      initiator: eventMsg.data,
+                    },
                     eventMsg.data.id
                   );
               },
@@ -213,7 +242,11 @@ const ContentContainer = () => {
                 if (!eventMsg.data.noDispatch)
                   dispatchToExtensions(
                     "download",
-                    { status: "progress", progress: e, url: eventMsg.data.url },
+                    {
+                      status: "progress",
+                      progress: e,
+                      initiator: eventMsg.data,
+                    },
                     eventMsg.data.id
                   );
               },
@@ -222,21 +255,21 @@ const ContentContainer = () => {
           break;
         case "toast":
           toasts.addToast({
-            content: eventMsg.data.toast.content,
-            type: eventMsg.data.toast.type,
+            content: eventMsg.data.content.text,
+            type: eventMsg.data.content.type,
           });
           break;
         case "modal":
           let inputData = "";
+          const content = eventMsg.data.content;
           const cb1 = () => {
             setTimeout(() => {
               dispatchToExtensions(
                 "modal",
                 {
-                  response: eventMsg.data.modal.response1,
-                  style: eventMsg.data.modal.style,
-                  inputData,
-                  id: eventMsg.data.modal.id,
+                  response: content.response1,
+                  inputData: inputData,
+                  initiator: eventMsg.data,
                 },
                 eventMsg.data.id
               );
@@ -247,10 +280,9 @@ const ContentContainer = () => {
               dispatchToExtensions(
                 "modal",
                 {
-                  response: eventMsg.data.modal.response2,
-                  inputData,
-                  style: eventMsg.data.modal.style,
-                  id: eventMsg.data.modal.id,
+                  response: content.response2,
+                  inputData: inputData,
+                  initiator: eventMsg.data,
                 },
                 eventMsg.data.id
               );
@@ -259,30 +291,25 @@ const ContentContainer = () => {
 
           showModal({
             modals,
-            title: T(eventMsg.data.modal.title),
-            button2: eventMsg.data.modal.bt2Txt
+            title: T(content.title),
+            button2: content.bt2Txt
               ? {
                   cb: cb2,
-                  text: T(eventMsg.data.modal.bt2Txt),
+                  text: T(content.bt2Txt),
                 }
               : null,
-            button1: eventMsg.data.modal.bt1Txt
+            button1: content.bt1Txt
               ? {
                   cb: cb1,
-                  text: T(eventMsg.data.modal.bt1Txt),
+                  text: T(content.bt1Txt),
                 }
               : null,
-            icon:
-              eventMsg.data.modal.style == "question" ? (
-                <HelpCircle />
-              ) : (
-                <Layout />
-              ),
-            id: eventMsg.data.modal.id,
+            icon: content.style == "question" ? <HelpCircle /> : <Layout />,
+            id: content.id,
             content: (
               <Fragment>
-                <div>{T(eventMsg.data.modal.text)}</div>
-                {eventMsg.data.modal.style == "input" && (
+                <div>{T(content.text)}</div>
+                {content.style == "input" && (
                   <input
                     class="form-input"
                     onInput={(e) => {
@@ -292,27 +319,56 @@ const ContentContainer = () => {
                 )}
               </Fragment>
             ),
-            hideclose: eventMsg.data.modal.hideclose,
-            overlay: eventMsg.data.modal.overlay,
+            hideclose: content.hideclose,
+            overlay: content.overlay,
           });
           break;
-        case "beep":
-          console.log(eventMsg.data);
-          if (eventMsg.data.sound == "beep") useUiContextFn.beep();
-          if (eventMsg.data.sound == "error") useUiContextFn.beepError();
-          if (eventMsg.data.sound == "seq")
+        case "sound":
+          if (eventMsg.data.content == "beep") useUiContextFn.beep();
+          if (eventMsg.data.content == "error") useUiContextFn.beepError();
+          if (eventMsg.data.content == "seq")
             useUiContextFn.beepSeq(eventMsg.data.seq);
           break;
         case "translate":
-          if (!eventMsg.data.noDispatch)
+          if (eventMsg.data.all) {
             dispatchToExtensions(
               "translate",
               {
-                initial: eventMsg.data.content,
-                translated: T(eventMsg.data.content),
+                response: baseLangRessource,
+                initiator: eventMsg.data,
               },
               eventMsg.data.id
             );
+          } else {
+            dispatchToExtensions(
+              "translate",
+              {
+                response: T(eventMsg.data.content),
+                initiator: eventMsg.data,
+              },
+              eventMsg.data.id
+            );
+          }
+          break;
+        case "capabilities":
+          dispatchToExtensions(
+            "capabilities",
+            {
+              response: JSON.parse(JSON.stringify(connectionSettings.current)),
+              initiator: eventMsg.data,
+            },
+            eventMsg.data.id
+          );
+          break;
+        case "dispatch":
+          dispatchToExtensions(
+            "dispatch",
+            {
+              response: eventMsg.data.content,
+              initiator: eventMsg.data,
+            },
+            eventMsg.data.targetid
+          );
           break;
 
         default:

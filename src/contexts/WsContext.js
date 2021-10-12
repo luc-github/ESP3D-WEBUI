@@ -19,7 +19,6 @@
 import { h, createContext } from "preact";
 import { useState, useEffect, useRef, useContext } from "preact/hooks";
 import { useTargetContext } from "../targets";
-import { dispatchToExtensions } from "../components/Helpers";
 import {
   useUiContext,
   useSettingsContext,

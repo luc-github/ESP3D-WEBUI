@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+      if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="uploadpanel")){
+          if (eventMsg.data.type=="upload"){
+            const line =  eventMsg.data.content
+            if (line.status=="success"){
+              const resultPanel = document.getElementById("output");
+              resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + line.initiator.filename + " is uploaded<br><hr />";           
+            }
+            if (line.status=="error"){
+              //TBD
+            }
+          }
+      }
+  }
+
+  function uploadFile(){
+		const files = document.getElementById("uploadBtn").files
+		if (files.length>0){
+        const reader = new FileReader();
+        reader.onload = function (e) {
+              sendMessage({type:'upload', target:"webui", id:'uploadpanel', url:"files", content:e.target.result,size:e.target.result.byteLength, path:"/", filename:files[0].name});
+              document.getElementById("uploadBtn").value="";
+          }
+        reader.readAsArrayBuffer(files[0]);
+	    }
+  };
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  };
+    
+</script>
+
+<div class="container">
+  <button class="btn m-1" onclick="document.getElementById('uploadBtn').click();">Upload</button>
+  <input type="file" class="d-none" id="uploadBtn" onChange="uploadFile()" />   
+    <div class="container m-2" id="output">
+    </div>
+</div>
+

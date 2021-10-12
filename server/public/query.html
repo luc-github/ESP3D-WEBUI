@@ -1,0 +1,33 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+      if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="querypanel")){
+          if (eventMsg.data.type=="query"){
+            const line =  eventMsg.data.content
+            if (line.status=="success"){
+              const resultPanel = document.getElementById("output");
+              resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + line.response.replace("\n", "<br/>") + "<hr />";
+              
+            }
+            if (line.status=="error"){
+              //TBD
+            }
+          }
+      }
+  }
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  };
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'query', target:'webui', id:'querypanel', url:'files', args:{action:'list', path:'/'}});">List Files</button>   
+    <div class="container m-2" id="output">
+    </div>
+</div>
+

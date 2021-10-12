@@ -1,0 +1,60 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+      if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="downloadpanel")){
+          if (eventMsg.data.type=="download"){
+            const line =  eventMsg.data.content
+            if (line.status=="success"){
+                //it is text so we can read it
+                var reader = new FileReader();
+
+                reader.onload = function() {
+                    //it is text display it
+                    const resultPanel = document.getElementById("output");
+                    resultPanel.innerHTML += "<br>" + reader.result + "<hr>"
+                }
+                reader.readAsText(eventMsg.data.content.response);
+				//we ca also save it localy
+                if (window.navigator.msSaveOrOpenBlob)
+                // IE10+
+                window.navigator.msSaveOrOpenBlob(eventMsg.data.content.response, eventMsg.data.content.initiato.url);
+                else {
+                // Others
+                const a = document.createElement("a");
+                const url = URL.createObjectURL(eventMsg.data.content.response);
+                a.href = url;
+                a.download = eventMsg.data.content.initiator.url;
+                a.onload = () => {
+                    URL.revokeObjectURL(a.href);
+                };
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+                }
+                      
+            }
+            if (line.status=="error"){
+              //TBD
+            }
+          }
+      }
+  }
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  };
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'download', target:'webui',id:'downloadpanel',url:'preferences.json'});">Download preferences.json</button>
+    <div class="container m-2" id="output">
+    </div>
+</div>
+
