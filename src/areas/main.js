@@ -92,7 +92,6 @@ const MainContainer = () => {
 
   useEffect(() => {
     setInterval(() => {
-      console.log("check time out");
       processor.handle();
     }, 10000);
   }, []);
