@@ -92,9 +92,11 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
                 return (
                   <tr>
                     <td>
-                      {id == "languagePickup"
-                        ? getLanguageName(e.name.replace(".gz", ""))
-                        : e.name.replace(".gz", "").replace("theme-", "")}
+                      <span class="tooltip tooltip-right" data-tooltip={e.name}>
+                        {id == "languagePickup"
+                          ? getLanguageName(e.name.replace(".gz", ""))
+                          : e.name.replace(".gz", "").replace("theme-", "")}
+                      </span>
                     </td>
 
                     <td>
