@@ -1,4 +1,5 @@
 const express = require("express");
+const expressStaticGzip = require("express-static-gzip");
 const chalk = require("chalk");
 let path = require("path");
 const fs = require("fs");
@@ -16,6 +17,7 @@ const app = express();
 const fileUpload = require("express-fileupload");
 
 const serverpath = path.normalize(__dirname + "/../server/public/");
+
 const subtarget = process.env.SUBTARGET_ENV
   ? process.env.SUBTARGET_ENV
   : "Marlin";
@@ -33,6 +35,7 @@ const {
 const WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({ port: 81 });
 app.use("/", express.static(serverpath));
+app.use("/", expressStaticGzip(serverpath));
 app.use(fileUpload({ preserveExtension: true, debug: false }));
 
 app.listen(port, () => console.log("Env:", subtarget, ":", target));
