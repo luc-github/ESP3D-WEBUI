@@ -187,6 +187,9 @@ const UiContextProvider = ({ children }) => {
     play(seq);
   };
 
+  useUiContextFn.toasts = { addToast, removeToast, toastList: toasts };
+  useUiContextFn.panels = { hide: removeFromVisibles };
+
   useEffect(() => {
     initAudio();
   }, []);
@@ -209,7 +212,7 @@ const UiContextProvider = ({ children }) => {
       getValue,
       refreshPaused: uiRefreshPaused.current,
     },
-
+    toasts: { toastList: toasts, addToast, removeToast },
     modals: {
       modalList: modals,
       addModal,
@@ -217,7 +220,6 @@ const UiContextProvider = ({ children }) => {
       getModalIndex,
       clearModals,
     },
-    toasts: { toastList: toasts, addToast, removeToast },
     connection: {
       connectionState,
       setConnectionState,

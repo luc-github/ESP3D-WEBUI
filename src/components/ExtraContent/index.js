@@ -20,7 +20,7 @@
 import { Fragment, h } from "preact";
 import { useRef, useEffect, useState } from "preact/hooks";
 import { espHttpURL } from "../Helpers";
-import { useUiContext } from "../../contexts";
+import { useUiContextFn } from "../../contexts";
 import { useHttpFn } from "../../hooks";
 import { Play, Pause, Aperture, RefreshCcw } from "preact-feather";
 import { ButtonImg } from "../Controls";
@@ -29,6 +29,8 @@ import { iconsFeather } from "../Images";
 import { iconsTarget } from "../../targets";
 
 const contentCache = {};
+const refreshPausedList = {};
+const timerIDs = {};
 
 const ExtraContent = ({
   id,
@@ -40,16 +42,14 @@ const ExtraContent = ({
   icon,
 }) => {
   const { createNewRequest } = useHttpFn;
-  const { uisettings, panels, timerIDs } = useUiContext();
-  const [refreshPaused, setRefreshPaused] = useState(
-    uisettings.refreshPaused.id
-  );
+  const panels = useUiContextFn.panels;
+  const [refreshPaused, setRefreshPaused] = useState(refreshPausedList[id]);
   const element = useRef(null);
   const imageCache = useRef(null);
   const pageSource = type == "camera" ? "/snap" : source;
   const iconsList = { ...iconsTarget, ...iconsFeather };
   const loadContent = (init = false) => {
-    if (!init && uisettings.refreshPaused.id) {
+    if (!init && refreshPausedList[id]) {
       return;
     }
     if (pageSource.startsWith("http")) {
@@ -160,7 +160,7 @@ const ExtraContent = ({
               icon={refreshPaused ? <Play /> : <Pause />}
               onclick={() => {
                 setRefreshPaused(!refreshPaused);
-                uisettings.refreshPaused.id = !refreshPaused;
+                refreshPausedList[id] = !refreshPaused;
               }}
             />
             {type != "content" && (
