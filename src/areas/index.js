@@ -53,7 +53,6 @@ const ViewContainer = () => {
     return (
       <Fragment>
         <Menu />
-        <Informations type="panel" />
         <MainContainer />
       </Fragment>
     );
