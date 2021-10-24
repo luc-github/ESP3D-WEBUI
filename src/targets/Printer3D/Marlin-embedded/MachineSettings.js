@@ -261,6 +261,7 @@ const MachineSettings = () => {
             <div>{collected}</div>
             <ButtonImg
               donotdisable
+              showlow
               icon={<XCircle />}
               label={T("S28")}
               tooltip

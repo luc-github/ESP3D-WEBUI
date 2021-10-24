@@ -30,6 +30,7 @@ import {
 } from "./TargetContext";
 
 const Target = "Marlin";
+const webUIbuild = "MS1";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/MarlinFirmware/Marlin";
 
@@ -48,4 +49,5 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  webUIbuild,
 };

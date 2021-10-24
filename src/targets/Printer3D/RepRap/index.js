@@ -30,6 +30,7 @@ import {
 } from "./TargetContext";
 
 const Target = "RepRap";
+const webUIbuild = "RR1";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 
@@ -48,4 +49,5 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  webUIbuild,
 };

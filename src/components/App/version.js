@@ -16,5 +16,10 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-
-export const Esp3dVersion = () => <span>3.0.0.a19</span>;
+import { webUIbuild } from "../../targets";
+const webUIversion = "3.0.0";
+export const Esp3dVersion = () => (
+  <span>
+    {webUIversion}.{webUIbuild}
+  </span>
+);

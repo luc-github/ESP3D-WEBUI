@@ -30,6 +30,7 @@ import {
 } from "./TargetContext";
 
 const Target = "FluidNC";
+const webUIbuild = "FS1";
 const Name = "FluidNC";
 const fwUrl = "https://github.com/bdring/FluidNC/tree/main";
 
@@ -48,4 +49,5 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  webUIbuild,
 };

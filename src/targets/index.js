@@ -31,6 +31,7 @@ import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  webUIbuild,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -63,4 +64,5 @@ export {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
+  webUIbuild,
 };

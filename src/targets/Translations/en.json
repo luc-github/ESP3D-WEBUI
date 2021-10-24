@@ -239,7 +239,7 @@
   "shared": "Shared",
   "debug": "Debug",
   "FW arch": "FW architecture",
-  "FW ver": "Firmware version",
+  "FW ver": "FW version",
   "system": "System",
   "sta": "Client mode",
   "ap": "Access point mode",
