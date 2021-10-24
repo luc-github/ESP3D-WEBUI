@@ -132,9 +132,9 @@ const MachineSettings = () => {
       );
     } else {
       //if overide do M500
-      if (!configSelected){
+      if (!configSelected) {
         createNewRequest(
-          espHttpURL("command", { cmd:"M500" }).toString(),
+          espHttpURL("command", { cmd: "M500" }).toString(),
           { method: "GET", id: "saveMachineSetting" },
           {
             onSuccess: (result) => {
@@ -148,9 +148,9 @@ const MachineSettings = () => {
           }
         );
       } else {
-      endProgression();
+        endProgression();
+      }
     }
-  }
   };
 
   const saveSettings = () => {
@@ -235,7 +235,7 @@ const MachineSettings = () => {
 
   const restartBoard = () => {
     createNewRequest(
-      espHttpURL("command", { cmd:"reset" }).toString(),
+      espHttpURL("command", { cmd: "reset" }).toString(),
       { method: "GET", id: "saveMachineSetting" },
       {
         onSuccess: (result) => {
@@ -247,9 +247,9 @@ const MachineSettings = () => {
         },
       }
     );
-  }
+  };
 
-  const onReset = (e) =>{
+  const onReset = (e) => {
     showConfirmationModal({
       modals,
       title: T("S26"),
@@ -257,7 +257,7 @@ const MachineSettings = () => {
       button1: { cb: restartBoard, text: T("S27") },
       button2: { text: T("S28") },
     });
-  }
+  };
 
   const onRefresh = (e) => {
     const refreshContext = { target: "", command: "" };
@@ -344,6 +344,7 @@ const MachineSettings = () => {
           <div class="m-2">{collected}</div>
           <ButtonImg
             donotdisable
+            showlow
             icon={<XCircle />}
             label={T("S28")}
             tooltip

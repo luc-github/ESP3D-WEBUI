@@ -28,6 +28,7 @@ const ButtonImg = ({
   width,
   nomin,
   style,
+  showlow,
   className,
   ...rest
 }) => {
@@ -40,7 +41,13 @@ const ButtonImg = ({
       {icon}
       {label && (
         <label
-          class={width ? "hide-low text-ellipsis" : "hide-low"}
+          class={
+            width
+              ? `${showlow ? "" : "hide-low"} text-ellipsis`
+              : showlow
+              ? ""
+              : "hide-low"
+          }
           style={
             "cursor: pointer;pointer-events: none;" +
             (width
