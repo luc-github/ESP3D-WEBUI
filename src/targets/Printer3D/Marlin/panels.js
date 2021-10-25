@@ -21,11 +21,13 @@ import { h } from "preact";
 import { FilesPanelElement } from "../../../components/Panel/Files";
 import { MacrosPanelElement } from "../../../components/Panel/Macros";
 import { TerminalPanelElement } from "../../../components/Panel/Terminal";
+import { JogPanelElement } from "../../../components/Panel/Jog";
 
 const defaultPanelsList = [
   FilesPanelElement,
   TerminalPanelElement,
   MacrosPanelElement,
+  JogPanelElement,
 ];
 
 export { defaultPanelsList };
