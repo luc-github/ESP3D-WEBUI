@@ -17,16 +17,19 @@ Jog.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact";
-import { Crosshair } from "preact-feather";
+import { Crosshair, Home } from "preact-feather";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { useUiContext } from "../../contexts";
+import { useUiContext, useUiContextFn } from "../../contexts";
 import { T } from "../Translations";
-import "SubTargetDir/style/index.scss";
+import { Button } from "../Controls";
+import { useEffect, useState } from "preact/hooks";
 
 let currentFeedRate = [];
-let hasError = [];
 let jogDistance = 100;
+let movetoX;
+let movetoY;
+let currentButtonPressed;
 
 /*
  * Local const
@@ -34,56 +37,39 @@ let jogDistance = 100;
  */
 const JogPanel = () => {
   const { panels } = useUiContext();
+  const [moveToTitle, setMoveToTitle] = useState(
+    T("P20") + movetoX + "," + movetoY
+  );
   const id = "jogPanel";
+  console.log(id);
   const SendCommand = () => {};
-  const sendHomeCommand = (e) => {
-    let cmd;
-    let id;
-    if (e.target.classList.contains("btn")) {
-      id = e.target.id;
-    } else {
-      id = e.target.parentElement.id;
-      e.target.classList.add("std");
-      e.target.classList.remove("pressedbutton");
-    }
-    switch (id) {
-      case "HomeX":
-        cmd = "G28 X0";
-        break;
-      case "HomeY":
-        cmd = "G28 Y0";
-        break;
-      case "HomeZ":
-        cmd = "G28 Z0";
-        break;
-      case "HomeAll":
-      default:
-        cmd = "G28";
-        break;
-    }
-    SendCommand(cmd, null /*sendCommandError*/);
+  const sendHomeCommand = (axis, id) => {
+    const cmd = useUiContextFn.getValue("homecmd").replace("$", axis);
+    onOut(id);
+    if (id && currentButtonPressed != id) return;
+    console.log(cmd);
+    //SendCommand(cmd, null /*sendCommandError*/);
   };
-  const onMouseDown = (e) => {
-    e.target.classList.add("pressedbutton");
-    e.target.classList.remove("std");
+  const onMouseDown = (id) => {
+    currentButtonPressed = id;
+    if (document.getElementById(id)) {
+      const list_item = document.getElementById(id).querySelector(".std");
+      if (list_item) {
+        list_item.classList.add("pressedbutton");
+        list_item.classList.remove("std");
+      }
+    }
   };
 
-  const onOut = (e) => {
-    e.target.classList.add("std");
-    e.target.classList.remove("pressedbutton");
-  };
-  const sendJogCommand = (e) => {
-    let cmd;
-    let id;
-    let distance;
-    let feedrate;
-    if (e.target.classList.contains("btn")) {
-      id = e.target.id;
-    } else {
-      id = e.target.parentElement.id;
-      e.target.classList.add("std");
-      e.target.classList.remove("pressedbutton");
-    }
+  const sendJogCommand = (axis, id, distance) => {
+    let movement;
+    onOut(id);
+    let feedrate = axis.startsWith("Z")
+      ? currentFeedRate["zfeedrate"]
+      : currentFeedRate["xyfeedrate"];
+    if (distance) movement = axis + distance;
+    else movement = axis + jogDistance;
+
     /*  if (
             (hasError["xyfeedrate"] &&
                 (id.startsWith("X") || id.startsWith("Y"))) ||
@@ -92,224 +78,60 @@ const JogPanel = () => {
             showDialog({ type: "error", numError: 500, message: T("S83") })
             return
         }*/
-    switch (id) {
-      case "Xplus":
-        distance = "X" + jogDistance;
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Xminus":
-        distance = "X-" + jogDistance;
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X+100":
-        distance = "X100";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X-100":
-        distance = "X-100";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X+10":
-        distance = "X10";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X-10":
-        distance = "X-10";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X+1":
-        distance = "X1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X-1":
-        distance = "X-1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X+0_1":
-        distance = "X0.1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "X-0_1":
-        distance = "X-0.1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Yplus":
-        distance = "Y" + jogDistance;
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Yminus":
-        distance = "Y-" + jogDistance;
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y+100":
-        distance = "Y100";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y-100":
-        distance = "Y-100";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y+10":
-        distance = "Y10";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y-10":
-        distance = "Y-10";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y+1":
-        distance = "Y1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y-1":
-        distance = "Y-1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y+0_1":
-        distance = "Y0.1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Y-0_1":
-        distance = "Y-0.1";
-        feedrate = currentFeedRate["xyfeedrate"];
-        break;
-      case "Zplus":
-        distance = "Z" + jogDistance;
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Zminus":
-        distance = "Z-" + jogDistance;
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z+100":
-        distance = "Z100";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z-100":
-        distance = "Z-100";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z+10":
-        distance = "Z10";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z-10":
-        distance = "Z-10";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z+1":
-        distance = "Z1";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z-1":
-        distance = "Z-1";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z+0_1":
-        distance = "Z0.1";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      case "Z-0_1":
-        distance = "Z-0.1";
-        feedrate = currentFeedRate["zfeedrate"];
-        break;
-      default:
-        console.log("unknow id:" + id);
-        return;
-        break;
-    }
-    cmd = "G91\nG1 " + distance + " F" + feedrate + "\nG90";
-    SendCommand(cmd, null /*sendCommandError*/);
+
+    let cmd = "G91\nG1 " + movement + " F" + feedrate + "\nG90";
+    if (id && currentButtonPressed != id) return;
+    console.log(cmd);
+    //SendCommand(cmd, null /*sendCommandError*/);
   };
-  const onHoverJog = (e) => {
-    switch (e.target.parentElement.id) {
-      case "X+100":
-      case "Y+100":
-      case "X-100":
-      case "Y-100":
-        document.getElementById("xy100").style.opacity = "1";
-        break;
-      case "X+10":
-      case "Y+10":
-      case "X-10":
-      case "Y-10":
-        document.getElementById("xy10").style.opacity = "1";
-        break;
-      case "X+1":
-      case "Y+1":
-      case "X-1":
-      case "Y-1":
-        document.getElementById("xy1").style.opacity = "1";
-        break;
-      case "X+0_1":
-      case "Y+0_1":
-      case "X-0_1":
-      case "Y-0_1":
-        document.getElementById("xy0_1").style.opacity = "1";
-        break;
-      case "Z+0_1":
-      case "Z-0_1":
-        document.getElementById("z0_1").style.opacity = "1";
-        break;
-      case "Z+1":
-      case "Z-1":
-        document.getElementById("z1").style.opacity = "1";
-        break;
-      case "Z+10":
-      case "Z-10":
-        document.getElementById("z10").style.opacity = "1";
-        break;
+  const onCheck = (distance) => {
+    jogDistance = distance;
+  };
+  const onHoverJog = (id) => {
+    if (document.getElementById(id))
+      document.getElementById(id).style.opacity = "1";
+  };
+
+  const onOut = (id) => {
+    if (document.getElementById(id)) {
+      const list_item = document
+        .getElementById(id)
+        .querySelector(".pressedbutton");
+      if (list_item) {
+        list_item.classList.add("std");
+        list_item.classList.remove("pressedbutton");
+      }
     }
   };
 
-  const onOutJog = (e) => {
-    onOut(e);
-    switch (e.target.parentElement.id) {
-      case "X+100":
-      case "Y+100":
-      case "X-100":
-      case "Y-100":
-        document.getElementById("xy100").style.opacity = "0.2";
-        break;
-      case "X+10":
-      case "Y+10":
-      case "X-10":
-      case "Y-10":
-        document.getElementById("xy10").style.opacity = "0.2";
-        break;
-      case "X+1":
-      case "Y+1":
-      case "X-1":
-      case "Y-1":
-        document.getElementById("xy1").style.opacity = "0.2";
-        break;
-      case "X+0_1":
-      case "Y+0_1":
-      case "X-0_1":
-      case "Y-0_1":
-        document.getElementById("xy0_1").style.opacity = "0.2";
-        break;
-      case "Z+0_1":
-      case "Z-0_1":
-        document.getElementById("z0_1").style.opacity = "0.2";
-        break;
-      case "Z+1":
-      case "Z-1":
-        document.getElementById("z1").style.opacity = "0.2";
-        break;
-      case "Z+10":
-      case "Z-10":
-        document.getElementById("z10").style.opacity = "0.2";
-        break;
-    }
+  const onOutMove = (id) => {
+    onOut(id);
   };
 
-  const onMouseDownJog = (e) => {
-    onMouseDown(e);
+  const onOutJog = (id, buttonId) => {
+    if (document.getElementById(id))
+      document.getElementById(id).style.opacity = "0.2";
+    onOut(buttonId);
   };
-  const sendMoveCommand = (e) => {};
-  const movetoX = 0;
-  const movetoY = 0;
+
+  const sendMoveCommand = (buttonId) => {
+    onOut(buttonId);
+    if (currentButtonPressed != id) return;
+    console.log("Move X" + movetoX, " Y" + movetoY);
+  };
+
+  useEffect(() => {
+    if (!currentFeedRate["xyfeedrate"])
+      currentFeedRate["xyfeedrate"] = useUiContextFn.getValue("xyfeedrate");
+    if (!currentFeedRate["zfeedrate"])
+      currentFeedRate["zfeedrate"] = useUiContextFn.getValue("zfeedrate");
+    console.log(useUiContextFn.getValue("xpos"));
+    if (typeof movetoX == "undefined")
+      movetoX = useUiContextFn.getValue("xpos");
+    if (typeof movetoY == "undefined")
+      movetoY = useUiContextFn.getValue("ypos");
+    setMoveToTitle(T("P20") + movetoX + "," + movetoY);
+  }, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
       <div class="panel mb-2 panel-dashboard">
@@ -330,7 +152,119 @@ const JogPanel = () => {
             </span>
           </span>
         </div>
-        <div class="m-2">
+        <div class="show-low m-1">
+          <div style="display:flex;width:100%; flex-direction:column">
+            <div style="display:flex;justify-content:space-between">
+              <div style="display:flex;flex-direction:column; justify-content:space-between; border: 0.05rem solid #dadee4;border-radius: 5px">
+                <Button m2 onclick={(e) => sendJogCommand("X+")}>
+                  +X
+                </Button>
+                <Button
+                  m2
+                  onclick={(e) => {
+                    sendHomeCommand("X");
+                  }}
+                >
+                  <Home />
+                </Button>
+                <Button m2 onclick={(e) => sendJogCommand("X-")}>
+                  -X
+                </Button>
+              </div>
+              <div style="display:flex;flex-direction:column; justify-content:space-between; border: 0.05rem solid #dadee4;border-radius: 5px">
+                <Button m2 onclick={(e) => sendJogCommand("Y+")}>
+                  +Y
+                </Button>
+                <Button m2 onclick={(e) => sendHomeCommand("Y")}>
+                  <Home />
+                </Button>
+                <Button m2 onclick={(e) => sendJogCommand("Y-")}>
+                  -Y
+                </Button>
+              </div>
+
+              <div style="display:flex;flex-direction:column; justify-content:space-between; border: 0.05rem solid #dadee4;border-radius: 5px">
+                <Button m2 onclick={(e) => sendJogCommand("Z+")}>
+                  +Z
+                </Button>
+                <Button m2 onclick={(e) => sendHomeCommand("Z")}>
+                  <Home />
+                </Button>
+                <Button m2 onclick={(e) => sendJogCommand("Z-")}>
+                  -Z
+                </Button>
+              </div>
+              <div
+                class="p-2"
+                style="display:flex;flex-direction:column; justify-content; border: 0.05rem solid #dadee4;border-radius: 5px"
+              >
+                <div
+                  class="btn-group"
+                  style="display:flex;flex-direction:column; justify-content:center;"
+                >
+                  <center
+                    class="bg-secondary text-primary"
+                    style="border: 0.05rem solid #5755d9!important; border-radius:5px 5px 0px 0px"
+                  >
+                    mm
+                  </center>
+
+                  <div class="flatbtn">
+                    <input
+                      type="radio"
+                      id="move_100"
+                      name="select_distance"
+                      value="100"
+                      checked={jogDistance == 100}
+                      onclick={(e) => onCheck(100)}
+                    />
+                    <label for="move_100">100</label>
+                  </div>
+                  <div class="flatbtn">
+                    <input
+                      type="radio"
+                      id="move_10"
+                      name="select_distance"
+                      value="10"
+                      checked={jogDistance == 10}
+                      onclick={(e) => onCheck(10)}
+                    />
+                    <label for="move_10">10</label>
+                  </div>
+                  <div class="flatbtn">
+                    <input
+                      type="radio"
+                      id="move_1"
+                      name="select_distance"
+                      value="1"
+                      checked={jogDistance == 11}
+                      onclick={(e) => onCheck(1)}
+                    />
+                    <label for="move_1">1</label>
+                  </div>
+                  <div class="flatbtn">
+                    <input
+                      type="radio"
+                      id="move_0_1"
+                      name="select_distance"
+                      value="0.1"
+                      checked={jogDistance == 0.1}
+                      onclick={(e) => onCheck(0.1)}
+                    />
+                    <label class="last-button" for="move_0_1">
+                      0.1
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="hide-low"
+          style="height:100%;display:flex; justify-content:center;align-items:center"
+        >
           <svg
             width="310"
             viewBox="0 -5 310 255"
@@ -374,9 +308,9 @@ const JogPanel = () => {
             </defs>
             <g
               id="HomeAll"
-              onmouseup={sendHomeCommand}
-              onmousedown={onMouseDown}
-              onmouseout={onOut}
+              onmouseup={(e) => sendHomeCommand("", "HomeAll")}
+              onmousedown={(e) => onMouseDown("HomeAll")}
+              onmouseout={(e) => onOut("HomeAll")}
             >
               <title>{T("P6")}</title>
               <path
@@ -394,9 +328,9 @@ const JogPanel = () => {
             </g>
             <g
               id="HomeX"
-              onmouseup={sendHomeCommand}
-              onmousedown={onMouseDown}
-              onmouseout={onOut}
+              onmouseup={(e) => sendHomeCommand("X", "HomeX")}
+              onmousedown={(e) => onMouseDown("HomeX")}
+              onmouseout={(e) => onOut("HomeX")}
             >
               <title>{T("P7")}</title>
               <path
@@ -417,9 +351,9 @@ const JogPanel = () => {
             </g>
             <g
               id="HomeY"
-              onmouseup={sendHomeCommand}
-              onmousedown={onMouseDown}
-              onmouseout={onOut}
+              onmouseup={(e) => sendHomeCommand("Y", "HomeY")}
+              onmousedown={(e) => onMouseDown("HomeY")}
+              onmouseout={(e) => onOut("HomeY")}
             >
               <title>{T("P8")}</title>
               <path
@@ -440,9 +374,9 @@ const JogPanel = () => {
             </g>
             <g
               id="HomeZ"
-              onmouseup={sendHomeCommand}
-              onmousedown={onMouseDown}
-              onmouseout={onOut}
+              onmouseup={(e) => sendHomeCommand("Z", "HomeZ")}
+              onmousedown={(e) => onMouseDown("HomeZ")}
+              onmouseout={(e) => onOut("HomeZ")}
             >
               <title>{T("P9")}</title>
               <path
@@ -464,10 +398,14 @@ const JogPanel = () => {
             <g id="Jog100" fill="#c0c0c0" class="std">
               <g
                 id="Y+100"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y+100", "+100")}
+                onmouseover={(e) => {
+                  onHoverJog("xy100");
+                }}
+                onmousedown={(e) => onMouseDown("Y+100")}
+                onmouseout={(e) => {
+                  onOutJog("xy100", "Y+100");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -477,10 +415,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X+100"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X+100", "+100")}
+                onmouseover={(e) => {
+                  onHoverJog("xy100");
+                }}
+                onmousedown={(e) => onMouseDown("X+100")}
+                onmouseout={(e) => {
+                  onOutJog("xy100", "X+100");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -490,10 +432,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="Y-100"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y-100", "-100")}
+                onmouseover={(e) => {
+                  onHoverJog("xy100");
+                }}
+                onmousedown={(e) => onMouseDown("Y-100")}
+                onmouseout={(e) => {
+                  onOutJog("xy100", "Y-100");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -503,10 +449,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X-100"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X-100", "-100")}
+                onmouseover={(e) => {
+                  onHoverJog("xy100");
+                }}
+                onmousedown={(e) => onMouseDown("X-100")}
+                onmouseout={(e) => {
+                  onOutJog("xy100", "X-100");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -518,10 +468,14 @@ const JogPanel = () => {
             <g id="Jog10" fill="#d0d0d0">
               <g
                 id="Y+10"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y+10", "+10")}
+                onmouseover={(e) => {
+                  onHoverJog("xy10");
+                }}
+                onmousedown={(e) => onMouseDown("Y+10")}
+                onmouseout={(e) => {
+                  onOutJog("xy10", "Y+10");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -531,10 +485,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X+10"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X+10", "+10")}
+                onmouseover={(e) => {
+                  onHoverJog("xy10");
+                }}
+                onmousedown={(e) => onMouseDown("X+10")}
+                onmouseout={(e) => {
+                  onOutJog("xy10", "X+10");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -544,10 +502,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="Y-10"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y-10", "-10")}
+                onmouseover={(e) => {
+                  onHoverJog("xy10");
+                }}
+                onmousedown={(e) => onMouseDown("Y-10")}
+                onmouseout={(e) => {
+                  onOutJog("xy10", "Y-10");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -557,10 +519,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X-10"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X-10", "-10")}
+                onmouseover={(e) => {
+                  onHoverJog("xy10");
+                }}
+                onmousedown={(e) => onMouseDown("X-10")}
+                onmouseout={(e) => {
+                  onOutJog("xy10", "X-10");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -572,10 +538,14 @@ const JogPanel = () => {
             <g id="Jog1" fill="#e0e0e0">
               <g
                 id="Y+1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y+1", "+1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy1");
+                }}
+                onmousedown={(e) => onMouseDown("Y+1")}
+                onmouseout={(e) => {
+                  onOutJog("xy1", "Y+1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -585,10 +555,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X+1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X+1", "+1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy1");
+                }}
+                onmousedown={(e) => onMouseDown("X+1")}
+                onmouseout={(e) => {
+                  onOutJog("xy1", "X+1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -598,10 +572,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="Y-1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y-1", "-1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy1");
+                }}
+                onmousedown={(e) => onMouseDown("Y-1")}
+                onmouseout={(e) => {
+                  onOutJog("xy1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -611,10 +589,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X-1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X-1", "-1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy1");
+                }}
+                onmousedown={(e) => onMouseDown("X-1")}
+                onmouseout={(e) => {
+                  onOutJog("xy1", "X-1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -626,10 +608,14 @@ const JogPanel = () => {
             <g id="Jog0_1" fill="#f0f0f0">
               <g
                 id="Y+0_1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y+0_1", "+0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy0_1");
+                }}
+                onmousedown={(e) => onMouseDown("Y+0_01")}
+                onmouseout={(e) => {
+                  onOutJog("xy0_1"), "Y+0_1";
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -639,10 +625,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X+0_1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X+0_1", "+0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy0_1");
+                }}
+                onmousedown={(e) => onMouseDown("X+0_1")}
+                onmouseout={(e) => {
+                  onOutJog("xy0_1", "X+0_1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -652,10 +642,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="Y-0_1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Y", "Y-0_1", "-0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy0_1");
+                }}
+                onmousedown={(e) => onMouseDown("Y-0_1")}
+                onmouseout={(e) => {
+                  onOutJog("xy0_1", "Y-0_1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -665,10 +659,14 @@ const JogPanel = () => {
               </g>
               <g
                 id="X-0_1"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("X", "X-0_1", "-0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("xy0_1");
+                }}
+                onmousedown={(e) => onMouseDown("X-0_1")}
+                onmouseout={(e) => {
+                  onOutJog("xy0_1");
+                }}
                 transform="translate(120 120)"
               >
                 <path
@@ -737,12 +735,18 @@ const JogPanel = () => {
             </g>
             <g
               id="posxy"
-              onmouseup={sendMoveCommand}
-              onmouseover={onHoverJog}
-              onmousedown={onMouseDownJog}
-              onmouseout={onOutJog}
+              onmouseup={(e) => {
+                sendMoveCommand("posxy");
+              }}
+              onmouseover={(e) => {
+                onHoverJog("posxy");
+              }}
+              onmousedown={(e) => onMouseDown("posxy")}
+              onmouseout={(e) => {
+                onOutMove("posxy");
+              }}
             >
-              <title>{T("P20") + movetoX + "," + movetoY}</title>
+              <title>{moveToTitle}</title>
               <circle class="std" cx="120.2" cy="120.3" r="15"></circle>
               <circle class="cross" cx="116" cy="120.3" r="4"></circle>
               <line
@@ -798,10 +802,14 @@ const JogPanel = () => {
               <g
                 id="Z+10"
                 fill="#d0d0d0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z+10", "+10")}
+                onmouseover={(e) => {
+                  onHoverJog("z10");
+                }}
+                onmousedown={(e) => onMouseDown("Z+10")}
+                onmouseout={(e) => {
+                  onOutJog("z10");
+                }}
               >
                 <rect class="std" x="0" y="32" width="40" height="30"></rect>
                 <g id="z10" style="opacity:0.2">
@@ -814,10 +822,14 @@ const JogPanel = () => {
               <g
                 id="Z+1"
                 fill="#e0e0e0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z+1", "+1")}
+                onmouseover={(e) => {
+                  onHoverJog("z1");
+                }}
+                onmousedown={(e) => onMouseDown("Z+1")}
+                onmouseout={(e) => {
+                  onOutJog("z1");
+                }}
               >
                 <rect class="std" x="0" y="62" width="40" height="26"></rect>
                 <g id="z1" style="opacity:0.2">
@@ -833,10 +845,14 @@ const JogPanel = () => {
               <g
                 id="Z+0_1"
                 fill="#f0f0f0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z+0_1", "+0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("z0_1");
+                }}
+                onmousedown={(e) => onMouseDown("Z+0_1")}
+                onmouseout={(e) => {
+                  onOutJog("z0_1");
+                }}
               >
                 <rect class="std" x="0" y="88" width="40" height="24"></rect>
                 <g id="z0_1" style="opacity:0.2">
@@ -849,30 +865,42 @@ const JogPanel = () => {
               <g
                 id="Z-0_1"
                 fill="#f0f0f0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z-0_1", "-0.1")}
+                onmouseover={(e) => {
+                  onHoverJog("z0_1");
+                }}
+                onmousedown={(e) => onMouseDown("Z-0_1")}
+                onmouseout={(e) => {
+                  onOutJog("z0_1");
+                }}
               >
                 <rect class="std" x="0" y="128" width="40" height="24"></rect>
               </g>
               <g
                 id="Z-1"
                 fill="#e0e0e0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z-1", "-1")}
+                onmouseover={(e) => {
+                  onHoverJog("z1");
+                }}
+                onmousedown={(e) => onMouseDown("Z-1")}
+                onmouseout={(e) => {
+                  onOutJog("z1");
+                }}
               >
                 <rect class="std" x="0" y="152" width="40" height="26"></rect>
               </g>
               <g
                 id="Z-10"
                 fill="#d0d0d0"
-                onmouseup={sendJogCommand}
-                onmouseover={onHoverJog}
-                onmousedown={onMouseDownJog}
-                onmouseout={onOutJog}
+                onmouseup={(e) => sendJogCommand("Z", "Z-10", "-10")}
+                onmouseover={(e) => {
+                  onHoverJog("z10");
+                }}
+                onmousedown={(e) => onMouseDown("Z-10")}
+                onmouseout={(e) => {
+                  onOutJog("z10");
+                }}
               >
                 <rect
                   class="std r10"

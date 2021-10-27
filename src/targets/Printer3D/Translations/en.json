@@ -64,6 +64,8 @@
     "P70": "Chamber maximum",
     "P71": "Chamber preheat",
     "P72": "℃",
+    "P73":"Home axis",
+    "P74":"($) is axis",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls"

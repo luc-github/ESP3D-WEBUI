@@ -202,6 +202,13 @@
           "type": "number",
           "label": "P66",
           "value": "100"
+        },
+        {
+          "id": "homecmd",
+          "type": "text",
+          "label": "P73",
+          "value": "G28 $",
+          "help": "P74"
         }
       ]
     }

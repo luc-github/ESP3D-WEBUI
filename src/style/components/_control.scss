@@ -320,3 +320,43 @@ a label {
     border-bottom-right-radius: 0px !important;
   }
 }
+
+.flatbtn {
+  input[type="radio"] {
+    display: none;
+    &:not(:disabled) ~ label {
+      cursor: pointer;
+    }
+    &:disabled ~ label {
+      color: hsla(150, 5%, 75%, 1);
+      border-color: hsla(150, 5%, 75%, 1);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+  label {
+    font-size: 0.8rem;
+    height: 1.8rem;
+    line-height: 1.8rem;
+    display: block;
+    background: white;
+    border: 0.05rem solid #5755d9;
+    border-top: 0em;
+    text-align: center;
+    color: #5755d9;
+    position: relative;
+    min-width: 2rem;
+  }
+
+  input[type="radio"]:active + label {
+    background: blue;
+    color: white;
+  }
+  input[type="radio"]:checked + label {
+    background: #5755d9;
+    color: white;
+  }
+  .last-button {
+    border-radius: 0px 0px 5px 5px;
+  }
+}
