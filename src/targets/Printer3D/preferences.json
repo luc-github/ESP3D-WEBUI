@@ -204,6 +204,12 @@
           "value": "100"
         },
         {
+          "id": "zpos",
+          "type": "number",
+          "label": "P75",
+          "value": "100"
+        },
+        {
           "id": "homecmd",
           "type": "text",
           "label": "P73",

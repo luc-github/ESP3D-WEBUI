@@ -29,6 +29,7 @@ let currentFeedRate = [];
 let jogDistance = 100;
 let movetoX;
 let movetoY;
+let movetoZ;
 let currentButtonPressed;
 
 /*
@@ -37,9 +38,10 @@ let currentButtonPressed;
  */
 const JogPanel = () => {
   const { panels } = useUiContext();
-  const [moveToTitle, setMoveToTitle] = useState(
+  const [moveToTitleXY, setMoveToTitleXY] = useState(
     T("P20") + movetoX + "," + movetoY
   );
+  const [moveToTitleZ, setMoveToTitleZ] = useState(T("P75") + movetoZ);
   const id = "jogPanel";
   console.log(id);
   const SendCommand = () => {};
@@ -53,10 +55,12 @@ const JogPanel = () => {
   const onMouseDown = (id) => {
     currentButtonPressed = id;
     if (document.getElementById(id)) {
-      const list_item = document.getElementById(id).querySelector(".std");
+      const list_item = document
+        .getElementById(id)
+        .querySelector(id == "posz" ? ".movez" : ".std");
       if (list_item) {
         list_item.classList.add("pressedbutton");
-        list_item.classList.remove("std");
+        list_item.classList.remove(id == "posz" ? "movez" : "std");
       }
     }
   };
@@ -98,7 +102,7 @@ const JogPanel = () => {
         .getElementById(id)
         .querySelector(".pressedbutton");
       if (list_item) {
-        list_item.classList.add("std");
+        list_item.classList.add(id == "posz" ? "movez" : "std");
         list_item.classList.remove("pressedbutton");
       }
     }
@@ -130,7 +134,10 @@ const JogPanel = () => {
       movetoX = useUiContextFn.getValue("xpos");
     if (typeof movetoY == "undefined")
       movetoY = useUiContextFn.getValue("ypos");
-    setMoveToTitle(T("P20") + movetoX + "," + movetoY);
+    setMoveToTitleXY(T("P20") + movetoX + "," + movetoY);
+    if (typeof movetoZ == "undefined")
+      movetoZ = useUiContextFn.getValue("zpos");
+    setMoveToTitleZ(T("P75") + movetoZ);
   }, []);
   return (
     <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
@@ -267,7 +274,7 @@ const JogPanel = () => {
         >
           <svg
             width="310"
-            viewBox="0 -5 310 255"
+            viewBox="0 -5 325 255"
             xmlns="http://www.w3.org/2000/svg"
             version="1.1"
           >
@@ -746,7 +753,7 @@ const JogPanel = () => {
                 onOutMove("posxy");
               }}
             >
-              <title>{moveToTitle}</title>
+              <title>{moveToTitleXY}</title>
               <circle class="std" cx="120.2" cy="120.3" r="15"></circle>
               <circle class="cross" cx="116" cy="120.3" r="4"></circle>
               <line
@@ -785,19 +792,28 @@ const JogPanel = () => {
               </text>
             </g>
             <g id="JogBar" transform="translate(250,0)">
-              <g id="+Z" fill="#b0b0b0" style="pointer-events:none;">
+              <g
+                id="+Z100"
+                fill="#d0d0d0"
+                onmouseup={(e) => sendJogCommand("Z", "Z+100", "+100")}
+                onmouseover={(e) => {
+                  onHoverJog("z100");
+                }}
+                onmousedown={(e) => onMouseDown("Z+100")}
+                onmouseout={(e) => {
+                  onOutJog("z100");
+                }}
+              >
                 <path
                   class="std"
                   d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"
                 ></path>
-                <path
-                  class="std"
-                  d="M20,2 l17,17 h-10 v11 h-14 v-11 h-10 z"
-                  fill="DarkSeaGreen"
-                ></path>
-                <text class="jog" x="11" y="18" id="axisup">
-                  +Z
-                </text>
+                <g id="z100" style="opacity:0.2">
+                  <circle class="scl" cx="20" cy="16" r="14"></circle>
+                  <text class="scl" x="8" y="22" font-size="14">
+                    100
+                  </text>
+                </g>
               </g>
               <g
                 id="Z+10"
@@ -813,8 +829,8 @@ const JogPanel = () => {
               >
                 <rect class="std" x="0" y="32" width="40" height="30"></rect>
                 <g id="z10" style="opacity:0.2">
-                  <circle class="scl" cx="20" cy="47" r="13"></circle>
-                  <text class="scl" x="9" y="53" font-size="18">
+                  <circle class="scl" cx="20" cy="47" r="12"></circle>
+                  <text class="scl" x="11" y="53" font-size="15">
                     10
                   </text>
                 </g>
@@ -833,8 +849,8 @@ const JogPanel = () => {
               >
                 <rect class="std" x="0" y="62" width="40" height="26"></rect>
                 <g id="z1" style="opacity:0.2">
-                  <circle class="scl" cx="20" cy="75" r="11"></circle>
-                  <text class="scl" x="15" y="81.5" font-size="18">
+                  <circle class="scl" cx="20" cy="75" r="10.5"></circle>
+                  <text class="scl" x="16" y="80" font-size="14">
                     1
                   </text>
                 </g>
@@ -857,7 +873,7 @@ const JogPanel = () => {
                 <rect class="std" x="0" y="88" width="40" height="24"></rect>
                 <g id="z0_1" style="opacity:0.2">
                   <circle class="scl" cx="20" cy="100" r="9.5"></circle>
-                  <text class="scl" x="13" y="103.5" font-size="10">
+                  <text class="scl" x="13.5" y="103.5" font-size="10">
                     0.1
                   </text>
                 </g>
@@ -911,18 +927,96 @@ const JogPanel = () => {
                 ></rect>
               </g>
 
-              <g id="-Z" fill="#b0b0b0" style="pointer-events:none;">
+              <g
+                id="Z-100"
+                fill="#d0d0d0"
+                onmouseup={(e) => sendJogCommand("Z", "Z-100", "-100")}
+                onmouseover={(e) => {
+                  onHoverJog("z100");
+                }}
+                onmousedown={(e) => onMouseDown("Z-100")}
+                onmouseout={(e) => {
+                  onOutJog("z100");
+                }}
+              >
                 <path
                   class="std"
                   d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
                 ></path>
+              </g>
+              <g id="+Z" fill-opacity=".6" pointer-events="none">
                 <path
                   class="std"
-                  d="M20,238 l-17,-17 h10 v-11 h14 v11 h10 z"
+                  d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
                   fill="DarkSeaGreen"
                 ></path>
-                <text class="jog" x="13" y="230" id="axisdown">
+                <text class="jog" x="41" y="36" id="axisup">
+                  +Z
+                </text>
+              </g>
+              <g id="-Z" fill-opacity=".6" pointer-events="none">
+                <path
+                  class="std"
+                  d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z"
+                  fill="DarkSeaGreen"
+                ></path>
+                <text class="jog" x="43" y="210" id="axisdown">
                   -Z
+                </text>
+              </g>
+              <g
+                id="posz"
+                onmouseup={(e) => {
+                  sendMoveCommand("posz");
+                }}
+                onmouseover={(e) => {
+                  onHoverJog("posz");
+                }}
+                onmousedown={(e) => onMouseDown("posz")}
+                onmouseout={(e) => {
+                  onOutMove("posz");
+                }}
+              >
+                <title>{moveToTitleZ}</title>
+                <rect
+                  class="movez"
+                  x="-1"
+                  y="110"
+                  width="42"
+                  height="20"
+                  rx="5"
+                />
+                <circle class="cross" cx="13" cy="120.3" r="4"></circle>
+                <line
+                  x1="13"
+                  y1="125.3"
+                  x2="13"
+                  y2="128.8"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="13"
+                  y1="115.3"
+                  x2="13"
+                  y2="111.6"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="4"
+                  y1="120.3"
+                  x2="8.7"
+                  y2="120.3"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="18"
+                  y1="120.3"
+                  x2="21.7"
+                  y2="120.3"
+                  style="stroke:black;stroke-width:1"
+                />
+                <text class="posscl" x="25" y="122">
+                  Z
                 </text>
               </g>
             </g>

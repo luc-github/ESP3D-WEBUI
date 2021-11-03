@@ -51,6 +51,19 @@ circle.cross {
   user-select: none;
 }
 
+rect.movez {
+  fill: #f06565;
+  fill-opacity: 1;
+  stroke: black;
+  stroke-width: 1;
+  filter: url(#f1);
+}
+
+rect.movez:hover {
+  fill: orange;
+  cursor: pointer;
+}
+
 circle.std {
   fill: #f06565;
   fill-opacity: 1;
