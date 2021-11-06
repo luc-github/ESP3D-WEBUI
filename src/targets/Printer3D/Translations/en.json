@@ -67,6 +67,9 @@
     "P73":"Home axis",
     "P74":"($) is axis",
     "P75": "Move Z to",
+    "P76": "Jog up",
+    "P77": "Jog down",
+    "P78":"Jogging distance",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls"

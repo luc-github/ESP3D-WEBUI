@@ -26,13 +26,26 @@
   "zfeedrate": "400",
   "xpos": "100",
   "ypos": "101",
+  "zpos": "100",
   "homecmd": "G28 $",
+  "motoroff": "M84;M117 Motor off",
+  "emergencystop": "M112",
   "showmacrospanel": true,
   "openmacrosonstart": false,
   "macros": [],
-  "showextracontents": false,
+  "showextracontents": true,
   "openextrapanelsonstart": false,
-  "extracontents": [],
+  "extracontents": [
+   {
+    "id": "2y58x8ijh",
+    "name": "Panel 2y58x8ijh long",
+    "icon": "Meh",
+    "target": "page",
+    "source": "/toto.html",
+    "type": "image",
+    "refreshtime": "0"
+   }
+  ],
   "showtemperaturespanel": true,
   "opentemperaturesonstart": true,
   "extrudermax": "300",

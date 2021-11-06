@@ -34,30 +34,29 @@ const ButtonImg = ({
 }) => {
   return (
     <Button
-      class={`feather-icon-container ${className}`}
+      class={`feather-icon-container ${className ? className : ""}`}
       {...rest}
-      style={nomin ? style : "min-width:2rem;" + style}
+      style={
+        (nomin ? style : "min-width:2rem;" + style) +
+        ";display:inline-block;white-space: nowrap;"
+      }
     >
-      {icon}
-      {label && (
-        <label
-          class={
-            width
-              ? `${showlow ? "" : "hide-low"} text-ellipsis`
-              : showlow
-              ? ""
-              : "hide-low"
-          }
-          style={
-            "cursor: pointer;pointer-events: none;" +
-            (width
-              ? "display:inline-block;max-width:" + width + ";overflow:clip;"
-              : "")
-          }
-        >
-          {label}
-        </label>
-      )}
+      <div style="overflow:hidden!important;white-space: nowrap;text-overflow:ellipsis!important;cursor: pointer;pointer-events: none;">
+        {icon}
+        {label && (
+          <label
+            class={
+              width ? `${showlow ? "" : "hide-low"}` : showlow ? "" : "hide-low"
+            }
+            style={
+              "display:inline" +
+              (width ? "max-width:" + width : "max-width:3rem")
+            }
+          >
+            {label}
+          </label>
+        )}
+      </div>
     </Button>
   );
 };

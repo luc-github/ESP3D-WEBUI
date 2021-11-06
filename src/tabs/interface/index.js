@@ -295,6 +295,7 @@ const InterfaceTab = () => {
                                 />
                               );
                             })}
+                            <div class="m-1" />
                           </div>
                         </div>
                       </div>
