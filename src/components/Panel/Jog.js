@@ -117,14 +117,14 @@ const JogPanel = () => {
       clickBtn("btnHY");
     } else if (e.key == "z" || e.key == "Z") {
       clickBtn("btnHZ");
-    } else if (e.key == "a" || e.key == "A") {
-      clickBtn("btnHXYZ");
+    } else if (e.key == "End") {
+      clickBtn("btnMoveZ");
     } else if (e.key == "m" || e.key == "M") {
       clickBtn("btnMotorOff");
     } else if (e.key == "P" || e.key == "p") {
       clickBtn("btnMoveXY");
     } else if (e.key == "Home") {
-      clickBtn("btnMoveZ");
+      clickBtn("btnHXYZ");
     } else if (e.key == "Delete") {
       clickBtn("btnEStop");
     } else if (e.key == "1") {
