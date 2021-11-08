@@ -78,9 +78,13 @@ const commandsQuery = (req, res, SendBinary) => {
   lastconnection = Date.now();
 
   if (url.indexOf("M114") != -1) {
-    SendBinary(
-      "X:0.00 Y:127.00 Z:145.00 E:0.00 Count X: 0 Y:10160 Z:116000\n" + "ok\n"
+    let X = Number(Math.random() * 200.12).toFixed(2);
+    let Y = Number(Math.random() * 200.12).toFixed(2);
+    let Z = Number(Math.random() * 200.12).toFixed(2);
+    console.log(
+      `X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`
     );
+    SendBinary(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`);
     res.send("");
     return;
   }

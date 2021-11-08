@@ -18,9 +18,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { FilesPanelElement } from "../../../components/Panel/Files";
-import { MacrosPanelElement } from "../../../components/Panel/Macros";
-import { TerminalPanelElement } from "../../../components/Panel/Terminal";
+import { FilesPanelElement } from "../../../components/Panels/Files";
+import { MacrosPanelElement } from "../../../components/Panels/Macros";
+import { TerminalPanelElement } from "../../../components/Panels/Terminal";
 
 const defaultPanelsList = [
   FilesPanelElement,

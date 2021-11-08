@@ -24,7 +24,7 @@ import { T } from "../../components/Translations";
 import { List } from "preact-feather";
 import { iconsFeather } from "../../components/Images";
 import { defaultPanelsList, iconsTarget } from "../../targets";
-import { ExtraPanelElement } from "../../components/Panel/ExtraPanel";
+import { ExtraPanelElement } from "../../components/Panels/ExtraPanel";
 
 const Dashboard = () => {
   console.log("Dashboard");

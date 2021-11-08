@@ -36,6 +36,7 @@ import { T } from "../Translations";
 import { Button, ButtonImg, CenterLeft } from "../Controls";
 import { useEffect, useState } from "preact/hooks";
 import { showModal } from "../Modal";
+import { useTargetContext } from "../../targets";
 
 let currentFeedRate = [];
 let jogDistance = 100;
@@ -51,8 +52,30 @@ let jog_keyboard_listener = false;
  * Local const
  *
  */
+//A separate control to avoid the full panel to be updated when the positions are updated
+const PositionsControls = () => {
+  const { positions } = useTargetContext();
+  return (
+    <div class="jog-positions-ctrls">
+      <div class="jog-position-ctrl">
+        <div class="jog-position-header">X</div>
+        <div class="m-1 jog-position-value">{positions.x}</div>
+      </div>
+      <div class="jog-position-ctrl">
+        <div class="jog-position-header">Y</div>
+        <div class="m-1 jog-position-value">{positions.y}</div>
+      </div>
+      <div class="jog-position-ctrl">
+        <div class="jog-position-header">Z</div>
+        <div class="m-1 jog-position-value">{positions.z}</div>
+      </div>
+    </div>
+  );
+};
+
 const JogPanel = () => {
   const { modals, toasts, panels } = useUiContext();
+
   const { createNewRequest } = useHttpFn;
   const [isKeyboardEnabled, setIsKeyboardEnabled] =
     useState(enable_keyboard_jog);
@@ -412,20 +435,7 @@ const JogPanel = () => {
           </span>
         </div>
         <div class="m-1 jog-container">
-          <div class="jog-positions-ctrls">
-            <div class="jog-position-ctrl">
-              <div class="jog-position-header">X</div>
-              <div class="m-1 jog-position-value">100.555</div>
-            </div>
-            <div class="jog-position-ctrl">
-              <div class="jog-position-header">Y</div>
-              <div class="m-1 jog-position-value">100.333</div>
-            </div>
-            <div class="jog-position-ctrl">
-              <div class="jog-position-header">Z</div>
-              <div class="m-1 jog-position-value">100.333</div>
-            </div>
-          </div>
+          <PositionsControls />
           <div class={isKeyboardEnabled ? "m-1" : "show-low m-1"}>
             <div class="job-buttons-main-container">
               <div class="m-1 jog-buttons-container">
@@ -587,7 +597,7 @@ const JogPanel = () => {
                       id="move_1"
                       name="select_distance"
                       value="1"
-                      checked={jogDistance == 11}
+                      checked={jogDistance == 1}
                       onclick={(e) => onCheck(e, 1)}
                     />
                     <label for="move_1">1</label>
@@ -1497,4 +1507,4 @@ const JogPanelElement = {
   onstart: "openjogonstart",
 };
 
-export { JogPanel, JogPanelElement };
+export { JogPanel, JogPanelElement, PositionsControls };

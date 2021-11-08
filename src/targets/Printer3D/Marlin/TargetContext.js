@@ -36,6 +36,12 @@ const useTargetContext = () => useContext(TargetContext);
 const useTargetContextFn = {};
 
 const TargetContextProvider = ({ children }) => {
+  const [positions, setPositions] = useState({
+    x: "0.00",
+    y: "0.00",
+    z: "0.00",
+  });
+
   const { terminal } = useDatasContext();
   const dataBuffer = useRef({
     stream: "",
@@ -50,10 +56,19 @@ const TargetContextProvider = ({ children }) => {
     processor.handle(type, data);
     //temperature
     if (type === "stream") {
-      console.log("stream", data);
+      //console.log("stream", data);
     }
     //sensors
     //positions
+    if (type === "stream") {
+      //format is : "X:-50.00 Y:127.00 Z:145.00 E:0.00 Count X: 0 Y:10160 Z:116000"
+      let regex_position =
+        /X:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*Y:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*Z:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*E/;
+      let result = null;
+      if ((result = regex_position.exec(data)) !== null) {
+        setPositions({ x: result[1], y: result[2], z: result[3] });
+      }
+    }
     //etc...
   };
   const processData = (type, data) => {
@@ -139,6 +154,7 @@ const TargetContextProvider = ({ children }) => {
   useTargetContextFn.processData = processData;
 
   const store = {
+    positions,
     processData,
   };
 

@@ -18,17 +18,11 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
+import { InformationsControls } from "../targets";
 const Informations = ({ type }) => {
   return (
-    <div
-      id={type == "panel" ? "infopanel" : "infopage"}
-      class={
-        type == "panel"
-          ? "information-container hide-low"
-          : "container show-low"
-      }
-    >
-      {type == "panel" ? "Information panel" : "Information page"}
+    <div id={type == "panel" ? "infopanel" : "infopage"} class="container m-2">
+      <InformationsControls />
     </div>
   );
 };
