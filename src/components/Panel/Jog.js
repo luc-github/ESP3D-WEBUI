@@ -27,12 +27,13 @@ import {
   CheckCircle,
   Circle,
   HelpCircle,
+  Edit3,
 } from "preact-feather";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { useUiContext, useUiContextFn } from "../../contexts";
 import { T } from "../Translations";
-import { Button, ButtonImg } from "../Controls";
+import { Button, ButtonImg, CenterLeft } from "../Controls";
 import { useEffect, useState } from "preact/hooks";
 import { showModal } from "../Modal";
 
@@ -45,6 +46,7 @@ let currentButtonPressed;
 let enable_keyboard_jog = false;
 let keyboard_listener = false;
 let jog_keyboard_listener = false;
+
 /*
  * Local const
  *
@@ -60,6 +62,8 @@ const JogPanel = () => {
   const [moveToTitleZ, setMoveToTitleZ] = useState(T("P75") + movetoZ);
   const id = "jogPanel";
   console.log(id);
+
+  //Send a request to the ESP
   const SendCommand = (command) => {
     createNewRequest(
       espHttpURL("command", { cmd: command }).toString(),
@@ -73,17 +77,23 @@ const JogPanel = () => {
       }
     );
   };
+
+  //Click button defined by id
   const clickBtn = (id) => {
     if (document.getElementById(id)) {
       document.getElementById(id).click();
     }
   };
+
+  //Send Home command
   const sendHomeCommand = (axis, id) => {
     const cmd = useUiContextFn.getValue("homecmd").replace("$", axis);
     onOut(id);
     if (id && currentButtonPressed != id) return;
     SendCommand(cmd);
   };
+
+  //mouse down event
   const onMouseDown = (id) => {
     currentButtonPressed = id;
     if (document.getElementById(id)) {
@@ -96,6 +106,8 @@ const JogPanel = () => {
       }
     }
   };
+
+  //keyboard listener handler
   const keyboardEventHandler = (e) => {
     if (!jog_keyboard_listener) return;
     if (e.key == "ArrowUp") {
@@ -137,6 +149,8 @@ const JogPanel = () => {
     } else console.log(e.key);
   };
 
+  //Add keyboard listener
+  //TODO: find a better way to remove listener as it is not working currently
   function AddKeyboardListener() {
     //hack to track keyboard is enabled or not
     jog_keyboard_listener = true;
@@ -146,6 +160,8 @@ const JogPanel = () => {
     document.addEventListener("keydown", keyboardEventHandler, true);
   }
 
+  //Remove keyboard listener
+  //TODO: find a better way to remove listener as it is not working currently
   function RemoveKeyboardListener() {
     //hack to track keyboard is enabled or not because removeEventListener is not working
     if (keyboard_listener) {
@@ -154,6 +170,7 @@ const JogPanel = () => {
     }
   }
 
+  //Send jog command
   const sendJogCommand = (axis, id, distance) => {
     let movement;
     onOut(id);
@@ -166,15 +183,20 @@ const JogPanel = () => {
     if (id && currentButtonPressed != id) return;
     SendCommand(cmd);
   };
+
+  //click distance button
   const onCheck = (e, distance) => {
     e.target.blur();
     jogDistance = distance;
   };
+
+  //mouse hover jog button
   const onHoverJog = (id) => {
     if (document.getElementById(id))
       document.getElementById(id).style.opacity = "1";
   };
 
+  //mouse out of button
   const onOut = (id) => {
     if (document.getElementById(id)) {
       const list_item = document
@@ -187,16 +209,14 @@ const JogPanel = () => {
     }
   };
 
-  const onOutMove = (id) => {
-    onOut(id);
-  };
-
+  //mouse out of the jog button
   const onOutJog = (id, buttonId) => {
     if (document.getElementById(id))
       document.getElementById(id).style.opacity = "0.2";
     onOut(buttonId);
   };
 
+  //Move command
   const sendMoveCommand = (buttonId, id) => {
     onOut(buttonId);
     if (id && currentButtonPressed != id) return;
@@ -213,20 +233,80 @@ const JogPanel = () => {
     SendCommand(cmd);
   };
 
-  const setFeedrateZ = () => {
-    if (enable_keyboard_jog)
-      modals.removeModal(modals.getModalIndex("setFeedRateZ"));
+  //Set the current feedrate for axis
+  const setFeedrate = (axis) => {
+    let value = currentFeedRate[axis == "XY" ? "xyfeedrate" : "zfeedrate"];
+    showModal({
+      modals,
+      title: axis == "XY" ? T("P10") : T("P11"),
+      button2: { text: T("S28") },
+      button1: {
+        cb: () => {
+          if (value.length > 0.1)
+            currentFeedRate[axis == "XY" ? "xyfeedrate" : "zfeedrate"] = value;
+        },
+        text: T("S43"),
+        id: "applyFrBtn",
+      },
+      icon: <Edit3 />,
+      id: "inputFeedrate",
+      content: (
+        <Fragment>
+          <div>{axis == "XY" ? T("P10") : T("P11")}</div>
+          <input
+            class="form-input"
+            type="number"
+            step="0.1"
+            value={value}
+            onInput={(e) => {
+              value = e.target.value.trim();
+              if (value < 0.1) {
+                if (document.getElementById("applyFrBtn")) {
+                  document.getElementById("applyFrBtn").disabled = true;
+                }
+              } else {
+                if (document.getElementById("applyFrBtn")) {
+                  document.getElementById("applyFrBtn").disabled = false;
+                }
+              }
+            }}
+          />
+        </Fragment>
+      ),
+    });
   };
 
-  const helpKeyboardJog = (
-    <span>
-      {T("P80")
-        .split(",")
-        .map((e) => {
-          return <div>{e}</div>;
-        })}
-    </span>
-  );
+  //Set the current feedrate for XY axis
+  const setFeedrateXY = (e) => {
+    setFeedrate("XY");
+  };
+
+  //Set the current feedrate for Z axis
+  const setFeedrateZ = (e) => {
+    setFeedrate("Z");
+  };
+
+  //Show keyboard mapped keys
+  const showKeyboarHelp = () => {
+    const helpKeyboardJog = (
+      <CenterLeft>
+        {T("P80")
+          .split(",")
+          .map((e) => {
+            return <div>{e}</div>;
+          })}
+      </CenterLeft>
+    );
+    showModal({
+      modals,
+      title: T("P81"),
+      button1: {
+        text: T("S24"),
+      },
+      icon: <HelpCircle />,
+      content: helpKeyboardJog,
+    });
+  };
 
   useEffect(() => {
     if (!currentFeedRate["xyfeedrate"])
@@ -246,7 +326,7 @@ const JogPanel = () => {
       jog_keyboard_listener = true;
     }
     return () => {
-      jog_keyboard_listener = false;
+      RemoveKeyboardListener();
     };
   }, []);
   return (
@@ -256,7 +336,7 @@ const JogPanel = () => {
     >
       <div class="panel mb-2 panel-dashboard">
         <div class="navbar">
-          <span class="navbar-section  feather-icon-container">
+          <span class="navbar-section feather-icon-container">
             <Move />
             <strong class="text-ellipsis">{T("jog")}</strong>
           </span>
@@ -272,12 +352,7 @@ const JogPanel = () => {
 
                 <ul class="menu">
                   <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        console.log("Click Edit FrameRate XY");
-                      }}
-                    >
+                    <div class="menu-entry" onclick={setFeedrateXY}>
                       <div class="menu-panel-item">
                         <span class="text-menu-item">{T("P10")}</span>
                       </div>
@@ -285,25 +360,7 @@ const JogPanel = () => {
                   </li>
 
                   <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        console.log("Click Edit FrameRate Z");
-                        showModal({
-                          modals,
-                          title: T("P11"),
-                          button1: {
-                            text: T("S43"),
-                            cb: setFeedrateZ,
-                            noclose: true,
-                          },
-                          button2: { text: T("S24") },
-                          icon: <HelpCircle />,
-                          id: "setFeedRateZ",
-                          content: helpKeyboardJog,
-                        });
-                      }}
-                    >
+                    <div class="menu-entry" onclick={setFeedrateZ}>
                       <div class="menu-panel-item">
                         <span class="text-menu-item">{T("P11")}</span>
                       </div>
@@ -336,20 +393,7 @@ const JogPanel = () => {
                     </div>
                   </li>
                   <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        showModal({
-                          modals,
-                          title: T("P81"),
-                          button1: {
-                            text: T("S24"),
-                          },
-                          icon: <HelpCircle />,
-                          content: helpKeyboardJog,
-                        });
-                      }}
-                    >
+                    <div class="menu-entry" onclick={showKeyboarHelp}>
                       <div class="menu-panel-item">
                         <span class="text-menu-item">{T("P81")}</span>
                       </div>
@@ -1053,7 +1097,7 @@ const JogPanel = () => {
                   }}
                   onmousedown={(e) => onMouseDown("posxy")}
                   onmouseout={(e) => {
-                    onOutMove("posxy");
+                    onOut("posxy");
                   }}
                 >
                   <title>{moveToTitleXY}</title>
@@ -1313,7 +1357,7 @@ const JogPanel = () => {
                     }}
                     onmousedown={(e) => onMouseDown("posz")}
                     onmouseout={(e) => {
-                      onOutMove("posz");
+                      onOut("posz");
                     }}
                   >
                     <title>{moveToTitleZ}</title>

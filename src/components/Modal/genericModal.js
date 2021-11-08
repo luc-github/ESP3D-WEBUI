@@ -54,13 +54,21 @@ const showModal = ({
       footer: (
         <div>
           {button1 && (
-            <button class="btn mx-2" onClick={defaultCb1}>
+            <button
+              id={button1.id ? button1.id : null}
+              class="btn mx-2"
+              onClick={defaultCb1}
+            >
               {button1.text}
             </button>
           )}
 
           {button2 && (
-            <button class="btn mx-2" onClick={defaultCb2}>
+            <button
+              id={button2.id ? button2.id : null}
+              class="btn mx-2"
+              onClick={defaultCb2}
+            >
               {button2.text}
             </button>
           )}
