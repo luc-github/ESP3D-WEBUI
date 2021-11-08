@@ -19,9 +19,9 @@
 */
 import { h } from "preact";
 import { InformationsControls } from "../targets";
-const Informations = ({ type }) => {
+const Informations = () => {
   return (
-    <div id={type == "panel" ? "infopanel" : "infopage"} class="container m-2">
+    <div id="infopage" class="container m-2">
       <InformationsControls />
     </div>
   );

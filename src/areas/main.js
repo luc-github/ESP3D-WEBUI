@@ -45,7 +45,7 @@ const defRoutes = {
     path: "/settings",
   },
   INFORMATIONS: {
-    component: <Informations type="page" />,
+    component: <Informations />,
     path: "/informations",
   },
 };

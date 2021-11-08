@@ -176,8 +176,6 @@ const Navbar = () => {
                       : connectionSettings.current.FWTarget == 0 &&
                         href == "/dashboard"
                       ? "d-none"
-                      : href == "/informations"
-                      ? "btn btn-link no-box feather-icon-container show-low"
                       : "btn btn-link no-box feather-icon-container"
                   }
                   activeClassName="active"
