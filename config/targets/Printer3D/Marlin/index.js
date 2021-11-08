@@ -76,6 +76,15 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   lastconnection = Date.now();
+
+  if (url.indexOf("M114") != -1) {
+    SendBinary(
+      "X:0.00 Y:127.00 Z:145.00 E:0.00 Count X: 0 Y:10160 Z:116000\n" + "ok\n"
+    );
+    res.send("");
+    return;
+  }
+
   if (url.indexOf("M20") != -1) {
     SendBinary(
       "Begin file list\n" +

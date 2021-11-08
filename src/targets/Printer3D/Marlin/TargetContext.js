@@ -49,6 +49,9 @@ const TargetContextProvider = ({ children }) => {
     //files
     processor.handle(type, data);
     //temperature
+    if (type === "stream") {
+      console.log("stream", data);
+    }
     //sensors
     //positions
     //etc...
@@ -58,6 +61,7 @@ const TargetContextProvider = ({ children }) => {
       if (type == "stream") {
         //TODO
         //need to handle \r \n and even not having some
+        //this will split by char
         data.split("").forEach((element, index) => {
           if (element == "\n" || element == "\r") {
             if (dataBuffer.current[type].length > 0) {
@@ -83,6 +87,7 @@ const TargetContextProvider = ({ children }) => {
                   });
                 }
               } else {
+                //if not json
                 terminal.add({
                   type,
                   content: dataBuffer.current[type],

@@ -48,7 +48,6 @@ const TargetContextProvider = ({ children }) => {
   const dispatchInternally = (type, data) => {
     //files
     processor.handle(type, data);
-    //temperature
     //sensors
     //positions
     //etc...
