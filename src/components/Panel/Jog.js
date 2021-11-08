@@ -45,7 +45,6 @@ let currentButtonPressed;
 let enable_keyboard_jog = false;
 let keyboard_listener = false;
 let jog_keyboard_listener = false;
-let shiftKeyPressed = false;
 /*
  * Local const
  *
@@ -219,8 +218,17 @@ const JogPanel = () => {
       modals.removeModal(modals.getModalIndex("setFeedRateZ"));
   };
 
+  const helpKeyboardJog = (
+    <span>
+      {T("P80")
+        .split(",")
+        .map((e) => {
+          return <div>{e}</div>;
+        })}
+    </span>
+  );
+
   useEffect(() => {
-    shiftKeyPressed = false;
     if (!currentFeedRate["xyfeedrate"])
       currentFeedRate["xyfeedrate"] = useUiContextFn.getValue("xyfeedrate");
     if (!currentFeedRate["zfeedrate"])
@@ -292,7 +300,7 @@ const JogPanel = () => {
                           button2: { text: T("S24") },
                           icon: <HelpCircle />,
                           id: "setFeedRateZ",
-                          content: "Let me know",
+                          content: helpKeyboardJog,
                         });
                       }}
                     >
@@ -324,6 +332,26 @@ const JogPanel = () => {
                             <Circle size="0.8rem" />
                           )}
                         </span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="menu-item">
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        showModal({
+                          modals,
+                          title: T("P81"),
+                          button1: {
+                            text: T("S24"),
+                          },
+                          icon: <HelpCircle />,
+                          content: helpKeyboardJog,
+                        });
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("P81")}</span>
                       </div>
                     </div>
                   </li>
