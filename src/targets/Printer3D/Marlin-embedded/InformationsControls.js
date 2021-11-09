@@ -1,5 +1,5 @@
 /*
- panels.js - ESP3D WebUI Target file
+ Informations.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,17 +17,16 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { FilesPanelElement } from "../../../components/Panels/Files";
-import { MacrosPanelElement } from "../../../components/Panels/Macros";
-import { TerminalPanelElement } from "../../../components/Panels/Terminal";
-import { JogPanelElement } from "../../../components/Panels/Jog";
+import { Fragment, h } from "preact";
+import { PositionsControls } from "../../../components/Panels/Jog";
+import { useUiContextFn } from "../../../contexts";
 
-const defaultPanelsList = [
-  FilesPanelElement,
-  TerminalPanelElement,
-  MacrosPanelElement,
-  JogPanelElement,
-];
+const InformationsControls = () => {
+  return (
+    <Fragment>
+      {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
+    </Fragment>
+  );
+};
 
-export { defaultPanelsList };
+export { InformationsControls };

@@ -69,8 +69,16 @@ const commandsQuery = (req, res, SendBinary) => {
     res.status(401);
     return;
   }
-
   lastconnection = Date.now();
+
+  if (url.indexOf("M114") != -1) {
+    let X = Number(Math.random() * 200.12).toFixed(2);
+    let Y = Number(Math.random() * 200.12).toFixed(2);
+    let Z = Number(Math.random() * 200.12).toFixed(2);
+    SendBinary(`X:${X} Y:${Y} Z:${Z} E:0.0000\nok\n`);
+    res.send("");
+    return;
+  }
 
   if (url.indexOf("M205") != -1) {
     SendBinary(
@@ -271,7 +279,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+    SendBinary(Temperatures());
     res.send("");
     return;
   }

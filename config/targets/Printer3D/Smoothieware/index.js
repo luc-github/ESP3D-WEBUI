@@ -35,7 +35,7 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-function sendTemperatures() {
+function Temperatures() {
   let T = Number(Math.floor(Math.random() * 215).toFixed(2));
   let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
   let B = Number(Math.floor(Math.random() * 45).toFixed(2));
@@ -76,6 +76,15 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   lastconnection = Date.now();
+
+  if (url.indexOf("M114") != -1) {
+    let X = Number(Math.random() * 200.12).toFixed(2);
+    let Y = Number(Math.random() * 200.12).toFixed(2);
+    let Z = Number(Math.random() * 200.12).toFixed(2);
+    SendBinary(`ok C: X:${X} Y:${Y} Z:${Z} E:0.0000\n`);
+    res.send("");
+    return;
+  }
 
   if (url.indexOf("ls -s /sd") != -1) {
     if (url.indexOf("echo BeginFiles") != -1) SendBinary("echo: BeginFiles\n");
@@ -522,7 +531,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+    SendBinary(Temperatures());
     res.send("");
     return;
   }

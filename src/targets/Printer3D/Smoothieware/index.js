@@ -23,6 +23,7 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
+import { InformationsControls } from "./InformationsControls";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -50,4 +51,5 @@ export {
   useTargetContext,
   useTargetContextFn,
   webUIbuild,
+  InformationsControls,
 };

@@ -81,9 +81,6 @@ const commandsQuery = (req, res, SendBinary) => {
     let X = Number(Math.random() * 200.12).toFixed(2);
     let Y = Number(Math.random() * 200.12).toFixed(2);
     let Z = Number(Math.random() * 200.12).toFixed(2);
-    console.log(
-      `X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`
-    );
     SendBinary(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`);
     res.send("");
     return;
