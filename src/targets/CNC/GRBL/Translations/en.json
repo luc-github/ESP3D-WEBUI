@@ -1,5 +1,4 @@
 {
-  "G": "",
   "$0": "Step pulse, microseconds",
     "$1": "Step idle delay, milliseconds",
     "$2": "Step port invert, mask",

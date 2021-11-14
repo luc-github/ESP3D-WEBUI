@@ -56,6 +56,20 @@
   border-top: 0.05rem solid #dadee4;
 }
 
+.field-group {
+  color: blue;
+  font-size: 0.8rem;
+}
+
+.field-group-content {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.5rem;
+  margin-top: -1rem;
+  padding-bottom: 0.5rem;
+  max-width: fit-content;
+}
+
 .terminal {
   font-size: $font-size-sm;
   white-space: pre-wrap;

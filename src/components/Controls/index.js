@@ -28,12 +28,14 @@ import Modal from "./Modal";
 import Toast from "./Toast";
 import Progress from "./Progress";
 import CenterLeft from "./CenterLeft";
+import FieldGroup from "./FieldGroup";
 
 export {
   Button,
   ButtonImg,
   CenterLeft,
   Field,
+  FieldGroup,
   Loading,
   Modal,
   Progress,

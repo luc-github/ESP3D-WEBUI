@@ -71,7 +71,7 @@
     "P77": "Jog down",
     "P78":"Jogging distance",
     "P79":"Use keyboard",
-    "P80":" [Arrow Up] X+, [Arrow Down] X-, [Arrow Left] Y-, [Arrow Right] Y+, [PageUp] Z+, [PageDown] Z-, [X] Home X, [Y] Home Y, [Z] Home Z, [Home] Home All, [M] Motor Off, [P] Move XY, [End] Move Z, [Delete] E-Stop, [1] Fr 100, [2] Fr 10, [3] Fr 1, [4] Fr 0.1",
+    "P80":"[Arrow Up] X+, [Arrow Down] X-, [Arrow Left] Y-, [Arrow Right] Y+, [PageUp] Z+, [PageDown] Z-, [X] Home X, [Y] Home Y, [Z] Home Z, [Home] Home All, [M] Motor Off, [P] Move XY, [End] Move Z, [Delete] E-Stop, [1] Fr 100, [2] Fr 10, [3] Fr 1, [4] Fr 0.1",
     "P81": "Keyboard keys",
     "processing": "Processing",
     "heating": "Heating",

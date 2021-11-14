@@ -28,7 +28,13 @@ function exportPreferences(preferencesSettings, asFile = true) {
   for (let key in preferencesSettings.settings) {
     for (let subkey in preferencesSettings.settings[key]) {
       if (preferencesSettings.settings[key][subkey].id) {
-        if (preferencesSettings.settings[key][subkey].type == "list") {
+        if (preferencesSettings.settings[key][subkey].type == "group") {
+          preferencesSettings.settings[key][subkey].value.forEach((element) => {
+            preferences.settings[element.id] = asFile
+              ? element.initial
+              : element.value;
+          });
+        } else if (preferencesSettings.settings[key][subkey].type == "list") {
           const itemsList = [];
           preferencesSettings.settings[key][subkey].value.forEach((element) => {
             const item = {};

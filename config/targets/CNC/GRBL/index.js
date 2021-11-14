@@ -26,6 +26,7 @@ const enableAuthentication = false;
 let lastconnection = Date.now();
 let logindone = false;
 const sessiontTime = 60000;
+let countStatus = 0;
 
 function getLastconnection() {
   return lastconnection;
@@ -54,11 +55,20 @@ const commandsQuery = (req, res, SendBinary) => {
   }
   lastconnection = Date.now();
 
-  /*if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+  if (req.query.cmd && req.query.cmd == "?") {
+    countStatus++;
+    if (countStatus == 1)
+      SendBinary(
+        "<Idle|MPos:0.000,0.000,0.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000>\n"
+      );
+    if (countStatus == 2)
+      SendBinary("<Idle|MPos:0.000,0.000,0.000,1.000|FS:0,0|Ov:100,100,100>\n");
+    if (countStatus > 2)
+      SendBinary("<Idle|MPos:0.000,0.000,0.000,1.000|FS:0,0>\n");
+    if (countStatus == 10) countStatus = 0;
     res.send("");
     return;
-  }*/
+  }
 
   if (url.indexOf("ESP800") != -1) {
     res.json({

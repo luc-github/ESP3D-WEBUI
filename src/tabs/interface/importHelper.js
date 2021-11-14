@@ -110,7 +110,11 @@ function formatPreferences(settings) {
   for (let key in settings) {
     if (Array.isArray(settings[key])) {
       for (let index = 0; index < settings[key].length; index++) {
-        if (settings[key][index].type == "list") {
+        if (settings[key][index].type == "group") {
+          settings[key][index].value.forEach((element, index) => {
+            element.initial = element.value;
+          });
+        } else if (settings[key][index].type == "list") {
           settings[key][index].nb = settings[key][index].value.length;
           settings[key][index].value = formatItemsList(
             [...settings[key][index].value],
@@ -137,6 +141,21 @@ function importPreferences(currentPreferencesData, importedPreferences) {
           if (currentPreferences.settings[key][index].id == id) {
             currentPreferences.settings[key][index].value = value;
             return true;
+          }
+          if (Array.isArray(currentPreferences.settings[key][index].value)) {
+            for (
+              let subindex = 0;
+              subindex < currentPreferences.settings[key][index].value.length;
+              subindex++
+            ) {
+              if (
+                currentPreferences.settings[key][index].value[subindex].id == id
+              ) {
+                currentPreferences.settings[key][index].value[subindex].value =
+                  value;
+                return true;
+              }
+            }
           }
         }
       }

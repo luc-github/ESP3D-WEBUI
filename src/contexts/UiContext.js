@@ -102,6 +102,17 @@ const UiContextProvider = ({ children }) => {
             if (settingsobject[key][index].id == Id) {
               return settingsobject[key][index].value;
             }
+            if (Array.isArray(settingsobject[key][index].value)) {
+              for (
+                let subindex = 0;
+                subindex < settingsobject[key][index].value.length;
+                subindex++
+              ) {
+                if (settingsobject[key][index].value[subindex].id == Id) {
+                  return settingsobject[key][index].value[subindex].value;
+                }
+              }
+            }
           }
         } else {
           for (let subkey in settingsobject[key]) {

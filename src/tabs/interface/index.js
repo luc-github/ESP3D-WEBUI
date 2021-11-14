@@ -25,7 +25,7 @@ import { useHttpQueue, useSettings } from "../../hooks";
 import { espHttpURL } from "../../components/Helpers";
 import { T } from "../../components/Translations";
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather";
-import { Field } from "../../components/Controls";
+import { Field, FieldGroup } from "../../components/Controls";
 import { exportPreferences } from "./exportHelper";
 import { importPreferences, formatPreferences } from "./importHelper";
 
@@ -267,33 +267,83 @@ const InterfaceTab = () => {
                           <div class="panel-body panel-body-interface">
                             {Object.keys(section).map((subsectionId) => {
                               const fieldData = section[subsectionId];
-                              const { label, initial, type, ...rest } =
-                                fieldData;
-                              const [validation, setvalidation] = useState();
-                              return (
-                                <Field
-                                  label={T(label)}
-                                  type={type}
-                                  validationfn={
-                                    type == "list" ? generateValidation : null
-                                  }
-                                  inline={
-                                    type == "boolean" || type == "icon"
-                                      ? true
-                                      : false
-                                  }
-                                  {...rest}
-                                  setValue={(val, update = false) => {
-                                    if (!update) {
-                                      fieldData.value = val;
+                              // console.log(fieldData);
+
+                              if (fieldData.type == "group") {
+                                //show group
+                                return (
+                                  <FieldGroup
+                                    id={fieldData.id}
+                                    label={T(fieldData.label)}
+                                  >
+                                    {Object.keys(fieldData.value).map(
+                                      (subData) => {
+                                        const subFieldData =
+                                          fieldData.value[subData];
+                                        const [validation, setvalidation] =
+                                          useState();
+                                        const {
+                                          label,
+                                          initial,
+                                          type,
+                                          ...rest
+                                        } = subFieldData;
+                                        return (
+                                          <Field
+                                            label={T(label)}
+                                            type={type}
+                                            validationfn={generateValidation}
+                                            inline={
+                                              type == "boolean" ||
+                                              type == "icon"
+                                                ? true
+                                                : false
+                                            }
+                                            {...rest}
+                                            setValue={(val, update = false) => {
+                                              if (!update) {
+                                                subFieldData.value = val;
+                                              }
+                                              setvalidation(
+                                                generateValidation(subFieldData)
+                                              );
+                                            }}
+                                            validation={validation}
+                                          />
+                                        );
+                                      }
+                                    )}
+                                  </FieldGroup>
+                                );
+                              } else {
+                                const [validation, setvalidation] = useState();
+                                const { label, initial, type, ...rest } =
+                                  fieldData;
+                                return (
+                                  <Field
+                                    label={T(label)}
+                                    type={type}
+                                    validationfn={
+                                      type == "list" ? generateValidation : null
                                     }
-                                    setvalidation(
-                                      generateValidation(fieldData)
-                                    );
-                                  }}
-                                  validation={validation}
-                                />
-                              );
+                                    inline={
+                                      type == "boolean" || type == "icon"
+                                        ? true
+                                        : false
+                                    }
+                                    {...rest}
+                                    setValue={(val, update = false) => {
+                                      if (!update) {
+                                        fieldData.value = val;
+                                      }
+                                      setvalidation(
+                                        generateValidation(fieldData)
+                                      );
+                                    }}
+                                    validation={validation}
+                                  />
+                                );
+                              }
                             })}
                             <div class="m-1" />
                           </div>

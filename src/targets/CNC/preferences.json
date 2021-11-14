@@ -2,9 +2,14 @@
   "settings": {
     "jog": [
       {
+        "id": "feedrate",
+        "type": "group",
+        "label": "CN9",
+        "value": [
+      {
         "id": "xyfeedrate",
         "type": "number",
-        "label": "CN2",
+        "label": "XY",
         "min": "1",
         "append": "CN1",
         "value": "1000"
@@ -12,22 +17,101 @@
       {
         "id": "zfeedrate",
         "type": "number",
-        "label": "CN3",
+        "label": "Z",
         "append": "CN1",
         "min": "1",
         "value": "1000"
       },
       {
-        "id": "xpos",
+        "id": "afeedrate",
         "type": "number",
-        "label": "CN4",
-        "value": "100"
+        "label": "A",
+        "append": "CN1",
+        "min": "1",
+        "value": "1000"
       },
       {
-        "id": "ypos",
+        "id": "bfeedrate",
         "type": "number",
-        "label": "CN5",
-        "value": "100"
+        "label": "B",
+        "append": "CN1",
+        "min": "1",
+        "value": "1000"
+      },
+      {
+        "id": "cfeedrate",
+        "type": "number",
+        "label": "C",
+        "append": "CN1",
+        "min": "1",
+        "value": "1000"
+      }]},
+      {
+        "id": "axis",
+        "type": "group",
+        "label": "CN8",
+        "value": [
+      {
+        "id": "showx",
+        "type": "boolean",
+        "label": "X",
+        "value": true
+      },
+      {
+        "id": "showy",
+        "type": "boolean",
+        "label": "Y",
+        "value": true
+      },
+      {
+        "id": "showz",
+        "type": "boolean",
+        "label": "Z",
+        "value": true
+      },
+      {
+        "id": "showa",
+        "type": "boolean",
+        "label": "A",
+        "value": true
+      },
+      {
+        "id": "showb",
+        "type": "boolean",
+        "label": "B",
+        "value": true
+      },
+      {
+        "id": "showc",
+        "type": "boolean",
+        "label": "C",
+        "value": true
+      }]}
+      ,
+      {
+        "id": "home",
+        "type": "group",
+        "label": "CN17",
+        "value": [ {
+          "id": "homesingleaxis",
+          "type": "boolean",
+          "label": "CN16",
+          "value": false
+        },
+        {
+          "id": "homecmd",
+          "type": "text",
+          "label": "CN10",
+          "value": "$H#",
+          "help": "CN11"
+        }]
+       },
+       {
+        "id": "zerocmd",
+        "type": "text",
+        "label": "CN19",
+        "value": "G10 L20 P0 #",
+        "help": "CN11"
       }
     ]
   }
