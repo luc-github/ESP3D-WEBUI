@@ -18,9 +18,7 @@ Jog.js - ESP3D WebUI component file
 
 import { Fragment, h } from "preact";
 import {
-  AlertCircle,
   Move,
-  Crosshair,
   Home,
   ZapOff,
   ChevronDown,
@@ -28,6 +26,8 @@ import {
   Circle,
   HelpCircle,
   Edit3,
+  StopCircle,
+  MoreHorizontal,
 } from "preact-feather";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
@@ -44,6 +44,7 @@ let currentButtonPressed;
 let enable_keyboard_jog = false;
 let keyboard_listener = false;
 let jog_keyboard_listener = false;
+let currentAxis = "A";
 
 /*
  * Local const
@@ -144,9 +145,15 @@ const JogPanel = () => {
   const { createNewRequest } = useHttpFn;
   const [isKeyboardEnabled, setIsKeyboardEnabled] =
     useState(enable_keyboard_jog);
+  const [currentSelectedAxis, setCurrentSelectedAxis] = useState(currentAxis);
 
   const id = "jogPanel";
   console.log(id);
+
+  const onChangeAxis = (e) => {
+    setCurrentSelectedAxis(e.target.value);
+    currentAxis = e.target.value;
+  };
 
   //Send a request to the ESP
   const SendCommand = (command) => {
@@ -376,6 +383,23 @@ const JogPanel = () => {
       AddKeyboardListener();
       jog_keyboard_listener = true;
     }
+    if (
+      (currentAxis == "A" && !useUiContextFn.getValue("showa")) ||
+      (currentAxis == "B" && !useUiContextFn.getValue("showb")) ||
+      (currentAxis == "C" && !useUiContextFn.getValue("showc"))
+    ) {
+      currentAxis = "-1";
+    }
+    if (currentAxis == "-1" && useUiContextFn.getValue("showa")) {
+      currentAxis = "A";
+    }
+    if (currentAxis == "-1" && useUiContextFn.getValue("showb")) {
+      currentAxis = "B";
+    }
+    if (currentAxis == "-1" && useUiContextFn.getValue("showc")) {
+      currentAxis = "C";
+    }
+    setCurrentSelectedAxis(currentAxis);
     return () => {
       RemoveKeyboardListener();
     };
@@ -536,19 +560,21 @@ const JogPanel = () => {
                 >
                   +X
                 </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN10")}
-                  id="btnHX"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("X");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">x</span>
-                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHX"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("X");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">x</span>
+                  </Button>
+                )}
                 <Button
                   m2
                   tooltip
@@ -587,19 +613,21 @@ const JogPanel = () => {
                 >
                   +Y
                 </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN10")}
-                  id="btnHY"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("Y");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">y</span>
-                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHY"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("Y");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">y</span>
+                  </Button>
+                )}
                 <Button
                   m2
                   tooltip
@@ -639,19 +667,21 @@ const JogPanel = () => {
                 >
                   +Z
                 </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN10")}
-                  id="btnHZ"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("Z");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">z</span>
-                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHZ"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("Z");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">z</span>
+                  </Button>
+                )}
                 <Button
                   m2
                   tooltip
@@ -757,6 +787,84 @@ const JogPanel = () => {
               </div>
             </div>
           </div>
+          {(useUiContextFn.getValue("showa") ||
+            useUiContextFn.getValue("showb") ||
+            useUiContextFn.getValue("showc")) && (
+            <div class="m-1 jog-buttons-container-horizontal">
+              <div class="form-group m-2 text-primary">
+                <select
+                  class="form-select"
+                  style="border-color: #5755d9!important"
+                  onchange={(e) => {
+                    onChangeAxis(e);
+                  }}
+                  value={currentSelectedAxis}
+                >
+                  {useUiContextFn.getValue("showa") && (
+                    <option value="A">A</option>
+                  )}
+                  {useUiContextFn.getValue("showb") && (
+                    <option value="B">B</option>
+                  )}
+                  {useUiContextFn.getValue("showc") && (
+                    <option value="C">C</option>
+                  )}
+                </select>
+              </div>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN12")}
+                id="btn+axis"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Axis+");
+                }}
+              >
+                +{currentSelectedAxis}
+              </Button>
+              {useUiContextFn.getValue("homesingleaxis") && (
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN10")}
+                  id="btnHaxis"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendHomeCommand("Axis");
+                  }}
+                >
+                  <Home size="1rem" />
+                  <span class="text-tiny">{currentSelectedAxis}</span>
+                </Button>
+              )}
+
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN19")}
+                onclick={(e) => {
+                  e.target.blur();
+                  sendZeroCommand("Axis");
+                }}
+              >
+                &Oslash;
+                <span class="text-tiny">{currentSelectedAxis}</span>
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN13")}
+                id="btn-axis"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Axis-");
+                }}
+              >
+                -{currentSelectedAxis}
+              </Button>
+            </div>
+          )}
 
           <div class="jog-extra-buttons-container">
             <Button
@@ -769,6 +877,7 @@ const JogPanel = () => {
               }}
             >
               <Home />
+              <MoreHorizontal />
             </Button>
             <Button
               m1
@@ -779,16 +888,19 @@ const JogPanel = () => {
                 sendZeroCommand("");
               }}
             >
-              &Oslash;
+              <label style="font-size:150%; vertical-align: top;">
+                &Oslash;
+              </label>
+              <MoreHorizontal />
             </Button>
           </div>
 
-          <div class="jog-extra-buttons-container" style="margin-right:8px">
+          <div class="jog-extra-buttons-container">
             <ButtonImg
               m1
               tooltip
-              label={T("P13")}
-              data-tooltip={T("P13")}
+              label={T("CN22")}
+              data-tooltip={T("CN22")}
               icon={<ZapOff />}
               id="btnMotorOff"
               onclick={(e) => {
@@ -796,13 +908,16 @@ const JogPanel = () => {
                 console.log(cmd);
               }}
             />
-            <Button
+            <ButtonImg
               m1
-              error
               tooltip
-              label={<Fragment>&oslash;</Fragment>}
-              showlow
-              data-tooltip={<Fragment>&oslash;</Fragment>}
+              label={T("CN23")}
+              icon={
+                <span class="text-error">
+                  <StopCircle />
+                </span>
+              }
+              data-tooltip={T("CN23")}
               id="btnEStop"
               onclick={(e) => {
                 e.target.blur();
@@ -811,9 +926,7 @@ const JogPanel = () => {
                   .replace(";", "\n");
                 SendCommand(cmd);
               }}
-            >
-              <Fragment>&Oslash; z</Fragment>
-            </Button>
+            />
           </div>
         </div>
       </div>

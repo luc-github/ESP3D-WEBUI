@@ -50,12 +50,16 @@
   font-size: 80%;
 }
 
+.jog-buttons-container-horizontal,
 .jog-buttons-container {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   border: 0.05rem solid #dadee4;
   border-radius: 5px;
+}
+
+.jog-buttons-container {
+  flex-direction: column;
 }
 
 .job-buttons-main-container {
