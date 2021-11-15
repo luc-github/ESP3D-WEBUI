@@ -45,6 +45,7 @@ let enable_keyboard_jog = false;
 let keyboard_listener = false;
 let jog_keyboard_listener = false;
 let currentAxis = "A";
+let numberOfAxis = 0;
 
 /*
  * Local const
@@ -53,6 +54,27 @@ let currentAxis = "A";
 //A separate control to avoid the full panel to be updated when the positions are updated
 const PositionsControls = () => {
   const { positions } = useTargetContext();
+  //detection of the number of axis
+  if (numberOfAxis == 0) {
+    if (positions.x) {
+      numberOfAxis = 1;
+    }
+    if (positions.y) {
+      numberOfAxis = 2;
+    }
+    if (positions.z) {
+      numberOfAxis = 3;
+    }
+    if (positions.a) {
+      numberOfAxis = 4;
+    }
+    if (positions.b) {
+      numberOfAxis = 5;
+    }
+    if (positions.c) {
+      numberOfAxis = 6;
+    }
+  }
   return (
     <Fragment>
       <div class="jog-positions-ctrls m-1">
@@ -547,166 +569,172 @@ const JogPanel = () => {
           <PositionsControls />
           <div class="m-1">
             <div class="job-buttons-main-container">
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN12")}
-                  id="btn+X"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("X+");
-                  }}
-                >
-                  +X
-                </Button>
-                {useUiContextFn.getValue("homesingleaxis") && (
+              {numberOfAxis > 0 && useUiContextFn.getValue("showx") && (
+                <div class="m-1 jog-buttons-container">
                   <Button
                     m2
                     tooltip
-                    data-tooltip={T("CN10")}
-                    id="btnHX"
+                    data-tooltip={T("CN12")}
+                    id="btn+X"
                     onclick={(e) => {
                       e.target.blur();
-                      sendHomeCommand("X");
+                      sendJogCommand("X+");
                     }}
                   >
-                    <Home size="1rem" />
+                    +X
+                  </Button>
+                  {useUiContextFn.getValue("homesingleaxis") && (
+                    <Button
+                      m2
+                      tooltip
+                      data-tooltip={T("CN10")}
+                      id="btnHX"
+                      onclick={(e) => {
+                        e.target.blur();
+                        sendHomeCommand("X");
+                      }}
+                    >
+                      <Home size="1rem" />
+                      <span class="text-tiny">x</span>
+                    </Button>
+                  )}
+
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN19")}
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendZeroCommand("X");
+                    }}
+                  >
+                    &Oslash;
                     <span class="text-tiny">x</span>
                   </Button>
-                )}
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN19")}
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendZeroCommand("X");
-                  }}
-                >
-                  &Oslash;
-                  <span class="text-tiny">x</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN13")}
-                  id="btn-X"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("X-");
-                  }}
-                >
-                  -X
-                </Button>
-              </div>
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN12")}
-                  id="btn+Y"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Y+");
-                  }}
-                >
-                  +Y
-                </Button>
-                {useUiContextFn.getValue("homesingleaxis") && (
                   <Button
                     m2
                     tooltip
-                    data-tooltip={T("CN10")}
-                    id="btnHY"
+                    data-tooltip={T("CN13")}
+                    id="btn-X"
                     onclick={(e) => {
                       e.target.blur();
-                      sendHomeCommand("Y");
+                      sendJogCommand("X-");
                     }}
                   >
-                    <Home size="1rem" />
+                    -X
+                  </Button>
+                </div>
+              )}
+              {numberOfAxis > 1 && useUiContextFn.getValue("showy") && (
+                <div class="m-1 jog-buttons-container">
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN12")}
+                    id="btn+Y"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendJogCommand("Y+");
+                    }}
+                  >
+                    +Y
+                  </Button>
+                  {useUiContextFn.getValue("homesingleaxis") && (
+                    <Button
+                      m2
+                      tooltip
+                      data-tooltip={T("CN10")}
+                      id="btnHY"
+                      onclick={(e) => {
+                        e.target.blur();
+                        sendHomeCommand("Y");
+                      }}
+                    >
+                      <Home size="1rem" />
+                      <span class="text-tiny">y</span>
+                    </Button>
+                  )}
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN19")}
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendZeroCommand("Y");
+                    }}
+                  >
+                    &Oslash;
                     <span class="text-tiny">y</span>
                   </Button>
-                )}
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN19")}
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendZeroCommand("Y");
-                  }}
-                >
-                  &Oslash;
-                  <span class="text-tiny">y</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN13")}
-                  id="btn-Y"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Y-");
-                  }}
-                >
-                  -Y
-                </Button>
-              </div>
-
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN12")}
-                  id="btn+Z"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Z+");
-                  }}
-                >
-                  +Z
-                </Button>
-                {useUiContextFn.getValue("homesingleaxis") && (
                   <Button
                     m2
                     tooltip
-                    data-tooltip={T("CN10")}
-                    id="btnHZ"
+                    data-tooltip={T("CN13")}
+                    id="btn-Y"
                     onclick={(e) => {
                       e.target.blur();
-                      sendHomeCommand("Z");
+                      sendJogCommand("Y-");
                     }}
                   >
-                    <Home size="1rem" />
+                    -Y
+                  </Button>
+                </div>
+              )}
+              {numberOfAxis > 2 && useUiContextFn.getValue("showz") && (
+                <div class="m-1 jog-buttons-container">
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN12")}
+                    id="btn+Z"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendJogCommand("Z+");
+                    }}
+                  >
+                    +Z
+                  </Button>
+                  {useUiContextFn.getValue("homesingleaxis") && (
+                    <Button
+                      m2
+                      tooltip
+                      data-tooltip={T("CN10")}
+                      id="btnHZ"
+                      onclick={(e) => {
+                        e.target.blur();
+                        sendHomeCommand("Z");
+                      }}
+                    >
+                      <Home size="1rem" />
+                      <span class="text-tiny">z</span>
+                    </Button>
+                  )}
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN19")}
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendZeroCommand("Z");
+                    }}
+                  >
+                    &Oslash;
                     <span class="text-tiny">z</span>
                   </Button>
-                )}
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN19")}
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendZeroCommand("Z");
-                  }}
-                >
-                  &Oslash;
-                  <span class="text-tiny">z</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN13")}
-                  id="btn-Z"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Z-");
-                  }}
-                >
-                  -Z
-                </Button>
-              </div>
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN13")}
+                    id="btn-Z"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendJogCommand("Z-");
+                    }}
+                  >
+                    -Z
+                  </Button>
+                </div>
+              )}
               <div class="m-1 p-2 jog-buttons-container">
                 <div class="btn-group jog-distance-selector-container">
                   <center class="jog-distance-selector-header">mm</center>
@@ -787,84 +815,85 @@ const JogPanel = () => {
               </div>
             </div>
           </div>
-          {(useUiContextFn.getValue("showa") ||
-            useUiContextFn.getValue("showb") ||
-            useUiContextFn.getValue("showc")) && (
-            <div class="m-1 jog-buttons-container-horizontal">
-              <div class="form-group m-2 text-primary">
-                <select
-                  class="form-select"
-                  style="border-color: #5755d9!important"
-                  onchange={(e) => {
-                    onChangeAxis(e);
-                  }}
-                  value={currentSelectedAxis}
-                >
-                  {useUiContextFn.getValue("showa") && (
-                    <option value="A">A</option>
-                  )}
-                  {useUiContextFn.getValue("showb") && (
-                    <option value="B">B</option>
-                  )}
-                  {useUiContextFn.getValue("showc") && (
-                    <option value="C">C</option>
-                  )}
-                </select>
-              </div>
-              <Button
-                m2
-                tooltip
-                data-tooltip={T("CN12")}
-                id="btn+axis"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendJogCommand("Axis+");
-                }}
-              >
-                +{currentSelectedAxis}
-              </Button>
-              {useUiContextFn.getValue("homesingleaxis") && (
+          {numberOfAxis > 3 &&
+            (useUiContextFn.getValue("showa") ||
+              useUiContextFn.getValue("showb") ||
+              useUiContextFn.getValue("showc")) && (
+              <div class="m-1 jog-buttons-container-horizontal">
+                <div class="form-group m-2 text-primary">
+                  <select
+                    class="form-select"
+                    style="border-color: #5755d9!important"
+                    onchange={(e) => {
+                      onChangeAxis(e);
+                    }}
+                    value={currentSelectedAxis}
+                  >
+                    {useUiContextFn.getValue("showa") && (
+                      <option value="A">A</option>
+                    )}
+                    {useUiContextFn.getValue("showb") && (
+                      <option value="B">B</option>
+                    )}
+                    {useUiContextFn.getValue("showc") && (
+                      <option value="C">C</option>
+                    )}
+                  </select>
+                </div>
                 <Button
                   m2
                   tooltip
-                  data-tooltip={T("CN10")}
-                  id="btnHaxis"
+                  data-tooltip={T("CN12")}
+                  id="btn+axis"
                   onclick={(e) => {
                     e.target.blur();
-                    sendHomeCommand("Axis");
+                    sendJogCommand("Axis+");
                   }}
                 >
-                  <Home size="1rem" />
+                  +{currentSelectedAxis}
+                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHaxis"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("Axis");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">{currentSelectedAxis}</span>
+                  </Button>
+                )}
+
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN19")}
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendZeroCommand("Axis");
+                  }}
+                >
+                  &Oslash;
                   <span class="text-tiny">{currentSelectedAxis}</span>
                 </Button>
-              )}
-
-              <Button
-                m2
-                tooltip
-                data-tooltip={T("CN19")}
-                onclick={(e) => {
-                  e.target.blur();
-                  sendZeroCommand("Axis");
-                }}
-              >
-                &Oslash;
-                <span class="text-tiny">{currentSelectedAxis}</span>
-              </Button>
-              <Button
-                m2
-                tooltip
-                data-tooltip={T("CN13")}
-                id="btn-axis"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendJogCommand("Axis-");
-                }}
-              >
-                -{currentSelectedAxis}
-              </Button>
-            </div>
-          )}
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN13")}
+                  id="btn-axis"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("Axis-");
+                  }}
+                >
+                  -{currentSelectedAxis}
+                </Button>
+              </div>
+            )}
 
           <div class="jog-extra-buttons-container">
             <Button

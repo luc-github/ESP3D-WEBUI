@@ -23,7 +23,7 @@
   "bfeedrate": "1000",
   "cfeedrate": "1000",
   "showx": true,
-  "showy": true,
+  "showy": false,
   "showz": true,
   "showa": false,
   "showb": true,
