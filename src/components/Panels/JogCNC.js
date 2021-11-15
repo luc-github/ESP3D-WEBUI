@@ -54,27 +54,6 @@ let numberOfAxis = 0;
 //A separate control to avoid the full panel to be updated when the positions are updated
 const PositionsControls = () => {
   const { positions } = useTargetContext();
-  //detection of the number of axis
-  if (numberOfAxis == 0) {
-    if (positions.x) {
-      numberOfAxis = 1;
-    }
-    if (positions.y) {
-      numberOfAxis = 2;
-    }
-    if (positions.z) {
-      numberOfAxis = 3;
-    }
-    if (positions.a) {
-      numberOfAxis = 4;
-    }
-    if (positions.b) {
-      numberOfAxis = 5;
-    }
-    if (positions.c) {
-      numberOfAxis = 6;
-    }
-  }
   return (
     <Fragment>
       <div class="jog-positions-ctrls m-1">
@@ -168,7 +147,7 @@ const JogPanel = () => {
   const [isKeyboardEnabled, setIsKeyboardEnabled] =
     useState(enable_keyboard_jog);
   const [currentSelectedAxis, setCurrentSelectedAxis] = useState(currentAxis);
-
+  const { positions } = useTargetContext();
   const id = "jogPanel";
   console.log(id);
 
@@ -412,13 +391,25 @@ const JogPanel = () => {
     ) {
       currentAxis = "-1";
     }
-    if (currentAxis == "-1" && useUiContextFn.getValue("showa")) {
+    if (
+      currentAxis == "-1" &&
+      useUiContextFn.getValue("showa") &&
+      positions.a
+    ) {
       currentAxis = "A";
     }
-    if (currentAxis == "-1" && useUiContextFn.getValue("showb")) {
+    if (
+      currentAxis == "-1" &&
+      useUiContextFn.getValue("showb") &&
+      positions.b
+    ) {
       currentAxis = "B";
     }
-    if (currentAxis == "-1" && useUiContextFn.getValue("showc")) {
+    if (
+      currentAxis == "-1" &&
+      useUiContextFn.getValue("showc") &&
+      positions.c
+    ) {
       currentAxis = "C";
     }
     setCurrentSelectedAxis(currentAxis);
@@ -448,8 +439,8 @@ const JogPanel = () => {
                 </span>
 
                 <ul class="menu">
-                  {(useUiContextFn.getValue("showx") ||
-                    useUiContextFn.getValue("showy")) && (
+                  {((useUiContextFn.getValue("showx") && positions.x) ||
+                    (useUiContextFn.getValue("showy") && positions.y)) && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -463,7 +454,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {useUiContextFn.getValue("showz") && (
+                  {positions.z && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -478,7 +469,7 @@ const JogPanel = () => {
                     </li>
                   )}
 
-                  {useUiContextFn.getValue("showa") && (
+                  {positions.a && useUiContextFn.getValue("showa") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -492,7 +483,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {useUiContextFn.getValue("showz") && (
+                  {positions.b && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -506,7 +497,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {useUiContextFn.getValue("showz") && (
+                  {positions.c && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -569,7 +560,7 @@ const JogPanel = () => {
           <PositionsControls />
           <div class="m-1">
             <div class="job-buttons-main-container">
-              {numberOfAxis > 0 && useUiContextFn.getValue("showx") && (
+              {positions.x && useUiContextFn.getValue("showx") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -625,7 +616,7 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              {numberOfAxis > 1 && useUiContextFn.getValue("showy") && (
+              {positions.y && useUiContextFn.getValue("showy") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -680,7 +671,7 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              {numberOfAxis > 2 && useUiContextFn.getValue("showz") && (
+              {positions.z && useUiContextFn.getValue("showz") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -815,85 +806,84 @@ const JogPanel = () => {
               </div>
             </div>
           </div>
-          {numberOfAxis > 3 &&
-            (useUiContextFn.getValue("showa") ||
-              useUiContextFn.getValue("showb") ||
-              useUiContextFn.getValue("showc")) && (
-              <div class="m-1 jog-buttons-container-horizontal">
-                <div class="form-group m-2 text-primary">
-                  <select
-                    class="form-select"
-                    style="border-color: #5755d9!important"
-                    onchange={(e) => {
-                      onChangeAxis(e);
-                    }}
-                    value={currentSelectedAxis}
-                  >
-                    {useUiContextFn.getValue("showa") && (
-                      <option value="A">A</option>
-                    )}
-                    {useUiContextFn.getValue("showb") && (
-                      <option value="B">B</option>
-                    )}
-                    {useUiContextFn.getValue("showc") && (
-                      <option value="C">C</option>
-                    )}
-                  </select>
-                </div>
+          {((useUiContextFn.getValue("showa") && positions.a) ||
+            (useUiContextFn.getValue("showb") && positions.b) ||
+            (useUiContextFn.getValue("showc") && positions.c)) && (
+            <div class="m-1 jog-buttons-container-horizontal">
+              <div class="form-group m-2 text-primary">
+                <select
+                  class="form-select"
+                  style="border-color: #5755d9!important"
+                  onchange={(e) => {
+                    onChangeAxis(e);
+                  }}
+                  value={currentSelectedAxis}
+                >
+                  {positions.a && useUiContextFn.getValue("showa") && (
+                    <option value="A">A</option>
+                  )}
+                  {positions.b && useUiContextFn.getValue("showb") && (
+                    <option value="B">B</option>
+                  )}
+                  {positions.c && useUiContextFn.getValue("showc") && (
+                    <option value="C">C</option>
+                  )}
+                </select>
+              </div>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN12")}
+                id="btn+axis"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Axis+");
+                }}
+              >
+                +{currentSelectedAxis}
+              </Button>
+              {useUiContextFn.getValue("homesingleaxis") && (
                 <Button
                   m2
                   tooltip
-                  data-tooltip={T("CN12")}
-                  id="btn+axis"
+                  data-tooltip={T("CN10")}
+                  id="btnHaxis"
                   onclick={(e) => {
                     e.target.blur();
-                    sendJogCommand("Axis+");
+                    sendHomeCommand("Axis");
                   }}
                 >
-                  +{currentSelectedAxis}
-                </Button>
-                {useUiContextFn.getValue("homesingleaxis") && (
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN10")}
-                    id="btnHaxis"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendHomeCommand("Axis");
-                    }}
-                  >
-                    <Home size="1rem" />
-                    <span class="text-tiny">{currentSelectedAxis}</span>
-                  </Button>
-                )}
-
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN19")}
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendZeroCommand("Axis");
-                  }}
-                >
-                  &Oslash;
+                  <Home size="1rem" />
                   <span class="text-tiny">{currentSelectedAxis}</span>
                 </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("CN13")}
-                  id="btn-axis"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Axis-");
-                  }}
-                >
-                  -{currentSelectedAxis}
-                </Button>
-              </div>
-            )}
+              )}
+
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN19")}
+                onclick={(e) => {
+                  e.target.blur();
+                  sendZeroCommand("Axis");
+                }}
+              >
+                &Oslash;
+                <span class="text-tiny">{currentSelectedAxis}</span>
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("CN13")}
+                id="btn-axis"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Axis-");
+                }}
+              >
+                -{currentSelectedAxis}
+              </Button>
+            </div>
+          )}
 
           <div class="jog-extra-buttons-container">
             <Button
