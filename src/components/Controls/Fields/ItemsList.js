@@ -96,28 +96,32 @@ const ItemControl = ({
   return (
     <Fragment>
       {!editionMode && (
-        <Fragment>
-          <div style="place-self: center;">
-            {index > 0 && completeList.length > 1 && (
-              <ButtonImg
-                m1
-                tooltip
-                data-tooltip={T("S38")}
-                icon={<ArrowUp />}
-                onClick={upItem}
-              />
-            )}
-            {completeList.length != 1 && index < completeList.length - 1 && (
-              <ButtonImg
-                m1
-                tooltip
-                data-tooltip={T("S39")}
-                icon={<ArrowDown />}
-                onClick={downItem}
-              />
-            )}
-          </div>
-          <div style="place-self: center;">
+        <div class="fields-line">
+          {((index > 0 && completeList.length > 1) ||
+            (index == 0 && completeList.length > 1)) && (
+            <div class="item-list-move">
+              {index > 0 && completeList.length > 1 && (
+                <ButtonImg
+                  m1
+                  tooltip
+                  data-tooltip={T("S38")}
+                  icon={<ArrowUp />}
+                  onClick={upItem}
+                />
+              )}
+              {completeList.length != 1 && index < completeList.length - 1 && (
+                <ButtonImg
+                  m1
+                  tooltip
+                  data-tooltip={T("S39")}
+                  icon={<ArrowDown />}
+                  onClick={downItem}
+                />
+              )}
+            </div>
+          )}
+
+          <div class="item-list-name">
             <ButtonImg
               m2
               tooltip
@@ -133,57 +137,57 @@ const ItemControl = ({
             />
           </div>
 
-          <div style="place-self: center">
-            <ButtonImg
-              m2
-              tooltip
-              data-tooltip={T("S37")}
-              icon={<Trash2 />}
-              onClick={removeItem}
-            />
-          </div>
-        </Fragment>
+          <ButtonImg
+            m2
+            tooltip
+            data-tooltip={T("S37")}
+            icon={<Trash2 />}
+            onClick={removeItem}
+          />
+        </div>
       )}
       {editionMode && (
         <div class="itemEditor">
-          <ButtonImg
-            sm
-            tooltip
-            data-tooltip={T("S95")}
-            icon={<Minimize2 />}
-            onClick={(e) => {
-              e.target.blur();
-              onEdit(false);
-            }}
-            class="float-right"
-          />
-          <div style="place-self: center;">
-            {index > 0 && completeList.length > 1 && (
-              <ButtonImg
-                m1
-                tooltip
-                data-tooltip={T("S38")}
-                icon={<ArrowUp />}
-                onClick={upItem}
-              />
-            )}
-            {completeList.length != 1 && index < completeList.length - 1 && (
-              <ButtonImg
-                m1
-                tooltip
-                data-tooltip={T("S39")}
-                icon={<ArrowDown />}
-                onClick={downItem}
-              />
-            )}
-
+          <div>
             <ButtonImg
-              m2
+              sm
               tooltip
-              data-tooltip={T("S37")}
-              icon={<Trash2 />}
-              onClick={removeItem}
+              data-tooltip={T("S95")}
+              icon={<Minimize2 />}
+              onClick={(e) => {
+                e.target.blur();
+                onEdit(false);
+              }}
+              class="float-right"
             />
+            <div>
+              {index > 0 && completeList.length > 1 && (
+                <ButtonImg
+                  m1
+                  tooltip
+                  data-tooltip={T("S38")}
+                  icon={<ArrowUp />}
+                  onClick={upItem}
+                />
+              )}
+              {completeList.length != 1 && index < completeList.length - 1 && (
+                <ButtonImg
+                  m1
+                  tooltip
+                  data-tooltip={T("S39")}
+                  icon={<ArrowDown />}
+                  onClick={downItem}
+                />
+              )}
+
+              <ButtonImg
+                m2
+                tooltip
+                data-tooltip={T("S37")}
+                icon={<Trash2 />}
+                onClick={removeItem}
+              />
+            </div>
           </div>
           <div class="m-1">
             {value &&
@@ -274,7 +278,7 @@ const ItemsList = ({
         />
       </legend>
 
-      <div style="display: grid;grid-template-columns: 30% auto 15%; grid-template-rows: auto;">
+      <div class="items-group-content">
         {value &&
           value.map((element, index, completeList) => {
             return (

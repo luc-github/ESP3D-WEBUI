@@ -21,11 +21,12 @@
 }
 
 .itemEditor {
-  grid-column-start: 1;
-  grid-column-end: 4;
+  display: flex;
+  flex-direction: column;
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
   margin-bottom: 0.4rem;
+  width: 100%;
 }
 
 .drop-zone {
@@ -63,6 +64,32 @@
 .field-group {
   color: blue;
   font-size: 0.8rem;
+}
+
+.fields-line {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.items-group-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: -1rem;
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.item-list-move {
+  flex-grow: 1;
+}
+
+.item-list-name {
+  display: flex;
+  justify-content: center;
+  border: #5755d9 0.05rem solid;
 }
 
 .field-group-content {
