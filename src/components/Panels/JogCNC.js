@@ -178,7 +178,10 @@ const JogPanel = () => {
 
   //Send Home command
   const sendHomeCommand = (axis) => {
-    const cmd = useUiContextFn.getValue("homecmd").replace("#", axis);
+    let selected_axis;
+    if (axis == "Axis") selected_axis = currentAxis;
+    else selected_axis = axis;
+    const cmd = useUiContextFn.getValue("homecmd").replace("#", selected_axis);
     SendCommand(cmd);
   };
 
@@ -279,7 +282,6 @@ const JogPanel = () => {
     else selected_axis = axis;
     let cmd =
       "$J=G91 G21 " + selected_axis + currentJogDistance + " F" + feedrate;
-    console.log(cmd);
     SendCommand(cmd);
   };
 
