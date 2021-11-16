@@ -205,20 +205,6 @@ const JogPanel = () => {
     SendCommand(cmd);
   };
 
-  //mouse down event
-  const onMouseDown = (id) => {
-    currentButtonPressed = id;
-    if (document.getElementById(id)) {
-      const list_item = document
-        .getElementById(id)
-        .querySelector(id == "posz" ? ".movez" : ".std");
-      if (list_item) {
-        list_item.classList.add("pressedbutton");
-        list_item.classList.remove(id == "posz" ? "movez" : "std");
-      }
-    }
-  };
-
   //keyboard listener handler
   const keyboardEventHandler = (e) => {
     if (!jog_keyboard_listener) return;
@@ -958,9 +944,12 @@ const JogPanel = () => {
               label={T("CN22")}
               data-tooltip={T("CN22")}
               icon={<ZapOff />}
-              id="btnMotorOff"
               onclick={(e) => {
-                const cmd = useUiContextFn.getValue("homesingleaxis");
+                e.target.blur();
+                const cmd = useUiContextFn
+                  .getValue("disablecmd")
+                  .replace(";", "\n");
+                SendCommand(cmd);
                 console.log(cmd);
               }}
             />
@@ -974,13 +963,13 @@ const JogPanel = () => {
                 </span>
               }
               data-tooltip={T("CN23")}
-              id="btnEStop"
               onclick={(e) => {
                 e.target.blur();
                 const cmd = useUiContextFn
-                  .getValue("emergencystop")
+                  .getValue("jogstopcmd")
                   .replace(";", "\n");
                 SendCommand(cmd);
+                console.log(cmd);
               }}
             />
           </div>

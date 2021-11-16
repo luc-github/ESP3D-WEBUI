@@ -112,6 +112,20 @@
         "label": "CN19",
         "value": "G10 L20 P0 #",
         "help": "CN11"
+      },
+      {
+        "id": "jogstopcmd",
+        "type": "text",
+        "label": "CN23",
+        "value": "#DOORSAFETY#",
+        "help": "S97"
+      },
+      {
+        "id": "disablecmd",
+        "type": "text",
+        "label": "CN22",
+        "value": "$SLP",
+        "help": "S97"
       }
     ]
   }
