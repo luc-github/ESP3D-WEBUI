@@ -39,13 +39,11 @@ import { showModal } from "../Modal";
 import { useTargetContext } from "../../targets";
 
 let currentFeedRate = [];
-let jogDistance = 100;
-let currentButtonPressed;
+let currentJogDistance = 100;
 let enable_keyboard_jog = false;
 let keyboard_listener = false;
 let jog_keyboard_listener = false;
 let currentAxis = "A";
-let numberOfAxis = 0;
 
 /*
  * Local const
@@ -268,23 +266,27 @@ const JogPanel = () => {
   }
 
   //Send jog command
-  const sendJogCommand = (axis, id, distance) => {
-    let movement;
+  const sendJogCommand = (axis) => {
+    let selected_axis;
     let feedrate =
       axis.startsWith("X") || axis.startsWith("Y")
         ? currentFeedRate["XY"]
-        : currentFeedRate[axis[0]];
-    if (distance) movement = axis + distance;
-    else movement = axis + jogDistance;
-    let cmd = "G91\nG1 " + movement + " F" + feedrate + "\nG90";
-    if (id && currentButtonPressed != id) return;
+        : axis.startsWith("Z")
+        ? currentFeedRate["Z"]
+        : currentFeedRate[currentAxis];
+    if (axis.startsWith("Axis"))
+      selected_axis = axis.replace("Axis", currentAxis);
+    else selected_axis = axis;
+    let cmd =
+      "$J=G91 G21 " + selected_axis + currentJogDistance + " F" + feedrate;
+    console.log(cmd);
     SendCommand(cmd);
   };
 
   //click distance button
   const onCheck = (e, distance) => {
     e.target.blur();
-    jogDistance = distance;
+    currentJogDistance = distance;
   };
 
   //Set the current feedrate for axis
@@ -751,7 +753,7 @@ const JogPanel = () => {
                         id="move_100"
                         name="select_distance"
                         value="100"
-                        checked={jogDistance == 100}
+                        checked={currentJogDistance == 100}
                         onclick={(e) => onCheck(e, 100)}
                       />
                       <label for="move_100">100</label>
@@ -765,7 +767,7 @@ const JogPanel = () => {
                         id="move_50"
                         name="select_distance"
                         value="50"
-                        checked={jogDistance == 50}
+                        checked={currentJogDistance == 50}
                         onclick={(e) => onCheck(e, 50)}
                       />
                       <label for="move_50">50</label>
@@ -779,7 +781,7 @@ const JogPanel = () => {
                         id="move_10"
                         name="select_distance"
                         value="10"
-                        checked={jogDistance == 10}
+                        checked={currentJogDistance == 10}
                         onclick={(e) => onCheck(e, 10)}
                       />
                       <label for="move_10">10</label>
@@ -793,7 +795,7 @@ const JogPanel = () => {
                         id="move_1"
                         name="select_distance"
                         value="1"
-                        checked={jogDistance == 1}
+                        checked={currentJogDistance == 1}
                         onclick={(e) => onCheck(e, 1)}
                       />
                       <label for="move_1">1</label>
@@ -807,7 +809,7 @@ const JogPanel = () => {
                         id="move_0_1"
                         name="select_distance"
                         value="0.1"
-                        checked={jogDistance == 0.1}
+                        checked={currentJogDistance == 0.1}
                         onclick={(e) => onCheck(e, 0.1)}
                       />
                       <label class="last-button" for="move_0_1">
@@ -877,7 +879,7 @@ const JogPanel = () => {
                 data-tooltip={T("CN19")}
                 onclick={(e) => {
                   e.target.blur();
-                  sendZeroCommand("Axis");
+                  sendZeroCommand("A");
                 }}
               >
                 &Oslash;
