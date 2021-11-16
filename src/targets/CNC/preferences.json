@@ -117,7 +117,7 @@
         "id": "jogstopcmd",
         "type": "text",
         "label": "CN23",
-        "value": "#DOORSAFETY#",
+        "value": "#SAFETYDOOR#",
         "help": "S97"
       },
       {

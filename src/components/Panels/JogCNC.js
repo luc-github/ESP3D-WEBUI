@@ -30,13 +30,15 @@ import {
   MoreHorizontal,
 } from "preact-feather";
 import { useHttpFn } from "../../hooks";
-import { espHttpURL } from "../Helpers";
+import { espHttpURL, replaceVariables } from "../Helpers";
 import { useUiContext, useUiContextFn } from "../../contexts";
 import { T } from "../Translations";
 import { Loading, Button, ButtonImg, CenterLeft } from "../Controls";
 import { useEffect, useState } from "preact/hooks";
 import { showModal } from "../Modal";
 import { useTargetContext } from "../../targets";
+//specific of this component and target
+import realCommandsTable from "SubTargetDir/realCommandsTable";
 
 let currentFeedRate = [];
 let currentJogDistance = 100;
@@ -946,11 +948,11 @@ const JogPanel = () => {
               icon={<ZapOff />}
               onclick={(e) => {
                 e.target.blur();
-                const cmd = useUiContextFn
-                  .getValue("disablecmd")
-                  .replace(";", "\n");
+                const cmd = replaceVariables(
+                  realCommandsTable,
+                  useUiContextFn.getValue("disablecmd")
+                ).replace(";", "\n");
                 SendCommand(cmd);
-                console.log(cmd);
               }}
             />
             <ButtonImg
@@ -965,11 +967,11 @@ const JogPanel = () => {
               data-tooltip={T("CN23")}
               onclick={(e) => {
                 e.target.blur();
-                const cmd = useUiContextFn
-                  .getValue("jogstopcmd")
-                  .replace(";", "\n");
+                const cmd = replaceVariables(
+                  realCommandsTable,
+                  useUiContextFn.getValue("jogstopcmd")
+                ).replace(";", "\n");
                 SendCommand(cmd);
-                console.log(cmd);
               }}
             />
           </div>

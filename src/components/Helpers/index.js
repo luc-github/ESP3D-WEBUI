@@ -33,6 +33,7 @@ import {
   formatFileSizeToString,
   formatStatus,
   compareStrings,
+  replaceVariables,
 } from "./strings";
 import {
   limitArr,
@@ -46,6 +47,7 @@ import { sortedFilesList, filterResultFiles } from "./filters";
 export {
   beautifyJSONString,
   capitalize,
+  replaceVariables,
   compareStrings,
   createComponent,
   disableNode,

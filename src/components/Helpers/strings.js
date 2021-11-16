@@ -68,6 +68,14 @@ const beautifyJSONString = (jsonstring) => {
   }
 };
 
+//replace several variable from a string
+//array format [{name,value},...]
+function replaceVariables(arrayRef, string) {
+  return arrayRef.reduce((acc, curr) => {
+    return acc.replaceAll(curr.name, curr.value);
+  }, string);
+}
+
 //Format status
 const formatStatus = (status) => {
   if (status.toUpperCase().indexOf("OK") != -1) return "S126";
@@ -82,4 +90,5 @@ export {
   compareStrings,
   formatFileSizeToString,
   formatStatus,
+  replaceVariables,
 };
