@@ -187,7 +187,21 @@ const JogPanel = () => {
 
   //Send Zero command
   const sendZeroCommand = (axis) => {
-    const cmd = useUiContextFn.getValue("zerocmd").replace("#", axis);
+    let selected_axis;
+    if (selected_axis == "Axis") selected_axis = currentAxis + "0";
+    else selected_axis = axis + "0";
+    if (axis.length == 0) {
+      selected_axis = "";
+      if (positions.x) selected_axis += " X0";
+      if (positions.y) selected_axis += " Y0";
+      if (positions.z) selected_axis += " Z0";
+      if (positions.a) selected_axis += " A0";
+      if (positions.b) selected_axis += " B0";
+      if (positions.c) selected_axis += " C0";
+    }
+    const cmd = useUiContextFn
+      .getValue("zerocmd")
+      .replace("#", selected_axis.trim());
     SendCommand(cmd);
   };
 
