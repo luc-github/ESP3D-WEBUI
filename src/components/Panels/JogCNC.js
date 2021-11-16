@@ -33,7 +33,7 @@ import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { useUiContext, useUiContextFn } from "../../contexts";
 import { T } from "../Translations";
-import { Button, ButtonImg, CenterLeft } from "../Controls";
+import { Loading, Button, ButtonImg, CenterLeft } from "../Controls";
 import { useEffect, useState } from "preact/hooks";
 import { showModal } from "../Modal";
 import { useTargetContext } from "../../targets";
@@ -560,6 +560,12 @@ const JogPanel = () => {
           <PositionsControls />
           <div class="m-1">
             <div class="job-buttons-main-container">
+              {!positions.x &&
+                !positions.y &&
+                !positions.z &&
+                !positions.a &&
+                !positions.b &&
+                !positions.c && <Loading large />}
               {positions.x && useUiContextFn.getValue("showx") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
@@ -726,84 +732,91 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              <div class="m-1 p-2 jog-buttons-container">
-                <div class="btn-group jog-distance-selector-container">
-                  <center class="jog-distance-selector-header">mm</center>
+              {(positions.x ||
+                positions.y ||
+                positions.z ||
+                positions.a ||
+                positions.b ||
+                positions.c) && (
+                <div class="m-1 p-2 jog-buttons-container">
+                  <div class="btn-group jog-distance-selector-container">
+                    <center class="jog-distance-selector-header">mm</center>
 
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("CN18")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_100"
-                      name="select_distance"
-                      value="100"
-                      checked={jogDistance == 100}
-                      onclick={(e) => onCheck(e, 100)}
-                    />
-                    <label for="move_100">100</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("CN18")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_50"
-                      name="select_distance"
-                      value="50"
-                      checked={jogDistance == 50}
-                      onclick={(e) => onCheck(e, 50)}
-                    />
-                    <label for="move_50">50</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("CN18")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_10"
-                      name="select_distance"
-                      value="10"
-                      checked={jogDistance == 10}
-                      onclick={(e) => onCheck(e, 10)}
-                    />
-                    <label for="move_10">10</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("CN18")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_1"
-                      name="select_distance"
-                      value="1"
-                      checked={jogDistance == 1}
-                      onclick={(e) => onCheck(e, 1)}
-                    />
-                    <label for="move_1">1</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("CN18")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_0_1"
-                      name="select_distance"
-                      value="0.1"
-                      checked={jogDistance == 0.1}
-                      onclick={(e) => onCheck(e, 0.1)}
-                    />
-                    <label class="last-button" for="move_0_1">
-                      0.1
-                    </label>
+                    <div
+                      class="flatbtn tooltip tooltip-left"
+                      data-tooltip={T("CN18")}
+                    >
+                      <input
+                        type="radio"
+                        id="move_100"
+                        name="select_distance"
+                        value="100"
+                        checked={jogDistance == 100}
+                        onclick={(e) => onCheck(e, 100)}
+                      />
+                      <label for="move_100">100</label>
+                    </div>
+                    <div
+                      class="flatbtn tooltip tooltip-left"
+                      data-tooltip={T("CN18")}
+                    >
+                      <input
+                        type="radio"
+                        id="move_50"
+                        name="select_distance"
+                        value="50"
+                        checked={jogDistance == 50}
+                        onclick={(e) => onCheck(e, 50)}
+                      />
+                      <label for="move_50">50</label>
+                    </div>
+                    <div
+                      class="flatbtn tooltip tooltip-left"
+                      data-tooltip={T("CN18")}
+                    >
+                      <input
+                        type="radio"
+                        id="move_10"
+                        name="select_distance"
+                        value="10"
+                        checked={jogDistance == 10}
+                        onclick={(e) => onCheck(e, 10)}
+                      />
+                      <label for="move_10">10</label>
+                    </div>
+                    <div
+                      class="flatbtn tooltip tooltip-left"
+                      data-tooltip={T("CN18")}
+                    >
+                      <input
+                        type="radio"
+                        id="move_1"
+                        name="select_distance"
+                        value="1"
+                        checked={jogDistance == 1}
+                        onclick={(e) => onCheck(e, 1)}
+                      />
+                      <label for="move_1">1</label>
+                    </div>
+                    <div
+                      class="flatbtn tooltip tooltip-left"
+                      data-tooltip={T("CN18")}
+                    >
+                      <input
+                        type="radio"
+                        id="move_0_1"
+                        name="select_distance"
+                        value="0.1"
+                        checked={jogDistance == 0.1}
+                        onclick={(e) => onCheck(e, 0.1)}
+                      />
+                      <label class="last-button" for="move_0_1">
+                        0.1
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           {((useUiContextFn.getValue("showa") && positions.a) ||
@@ -884,35 +897,41 @@ const JogPanel = () => {
               </Button>
             </div>
           )}
-
-          <div class="jog-extra-buttons-container">
-            <Button
-              m1
-              tooltip
-              data-tooltip={T("CN20")}
-              onclick={(e) => {
-                e.target.blur();
-                sendHomeCommand("");
-              }}
-            >
-              <Home />
-              <MoreHorizontal />
-            </Button>
-            <Button
-              m1
-              tooltip
-              data-tooltip={T("CN20")}
-              onclick={(e) => {
-                e.target.blur();
-                sendZeroCommand("");
-              }}
-            >
-              <label style="font-size:150%; vertical-align: top;">
-                &Oslash;
-              </label>
-              <MoreHorizontal />
-            </Button>
-          </div>
+          {(positions.x ||
+            positions.y ||
+            positions.z ||
+            positions.a ||
+            positions.b ||
+            positions.c) && (
+            <div class="jog-extra-buttons-container">
+              <Button
+                m1
+                tooltip
+                data-tooltip={T("CN20")}
+                onclick={(e) => {
+                  e.target.blur();
+                  sendHomeCommand("");
+                }}
+              >
+                <Home />
+                <MoreHorizontal />
+              </Button>
+              <Button
+                m1
+                tooltip
+                data-tooltip={T("CN20")}
+                onclick={(e) => {
+                  e.target.blur();
+                  sendZeroCommand("");
+                }}
+              >
+                <label style="font-size:150%; vertical-align: top;">
+                  &Oslash;
+                </label>
+                <MoreHorizontal />
+              </Button>
+            </div>
+          )}
 
           <div class="jog-extra-buttons-container">
             <ButtonImg
