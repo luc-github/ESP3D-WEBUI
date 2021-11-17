@@ -43,8 +43,6 @@ import realCommandsTable from "SubTargetDir/realCommandsTable";
 let currentFeedRate = [];
 let currentJogDistance = 100;
 let enable_keyboard_jog = false;
-let keyboard_listener = false;
-let jog_keyboard_listener = false;
 let currentAxis = "A";
 
 /*
@@ -151,16 +149,20 @@ const JogPanel = () => {
   const id = "jogPanel";
   console.log(id);
 
-  const onChangeAxis = (e) => {
-    setCurrentSelectedAxis(e.target.value);
-    currentAxis = e.target.value;
-  };
+  function onChangeAxis(e) {
+    let value = e.target ? e.target.value : e;
+    setCurrentSelectedAxis(value);
+    currentAxis = value;
+  }
 
   //Send a request to the ESP
   const SendCommand = (command) => {
     createNewRequest(
       espHttpURL("command", { cmd: command }).toString(),
-      { method: "GET", echo: command },
+      {
+        method: "GET",
+        echo: replaceVariables(realCommandsTable, command, true), //need to see real command as it is not printable
+      },
       {
         onSuccess: (result) => {},
         onFail: (error) => {
@@ -190,7 +192,7 @@ const JogPanel = () => {
   //Send Zero command
   const sendZeroCommand = (axis) => {
     let selected_axis;
-    if (selected_axis == "Axis") selected_axis = currentAxis + "0";
+    if (axis == "Axis") selected_axis = currentAxis + "0";
     else selected_axis = axis + "0";
     if (axis.length == 0) {
       selected_axis = "";
@@ -209,8 +211,16 @@ const JogPanel = () => {
 
   //keyboard listener handler
   const keyboardEventHandler = (e) => {
-    if (!jog_keyboard_listener) return;
-    if (e.key == "ArrowUp") {
+    if (!enable_keyboard_jog) RemoveKeyboardListener();
+    if (e.key == "1") {
+      clickBtn("btnHX");
+    } else if (e.key == "2") {
+      clickBtn("btnHY");
+    } else if (e.key == "3") {
+      clickBtn("btnHZ");
+    } else if (e.key == "4") {
+      clickBtn("btnHAxis");
+    } else if (e.key == "ArrowUp") {
       clickBtn("btn+X");
     } else if (e.key == "ArrowDown") {
       clickBtn("btn-X");
@@ -223,52 +233,70 @@ const JogPanel = () => {
     } else if (e.key == "PageDown") {
       clickBtn("btn-Z");
     } else if (e.key == "x" || e.key == "X") {
-      clickBtn("btnHX");
+      clickBtn("btnZX");
     } else if (e.key == "y" || e.key == "Y") {
-      clickBtn("btnHY");
+      clickBtn("btnZY");
     } else if (e.key == "z" || e.key == "Z") {
-      clickBtn("btnHZ");
+      clickBtn("btnZZ");
+    } else if (e.key == "a" || e.key == "A") {
+      clickBtn("btnZaxis");
+    } else if (e.key == "o" || e.key == "O") {
+      clickBtn("btnZAll");
     } else if (e.key == "End") {
-      clickBtn("btnMoveZ");
-    } else if (e.key == "m" || e.key == "M") {
-      clickBtn("btnMotorOff");
-    } else if (e.key == "P" || e.key == "p") {
-      clickBtn("btnMoveXY");
+      clickBtn("btnDisable");
     } else if (e.key == "Home") {
-      clickBtn("btnHXYZ");
+      clickBtn("btnHAll");
     } else if (e.key == "Delete") {
-      clickBtn("btnEStop");
-    } else if (e.key == "1") {
-      clickBtn("move_100");
-    } else if (e.key == "2") {
-      clickBtn("move_10");
-    } else if (e.key == "3") {
-      clickBtn("move_1");
-    } else if (e.key == "4") {
-      clickBtn("move_0_1");
+      clickBtn("btnStop");
+    } else if (e.key == "(" || e.key == ")") {
+      let axisList = [];
+      if (positions.a && useUiContextFn.getValue("showa")) axisList.push("A");
+      if (positions.b && useUiContextFn.getValue("showb")) axisList.push("B");
+      if (positions.c && useUiContextFn.getValue("showc")) axisList.push("C");
+
+      if (axisList.length > 1) {
+        let index = axisList.indexOf(currentAxis);
+        if (e.key == ")") {
+          index++;
+          if (index >= axisList.length) index = 0;
+        } else {
+          index--;
+          if (index < 0) index = axisList.length - 1;
+        }
+
+        if (document.getElementById("selectAxisList")) {
+          document.getElementById("selectAxisList").value = axisList[index];
+          onChangeAxis(axisList[index]);
+        }
+      }
+    } else if (e.key == "+") {
+      if (currentJogDistance == 100) clickBtn("move_0_1");
+      else if (currentJogDistance == 0.1) clickBtn("move_1");
+      else if (currentJogDistance == 1) clickBtn("move_10");
+      else if (currentJogDistance == 10) clickBtn("move_50");
+      else if (currentJogDistance == 50) clickBtn("move_100");
+    } else if (e.key == "-") {
+      if (currentJogDistance == 100) clickBtn("move_50");
+      else if (currentJogDistance == 0.1) clickBtn("move_100");
+      else if (currentJogDistance == 1) clickBtn("move_0_1");
+      else if (currentJogDistance == 10) clickBtn("move_1");
+      else if (currentJogDistance == 50) clickBtn("move_10");
+    } else if (e.key == "/") {
+      clickBtn("btn+axis");
+    } else if (e.key == "*") {
+      clickBtn("btn-axis");
     } else console.log(e.key);
   };
 
   //Add keyboard listener
-  //TODO: find a better way to remove listener as it is not working currently
-  function AddKeyboardListener() {
-    //hack to track keyboard is enabled or not
-    jog_keyboard_listener = true;
-    //hack to avoid multiple listeners as removeEventListener is not working
-    if (keyboard_listener) return;
-    keyboard_listener = true;
-    document.addEventListener("keydown", keyboardEventHandler, true);
-  }
+  const AddKeyboardListener = () => {
+    window.addEventListener("keydown", keyboardEventHandler, true);
+  };
 
   //Remove keyboard listener
-  //TODO: find a better way to remove listener as it is not working currently
-  function RemoveKeyboardListener() {
-    //hack to track keyboard is enabled or not because removeEventListener is not working
-    if (keyboard_listener) {
-      jog_keyboard_listener = false;
-      document.removeEventListener("keydown", keyboardEventHandler, true);
-    }
-  }
+  const RemoveKeyboardListener = () => {
+    window.removeEventListener("keydown", keyboardEventHandler, true);
+  };
 
   //Send jog command
   const sendJogCommand = (axis) => {
@@ -355,18 +383,42 @@ const JogPanel = () => {
 
   //Show keyboard mapped keys
   const showKeyboarHelp = () => {
+    let help = "";
+    if (positions.x && useUiContextFn.getValue("showx")) {
+      help += T("CN24");
+      if (useUiContextFn.getValue("homesingleaxis")) help += T("CN27");
+    }
+
+    if (positions.y && useUiContextFn.getValue("showy")) {
+      help += T("CN25");
+      if (useUiContextFn.getValue("homesingleaxis")) help += T("CN28");
+    }
+    if (positions.z && useUiContextFn.getValue("showz")) {
+      help += T("CN26");
+      if (useUiContextFn.getValue("homesingleaxis")) help += T("CN29");
+    }
+
+    if (
+      (positions.a && useUiContextFn.getValue("showa")) ||
+      (positions.b && useUiContextFn.getValue("showb")) ||
+      (positions.c && useUiContextFn.getValue("showc"))
+    ) {
+      help += T("CN30");
+      if (useUiContextFn.getValue("homesingleaxis")) help += T("CN31");
+      help += T("CN32");
+    }
+
+    help += T("CN33");
     const helpKeyboardJog = (
       <CenterLeft>
-        {T("CN15")
-          .split(",")
-          .map((e) => {
-            return <div>{e}</div>;
-          })}
+        {help.split(",").map((e) => {
+          return <div>{e}</div>;
+        })}
       </CenterLeft>
     );
     showModal({
       modals,
-      title: T("P81"),
+      title: T("CN14"),
       button1: {
         text: T("S24"),
       },
@@ -374,6 +426,15 @@ const JogPanel = () => {
       content: helpKeyboardJog,
     });
   };
+
+  useEffect(() => {
+    if (enable_keyboard_jog) AddKeyboardListener();
+    return () => {
+      if (enable_keyboard_jog) {
+        RemoveKeyboardListener();
+      }
+    };
+  }, [keyboardEventHandler, enable_keyboard_jog]);
 
   useEffect(() => {
     if (!currentFeedRate["XY"])
@@ -386,10 +447,6 @@ const JogPanel = () => {
       currentFeedRate["B"] = useUiContextFn.getValue("bfeedrate");
     if (!currentFeedRate["C"])
       currentFeedRate["C"] = useUiContextFn.getValue("cfeedrate");
-    if (enable_keyboard_jog) {
-      AddKeyboardListener();
-      jog_keyboard_listener = true;
-    }
     if (
       (currentAxis == "A" && !useUiContextFn.getValue("showa")) ||
       (currentAxis == "B" && !useUiContextFn.getValue("showb")) ||
@@ -419,9 +476,6 @@ const JogPanel = () => {
       currentAxis = "C";
     }
     setCurrentSelectedAxis(currentAxis);
-    return () => {
-      RemoveKeyboardListener();
-    };
   }, []);
   return (
     <div
@@ -606,6 +660,7 @@ const JogPanel = () => {
                     m2
                     tooltip
                     data-tooltip={T("CN19")}
+                    id="btnZX"
                     onclick={(e) => {
                       e.target.blur();
                       sendZeroCommand("X");
@@ -661,6 +716,7 @@ const JogPanel = () => {
                     m2
                     tooltip
                     data-tooltip={T("CN19")}
+                    id="btnZY"
                     onclick={(e) => {
                       e.target.blur();
                       sendZeroCommand("Y");
@@ -716,6 +772,7 @@ const JogPanel = () => {
                     m2
                     tooltip
                     data-tooltip={T("CN19")}
+                    id="btnZZ"
                     onclick={(e) => {
                       e.target.blur();
                       sendZeroCommand("Z");
@@ -831,6 +888,7 @@ const JogPanel = () => {
             <div class="m-1 jog-buttons-container-horizontal">
               <div class="form-group m-2 text-primary">
                 <select
+                  id="selectAxisList"
                   class="form-select"
                   style="border-color: #5755d9!important"
                   onchange={(e) => {
@@ -881,9 +939,10 @@ const JogPanel = () => {
                 m2
                 tooltip
                 data-tooltip={T("CN19")}
+                id="btnZaxis"
                 onclick={(e) => {
                   e.target.blur();
-                  sendZeroCommand("A");
+                  sendZeroCommand("Axis");
                 }}
               >
                 &Oslash;
@@ -914,6 +973,7 @@ const JogPanel = () => {
                 m1
                 tooltip
                 data-tooltip={T("CN20")}
+                id="btnHAll"
                 onclick={(e) => {
                   e.target.blur();
                   sendHomeCommand("");
@@ -926,6 +986,7 @@ const JogPanel = () => {
                 m1
                 tooltip
                 data-tooltip={T("CN20")}
+                id="btnZAll"
                 onclick={(e) => {
                   e.target.blur();
                   sendZeroCommand("");
@@ -945,6 +1006,7 @@ const JogPanel = () => {
               tooltip
               label={T("CN22")}
               data-tooltip={T("CN22")}
+              id="btnDisable"
               icon={<ZapOff />}
               onclick={(e) => {
                 e.target.blur();
@@ -959,6 +1021,7 @@ const JogPanel = () => {
               m1
               tooltip
               label={T("CN23")}
+              id="btnStop"
               icon={
                 <span class="text-error">
                   <StopCircle />

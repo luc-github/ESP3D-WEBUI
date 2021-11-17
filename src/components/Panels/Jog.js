@@ -45,8 +45,6 @@ let movetoY;
 let movetoZ;
 let currentButtonPressed;
 let enable_keyboard_jog = false;
-let keyboard_listener = false;
-let jog_keyboard_listener = false;
 
 /*
  * Local const
@@ -132,7 +130,7 @@ const JogPanel = () => {
 
   //keyboard listener handler
   const keyboardEventHandler = (e) => {
-    if (!jog_keyboard_listener) return;
+    if (!enable_keyboard_jog) RemoveKeyboardListener();
     if (e.key == "ArrowUp") {
       clickBtn("btn+X");
     } else if (e.key == "ArrowDown") {
@@ -173,25 +171,14 @@ const JogPanel = () => {
   };
 
   //Add keyboard listener
-  //TODO: find a better way to remove listener as it is not working currently
-  function AddKeyboardListener() {
-    //hack to track keyboard is enabled or not
-    jog_keyboard_listener = true;
-    //hack to avoid multiple listeners as removeEventListener is not working
-    if (keyboard_listener) return;
-    keyboard_listener = true;
-    document.addEventListener("keydown", keyboardEventHandler, true);
-  }
+  const AddKeyboardListener = () => {
+    window.addEventListener("keydown", keyboardEventHandler, true);
+  };
 
   //Remove keyboard listener
-  //TODO: find a better way to remove listener as it is not working currently
-  function RemoveKeyboardListener() {
-    //hack to track keyboard is enabled or not because removeEventListener is not working
-    if (keyboard_listener) {
-      jog_keyboard_listener = false;
-      document.removeEventListener("keydown", keyboardEventHandler, true);
-    }
-  }
+  const RemoveKeyboardListener = () => {
+    window.removeEventListener("keydown", keyboardEventHandler, true);
+  };
 
   //Send jog command
   const sendJogCommand = (axis, id, distance) => {
@@ -332,6 +319,15 @@ const JogPanel = () => {
   };
 
   useEffect(() => {
+    if (enable_keyboard_jog) AddKeyboardListener();
+    return () => {
+      if (enable_keyboard_jog) {
+        RemoveKeyboardListener();
+      }
+    };
+  }, [keyboardEventHandler, enable_keyboard_jog]);
+
+  useEffect(() => {
     if (!currentFeedRate["xyfeedrate"])
       currentFeedRate["xyfeedrate"] = useUiContextFn.getValue("xyfeedrate");
     if (!currentFeedRate["zfeedrate"])
@@ -344,13 +340,6 @@ const JogPanel = () => {
     if (typeof movetoZ == "undefined")
       movetoZ = useUiContextFn.getValue("zpos");
     setMoveToTitleZ(T("P75") + movetoZ);
-    if (enable_keyboard_jog) {
-      AddKeyboardListener();
-      jog_keyboard_listener = true;
-    }
-    return () => {
-      RemoveKeyboardListener();
-    };
   }, []);
   return (
     <div

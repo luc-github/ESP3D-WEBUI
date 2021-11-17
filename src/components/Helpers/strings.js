@@ -70,9 +70,13 @@ const beautifyJSONString = (jsonstring) => {
 
 //replace several variable from a string
 //array format [{name,value},...]
-function replaceVariables(arrayRef, string) {
+function replaceVariables(arrayRef, string, reverted = false) {
   return arrayRef.reduce((acc, curr) => {
-    return acc.replaceAll(curr.name, curr.value);
+    if (reverted) {
+      return acc.replace(curr.value, curr.name);
+    } else {
+      return acc.replaceAll(curr.name, curr.value);
+    }
   }, string);
 }
 
