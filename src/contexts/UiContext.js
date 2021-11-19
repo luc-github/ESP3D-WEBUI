@@ -93,7 +93,49 @@ const UiContextProvider = ({ children }) => {
     setModal([]);
   };
 
+  const getElement = (Id, base = null) => {
+    const settingsobject = base ? base : uiSettings;
+    if (settingsobject) {
+      for (let key in settingsobject) {
+        if (Array.isArray(settingsobject[key])) {
+          for (let index = 0; index < settingsobject[key].length; index++) {
+            if (settingsobject[key][index].id == Id) {
+              return settingsobject[key][index];
+            }
+            if (Array.isArray(settingsobject[key][index].value)) {
+              for (
+                let subindex = 0;
+                subindex < settingsobject[key][index].value.length;
+                subindex++
+              ) {
+                if (settingsobject[key][index].value[subindex].id == Id) {
+                  return settingsobject[key][index].value[subindex];
+                }
+              }
+            }
+          }
+        } else {
+          for (let subkey in settingsobject[key]) {
+            if (Array.isArray(settingsobject[key][subkey])) {
+              for (
+                let index = 0;
+                index < settingsobject[key][subkey].length;
+                index++
+              ) {
+                if (settingsobject[key][subkey][index].id == Id) {
+                  return settingsobject[key][subkey][index];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return undefined;
+  };
+
   const getValue = (Id, base = null) => {
+    if (!Id) return undefined;
     const settingsobject = base ? base : uiSettings;
     if (settingsobject) {
       for (let key in settingsobject) {
@@ -135,6 +177,7 @@ const UiContextProvider = ({ children }) => {
   };
 
   useUiContextFn.getValue = getValue;
+  useUiContextFn.getElement = getElement;
 
   const initAudio = () => {
     if (typeof window.AudioContext !== "undefined") {

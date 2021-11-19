@@ -40,6 +40,7 @@ const FormGroup = ({
   return (
     <div
       class={`${className ? className : ""} ${getValidationClass(validation)}`}
+      id={id ? "group-" + id : ""}
     >
       <div class={inline ? "columns mt-2" : "flex-cols"}>
         {label && (

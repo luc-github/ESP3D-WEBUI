@@ -24,7 +24,11 @@ import { ButtonImg } from "../../Controls";
 import { ScanApList } from "../ScanAp";
 import { T } from "./../../Translations";
 import { showModal } from "../../Modal";
-import { useUiContext } from "../../../contexts";
+import {
+  useUiContext,
+  useUiContextFn,
+  useSettingsContext,
+} from "../../../contexts";
 
 const Reveal = ({ applyTo }) => {
   const [reveal, setReveal] = useState(false);
@@ -57,10 +61,28 @@ const Input = ({
   extra,
   inline,
   append,
+  depend,
   help,
   button,
   ...rest
 }) => {
+  const dependId = [];
+  const dependValue = [];
+  const dependElement = [];
+  const { interfaceSettings } = useSettingsContext();
+  if (depend) {
+    depend.forEach((d) => {
+      const element = useUiContextFn.getElement(
+        d.id,
+        interfaceSettings.current.settings
+      );
+      if (element) {
+        dependElement.push(element);
+        dependId.push(element.value);
+        dependValue.push(d.value);
+      }
+    });
+  }
   const { step } = rest;
   const inputref = useRef();
   const onInput = (e) => {
@@ -80,6 +102,20 @@ const Input = ({
   const refreshList = () => {
     if (ScanNetworks) ScanNetworks();
   };
+
+  useEffect(() => {
+    if (dependId.length > 0) {
+      let visible = false;
+      dependElement.forEach((d, index) => {
+        if (d.value == dependValue[index]) visible = true;
+      });
+      document.getElementById(id).style.display = visible ? "block" : "none";
+      if (document.getElementById("group-" + id))
+        document.getElementById("group-" + id).style.display = visible
+          ? "block"
+          : "none";
+    }
+  }, [...dependId]);
 
   useEffect(() => {
     //to update state when import- but why ?
