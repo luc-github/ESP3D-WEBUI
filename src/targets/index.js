@@ -33,6 +33,7 @@ import {
   useTargetContextFn,
   webUIbuild,
   InformationsControls,
+  variablesList,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -67,4 +68,5 @@ export {
   useTargetContextFn,
   webUIbuild,
   InformationsControls,
+  variablesList,
 };

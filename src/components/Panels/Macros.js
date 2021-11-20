@@ -22,9 +22,14 @@ import { Cast } from "preact-feather";
 import { useUiContext } from "../../contexts";
 import { ButtonImg } from "../Controls";
 import { useHttpFn } from "../../hooks";
-import { espHttpURL } from "../Helpers";
+import { espHttpURL, replaceVariables } from "../Helpers";
 import { iconsFeather } from "../Images";
-import { iconsTarget, useTargetContextFn, files } from "../../targets";
+import {
+  iconsTarget,
+  useTargetContextFn,
+  files,
+  variablesList,
+} from "../../targets";
 
 /*
  * Local const
@@ -40,7 +45,7 @@ const MacrosPanel = () => {
   const sendCommand = (cmd) => {
     createNewRequest(
       espHttpURL("command", { cmd }).toString(),
-      { method: "GET", echo: cmd },
+      { method: "GET", echo: replaceVariables(variablesList, cmd, true) },
       {
         onSuccess: (result) => {
           processData("response", result);
@@ -105,7 +110,7 @@ const MacrosPanel = () => {
         //split by ; and show in terminal
         const commandsList = action.trim().split(";");
         commandsList.forEach((element) => {
-          sendCommand(element);
+          sendCommand(replaceVariables(variablesList, element));
         });
         break;
       default:

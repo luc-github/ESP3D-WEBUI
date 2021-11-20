@@ -34,7 +34,7 @@ const Target = "Marlin";
 const webUIbuild = "Me1";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin";
-
+const variablesList = [];
 const restartdelay = 30;
 
 export {
@@ -52,4 +52,5 @@ export {
   useTargetContextFn,
   webUIbuild,
   InformationsControls,
+  variablesList,
 };

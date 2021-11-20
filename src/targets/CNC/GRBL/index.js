@@ -30,12 +30,15 @@ import {
   useTargetContextFn,
 } from "./TargetContext";
 
+import realCommandsTable from "./realCommandsTable";
+
 const Target = "GRBL";
 const webUIbuild = "G1";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 
 const restartdelay = 30;
+const variablesList = [...realCommandsTable];
 
 export {
   MachineSettings,
@@ -52,4 +55,5 @@ export {
   useTargetContextFn,
   webUIbuild,
   InformationsControls,
+  variablesList,
 };

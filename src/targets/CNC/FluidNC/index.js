@@ -29,6 +29,7 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import realCommandsTable from "./realCommandsTable";
 
 const Target = "FluidNC";
 const webUIbuild = "F1";
@@ -36,6 +37,7 @@ const Name = "FluidNC";
 const fwUrl = "https://github.com/bdring/FluidNC";
 
 const restartdelay = 30;
+const variablesList = [...realCommandsTable];
 
 export {
   MachineSettings,
@@ -52,4 +54,5 @@ export {
   useTargetContextFn,
   webUIbuild,
   InformationsControls,
+  variablesList,
 };
