@@ -413,7 +413,6 @@ const MachineSettings = () => {
                 ref={editorRef}
                 class="m-1 yaml-editor"
                 value={formatArrayToYaml(currentFileConfig)}
-                style="height:400px; width:90%; max-width:500px; border: 0.05rem solid #dadee4; border-radius: $border-radius;padding:0.5rem 0.5rem;"
                 onchange={(e) => {
                   editedCurrentFileConfig = formatYamlToFormatedArray(
                     e.target.value

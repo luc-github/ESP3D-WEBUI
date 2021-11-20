@@ -26,6 +26,7 @@ const enableAuthentication = false;
 let lastconnection = Date.now();
 let logindone = false;
 const sessiontTime = 60000;
+let countStatus = 0;
 
 function getLastconnection() {
   return lastconnection;
@@ -156,15 +157,6 @@ const commandsQuery = (req, res, SendBinary) => {
         "[MSG: EndData]\n" +
         "ok\n"
     );
-
-    res.send("");
-    return;
-  }
-
-  if (url.indexOf("?") != -1) {
-    SendBinary(
-      "<Idle|MPos:0.000,0.000,0.000|FS:0.000,0|WCO:0.000,0.000,0.000>\n"
-    );
     res.send("");
     return;
   }
@@ -173,6 +165,22 @@ const commandsQuery = (req, res, SendBinary) => {
     if (url.indexOf("$Config/Filename=") == -1)
       SendBinary("$Config/Filename=config.yaml\n");
     SendBinary("ok\n");
+    res.send("");
+    return;
+  }
+  if (req.query.cmd && req.query.cmd == "?") {
+    countStatus++;
+    if (countStatus == 1)
+      SendBinary(
+        "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
+      );
+    if (countStatus == 2)
+      SendBinary(
+        "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100>\n"
+      );
+    if (countStatus > 2)
+      SendBinary("<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0>\n");
+    if (countStatus == 10) countStatus = 0;
     res.send("");
     return;
   }
@@ -257,6 +265,60 @@ const commandsQuery = (req, res, SendBinary) => {
         { SSID: "orange", SIGNAL: "20", IS_PROTECTED: "0" },
       ],
     });
+    return;
+  }
+
+  if (url.indexOf("$$") != -1) {
+    SendBinary(
+      "$0=3\n" +
+        "$1=250\n" +
+        "$2=0\n" +
+        "$3=0\n" +
+        "$4=0\n" +
+        "$5=1\n" +
+        "$6=0\n" +
+        "$10=1\n" +
+        "$11=0.010\n" +
+        "$12=0.002\n" +
+        "$13=0\n" +
+        "$20=0\n" +
+        "$21=0\n" +
+        "$22=0\n" +
+        "$23=3\n" +
+        "$24=200.000\n" +
+        "$25=2000.000\n" +
+        "$26=250\n" +
+        "$27=1.000\n" +
+        "$30=1000.000\n" +
+        "$31=0.000\n" +
+        "$32=0\n" +
+        "$100=100.000\n" +
+        "$101=100.000\n" +
+        "$102=100.000\n" +
+        "$103=100.000\n" +
+        "$104=100.000\n" +
+        "$105=100.000\n" +
+        "$110=1000.000\n" +
+        "$111=1000.000\n" +
+        "$112=1000.000\n" +
+        "$113=1000.000\n" +
+        "$114=1000.000\n" +
+        "$115=1000.000\n" +
+        "$120=200.000\n" +
+        "$121=200.000\n" +
+        "$122=200.000\n" +
+        "$123=200.000\n" +
+        "$124=200.000\n" +
+        "$125=200.000\n" +
+        "$130=300.000\n" +
+        "$131=300.000\n" +
+        "$132=300.000\n" +
+        "$133=300.000\n" +
+        "$134=300.000\n" +
+        "$135=300.000\n" +
+        "ok\n"
+    );
+    res.send("");
     return;
   }
 
@@ -504,21 +566,6 @@ const commandsQuery = (req, res, SendBinary) => {
         },
         {
           F: "system/system",
-          P: "461",
-          T: "B",
-          V: "40",
-          H: "targetfw",
-          O: [
-            { repetier: "50" },
-            { marlin: "20" },
-            { marlinkimbra: "35" },
-            { smoothieware: "40" },
-            { grbl: "10" },
-            { unknown: "0" },
-          ],
-        },
-        {
-          F: "system/system",
           P: "112",
           T: "I",
           V: "115200",
@@ -604,8 +651,7 @@ const configURI = (req, res) => {
       "mac: 80:7D:3A:C4:4E:DD<br/>" +
       "serial: ON<br/>" +
       "notification: OFF<br/>" +
-      "Target Fw: repetier<br/>" +
-      "FW ver: 3.0.0.a91<br/>" +
+      "Target Fw: FluidNC v3.2.2<br/>" +
       "FW arch: ESP32 "
   );
 };

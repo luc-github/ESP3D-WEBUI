@@ -68,18 +68,28 @@ const Input = ({
 }) => {
   const dependId = [];
   const dependValue = [];
+  const dependCondition = [];
   const dependElement = [];
-  const { interfaceSettings } = useSettingsContext();
+  const { interfaceSettings, connectionSettings } = useSettingsContext();
   if (depend) {
     depend.forEach((d) => {
-      const element = useUiContextFn.getElement(
-        d.id,
-        interfaceSettings.current.settings
-      );
-      if (element) {
-        dependElement.push(element);
-        dependId.push(element.value);
-        dependValue.push(d.value);
+      if (d.id) {
+        const element = useUiContextFn.getElement(
+          d.id,
+          interfaceSettings.current.settings
+        );
+        if (element) {
+          dependElement.push(element);
+          dependId.push(element.value);
+          dependValue.push(d.value);
+        }
+      }
+      if (d.connection_id) {
+        if (connectionSettings.current.Axis) {
+          dependCondition.push({
+            value: eval(connectionSettings.current.Axis + d.value),
+          });
+        }
       }
     });
   }
@@ -104,10 +114,20 @@ const Input = ({
   };
 
   useEffect(() => {
-    if (dependId.length > 0) {
+    //if any dependId is true then visible is true
+    if (dependId.length > 0 || dependCondition.length > 0) {
       let visible = false;
       dependElement.forEach((d, index) => {
         if (d.value == dependValue[index]) visible = true;
+      });
+      //if dependCondition is false when visible is true (dependId) => visible is false
+      //if dependCondition is true when visible is false and no dependId => visible is true
+      dependCondition.forEach((d) => {
+        if (dependId.length == 0) {
+          if (d.value) visible = true;
+        } else {
+          if (!d.value) visible = false;
+        }
       });
       document.getElementById(id).style.display = visible ? "block" : "none";
       if (document.getElementById("group-" + id))

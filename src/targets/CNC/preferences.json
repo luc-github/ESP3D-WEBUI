@@ -9,36 +9,54 @@
       {
         "id": "showx",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">0"}
+        ],
         "label": "X",
         "value": true
       },
       {
         "id": "showy",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">1"}
+        ],
         "label": "Y",
         "value": true
       },
       {
         "id": "showz",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">2"}
+        ],
         "label": "Z",
         "value": true
       },
       {
         "id": "showa",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">3"}
+        ],
         "label": "A",
         "value": true
       },
       {
         "id": "showb",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">4"}
+        ],
         "label": "B",
         "value": true
       },
       {
         "id": "showc",
         "type": "boolean",
+        "depend":[
+          {"connection_id":"axis", "value":">5"}
+        ],
         "label": "C",
         "value": true
       }]}
@@ -54,7 +72,8 @@
             {"id":"showx",
             "value": true},
             {"id":"showy",
-              "value": true}
+              "value": true},
+            {"connection_id":"axis", "value":">1"}
           ],
         "type": "number",
         "label": "XY",
@@ -66,7 +85,8 @@
         "id": "zfeedrate",
         "depend":[
           {"id":"showz",
-            "value": true}
+            "value": true},
+            {"connection_id":"axis", "value":">2"}
           ],
         "type": "number",
         "label": "Z",
@@ -78,7 +98,8 @@
         "id": "afeedrate",
         "depend":[
           {"id":"showa",
-            "value": true}
+            "value": true},
+            {"connection_id":"axis", "value":">3"}
           ],
         "type": "number",
         "label": "A",
@@ -90,7 +111,8 @@
         "id": "bfeedrate",
         "depend":[
           {"id":"showb",
-            "value": true}
+            "value": true},
+            {"connection_id":"axis", "value":">4"}
           ],
         "type": "number",
         "label": "B",
@@ -102,7 +124,9 @@
         "id": "cfeedrate",
         "depend":[
           {"id":"showc",
-            "value": true}
+            "value": true},
+            
+            {"connection_id":"axis", "value":">5"}
           ],
         "type": "number",
         "label": "C",

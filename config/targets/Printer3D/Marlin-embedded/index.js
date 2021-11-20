@@ -625,8 +625,7 @@ const configURI = (req, res) => {
       "mac: 80:7D:3A:C4:4E:DD<br/>" +
       "serial: ON<br/>" +
       "notification: OFF<br/>" +
-      "Target Fw: marlin<br/>" +
-      "FW ver: 3.0.0.a91<br/>" +
+      "Target Fw: Marlin 2.0.9.2 (ESP3D:1.0.10)<br/>" +
       "FW arch: ESP32 "
   );
 };

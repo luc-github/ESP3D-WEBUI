@@ -1,5 +1,5 @@
 /*
- stream.js - ESP3D WebUI Target file
+ Informations.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,19 +17,16 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { Fragment, h } from "preact";
+import { PositionsControls } from "../../../components/Panels/JogCNC";
+import { useUiContextFn } from "../../../contexts";
 
-const isVerboseOnly = (type, data) => {
-  const line = data.trim();
-  if (
-    line.trim().length == 0 ||
-    line.startsWith("[") ||
-    line.startsWith("ok") ||
-    line.startsWith("<") ||
-    (line.startsWith("{") && line.endsWith("}"))
-  )
-    return true;
-  else return false;
+const InformationsControls = () => {
+  return (
+    <Fragment>
+      {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
+    </Fragment>
+  );
 };
 
-export { isVerboseOnly };
+export { InformationsControls };

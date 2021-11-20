@@ -55,10 +55,6 @@ const TargetContextProvider = ({ children }) => {
   const dispatchInternally = (type, data) => {
     //files
     processor.handle(type, data);
-    //temperature
-    if (type === "stream") {
-      //console.log("stream", data);
-    }
     //sensors
     //status
     if (type === "stream") {
