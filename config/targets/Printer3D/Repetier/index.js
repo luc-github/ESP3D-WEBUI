@@ -287,7 +287,7 @@ const commandsQuery = (req, res, SendBinary) => {
   if (url.indexOf("ESP800") != -1) {
     res.json({
       FWVersion: "3.0.0.a28",
-      FWTarget: 40,
+      FWTarget: 50,
       SDConnection: "none",
       Authentication: enableAuthentication ? "Enabled" : "Disabled",
       WebCommunication: "Synchronous",

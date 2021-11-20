@@ -179,8 +179,8 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("ESP800") != -1) {
     res.json({
-      FWVersion: "3.0.0.a28",
-      FWTarget: 40,
+      FWVersion: "3.2.2",
+      FWTarget: 60,
       SDConnection: "none",
       Authentication: enableAuthentication ? "Enabled" : "Disabled",
       WebCommunication: "Synchronous",
@@ -193,6 +193,7 @@ const commandsQuery = (req, res, SendBinary) => {
       Time: "none",
       Cam_ID: "4",
       Cam_name: "ESP32 Cam",
+      Axis: "4",
     });
     return;
   }
