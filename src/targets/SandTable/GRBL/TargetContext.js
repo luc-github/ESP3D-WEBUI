@@ -28,6 +28,11 @@ import { processor } from "./processor";
 import { isVerboseOnly } from "./stream";
 
 /*
+ * Local variables
+ */
+let wpos = [];
+
+/*
  * Local const
  *
  */
@@ -36,6 +41,8 @@ const useTargetContext = () => useContext(TargetContext);
 const useTargetContextFn = {};
 
 const TargetContextProvider = ({ children }) => {
+  const [positions, setPositions] = useState({});
+
   const { terminal } = useDatasContext();
   const dataBuffer = useRef({
     stream: "",
@@ -48,9 +55,56 @@ const TargetContextProvider = ({ children }) => {
   const dispatchInternally = (type, data) => {
     //files
     processor.handle(type, data);
-    //temperature
     //sensors
-    //positions
+    //status
+    if (type === "stream") {
+      //format is : <...>
+      const status_patern = /<?(.*)>/;
+      if (status_patern.test(data)) {
+        const mpos_pattern = /\|MPos:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i;
+        const WCO_pattern = /\|WCO:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i;
+        let result = null;
+        //Machine positions
+        if ((result = mpos_pattern.exec(data)) !== null) {
+          try {
+            const mpos_array = result[0].split(":")[1].split("|")[0].split(",");
+            const precision = mpos_array[0].split(".")[1].length;
+            const pos = mpos_array.map((e) => parseFloat(e).toFixed(precision));
+
+            //Work coordinates
+            if ((result = WCO_pattern.exec(data)) !== null) {
+              try {
+                const wpos_array = result[0]
+                  .split(":")[1]
+                  .split("|")[0]
+                  .split(",");
+                wpos = wpos_array.map((e, index) =>
+                  (pos[index] - parseFloat(e)).toFixed(precision)
+                );
+              } catch (e) {
+                console.error(e);
+              }
+            }
+            setPositions({
+              x: pos[0],
+              y: pos.length > 1 ? pos[1] : undefined,
+              z: pos.length > 2 ? pos[2] : undefined,
+              a: pos.length > 3 ? pos[3] : undefined,
+              b: pos.length > 4 ? pos[4] : undefined,
+              c: pos.length > 5 ? pos[5] : undefined,
+              wx: wpos.length > 0 ? wpos[0] : undefined,
+              wy: wpos.length > 1 ? wpos[1] : undefined,
+              wz: wpos.length > 2 ? wpos[2] : undefined,
+              wa: wpos.length > 3 ? wpos[3] : undefined,
+              wb: wpos.length > 4 ? wpos[4] : undefined,
+              wc: wpos.length > 5 ? wpos[5] : undefined,
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+    }
     //etc...
   };
   const processData = (type, data) => {
@@ -58,6 +112,7 @@ const TargetContextProvider = ({ children }) => {
       if (type == "stream") {
         //TODO
         //need to handle \r \n and even not having some
+        //this will split by char
         data.split("").forEach((element, index) => {
           if (element == "\n" || element == "\r") {
             if (dataBuffer.current[type].length > 0) {
@@ -83,6 +138,7 @@ const TargetContextProvider = ({ children }) => {
                   });
                 }
               } else {
+                //if not json
                 terminal.add({
                   type,
                   content: dataBuffer.current[type],
@@ -134,6 +190,7 @@ const TargetContextProvider = ({ children }) => {
   useTargetContextFn.processData = processData;
 
   const store = {
+    positions,
     processData,
   };
 

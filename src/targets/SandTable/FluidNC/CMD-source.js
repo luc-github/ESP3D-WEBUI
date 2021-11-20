@@ -19,75 +19,37 @@
 */
 import { h } from "preact";
 
-const formatCapabilityLine = (acc, line) => {
-  //TODO:
-  //isolate description
-  //sort enabled
-  //sort disabled
-  acc.push({ data: line });
-  return acc;
-};
-
-const formatEepromLine = (acc, line) => {
-  //format G20 / G21
-  //it is comment
-  if (line.startsWith("echo:")) {
-    //it is setting
-    const data = line
-      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
-      .trim();
-    const extra =
-      line.indexOf(";") != -1
-        ? line.substring(line.indexOf(";") + 1).trim()
-        : "";
-    if (extra.length > 0) acc.push({ type: "comment", value: extra });
-    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
+const formatYamlLine = (acc, line) => {
+  console.log(line);
+  if (line.indexOf(":") != -1 && !line.startsWith("[")) {
+    acc.push(line);
   }
 
   return acc;
 };
 
-const capabilities = {
-  capabilities: () => true,
-};
-
 const commands = {
-  capabilities: () => {
-    return { type: "cmd", cmd: "M115" };
+  configFileName: () => {
+    return { type: "cmd", cmd: "$Config/Filename" };
   },
-  formatCapabilities: (result) => {
-    const capabilityList = result.reduce((acc, line) => {
-      return formatCapabilityLine(acc, line);
-    }, []);
-    return capabilityList;
-  },
-  eeprom: () => {
-    return { type: "cmd", cmd: "M503" };
-  },
-  formatEeprom: (result) => {
-    const res = result.reduce((acc, line) => {
-      return formatEepromLine(acc, line);
-    }, []);
-    return res;
+  yamlFile: () => {
+    return { type: "cmd", cmd: "$CD" };
   },
 };
 
 const responseSteps = {
-  capabilities: {
-    start: (data) => data.startsWith("FIRMWARE_NAME:"),
-    end: (data) =>
-      !(data.startsWith("Cap:") || data.startsWith("FIRMWARE_NAME:")),
+  yamlFile: {
+    start: (data) => data.startsWith("[MSG: BeginData]"),
+    end: (data) => data.startsWith("[MSG: EndData]"),
     error: (data) => {
-      return data.indexOf("error") != -1;
+      return data.startsWith("error:");
     },
   },
-  eeprom: {
-    start: (data) => data.startsWith("echo:") && data.indexOf("G2") != -1,
-    end: (data) => data.startsWith("ok"),
+  configFileName: {
+    start: (data) => data.startsWith("$Config/Filename="),
+    end: (data) => data.startsWith("$Config/Filename="),
     error: (data) => {
-      return (
-        data.indexOf("Unknown command") != -1 || data.indexOf("error") != -1
-      );
+      return data.startsWith("error:");
     },
   },
 };

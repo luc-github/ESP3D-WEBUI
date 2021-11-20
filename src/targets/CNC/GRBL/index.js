@@ -29,7 +29,6 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
-
 import realCommandsTable from "./realCommandsTable";
 
 const Target = "GRBL";

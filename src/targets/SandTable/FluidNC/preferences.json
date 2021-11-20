@@ -6,7 +6,25 @@
         "type": "text",
         "label": "S115",
         "help": "S97",
-        "value": "M105"
+        "value": "?"
+      }
+    ],
+    "files": [
+      {
+        "id": "filesfilter",
+        "type": "text",
+        "label": "S96",
+        "value": "g;G;gco;GCO;gcode;GCODE;nc;txt",
+        "help": "S97"
+      }],
+    "FluidNC":[ 
+      {
+        "id": "configfilenames",
+        "type": "text",
+        "min":6,
+        "label": "FL1",
+        "help": "S97",
+        "value": "config.yaml"
       }
     ]
   }

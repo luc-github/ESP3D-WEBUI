@@ -23,18 +23,21 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
+import { InformationsControls } from "./InformationsControls";
 import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import realCommandsTable from "./realCommandsTable";
 
 const Target = "FluidNC";
 const webUIbuild = "FS1";
 const Name = "FluidNC";
-const fwUrl = "https://github.com/bdring/FluidNC/tree/main";
+const fwUrl = "https://github.com/bdring/FluidNC";
 
 const restartdelay = 30;
+const variablesList = [...realCommandsTable];
 
 export {
   MachineSettings,
@@ -50,4 +53,6 @@ export {
   useTargetContext,
   useTargetContextFn,
   webUIbuild,
+  InformationsControls,
+  variablesList,
 };

@@ -139,15 +139,7 @@ const MachineSettings = () => {
       } else {
         fieldData.hasmodified = true;
       }
-      //TODO: Use Regex for validation
-      if (
-        fieldData.value.trim().length < 3 ||
-        !(
-          fieldData.value.trim().startsWith("G") ||
-          fieldData.value.trim().startsWith("M")
-        )
-      )
-        validation.valid = false;
+      if (fieldData.value.trim().length == 0) validation.valid = false;
     }
     if (!validation.valid) {
       validation.message = T("S42");
@@ -179,7 +171,6 @@ const MachineSettings = () => {
             <div>{collected}</div>
             <ButtonImg
               donotdisable
-              showlow
               icon={<XCircle />}
               label={T("S28")}
               tooltip
@@ -195,7 +186,11 @@ const MachineSettings = () => {
                 <CenterLeft bordered>
                   {machineSetting.cache.map((element) => {
                     if (element.type == "comment")
-                      return <div class="comment m-1  ">{element.value}</div>;
+                      return (
+                        <div class="comment m-1  ">
+                          {T(element.value)}({element.value})
+                        </div>
+                      );
                     const [validation, setvalidation] = useState();
                     const button = (
                       <ButtonImg

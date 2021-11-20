@@ -6,7 +6,7 @@
   "mobileview": false,
   "audio": false,
   "showsensorspanel": false,
-  "enablepolling": false,
+  "enablepolling": true,
   "pollingrefresh": "3000",
   "pollingcommands": "?",
   "showterminalpanel": true,
@@ -15,6 +15,7 @@
   "autoscroll": true,
   "showfilespanel": true,
   "openfilesonstart": false,
+  "filesfilter": "g;G;gco;GCO;gcode;GCODE;nc;txt",
   "showjogpanel": true,
   "openjogonstart": true,
   "showx": true,
@@ -56,6 +57,7 @@
     "type": "image",
     "refreshtime": "0"
    }
-  ]
+  ],
+  "configfilenames": "config.yaml"
  }
 }

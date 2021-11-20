@@ -23,11 +23,13 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
+import { InformationsControls } from "./InformationsControls";
 import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import realCommandsTable from "./realCommandsTable";
 
 const Target = "GRBL";
 const webUIbuild = "GS1";
@@ -35,6 +37,7 @@ const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 
 const restartdelay = 30;
+const variablesList = [...realCommandsTable];
 
 export {
   MachineSettings,
@@ -50,4 +53,6 @@ export {
   useTargetContext,
   useTargetContextFn,
   webUIbuild,
+  InformationsControls,
+  variablesList,
 };

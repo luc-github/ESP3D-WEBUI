@@ -31,38 +31,26 @@ const formatCapabilityLine = (acc, line) => {
 const formatEepromLine = (acc, line) => {
   //format G20 / G21
   //it is comment
-  if (line.startsWith("echo:")) {
+  if (line.startsWith("$")) {
     //it is setting
-    const data = line
-      .substring(5, line.indexOf(";") != -1 ? line.indexOf(";") : line.length)
-      .trim();
-    const extra =
-      line.indexOf(";") != -1
-        ? line.substring(line.indexOf(";") + 1).trim()
-        : "";
-    if (extra.length > 0) acc.push({ type: "comment", value: extra });
-    if (data.length > 0) acc.push({ type: "text", value: data, initial: data });
+    const data = line.split("=");
+    acc.push({ type: "comment", value: data[0] });
+    acc.push({
+      type: "text",
+      value: data[1],
+      initial: data[1],
+      cmd: data[0],
+    });
   }
 
   return acc;
 };
 
-const capabilities = {
-  capabilities: () => true,
-};
+const capabilities = {};
 
 const commands = {
-  capabilities: () => {
-    return { type: "cmd", cmd: "M115" };
-  },
-  formatCapabilities: (result) => {
-    const capabilityList = result.reduce((acc, line) => {
-      return formatCapabilityLine(acc, line);
-    }, []);
-    return capabilityList;
-  },
   eeprom: () => {
-    return { type: "cmd", cmd: "M503" };
+    return { type: "cmd", cmd: "$$" };
   },
   formatEeprom: (result) => {
     const res = result.reduce((acc, line) => {
@@ -73,21 +61,11 @@ const commands = {
 };
 
 const responseSteps = {
-  capabilities: {
-    start: (data) => data.startsWith("FIRMWARE_NAME:"),
-    end: (data) =>
-      !(data.startsWith("Cap:") || data.startsWith("FIRMWARE_NAME:")),
-    error: (data) => {
-      return data.indexOf("error") != -1;
-    },
-  },
   eeprom: {
-    start: (data) => data.startsWith("echo:") && data.indexOf("G2") != -1,
+    start: (data) => data.startsWith("$"),
     end: (data) => data.startsWith("ok"),
     error: (data) => {
-      return (
-        data.indexOf("Unknown command") != -1 || data.indexOf("error") != -1
-      );
+      return data.indexOf("error") != -1;
     },
   },
 };

@@ -23,9 +23,9 @@ const isVerboseOnly = (type, data) => {
   const line = data.trim();
   if (
     line.trim().length == 0 ||
-    line.startsWith("echo:") ||
+    line.startsWith("[") ||
     line.startsWith("ok") ||
-    line.startsWith("M105") ||
+    line.startsWith("<") ||
     (line.startsWith("{") && line.endsWith("}"))
   )
     return true;
