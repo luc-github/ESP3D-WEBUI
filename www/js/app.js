@@ -754,7 +754,8 @@ function process_socket_response(msg) {
         (msg.startsWith("  G21") ||
           msg.startsWith("  G20") ||
           msg.startsWith("echo:  G21") ||
-          msg.startsWith("echo:  G20"))
+          msg.startsWith("echo:  G20") ||
+          msg.startsWith("echo:; Linear Units:"))
       ) {
         socket_is_settings = true;
         socket_response = msg + "\n";
