@@ -350,7 +350,7 @@ const JogPanel = () => {
         <div class="navbar">
           <span class="navbar-section feather-icon-container">
             <Move />
-            <strong class="text-ellipsis">{T("jog")}</strong>
+            <strong class="text-ellipsis">{T("S66")}</strong>
           </span>
           <span class="navbar-section">
             <span class="H-100">
@@ -1490,7 +1490,7 @@ const JogPanel = () => {
 const JogPanelElement = {
   id: "jogPanel",
   content: <JogPanel />,
-  name: "jog",
+  name: "S66",
   icon: "Move",
   show: "showjogpanel",
   onstart: "openjogonstart",
