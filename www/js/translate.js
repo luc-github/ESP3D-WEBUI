@@ -41,6 +41,9 @@ var language_list = [
 //removeIf(zh_cn_lang_disabled)
     ['zh_CN', '&#31616;&#20307;&#20013;&#25991;', 'zh_CN_trans'],
 //endRemoveIf(zh_cn_lang_disabled)
+//removeIf(zh_tw_lang_disabled)
+    ['zh_TW', '&#32321;&#39636;&#20013;&#25991;;', 'zh_TW_trans'],
+//endRemoveIf(zh_tw_lang_disabled)
 ];
 
 //removeIf(production)
