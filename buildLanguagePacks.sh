@@ -37,6 +37,9 @@ cp index.html.gz languages/tr
 mkdir -p languages/zh_CN 
 gulp package --lang zh_CN 
 cp index.html.gz languages/zh_CN 
+mkdir -p languages/zh_TW 
+gulp package --lang zh_TW 
+cp index.html.gz languages/zh_TW 
 mkdir -p languages/uk
 gulp package --lang uk
 cp index.html.gz languages/uk
