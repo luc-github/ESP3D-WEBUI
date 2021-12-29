@@ -108,7 +108,7 @@ const About = () => {
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(
-      espHttpURL("command", { cmd: "[ESP420]" }).toString(),
+      espHttpURL("command", { cmd: "[ESP421]" }).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {

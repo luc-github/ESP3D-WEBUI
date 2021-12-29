@@ -52,7 +52,7 @@ const useSettings = () => {
   const getConnectionSettings = (next) => {
     createNewRequest(
       espHttpURL("command", {
-        cmd: "[ESP800]",
+        cmd: "[ESP801]",
         time: getBrowserTime(),
       }).toString(),
       { method: "GET", id: "connection" },
