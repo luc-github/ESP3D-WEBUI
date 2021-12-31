@@ -167,10 +167,9 @@ function importPreferences(currentPreferencesData, importedPreferences) {
   }
   if (importedPreferences.settings) {
     for (let key in importedPreferences.settings) {
-      const setting = importedPreferences.settings[key][0]
-      if (!updateElement(setting.id, setting.value)) {
-         haserrors = true;
-         console.log("Error with ", key);
+      if (!updateElement(key, importedPreferences.settings[key])) {
+        haserrors = true;
+        console.log("Error with ", key);
       }
     }
   }
