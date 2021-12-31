@@ -196,12 +196,12 @@ const JogPanel = () => {
     else selected_axis = axis + "0";
     if (axis.length == 0) {
       selected_axis = "";
-      if (positions.x) selected_axis += " X0";
-      if (positions.y) selected_axis += " Y0";
-      if (positions.z) selected_axis += " Z0";
-      if (positions.a) selected_axis += " A0";
-      if (positions.b) selected_axis += " B0";
-      if (positions.c) selected_axis += " C0";
+      if (typeof(positions.x) !== "undefined") selected_axis += " X0";
+      if (typeof(positions.y) !== "undefined") selected_axis += " Y0";
+      if (typeof(positions.z) !== "undefined") selected_axis += " Z0";
+      if (typeof(positions.a) !== "undefined") selected_axis += " A0";
+      if (typeof(positions.b) !== "undefined") selected_axis += " B0";
+      if (typeof(positions.c) !== "undefined") selected_axis += " C0";
     }
     const cmd = useUiContextFn
       .getValue("zerocmd")
@@ -499,8 +499,8 @@ const JogPanel = () => {
                 </span>
 
                 <ul class="menu">
-                  {((useUiContextFn.getValue("showx") && positions.x) ||
-                    (useUiContextFn.getValue("showy") && positions.y)) && (
+                  {((useUiContextFn.getValue("showx") && typeof(positions.x) !== "undefined") ||
+                    (useUiContextFn.getValue("showy") && typeof(positions.y) !== "undefined")) && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -514,7 +514,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {positions.z && useUiContextFn.getValue("showz") && (
+                  {typeof(positions.z) !== "undefined" && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -529,7 +529,7 @@ const JogPanel = () => {
                     </li>
                   )}
 
-                  {positions.a && useUiContextFn.getValue("showa") && (
+                  {typeof(positions.a) !== "undefined" && useUiContextFn.getValue("showa") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -543,7 +543,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {positions.b && useUiContextFn.getValue("showz") && (
+                  {typeof(positions.b) !== "undefined" && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -557,7 +557,7 @@ const JogPanel = () => {
                       </div>
                     </li>
                   )}
-                  {positions.c && useUiContextFn.getValue("showz") && (
+                  {typeof(positions.c) !== "undefined" && useUiContextFn.getValue("showz") && (
                     <li class="menu-item">
                       <div
                         class="menu-entry"
@@ -619,14 +619,14 @@ const JogPanel = () => {
         <div class="m-1 jog-container">
           <PositionsControls />
           <div class="m-1">
-            <div class="job-buttons-main-container">
-              {!positions.x &&
-                !positions.y &&
-                !positions.z &&
-                !positions.a &&
-                !positions.b &&
-                !positions.c && <Loading large />}
-              {positions.x && useUiContextFn.getValue("showx") && (
+            <div class="jog-buttons-main-container">
+              {typeof(positions.x) == "undefined" &&
+                typeof(positions.y) == "undefined" &&
+                typeof(positions.z) == "undefined" &&
+                typeof(positions.a) == "undefined" &&
+                typeof(positions.b) == "undefined" &&
+                typeof(positions.c) == "undefined" && <Loading large />}
+              {typeof(positions.x) !== "undefined" && useUiContextFn.getValue("showx") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -655,7 +655,6 @@ const JogPanel = () => {
                       <span class="text-tiny">x</span>
                     </Button>
                   )}
-
                   <Button
                     m2
                     tooltip
@@ -683,7 +682,7 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              {positions.y && useUiContextFn.getValue("showy") && (
+              {typeof(positions.y) !== "undefined" && useUiContextFn.getValue("showy") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -739,7 +738,7 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              {positions.z && useUiContextFn.getValue("showz") && (
+              {typeof(positions.z) !== "undefined" && useUiContextFn.getValue("showz") && (
                 <div class="m-1 jog-buttons-container">
                   <Button
                     m2
@@ -795,12 +794,12 @@ const JogPanel = () => {
                   </Button>
                 </div>
               )}
-              {(positions.x ||
-                positions.y ||
-                positions.z ||
-                positions.a ||
-                positions.b ||
-                positions.c) && (
+              {(typeof(positions.x) !== "undefined" ||
+                typeof(positions.y) !== "undefined" ||
+                typeof(positions.z) !== "undefined" ||
+                typeof(positions.a) !== "undefined" ||
+                typeof(positions.b) !== "undefined" ||
+                typeof(positions.c) !== "undefined") && (
                 <div class="m-1 p-2 jog-buttons-container">
                   <div class="btn-group jog-distance-selector-container">
                     <center class="jog-distance-selector-header">mm</center>
@@ -882,9 +881,9 @@ const JogPanel = () => {
               )}
             </div>
           </div>
-          {((useUiContextFn.getValue("showa") && positions.a) ||
-            (useUiContextFn.getValue("showb") && positions.b) ||
-            (useUiContextFn.getValue("showc") && positions.c)) && (
+          {((useUiContextFn.getValue("showa") && typeof(positions.a) !== "undefined") ||
+            (useUiContextFn.getValue("showb") && typeof(positions.b) !== "undefined") ||
+            (useUiContextFn.getValue("showc") && typeof(positions.c) !== "undefined")) && (
             <div class="m-1 jog-buttons-container-horizontal">
               <div class="form-group m-2 text-primary">
                 <select
@@ -896,13 +895,13 @@ const JogPanel = () => {
                   }}
                   value={currentSelectedAxis}
                 >
-                  {positions.a && useUiContextFn.getValue("showa") && (
+                  {typeof(positions.a) !== "undefined" && useUiContextFn.getValue("showa") && (
                     <option value="A">A</option>
                   )}
-                  {positions.b && useUiContextFn.getValue("showb") && (
+                  {typeof(positions.b) !== "undefined" && useUiContextFn.getValue("showb") && (
                     <option value="B">B</option>
                   )}
-                  {positions.c && useUiContextFn.getValue("showc") && (
+                  {typeof(positions.c) !== "undefined" && useUiContextFn.getValue("showc") && (
                     <option value="C">C</option>
                   )}
                 </select>
@@ -962,12 +961,12 @@ const JogPanel = () => {
               </Button>
             </div>
           )}
-          {(positions.x ||
-            positions.y ||
-            positions.z ||
-            positions.a ||
-            positions.b ||
-            positions.c) && (
+          {(typeof(positions.x) !== "undefined" ||
+            typeof(positions.y) !== "undefined" ||
+            typeof(positions.z) !== "undefined" ||
+            typeof(positions.a) !== "undefined" ||
+            typeof(positions.b) !== "undefined" ||
+            typeof(positions.c) !== "undefined") && (
             <div class="jog-extra-buttons-container">
               <Button
                 m1
