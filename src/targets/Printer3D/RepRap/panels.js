@@ -21,11 +21,17 @@ import { h } from "preact";
 import { FilesPanelElement } from "../../../components/Panels/Files";
 import { MacrosPanelElement } from "../../../components/Panels/Macros";
 import { TerminalPanelElement } from "../../../components/Panels/Terminal";
+import { JogPanelElement } from "../../../components/Panels/Jog";
+import { ExtrudersPanelElement } from "../../../components/Panels/Extruders";
+import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures";
 
 const defaultPanelsList = [
   FilesPanelElement,
   TerminalPanelElement,
   MacrosPanelElement,
+  JogPanelElement,
+  ExtrudersPanelElement,
+  TemperaturesPanelElement,
 ];
 
 export { defaultPanelsList };

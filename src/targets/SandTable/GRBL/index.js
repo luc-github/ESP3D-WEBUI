@@ -32,7 +32,7 @@ import {
 import realCommandsTable from "./realCommandsTable";
 
 const Target = "GRBL";
-const webUIbuild = "GS1";
+const webUIbuild = "GS2";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 

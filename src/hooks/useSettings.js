@@ -18,6 +18,7 @@
 */
 import { h } from "preact";
 import { useState } from "preact/hooks";
+import { webUIversion } from "../components/App/version";
 import { useSettingsContext } from "../contexts/";
 import {
   espHttpURL,
@@ -54,6 +55,7 @@ const useSettings = () => {
       espHttpURL("command", {
         cmd: "[ESP800]",
         time: getBrowserTime(),
+        version: webUIversion,
       }).toString(),
       { method: "GET", id: "connection" },
       {
@@ -71,9 +73,9 @@ const useSettings = () => {
               content: T("S124").replace(
                 "%s",
                 connectionSettings.current.WebSocketIP +
-                  (connectionSettings.current.WebSocketport != "81"
+                  (connectionSettings.current.WebSocketPort != "81"
                     ? ":" +
-                      (parseInt(connectionSettings.current.WebSocketport) - 1)
+                      (parseInt(connectionSettings.current.WebSocketPort) - 1)
                     : "")
               ),
               hideclose: true,

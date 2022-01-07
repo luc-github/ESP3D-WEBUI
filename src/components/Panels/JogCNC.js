@@ -619,7 +619,7 @@ const JogPanel = () => {
         <div class="m-1 jog-container">
           <PositionsControls />
           <div class="m-1">
-            <div class="job-buttons-main-container">
+            <div class="jog-buttons-main-container">
               {!positions.x &&
                 !positions.y &&
                 !positions.z &&

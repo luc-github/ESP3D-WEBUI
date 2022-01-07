@@ -32,7 +32,7 @@ import {
 import realCommandsTable from "./realCommandsTable";
 
 const Target = "FluidNC";
-const webUIbuild = "F1";
+const webUIbuild = "F2";
 const Name = "FluidNC";
 const fwUrl = "https://github.com/bdring/FluidNC";
 

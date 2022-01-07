@@ -31,7 +31,7 @@ import {
 } from "./TargetContext";
 
 const Target = "Repetier";
-const webUIbuild = "R1";
+const webUIbuild = "R2";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
 const variablesList = [];

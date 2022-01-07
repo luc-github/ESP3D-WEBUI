@@ -17,7 +17,7 @@
     "dev-printer-reprap": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=RepRap concurrently \"npm run server\" \"npm run front\"",
     "dev-sand-marlin": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=Marlin concurrently \"npm run server\" \"npm run front\"",
     "dev-sand-grbl": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=GRBL concurrently \"npm run server\" \"npm run front\"",
-    "dev-sand-fluidnc": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=FluidNc concurrently \"npm run server\" \"npm run front\"",
+    "dev-sand-fluidnc": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=FluidNC concurrently \"npm run server\" \"npm run front\"",
     "dev": "concurrently \"npm run server\" \"npm run front\"",
     "printer-repetier": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Repetier webpack --config config/webpack.prod.js",
     "printer-marlin": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Marlin webpack --config config/webpack.prod.js",
@@ -48,7 +48,7 @@
     "chalk": "^4.1.2",
     "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^7.1.2",
-    "concurrently": "^6.3.0",
+    "concurrently": "^7.0.0",
     "core-js": "^3.18.3",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.7",
@@ -72,7 +72,7 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.7.2"
   },
   "dependencies": {
     "preact": "^10.6.0",

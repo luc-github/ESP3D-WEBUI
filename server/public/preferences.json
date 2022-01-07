@@ -6,18 +6,18 @@
   "mobileview": false,
   "audio": false,
   "showsensorspanel": false,
-  "enablepolling": true,
+  "enablepolling": false,
   "pollingrefresh": "3000",
   "pollingcommands": "?",
   "showterminalpanel": true,
-  "openterminalonstart": true,
+  "openterminalonstart": false,
   "verbose": true,
   "autoscroll": true,
   "showfilespanel": true,
   "openfilesonstart": false,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE;nc;txt",
   "showjogpanel": true,
-  "openjogonstart": true,
+  "openjogonstart": false,
   "showx": true,
   "showy": true,
   "showz": true,
@@ -35,29 +35,11 @@
   "jogstopcmd": "#SAFETYDOOR#",
   "disablecmd": "$SLP",
   "showmacrospanel": true,
-  "openmacrosonstart": true,
-  "macros": [
-   {
-    "id": "vmm7erfhh",
-    "name": "Macro test",
-    "icon": "Meh",
-    "action": "#JOGCANCEL#",
-    "type": "CMD"
-   }
-  ],
+  "openmacrosonstart": false,
+  "macros": [],
   "showextracontents": false,
   "openextrapanelsonstart": false,
-  "extracontents": [
-   {
-    "id": "3u6ujpjgg",
-    "name": "Panel 3u6ujpjgg",
-    "icon": "Meh",
-    "target": "page",
-    "source": "/test.html",
-    "type": "image",
-    "refreshtime": "0"
-   }
-  ],
+  "extracontents": [],
   "configfilenames": "config.yaml"
  }
 }

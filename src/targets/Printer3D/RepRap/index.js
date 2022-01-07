@@ -23,6 +23,7 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
+import { InformationsControls } from "./InformationsControls";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -30,10 +31,10 @@ import {
 } from "./TargetContext";
 
 const Target = "RepRap";
-const webUIbuild = "RR1";
+const webUIbuild = "RR2";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
-
+const variablesList = [];
 const restartdelay = 30;
 
 export {
@@ -50,4 +51,6 @@ export {
   useTargetContext,
   useTargetContextFn,
   webUIbuild,
+  InformationsControls,
+  variablesList,
 };

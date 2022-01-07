@@ -31,7 +31,7 @@ import {
 } from "./TargetContext";
 
 const Target = "Marlin";
-const webUIbuild = "Me1";
+const webUIbuild = "Me2";
 const Name = "ESP3D";
 const fwUrl = "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin";
 const variablesList = [];

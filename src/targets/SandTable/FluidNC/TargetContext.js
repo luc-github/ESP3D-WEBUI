@@ -41,7 +41,9 @@ const useTargetContext = () => useContext(TargetContext);
 const useTargetContextFn = {};
 
 const TargetContextProvider = ({ children }) => {
-  const [positions, setPositions] = useState({});
+  const [positions, setPositions] = useState({
+    x: "?",
+  });
 
   const { terminal } = useDatasContext();
   const dataBuffer = useRef({

@@ -292,7 +292,7 @@ const commandsQuery = (req, res, SendBinary) => {
       Authentication: enableAuthentication ? "Enabled" : "Disabled",
       WebCommunication: "Synchronous",
       WebSocketIP: "localhost",
-      WebSocketport: "81",
+      WebSocketPort: "81",
       Hostname: "esp3d",
       WiFiMode: "STA",
       WebUpdate: "Enabled",
