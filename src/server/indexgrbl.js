@@ -61,7 +61,7 @@ function sendStatus() {
         nbqueries++
     }
 }
-app.get("/command", function(req, res) {
+app.get("/command", function (req, res) {
     var url = req.originalUrl
     console.log(url)
     if (url.indexOf("cmd=%3F") != -1) {
@@ -132,7 +132,7 @@ app.get("/command", function(req, res) {
             Authentication: "Disabled",
             WebCommunication: "Synchronous",
             WebSocketIP: "localhost",
-            WebSocketport: "81",
+            WebSocketPort: "81",
             Hostname: "esp3d",
             WiFiMode: "STA",
             WebUpdate: "Enabled",
@@ -314,20 +314,20 @@ app.get("/command", function(req, res) {
                     V: "11",
                     H: "channel",
                     O: [
-                        { "1": "1" },
-                        { "2": "2" },
-                        { "3": "3" },
-                        { "4": "4" },
-                        { "5": "5" },
-                        { "6": "6" },
-                        { "7": "7" },
-                        { "8": "8" },
-                        { "9": "9" },
-                        { "10": "10" },
-                        { "11": "11" },
-                        { "12": "12" },
-                        { "13": "13" },
-                        { "14": "14" },
+                        { 1: "1" },
+                        { 2: "2" },
+                        { 3: "3" },
+                        { 4: "4" },
+                        { 5: "5" },
+                        { 6: "6" },
+                        { 7: "7" },
+                        { 8: "8" },
+                        { 9: "9" },
+                        { 10: "10" },
+                        { 11: "11" },
+                        { 12: "12" },
+                        { 13: "13" },
+                        { 14: "14" },
                     ],
                 },
                 {
@@ -479,7 +479,7 @@ function filesList(mypath) {
     let nb = 0
     let totalused = getTotalSize(__dirname + "/public")
     let total = 1.31 * 1024 * 1024
-    fs.readdirSync(__dirname + "/public" + mypath).forEach(fileelement => {
+    fs.readdirSync(__dirname + "/public" + mypath).forEach((fileelement) => {
         let fst = fs.statSync(__dirname + "/public" + mypath + fileelement)
         let fsize = -1
 
@@ -503,12 +503,12 @@ function filesList(mypath) {
     return res
 }
 
-const getAllFiles = function(dirPath, arrayOfFiles) {
+const getAllFiles = function (dirPath, arrayOfFiles) {
     let files = fs.readdirSync(dirPath)
 
     arrayOfFiles = arrayOfFiles || []
 
-    files.forEach(function(file) {
+    files.forEach(function (file) {
         if (fs.statSync(dirPath + "/" + file).isDirectory()) {
             arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
         } else {
@@ -519,23 +519,23 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
     return arrayOfFiles
 }
 
-const getTotalSize = function(directoryPath) {
+const getTotalSize = function (directoryPath) {
     const arrayOfFiles = getAllFiles(directoryPath)
 
     let totalSize = 0
 
-    arrayOfFiles.forEach(function(filePath) {
+    arrayOfFiles.forEach(function (filePath) {
         totalSize += fs.statSync(filePath).size
     })
 
     return totalSize
 }
 
-app.all("/updatefw", function(req, res) {
+app.all("/updatefw", function (req, res) {
     res.send("ok")
 })
 
-app.all("/files", function(req, res) {
+app.all("/files", function (req, res) {
     let mypath = req.query.path
     if (typeof mypath == "undefined") mypath = "/"
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -545,17 +545,18 @@ app.all("/files", function(req, res) {
 
     if (typeof myFile.length == "undefined") {
         console.log("one files")
-        myFile.mv(__dirname + "/public" + mypath + myFile.name, function(err) {
+        myFile.mv(__dirname + "/public" + mypath + myFile.name, function (err) {
             if (err) return res.status(500).send(err)
         })
     } else {
         console.log(myFile.length + " files")
         for (let i = 0; i < myFile.length; i++) {
-            myFile[i].mv(__dirname + "/public/" + myFile[i].name, function(
-                err
-            ) {
-                if (err) return res.status(500).send(err)
-            })
+            myFile[i].mv(
+                __dirname + "/public/" + myFile[i].name,
+                function (err) {
+                    if (err) return res.status(500).send(err)
+                }
+            )
         }
     }
     res.send(filesList(mypath))
@@ -565,7 +566,7 @@ app.listen(process.env.PORT || 8080, () =>
     console.log(`Listening on port ${process.env.PORT || 8080}!`)
 )
 
-wss.on("connection", function(ws) {
+wss.on("connection", function (ws) {
     console.log("New connection")
     ws.send(`currentID:${currentID}`)
     wss.clients.forEach(function each(client) {
@@ -574,7 +575,7 @@ wss.on("connection", function(ws) {
         }
     })
     currentID++
-    ws.on("message", function(message) {
+    ws.on("message", function (message) {
         console.log("received: %s", message)
     })
 })

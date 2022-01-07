@@ -436,11 +436,11 @@ function loadConfigSuccess(responseText) {
     try {
         data = JSON.parse(responseText)
         applyConfig(data)
-        if (data.WebSocketIP && data.WebCommunication && data.WebSocketport) {
+        if (data.WebSocketIP && data.WebCommunication && data.WebSocketPort) {
             setupWebSocket(
                 data.WebCommunication,
                 document.location.hostname,
-                data.WebSocketport
+                data.WebSocketPort
             )
         }
     } catch (e) {
