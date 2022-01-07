@@ -21,10 +21,9 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
-import { Target } from "../../targets";
+import { AppLogo, WebUILogo, Target } from "../../targets";
 import { useSettingsContext } from "../../contexts";
-import { Eye, Tool } from "preact-feather";
-import { ESP3DLogo } from "../../components/Images/logo";
+import { Tool } from "preact-feather";
 
 /*
  * Local const
@@ -33,10 +32,14 @@ import { ESP3DLogo } from "../../components/Images/logo";
 const defaultLinks = [
   {
     label: "S36",
-    icon: <ESP3DLogo height="24px" />,
+    icon: <AppLogo height="24px" />,
     href: "/settings/features",
   },
-  { label: "S17", icon: <Eye />, href: "/settings/interface" },
+  {
+    label: "S17",
+    icon: <WebUILogo height="24px" />,
+    href: "/settings/interface",
+  },
   { label: Target, icon: <Tool />, href: "/settings/machine" },
 ];
 const TabBar = () => {

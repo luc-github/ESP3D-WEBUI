@@ -21,7 +21,7 @@ import { h } from "preact";
 import { useEffect, useState, useRef } from "preact/hooks";
 import { useUiContext, useSettingsContext, useUiContextFn } from "../contexts";
 import { Loading } from "../components/Controls";
-import { ESP3DLogo } from "../components/Images/logo";
+import { AppLogo } from "../targets";
 import {
   Minus,
   HardDrive,
@@ -207,7 +207,7 @@ const ConnectionContainer = () => {
         <div class="centered text-primary">
           <div class="empty-icon">
             <div class="d-flex p-centered" style="flex-wrap:nowrap!important">
-              <ESP3DLogo />
+              <AppLogo />
               <Minus size="50px" class="hide-low" />
               {contentIcon}
               <Minus size="50px" class="hide-low" />

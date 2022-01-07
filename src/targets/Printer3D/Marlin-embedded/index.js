@@ -29,10 +29,12 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import { AppLogo as WebUILogo } from "../../../components/Images/logo";
+import { AppLogo } from "./logo";
 
 const Target = "Marlin";
 const webUIbuild = "Me2";
-const Name = "ESP3D";
+const Name = "Marlin";
 const fwUrl = "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin";
 const variablesList = [];
 const restartdelay = 30;
@@ -53,4 +55,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

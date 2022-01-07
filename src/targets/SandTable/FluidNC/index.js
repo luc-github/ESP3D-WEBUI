@@ -24,6 +24,8 @@ import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
 import { InformationsControls } from "./InformationsControls";
+import { AppLogo as WebUILogo } from "../../../components/Images/logo";
+import { AppLogo } from "./logo";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -32,7 +34,7 @@ import {
 import realCommandsTable from "./realCommandsTable";
 
 const Target = "FluidNC";
-const webUIbuild = "FS2";
+const webUIbuild = "F2";
 const Name = "FluidNC";
 const fwUrl = "https://github.com/bdring/FluidNC";
 
@@ -55,4 +57,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

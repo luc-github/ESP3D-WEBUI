@@ -1,5 +1,5 @@
 /*
- logo.js - ESP3D logo file
+ icons.js - ESP3D icons file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 

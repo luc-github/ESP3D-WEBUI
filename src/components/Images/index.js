@@ -18,6 +18,5 @@
 */
 import { h } from "preact";
 import { iconsFeather } from "./icons";
-import { ESP3DLogo } from "./logo";
 
-export { iconsFeather, ESP3DLogo };
+export { iconsFeather };

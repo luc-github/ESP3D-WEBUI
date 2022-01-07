@@ -29,6 +29,7 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import { AppLogo, AppLogo as WebUILogo } from "../../../components/Images/logo";
 
 const Target = "RepRap";
 const webUIbuild = "RRe2";
@@ -53,4 +54,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

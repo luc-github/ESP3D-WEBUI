@@ -34,6 +34,8 @@ import {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -69,4 +71,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

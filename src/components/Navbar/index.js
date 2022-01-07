@@ -21,8 +21,8 @@
 */
 import { Fragment, h } from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
-import { ESP3DLogo, iconsFeather } from "../Images";
-import { iconsTarget } from "../../targets";
+import { iconsFeather } from "../Images";
+import { iconsTarget, AppLogo } from "../../targets";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import {
@@ -49,7 +49,7 @@ import {
  */
 const defaultLinks = [
   {
-    label: <ESP3DLogo bgcolor="#ffffff" />,
+    label: <AppLogo bgcolor="#ffffff" />,
     icon: null,
     href: "/about",
   },

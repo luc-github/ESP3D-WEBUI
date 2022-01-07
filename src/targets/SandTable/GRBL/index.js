@@ -30,6 +30,8 @@ import {
   useTargetContextFn,
 } from "./TargetContext";
 import realCommandsTable from "./realCommandsTable";
+import { AppLogo } from "../../../components/Images/logo";
+import { Eye as WebUILogo } from "preact-feather";
 
 const Target = "GRBL";
 const webUIbuild = "GS2";
@@ -55,4 +57,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

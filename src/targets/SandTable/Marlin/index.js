@@ -29,6 +29,8 @@ import {
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
+import { AppLogo } from "../../../components/Images/logo";
+import { Eye as WebUILogo } from "preact-feather";
 
 const Target = "Marlin";
 const webUIbuild = "MS2";
@@ -53,4 +55,6 @@ export {
   webUIbuild,
   InformationsControls,
   variablesList,
+  AppLogo,
+  WebUILogo,
 };

@@ -25,7 +25,7 @@ import { useSettingsContext } from "../../contexts";
  *ESP3D Logo
  * default height is 50px
  */
-const ESP3DLogo = ({
+const AppLogo = ({
   height = "50px",
   color = "currentColor",
   bgcolor = "white",
@@ -88,4 +88,4 @@ const ESP3DLogo = ({
     );
 };
 
-export { ESP3DLogo };
+export { AppLogo };
