@@ -200,7 +200,7 @@ const About = () => {
       { method: "POST", id: "upload", body: formData },
       {
         onSuccess: (result) => {
-          progressBar.update(100);
+          if (progressBar.update) progressBar.update(100);
           modals.removeModal(modals.getModalIndex("upload"));
           Disconnect(isFwUpdate ? "restart" : "connecting");
           if (isFwUpdate) {

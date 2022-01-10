@@ -16,7 +16,16 @@
         "label": "S96",
         "value": "g;G;gco;GCO;gcode;GCODE;nc;txt",
         "help": "S97"
-      }],
+      },{
+        "id": "directsd",
+        "type": "boolean",
+        "depend":[
+          {"connection_id":"SDConnection", "value":"!='none'"}
+        ],
+        "label": "S190",
+        "value": true
+      }
+    ],
     "FluidNC":[ 
       {
         "id": "configfilenames",

@@ -18,7 +18,6 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { SD } from "./SD-source";
 import { CMD } from "./CMD-source";
 import { disableUI } from "../../../components/Helpers";
 
@@ -61,7 +60,6 @@ const stopCatchResponse = () => {
 
 //steps
 const responseSteps = {
-  SD: SD.responseSteps,
   CMD: CMD.responseSteps,
 };
 

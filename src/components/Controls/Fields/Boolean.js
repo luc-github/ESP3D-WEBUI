@@ -69,9 +69,15 @@ const Boolean = ({
         }
       }
       if (d.connection_id) {
-        if (connectionSettings.current.Axis) {
+        if (connectionSettings.current[d.connection_id]) {
+          const quote = d.value.trim().endsWith("'") ? "'" : "";
           dependCondition.push({
-            value: eval(connectionSettings.current.Axis + d.value),
+            value: eval(
+              quote +
+                connectionSettings.current[d.connection_id] +
+                quote +
+                d.value
+            ),
           });
         }
       }

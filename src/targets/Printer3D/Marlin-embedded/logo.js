@@ -50,7 +50,7 @@ const AppLogo = ({
     return (
       <svg
         height={height}
-        viewBox="0 290 595.28 200"
+        viewBox="100 290 410 200"
         enable-background="new 0 0 595.28 841.89"
         class="esp3dlogo"
       >

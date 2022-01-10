@@ -218,7 +218,7 @@ const FilesPanel = () => {
             setIsLoading(false);
           },
           onProgress: (e) => {
-            progressBar.update(e);
+            if (progressBar.update) progressBar.update(e);
           },
         }
       );
@@ -310,7 +310,7 @@ const FilesPanel = () => {
           toasts.addToast({ content: error, type: "error" });
         },
         onProgress: (e) => {
-          progressBar.update(e);
+          if (progressBar.update) progressBar.update(e);
         },
       }
     );
@@ -587,10 +587,11 @@ const FilesPanel = () => {
           <div>
             <select class="form-select" onchange={onSelectFS} value={currentFS}>
               {files.supported.map((element) => {
-                if (uisettings.getValue(element.depend))
-                  return (
-                    <option value={element.value}>{T(element.name)}</option>
-                  );
+                if (element.depend)
+                  if (element.depend())
+                    return (
+                      <option value={element.value}>{T(element.name)}</option>
+                    );
               })}
             </select>
           </div>

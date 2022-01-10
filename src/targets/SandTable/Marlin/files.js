@@ -25,17 +25,13 @@ import { SD } from "./SD-source";
 const supportedFileSystems = [
   { value: "FLASH", name: "S137", depend: "showfilespanel" },
   { value: "SD", name: "S190", depend: "sd" },
-  { value: "SDEXT", name: "S191", depend: "sdext" },
   { value: "TFTSD", name: "S188", depend: "tftsd" },
   { value: "TFTUSB", name: "S189", depend: "tftusb" },
 ];
 
 const capabilities = {
   FLASH: FLASH.capabilities,
-
   SD: SD.capabilities,
-
-  SDEXT: {},
   TFTUSB: {},
   TFTSD: {},
 };
@@ -43,7 +39,6 @@ const capabilities = {
 const commands = {
   FLASH: FLASH.commands,
   SD: SD.commands,
-  SDEXT: {},
   TFTUSB: {},
   TFTSD: {},
 };

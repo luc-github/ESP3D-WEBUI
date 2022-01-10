@@ -203,7 +203,7 @@ const commandsQuery = (req, res, SendBinary) => {
     res.json({
       FWVersion: "2.0.9.2-1.0.10",
       FWTarget: 30,
-      SDConnection: "none",
+      SDConnection: "direct",
       Authentication: enableAuthentication ? "Enabled" : "Disabled",
       WebCommunication: "Synchronous",
       WebSocketIP: "localhost",

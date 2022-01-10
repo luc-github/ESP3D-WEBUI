@@ -19,20 +19,71 @@
 */
 import { h } from "preact";
 import { FLASH } from "../../FLASH-source";
+import { DIRECTSD } from "./DIRECTSD-source";
 import { SD } from "./SD-source";
+import { useSettingsContext, useUiContextFn } from "../../../contexts";
 
 //List of supported files systems
 const supportedFileSystems = [
-  { value: "FLASH", name: "S137", depend: "showfilespanel" },
-  { value: "SD", name: "S190", depend: "sd" },
-  { value: "SDEXT", name: "S191", depend: "sdext" },
-  { value: "TFTSD", name: "S188", depend: "tftsd" },
-  { value: "TFTUSB", name: "S189", depend: "tftusb" },
+  {
+    value: "FLASH",
+    name: "S137",
+    depend: () => {
+      return useUiContextFn.getValue("showfilespanel");
+    },
+  },
+  {
+    value: "SDEXT",
+    name: "S191",
+    depend: () => {
+      const { connectionSettings } = useSettingsContext();
+      return (
+        useUiContextFn.getValue("sd") &&
+        connectionSettings.current.SDConnection == "none"
+      );
+    },
+  },
+  {
+    value: "SD",
+    name: "S190",
+    depend: () => {
+      const { connectionSettings } = useSettingsContext();
+      return (
+        useUiContextFn.getValue("sd") &&
+        connectionSettings.current.SDConnection == "none"
+      );
+    },
+  },
+  {
+    value: "DIRECTSD",
+    name: "S190",
+    depend: () => {
+      const { connectionSettings } = useSettingsContext();
+      return (
+        useUiContextFn.getValue("directsd") &&
+        connectionSettings.current.SDConnection != "none"
+      );
+    },
+  },
+  {
+    value: "TFTSD",
+    name: "S188",
+    depend: () => {
+      return useUiContextFn.getValue("tftsd");
+    },
+  },
+  {
+    value: "TFTUSB",
+    name: "S189",
+    depend: () => {
+      return useUiContextFn.getValue("tftusb");
+    },
+  },
 ];
 
 const capabilities = {
   FLASH: FLASH.capabilities,
-
+  DIRECTSD: DIRECTSD.capabilities,
   SD: SD.capabilities,
 
   SDEXT: {},
@@ -42,6 +93,7 @@ const capabilities = {
 
 const commands = {
   FLASH: FLASH.commands,
+  DIRECTSD: DIRECTSD.commands,
   SD: SD.commands,
   SDEXT: {},
   TFTUSB: {},

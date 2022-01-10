@@ -11,7 +11,7 @@
           "id": "opentemperaturesonstart",
           "type": "boolean",
           "label": "S93",
-          "value": true
+          "value": false
         },
         {
           "id": "extrudermax",
@@ -72,7 +72,7 @@
           "id": "openextrudersonstart",
           "type": "boolean",
           "label": "S93",
-          "value": true
+          "value": false
         },
         {
           "id": "ismixedextruder",
@@ -164,14 +164,20 @@
         {
           "id": "sd",
           "type": "boolean",
+          "depend":[
+            {"connection_id":"SDConnection", "value":"=='none'"}
+          ],
           "label": "S190",
           "value": false
         },
         {
-          "id": "sdext",
+          "id": "directsd",
           "type": "boolean",
-          "label": "S191",
-          "value": false
+          "depend":[
+            {"connection_id":"SDConnection", "value":"!='none'"}
+          ],
+          "label": "S190",
+          "value": true
         }
       ],
       "jog": [

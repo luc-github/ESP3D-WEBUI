@@ -23,22 +23,18 @@ import { FLASH } from "../../FLASH-source";
 //List of supported files systems
 const supportedFileSystems = [
   { value: "FLASH", name: "S137", depend: "showfilespanel" },
-  { value: "SDEXT", name: "S191", depend: "sdext" },
   { value: "TFTSD", name: "S188", depend: "tftsd" },
   { value: "TFTUSB", name: "S189", depend: "tftusb" },
 ];
 
 const capabilities = {
   FLASH: FLASH.capabilities,
-
-  SDEXT: {},
   TFTUSB: {},
   TFTSD: {},
 };
 
 const commands = {
   FLASH: FLASH.commands,
-  SDEXT: {},
   TFTUSB: {},
   TFTSD: {},
 };

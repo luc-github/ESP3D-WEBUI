@@ -9,7 +9,7 @@
         "value": "M105"
       }
     ],
- "jog": [
+    "jog": [
       {
         "id": "homecmd",
         "type": "text",
@@ -31,6 +31,12 @@
         "value": "M112"
       }
     ],
+  "files":[ {
+    "id": "sdext",
+    "type": "boolean",
+    "label": "S191",
+    "value": false
+  }],
   "Smoothieware":[ 
       {
         "id": "configfilename",

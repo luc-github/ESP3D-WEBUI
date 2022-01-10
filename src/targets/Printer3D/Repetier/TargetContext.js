@@ -102,6 +102,7 @@ const TargetContextProvider = ({ children }) => {
                   });
                 }
               } else {
+                //if not json
                 terminal.add({
                   type,
                   content: dataBuffer.current[type],
