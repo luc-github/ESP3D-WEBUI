@@ -16,9 +16,11 @@
   "showfilespanel": true,
   "openfilesonstart": false,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
-  "tftsd": false,
-  "tftusb": false,
+  "tftsd": true,
+  "tftusb": true,
   "sd": true,
+  "directsd": true,
+  "sdext": true,
   "showjogpanel": true,
   "openjogonstart": false,
   "xyfeedrate": "1000",
@@ -54,6 +56,7 @@
   "showspeedpanel": false,
   "openspeedonstart": true,
   "showflowratepanel": false,
-  "openflowrateonstart": true
+  "openflowrateonstart": true,
+  "configfilename": "config.txt"
  }
 }

@@ -49,7 +49,7 @@ const supportedFileSystems = [
     depend: () => {
       const { connectionSettings } = useSettingsContext();
       return (
-        useUiContextFn.getValue("directsd") &&
+        useUiContextFn.getValue("sd") &&
         connectionSettings.current.SDConnection != "none"
       );
     },

@@ -33,17 +33,6 @@ const supportedFileSystems = [
     },
   },
   {
-    value: "SDEXT",
-    name: "S191",
-    depend: () => {
-      const { connectionSettings } = useSettingsContext();
-      return (
-        useUiContextFn.getValue("sd") &&
-        connectionSettings.current.SDConnection == "none"
-      );
-    },
-  },
-  {
     value: "SD",
     name: "S190",
     depend: () => {
@@ -56,6 +45,28 @@ const supportedFileSystems = [
   },
   {
     value: "DIRECTSD",
+    name: "S190",
+    depend: () => {
+      const { connectionSettings } = useSettingsContext();
+      return (
+        useUiContextFn.getValue("directsd") &&
+        connectionSettings.current.SDConnection != "none"
+      );
+    },
+  },
+  {
+    value: "SDEXT",
+    name: "S191",
+    depend: () => {
+      const { connectionSettings } = useSettingsContext();
+      return (
+        useUiContextFn.getValue("sd") &&
+        connectionSettings.current.SDConnection == "none"
+      );
+    },
+  },
+  {
+    value: "DIRECTSDEXT",
     name: "S190",
     depend: () => {
       const { connectionSettings } = useSettingsContext();

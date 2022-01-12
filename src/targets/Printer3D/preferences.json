@@ -160,24 +160,6 @@
           "type": "boolean",
           "label": "S189",
           "value": false
-        },
-        {
-          "id": "sd",
-          "type": "boolean",
-          "depend":[
-            {"connection_id":"SDConnection", "value":"=='none'"}
-          ],
-          "label": "S190",
-          "value": false
-        },
-        {
-          "id": "directsd",
-          "type": "boolean",
-          "depend":[
-            {"connection_id":"SDConnection", "value":"!='none'"}
-          ],
-          "label": "S190",
-          "value": true
         }
       ],
       "jog": [

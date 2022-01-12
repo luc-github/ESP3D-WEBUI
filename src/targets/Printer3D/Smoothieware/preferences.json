@@ -36,6 +36,16 @@
     "type": "boolean",
     "label": "S191",
     "value": false
+  }, 
+  {
+    "id": "isextrasd_direct",
+    "type": "boolean",
+    "depend":[
+      {"connection_id":"SDConnection", "value":"!='none'"},
+      {"id":"sdext", "value": true}
+    ],
+    "label": "SM4",
+    "value": false
   }],
   "Smoothieware":[ 
       {
