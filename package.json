@@ -72,12 +72,12 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0",
-    "webpack-dev-server": "^4.7.2"
+    "webpack-dev-server": "^4.7.3"
   },
   "dependencies": {
-    "preact": "^10.6.0",
+    "preact": "^10.6.5",
     "preact-feather": "^4.2.1",
     "smoothie": "^1.35.0",
-    "spectre.css": "^0.5.9"
+    "spectre.css": "luc-github/spectre"
   }
 }
