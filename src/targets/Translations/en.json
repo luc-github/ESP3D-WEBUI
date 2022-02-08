@@ -319,5 +319,6 @@
   "modem": "Modem",
   "light": "Light",
   "grbl": "Grbl",
-  "SD updater": "SD updater"
+  "SD updater": "SD updater", 
+  "setup": "Setup mode"
 }
