@@ -965,7 +965,7 @@ const JogPanel = () => {
                     onmouseover={(e) => {
                       onHoverJog("xy0_1");
                     }}
-                    onmousedown={(e) => onMouseDown("Y+0_01")}
+                    onmousedown={(e) => onMouseDown("Y+0_1")}
                     onmouseout={(e) => {
                       onOutJog("xy0_1"), "Y+0_1";
                     }}
