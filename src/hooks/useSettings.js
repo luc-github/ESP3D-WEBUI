@@ -209,7 +209,6 @@ const useSettings = () => {
                       },
                       onFail: (error) => {
                         toasts.addToast({ content: error, type: "error" });
-                        console.log("error");
                       },
                     }
                   );

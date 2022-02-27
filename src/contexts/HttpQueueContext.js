@@ -20,7 +20,10 @@ import { h, createContext } from "preact";
 import { useContext, useRef } from "preact/hooks";
 import { httpAdapter } from "../adapters";
 import { useUiContext } from "./UiContext";
+import { useWsContext } from "./WsContext";
 import { useTargetContext } from "../targets";
+
+let counterNoAnswer = 0;
 /*
  * Local const
  *
@@ -30,6 +33,7 @@ const useHttpQueueContext = () => useContext(HttpQueueContext);
 
 const HttpQueueContextProvider = ({ children }) => {
   const { processData } = useTargetContext();
+  const { Disconnect } = useWsContext();
   const requestQueue = useRef([]); // Http queue for every components
   const isBusy = useRef(false);
   const currentRequest = useRef();
@@ -85,6 +89,7 @@ const HttpQueueContextProvider = ({ children }) => {
       }
       const response = await currentRequest.current.response;
       onSuccess(response);
+      counterNoAnswer = 0;
     } catch (e) {
       if (e.code == 401) {
         is401Error = true;
@@ -97,11 +102,15 @@ const HttpQueueContextProvider = ({ children }) => {
         //just do not raise error screen
       } else {
         if (!e.code) {
-          connection.setConnectionState({
-            connected: false,
-            authenticate: connection.connectionState.authenticate,
-            page: "connectionlost",
-          });
+          counterNoAnswer++;
+          if (counterNoAnswer > 3) {
+            Disconnect("connectionlost");
+            /*connection.setConnectionState({
+              connected: false,
+              authenticate: connection.connectionState.authenticate,
+              page: "connectionlost",
+            });*/
+          }
         }
       }
       if (onFail) {

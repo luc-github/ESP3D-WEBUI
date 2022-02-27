@@ -104,6 +104,7 @@ const WsContextProvider = ({ children }) => {
   };
 
   const Disconnect = (reason) => {
+    console.log("Disconnect:", reason);
     connection.setConnectionState({
       connected: false,
       authenticate: false,

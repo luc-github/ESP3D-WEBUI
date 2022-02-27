@@ -71,14 +71,26 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
   const response = new Promise((resolve, reject) => {
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
+      else {
+        const e = new Error(
+          `${xhr.status ? xhr.status : ""}${
+            xhr.statusText ? ` - ${xhr.statusText}` : ""
+          }`
+        );
+        e.code = xhr.status;
+        reject(e);
+      }
+    };
+    xhr.onerror = () => {
       const e = new Error(
-        `${xhr.status}${xhr.statusText ? ` - ${xhr.statusText}` : ""}`
+        `${xhr.status ? xhr.status : "Connection time out"}${
+          xhr.status && xhr.statusText ? ` - ${xhr.statusText}` : ""
+        }`
       );
       e.code = xhr.status;
       reject(e);
     };
-    xhr.onerror = () =>
-      reject(new Error("An error occurred during the transaction"));
+
     xhr.onabort = () => {
       const e = new Error("Request aborted");
       e.code = 499;
