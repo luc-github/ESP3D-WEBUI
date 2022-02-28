@@ -105,11 +105,6 @@ const HttpQueueContextProvider = ({ children }) => {
           counterNoAnswer++;
           if (counterNoAnswer > 3) {
             Disconnect("connectionlost");
-            /*connection.setConnectionState({
-              connected: false,
-              authenticate: connection.connectionState.authenticate,
-              page: "connectionlost",
-            });*/
           }
         }
       }
