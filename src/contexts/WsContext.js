@@ -24,6 +24,7 @@ import {
   useSettingsContext,
   useHttpQueueContext,
 } from "../contexts";
+import { useHttpFn } from "../hooks";
 import { getCookie, splitArrayByLines } from "../components/Helpers";
 
 /*
@@ -47,6 +48,7 @@ const WsContextProvider = ({ children }) => {
   const reconnectCounter = useRef(0);
   const [wsData, setWsData] = useState([]);
   const { processData } = useTargetContext();
+  const { abortRequest } = useHttpFn;
 
   const ping = (start = false) => {
     if (isLogOff.current) return;
@@ -94,6 +96,15 @@ const WsContextProvider = ({ children }) => {
                 dialogs.setShowKeepConnected(true);
               }
             }
+            break;
+          case "ERROR":
+            console.log(stdOutData);
+            //cancel request
+            toasts.addToast({
+              content: "Error code " + eventLine[1] + ": " + eventLine[2],
+              type: "error",
+            });
+            abortRequest();
             break;
           default:
             processData("core", stdOutData);
