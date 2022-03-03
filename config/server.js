@@ -44,7 +44,7 @@ const {
 const WebSocketServer = require("ws").Server,
   wss = new WebSocketServer({ port: 81 });
 app.use("/", express.static(serverpath + "Flash"));
-app.use("/SD", express.static(serverpath + "SD"));
+app.use("/sd", express.static(serverpath + "sd"));
 app.use("/", expressStaticGzip(serverpath + "Flash"));
 app.use(fileUpload({ preserveExtension: true, debug: false }));
 
