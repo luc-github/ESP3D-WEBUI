@@ -538,20 +538,27 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("ESP800") != -1) {
     res.json({
-      FWVersion: "3.0.0.a28",
-      FWTarget: 40,
-      SDConnection: "none",
-      Authentication: enableAuthentication ? "Enabled" : "Disabled",
-      WebCommunication: "Synchronous",
-      WebSocketIP: "localhost",
-      WebSocketPort: "81",
-      Hostname: "esp3d",
-      WiFiMode: "STA",
-      WebUpdate: "Enabled",
-      Filesystem: "SPIFFS",
-      Time: "none",
-      Cam_ID: "4",
-      Cam_name: "ESP32 Cam",
+      cmd: "800",
+      status: "ok",
+      data: {
+        FWVersion: "3.0.0.a111",
+        FWTarget: "smoothieware",
+        FWTargetID: "40",
+        Setup: "Enabled",
+        SDConnection: "shared",
+        SerialProtocol: "Socket",
+        Authentication: enableAuthentication ? "Enabled" : "Disabled",
+        WebCommunication: "Synchronous",
+        WebSocketIP: "localhost",
+        WebSocketPort: "81",
+        Hostname: "marlinesp3d",
+        WiFiMode: "STA",
+        WebUpdate: "Enabled",
+        FileSystem: "LittleFS",
+        Time: "none",
+        CameraID: "4",
+        CameraName: "ESP32 Cam",
+      },
     });
     return;
   }
@@ -561,39 +568,40 @@ const commandsQuery = (req, res, SendBinary) => {
   }
   if (url.indexOf("ESP420") != -1) {
     res.json({
-      Status: [
-        { id: "chip id", value: "38078" },
-        { id: "CPU Freq", value: "240 Mhz" },
-        { id: "CPU Temp", value: "50.6 C" },
-        { id: "free mem", value: "217.50 KB" },
-        { id: "SDK", value: "v3.3.1-61-g367c3c09c" },
+      cmd: "420",
+      status: "ok",
+      data: [
+        { id: "chip id", value: "18569" },
+        { id: "CPU Freq", value: "240Mhz" },
+        { id: "CPU Temp", value: "54.4C" },
+        { id: "free mem", value: "201.86 KB" },
+        { id: "SDK", value: "v4.4-beta1-308-gf3e0c8bc41" },
         { id: "flash size", value: "4.00 MB" },
-        { id: "size for update", value: "1.87 MB" },
-        { id: "FS type", value: "SPIFFS" },
-        { id: "FS usage", value: "39.95 KB/169.38 KB" },
-        { id: "baud", value: "115200" },
+        { id: "size for update", value: "1.25 MB" },
+        { id: "FS type", value: "LittleFS" },
+        { id: "FS usage", value: "64.00 KB/1.44 MB" },
         { id: "sleep mode", value: "none" },
         { id: "wifi", value: "ON" },
         { id: "hostname", value: "esp3d" },
         { id: "HTTP port", value: "80" },
         { id: "Telnet port", value: "23" },
-        { id: "Ftp ports", value: "21, 20, 55600" },
         { id: "sta", value: "ON" },
-        { id: "mac", value: "30:AE:A4:21:BE:94" },
-        { id: "SSID", value: "WIFI_OFFICE_B2G" },
-        { id: "signal", value: "100 %" },
+        { id: "mac", value: "24:6F:28:4C:89:48" },
+        { id: "SSID", value: "luc-ext1" },
+        { id: "signal", value: "60%" },
         { id: "phy mode", value: "11n" },
-        { id: "channel", value: "2" },
+        { id: "channel", value: "3" },
         { id: "ip mode", value: "dhcp" },
-        { id: "ip", value: "192.168.1.43" },
-        { id: "gw", value: "192.168.1.1" },
+        { id: "ip", value: "192.168.2.215" },
+        { id: "gw", value: "192.168.2.1" },
         { id: "msk", value: "255.255.255.0" },
-        { id: "DNS", value: "192.168.1.1" },
+        { id: "DNS", value: "192.168.2.1" },
         { id: "ap", value: "OFF" },
-        { id: "mac", value: "30:AE:A4:21:BE:95" },
-        { id: "serial", value: "ON" },
-        { id: "notification", value: "OFF" },
-        { id: "FW ver", value: "3.0.0.a28" },
+        { id: "mac", value: "24:6F:28:4C:89:49" },
+        { id: "notification", value: "ON(line)" },
+        { id: "sd", value: "shared(SDFat - 2.1.2)" },
+        { id: "targetfw", value: "smoothieware" },
+        { id: "FW ver", value: "3.0.0.a111" },
         { id: "FW arch", value: "ESP32" },
       ],
     });
@@ -602,25 +610,18 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("ESP410") != -1) {
     res.json({
-      AP_LIST: [
-        {
-          SSID: "HP-Setup>71-M277 LaserJet",
-          SIGNAL: "92",
-          IS_PROTECTED: "0",
-        },
-        { SSID: "WIFI_OFFICE_B2G", SIGNAL: "88", IS_PROTECTED: "1" },
-        { SSID: "NETGEAR70", SIGNAL: "66", IS_PROTECTED: "1" },
-        { SSID: "ZenFone6&#39;luc", SIGNAL: "48", IS_PROTECTED: "1" },
-        { SSID: "Livebox-EF01", SIGNAL: "20", IS_PROTECTED: "1" },
-        { SSID: "orange", SIGNAL: "20", IS_PROTECTED: "0" },
-      ],
+      cmd: "410",
+      status: "ok",
+      data: [{ SSID: "luc-ext1", SIGNAL: "52", IS_PROTECTED: "1" }],
     });
     return;
   }
 
   if (url.indexOf("ESP400") != -1) {
     res.json({
-      Settings: [
+      cmd: "400",
+      status: "ok",
+      data: [
         {
           F: "network/network",
           P: "130",

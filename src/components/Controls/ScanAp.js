@@ -34,13 +34,21 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
   const ScanNetworks = () => {
     setIsLoading(true);
     createNewRequest(
-      espHttpURL("command", { cmd: "[ESP410]" }).toString(),
+      espHttpURL("command", { cmd: "[ESP410]json=yes" }).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {
           setIsLoading(false);
-          const listAP = JSON.parse(result);
-          setApList(listAP.AP_LIST);
+          const jsonResult = JSON.parse(result);
+          if (
+            jsonResult.cmd != 410 ||
+            jsonResult.status == "error" ||
+            !jsonResult.data
+          ) {
+            toasts.addToast({ content: T("S194"), type: "error" });
+            return;
+          }
+          setApList(jsonResult.data);
         },
         onFail: (error) => {
           setIsLoading(false);

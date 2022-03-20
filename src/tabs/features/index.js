@@ -56,13 +56,21 @@ const FeaturesTab = () => {
   const getFeatures = () => {
     setIsLoading(true);
     createNewRequest(
-      espHttpURL("command", { cmd: "[ESP400]" }).toString(),
+      espHttpURL("command", { cmd: "[ESP400]json=yes" }).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {
           try {
-            const Status = JSON.parse(result);
-            const feat = formatStructure(Status.Settings);
+            const jsonResult = JSON.parse(result);
+            if (
+              jsonResult.cmd != 400 ||
+              jsonResult.status == "error" ||
+              !jsonResult.data
+            ) {
+              toasts.addToast({ content: T("S194"), type: "error" });
+              return;
+            }
+            const feat = formatStructure(jsonResult.data);
             featuresSettings.current = { ...feat };
             setFeatures(featuresSettings.current);
           } catch (e) {
@@ -103,14 +111,31 @@ const FeaturesTab = () => {
 
   function saveEntry(entry, index, total, needrestart) {
     let cmd =
-      "[ESP401]P=" + entry.id + " T=" + entry.cast + " V=" + entry.value;
+      "[ESP401]P=" +
+      entry.id +
+      " T=" +
+      entry.cast +
+      " V=" +
+      entry.value +
+      " json=yes";
     createNewRequest(
       espHttpURL("command", { cmd }).toString(),
       { method: "GET", id: "ESP401" },
       {
         onSuccess: (result) => {
-          progressBar.update(index + 1);
           try {
+            progressBar.update(index + 1);
+            if (
+              jsonResult.cmd != 401 ||
+              jsonResult.status == "error" ||
+              !jsonResult.data
+            ) {
+              if (jsonResult.cmd != 401)
+                toasts.addToast({ content: T("S194"), type: "error" });
+              else if (jsonResult.status == "error")
+                toasts.addToast({ content: T("S195"), type: "error" });
+              return;
+            }
             entry.initial = entry.value;
           } catch (e) {
             console.log(e);

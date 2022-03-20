@@ -198,6 +198,8 @@
   "S191": "Extra SD",
   "S192": "Directories are not allowed",
   "S193": "Multiple files are not allowed",
+  "S194": "WebUI and Firmware version are not compatible",
+  "S195": "Error saving data",
   "sta fallback mode": "Client fallback mode",
   "radio_boot": "Radio at boot",
   "general": "General",

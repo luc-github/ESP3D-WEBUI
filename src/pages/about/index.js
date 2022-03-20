@@ -108,13 +108,22 @@ const About = () => {
   const getProps = () => {
     setIsLoading(true);
     createNewRequest(
-      espHttpURL("command", { cmd: "[ESP420]" }).toString(),
+      espHttpURL("command", { cmd: "[ESP420]json=yes" }).toString(),
       { method: "GET" },
       {
         onSuccess: (result) => {
-          const { Status } = JSON.parse(result);
-          setProps([...Status]);
-          about = [...Status];
+          const jsonResult = JSON.parse(result);
+          if (
+            jsonResult.cmd != 420 ||
+            jsonResult.status == "error" ||
+            !jsonResult.data
+          ) {
+            toasts.addToast({ content: T("S194"), type: "error" });
+            setIsLoading(false);
+            return;
+          }
+          setProps([...jsonResult.data]);
+          about = [...jsonResult.data];
           setIsLoading(false);
         },
         onFail: (error) => {

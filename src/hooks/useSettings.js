@@ -53,7 +53,7 @@ const useSettings = () => {
   const getConnectionSettings = (next) => {
     createNewRequest(
       espHttpURL("command", {
-        cmd: "[ESP800]",
+        cmd: "[ESP800]json=yes",
         time: getBrowserTime(),
         version: webUIversion,
       }).toString(),
@@ -61,8 +61,23 @@ const useSettings = () => {
       {
         onSuccess: (result) => {
           const jsonResult = JSON.parse(result);
-          connectionSettings.current = jsonResult;
-          document.title = jsonResult.Hostname;
+          if (
+            jsonResult.cmd != 800 ||
+            jsonResult.status == "error" ||
+            !jsonResult.data
+          ) {
+            toasts.addToast({ content: T("S194"), type: "error" });
+            connection.setConnectionState({
+              connected: false,
+              authenticate: false,
+              page: "error",
+              extraMsg: T("S194"),
+            });
+            return;
+          }
+
+          connectionSettings.current = jsonResult.data;
+          document.title = connectionSettings.current.Hostname;
 
           if (isLimitedEnvironment(connectionSettings.current.WiFiMode)) {
             showModal({

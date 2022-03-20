@@ -93,6 +93,8 @@ const ConnectionContainer = () => {
         contentTitle = T("S1"); //"Connection error"
         contentIcon = <Frown size="50px" />;
         contentSubtitle = T("S5"); //"Cannot connect with board"
+        if (connection.connectionState.extraMsg)
+          contentSubtitle += ": " + connection.connectionState.extraMsg;
         document.title =
           (connectionSettings.current && connectionSettings.current.Hostname
             ? connectionSettings.current.Hostname
