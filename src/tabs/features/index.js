@@ -414,6 +414,7 @@ const FeaturesTab = () => {
                                     />
                                   );
                                 })}
+                                <div class="m-1" />
                               </div>
                             </div>
                           </div>
