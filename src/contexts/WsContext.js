@@ -26,6 +26,7 @@ import {
 } from "../contexts";
 import { useHttpFn } from "../hooks";
 import { getCookie, splitArrayByLines } from "../components/Helpers";
+import { MessageSquare } from "preact-feather";
 
 /*
  * Local const
@@ -96,6 +97,21 @@ const WsContextProvider = ({ children }) => {
                 dialogs.setShowKeepConnected(true);
               }
             }
+            break;
+          case "NOTIFICATION":
+            console.log(stdOutData);
+            //Show notification
+            toasts.addToast({
+              content: (
+                <span class="feather-icon-container">
+                  <MessageSquare />
+                  <label class="m-1">
+                    {stdOutData.substring(eventLine[0].length + 1)}
+                  </label>
+                </span>
+              ),
+              type: "default",
+            });
             break;
           case "ERROR":
             console.log(stdOutData);
