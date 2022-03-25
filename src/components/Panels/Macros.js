@@ -72,7 +72,7 @@ const MacrosPanel = () => {
       case "FS":
         //[ESP700] //ESP700 should send status to telnet / websocket
         //Todo: handle response from ESP700
-        sendCommand("[ESP700]" + action + " json=yes");
+        sendCommand("[ESP700]" + action);
         break;
       case "SD":
         //get command accoring target FW
