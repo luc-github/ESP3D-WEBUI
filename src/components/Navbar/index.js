@@ -19,7 +19,7 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact";
+import { Fragment, h , render} from "preact";
 import { useState, useEffect, useRef } from "preact/hooks";
 import { iconsFeather } from "../Images";
 import { iconsTarget, AppLogo } from "../../targets";
@@ -248,24 +248,22 @@ const Navbar = () => {
             </Fragment>
           )}
         </section>
-        <section class="navbar-section">
-          <span
-            className={
-              connectionSettings.current.Authentication == "Disabled"
-                ? "d-none"
-                : "btn btn-link no-box mx-2 feather-icon-container"
-            }
-            onClick={onDisconnect}
-          >
-            <LogOut />
-            <label style="cursor:pointer;" class="hide-low">
-              {T("S151")}
-            </label>
-          </span>
+        <section class="navbar-section" id="actionMenu">
         </section>
       </header>
     );
   }
 };
 
-export { Navbar };
+
+const ActionMenu = (props) => {
+  console.log("Do ActionMenu", props.children, props);
+  render (
+  <Fragment>
+     {props.children}
+  </Fragment>,
+  document.getElementById("actionMenu")
+  );
+}
+
+export { Navbar , ActionMenu};

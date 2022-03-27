@@ -2,3 +2,8 @@
 node_modules
 .vscode
 build
+package-lock.json
+package-lock.json
+server/CNC/FluidNC/Flash/config.yaml
+server/CNC/FluidNC/Flash/mks-dlc32.nc
+server/CNC/FluidNC/Flash/preferences.json
