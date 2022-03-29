@@ -36,6 +36,12 @@
           "type": "boolean",
           "label": "S176",
           "value": false
+        },
+        {
+          "id": "showinformationpage",
+          "type": "boolean",
+          "label": "S196",
+          "value": false
         }
       ],
       "polling": [

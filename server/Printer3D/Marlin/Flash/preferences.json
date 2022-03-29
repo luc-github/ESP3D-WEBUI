@@ -1,11 +1,12 @@
 {
  "settings": {
   "language": "default",
-  "theme": "theme-dark",
+  "theme": "default",
   "autoload": true,
   "mobileview": false,
   "audio": false,
   "showsensorspanel": false,
+  "showinformationpage": true,
   "enablepolling": false,
   "pollingrefresh": "3000",
   "pollingcommands": "M105",

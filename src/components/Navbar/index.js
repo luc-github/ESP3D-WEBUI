@@ -163,6 +163,11 @@ const Navbar = () => {
         <section class="navbar-section">
           {defaultLinks &&
             defaultLinks.map(({ label, icon, href, id }) => {
+              if (
+                href == "/informations" &&
+                !uisettings.getValue("showinformationpage")
+              )
+                return;
               return (
                 <Link
                   onclick={(e) => {
