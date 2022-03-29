@@ -19,7 +19,6 @@
   "tftsd": false,
   "tftusb": false,
   "sd": false,
-  "directsd": true,
   "showjogpanel": true,
   "openjogonstart": false,
   "xyfeedrate": "1000",

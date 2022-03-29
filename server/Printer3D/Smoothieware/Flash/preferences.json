@@ -19,7 +19,6 @@
   "tftsd": true,
   "tftusb": true,
   "sd": true,
-  "directsd": true,
   "sdext": true,
   "showjogpanel": true,
   "openjogonstart": false,

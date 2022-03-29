@@ -36,7 +36,7 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-const commandsQuery = (req, res, SendBinary) => {
+const commandsQuery = (req, res, SendWS) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
@@ -55,7 +55,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
   lastconnection = Date.now();
   if (url.indexOf("$CD") != -1 && url.indexOf("$CD=") == -1) {
-    SendBinary(
+    SendWS(
       "[MSG: BeginData]\n" +
         "board: Bart Board\n" +
         "name: Default (Test Drive with SD)\n" +
@@ -163,23 +163,23 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("$Config/Filename") != -1) {
     if (url.indexOf("$Config/Filename=") == -1)
-      SendBinary("$Config/Filename=config.yaml\n");
-    SendBinary("ok\n");
+      SendWS("$Config/Filename=config.yaml\n");
+    SendWS("ok\n");
     res.send("");
     return;
   }
   if (req.query.cmd && req.query.cmd == "?") {
     countStatus++;
     if (countStatus == 1)
-      SendBinary(
+      SendWS(
         "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
       );
     if (countStatus == 2)
-      SendBinary(
+      SendWS(
         "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100>\n"
       );
     if (countStatus > 2)
-      SendBinary("<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0>\n");
+      SendWS("<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0>\n");
     if (countStatus == 10) countStatus = 0;
     res.send("");
     return;
@@ -267,7 +267,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("$$") != -1) {
-    SendBinary(
+    SendWS(
       "$0=3\n" +
         "$1=250\n" +
         "$2=0\n" +
@@ -317,6 +317,12 @@ const commandsQuery = (req, res, SendBinary) => {
         "ok\n"
     );
     res.send("");
+    return;
+  }
+
+  if (url.indexOf("ESP600") != -1) {
+    const text = url.substring(8);
+    SendWS(text, false);
     return;
   }
 
@@ -596,7 +602,7 @@ const commandsQuery = (req, res, SendBinary) => {
     });
     return;
   }
-  SendBinary("ok\n");
+  SendWS("ok\n");
   res.send("");
 };
 

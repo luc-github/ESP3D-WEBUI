@@ -268,6 +268,18 @@ a label {
   margin-right: 10px;
 }
 
+.notification-line {
+  overflow-x: hidden;
+  line-height: 24px !important;
+  padding-top: 4px !important;
+  padding-left: 4px;
+  padding-right: 4px;
+  cursor: pointer;
+}
+.notification-line:hover {
+  background-color: #f1f1fc;
+}
+
 .feather-icon-container .text-menu-item,
 .feather-icon-container .text-ellipsis,
 .feather-icon-container label {

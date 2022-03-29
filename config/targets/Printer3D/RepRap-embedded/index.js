@@ -58,7 +58,7 @@ function sendTemperatures() {
   );
 }
 
-const commandsQuery = (req, res, SendBinary) => {
+const commandsQuery = (req, res, SendWS) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
@@ -77,7 +77,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
   lastconnection = Date.now();
   if (url.indexOf("M20") != -1) {
-    SendBinary(
+    SendWS(
       "Begin file list\n" +
         "CUBE2.GCO 210240\n" +
         "CUBE01.GCO 2089832\n" +
@@ -88,7 +88,7 @@ const commandsQuery = (req, res, SendBinary) => {
         "End file list\n" +
         "ok\n"
     );
-    /* SendBinary(
+    /* SendWS(
       "Begin file list\n" +
         "COOL_V~1.GCO 66622272\n" +
         "415%VA~1.GCO 66622272\n" +
@@ -110,7 +110,7 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("M30") != -1) {
     const name = url.split(" ");
-    SendBinary(
+    SendWS(
       //"Deletion failed, File:" + name[1].substring(1) + ".\n" + "ok\n"
       "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
     );
@@ -119,7 +119,7 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   if (url.indexOf("M115") != -1) {
-    SendBinary(
+    SendWS(
       "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +
         "Cap:SERIAL_XON_XOFF:0\n" +
         "Cap:BINARY_FILE_TRANSFER:0\n" +
@@ -158,7 +158,7 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   if (url.indexOf("M503") != -1) {
-    SendBinary(
+    SendWS(
       "echo:  G21    ; Units in mm (mm)\n" +
         "      \n" +
         "echo:; Filament settings: Disabled\n" +
@@ -184,7 +184,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(sendTemperatures());
+    SendWS(sendTemperatures());
     res.send("");
     return;
   }
@@ -265,6 +265,12 @@ const commandsQuery = (req, res, SendBinary) => {
       status: "ok",
       data: [{ SSID: "luc-ext1", SIGNAL: "52", IS_PROTECTED: "1" }],
     });
+    return;
+  }
+
+  if (url.indexOf("ESP600") != -1) {
+    const text = url.substring(8);
+    SendWS(text, false);
     return;
   }
 
@@ -559,7 +565,7 @@ const commandsQuery = (req, res, SendBinary) => {
     });
     return;
   }
-  SendBinary("ok\n");
+  SendWS("ok\n");
   res.send("");
 };
 

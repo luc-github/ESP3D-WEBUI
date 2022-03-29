@@ -52,7 +52,7 @@ function Temperatures() {
   );
 }
 
-const commandsQuery = (req, res, SendBinary) => {
+const commandsQuery = (req, res, SendWS) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
@@ -75,13 +75,13 @@ const commandsQuery = (req, res, SendBinary) => {
     let X = Number(Math.random() * 200.12).toFixed(2);
     let Y = Number(Math.random() * 200.12).toFixed(2);
     let Z = Number(Math.random() * 200.12).toFixed(2);
-    SendBinary(`X:${X} Y:${Y} Z:${Z} E:0.0000\nok\n`);
+    SendWS(`X:${X} Y:${Y} Z:${Z} E:0.0000\nok\n`);
     res.send("");
     return;
   }
 
   if (url.indexOf("M205") != -1) {
-    SendBinary(
+    SendWS(
       "EPR:0 1028 0 Language\n" +
         "EPR:2 75 230400 Baudrate\n" +
         "EPR:0 1125 1 Display Mode:\n" +
@@ -211,13 +211,13 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M206") != -1) {
-    SendBinary("wait\n");
+    SendWS("wait\n");
     res.send("");
     return;
   }
 
   if (url.indexOf("M20") != -1) {
-    SendBinary(
+    SendWS(
       "ok 0\n" +
         "Begin file list\n" +
         "TEST.ZIP 66622272\n" +
@@ -246,7 +246,7 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("M32") != -1) {
     const name = url.split(" ");
-    SendBinary(
+    SendWS(
       //"Creation failed\n"
       "Directory created\n"
     );
@@ -257,7 +257,7 @@ const commandsQuery = (req, res, SendBinary) => {
 
   if (url.indexOf("M30") != -1) {
     const name = url.split(" ");
-    SendBinary(
+    SendWS(
       //"Deletion failed, File:" + name[1].substring(1) + ".\n" + "ok\n"
       "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
     );
@@ -266,7 +266,7 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   if (url.indexOf("M115") != -1) {
-    SendBinary(
+    SendWS(
       "FIRMWARE_NAME:Repetier_0.92.10 FIRMWARE_URL:https://github.com/luc-github/Repetier-Firmware-0.92/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:DaVinci EXTRUDER_COUNT:2 REPETIER_PROTOCOL:3\n" +
         "Cap:PROGRESS:1\n" +
         "Cap:AUTOREPORT_TEMP:1\n" +
@@ -279,7 +279,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(Temperatures());
+    SendWS(Temperatures());
     res.send("");
     return;
   }
@@ -362,6 +362,12 @@ const commandsQuery = (req, res, SendBinary) => {
       status: "ok",
       data: [{ SSID: "luc-ext1", SIGNAL: "52", IS_PROTECTED: "1" }],
     });
+    return;
+  }
+
+  if (url.indexOf("ESP600") != -1) {
+    const text = url.substring(8);
+    SendWS(text, false);
     return;
   }
 
@@ -656,7 +662,7 @@ const commandsQuery = (req, res, SendBinary) => {
     });
     return;
   }
-  SendBinary("ok\n");
+  SendWS("ok\n");
   res.send("");
 };
 

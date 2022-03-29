@@ -58,7 +58,7 @@ function Temperatures() {
   );
 }
 
-const commandsQuery = (req, res, SendBinary) => {
+const commandsQuery = (req, res, SendWS) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
   if (req.query.cmd)
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
@@ -81,14 +81,14 @@ const commandsQuery = (req, res, SendBinary) => {
     let X = Number(Math.random() * 200.12).toFixed(2);
     let Y = Number(Math.random() * 200.12).toFixed(2);
     let Z = Number(Math.random() * 200.12).toFixed(2);
-    SendBinary(`ok C: X:${X} Y:${Y} Z:${Z} E:0.0000\n`);
+    SendWS(`ok C: X:${X} Y:${Y} Z:${Z} E:0.0000\n`);
     res.send("");
     return;
   }
 
   if (url.indexOf("ls -s /sd") != -1) {
-    if (url.indexOf("echo BeginFiles") != -1) SendBinary("echo: BeginFiles\n");
-    SendBinary(
+    if (url.indexOf("echo BeginFiles") != -1) SendWS("echo: BeginFiles\n");
+    SendWS(
       "found.000/\n" +
         "t2.g 112023\n" +
         "calibration/\n" +
@@ -103,13 +103,13 @@ const commandsQuery = (req, res, SendBinary) => {
         "a.dat 6257\n" +
         "firmware.cur.printer 389776\n"
     );
-    if (url.indexOf("echo EndFiles") != -1) SendBinary("echo: EndFiles\n");
+    if (url.indexOf("echo EndFiles") != -1) SendWS("echo: EndFiles\n");
     res.send("");
     return;
   }
 
   if (url.indexOf("M20") != -1) {
-    SendBinary(
+    SendWS(
       "Begin file list\n" +
         "found.000/\n" +
         "t2.g\n" +
@@ -135,13 +135,13 @@ const commandsQuery = (req, res, SendBinary) => {
     console.log("yes");
     const response = url.replace("echo ", "echo: ");
     console.log("Resp:", response);
-    SendBinary(response + "\n");
+    SendWS(response + "\n");
     res.send("");
     return;
   }
   if (url.indexOf("M30") != -1) {
     const name = url.split(" ");
-    SendBinary(
+    SendWS(
       //"Deletion failed, File:" + name[1].substring(1) + ".\n" + "ok\n"
       "File deleted:" + name[1].substring(1) + "\n" + "ok\n"
     );
@@ -150,14 +150,14 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   if (url.indexOf("M115") != -1) {
-    SendBinary(
+    SendWS(
       "FIRMWARE_NAME:Smoothieware, FIRMWARE_URL:http%3A//smoothieware.org, X-SOURCE_CODE_URL:https://github.com/Smoothieware/Smoothieware, FIRMWARE_VERSION:edge-0565b13, PROTOCOL_VERSION:1.0, X-FIRMWARE_BUILD_DATE:Jun 19 2021 16:12:18, X-SYSTEM_CLOCK:100MHz, X-AXES:5, X-GRBL_MODE:0, X-ARCS:1, X-CNC:0, X-MSD:1, X-WARNING:deprecated_MCU\nok\n"
     );
     res.send("");
     return;
   }
   if (url.indexOf("cat /sd/config") != -1) {
-    SendBinary(
+    SendWS(
       "# Robot module configurations : general handling of movement G-codes and slicing into moves\n" +
         "default_feed_rate                            1000             # Default rate ( mm/minute ) for G1/G2/G3 moves\n" +
         "default_seek_rate                            1000             # Default rate ( mm/minute ) for G0 moves\n" +
@@ -478,14 +478,14 @@ const commandsQuery = (req, res, SendBinary) => {
     return;
   }
   if (url.startsWith("version")) {
-    SendBinary(
+    SendWS(
       "Build version: edge-3332442, Build date: Apr 22 2016 15:52:55, MCU: LPC1768, System Clock: 100MHz\nok\n"
     );
     res.send("");
     return;
   }
   if (url.indexOf("M503") != -1) {
-    SendBinary(
+    SendWS(
       "; config override present: /sd/config-override\n" +
         ";Steps per unit:\n" +
         "M92 X80.00000 Y80.00000 Z1637.79529 \n" +
@@ -531,7 +531,7 @@ const commandsQuery = (req, res, SendBinary) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendBinary(Temperatures());
+    SendWS(Temperatures());
     res.send("");
     return;
   }
@@ -614,6 +614,12 @@ const commandsQuery = (req, res, SendBinary) => {
       status: "ok",
       data: [{ SSID: "luc-ext1", SIGNAL: "52", IS_PROTECTED: "1" }],
     });
+    return;
+  }
+
+  if (url.indexOf("ESP600") != -1) {
+    const text = url.substring(8);
+    SendWS(text, false);
     return;
   }
 
@@ -908,7 +914,7 @@ const commandsQuery = (req, res, SendBinary) => {
     });
     return;
   }
-  SendBinary("ok\n");
+  SendWS("ok\n");
   res.send("");
 };
 

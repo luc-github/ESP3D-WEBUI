@@ -116,6 +116,26 @@
           "value": false
         }
       ],
+      "notification": [
+        {
+          "id": "shownotificationspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "opennotificationsonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        },
+        {
+          "id": "notifautoscroll",
+          "type": "boolean",
+          "label": "S77",
+          "value": true
+        }
+      ],
       "macros": [
         {
           "id": "showmacrospanel",

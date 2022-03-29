@@ -53,16 +53,27 @@ app.timeout = 2000;
 
 //app.use(express.urlencoded({ extended: false }));
 
-function SendBinary(text) {
-  const array = new Uint8Array(text.length);
-  for (let i = 0; i < array.length; ++i) {
-    array[i] = text.charCodeAt(i);
-  }
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(array);
+function SendWS(text, isbinary = true) {
+  if (typeof isbinary === "undefined") isbinary = true;
+  if (isbinary) {
+    const array = new Uint8Array(text.length);
+    for (let i = 0; i < array.length; ++i) {
+      array[i] = text.charCodeAt(i);
     }
-  });
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(array);
+      }
+    });
+  } else {
+    const notif = "NOTIFICATION:" + text;
+    console.log("Send ws:", text);
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(notif);
+      }
+    });
+  }
 }
 
 app.post("/login", function (req, res) {
@@ -74,7 +85,7 @@ app.get("/config", function (req, res) {
 });
 
 app.get("/command", function (req, res) {
-  commandsQuery(req, res, SendBinary);
+  commandsQuery(req, res, SendWS);
 });
 
 /*app.get("/sdfiles", function (req, res) {

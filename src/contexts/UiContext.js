@@ -41,6 +41,9 @@ const UiContextProvider = ({ children }) => {
   const [uiSettings, setUISettings] = useState();
   const [modals, setModal] = useState([]);
   const [toasts, setToasts] = useState([]);
+  const isNotificationsAutoScroll = useRef(true);
+  const isNotificationsAutoScrollPaused = useRef(false);
+  const [notifications, setNotifications] = useState([]);
   const [needLogin, setNeedLogin] = useState(false);
   const [showKeepConnected, setShowKeepConnected] = useState(false);
   const [connectionState, setConnectionState] = useState({
@@ -51,6 +54,8 @@ const UiContextProvider = ({ children }) => {
   const audio = {};
   const toastsRef = useRef(toasts);
   toastsRef.current = toasts;
+  const notificationsRef = useRef(notifications);
+  notificationsRef.current = notifications;
 
   const removeFromVisibles = (id) => {
     setVisiblePanelsList(
@@ -66,12 +71,25 @@ const UiContextProvider = ({ children }) => {
   };
 
   const addToast = (newToast) => {
-    setToasts([...toastsRef.current, { ...newToast, id: generateUID() }]);
+    const id = generateUID();
+    const now = new Date();
+    const time =
+      now.getHours().toString().padStart(2, "0") +
+      ":" +
+      now.getMinutes().toString().padStart(2, "0") +
+      ":" +
+      now.getSeconds().toString().padStart(2, "0");
+
+    setToasts([...toastsRef.current, { ...newToast, id }]);
+    setNotifications([...notificationsRef.current, { ...newToast, id, time }]);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
   };
 
   const removeToast = (uids) => {
     const removedIds = removeEntriesByIDs(toastsRef.current, uids);
-
     setToasts([...removedIds]);
   };
 
@@ -266,6 +284,12 @@ const UiContextProvider = ({ children }) => {
       refreshPaused: uiRefreshPaused.current,
     },
     toasts: { toastList: toasts, addToast, removeToast },
+    notifications: {
+      list: notifications,
+      clear: clearNotifications,
+      isAutoScroll: isNotificationsAutoScroll,
+      isAutoScrollPaused: isNotificationsAutoScrollPaused,
+    },
     modals: {
       modalList: modals,
       addModal,

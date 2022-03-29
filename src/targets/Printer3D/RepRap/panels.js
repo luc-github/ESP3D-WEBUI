@@ -24,6 +24,7 @@ import { TerminalPanelElement } from "../../../components/Panels/Terminal";
 import { JogPanelElement } from "../../../components/Panels/Jog";
 import { ExtrudersPanelElement } from "../../../components/Panels/Extruders";
 import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures";
+import { NotificationsPanelElement } from "../../../components/Panels/Notifications";
 
 const defaultPanelsList = [
   FilesPanelElement,
@@ -32,6 +33,7 @@ const defaultPanelsList = [
   JogPanelElement,
   ExtrudersPanelElement,
   TemperaturesPanelElement,
+  NotificationsPanelElement,
 ];
 
 export { defaultPanelsList };
