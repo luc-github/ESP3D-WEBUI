@@ -89,12 +89,22 @@ const FeaturesTab = () => {
     );
   };
 
+  /**
+   * *Aborts the save request and displays an error message.*
+   */
   function abortSave() {
     abortRequest("ESP401");
     toasts.addToast({ content: T("S175"), type: "error" });
     endProgression(false);
   }
 
+  /**
+   * * Remove the progression modal from the DOM.
+   * * Set the `isLoading` flag to `false`.
+   * * If the `needrestart` flag is `true`, show a confirmation modal asking the user if they want to
+   * restart the board
+   * @param needrestart - If true, the board will ask for restart after the progression is finished.
+   */
   function endProgression(needrestart) {
     modals.removeModal(modals.getModalIndex("progression"));
     setIsLoading(false);
@@ -109,6 +119,13 @@ const FeaturesTab = () => {
     }
   }
 
+  /**
+   * It sends a command to the ESP to save the current value of the entry to the ESP's memory
+   * @param entry - the entry to save
+   * @param index - the index of the current entry in the list of entries
+   * @param total - the total number of entries to save
+   * @param needrestart - If true, the ESP will be restarted after the save.
+   */
   function saveEntry(entry, index, total, needrestart) {
     let cmd =
       "[ESP401]P=" +
@@ -158,6 +175,9 @@ const FeaturesTab = () => {
     );
   }
 
+  /**
+   * Save the settings to the board
+   */
   function SaveSettings() {
     let needrestart = false;
     let index = 0;
@@ -196,6 +216,10 @@ const FeaturesTab = () => {
     });
   }
 
+  /**
+   * Check if the user has made changes
+   * @returns a boolean value.
+   */
   function checkSaveStatus() {
     let stringified = JSON.stringify(features);
     let hasmodified =
@@ -205,6 +229,13 @@ const FeaturesTab = () => {
     return true;
   }
 
+  /**
+   * * Create a new request to the ESP HTTP server.
+   * * Set the method to GET.
+   * * Set the onSuccess callback to reload page
+   * * Set the onFail callback to the error toaster
+   * * Send the request
+   */
   function reStartBoard() {
     createNewRequest(
       espHttpURL("command", { cmd: "[ESP444]RESTART" }).toString(),
@@ -254,6 +285,11 @@ const FeaturesTab = () => {
     }
   };
 
+  /**
+   * Generate validation for a field
+   * @param fieldData - The data for the field.
+   * @returns The validation object
+   */
   const generateValidation = (fieldData) => {
     let validation = {
       message: <Flag size="1rem" />,
