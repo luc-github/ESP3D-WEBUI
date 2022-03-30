@@ -41,7 +41,13 @@
           "id": "showinformationpage",
           "type": "boolean",
           "label": "S196",
-          "value": false
+          "value": true
+        },
+        {
+          "id": "showmachinesettings",
+          "type": "boolean",
+          "label": "S197",
+          "value": true
         }
       ],
       "polling": [

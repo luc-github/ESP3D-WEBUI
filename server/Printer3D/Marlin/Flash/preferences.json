@@ -7,6 +7,7 @@
   "audio": false,
   "showsensorspanel": false,
   "showinformationpage": true,
+  "showmachinesettings": false,
   "enablepolling": false,
   "pollingrefresh": "3000",
   "pollingcommands": "M105",

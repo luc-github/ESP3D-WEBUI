@@ -201,6 +201,7 @@
   "S194": "WebUI and Firmware version are not compatible",
   "S195": "Error saving data",
   "S196": "Show informations page",
+  "S197": "Show machine settings tab",
   "sta fallback mode": "Client fallback mode",
   "radio_boot": "Radio at boot",
   "general": "General",

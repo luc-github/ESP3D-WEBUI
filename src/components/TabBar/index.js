@@ -22,7 +22,7 @@ import { h } from "preact";
 import { Link } from "../Router";
 import { T } from "../Translations";
 import { AppLogo, WebUILogo, Target } from "../../targets";
-import { useSettingsContext } from "../../contexts";
+import { useSettingsContext, useUiContext } from "../../contexts";
 import { Tool } from "preact-feather";
 
 /*
@@ -44,26 +44,35 @@ const defaultLinks = [
 ];
 const TabBar = () => {
   const { connectionSettings } = useSettingsContext();
+  const { uisettings } = useUiContext();
+
   return (
     <ul class="tab tab-block">
       {defaultLinks &&
-        defaultLinks.map(({ label, icon, href }) => (
-          <li class="tab-item">
-            <Link
-              className={
-                connectionSettings.current.FWTarget == 0 &&
-                href == "/settings/machine"
-                  ? "d-none"
-                  : "btn btn-link no-box feather-icon-container"
-              }
-              activeClassName="active"
-              href={href}
-            >
-              {icon}
-              <label class="hide-low">{T(label)}</label>
-            </Link>
-          </li>
-        ))}
+        defaultLinks.map(({ label, icon, href }) => {
+          if (
+            href == "/settings/machine" &&
+            !uisettings.getValue("showmachinesettings")
+          )
+            return;
+          return (
+            <li class="tab-item">
+              <Link
+                className={
+                  connectionSettings.current.FWTarget == 0 &&
+                  href == "/settings/machine"
+                    ? "d-none"
+                    : "btn btn-link no-box feather-icon-container"
+                }
+                activeClassName="active"
+                href={href}
+              >
+                {icon}
+                <label class="hide-low">{T(label)}</label>
+              </Link>
+            </li>
+          );
+        })}
     </ul>
   );
 };
