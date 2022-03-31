@@ -85,7 +85,7 @@
           "id": "openterminalonstart",
           "type": "boolean",
           "label": "S93",
-          "value": false
+          "value": true
         },
         {
           "id": "verbose",
@@ -111,7 +111,7 @@
           "id": "openfilesonstart",
           "type": "boolean",
           "label": "S93",
-          "value": false
+          "value": true
         }
       ],
       "jog": [
@@ -125,7 +125,7 @@
           "id": "openjogonstart",
           "type": "boolean",
           "label": "S93",
-          "value": false
+          "value": true
         }
       ],
       "notification": [
