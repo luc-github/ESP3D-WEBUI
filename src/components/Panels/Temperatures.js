@@ -16,19 +16,57 @@ Temperatures.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { T } from "../Translations";
 import { useUiContext } from "../../contexts";
 import { ButtonImg } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { Thermometer } from "preact-feather";
-import { iconsTarget, useTargetContextFn } from "../../targets";
+import {
+  iconsTarget,
+  useTargetContextFn,
+  useTargetContext,
+} from "../../targets";
 
 /*
  * Local const
  *
  */
+/*
+ * Local const
+ *
+ */
+//A separate control to avoid the full panel to be updated when the temperatures are updated
+const TemperaturesControls = () => {
+  const { temperatures } = useTargetContext();
+  return (
+    <div class="temperatures-ctrls">
+      {Object.keys(temperatures).map((tool) => {
+        if (temperatures[tool].length == 0) return;
+        return (
+          <Fragment>
+            {temperatures[tool].map((temp, index) => {
+              return (
+                <div class="temperatures-ctrl mt-1">
+                  <div class="temperatures-header">
+                    {tool}
+                    {temperatures[tool].length > 1 ? index : ""}
+                  </div>
+                  <div class="temperatures-value">{temp.current}</div>
+                  {temp.target > 0 && (
+                    <div class=" temperatures-target">{temp.target}</div>
+                  )}
+                </div>
+              );
+            })}
+          </Fragment>
+        );
+      })}
+    </div>
+  );
+};
+
 const TemperaturesPanel = () => {
   const { panels, uisettings } = useUiContext();
   const { processData } = useTargetContextFn;
@@ -73,7 +111,9 @@ const TemperaturesPanel = () => {
             </span>
           </span>
         </div>
-        <div class="panel-body panel-body-dashboard"></div>
+        <div class="panel-body panel-body-dashboard">
+          <TemperaturesControls />
+        </div>
       </div>
     </div>
   );
@@ -88,4 +128,4 @@ const TemperaturesPanelElement = {
   onstart: "opentemperaturesonstart",
 };
 
-export { TemperaturesPanel, TemperaturesPanelElement };
+export { TemperaturesPanel, TemperaturesPanelElement, TemperaturesControls };

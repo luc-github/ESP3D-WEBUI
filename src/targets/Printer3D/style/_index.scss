@@ -135,36 +135,60 @@ path.std:hover {
   align-items: center;
 }
 
+.temperatures-ctrls,
 .jog-positions-ctrls {
   display: flex;
   width: 100%;
   justify-content: space-evenly;
 }
+.temperatures-ctrls {
+  flex-wrap: wrap;
+}
 
+.temperatures-ctrl,
 .jog-position-ctrl {
+  display: flex;
+  flex-direction: column;
   min-width: 3rem;
   border: 0.05rem solid #dadee4;
   border-radius: 5px;
+  align-items: center;
 }
 
+.temperatures-header,
 .jog-position-header {
   border-radius: 5px 5px 0px 0px;
   border-bottom: 0.05rem solid #dadee4;
   color: #5755d9;
   background-color: #f1f1fc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   font-weight: bold;
   font-size: 70%;
+  width: 100%;
 }
 
+.temperatures-value,
 .jog-position-value {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
   color: #5755d9;
   font-size: 80%;
+  width: 100%;
+  height: 100%;
+}
+
+.temperatures-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.temperatures-target {
+  text-align: center;
+  color: #ffffff;
+  background-color: #ff0000;
+  border-radius: 0px 0px 5px 5px;
+  font-size: 80%;
+  width: 100%;
 }
 
 .jog-buttons-container {
