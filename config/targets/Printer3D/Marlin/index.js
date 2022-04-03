@@ -201,23 +201,6 @@ const commandsQuery = (req, res, SendWS) => {
     return;
   }
 
-  /*{
-    FWVersion: "3.0.0.a28",
-    FWTarget: 40,
-    SDConnection: "none",
-    Authentication: enableAuthentication ? "Enabled" : "Disabled",
-    WebCommunication: "Synchronous",
-    WebSocketIP: "localhost",
-    WebSocketPort: "81",
-    Hostname: "esp3d",
-    WiFiMode: "STA",
-    WebUpdate: "Enabled",
-    Filesystem: "SPIFFS",
-    Time: "none",
-    Cam_ID: "4",
-    Cam_name: "ESP32 Cam",
-  }*/
-
   if (url.indexOf("ESP800") != -1) {
     res.json({
       cmd: "800",
@@ -227,7 +210,7 @@ const commandsQuery = (req, res, SendWS) => {
         FWTarget: "marlin",
         FWTargetID: "40",
         Setup: "Enabled",
-        SDConnection: "shared",
+        SDConnection: "none",
         SerialProtocol: "Socket",
         Authentication: "Disabled",
         WebCommunication: "Synchronous",

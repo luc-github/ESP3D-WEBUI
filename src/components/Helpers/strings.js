@@ -29,22 +29,14 @@ function compareStrings(a, b) {
 }
 
 function formatFileSizeToString(size) {
-  var lsize = parseInt(size);
-  var value = 0.0;
-  var tsize = "";
-  if (lsize < 1024) {
-    tsize = lsize + " B";
-  } else if (lsize < 1024 * 1024) {
-    value = lsize / 1024.0;
-    tsize = value.toFixed(2) + " KB";
-  } else if (lsize < 1024 * 1024 * 1024) {
-    value = lsize / 1024.0 / 1024.0;
-    tsize = value.toFixed(2) + " MB";
-  } else {
-    value = lsize / 1024.0 / 1024.0 / 1024.0;
-    tsize = value.toFixed(2) + " GB";
+  if (size === -1) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  let i = 0;
+  while (size >= 1024) {
+    size /= 1024;
+    ++i;
   }
-  return tsize;
+  return `${size.toFixed(2)} ${units[i]}`;
 }
 
 const hslToHex = (h, s, l) => {
