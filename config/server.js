@@ -98,74 +98,56 @@ app.get("/command", function (req, res) {
 });*/
 
 function fileSizeString(size) {
-  let s;
-  if (size < 1024) return size + " B";
-  if (size < 1024 * 1024) return (size / 1024).toFixed(2) + " KB";
-  if (size < 1024 * 1024 * 1024)
-    return (size / (1024 * 1024)).toFixed(2) + " MB";
-  if (size < 1024 * 1024 * 1024 * 1024)
-    return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
-  return "X B";
+  if (size === -1) return "";
+  const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  let i = 0;
+  while (size >= 1024) {
+    size /= 1024;
+    ++i;
+  }
+  return `${size.toFixed(2)} ${units[i]}`;
 }
 
 function filesList(mypath, destination) {
-  let res = '{"files":[';
-  let nb = 0;
-  let total = (destination == "SD" ? 4096 : 1.31) * 1024 * 1024;
-  let totalused = getTotalSize(serverpath + destination);
-  let currentpath = path.normalize(serverpath + destination + mypath);
-  console.log("[path]" + currentpath);
-  fs.readdirSync(currentpath).forEach((fileelement) => {
-    let fullpath = path.normalize(currentpath + "/" + fileelement);
-    let fst = fs.statSync(fullpath);
-    let fsize = -1;
+  const currentPath = path.normalize(serverpath + destination + mypath);
+  console.log("[path]" + currentPath);
+  const totalUsed = getTotalSize(serverpath + destination);
+  const total = (destination == "SD" ? 4096 : 1.31) * 1024 * 1024;
+  const occupation = ((100 * totalUsed) / total).toFixed(0)
 
-    if (fst.isFile()) {
-      fsize = fileSizeString(fst.size);
-    }
-    if (nb > 0) res += ",";
-    res += '{"name":"' + fileelement + '","size":"' + fsize + '"}';
-    nb++;
-  });
-  res +=
-    '],"path":"' +
-    mypath +
-    '","occupation":"' +
-    ((100 * totalused) / total).toFixed(0) +
-    '","status":"ok","total":"' +
-    fileSizeString(total) +
-    '","used":"' +
-    fileSizeString(totalused) +
-    '"}';
-  return res;
+  const files = fs.readdirSync(currentPath)
+    .map(file => {
+      const fullpath = path.normalize(currentPath + "/" + file);
+      const fst = fs.statSync(fullpath);
+      const fsize = (fst.isFile()) ? fileSizeString(fst.size) : "-1";
+      return { name: file, size: fsize }
+    });
+
+  const response = {
+    files,
+    path: mypath,
+    occupation,
+    status: "ok",
+    total: fileSizeString(total),
+    used: fileSizeString(totalUsed),
+  };
+
+  return JSON.stringify(response);
 }
 
-const getAllFiles = function (dirPath, arrayOfFiles) {
-  let files = fs.readdirSync(dirPath);
-
-  arrayOfFiles = arrayOfFiles || [];
-
-  files.forEach(function (file) {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
-    } else {
-      arrayOfFiles.push(dirPath + "/" + file);
-    }
-  });
-
-  return arrayOfFiles;
+const getAllFiles = function (dirPath, arrayOfFiles = []) {
+  let files = fs.readdirSync(dirPath) || [];
+  const newFiles = files.reduce((acc, file) => {
+    const fullpath = dirPath + "/" + file;
+    return (fs.statSync(fullpath).isDirectory()) ? getAllFiles(fullpath, acc) : [...acc, fullpath];
+  }, []);
+  return [...arrayOfFiles, ...newFiles];
 };
 
 const getTotalSize = function (directoryPath) {
-  const arrayOfFiles = getAllFiles(directoryPath);
-
-  let totalSize = 0;
-
-  arrayOfFiles.forEach(function (filePath) {
-    totalSize += fs.statSync(filePath).size;
-  });
-
-  return totalSize;
+  const allFiles = getAllFiles(directoryPath)
+  console.log('allFiles', allFiles);
+  return allFiles.reduce((acc, currFile) => acc + fs.statSync(currFile).size, 0);
 };
 
 function deleteFolderRecursive(path) {
