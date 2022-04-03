@@ -37,6 +37,7 @@ import { Button, ButtonImg, CenterLeft } from "../Controls";
 import { useEffect, useState } from "preact/hooks";
 import { showModal } from "../Modal";
 import { useTargetContext } from "../../targets";
+import { Menu as PanelMenu } from "./"
 
 let currentFeedRate = [];
 let jogDistance = 100;
@@ -75,8 +76,7 @@ const JogPanel = () => {
   const { modals, toasts, panels } = useUiContext();
 
   const { createNewRequest } = useHttpFn;
-  const [isKeyboardEnabled, setIsKeyboardEnabled] =
-    useState(enable_keyboard_jog);
+  const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(enable_keyboard_jog);
   const [moveToTitleXY, setMoveToTitleXY] = useState(
     T("P20") + movetoX + "," + movetoY
   );
@@ -90,7 +90,7 @@ const JogPanel = () => {
       espHttpURL("command", { cmd: command }).toString(),
       { method: "GET", echo: command },
       {
-        onSuccess: (result) => {},
+        onSuccess: (result) => { },
         onFail: (error) => {
           toasts.addToast({ content: error, type: "error" });
           console.log(error);
@@ -341,6 +341,33 @@ const JogPanel = () => {
       movetoZ = useUiContextFn.getValue("zpos");
     setMoveToTitleZ(T("P75") + movetoZ);
   }, []);
+
+  const toggleUseKeyboard = (e) => {
+    enable_keyboard_jog = !enable_keyboard_jog;
+    setIsKeyboardEnabled(enable_keyboard_jog);
+    (enable_keyboard_jog) ? AddKeyboardListener() : RemoveKeyboardListener();
+  }
+
+  const menu = [
+    {
+      label: T("P10"),
+      onClick: setFeedrateXY,
+    },
+    {
+      label: T("P11"),
+      onClick: setFeedrateZ,
+    },
+    { divider: true },
+    {
+      label: T("P79"),
+      onClick: toggleUseKeyboard,
+      displayToggle: () => <span class="feather-icon-container">{isKeyboardEnabled ? (<CheckCircle size="0.8rem" />) : (<Circle size="0.8rem" />)}</span>,
+    },
+    {
+      label: T("P81"),
+      onClick: showKeyboarHelp,
+    }
+  ]
   return (
     <div
       id={id}
@@ -354,65 +381,7 @@ const JogPanel = () => {
           </span>
           <span class="navbar-section">
             <span class="H-100">
-              <div class="dropdown dropdown-right">
-                <span
-                  class="dropdown-toggle btn btn-xs btn-header m-1"
-                  tabindex="0"
-                >
-                  <ChevronDown size="0.8rem" />
-                </span>
-
-                <ul class="menu">
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={setFeedrateXY}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P10")}</span>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={setFeedrateZ}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P11")}</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="divider" />
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        enable_keyboard_jog = !enable_keyboard_jog;
-                        setIsKeyboardEnabled(enable_keyboard_jog);
-                        if (enable_keyboard_jog) {
-                          AddKeyboardListener();
-                        } else {
-                          RemoveKeyboardListener();
-                        }
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P79")}</span>
-                        <span class="feather-icon-container">
-                          {isKeyboardEnabled ? (
-                            <CheckCircle size="0.8rem" />
-                          ) : (
-                            <Circle size="0.8rem" />
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={showKeyboarHelp}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P81")}</span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+              <PanelMenu items={menu} />
               <span
                 class="btn btn-clear btn-close m-1"
                 aria-label="Close"

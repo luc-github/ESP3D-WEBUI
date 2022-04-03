@@ -36,6 +36,7 @@ import {
 } from "preact-feather";
 import { files, processor, useTargetContextFn } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
+import { Menu as PanelMenu } from "./"
 
 let currentFS = "";
 const currentPath = {};
@@ -52,6 +53,7 @@ const FilesPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fileSystem, setFileSystem] = useState(currentFS);
   const [filesList, setFilesList] = useState(filesListCache[currentFS]);
+  const [menu, setMenu] = useState(null);
   const { createNewRequest, abortRequest } = useHttpFn;
   const { processData } = useTargetContextFn;
   const { modals, toasts } = useUiContext();
@@ -193,8 +195,8 @@ const FilesPanel = () => {
           "myfiles",
           file,
           currentPath[currentFS] +
-            (currentPath[currentFS] == "/" ? "" : "/") +
-            file.name
+          (currentPath[currentFS] == "/" ? "" : "/") +
+          file.name
         );
       }
       //now do request
@@ -468,6 +470,70 @@ const FilesPanel = () => {
     }
     setupFileInput();
   }, []);
+  const openFileUploadBrowser = () => {
+    fileref.current.value = "";
+    fileref.current.click();
+  }
+  const showCreateDirModal = () => {
+    let name;
+    showModal({
+      modals,
+      title: T("S104"),
+      button2: { text: T("S28") },
+      button1: {
+        cb: () => {
+          if (name.length > 0) createDirectory(name);
+        },
+        text: T("S106"),
+      },
+      icon: <Edit3 />,
+      id: "inputName",
+      content: (
+        <Fragment>
+          <div>{T("S105")}</div>
+          <input
+            class="form-input"
+            onInput={(e) => {
+              name = e.target.value.trim();
+            }}
+          />
+        </Fragment>
+      ),
+    });
+  }
+
+  useEffect(() => {
+    const newMenu = () => {
+      const rawMenuItems = [
+        {
+          capability: 'CreateDir',
+          label: T("S90"),
+          icon: <span class="feather-icon-container"><FolderPlus size="0.8rem" /></span>,
+          onClick: showCreateDirModal,
+        },
+        {
+          capability: "Upload",
+          label: T("S89"),
+          displayToggle: () => <span class="feather-icon-container"><Upload size="0.8rem" /></span>,
+          onClick: openFileUploadBrowser,
+        },
+        { divider: true },
+        {
+          label: T("S50"),
+          onClick: onRefresh,
+          icon: <span class="feather-icon-container"><RefreshCcw size="0.8rem" /></span>
+        }
+      ]
+      const capabilities = ['CreateDir', 'Upload'].filter(cap => files.capability(currentFS, cap));
+      console.log("capabilities", capabilities);
+      return rawMenuItems.filter(item => {
+        if (item.capability) return capabilities.includes(item.capability);
+        if (item.divider && capabilities.length <= 0) return false;
+        return true;
+      });
+    }
+    setMenu(newMenu());
+  }, [fileSystem])
 
   console.log(id);
   return (
@@ -487,92 +553,7 @@ const FilesPanel = () => {
 
           <span class="navbar-section">
             <span style="height: 100%;">
-              {fileSystem != "" && !isLoading && (
-                <div class="dropdown dropdown-right">
-                  <span
-                    class="dropdown-toggle btn btn-xs btn-header m-1"
-                    tabindex="0"
-                  >
-                    <ChevronDown size="0.8rem" />
-                  </span>
-
-                  <ul class="menu">
-                    {files.capability(fileSystem, "CreateDir") && (
-                      <li class="menu-item">
-                        <div
-                          class="menu-entry"
-                          onclick={(e) => {
-                            let name;
-                            showModal({
-                              modals,
-                              title: T("S104"),
-                              button2: { text: T("S28") },
-                              button1: {
-                                cb: () => {
-                                  if (name.length > 0) createDirectory(name);
-                                },
-                                text: T("S106"),
-                              },
-                              icon: <Edit3 />,
-                              id: "inputName",
-                              content: (
-                                <Fragment>
-                                  <div>{T("S105")}</div>
-                                  <input
-                                    class="form-input"
-                                    onInput={(e) => {
-                                      name = e.target.value.trim();
-                                    }}
-                                  />
-                                </Fragment>
-                              ),
-                            });
-                          }}
-                        >
-                          <div class="menu-panel-item">
-                            <span class="text-menu-item">{T("S90")}</span>
-                            <span class="feather-icon-container">
-                              <FolderPlus size="0.8rem" />
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    )}
-                    {files.capability(fileSystem, "Upload") && (
-                      <li class="menu-item">
-                        <div
-                          class="menu-entry"
-                          onclick={(e) => {
-                            fileref.current.value = "";
-                            fileref.current.click();
-                          }}
-                        >
-                          <div class="menu-panel-item">
-                            <span class="text-menu-item">{T("S89")}</span>
-                            <span class="feather-icon-container">
-                              <Upload size="0.8rem" />
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    )}
-                    {(files.capability(fileSystem, "Upload") ||
-                      files.capability(fileSystem, "CreateDir")) && (
-                      <li class="divider" />
-                    )}
-                    <li class="menu-item">
-                      <div class="menu-entry" onclick={onRefresh}>
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("S50")}</span>
-                          <span class="feather-icon-container">
-                            <RefreshCcw size="0.8rem" />
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              {fileSystem != "" && !isLoading && <PanelMenu items={menu} />}
               <span
                 class="btn btn-clear btn-close m-1"
                 aria-label="Close"
@@ -692,12 +673,11 @@ const FilesPanel = () => {
                   return (
                     <div class="file-line form-control">
                       <div
-                        class={`feather-icon-container file-line-name ${
-                          files.capability(fileSystem, "Download") ||
+                        class={`feather-icon-container file-line-name ${files.capability(fileSystem, "Download") ||
                           line.size == -1
-                            ? "file-line-action"
-                            : ""
-                        }`}
+                          ? "file-line-action"
+                          : ""
+                          }`}
                         onclick={(e) => {
                           ElementClicked(e, line);
                         }}
@@ -715,24 +695,24 @@ const FilesPanel = () => {
                               currentPath[currentFS],
                               line.name
                             ) && (
-                              <ButtonImg
-                                m1
-                                ltooltip
-                                data-tooltip={T("S74")}
-                                icon={<Play />}
-                                onClick={(e) => {
-                                  e.target.blur();
-                                  //TODO print file
-                                  const cmd = files.command(
-                                    currentFS,
-                                    "play",
-                                    currentPath[currentFS],
-                                    line.name
-                                  );
-                                  sendSerialCmd(cmd.cmd);
-                                }}
-                              />
-                            )}
+                                <ButtonImg
+                                  m1
+                                  ltooltip
+                                  data-tooltip={T("S74")}
+                                  icon={<Play />}
+                                  onClick={(e) => {
+                                    e.target.blur();
+                                    //TODO print file
+                                    const cmd = files.command(
+                                      currentFS,
+                                      "play",
+                                      currentPath[currentFS],
+                                      line.name
+                                    );
+                                    sendSerialCmd(cmd.cmd);
+                                  }}
+                                />
+                              )}
                             {!files.capability(
                               currentFS,
                               "Process",

@@ -12,8 +12,8 @@ const Menu = ({ items }) => {
 							<div className="menu-entry">
 								<div class="menu-panel-item" onclick={item.onClick}>
 									<span class="text-menu-item">{item.label}</span>
-									{(item.toggleDisplay)
-										? item.toggleDisplay()
+									{(item.displayToggle)
+										? item.displayToggle()
 										: item.icon}
 								</div>
 							</div>
