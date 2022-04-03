@@ -42,7 +42,7 @@ function Temperatures() {
   return (
     "ok T:" +
     T +
-    " /200 R:" +
+    " /200 C:" +
     (T * 1.1).toFixed(2) +
     " /200 B:" +
     B +
@@ -50,7 +50,7 @@ function Temperatures() {
     T +
     " /0 P:" +
     (B * 1.3).toFixed(2) +
-    " /0 C:" +
+    " /0 R:" +
     B * 2 +
     " /0 T0:" +
     T +

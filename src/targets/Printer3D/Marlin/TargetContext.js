@@ -54,8 +54,8 @@ const TargetContextProvider = ({ children }) => {
   //Cooler: [], //0->1 is only for laser so out of scope
   const [temperatures, setTemperaturess] = useState({
     T: [], //0->8 T0->T8 Extruders
-    B: [], //0->1 B Bed
     R: [], //0->1 R Redondant
+    B: [], //0->1 B Bed
     C: [], //0->1  Chamber
     P: [], //0->1 Probe
     M: [], //0->1 M Board

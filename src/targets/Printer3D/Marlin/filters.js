@@ -35,8 +35,8 @@ const getTemperatures = (str) => {
   let result = null;
   const response = {
     T: [], //0->8 T0->T8 Extruders
-    B: [], //0->1 B Bed
     R: [], //0->1 R Redondant
+    B: [], //0->1 B Bed
     C: [], //0->1  Chamber
     P: [], //0->1 Probe
     M: [], //0->1 M Board
