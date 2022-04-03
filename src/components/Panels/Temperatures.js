@@ -50,28 +50,24 @@ const isEditable = (tool) => {
 };
 
 const isVisible = (tool) => {
-  switch (tool) {
-    case "T":
-      return useUiContextFn.getValue("showextruderctrls");
-      break;
-    case "B":
-      return useUiContextFn.getValue("showbedctrls");
-      break;
-    case "C":
-      return useUiContextFn.getValue("showchamberctrls");
-      break;
-    case "P":
-      return useUiContextFn.getValue("showprobectrls");
-      break;
-    case "R":
-      return useUiContextFn.getValue("showredondantctrls");
-      break;
-    case "M":
-      return useUiContextFn.getValue("showboardctrls");
-      break;
-    default:
-      return false;
-  }
+  const setting = {
+    T: "showextruderctrls",
+    B: "showbedctrls",
+    C: "showchamberctrls",
+    P: "showprobectrls",
+    R: "showredondantctrls",
+    M: "showboardctrls",
+  };
+  return setting[tool] != undefined
+    ? useUiContextFn.getValue(setting[tool])
+    : false;
+};
+
+const sensorName = (tool, index, size) => {
+  const name = { T: "P41", B: "P37", C: "P43", P: "P42", R: "P44", M: "P90" };
+  return name[tool] != undefined
+    ? T(name[tool]).replace("$", size == 1 ? "" : index + 1)
+    : "";
 };
 
 //A separate control to avoid the full panel to be updated when the temperatures are updated
@@ -85,7 +81,14 @@ const TemperaturesControls = () => {
           <Fragment>
             {temperatures[tool].map((temp, index) => {
               return (
-                <div class="temperatures-ctrl mt-1">
+                <div
+                  class="temperatures-ctrl mt-1 tooltip tooltip-bottom"
+                  data-tooltip={sensorName(
+                    tool,
+                    index,
+                    temperatures[tool].length
+                  )}
+                >
                   <div class="temperatures-header">
                     {tool == "T" ? "E" : tool}
                     {temperatures[tool].length > 1 ? index : ""}
@@ -104,7 +107,7 @@ const TemperaturesControls = () => {
   );
 };
 
-const TemperatureInputControl = ({ tool, index }) => {
+const TemperatureInputControl = ({ tool, index, size }) => {
   const { temperatures } = useTargetContext();
   const [validation, setvalidation] = useState();
   const generateValidation = (fieldData) => {
@@ -115,11 +118,7 @@ const TemperatureInputControl = ({ tool, index }) => {
     };
     return validation;
   };
-  return (
-    <div>
-      {tool}-{index}
-    </div>
-  );
+  return <div>{sensorName(tool, index, size)}</div>;
   /*
 
    */
@@ -195,7 +194,11 @@ const TemperaturesPanel = () => {
                   <Fragment>
                     {temperatures[tool].map((temp, index) => {
                       return (
-                        <TemperatureInputControl tool={tool} index={index} />
+                        <TemperatureInputControl
+                          tool={tool}
+                          index={index}
+                          size={temperatures[tool].length}
+                        />
                       );
                     })}
                   </Fragment>

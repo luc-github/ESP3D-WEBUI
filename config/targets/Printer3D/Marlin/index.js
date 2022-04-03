@@ -46,8 +46,6 @@ function Temperatures() {
     (T * 1.1).toFixed(2) +
     " /200 B:" +
     B +
-    " /0 B1:" +
-    T +
     " /0 P:" +
     (B * 1.3).toFixed(2) +
     " /0 R:" +

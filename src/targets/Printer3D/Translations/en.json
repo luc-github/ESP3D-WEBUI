@@ -81,6 +81,7 @@
     "P87": "Show Board controls",  
     "P88": "Show Graph controls",
     "P89": "Waiting for temperatures from printer",
+    "P90": "Board",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls"
