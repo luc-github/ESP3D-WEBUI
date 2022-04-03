@@ -19,7 +19,7 @@
 
 import { h } from "preact";
 import { useRef, useState, useEffect } from "preact/hooks";
-import { Eye, EyeOff, Search } from "preact-feather";
+import { Eye, EyeOff, Search, ChevronDown } from "preact-feather";
 import { ButtonImg } from "../../Controls";
 import { ScanApList } from "../ScanAp";
 import { T } from "./../../Translations";
@@ -57,6 +57,7 @@ const Input = ({
   type = "text",
   id = "",
   value = "",
+  width,
   setValue,
   extra,
   inline,
@@ -156,6 +157,50 @@ const Input = ({
         <Reveal applyTo={inputref} />
       </div>
     );
+  if (extra == "dropList") {
+    return (
+      <div class={`input-group ${inline ? "column" : ""} `}>
+        <input
+          spellcheck="false"
+          lang="en-US"
+          ref={inputref}
+          style={width ? "width:" + width : ""}
+          id={id}
+          class="form-input"
+          {...props}
+          placeholder=""
+          {...rest}
+          onInput={onInput}
+        />
+        {append && <span class="input-group-addon">{T(append)}</span>}
+        <ButtonImg
+          class="input-group-btn"
+          icon={<ChevronDown color="blue" />}
+          data-tooltip={T(help)}
+          onClick={(e) => {
+            e.target.blur();
+            const modalId = "list" + id;
+            console.log("modalId:", modalId);
+            /* showModal({
+              modals,
+              title: T("S45"),
+              button2: { text: T("S24") },
+              button1: { cb: refreshList, text: T("S50"), noclose: true },
+              icon: <Search />,
+              id: modalId,
+              content: (
+                <ScanApList
+                  id={modalId}
+                  setValue={setValue}
+                  refreshfn={(scannetwork) => (ScanNetworks = scannetwork)}
+                />
+              ),
+            });*/
+          }}
+        />
+      </div>
+    );
+  }
   if (extra == "scan") {
     return (
       <div class={`input-group ${inline ? "column" : ""} `}>

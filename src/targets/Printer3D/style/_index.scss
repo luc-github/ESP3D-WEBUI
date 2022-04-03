@@ -229,3 +229,13 @@ path.std:hover {
   width: 100%;
   justify-content: space-evenly;
 }
+
+.temperature-ctrls-container {
+  display: flex;
+  justify-content: justify-content;
+  align-items: center;
+}
+.temperature-ctrl-name {
+  color: #5755d9;
+  flex-grow: 1;
+}

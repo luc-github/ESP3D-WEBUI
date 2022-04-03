@@ -23,7 +23,7 @@ import { useEffect, useState, useRef } from "preact/hooks";
 import { ButtonImg, Loading, Field } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { Thermometer, Flag } from "preact-feather";
+import { Thermometer, Flag, Power, Send } from "preact-feather";
 import {
   iconsTarget,
   useTargetContextFn,
@@ -37,7 +37,7 @@ let temp_value = 0;
  *
  */
 //each one has
-//{current: 0, modified: 0}
+//{current: 0, max: tbd}
 const target_temperatures = {
   T: [], //0->8 T0->T8 Extruders
   B: [], //0->1 B Bed
@@ -108,29 +108,99 @@ const TemperaturesControls = () => {
 };
 
 const TemperatureInputControl = ({ tool, index, size }) => {
-  const { temperatures } = useTargetContext();
-  const [validation, setvalidation] = useState();
-  const generateValidation = (fieldData) => {
-    let validation = {
-      message: <Flag size="1rem" />,
-      valid: true,
-      modified: true,
+  //we won't handle modified state just handle error
+  //too many user cases where changing value to show button is not suitable
+  const [validation, setvalidation] = useState({
+    message: null,
+    valid: true,
+    modified: false,
+  });
+
+  const getMaxTemperature = (tool) => {
+    const setting = {
+      T: "extrudermax",
+      B: "bedmax",
+      C: "chambermax",
     };
+    return setting[tool] != undefined
+      ? useUiContextFn.getValue(setting[tool])
+      : 0;
+  };
+  const generateValidation = (tool, index) => {
+    let validation = {
+      message: null,
+      valid: true,
+      modified: false,
+    };
+    if (
+      target_temperatures[tool][index].current.length == 0 ||
+      target_temperatures[tool][index].current < 0 ||
+      (target_temperatures[tool][index].max &&
+        target_temperatures[tool][index].current >
+          target_temperatures[tool][index].max)
+    ) {
+      //No error message to keep all control aligned
+      //may be have a better way ?
+      // validation.message = T("S42");
+      validation.valid = false;
+    }
+
     return validation;
   };
-  return <div>{sensorName(tool, index, size)}</div>;
-  /*
+  //todo extract max value from settings
+  const max = parseFloat(getMaxTemperature(tool));
+  if (target_temperatures[tool][index] == undefined)
+    target_temperatures[tool][index] = {
+      current: 0,
+      max: max > 0 ? max : null,
+    };
 
-   */
-  /*<Field
-                value={temp_value}
-                id="temp_tool"
-                setValue={(val, update) => {
-                  if (!update) temp_value = val;
-                  setvalidation(generateValidation("fieldData"));
-                }}
-                validation={validation}
-              />*/
+  return (
+    <div class="temperature-ctrls-container m-1">
+      <div class="temperature-ctrl-name">{sensorName(tool, index, size)}</div>
+      <ButtonImg
+        id={"btn-stop-" + tool + index}
+        class="temperature-ctrl-stop m-1"
+        icon={<Power color="red" />}
+        tooltip
+        data-tooltip={T("P38")}
+        onClick={(e) => {
+          e.target.blur();
+          console.log("Stop heating ", tool, index);
+        }}
+      />
+      <div>
+        <Field
+          id={"input-" + tool + index}
+          type="number"
+          value={target_temperatures[tool][index].current}
+          min="0"
+          step="0.1"
+          max={max > 0 ? max : null}
+          width="5rem"
+          extra="dropList"
+          setValue={(val, update) => {
+            if (!update) target_temperatures[tool][index].current = val;
+            setvalidation(generateValidation(tool, index));
+          }}
+          validation={validation}
+        />
+      </div>
+      <ButtonImg
+        id={"btn-send" + tool + index}
+        class={`temperature-ctrl-send ${
+          !validation.valid ? "d-invisible" : ""
+        }`}
+        icon={<Send />}
+        tooltip
+        data-tooltip={T("S43")}
+        onClick={(e) => {
+          e.target.blur();
+          console.log("Set temperature for ", tool, index);
+        }}
+      />
+    </div>
+  );
 };
 
 const TemperaturesPanel = () => {
