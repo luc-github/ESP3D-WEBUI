@@ -81,7 +81,7 @@ const commandsQuery = (req, res, SendWS) => {
         FWTarget: "grbl",
         FWTargetID: "10",
         Setup: "Enabled",
-        SDConnection: "shared",
+        SDConnection: "none",
         SerialProtocol: "Socket",
         Authentication: "Disabled",
         WebCommunication: "Synchronous",

@@ -586,7 +586,8 @@ const FilesPanel = () => {
         <div>
           <select class="form-select" onchange={onSelectFS} value={currentFS}>
             {files.supported.map((element) => {
-              if (element.depend)
+              console.log("Debug", typeof element.depend);
+              if (element.depend && typeof element.depend == "function")
                 if (element.depend())
                   return (
                     <option value={element.value}>{T(element.name)}</option>

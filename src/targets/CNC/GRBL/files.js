@@ -19,12 +19,31 @@
 */
 import { h } from "preact";
 import { FLASH } from "../../FLASH-source";
+import { useUiContextFn } from "../../../contexts";
 
 //List of supported files systems
 const supportedFileSystems = [
-  { value: "FLASH", name: "S137", depend: "showfilespanel" },
-  { value: "TFTSD", name: "S188", depend: "tftsd" },
-  { value: "TFTUSB", name: "S189", depend: "tftusb" },
+  {
+    value: "FLASH",
+    name: "S137",
+    depend: () => {
+      return useUiContextFn.getValue("showfilespanel");
+    },
+  },
+  {
+    value: "TFTSD",
+    name: "S188",
+    depend: () => {
+      return useUiContextFn.getValue("tftsd");
+    },
+  },
+  {
+    value: "TFTUSB",
+    name: "S189",
+    depend: () => {
+      return useUiContextFn.getValue("tftusb");
+    },
+  },
 ];
 
 const capabilities = {

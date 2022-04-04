@@ -30,6 +30,13 @@
         "label": "P15",
         "value": "M112"
       }
-    ]
+    ],
+    "files":[ 
+      {
+        "id": "sd",
+        "type": "boolean",
+        "label": "S190",
+        "value": false
+      }]
   }
 }

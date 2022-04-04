@@ -172,7 +172,25 @@
         "label": "CN22",
         "value": "$SLP",
         "help": "S97"
-      }
+      },
+    {
+          "id": "xpos",
+          "type": "number",
+          "label": "P65",
+          "value": "100"
+        },
+        {
+          "id": "ypos",
+          "type": "number",
+          "label": "P66",
+          "value": "100"
+        },
+        {
+          "id": "zpos",
+          "type": "number",
+          "label": "P75",
+          "value": "100"
+        }
     ]
   }
 }
