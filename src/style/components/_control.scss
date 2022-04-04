@@ -2,7 +2,7 @@
   text-align: center;
 }
 .buttons-bar {
-  flex: 0 1 auto;
+  display: flex;
 }
 
 .btn-xs {
@@ -27,6 +27,12 @@
   border-radius: $border-radius;
   margin-bottom: 0.4rem;
   width: 100%;
+}
+
+.information-buttons-bar {
+  display: flex;
+  align-content: center;
+  justify-content: center;
 }
 
 .drop-zone {

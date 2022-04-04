@@ -24,6 +24,7 @@ import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
 import { InformationsControls } from "./InformationsControls";
+import { DashboardButtonsBar } from "./DashboardButtonsBar";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -57,4 +58,5 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
+  DashboardButtonsBar,
 };

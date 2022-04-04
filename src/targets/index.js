@@ -36,6 +36,7 @@ import {
   variablesList,
   AppLogo,
   WebUILogo,
+  DashboardButtonsBar,
 } from "SubTargetDir";
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
 import defaultPreferencesTarget from "TargetDir/preferences.json";
@@ -73,4 +74,5 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
+  DashboardButtonsBar,
 };

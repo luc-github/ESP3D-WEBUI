@@ -1397,22 +1397,6 @@ const JogPanel = () => {
               SendCommand(cmd);
             }}
           />
-          <ButtonImg
-            m1
-            error
-            tooltip
-            label={T("P15")}
-            icon={<AlertCircle />}
-            data-tooltip={T("P15")}
-            id="btnEStop"
-            onclick={(e) => {
-              e.target.blur();
-              const cmd = useUiContextFn
-                .getValue("emergencystop")
-                .replace(";", "\n");
-              SendCommand(cmd);
-            }}
-          />
         </div>
       </div>
     </div>

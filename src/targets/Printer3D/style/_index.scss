@@ -239,3 +239,10 @@ path.std:hover {
   color: #5755d9;
   flex-grow: 1;
 }
+
+dashboard-buttons-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
