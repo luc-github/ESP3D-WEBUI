@@ -36,7 +36,7 @@ import {
 } from "preact-feather";
 import { files, processor, useTargetContextFn } from "../../targets";
 import { Folder, File, Trash2, Play } from "preact-feather";
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu } from "./";
 
 let currentFS = "";
 const currentPath = {};
@@ -195,8 +195,8 @@ const FilesPanel = () => {
           "myfiles",
           file,
           currentPath[currentFS] +
-          (currentPath[currentFS] == "/" ? "" : "/") +
-          file.name
+            (currentPath[currentFS] == "/" ? "" : "/") +
+            file.name
         );
       }
       //now do request
@@ -473,7 +473,7 @@ const FilesPanel = () => {
   const openFileUploadBrowser = () => {
     fileref.current.value = "";
     fileref.current.click();
-  }
+  };
   const showCreateDirModal = () => {
     let name;
     showModal({
@@ -500,296 +500,309 @@ const FilesPanel = () => {
         </Fragment>
       ),
     });
-  }
+  };
 
   useEffect(() => {
     const newMenu = () => {
       const rawMenuItems = [
         {
-          capability: 'CreateDir',
+          capability: "CreateDir",
           label: T("S90"),
-          icon: <span class="feather-icon-container"><FolderPlus size="0.8rem" /></span>,
+          icon: (
+            <span class="feather-icon-container">
+              <FolderPlus size="0.8rem" />
+            </span>
+          ),
           onClick: showCreateDirModal,
         },
         {
           capability: "Upload",
           label: T("S89"),
-          displayToggle: () => <span class="feather-icon-container"><Upload size="0.8rem" /></span>,
+          displayToggle: () => (
+            <span class="feather-icon-container">
+              <Upload size="0.8rem" />
+            </span>
+          ),
           onClick: openFileUploadBrowser,
         },
         { divider: true },
         {
           label: T("S50"),
           onClick: onRefresh,
-          icon: <span class="feather-icon-container"><RefreshCcw size="0.8rem" /></span>
-        }
-      ]
-      const capabilities = ['CreateDir', 'Upload'].filter(cap => files.capability(currentFS, cap));
+          icon: (
+            <span class="feather-icon-container">
+              <RefreshCcw size="0.8rem" />
+            </span>
+          ),
+        },
+      ];
+      const capabilities = ["CreateDir", "Upload"].filter((cap) =>
+        files.capability(currentFS, cap)
+      );
       console.log("capabilities", capabilities);
-      return rawMenuItems.filter(item => {
+      return rawMenuItems.filter((item) => {
         if (item.capability) return capabilities.includes(item.capability);
         if (item.divider && capabilities.length <= 0) return false;
         return true;
       });
-    }
+    };
     setMenu(newMenu());
-  }, [fileSystem])
+  }, [fileSystem]);
 
   console.log(id);
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
+    <div class="panel mb-2 panel-dashboard">
       <input
         type="file"
         ref={fileref}
         class="d-none"
         onChange={filesSelected}
       />
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section  feather-icon-container">
-            <HardDrive />
-            <strong class="text-ellipsis">{T("S65")}</strong>
-          </span>
+      <div class="navbar">
+        <span class="navbar-section  feather-icon-container">
+          <HardDrive />
+          <strong class="text-ellipsis">{T("S65")}</strong>
+        </span>
 
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              {fileSystem != "" && !isLoading && <PanelMenu items={menu} />}
-              <span
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            {fileSystem != "" && !isLoading && <PanelMenu items={menu} />}
+            <span
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
+        </span>
+      </div>
+      <div class="input-group m-2">
+        <div>
+          <select class="form-select" onchange={onSelectFS} value={currentFS}>
+            {files.supported.map((element) => {
+              if (element.depend)
+                if (element.depend())
+                  return (
+                    <option value={element.value}>{T(element.name)}</option>
+                  );
+            })}
+          </select>
         </div>
-        <div class="input-group m-2">
-          <div>
-            <select class="form-select" onchange={onSelectFS} value={currentFS}>
-              {files.supported.map((element) => {
-                if (element.depend)
-                  if (element.depend())
-                    return (
-                      <option value={element.value}>{T(element.name)}</option>
-                    );
-              })}
-            </select>
-          </div>
-          <div class="form-control m-1">{filePath ? filePath : ""}</div>
-        </div>
+        <div class="form-control m-1">{filePath ? filePath : ""}</div>
+      </div>
 
-        <div
-          ref={dropRef}
-          class="panel drop-zone panel-body-dashboard"
-          onDragOver={(e) => {
-            dropRef.current.classList.add("drop-zone--over");
-            e.preventDefault();
-          }}
-          onDragLeave={(e) => {
-            dropRef.current.classList.remove("drop-zone--over");
-            e.preventDefault();
-          }}
-          onDragEnd={(e) => {
-            dropRef.current.classList.remove("drop-zone--over");
-            e.preventDefault();
-          }}
-          onDrop={(e) => {
-            dropRef.current.classList.remove("drop-zone--over");
-            if (e.dataTransfer.files.length) {
-              const length = e.dataTransfer.items.length;
-              if (!fileref.current.multiple && length > 1) {
-                toasts.addToast({ content: T("S193"), type: "error" });
-                console.log("Multiple detected abort");
-                e.preventDefault();
-                return;
-              }
-              //webkitGetAsEntry seems experimental
-              if (
-                e.dataTransfer.items &&
-                e.dataTransfer.items[0].webkitGetAsEntry()
-              ) {
-                for (let i = 0; i < length; i++) {
-                  const entry = e.dataTransfer.items[i].webkitGetAsEntry();
-                  if (entry.isDirectory) {
-                    toasts.addToast({ content: T("S192"), type: "error" });
-                    console.log("Directory detected abort");
-                    e.preventDefault();
-                    return;
-                  }
+      <div
+        ref={dropRef}
+        class="panel drop-zone panel-body-dashboard"
+        onDragOver={(e) => {
+          dropRef.current.classList.add("drop-zone--over");
+          e.preventDefault();
+        }}
+        onDragLeave={(e) => {
+          dropRef.current.classList.remove("drop-zone--over");
+          e.preventDefault();
+        }}
+        onDragEnd={(e) => {
+          dropRef.current.classList.remove("drop-zone--over");
+          e.preventDefault();
+        }}
+        onDrop={(e) => {
+          dropRef.current.classList.remove("drop-zone--over");
+          if (e.dataTransfer.files.length) {
+            const length = e.dataTransfer.items.length;
+            if (!fileref.current.multiple && length > 1) {
+              toasts.addToast({ content: T("S193"), type: "error" });
+              console.log("Multiple detected abort");
+              e.preventDefault();
+              return;
+            }
+            //webkitGetAsEntry seems experimental
+            if (
+              e.dataTransfer.items &&
+              e.dataTransfer.items[0].webkitGetAsEntry()
+            ) {
+              for (let i = 0; i < length; i++) {
+                const entry = e.dataTransfer.items[i].webkitGetAsEntry();
+                if (entry.isDirectory) {
+                  toasts.addToast({ content: T("S192"), type: "error" });
+                  console.log("Directory detected abort");
+                  e.preventDefault();
+                  return;
                 }
               }
             }
+          }
 
-            fileref.current.files = e.dataTransfer.files;
+          fileref.current.files = e.dataTransfer.files;
 
-            filesSelected(e);
-            e.preventDefault();
-          }}
-        >
-          <div class="panel-body panel-body-dashboard files-list m-1">
-            {isLoading && fileSystem != "" && (
-              <Fragment>
-                <center>
-                  <Loading class="m-2" />
+          filesSelected(e);
+          e.preventDefault();
+        }}
+      >
+        <div class="panel-body panel-body-dashboard files-list m-1">
+          {isLoading && fileSystem != "" && (
+            <Fragment>
+              <center>
+                <Loading class="m-2" />
 
-                  <ButtonImg
-                    donotdisable
-                    icon={<XCircle />}
-                    label={T("S28")}
-                    btooltip
-                    data-tooltip={T("S28")}
-                    onClick={onCancel}
-                  />
-                </center>
-              </Fragment>
-            )}
+                <ButtonImg
+                  donotdisable
+                  icon={<XCircle />}
+                  label={T("S28")}
+                  btooltip
+                  data-tooltip={T("S28")}
+                  onClick={onCancel}
+                />
+              </center>
+            </Fragment>
+          )}
 
-            {!isLoading && fileSystem != "" && filesList && (
-              <Fragment>
-                {currentPath[currentFS] != "/" && (
+          {!isLoading && fileSystem != "" && filesList && (
+            <Fragment>
+              {currentPath[currentFS] != "/" && (
+                <div
+                  class="file-line file-line-name"
+                  onclick={(e) => {
+                    const newpath = currentPath[currentFS].substring(
+                      0,
+                      currentPath[currentFS].lastIndexOf("/")
+                    );
+
+                    currentPath[currentFS] =
+                      newpath.length == 0 ? "/" : newpath;
+                    onRefresh(e, files.capability(currentFS, "IsFlatFS"));
+                  }}
+                >
                   <div
-                    class="file-line file-line-name"
-                    onclick={(e) => {
-                      const newpath = currentPath[currentFS].substring(
-                        0,
-                        currentPath[currentFS].lastIndexOf("/")
-                      );
-
-                      currentPath[currentFS] =
-                        newpath.length == 0 ? "/" : newpath;
-                      onRefresh(e, files.capability(currentFS, "IsFlatFS"));
-                    }}
+                    class="form-control  file-line-name file-line-action"
+                    style="height:2rem!important"
                   >
-                    <div
-                      class="form-control  file-line-name file-line-action"
-                      style="height:2rem!important"
-                    >
-                      <CornerRightUp /> <label class="p-2">...</label>
-                    </div>
+                    <CornerRightUp /> <label class="p-2">...</label>
                   </div>
-                )}
-                {filesList.files.map((line) => {
-                  return (
-                    <div class="file-line form-control">
-                      <div
-                        class={`feather-icon-container file-line-name ${files.capability(fileSystem, "Download") ||
-                          line.size == -1
+                </div>
+              )}
+              {filesList.files.map((line) => {
+                return (
+                  <div class="file-line form-control">
+                    <div
+                      class={`feather-icon-container file-line-name ${
+                        files.capability(fileSystem, "Download") ||
+                        line.size == -1
                           ? "file-line-action"
                           : ""
-                          }`}
-                        onclick={(e) => {
-                          ElementClicked(e, line);
-                        }}
-                      >
-                        {line.size == -1 ? <Folder /> : <File />}
-                        <label>{line.name}</label>
-                      </div>
-                      <div class="file-line-controls">
-                        {line.size != -1 && (
-                          <Fragment>
-                            <div>{line.size}</div>
-                            {files.capability(
-                              currentFS,
-                              "Process",
-                              currentPath[currentFS],
-                              line.name
-                            ) && (
-                                <ButtonImg
-                                  m1
-                                  ltooltip
-                                  data-tooltip={T("S74")}
-                                  icon={<Play />}
-                                  onClick={(e) => {
-                                    e.target.blur();
-                                    //TODO print file
-                                    const cmd = files.command(
-                                      currentFS,
-                                      "play",
-                                      currentPath[currentFS],
-                                      line.name
-                                    );
-                                    sendSerialCmd(cmd.cmd);
-                                  }}
-                                />
-                              )}
-                            {!files.capability(
-                              currentFS,
-                              "Process",
-                              currentPath[currentFS],
-                              line.name
-                            ) && <div style="width:2rem" />}
-                          </Fragment>
-                        )}
-                        <ButtonImg
-                          m1
-                          ltooltip
-                          data-tooltip={line.size == -1 ? T("S101") : T("S100")}
-                          icon={<Trash2 />}
-                          onClick={(e) => {
-                            e.target.blur();
-                            const content = (
-                              <Fragment>
-                                <div>
-                                  {line.size == -1 ? T("S101") : T("S100")}:
-                                </div>
-                                <center>
-                                  <li>{line.name}</li>
-                                </center>
-                              </Fragment>
-                            );
-                            showConfirmationModal({
-                              modals,
-                              title: T("S26"),
-                              content,
-                              button1: {
-                                cb: () => {
-                                  deleteCommand(line);
-                                },
-                                text: T("S27"),
-                              },
-                              button2: { text: T("S28") },
-                            });
-                          }}
-                        />
-                      </div>
+                      }`}
+                      onclick={(e) => {
+                        ElementClicked(e, line);
+                      }}
+                    >
+                      {line.size == -1 ? <Folder /> : <File />}
+                      <label>{line.name}</label>
                     </div>
-                  );
-                })}
-              </Fragment>
-            )}
-          </div>
+                    <div class="file-line-controls">
+                      {line.size != -1 && (
+                        <Fragment>
+                          <div>{line.size}</div>
+                          {files.capability(
+                            currentFS,
+                            "Process",
+                            currentPath[currentFS],
+                            line.name
+                          ) && (
+                            <ButtonImg
+                              m1
+                              ltooltip
+                              data-tooltip={T("S74")}
+                              icon={<Play />}
+                              onClick={(e) => {
+                                e.target.blur();
+                                //TODO print file
+                                const cmd = files.command(
+                                  currentFS,
+                                  "play",
+                                  currentPath[currentFS],
+                                  line.name
+                                );
+                                sendSerialCmd(cmd.cmd);
+                              }}
+                            />
+                          )}
+                          {!files.capability(
+                            currentFS,
+                            "Process",
+                            currentPath[currentFS],
+                            line.name
+                          ) && <div style="width:2rem" />}
+                        </Fragment>
+                      )}
+                      <ButtonImg
+                        m1
+                        ltooltip
+                        data-tooltip={line.size == -1 ? T("S101") : T("S100")}
+                        icon={<Trash2 />}
+                        onClick={(e) => {
+                          e.target.blur();
+                          const content = (
+                            <Fragment>
+                              <div>
+                                {line.size == -1 ? T("S101") : T("S100")}:
+                              </div>
+                              <center>
+                                <li>{line.name}</li>
+                              </center>
+                            </Fragment>
+                          );
+                          showConfirmationModal({
+                            modals,
+                            title: T("S26"),
+                            content,
+                            button1: {
+                              cb: () => {
+                                deleteCommand(line);
+                              },
+                              text: T("S27"),
+                            },
+                            button2: { text: T("S28") },
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </Fragment>
+          )}
         </div>
-        <div class="files-list-footer">
-          {!isLoading && filesList && filesList.occupation && (
-            <div style=" display: flex; align-items:center; flex-wrap: wrap; justify-content: space-between;">
-              <div class="flex-pack">
-                {T("S98")}:{filesList.total}
-              </div>
-              <div class="m-1">-</div>
-              <div class="flex-pack m-2">
-                {T("S99")}:{filesList.used}
-              </div>
-              <div class="flex-pack hide-low m-1">
-                <div class="bar bar-sm" style="width:4rem">
-                  <div
-                    class="bar-item"
-                    role="progressbar"
-                    style={`width:${filesList.occupation}%`}
-                    aria-valuenow={filesList.occupation}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
-
-                <span class="m-1">{filesList.occupation}%</span>
-              </div>
+      </div>
+      <div class="files-list-footer">
+        {!isLoading && filesList && filesList.occupation && (
+          <div style=" display: flex; align-items:center; flex-wrap: wrap; justify-content: space-between;">
+            <div class="flex-pack">
+              {T("S98")}:{filesList.total}
             </div>
-          )}
-          {!isLoading && filesList && filesList.status && (
-            <div class="file-status">{T(filesList.status)}</div>
-          )}
-        </div>
+            <div class="m-1">-</div>
+            <div class="flex-pack m-2">
+              {T("S99")}:{filesList.used}
+            </div>
+            <div class="flex-pack hide-low m-1">
+              <div class="bar bar-sm" style="width:4rem">
+                <div
+                  class="bar-item"
+                  role="progressbar"
+                  style={`width:${filesList.occupation}%`}
+                  aria-valuenow={filesList.occupation}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+
+              <span class="m-1">{filesList.occupation}%</span>
+            </div>
+          </div>
+        )}
+        {!isLoading && filesList && filesList.status && (
+          <div class="file-status">{T(filesList.status)}</div>
+        )}
       </div>
     </div>
   );
