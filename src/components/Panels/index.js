@@ -1,14 +1,6 @@
 import { Fragment, h } from "preact";
-import { useState } from "preact/hooks";
 import { MoreVertical as MoreVerticalIcon } from 'preact-feather';
-import {
-	ChevronDown,
-	MessageSquare,
-	AlertCircle,
-	CheckCircle,
-	Circle,
-	PauseCircle,
-} from "preact-feather";
+import { ChevronDown } from "preact-feather";
 
 const Menu = ({ items }) => {
 	return (
