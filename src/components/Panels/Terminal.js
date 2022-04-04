@@ -20,7 +20,6 @@ import { h } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { T } from "../Translations";
 import {
-  ChevronDown,
   Terminal,
   Send,
   CheckCircle,
@@ -32,6 +31,7 @@ import { useTargetContext } from "../../targets";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { ButtonImg } from "../Controls";
+import { Menu as PanelMenu } from "./";
 
 /*
  * Local const
@@ -125,6 +125,64 @@ const TerminalPanel = () => {
     scrollToBottom();
   }, [terminal.content]);
   console.log("Terminal panel");
+
+  const toggleVerboseMode = () => {
+    terminal.isVerbose.current = !isVerbose;
+    setIsVerbose(!isVerbose);
+  };
+
+  const toggleAutoScroll = () => {
+    if (!isAutoScrollPaused) {
+      terminal.isAutoScroll.current = !isAutoScroll;
+      setIsAutoScroll(!isAutoScroll);
+    }
+    terminal.isAutoScrollPaused.current = false;
+    setIsAutoScrollPaused(false);
+    scrollToBottom();
+  };
+
+  const menu = [
+    {
+      label: T("S76"),
+      displayToggle: () => (
+        <span class="feather-icon-container">
+          {" "}
+          {isVerbose ? (
+            <CheckCircle size="0.8rem" />
+          ) : (
+            <Circle size="0.8rem" />
+          )}{" "}
+        </span>
+      ),
+      onClick: toggleVerboseMode,
+    },
+    {
+      label: T("S77"),
+      displayToggle: () => (
+        <span class="feather-icon-container">
+          {isAutoScroll ? (
+            isAutoScrollPaused ? (
+              <PauseCircle size="0.8rem" />
+            ) : (
+              <CheckCircle size="0.8rem" />
+            )
+          ) : (
+            <Circle size="0.8rem" />
+          )}
+        </span>
+      ),
+      onClick: toggleAutoScroll,
+    },
+    { divider: true },
+    {
+      label: T("S79"),
+      onClick: (e) => {
+        terminal.clear();
+      },
+      icon: <span class="btn btn-clear" aria-label="Close" />,
+    },
+  ];
+
   return (
     <div class="panel panel-dashboard">
       <div class="navbar">
@@ -134,81 +192,7 @@ const TerminalPanel = () => {
         </span>
         <span class="navbar-section">
           <span style="height: 100%;">
-            <div class="dropdown dropdown-right">
-              <span
-                class="dropdown-toggle btn btn-xs btn-header m-1"
-                tabindex="0"
-              >
-                <ChevronDown size="0.8rem" />
-              </span>
-
-              <ul class="menu">
-                <li class="menu-item">
-                  <div
-                    class="menu-entry"
-                    onclick={(e) => {
-                      terminal.isVerbose.current = !isVerbose;
-                      setIsVerbose(!isVerbose);
-                    }}
-                  >
-                    <div class="menu-panel-item">
-                      <span class="text-menu-item">{T("S76")}</span>
-                      <span class="feather-icon-container">
-                        {isVerbose ? (
-                          <CheckCircle size="0.8rem" />
-                        ) : (
-                          <Circle size="0.8rem" />
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-                <li class="menu-item">
-                  <div
-                    class="menu-entry"
-                    onclick={(e) => {
-                      if (!isAutoScrollPaused) {
-                        terminal.isAutoScroll.current = !isAutoScroll;
-                        setIsAutoScroll(!isAutoScroll);
-                      }
-                      terminal.isAutoScrollPaused.current = false;
-                      setIsAutoScrollPaused(false);
-                      scrollToBottom();
-                    }}
-                  >
-                    <div class="menu-panel-item">
-                      <span class="text-menu-item">{T("S77")}</span>
-                      <span class="feather-icon-container">
-                        {isAutoScroll ? (
-                          isAutoScrollPaused ? (
-                            <PauseCircle size="0.8rem" />
-                          ) : (
-                            <CheckCircle size="0.8rem" />
-                          )
-                        ) : (
-                          <Circle size="0.8rem" />
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-                <li class="divider" />
-                <li class="menu-item">
-                  <div
-                    class="menu-entry"
-                    onclick={(e) => {
-                      terminal.clear();
-                    }}
-                  >
-                    <div class="menu-panel-item">
-                      <span class="text-menu-item">{T("S79")}</span>
-                      <span class="btn btn-clear" aria-label="Close" />
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
+            <PanelMenu items={menu} />
             <span
               class="btn btn-clear btn-close m-1"
               aria-label="Close"

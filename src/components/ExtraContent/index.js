@@ -271,7 +271,7 @@ const ExtraContent = ({
   if (target == "panel") {
     const displayIcon = iconsList[icon] ? iconsList[icon] : "";
     return (
-      <div class="panel mb-2 panel-dashboard">
+      <div class="panel panel-dashboard">
         <div class="navbar">
           <span class="navbar-section  feather-icon-container">
             {displayIcon}
