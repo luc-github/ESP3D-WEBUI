@@ -388,7 +388,7 @@ const FeaturesTab = () => {
         <Fragment>
           <div class="panels-container">
             {Object.keys(features).length != 0 && (
-              <div class="flex-wrap">
+              <Fragment>
                 {Object.keys(features).map((sectionId) => {
                   const section = features[sectionId];
                   return (
@@ -396,62 +396,59 @@ const FeaturesTab = () => {
                       {Object.keys(section).map((subsectionId) => {
                         const subSection = section[subsectionId];
                         return (
-                          <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-                            <div class="panel mb-2 panel-features">
-                              <div class="navbar">
-                                <span class="navbar-section text-ellipsis">
-                                  <strong class="text-ellipsis">
-                                    {T(subsectionId)}
-                                  </strong>
-                                </span>
-                                <span class="navbar-section">
-                                  <span style="height: 100%;">
-                                    <span class="label label-primary align-top">
-                                      {T(sectionId)}
-                                    </span>
+                          <div class="panel panel-features">
+                            <div class="navbar">
+                              <span class="navbar-section text-ellipsis">
+                                <strong class="text-ellipsis">
+                                  {T(subsectionId)}
+                                </strong>
+                              </span>
+                              <span class="navbar-section">
+                                <span style="height: 100%;">
+                                  <span class="label label-primary align-top">
+                                    {T(sectionId)}
                                   </span>
                                 </span>
-                              </div>
+                              </span>
+                            </div>
 
-                              <div class="panel-body panel-body-features">
-                                {subSection.map((fieldData) => {
-                                  const [validation, setvalidation] =
-                                    useState();
-                                  const { label, options, initial, ...rest } =
-                                    fieldData;
-                                  const Options = options
-                                    ? options.reduce((acc, curval) => {
-                                        return [
-                                          ...acc,
-                                          {
-                                            label: T(curval.label),
-                                            value: curval.value,
-                                          },
-                                        ];
-                                      }, [])
-                                    : null;
-                                  return (
-                                    <Field
-                                      label={T(label)}
-                                      options={Options}
-                                      extra={
-                                        subsectionId == "sta" && label == "SSID"
-                                          ? "scan"
-                                          : null
-                                      }
-                                      {...rest}
-                                      setValue={(val, update) => {
-                                        if (!update) fieldData.value = val;
-                                        setvalidation(
-                                          generateValidation(fieldData)
-                                        );
-                                      }}
-                                      validation={validation}
-                                    />
-                                  );
-                                })}
-                                <div class="m-1" />
-                              </div>
+                            <div class="panel-body panel-body-features">
+                              {subSection.map((fieldData) => {
+                                const [validation, setvalidation] = useState();
+                                const { label, options, initial, ...rest } =
+                                  fieldData;
+                                const Options = options
+                                  ? options.reduce((acc, curval) => {
+                                      return [
+                                        ...acc,
+                                        {
+                                          label: T(curval.label),
+                                          value: curval.value,
+                                        },
+                                      ];
+                                    }, [])
+                                  : null;
+                                return (
+                                  <Field
+                                    label={T(label)}
+                                    options={Options}
+                                    extra={
+                                      subsectionId == "sta" && label == "SSID"
+                                        ? "scan"
+                                        : null
+                                    }
+                                    {...rest}
+                                    setValue={(val, update) => {
+                                      if (!update) fieldData.value = val;
+                                      setvalidation(
+                                        generateValidation(fieldData)
+                                      );
+                                    }}
+                                    validation={validation}
+                                  />
+                                );
+                              })}
+                              <div class="m-1" />
                             </div>
                           </div>
                         );
@@ -459,7 +456,7 @@ const FeaturesTab = () => {
                     </Fragment>
                   );
                 })}
-              </div>
+              </Fragment>
             )}
           </div>
         </Fragment>

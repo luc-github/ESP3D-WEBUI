@@ -53,27 +53,25 @@ const ExtrudersPanel = () => {
   //const macroList = uisettings.getValue("macros");
 
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            {iconsTarget["Extruder"]}
-            <strong class="text-ellipsis">{T("P36")}</strong>
+    <div class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          {iconsTarget["Extruder"]}
+          <strong class="text-ellipsis">{T("P36")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            <button
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              <button
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
-          </span>
-        </div>
-        <div class="panel-body panel-body-dashboard"></div>
+        </span>
       </div>
+      <div class="panel-body panel-body-dashboard"></div>
     </div>
   );
 };

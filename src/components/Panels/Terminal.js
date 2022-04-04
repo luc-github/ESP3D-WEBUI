@@ -126,159 +126,155 @@ const TerminalPanel = () => {
   }, [terminal.content]);
   console.log("Terminal panel");
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Terminal />
-            <strong class="text-ellipsis">{T("Terminal")}</strong>
-          </span>
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              <div class="dropdown dropdown-right">
-                <span
-                  class="dropdown-toggle btn btn-xs btn-header m-1"
-                  tabindex="0"
-                >
-                  <ChevronDown size="0.8rem" />
-                </span>
-
-                <ul class="menu">
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        terminal.isVerbose.current = !isVerbose;
-                        setIsVerbose(!isVerbose);
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("S76")}</span>
-                        <span class="feather-icon-container">
-                          {isVerbose ? (
-                            <CheckCircle size="0.8rem" />
-                          ) : (
-                            <Circle size="0.8rem" />
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        if (!isAutoScrollPaused) {
-                          terminal.isAutoScroll.current = !isAutoScroll;
-                          setIsAutoScroll(!isAutoScroll);
-                        }
-                        terminal.isAutoScrollPaused.current = false;
-                        setIsAutoScrollPaused(false);
-                        scrollToBottom();
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("S77")}</span>
-                        <span class="feather-icon-container">
-                          {isAutoScroll ? (
-                            isAutoScrollPaused ? (
-                              <PauseCircle size="0.8rem" />
-                            ) : (
-                              <CheckCircle size="0.8rem" />
-                            )
-                          ) : (
-                            <Circle size="0.8rem" />
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="divider" />
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        terminal.clear();
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("S79")}</span>
-                        <span class="btn btn-clear" aria-label="Close" />
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
+    <div class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Terminal />
+          <strong class="text-ellipsis">{T("Terminal")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            <div class="dropdown dropdown-right">
               <span
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
+                class="dropdown-toggle btn btn-xs btn-header m-1"
+                tabindex="0"
+              >
+                <ChevronDown size="0.8rem" />
+              </span>
+
+              <ul class="menu">
+                <li class="menu-item">
+                  <div
+                    class="menu-entry"
+                    onclick={(e) => {
+                      terminal.isVerbose.current = !isVerbose;
+                      setIsVerbose(!isVerbose);
+                    }}
+                  >
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("S76")}</span>
+                      <span class="feather-icon-container">
+                        {isVerbose ? (
+                          <CheckCircle size="0.8rem" />
+                        ) : (
+                          <Circle size="0.8rem" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+                <li class="menu-item">
+                  <div
+                    class="menu-entry"
+                    onclick={(e) => {
+                      if (!isAutoScrollPaused) {
+                        terminal.isAutoScroll.current = !isAutoScroll;
+                        setIsAutoScroll(!isAutoScroll);
+                      }
+                      terminal.isAutoScrollPaused.current = false;
+                      setIsAutoScrollPaused(false);
+                      scrollToBottom();
+                    }}
+                  >
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("S77")}</span>
+                      <span class="feather-icon-container">
+                        {isAutoScroll ? (
+                          isAutoScrollPaused ? (
+                            <PauseCircle size="0.8rem" />
+                          ) : (
+                            <CheckCircle size="0.8rem" />
+                          )
+                        ) : (
+                          <Circle size="0.8rem" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+                <li class="divider" />
+                <li class="menu-item">
+                  <div
+                    class="menu-entry"
+                    onclick={(e) => {
+                      terminal.clear();
+                    }}
+                  >
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("S79")}</span>
+                      <span class="btn btn-clear" aria-label="Close" />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <span
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-        </div>
-        <div class="input-group m-2">
-          <input
-            type="text"
-            class="form-input"
-            onInput={onInput}
-            onkeyup={onKeyUp}
-            ref={inputRef}
-            value={terminal.input.current}
-            placeholder={T("S80")}
-          />
-          <ButtonImg
-            group
-            ltooltip
-            data-tooltip={T("S82")}
-            label={T("S81")}
-            icon={<Send />}
-            onClick={onSend}
-          />
-        </div>
-        <div
-          ref={terminalOutput}
-          class="panel-body panel-body-dashboard terminal m-1"
-          onScroll={(e) => {
-            if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
-              terminal.isAutoScrollPaused.current = true;
-              setIsAutoScrollPaused(true);
+        </span>
+      </div>
+      <div class="input-group m-2">
+        <input
+          type="text"
+          class="form-input"
+          onInput={onInput}
+          onkeyup={onKeyUp}
+          ref={inputRef}
+          value={terminal.input.current}
+          placeholder={T("S80")}
+        />
+        <ButtonImg
+          group
+          ltooltip
+          data-tooltip={T("S82")}
+          label={T("S81")}
+          icon={<Send />}
+          onClick={onSend}
+        />
+      </div>
+      <div
+        ref={terminalOutput}
+        class="panel-body panel-body-dashboard terminal m-1"
+        onScroll={(e) => {
+          if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
+            terminal.isAutoScrollPaused.current = true;
+            setIsAutoScrollPaused(true);
+          }
+          if (
+            terminal.isAutoScrollPaused.current &&
+            Math.abs(
+              e.target.scrollTop + e.target.offsetHeight - e.target.scrollHeight
+            ) < 5
+          ) {
+            terminal.isAutoScrollPaused.current = false;
+            setIsAutoScrollPaused(false);
+          }
+          lastPos = e.target.scrollTop;
+        }}
+      >
+        {terminal.content &&
+          terminal.content.map((line) => {
+            let className = "";
+            switch (line.type) {
+              case "echo":
+                className = "echo";
+                break;
+              case "error":
+                className = "error";
+                break;
+              default:
+              //do nothing
             }
-            if (
-              terminal.isAutoScrollPaused.current &&
-              Math.abs(
-                e.target.scrollTop +
-                  e.target.offsetHeight -
-                  e.target.scrollHeight
-              ) < 5
-            ) {
-              terminal.isAutoScrollPaused.current = false;
-              setIsAutoScrollPaused(false);
-            }
-            lastPos = e.target.scrollTop;
-          }}
-        >
-          {terminal.content &&
-            terminal.content.map((line) => {
-              let className = "";
-              switch (line.type) {
-                case "echo":
-                  className = "echo";
-                  break;
-                case "error":
-                  className = "error";
-                  break;
-                default:
-                //do nothing
-              }
-              if (isVerbose || isVerbose == line.isverboseOnly)
-                return <pre class={className}>{line.content}</pre>;
-            })}
-          <div ref={messagesEndRef} />
-        </div>
+            if (isVerbose || isVerbose == line.isverboseOnly)
+              return <pre class={className}>{line.content}</pre>;
+          })}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );

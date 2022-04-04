@@ -1,7 +1,6 @@
 .panel-dashboard,
 .panel-interface,
 .panel-features {
-  min-height: 300px;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -19,7 +18,6 @@
 .panel {
   min-height: 300px;
   max-height: 650px;
-  min-width: fit-content;
 }
 
 .panel-body-dashboard,

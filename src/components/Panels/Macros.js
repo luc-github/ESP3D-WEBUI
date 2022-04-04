@@ -121,44 +121,42 @@ const MacrosPanel = () => {
   };
 
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Cast />
-            <strong class="text-ellipsis">{T("macros")}</strong>
+    <div class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Cast />
+          <strong class="text-ellipsis">{T("macros")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            <button
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              <button
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
+        </span>
+      </div>
+      <div class="panel-body panel-body-dashboard">
+        <div class="macro-buttons-panel">
+          {macroButtons.map((element) => {
+            const displayIcon = iconsList[element.icon]
+              ? iconsList[element.icon]
+              : "";
+            return (
+              <ButtonImg
+                m1
+                label={element.name}
+                icon={displayIcon}
                 onclick={(e) => {
-                  panels.hide(id);
+                  e.target.blur();
+                  processMacro(element.action, element.type);
                 }}
               />
-            </span>
-          </span>
-        </div>
-        <div class="panel-body panel-body-dashboard">
-          <div class="macro-buttons-panel">
-            {macroButtons.map((element) => {
-              const displayIcon = iconsList[element.icon]
-                ? iconsList[element.icon]
-                : "";
-              return (
-                <ButtonImg
-                  m1
-                  label={element.name}
-                  icon={displayIcon}
-                  onclick={(e) => {
-                    e.target.blur();
-                    processMacro(element.action, element.type);
-                  }}
-                />
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>

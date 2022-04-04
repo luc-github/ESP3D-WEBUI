@@ -478,566 +478,561 @@ const JogPanel = () => {
     setCurrentSelectedAxis(currentAxis);
   }, []);
   return (
-    <div
-      id={id}
-      className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2"
-    >
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Move />
-            <strong class="text-ellipsis">{T("S66")}</strong>
-          </span>
-          <span class="navbar-section">
-            <span class="H-100">
-              <div class="dropdown dropdown-right">
-                <span
-                  class="dropdown-toggle btn btn-xs btn-header m-1"
-                  tabindex="0"
-                >
-                  <ChevronDown size="0.8rem" />
-                </span>
+    <div id={id} class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Move />
+          <strong class="text-ellipsis">{T("S66")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span class="H-100">
+            <div class="dropdown dropdown-right">
+              <span
+                class="dropdown-toggle btn btn-xs btn-header m-1"
+                tabindex="0"
+              >
+                <ChevronDown size="0.8rem" />
+              </span>
 
-                <ul class="menu">
-                  {((useUiContextFn.getValue("showx") && positions.x) ||
-                    (useUiContextFn.getValue("showy") && positions.y)) && (
-                    <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          setFeedrate("XY");
-                        }}
-                      >
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("CN2")}</span>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                  {positions.z && useUiContextFn.getValue("showz") && (
-                    <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          setFeedrate("Z");
-                        }}
-                      >
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("CN3")}</span>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-
-                  {positions.a && useUiContextFn.getValue("showa") && (
-                    <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          setFeedrate("A");
-                        }}
-                      >
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("CN4")}</span>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                  {positions.b && useUiContextFn.getValue("showz") && (
-                    <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          setFeedrate("B");
-                        }}
-                      >
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("CN5")}</span>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                  {positions.c && useUiContextFn.getValue("showz") && (
-                    <li class="menu-item">
-                      <div
-                        class="menu-entry"
-                        onclick={(e) => {
-                          setFeedrate("C");
-                        }}
-                      >
-                        <div class="menu-panel-item">
-                          <span class="text-menu-item">{T("CN6")}</span>
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                  <li class="divider" />
+              <ul class="menu">
+                {((useUiContextFn.getValue("showx") && positions.x) ||
+                  (useUiContextFn.getValue("showy") && positions.y)) && (
                   <li class="menu-item">
                     <div
                       class="menu-entry"
                       onclick={(e) => {
-                        enable_keyboard_jog = !enable_keyboard_jog;
-                        setIsKeyboardEnabled(enable_keyboard_jog);
-                        if (enable_keyboard_jog) {
-                          AddKeyboardListener();
-                        } else {
-                          RemoveKeyboardListener();
-                        }
+                        setFeedrate("XY");
                       }}
                     >
                       <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("CN7")}</span>
-                        <span class="feather-icon-container">
-                          {isKeyboardEnabled ? (
-                            <CheckCircle size="0.8rem" />
-                          ) : (
-                            <Circle size="0.8rem" />
-                          )}
-                        </span>
+                        <span class="text-menu-item">{T("CN2")}</span>
                       </div>
                     </div>
                   </li>
+                )}
+                {positions.z && useUiContextFn.getValue("showz") && (
                   <li class="menu-item">
-                    <div class="menu-entry" onclick={showKeyboarHelp}>
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        setFeedrate("Z");
+                      }}
+                    >
                       <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("CN14")}</span>
+                        <span class="text-menu-item">{T("CN3")}</span>
                       </div>
                     </div>
                   </li>
-                </ul>
-              </div>
-              <span
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
-          </span>
-        </div>
-        <div class="m-1 jog-container">
-          <PositionsControls />
-          <div class="m-1">
-            <div class="jog-buttons-main-container">
-              {!positions.x &&
-                !positions.y &&
-                !positions.z &&
-                !positions.a &&
-                !positions.b &&
-                !positions.c && <Loading large />}
-              {positions.x && useUiContextFn.getValue("showx") && (
-                <div class="m-1 jog-buttons-container">
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN12")}
-                    id="btn+X"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("X+");
-                    }}
-                  >
-                    +X
-                  </Button>
-                  {useUiContextFn.getValue("homesingleaxis") && (
-                    <Button
-                      m2
-                      tooltip
-                      data-tooltip={T("CN10")}
-                      id="btnHX"
-                      onclick={(e) => {
-                        e.target.blur();
-                        sendHomeCommand("X");
-                      }}
-                    >
-                      <Home size="1rem" />
-                      <span class="text-tiny">x</span>
-                    </Button>
-                  )}
+                )}
 
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN19")}
-                    id="btnZX"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendZeroCommand("X");
-                    }}
-                  >
-                    &Oslash;
-                    <span class="text-tiny">x</span>
-                  </Button>
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN13")}
-                    id="btn-X"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("X-");
-                    }}
-                  >
-                    -X
-                  </Button>
-                </div>
-              )}
-              {positions.y && useUiContextFn.getValue("showy") && (
-                <div class="m-1 jog-buttons-container">
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN12")}
-                    id="btn+Y"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("Y+");
-                    }}
-                  >
-                    +Y
-                  </Button>
-                  {useUiContextFn.getValue("homesingleaxis") && (
-                    <Button
-                      m2
-                      tooltip
-                      data-tooltip={T("CN10")}
-                      id="btnHY"
+                {positions.a && useUiContextFn.getValue("showa") && (
+                  <li class="menu-item">
+                    <div
+                      class="menu-entry"
                       onclick={(e) => {
-                        e.target.blur();
-                        sendHomeCommand("Y");
+                        setFeedrate("A");
                       }}
                     >
-                      <Home size="1rem" />
-                      <span class="text-tiny">y</span>
-                    </Button>
-                  )}
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN19")}
-                    id="btnZY"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendZeroCommand("Y");
-                    }}
-                  >
-                    &Oslash;
-                    <span class="text-tiny">y</span>
-                  </Button>
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN13")}
-                    id="btn-Y"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("Y-");
-                    }}
-                  >
-                    -Y
-                  </Button>
-                </div>
-              )}
-              {positions.z && useUiContextFn.getValue("showz") && (
-                <div class="m-1 jog-buttons-container">
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN12")}
-                    id="btn+Z"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("Z+");
-                    }}
-                  >
-                    +Z
-                  </Button>
-                  {useUiContextFn.getValue("homesingleaxis") && (
-                    <Button
-                      m2
-                      tooltip
-                      data-tooltip={T("CN10")}
-                      id="btnHZ"
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("CN4")}</span>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                {positions.b && useUiContextFn.getValue("showz") && (
+                  <li class="menu-item">
+                    <div
+                      class="menu-entry"
                       onclick={(e) => {
-                        e.target.blur();
-                        sendHomeCommand("Z");
+                        setFeedrate("B");
                       }}
                     >
-                      <Home size="1rem" />
-                      <span class="text-tiny">z</span>
-                    </Button>
-                  )}
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN19")}
-                    id="btnZZ"
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("CN5")}</span>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                {positions.c && useUiContextFn.getValue("showz") && (
+                  <li class="menu-item">
+                    <div
+                      class="menu-entry"
+                      onclick={(e) => {
+                        setFeedrate("C");
+                      }}
+                    >
+                      <div class="menu-panel-item">
+                        <span class="text-menu-item">{T("CN6")}</span>
+                      </div>
+                    </div>
+                  </li>
+                )}
+                <li class="divider" />
+                <li class="menu-item">
+                  <div
+                    class="menu-entry"
                     onclick={(e) => {
-                      e.target.blur();
-                      sendZeroCommand("Z");
+                      enable_keyboard_jog = !enable_keyboard_jog;
+                      setIsKeyboardEnabled(enable_keyboard_jog);
+                      if (enable_keyboard_jog) {
+                        AddKeyboardListener();
+                      } else {
+                        RemoveKeyboardListener();
+                      }
                     }}
                   >
-                    &Oslash;
-                    <span class="text-tiny">z</span>
-                  </Button>
-                  <Button
-                    m2
-                    tooltip
-                    data-tooltip={T("CN13")}
-                    id="btn-Z"
-                    onclick={(e) => {
-                      e.target.blur();
-                      sendJogCommand("Z-");
-                    }}
-                  >
-                    -Z
-                  </Button>
-                </div>
-              )}
-              {(positions.x ||
-                positions.y ||
-                positions.z ||
-                positions.a ||
-                positions.b ||
-                positions.c) && (
-                <div class="m-1 p-2 jog-buttons-container">
-                  <div class="btn-group jog-distance-selector-container">
-                    <center class="jog-distance-selector-header">mm</center>
-
-                    <div
-                      class="flatbtn tooltip tooltip-left"
-                      data-tooltip={T("CN18")}
-                    >
-                      <input
-                        type="radio"
-                        id="move_100"
-                        name="select_distance"
-                        value="100"
-                        checked={currentJogDistance == 100}
-                        onclick={(e) => onCheck(e, 100)}
-                      />
-                      <label for="move_100">100</label>
-                    </div>
-                    <div
-                      class="flatbtn tooltip tooltip-left"
-                      data-tooltip={T("CN18")}
-                    >
-                      <input
-                        type="radio"
-                        id="move_50"
-                        name="select_distance"
-                        value="50"
-                        checked={currentJogDistance == 50}
-                        onclick={(e) => onCheck(e, 50)}
-                      />
-                      <label for="move_50">50</label>
-                    </div>
-                    <div
-                      class="flatbtn tooltip tooltip-left"
-                      data-tooltip={T("CN18")}
-                    >
-                      <input
-                        type="radio"
-                        id="move_10"
-                        name="select_distance"
-                        value="10"
-                        checked={currentJogDistance == 10}
-                        onclick={(e) => onCheck(e, 10)}
-                      />
-                      <label for="move_10">10</label>
-                    </div>
-                    <div
-                      class="flatbtn tooltip tooltip-left"
-                      data-tooltip={T("CN18")}
-                    >
-                      <input
-                        type="radio"
-                        id="move_1"
-                        name="select_distance"
-                        value="1"
-                        checked={currentJogDistance == 1}
-                        onclick={(e) => onCheck(e, 1)}
-                      />
-                      <label for="move_1">1</label>
-                    </div>
-                    <div
-                      class="flatbtn tooltip tooltip-left"
-                      data-tooltip={T("CN18")}
-                    >
-                      <input
-                        type="radio"
-                        id="move_0_1"
-                        name="select_distance"
-                        value="0.1"
-                        checked={currentJogDistance == 0.1}
-                        onclick={(e) => onCheck(e, 0.1)}
-                      />
-                      <label class="last-button" for="move_0_1">
-                        0.1
-                      </label>
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("CN7")}</span>
+                      <span class="feather-icon-container">
+                        {isKeyboardEnabled ? (
+                          <CheckCircle size="0.8rem" />
+                        ) : (
+                          <Circle size="0.8rem" />
+                        )}
+                      </span>
                     </div>
                   </div>
-                </div>
-              )}
+                </li>
+                <li class="menu-item">
+                  <div class="menu-entry" onclick={showKeyboarHelp}>
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("CN14")}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
-          </div>
-          {((useUiContextFn.getValue("showa") && positions.a) ||
-            (useUiContextFn.getValue("showb") && positions.b) ||
-            (useUiContextFn.getValue("showc") && positions.c)) && (
-            <div class="m-1 jog-buttons-container-horizontal">
-              <div class="form-group m-2 text-primary">
-                <select
-                  id="selectAxisList"
-                  class="form-select"
-                  style="border-color: #5755d9!important"
-                  onchange={(e) => {
-                    onChangeAxis(e);
-                  }}
-                  value={currentSelectedAxis}
-                >
-                  {positions.a && useUiContextFn.getValue("showa") && (
-                    <option value="A">A</option>
-                  )}
-                  {positions.b && useUiContextFn.getValue("showb") && (
-                    <option value="B">B</option>
-                  )}
-                  {positions.c && useUiContextFn.getValue("showc") && (
-                    <option value="C">C</option>
-                  )}
-                </select>
-              </div>
-              <Button
-                m2
-                tooltip
-                data-tooltip={T("CN12")}
-                id="btn+axis"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendJogCommand("Axis+");
-                }}
-              >
-                +{currentSelectedAxis}
-              </Button>
-              {useUiContextFn.getValue("homesingleaxis") && (
+            <span
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
+          </span>
+        </span>
+      </div>
+      <div class="m-1 jog-container">
+        <PositionsControls />
+        <div class="m-1">
+          <div class="jog-buttons-main-container">
+            {!positions.x &&
+              !positions.y &&
+              !positions.z &&
+              !positions.a &&
+              !positions.b &&
+              !positions.c && <Loading large />}
+            {positions.x && useUiContextFn.getValue("showx") && (
+              <div class="m-1 jog-buttons-container">
                 <Button
                   m2
                   tooltip
-                  data-tooltip={T("CN10")}
-                  id="btnHaxis"
+                  data-tooltip={T("CN12")}
+                  id="btn+X"
                   onclick={(e) => {
                     e.target.blur();
-                    sendHomeCommand("Axis");
+                    sendJogCommand("X+");
                   }}
                 >
-                  <Home size="1rem" />
-                  <span class="text-tiny">{currentSelectedAxis}</span>
+                  +X
                 </Button>
-              )}
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHX"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("X");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">x</span>
+                  </Button>
+                )}
 
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN19")}
+                  id="btnZX"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendZeroCommand("X");
+                  }}
+                >
+                  &Oslash;
+                  <span class="text-tiny">x</span>
+                </Button>
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN13")}
+                  id="btn-X"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("X-");
+                  }}
+                >
+                  -X
+                </Button>
+              </div>
+            )}
+            {positions.y && useUiContextFn.getValue("showy") && (
+              <div class="m-1 jog-buttons-container">
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN12")}
+                  id="btn+Y"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("Y+");
+                  }}
+                >
+                  +Y
+                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHY"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("Y");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">y</span>
+                  </Button>
+                )}
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN19")}
+                  id="btnZY"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendZeroCommand("Y");
+                  }}
+                >
+                  &Oslash;
+                  <span class="text-tiny">y</span>
+                </Button>
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN13")}
+                  id="btn-Y"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("Y-");
+                  }}
+                >
+                  -Y
+                </Button>
+              </div>
+            )}
+            {positions.z && useUiContextFn.getValue("showz") && (
+              <div class="m-1 jog-buttons-container">
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN12")}
+                  id="btn+Z"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("Z+");
+                  }}
+                >
+                  +Z
+                </Button>
+                {useUiContextFn.getValue("homesingleaxis") && (
+                  <Button
+                    m2
+                    tooltip
+                    data-tooltip={T("CN10")}
+                    id="btnHZ"
+                    onclick={(e) => {
+                      e.target.blur();
+                      sendHomeCommand("Z");
+                    }}
+                  >
+                    <Home size="1rem" />
+                    <span class="text-tiny">z</span>
+                  </Button>
+                )}
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN19")}
+                  id="btnZZ"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendZeroCommand("Z");
+                  }}
+                >
+                  &Oslash;
+                  <span class="text-tiny">z</span>
+                </Button>
+                <Button
+                  m2
+                  tooltip
+                  data-tooltip={T("CN13")}
+                  id="btn-Z"
+                  onclick={(e) => {
+                    e.target.blur();
+                    sendJogCommand("Z-");
+                  }}
+                >
+                  -Z
+                </Button>
+              </div>
+            )}
+            {(positions.x ||
+              positions.y ||
+              positions.z ||
+              positions.a ||
+              positions.b ||
+              positions.c) && (
+              <div class="m-1 p-2 jog-buttons-container">
+                <div class="btn-group jog-distance-selector-container">
+                  <center class="jog-distance-selector-header">mm</center>
+
+                  <div
+                    class="flatbtn tooltip tooltip-left"
+                    data-tooltip={T("CN18")}
+                  >
+                    <input
+                      type="radio"
+                      id="move_100"
+                      name="select_distance"
+                      value="100"
+                      checked={currentJogDistance == 100}
+                      onclick={(e) => onCheck(e, 100)}
+                    />
+                    <label for="move_100">100</label>
+                  </div>
+                  <div
+                    class="flatbtn tooltip tooltip-left"
+                    data-tooltip={T("CN18")}
+                  >
+                    <input
+                      type="radio"
+                      id="move_50"
+                      name="select_distance"
+                      value="50"
+                      checked={currentJogDistance == 50}
+                      onclick={(e) => onCheck(e, 50)}
+                    />
+                    <label for="move_50">50</label>
+                  </div>
+                  <div
+                    class="flatbtn tooltip tooltip-left"
+                    data-tooltip={T("CN18")}
+                  >
+                    <input
+                      type="radio"
+                      id="move_10"
+                      name="select_distance"
+                      value="10"
+                      checked={currentJogDistance == 10}
+                      onclick={(e) => onCheck(e, 10)}
+                    />
+                    <label for="move_10">10</label>
+                  </div>
+                  <div
+                    class="flatbtn tooltip tooltip-left"
+                    data-tooltip={T("CN18")}
+                  >
+                    <input
+                      type="radio"
+                      id="move_1"
+                      name="select_distance"
+                      value="1"
+                      checked={currentJogDistance == 1}
+                      onclick={(e) => onCheck(e, 1)}
+                    />
+                    <label for="move_1">1</label>
+                  </div>
+                  <div
+                    class="flatbtn tooltip tooltip-left"
+                    data-tooltip={T("CN18")}
+                  >
+                    <input
+                      type="radio"
+                      id="move_0_1"
+                      name="select_distance"
+                      value="0.1"
+                      checked={currentJogDistance == 0.1}
+                      onclick={(e) => onCheck(e, 0.1)}
+                    />
+                    <label class="last-button" for="move_0_1">
+                      0.1
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        {((useUiContextFn.getValue("showa") && positions.a) ||
+          (useUiContextFn.getValue("showb") && positions.b) ||
+          (useUiContextFn.getValue("showc") && positions.c)) && (
+          <div class="m-1 jog-buttons-container-horizontal">
+            <div class="form-group m-2 text-primary">
+              <select
+                id="selectAxisList"
+                class="form-select"
+                style="border-color: #5755d9!important"
+                onchange={(e) => {
+                  onChangeAxis(e);
+                }}
+                value={currentSelectedAxis}
+              >
+                {positions.a && useUiContextFn.getValue("showa") && (
+                  <option value="A">A</option>
+                )}
+                {positions.b && useUiContextFn.getValue("showb") && (
+                  <option value="B">B</option>
+                )}
+                {positions.c && useUiContextFn.getValue("showc") && (
+                  <option value="C">C</option>
+                )}
+              </select>
+            </div>
+            <Button
+              m2
+              tooltip
+              data-tooltip={T("CN12")}
+              id="btn+axis"
+              onclick={(e) => {
+                e.target.blur();
+                sendJogCommand("Axis+");
+              }}
+            >
+              +{currentSelectedAxis}
+            </Button>
+            {useUiContextFn.getValue("homesingleaxis") && (
               <Button
                 m2
                 tooltip
-                data-tooltip={T("CN19")}
-                id="btnZaxis"
+                data-tooltip={T("CN10")}
+                id="btnHaxis"
                 onclick={(e) => {
                   e.target.blur();
-                  sendZeroCommand("Axis");
+                  sendHomeCommand("Axis");
                 }}
               >
-                &Oslash;
+                <Home size="1rem" />
                 <span class="text-tiny">{currentSelectedAxis}</span>
               </Button>
-              <Button
-                m2
-                tooltip
-                data-tooltip={T("CN13")}
-                id="btn-axis"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendJogCommand("Axis-");
-                }}
-              >
-                -{currentSelectedAxis}
-              </Button>
-            </div>
-          )}
-          {(positions.x ||
-            positions.y ||
-            positions.z ||
-            positions.a ||
-            positions.b ||
-            positions.c) && (
-            <div class="jog-extra-buttons-container">
-              <Button
-                m1
-                tooltip
-                data-tooltip={T("CN20")}
-                id="btnHAll"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendHomeCommand("");
-                }}
-              >
-                <Home />
-                <MoreHorizontal />
-              </Button>
-              <Button
-                m1
-                tooltip
-                data-tooltip={T("CN20")}
-                id="btnZAll"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendZeroCommand("");
-                }}
-              >
-                <label style="font-size:150%; vertical-align: top;">
-                  &Oslash;
-                </label>
-                <MoreHorizontal />
-              </Button>
-            </div>
-          )}
+            )}
 
-          <div class="jog-extra-buttons-container">
-            <ButtonImg
-              m1
+            <Button
+              m2
               tooltip
-              label={T("CN22")}
-              data-tooltip={T("CN22")}
-              id="btnDisable"
-              icon={<ZapOff />}
+              data-tooltip={T("CN19")}
+              id="btnZaxis"
               onclick={(e) => {
                 e.target.blur();
-                const cmd = replaceVariables(
-                  realCommandsTable,
-                  useUiContextFn.getValue("disablecmd")
-                ).replace(";", "\n");
-                SendCommand(cmd);
+                sendZeroCommand("Axis");
               }}
-            />
-            <ButtonImg
-              m1
+            >
+              &Oslash;
+              <span class="text-tiny">{currentSelectedAxis}</span>
+            </Button>
+            <Button
+              m2
               tooltip
-              label={T("CN23")}
-              id="btnStop"
-              icon={
-                <span class="text-error">
-                  <StopCircle />
-                </span>
-              }
-              data-tooltip={T("CN23")}
+              data-tooltip={T("CN13")}
+              id="btn-axis"
               onclick={(e) => {
                 e.target.blur();
-                const cmd = replaceVariables(
-                  realCommandsTable,
-                  useUiContextFn.getValue("jogstopcmd")
-                ).replace(";", "\n");
-                SendCommand(cmd);
+                sendJogCommand("Axis-");
               }}
-            />
+            >
+              -{currentSelectedAxis}
+            </Button>
           </div>
+        )}
+        {(positions.x ||
+          positions.y ||
+          positions.z ||
+          positions.a ||
+          positions.b ||
+          positions.c) && (
+          <div class="jog-extra-buttons-container">
+            <Button
+              m1
+              tooltip
+              data-tooltip={T("CN20")}
+              id="btnHAll"
+              onclick={(e) => {
+                e.target.blur();
+                sendHomeCommand("");
+              }}
+            >
+              <Home />
+              <MoreHorizontal />
+            </Button>
+            <Button
+              m1
+              tooltip
+              data-tooltip={T("CN20")}
+              id="btnZAll"
+              onclick={(e) => {
+                e.target.blur();
+                sendZeroCommand("");
+              }}
+            >
+              <label style="font-size:150%; vertical-align: top;">
+                &Oslash;
+              </label>
+              <MoreHorizontal />
+            </Button>
+          </div>
+        )}
+
+        <div class="jog-extra-buttons-container">
+          <ButtonImg
+            m1
+            tooltip
+            label={T("CN22")}
+            data-tooltip={T("CN22")}
+            id="btnDisable"
+            icon={<ZapOff />}
+            onclick={(e) => {
+              e.target.blur();
+              const cmd = replaceVariables(
+                realCommandsTable,
+                useUiContextFn.getValue("disablecmd")
+              ).replace(";", "\n");
+              SendCommand(cmd);
+            }}
+          />
+          <ButtonImg
+            m1
+            tooltip
+            label={T("CN23")}
+            id="btnStop"
+            icon={
+              <span class="text-error">
+                <StopCircle />
+              </span>
+            }
+            data-tooltip={T("CN23")}
+            onclick={(e) => {
+              e.target.blur();
+              const cmd = replaceVariables(
+                realCommandsTable,
+                useUiContextFn.getValue("jogstopcmd")
+              ).replace(";", "\n");
+              SendCommand(cmd);
+            }}
+          />
         </div>
       </div>
     </div>

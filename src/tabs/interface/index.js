@@ -255,98 +255,91 @@ const InterfaceTab = () => {
                   const section = interfaceSettings.current.settings[sectionId];
                   return (
                     <Fragment>
-                      <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-                        <div class="panel mb-2 panel-interface">
-                          <div class="navbar">
-                            <span class="navbar-section text-ellipsis">
-                              <strong class="text-ellipsis">
-                                {T(sectionId)}
-                              </strong>
-                            </span>
-                          </div>
-                          <div class="panel-body panel-body-interface">
-                            {Object.keys(section).map((subsectionId) => {
-                              const fieldData = section[subsectionId];
-                              // console.log(fieldData);
+                      <div class="panel panel-interface">
+                        <div class="navbar">
+                          <span class="navbar-section text-ellipsis">
+                            <strong class="text-ellipsis">
+                              {T(sectionId)}
+                            </strong>
+                          </span>
+                        </div>
+                        <div class="panel-body panel-body-interface">
+                          {Object.keys(section).map((subsectionId) => {
+                            const fieldData = section[subsectionId];
+                            // console.log(fieldData);
 
-                              if (fieldData.type == "group") {
-                                //show group
-                                return (
-                                  <FieldGroup
-                                    id={fieldData.id}
-                                    label={T(fieldData.label)}
-                                  >
-                                    {Object.keys(fieldData.value).map(
-                                      (subData) => {
-                                        const subFieldData =
-                                          fieldData.value[subData];
-                                        const [validation, setvalidation] =
-                                          useState();
-                                        const {
-                                          label,
-                                          initial,
-                                          type,
-                                          ...rest
-                                        } = subFieldData;
-                                        return (
-                                          <Field
-                                            label={T(label)}
-                                            type={type}
-                                            validationfn={generateValidation}
-                                            inline={
-                                              type == "boolean" ||
-                                              type == "icon"
-                                                ? true
-                                                : false
+                            if (fieldData.type == "group") {
+                              //show group
+                              return (
+                                <FieldGroup
+                                  id={fieldData.id}
+                                  label={T(fieldData.label)}
+                                >
+                                  {Object.keys(fieldData.value).map(
+                                    (subData) => {
+                                      const subFieldData =
+                                        fieldData.value[subData];
+                                      const [validation, setvalidation] =
+                                        useState();
+                                      const { label, initial, type, ...rest } =
+                                        subFieldData;
+                                      return (
+                                        <Field
+                                          label={T(label)}
+                                          type={type}
+                                          validationfn={generateValidation}
+                                          inline={
+                                            type == "boolean" || type == "icon"
+                                              ? true
+                                              : false
+                                          }
+                                          {...rest}
+                                          setValue={(val, update = false) => {
+                                            if (!update) {
+                                              subFieldData.value = val;
                                             }
-                                            {...rest}
-                                            setValue={(val, update = false) => {
-                                              if (!update) {
-                                                subFieldData.value = val;
-                                              }
-                                              setvalidation(
-                                                generateValidation(subFieldData)
-                                              );
-                                            }}
-                                            validation={validation}
-                                          />
-                                        );
-                                      }
-                                    )}
-                                  </FieldGroup>
-                                );
-                              } else {
-                                const [validation, setvalidation] = useState();
-                                const { label, initial, type, ...rest } =
-                                  fieldData;
-                                return (
-                                  <Field
-                                    label={T(label)}
-                                    type={type}
-                                    validationfn={
-                                      type == "list" ? generateValidation : null
-                                    }
-                                    inline={
-                                      type == "boolean" || type == "icon"
-                                        ? true
-                                        : false
-                                    }
-                                    {...rest}
-                                    setValue={(val, update = false) => {
-                                      if (!update) {
-                                        fieldData.value = val;
-                                      }
-                                      setvalidation(
-                                        generateValidation(fieldData)
+                                            setvalidation(
+                                              generateValidation(subFieldData)
+                                            );
+                                          }}
+                                          validation={validation}
+                                        />
                                       );
-                                    }}
-                                    validation={validation}
-                                  />
-                                );
-                              }
-                            })}
-                            <div class="m-1" />
-                          </div>
+                                    }
+                                  )}
+                                </FieldGroup>
+                              );
+                            } else {
+                              const [validation, setvalidation] = useState();
+                              const { label, initial, type, ...rest } =
+                                fieldData;
+                              return (
+                                <Field
+                                  label={T(label)}
+                                  type={type}
+                                  validationfn={
+                                    type == "list" ? generateValidation : null
+                                  }
+                                  inline={
+                                    type == "boolean" || type == "icon"
+                                      ? true
+                                      : false
+                                  }
+                                  {...rest}
+                                  setValue={(val, update = false) => {
+                                    if (!update) {
+                                      fieldData.value = val;
+                                    }
+                                    setvalidation(
+                                      generateValidation(fieldData)
+                                    );
+                                  }}
+                                  validation={validation}
+                                />
+                              );
+                            }
+                          })}
+                          <div class="m-1" />
                         </div>
                       </div>
                     </Fragment>

@@ -230,61 +230,59 @@ const TemperaturesPanel = () => {
     if (temperatures[tool].length != 0) hasTemp = true;
   });
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Thermometer />
-            <strong class="text-ellipsis">{T("P29")}</strong>
+    <div class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Thermometer />
+          <strong class="text-ellipsis">{T("P29")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            <button
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              <button
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
-          </span>
-        </div>
-        <div class="panel-body panel-body-dashboard">
-          {hasTemp && (
-            <Fragment>
-              <TemperaturesControls />
-              {Object.keys(temperatures).map((tool) => {
-                if (
-                  temperatures[tool].length == 0 ||
-                  !isVisible(tool) ||
-                  !isEditable(tool)
-                )
-                  return;
-                return (
-                  <Fragment>
-                    {temperatures[tool].map((temp, index) => {
-                      return (
-                        <TemperatureInputControl
-                          tool={tool}
-                          index={index}
-                          size={temperatures[tool].length}
-                        />
-                      );
-                    })}
-                  </Fragment>
-                );
-              })}
-            </Fragment>
-          )}
-          {!hasTemp && (
-            <div class="loading-panel">
-              <div class="m-2">
-                <div class="m-1">{T("P89")}</div>
-                <Loading />
-              </div>
+        </span>
+      </div>
+      <div class="panel-body panel-body-dashboard">
+        {hasTemp && (
+          <Fragment>
+            <TemperaturesControls />
+            {Object.keys(temperatures).map((tool) => {
+              if (
+                temperatures[tool].length == 0 ||
+                !isVisible(tool) ||
+                !isEditable(tool)
+              )
+                return;
+              return (
+                <Fragment>
+                  {temperatures[tool].map((temp, index) => {
+                    return (
+                      <TemperatureInputControl
+                        tool={tool}
+                        index={index}
+                        size={temperatures[tool].length}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
+            })}
+          </Fragment>
+        )}
+        {!hasTemp && (
+          <div class="loading-panel">
+            <div class="m-2">
+              <div class="m-1">{T("P89")}</div>
+              <Loading />
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

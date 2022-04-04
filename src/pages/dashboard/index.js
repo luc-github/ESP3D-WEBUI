@@ -149,7 +149,7 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-      <div class="panels-container">
+      <div class="panels-container m-2">
         {panels.visibles.map((panel) => {
           return <Fragment>{panel.content}</Fragment>;
         })}

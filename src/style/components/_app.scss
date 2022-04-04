@@ -80,12 +80,10 @@ body {
   display: none;
 }
 
-.panels-container,
-.flex-wrap {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
+.panels-container {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
 }
 
 .flex-cols {

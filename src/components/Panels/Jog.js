@@ -342,1145 +342,1100 @@ const JogPanel = () => {
     setMoveToTitleZ(T("P75") + movetoZ);
   }, []);
   return (
-    <div
-      id={id}
-      className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2"
-    >
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Move />
-            <strong class="text-ellipsis">{T("S66")}</strong>
-          </span>
-          <span class="navbar-section">
-            <span class="H-100">
-              <div class="dropdown dropdown-right">
-                <span
-                  class="dropdown-toggle btn btn-xs btn-header m-1"
-                  tabindex="0"
-                >
-                  <ChevronDown size="0.8rem" />
-                </span>
-
-                <ul class="menu">
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={setFeedrateXY}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P10")}</span>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={setFeedrateZ}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P11")}</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="divider" />
-                  <li class="menu-item">
-                    <div
-                      class="menu-entry"
-                      onclick={(e) => {
-                        enable_keyboard_jog = !enable_keyboard_jog;
-                        setIsKeyboardEnabled(enable_keyboard_jog);
-                        if (enable_keyboard_jog) {
-                          AddKeyboardListener();
-                        } else {
-                          RemoveKeyboardListener();
-                        }
-                      }}
-                    >
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P79")}</span>
-                        <span class="feather-icon-container">
-                          {isKeyboardEnabled ? (
-                            <CheckCircle size="0.8rem" />
-                          ) : (
-                            <Circle size="0.8rem" />
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="menu-item">
-                    <div class="menu-entry" onclick={showKeyboarHelp}>
-                      <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("P81")}</span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+    <div id={id} class="panel  panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Move />
+          <strong class="text-ellipsis">{T("S66")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span class="H-100">
+            <div class="dropdown dropdown-right">
               <span
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
+                class="dropdown-toggle btn btn-xs btn-header m-1"
+                tabindex="0"
+              >
+                <ChevronDown size="0.8rem" />
+              </span>
+
+              <ul class="menu">
+                <li class="menu-item">
+                  <div class="menu-entry" onclick={setFeedrateXY}>
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("P10")}</span>
+                    </div>
+                  </div>
+                </li>
+
+                <li class="menu-item">
+                  <div class="menu-entry" onclick={setFeedrateZ}>
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("P11")}</span>
+                    </div>
+                  </div>
+                </li>
+                <li class="divider" />
+                <li class="menu-item">
+                  <div
+                    class="menu-entry"
+                    onclick={(e) => {
+                      enable_keyboard_jog = !enable_keyboard_jog;
+                      setIsKeyboardEnabled(enable_keyboard_jog);
+                      if (enable_keyboard_jog) {
+                        AddKeyboardListener();
+                      } else {
+                        RemoveKeyboardListener();
+                      }
+                    }}
+                  >
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("P79")}</span>
+                      <span class="feather-icon-container">
+                        {isKeyboardEnabled ? (
+                          <CheckCircle size="0.8rem" />
+                        ) : (
+                          <Circle size="0.8rem" />
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+                <li class="menu-item">
+                  <div class="menu-entry" onclick={showKeyboarHelp}>
+                    <div class="menu-panel-item">
+                      <span class="text-menu-item">{T("P81")}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <span
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-        </div>
-        <div class="m-1 jog-container">
-          <PositionsControls />
-          <div class={isKeyboardEnabled ? "m-1" : "show-low m-1"}>
-            <div class="jog-buttons-main-container">
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P76")}
-                  id="btn+X"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("X+");
-                  }}
-                >
-                  +X
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P7")}
-                  id="btnHX"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("X");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">x</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P77")}
-                  id="btn-X"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("X-");
-                  }}
-                >
-                  -X
-                </Button>
-              </div>
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P76")}
-                  id="btn+Y"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Y+");
-                  }}
-                >
-                  +Y
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P8")}
-                  id="btnHY"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("Y");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">y</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P77")}
-                  id="btn-Y"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Y-");
-                  }}
-                >
-                  -Y
-                </Button>
-              </div>
+        </span>
+      </div>
+      <div class="m-1 jog-container">
+        <PositionsControls />
+        <div class={isKeyboardEnabled ? "m-1" : "show-low m-1"}>
+          <div class="jog-buttons-main-container">
+            <div class="m-1 jog-buttons-container">
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P76")}
+                id="btn+X"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("X+");
+                }}
+              >
+                +X
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P7")}
+                id="btnHX"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendHomeCommand("X");
+                }}
+              >
+                <Home size="1rem" />
+                <span class="text-tiny">x</span>
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P77")}
+                id="btn-X"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("X-");
+                }}
+              >
+                -X
+              </Button>
+            </div>
+            <div class="m-1 jog-buttons-container">
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P76")}
+                id="btn+Y"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Y+");
+                }}
+              >
+                +Y
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P8")}
+                id="btnHY"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendHomeCommand("Y");
+                }}
+              >
+                <Home size="1rem" />
+                <span class="text-tiny">y</span>
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P77")}
+                id="btn-Y"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Y-");
+                }}
+              >
+                -Y
+              </Button>
+            </div>
 
-              <div class="m-1 jog-buttons-container">
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P76")}
-                  id="btn+Z"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Z+");
-                  }}
-                >
-                  +Z
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P9")}
-                  id="btnHZ"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendHomeCommand("Z");
-                  }}
-                >
-                  <Home size="1rem" />
-                  <span class="text-tiny">z</span>
-                </Button>
-                <Button
-                  m2
-                  tooltip
-                  data-tooltip={T("P77")}
-                  id="btn-Z"
-                  onclick={(e) => {
-                    e.target.blur();
-                    sendJogCommand("Z-");
-                  }}
-                >
-                  -Z
-                </Button>
-              </div>
-              <div class="m-1 p-2 jog-buttons-container">
-                <div class="btn-group jog-distance-selector-container">
-                  <center class="jog-distance-selector-header">mm</center>
+            <div class="m-1 jog-buttons-container">
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P76")}
+                id="btn+Z"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Z+");
+                }}
+              >
+                +Z
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P9")}
+                id="btnHZ"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendHomeCommand("Z");
+                }}
+              >
+                <Home size="1rem" />
+                <span class="text-tiny">z</span>
+              </Button>
+              <Button
+                m2
+                tooltip
+                data-tooltip={T("P77")}
+                id="btn-Z"
+                onclick={(e) => {
+                  e.target.blur();
+                  sendJogCommand("Z-");
+                }}
+              >
+                -Z
+              </Button>
+            </div>
+            <div class="m-1 p-2 jog-buttons-container">
+              <div class="btn-group jog-distance-selector-container">
+                <center class="jog-distance-selector-header">mm</center>
 
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("P78")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_100"
-                      name="select_distance"
-                      value="100"
-                      checked={jogDistance == 100}
-                      onclick={(e) => onCheck(e, 100)}
-                    />
-                    <label for="move_100">100</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("P78")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_10"
-                      name="select_distance"
-                      value="10"
-                      checked={jogDistance == 10}
-                      onclick={(e) => onCheck(e, 10)}
-                    />
-                    <label for="move_10">10</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("P78")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_1"
-                      name="select_distance"
-                      value="1"
-                      checked={jogDistance == 1}
-                      onclick={(e) => onCheck(e, 1)}
-                    />
-                    <label for="move_1">1</label>
-                  </div>
-                  <div
-                    class="flatbtn tooltip tooltip-left"
-                    data-tooltip={T("P78")}
-                  >
-                    <input
-                      type="radio"
-                      id="move_0_1"
-                      name="select_distance"
-                      value="0.1"
-                      checked={jogDistance == 0.1}
-                      onclick={(e) => onCheck(e, 0.1)}
-                    />
-                    <label class="last-button" for="move_0_1">
-                      0.1
-                    </label>
-                  </div>
+                <div
+                  class="flatbtn tooltip tooltip-left"
+                  data-tooltip={T("P78")}
+                >
+                  <input
+                    type="radio"
+                    id="move_100"
+                    name="select_distance"
+                    value="100"
+                    checked={jogDistance == 100}
+                    onclick={(e) => onCheck(e, 100)}
+                  />
+                  <label for="move_100">100</label>
+                </div>
+                <div
+                  class="flatbtn tooltip tooltip-left"
+                  data-tooltip={T("P78")}
+                >
+                  <input
+                    type="radio"
+                    id="move_10"
+                    name="select_distance"
+                    value="10"
+                    checked={jogDistance == 10}
+                    onclick={(e) => onCheck(e, 10)}
+                  />
+                  <label for="move_10">10</label>
+                </div>
+                <div
+                  class="flatbtn tooltip tooltip-left"
+                  data-tooltip={T("P78")}
+                >
+                  <input
+                    type="radio"
+                    id="move_1"
+                    name="select_distance"
+                    value="1"
+                    checked={jogDistance == 1}
+                    onclick={(e) => onCheck(e, 1)}
+                  />
+                  <label for="move_1">1</label>
+                </div>
+                <div
+                  class="flatbtn tooltip tooltip-left"
+                  data-tooltip={T("P78")}
+                >
+                  <input
+                    type="radio"
+                    id="move_0_1"
+                    name="select_distance"
+                    value="0.1"
+                    checked={jogDistance == 0.1}
+                    onclick={(e) => onCheck(e, 0.1)}
+                  />
+                  <label class="last-button" for="move_0_1">
+                    0.1
+                  </label>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {!isKeyboardEnabled && (
-            <div class="hide-low jog-svg-container">
-              <svg
-                width="250px"
-                viewBox="0 -5 325 255"
-                xmlns="http://www.w3.org/2000/svg"
-                version="1.1"
+        {!isKeyboardEnabled && (
+          <div class="hide-low jog-svg-container">
+            <svg
+              width="250px"
+              viewBox="0 -5 325 255"
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+            >
+              <defs>
+                <filter id="f1" x="-1" y="-1" width="300%" height="300%">
+                  <feOffset
+                    result="offOut"
+                    in="SourceAlpha"
+                    dx="3"
+                    dy="3"
+                  ></feOffset>
+                  <feGaussianBlur
+                    result="blurOut"
+                    in="offOut"
+                    stdDeviation="4"
+                  ></feGaussianBlur>
+                  <feBlend
+                    in="SourceGraphic"
+                    in2="blurOut"
+                    mode="normal"
+                  ></feBlend>
+                </filter>
+                <symbol id="HomeIcon" viewBox="0 0 20 18" pointer-events="none">
+                  <desc>HomeIcon - house</desc>
+                  <path
+                    class="home"
+                    d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z"
+                    fill="black"
+                  ></path>
+                  <path
+                    class="home"
+                    d="M0,10 l10-8.5 l10,8.5"
+                    stroke-width="1.5"
+                    fill="none"
+                  ></path>
+                  <path class="home" d="M15,3 v2.8 l1,.8 v-3.6 z"></path>
+                </symbol>
+              </defs>
+              <g
+                id="HomeAll"
+                onmouseup={(e) => sendHomeCommand("", "HomeAll")}
+                onmousedown={(e) => onMouseDown("HomeAll")}
+                onmouseout={(e) => onOut("HomeAll")}
               >
-                <defs>
-                  <filter id="f1" x="-1" y="-1" width="300%" height="300%">
-                    <feOffset
-                      result="offOut"
-                      in="SourceAlpha"
-                      dx="3"
-                      dy="3"
-                    ></feOffset>
-                    <feGaussianBlur
-                      result="blurOut"
-                      in="offOut"
-                      stdDeviation="4"
-                    ></feGaussianBlur>
-                    <feBlend
-                      in="SourceGraphic"
-                      in2="blurOut"
-                      mode="normal"
-                    ></feBlend>
-                  </filter>
-                  <symbol
-                    id="HomeIcon"
-                    viewBox="0 0 20 18"
-                    pointer-events="none"
-                  >
-                    <desc>HomeIcon - house</desc>
-                    <path
-                      class="home"
-                      d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z"
-                      fill="black"
-                    ></path>
-                    <path
-                      class="home"
-                      d="M0,10 l10-8.5 l10,8.5"
-                      stroke-width="1.5"
-                      fill="none"
-                    ></path>
-                    <path class="home" d="M15,3 v2.8 l1,.8 v-3.6 z"></path>
-                  </symbol>
-                </defs>
+                <title>{T("P6")}</title>
+                <path
+                  class="std"
+                  d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z"
+                  fill="#f0f0f0"
+                ></path>
+                <use
+                  x="3"
+                  y="217"
+                  width="20"
+                  height="18"
+                  xlinkHref="#HomeIcon"
+                ></use>
+              </g>
+              <g
+                id="HomeX"
+                onmouseup={(e) => sendHomeCommand("X", "HomeX")}
+                onmousedown={(e) => onMouseDown("HomeX")}
+                onmouseout={(e) => onOut("HomeX")}
+              >
+                <title>{T("P7")}</title>
+                <path
+                  class="std"
+                  d="M10 57.50 h-10 v-57.5 h57.5 v10 a 125,125 0 0,0 -47.5 47.5 Z"
+                  fill="Khaki"
+                ></path>
+                <use
+                  x="3"
+                  y="5"
+                  width="20"
+                  height="18"
+                  xlinkHref="#HomeIcon"
+                ></use>
+                <text x="25" y="20" class="home">
+                  X
+                </text>
+              </g>
+              <g
+                id="HomeY"
+                onmouseup={(e) => sendHomeCommand("Y", "HomeY")}
+                onmousedown={(e) => onMouseDown("HomeY")}
+                onmouseout={(e) => onOut("HomeY")}
+              >
+                <title>{T("P8")}</title>
+                <path
+                  class="std"
+                  d="M230 57.50 h10 v-57.5 h-57.5 v10 a 125,125 0 0,1 47.5 47.5 z"
+                  fill="SteelBlue"
+                ></path>
+                <use
+                  x="217"
+                  y="5"
+                  width="20"
+                  height="18"
+                  xlinkHref="#HomeIcon"
+                ></use>
+                <text x="202" y="20" class="home">
+                  Y
+                </text>
+              </g>
+              <g
+                id="HomeZ"
+                onmouseup={(e) => sendHomeCommand("Z", "HomeZ")}
+                onmousedown={(e) => onMouseDown("HomeZ")}
+                onmouseout={(e) => onOut("HomeZ")}
+              >
+                <title>{T("P9")}</title>
+                <path
+                  class="std"
+                  d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z"
+                  fill="DarkSeaGreen"
+                ></path>
+                <use
+                  x="217"
+                  y="217"
+                  width="20"
+                  height="18"
+                  xlinkHref="#HomeIcon"
+                ></use>
+                <text x="202" y="232" class="home" id="homeZlabel">
+                  Z
+                </text>
+              </g>
+              <g id="Jog100" fill="#c0c0c0" class="std">
                 <g
-                  id="HomeAll"
-                  onmouseup={(e) => sendHomeCommand("", "HomeAll")}
-                  onmousedown={(e) => onMouseDown("HomeAll")}
-                  onmouseout={(e) => onOut("HomeAll")}
+                  id="Y+100"
+                  onmouseup={(e) => sendJogCommand("Y", "Y+100", "+100")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy100");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y+100")}
+                  onmouseout={(e) => {
+                    onOutJog("xy100", "Y+100");
+                  }}
+                  transform="translate(120 120)"
                 >
-                  <title>{T("P6")}</title>
                   <path
                     class="std"
-                    d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z"
-                    fill="#f0f0f0"
+                    d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z"
                   ></path>
-                  <use
-                    x="3"
-                    y="217"
-                    width="20"
-                    height="18"
-                    xlinkHref="#HomeIcon"
-                  ></use>
                 </g>
                 <g
-                  id="HomeX"
-                  onmouseup={(e) => sendHomeCommand("X", "HomeX")}
-                  onmousedown={(e) => onMouseDown("HomeX")}
-                  onmouseout={(e) => onOut("HomeX")}
+                  id="X+100"
+                  onmouseup={(e) => sendJogCommand("X", "X+100", "+100")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy100");
+                  }}
+                  onmousedown={(e) => onMouseDown("X+100")}
+                  onmouseout={(e) => {
+                    onOutJog("xy100", "X+100");
+                  }}
+                  transform="translate(120 120)"
                 >
-                  <title>{T("P7")}</title>
                   <path
                     class="std"
-                    d="M10 57.50 h-10 v-57.5 h57.5 v10 a 125,125 0 0,0 -47.5 47.5 Z"
-                    fill="Khaki"
+                    d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"
                   ></path>
-                  <use
-                    x="3"
-                    y="5"
-                    width="20"
-                    height="18"
-                    xlinkHref="#HomeIcon"
-                  ></use>
-                  <text x="25" y="20" class="home">
-                    X
-                  </text>
                 </g>
                 <g
-                  id="HomeY"
-                  onmouseup={(e) => sendHomeCommand("Y", "HomeY")}
-                  onmousedown={(e) => onMouseDown("HomeY")}
-                  onmouseout={(e) => onOut("HomeY")}
+                  id="Y-100"
+                  onmouseup={(e) => sendJogCommand("Y", "Y-100", "-100")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy100");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y-100")}
+                  onmouseout={(e) => {
+                    onOutJog("xy100", "Y-100");
+                  }}
+                  transform="translate(120 120)"
                 >
-                  <title>{T("P8")}</title>
                   <path
                     class="std"
-                    d="M230 57.50 h10 v-57.5 h-57.5 v10 a 125,125 0 0,1 47.5 47.5 z"
-                    fill="SteelBlue"
+                    d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60.00,67.07 z"
                   ></path>
-                  <use
-                    x="217"
-                    y="5"
-                    width="20"
-                    height="18"
-                    xlinkHref="#HomeIcon"
-                  ></use>
-                  <text x="202" y="20" class="home">
-                    Y
-                  </text>
                 </g>
                 <g
-                  id="HomeZ"
-                  onmouseup={(e) => sendHomeCommand("Z", "HomeZ")}
-                  onmousedown={(e) => onMouseDown("HomeZ")}
-                  onmouseout={(e) => onOut("HomeZ")}
+                  id="X-100"
+                  onmouseup={(e) => sendJogCommand("X", "X-100", "-100")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy100");
+                  }}
+                  onmousedown={(e) => onMouseDown("X-100")}
+                  onmouseout={(e) => {
+                    onOutJog("xy100", "X-100");
+                  }}
+                  transform="translate(120 120)"
                 >
-                  <title>{T("P9")}</title>
                   <path
                     class="std"
-                    d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z"
+                    d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"
+                  ></path>
+                </g>
+              </g>
+              <g id="Jog10" fill="#d0d0d0">
+                <g
+                  id="Y+10"
+                  onmouseup={(e) => sendJogCommand("Y", "Y+10", "+10")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy10");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y+10")}
+                  onmouseout={(e) => {
+                    onOutJog("xy10", "Y+10");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"
+                  ></path>
+                </g>
+                <g
+                  id="X+10"
+                  onmouseup={(e) => sendJogCommand("X", "X+10", "+10")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy10");
+                  }}
+                  onmousedown={(e) => onMouseDown("X+10")}
+                  onmouseout={(e) => {
+                    onOutJog("xy10", "X+10");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"
+                  ></path>
+                </g>
+                <g
+                  id="Y-10"
+                  onmouseup={(e) => sendJogCommand("Y", "Y-10", "-10")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy10");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y-10")}
+                  onmouseout={(e) => {
+                    onOutJog("xy10", "Y-10");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"
+                  ></path>
+                </g>
+                <g
+                  id="X-10"
+                  onmouseup={(e) => sendJogCommand("X", "X-10", "-10")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy10");
+                  }}
+                  onmousedown={(e) => onMouseDown("X-10")}
+                  onmouseout={(e) => {
+                    onOutJog("xy10", "X-10");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"
+                  ></path>
+                </g>
+              </g>
+              <g id="Jog1" fill="#e0e0e0">
+                <g
+                  id="Y+1"
+                  onmouseup={(e) => sendJogCommand("Y", "Y+1", "+1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y+1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy1", "Y+1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"
+                  ></path>
+                </g>
+                <g
+                  id="X+1"
+                  onmouseup={(e) => sendJogCommand("X", "X+1", "+1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy1");
+                  }}
+                  onmousedown={(e) => onMouseDown("X+1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy1", "X+1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M35.16 -28.09 L51.13,-44.06 A67.5,67.05 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"
+                  ></path>
+                </g>
+                <g
+                  id="Y-1"
+                  onmouseup={(e) => sendJogCommand("Y", "Y-1", "-1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y-1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"
+                  ></path>
+                </g>
+                <g
+                  id="X-1"
+                  onmouseup={(e) => sendJogCommand("X", "X-1", "-1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy1");
+                  }}
+                  onmousedown={(e) => onMouseDown("X-1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy1", "X-1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.05 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"
+                  ></path>
+                </g>
+              </g>
+              <g id="Jog0_1" fill="#f0f0f0">
+                <g
+                  id="Y+0_1"
+                  onmouseup={(e) => sendJogCommand("Y", "Y+0_1", "+0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y+0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy0_1"), "Y+0_1";
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"
+                  ></path>
+                </g>
+                <g
+                  id="X+0_1"
+                  onmouseup={(e) => sendJogCommand("X", "X+0_1", "+0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("X+0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy0_1", "X+0_1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"
+                  ></path>
+                </g>
+                <g
+                  id="Y-0_1"
+                  onmouseup={(e) => sendJogCommand("Y", "Y-0_1", "-0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Y-0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy0_1", "Y-0_1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"
+                  ></path>
+                </g>
+                <g
+                  id="X-0_1"
+                  onmouseup={(e) => sendJogCommand("X", "X-0_1", "-0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("xy0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("X-0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("xy0_1");
+                  }}
+                  transform="translate(120 120)"
+                >
+                  <path
+                    class="std"
+                    d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"
+                  ></path>
+                </g>
+              </g>
+              <g id="xy0_1" style="opacity:0.2">
+                <circle class="scl" cx="144" cy="96" r="9.5"></circle>
+                <text class="scl" x="137" y="99" font-size="10">
+                  0.1
+                </text>
+              </g>
+              <g id="xy1" style="opacity:0.2">
+                <circle class="scl" cx="159.5" cy="80.5" r="10.5"></circle>
+                <text class="scl" x="155" y="85" font-size="14">
+                  1
+                </text>
+              </g>
+              <g id="xy10" style="opacity:0.2">
+                <circle class="scl" cx="175" cy="65" r="12"></circle>
+                <text class="scl" x="166" y="70" font-size="15">
+                  10
+                </text>
+              </g>
+              <g id="xy100" style="opacity:0.2">
+                <circle class="scl" cx="195" cy="45" r="15"></circle>
+                <text class="scl" x="182" y="50" font-size="15">
+                  100
+                </text>
+              </g>
+              <g id="Decoration" pointer-events="none" fill-opacity=".6">
+                <path
+                  class="std"
+                  d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
+                  fill="SteelBlue"
+                ></path>
+                <path
+                  class="std"
+                  d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z"
+                  fill="SteelBlue"
+                ></path>
+                <path
+                  class="std"
+                  d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z"
+                  fill="Khaki"
+                ></path>
+                <path
+                  class="std"
+                  d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z"
+                  fill="Khaki"
+                ></path>
+                <text class="jog" x="110" y="36">
+                  +Y
+                </text>
+                <text class="jog" x="113" y="212">
+                  -Y
+                </text>
+                <text class="jog" x="27" y="124">
+                  -X
+                </text>
+                <text class="jog" x="196" y="124">
+                  +X
+                </text>
+              </g>
+              <g
+                id="posxy"
+                onmouseup={(e) => {
+                  sendMoveCommand("posxy", "posxy");
+                }}
+                onmouseover={(e) => {
+                  onHoverJog("posxy");
+                }}
+                onmousedown={(e) => onMouseDown("posxy")}
+                onmouseout={(e) => {
+                  onOut("posxy");
+                }}
+              >
+                <title>{moveToTitleXY}</title>
+                <circle class="std" cx="120.2" cy="120.3" r="15"></circle>
+                <circle class="cross" cx="116" cy="120.3" r="4"></circle>
+                <line
+                  x1="116"
+                  y1="125.3"
+                  x2="116"
+                  y2="129"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="116"
+                  y1="115.3"
+                  x2="116"
+                  y2="111.6"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="121"
+                  y1="120.3"
+                  x2="124.7"
+                  y2="120.3"
+                  style="stroke:black;stroke-width:1"
+                />
+                <line
+                  x1="111"
+                  y1="120.3"
+                  x2="107.3"
+                  y2="120.3"
+                  style="stroke:black;stroke-width:1"
+                />
+                <text class="posscl" x="125" y="118">
+                  X
+                </text>
+                <text class="posscl" x="125" y="130">
+                  Y
+                </text>
+              </g>
+              <g id="JogBar" transform="translate(250,0)">
+                <g
+                  id="Z+100"
+                  fill="#d0d0d0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z+100", "+100")}
+                  onmouseover={(e) => {
+                    onHoverJog("z100");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z+100")}
+                  onmouseout={(e) => {
+                    onOutJog("z100", "Z+100");
+                  }}
+                >
+                  <path
+                    class="std"
+                    d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"
+                  ></path>
+                  <g id="z100" style="opacity:0.2">
+                    <circle class="scl" cx="20" cy="16" r="14"></circle>
+                    <text class="scl" x="8" y="22" font-size="14">
+                      100
+                    </text>
+                  </g>
+                </g>
+                <g
+                  id="Z+10"
+                  fill="#d0d0d0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z+10", "+10")}
+                  onmouseover={(e) => {
+                    onHoverJog("z10");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z+10")}
+                  onmouseout={(e) => {
+                    onOutJog("z10", "Z+10");
+                  }}
+                >
+                  <rect class="std" x="0" y="32" width="40" height="30"></rect>
+                  <g id="z10" style="opacity:0.2">
+                    <circle class="scl" cx="20" cy="47" r="12"></circle>
+                    <text class="scl" x="11" y="53" font-size="15">
+                      10
+                    </text>
+                  </g>
+                </g>
+                <g
+                  id="Z+1"
+                  fill="#e0e0e0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z+1", "+1")}
+                  onmouseover={(e) => {
+                    onHoverJog("z1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z+1")}
+                  onmouseout={(e) => {
+                    onOutJog("z1", "Z+1");
+                  }}
+                >
+                  <rect class="std" x="0" y="62" width="40" height="26"></rect>
+                  <g id="z1" style="opacity:0.2">
+                    <circle class="scl" cx="20" cy="75" r="10.5"></circle>
+                    <text class="scl" x="16" y="80" font-size="14">
+                      1
+                    </text>
+                  </g>
+                </g>
+                <g id="ZSpace" fill="#000000" style="pointer-events:none;">
+                  <rect class="std" x="0" y="112" width="40" height="16"></rect>
+                </g>
+                <g
+                  id="Z+0_1"
+                  fill="#f0f0f0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z+0_1", "+0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("z0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z+0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("z0_1", "Z+0_1");
+                  }}
+                >
+                  <rect class="std" x="0" y="88" width="40" height="24"></rect>
+                  <g id="z0_1" style="opacity:0.2">
+                    <circle class="scl" cx="20" cy="100" r="9.5"></circle>
+                    <text class="scl" x="13.5" y="103.5" font-size="10">
+                      0.1
+                    </text>
+                  </g>
+                </g>
+                <g
+                  id="Z-0_1"
+                  fill="#f0f0f0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z-0_1", "-0.1")}
+                  onmouseover={(e) => {
+                    onHoverJog("z0_1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z-0_1")}
+                  onmouseout={(e) => {
+                    onOutJog("z0_1", "Z-0_1");
+                  }}
+                >
+                  <rect class="std" x="0" y="128" width="40" height="24"></rect>
+                </g>
+                <g
+                  id="Z-1"
+                  fill="#e0e0e0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z-1", "-1")}
+                  onmouseover={(e) => {
+                    onHoverJog("z1");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z-1")}
+                  onmouseout={(e) => {
+                    onOutJog("z1", "Z-1");
+                  }}
+                >
+                  <rect class="std" x="0" y="152" width="40" height="26"></rect>
+                </g>
+                <g
+                  id="Z-10"
+                  fill="#d0d0d0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z-10", "-10")}
+                  onmouseover={(e) => {
+                    onHoverJog("z10");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z-10")}
+                  onmouseout={(e) => {
+                    onOutJog("z10", "Z-10");
+                  }}
+                >
+                  <rect
+                    class="std r10"
+                    x="0"
+                    y="178"
+                    width="40"
+                    height="30"
+                  ></rect>
+                </g>
+
+                <g
+                  id="Z-100"
+                  fill="#d0d0d0"
+                  onmouseup={(e) => sendJogCommand("Z", "Z-100", "-100")}
+                  onmouseover={(e) => {
+                    onHoverJog("z100");
+                  }}
+                  onmousedown={(e) => onMouseDown("Z-100")}
+                  onmouseout={(e) => {
+                    onOutJog("z100", "Z-100");
+                  }}
+                >
+                  <path
+                    class="std"
+                    d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
+                  ></path>
+                </g>
+                <g id="+Z" fill-opacity=".6" pointer-events="none">
+                  <path
+                    class="std"
+                    d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
                     fill="DarkSeaGreen"
                   ></path>
-                  <use
-                    x="217"
-                    y="217"
-                    width="20"
-                    height="18"
-                    xlinkHref="#HomeIcon"
-                  ></use>
-                  <text x="202" y="232" class="home" id="homeZlabel">
-                    Z
+                  <text class="jog" x="41" y="36" id="axisup">
+                    +Z
                   </text>
                 </g>
-                <g id="Jog100" fill="#c0c0c0" class="std">
-                  <g
-                    id="Y+100"
-                    onmouseup={(e) => sendJogCommand("Y", "Y+100", "+100")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy100");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y+100")}
-                    onmouseout={(e) => {
-                      onOutJog("xy100", "Y+100");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X+100"
-                    onmouseup={(e) => sendJogCommand("X", "X+100", "+100")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy100");
-                    }}
-                    onmousedown={(e) => onMouseDown("X+100")}
-                    onmouseout={(e) => {
-                      onOutJog("xy100", "X+100");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"
-                    ></path>
-                  </g>
-                  <g
-                    id="Y-100"
-                    onmouseup={(e) => sendJogCommand("Y", "Y-100", "-100")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy100");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y-100")}
-                    onmouseout={(e) => {
-                      onOutJog("xy100", "Y-100");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60.00,67.07 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X-100"
-                    onmouseup={(e) => sendJogCommand("X", "X-100", "-100")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy100");
-                    }}
-                    onmousedown={(e) => onMouseDown("X-100")}
-                    onmouseout={(e) => {
-                      onOutJog("xy100", "X-100");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"
-                    ></path>
-                  </g>
-                </g>
-                <g id="Jog10" fill="#d0d0d0">
-                  <g
-                    id="Y+10"
-                    onmouseup={(e) => sendJogCommand("Y", "Y+10", "+10")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy10");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y+10")}
-                    onmouseout={(e) => {
-                      onOutJog("xy10", "Y+10");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X+10"
-                    onmouseup={(e) => sendJogCommand("X", "X+10", "+10")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy10");
-                    }}
-                    onmousedown={(e) => onMouseDown("X+10")}
-                    onmouseout={(e) => {
-                      onOutJog("xy10", "X+10");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="Y-10"
-                    onmouseup={(e) => sendJogCommand("Y", "Y-10", "-10")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy10");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y-10")}
-                    onmouseout={(e) => {
-                      onOutJog("xy10", "Y-10");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X-10"
-                    onmouseup={(e) => sendJogCommand("X", "X-10", "-10")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy10");
-                    }}
-                    onmousedown={(e) => onMouseDown("X-10")}
-                    onmouseout={(e) => {
-                      onOutJog("xy10", "X-10");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"
-                    ></path>
-                  </g>
-                </g>
-                <g id="Jog1" fill="#e0e0e0">
-                  <g
-                    id="Y+1"
-                    onmouseup={(e) => sendJogCommand("Y", "Y+1", "+1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y+1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy1", "Y+1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X+1"
-                    onmouseup={(e) => sendJogCommand("X", "X+1", "+1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy1");
-                    }}
-                    onmousedown={(e) => onMouseDown("X+1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy1", "X+1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M35.16 -28.09 L51.13,-44.06 A67.5,67.05 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="Y-1"
-                    onmouseup={(e) => sendJogCommand("Y", "Y-1", "-1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y-1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X-1"
-                    onmouseup={(e) => sendJogCommand("X", "X-1", "-1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy1");
-                    }}
-                    onmousedown={(e) => onMouseDown("X-1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy1", "X-1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.05 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"
-                    ></path>
-                  </g>
-                </g>
-                <g id="Jog0_1" fill="#f0f0f0">
-                  <g
-                    id="Y+0_1"
-                    onmouseup={(e) => sendJogCommand("Y", "Y+0_1", "+0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y+0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy0_1"), "Y+0_1";
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X+0_1"
-                    onmouseup={(e) => sendJogCommand("X", "X+0_1", "+0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("X+0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy0_1", "X+0_1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="Y-0_1"
-                    onmouseup={(e) => sendJogCommand("Y", "Y-0_1", "-0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Y-0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy0_1", "Y-0_1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"
-                    ></path>
-                  </g>
-                  <g
-                    id="X-0_1"
-                    onmouseup={(e) => sendJogCommand("X", "X-0_1", "-0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("xy0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("X-0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("xy0_1");
-                    }}
-                    transform="translate(120 120)"
-                  >
-                    <path
-                      class="std"
-                      d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"
-                    ></path>
-                  </g>
-                </g>
-                <g id="xy0_1" style="opacity:0.2">
-                  <circle class="scl" cx="144" cy="96" r="9.5"></circle>
-                  <text class="scl" x="137" y="99" font-size="10">
-                    0.1
-                  </text>
-                </g>
-                <g id="xy1" style="opacity:0.2">
-                  <circle class="scl" cx="159.5" cy="80.5" r="10.5"></circle>
-                  <text class="scl" x="155" y="85" font-size="14">
-                    1
-                  </text>
-                </g>
-                <g id="xy10" style="opacity:0.2">
-                  <circle class="scl" cx="175" cy="65" r="12"></circle>
-                  <text class="scl" x="166" y="70" font-size="15">
-                    10
-                  </text>
-                </g>
-                <g id="xy100" style="opacity:0.2">
-                  <circle class="scl" cx="195" cy="45" r="15"></circle>
-                  <text class="scl" x="182" y="50" font-size="15">
-                    100
-                  </text>
-                </g>
-                <g id="Decoration" pointer-events="none" fill-opacity=".6">
+                <g id="-Z" fill-opacity=".6" pointer-events="none">
                   <path
                     class="std"
-                    d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
-                    fill="SteelBlue"
+                    d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z"
+                    fill="DarkSeaGreen"
                   ></path>
-                  <path
-                    class="std"
-                    d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z"
-                    fill="SteelBlue"
-                  ></path>
-                  <path
-                    class="std"
-                    d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z"
-                    fill="Khaki"
-                  ></path>
-                  <path
-                    class="std"
-                    d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z"
-                    fill="Khaki"
-                  ></path>
-                  <text class="jog" x="110" y="36">
-                    +Y
-                  </text>
-                  <text class="jog" x="113" y="212">
-                    -Y
-                  </text>
-                  <text class="jog" x="27" y="124">
-                    -X
-                  </text>
-                  <text class="jog" x="196" y="124">
-                    +X
+                  <text class="jog" x="43" y="210" id="axisdown">
+                    -Z
                   </text>
                 </g>
                 <g
-                  id="posxy"
+                  id="posz"
                   onmouseup={(e) => {
-                    sendMoveCommand("posxy", "posxy");
+                    sendMoveCommand("posz", "posz");
                   }}
                   onmouseover={(e) => {
-                    onHoverJog("posxy");
+                    onHoverJog("posz");
                   }}
-                  onmousedown={(e) => onMouseDown("posxy")}
+                  onmousedown={(e) => onMouseDown("posz")}
                   onmouseout={(e) => {
-                    onOut("posxy");
+                    onOut("posz");
                   }}
                 >
-                  <title>{moveToTitleXY}</title>
-                  <circle class="std" cx="120.2" cy="120.3" r="15"></circle>
-                  <circle class="cross" cx="116" cy="120.3" r="4"></circle>
+                  <title>{moveToTitleZ}</title>
+                  <rect
+                    class="movez"
+                    x="-1"
+                    y="110"
+                    width="42"
+                    height="20"
+                    rx="5"
+                  />
+                  <circle class="cross" cx="13" cy="120.3" r="4"></circle>
                   <line
-                    x1="116"
+                    x1="13"
                     y1="125.3"
-                    x2="116"
-                    y2="129"
+                    x2="13"
+                    y2="128.8"
                     style="stroke:black;stroke-width:1"
                   />
                   <line
-                    x1="116"
+                    x1="13"
                     y1="115.3"
-                    x2="116"
+                    x2="13"
                     y2="111.6"
                     style="stroke:black;stroke-width:1"
                   />
                   <line
-                    x1="121"
+                    x1="4"
                     y1="120.3"
-                    x2="124.7"
+                    x2="8.7"
                     y2="120.3"
                     style="stroke:black;stroke-width:1"
                   />
                   <line
-                    x1="111"
+                    x1="18"
                     y1="120.3"
-                    x2="107.3"
+                    x2="21.7"
                     y2="120.3"
                     style="stroke:black;stroke-width:1"
                   />
-                  <text class="posscl" x="125" y="118">
-                    X
-                  </text>
-                  <text class="posscl" x="125" y="130">
-                    Y
+                  <text class="posscl" x="25" y="122">
+                    Z
                   </text>
                 </g>
-                <g id="JogBar" transform="translate(250,0)">
-                  <g
-                    id="Z+100"
-                    fill="#d0d0d0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z+100", "+100")}
-                    onmouseover={(e) => {
-                      onHoverJog("z100");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z+100")}
-                    onmouseout={(e) => {
-                      onOutJog("z100", "Z+100");
-                    }}
-                  >
-                    <path
-                      class="std"
-                      d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"
-                    ></path>
-                    <g id="z100" style="opacity:0.2">
-                      <circle class="scl" cx="20" cy="16" r="14"></circle>
-                      <text class="scl" x="8" y="22" font-size="14">
-                        100
-                      </text>
-                    </g>
-                  </g>
-                  <g
-                    id="Z+10"
-                    fill="#d0d0d0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z+10", "+10")}
-                    onmouseover={(e) => {
-                      onHoverJog("z10");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z+10")}
-                    onmouseout={(e) => {
-                      onOutJog("z10", "Z+10");
-                    }}
-                  >
-                    <rect
-                      class="std"
-                      x="0"
-                      y="32"
-                      width="40"
-                      height="30"
-                    ></rect>
-                    <g id="z10" style="opacity:0.2">
-                      <circle class="scl" cx="20" cy="47" r="12"></circle>
-                      <text class="scl" x="11" y="53" font-size="15">
-                        10
-                      </text>
-                    </g>
-                  </g>
-                  <g
-                    id="Z+1"
-                    fill="#e0e0e0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z+1", "+1")}
-                    onmouseover={(e) => {
-                      onHoverJog("z1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z+1")}
-                    onmouseout={(e) => {
-                      onOutJog("z1", "Z+1");
-                    }}
-                  >
-                    <rect
-                      class="std"
-                      x="0"
-                      y="62"
-                      width="40"
-                      height="26"
-                    ></rect>
-                    <g id="z1" style="opacity:0.2">
-                      <circle class="scl" cx="20" cy="75" r="10.5"></circle>
-                      <text class="scl" x="16" y="80" font-size="14">
-                        1
-                      </text>
-                    </g>
-                  </g>
-                  <g id="ZSpace" fill="#000000" style="pointer-events:none;">
-                    <rect
-                      class="std"
-                      x="0"
-                      y="112"
-                      width="40"
-                      height="16"
-                    ></rect>
-                  </g>
-                  <g
-                    id="Z+0_1"
-                    fill="#f0f0f0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z+0_1", "+0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("z0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z+0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("z0_1", "Z+0_1");
-                    }}
-                  >
-                    <rect
-                      class="std"
-                      x="0"
-                      y="88"
-                      width="40"
-                      height="24"
-                    ></rect>
-                    <g id="z0_1" style="opacity:0.2">
-                      <circle class="scl" cx="20" cy="100" r="9.5"></circle>
-                      <text class="scl" x="13.5" y="103.5" font-size="10">
-                        0.1
-                      </text>
-                    </g>
-                  </g>
-                  <g
-                    id="Z-0_1"
-                    fill="#f0f0f0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z-0_1", "-0.1")}
-                    onmouseover={(e) => {
-                      onHoverJog("z0_1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z-0_1")}
-                    onmouseout={(e) => {
-                      onOutJog("z0_1", "Z-0_1");
-                    }}
-                  >
-                    <rect
-                      class="std"
-                      x="0"
-                      y="128"
-                      width="40"
-                      height="24"
-                    ></rect>
-                  </g>
-                  <g
-                    id="Z-1"
-                    fill="#e0e0e0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z-1", "-1")}
-                    onmouseover={(e) => {
-                      onHoverJog("z1");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z-1")}
-                    onmouseout={(e) => {
-                      onOutJog("z1", "Z-1");
-                    }}
-                  >
-                    <rect
-                      class="std"
-                      x="0"
-                      y="152"
-                      width="40"
-                      height="26"
-                    ></rect>
-                  </g>
-                  <g
-                    id="Z-10"
-                    fill="#d0d0d0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z-10", "-10")}
-                    onmouseover={(e) => {
-                      onHoverJog("z10");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z-10")}
-                    onmouseout={(e) => {
-                      onOutJog("z10", "Z-10");
-                    }}
-                  >
-                    <rect
-                      class="std r10"
-                      x="0"
-                      y="178"
-                      width="40"
-                      height="30"
-                    ></rect>
-                  </g>
-
-                  <g
-                    id="Z-100"
-                    fill="#d0d0d0"
-                    onmouseup={(e) => sendJogCommand("Z", "Z-100", "-100")}
-                    onmouseover={(e) => {
-                      onHoverJog("z100");
-                    }}
-                    onmousedown={(e) => onMouseDown("Z-100")}
-                    onmouseout={(e) => {
-                      onOutJog("z100", "Z-100");
-                    }}
-                  >
-                    <path
-                      class="std"
-                      d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
-                    ></path>
-                  </g>
-                  <g id="+Z" fill-opacity=".6" pointer-events="none">
-                    <path
-                      class="std"
-                      d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
-                      fill="DarkSeaGreen"
-                    ></path>
-                    <text class="jog" x="41" y="36" id="axisup">
-                      +Z
-                    </text>
-                  </g>
-                  <g id="-Z" fill-opacity=".6" pointer-events="none">
-                    <path
-                      class="std"
-                      d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z"
-                      fill="DarkSeaGreen"
-                    ></path>
-                    <text class="jog" x="43" y="210" id="axisdown">
-                      -Z
-                    </text>
-                  </g>
-                  <g
-                    id="posz"
-                    onmouseup={(e) => {
-                      sendMoveCommand("posz", "posz");
-                    }}
-                    onmouseover={(e) => {
-                      onHoverJog("posz");
-                    }}
-                    onmousedown={(e) => onMouseDown("posz")}
-                    onmouseout={(e) => {
-                      onOut("posz");
-                    }}
-                  >
-                    <title>{moveToTitleZ}</title>
-                    <rect
-                      class="movez"
-                      x="-1"
-                      y="110"
-                      width="42"
-                      height="20"
-                      rx="5"
-                    />
-                    <circle class="cross" cx="13" cy="120.3" r="4"></circle>
-                    <line
-                      x1="13"
-                      y1="125.3"
-                      x2="13"
-                      y2="128.8"
-                      style="stroke:black;stroke-width:1"
-                    />
-                    <line
-                      x1="13"
-                      y1="115.3"
-                      x2="13"
-                      y2="111.6"
-                      style="stroke:black;stroke-width:1"
-                    />
-                    <line
-                      x1="4"
-                      y1="120.3"
-                      x2="8.7"
-                      y2="120.3"
-                      style="stroke:black;stroke-width:1"
-                    />
-                    <line
-                      x1="18"
-                      y1="120.3"
-                      x2="21.7"
-                      y2="120.3"
-                      style="stroke:black;stroke-width:1"
-                    />
-                    <text class="posscl" x="25" y="122">
-                      Z
-                    </text>
-                  </g>
-                </g>
-              </svg>
-            </div>
-          )}
-          <div class={isKeyboardEnabled ? "m-1 W-100" : "m-1 show-low W-100"}>
-            <div class="jog-extra-buttons-container">
-              <Button
-                m1
-                tooltip
-                data-tooltip={T("P6")}
-                id="btnHXYZ"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendHomeCommand("");
-                }}
-              >
-                <Home />
-                <span class="text-tiny">xyz</span>
-              </Button>
-              <Button
-                m1
-                tooltip
-                data-tooltip={moveToTitleXY}
-                id="btnMoveXY"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendMoveCommand("posxy");
-                }}
-              >
-                <Crosshair />
-                <span class="text-tiny">xy</span>
-              </Button>
-              <Button
-                m1
-                tooltip
-                data-tooltip={moveToTitleZ}
-                id="btnMoveZ"
-                onclick={(e) => {
-                  e.target.blur();
-                  sendMoveCommand("posz");
-                }}
-              >
-                <Crosshair />
-                <span class="text-tiny">z</span>{" "}
-              </Button>
-            </div>
+              </g>
+            </svg>
           </div>
-          <div class="jog-extra-buttons-container" style="margin-right:8px">
-            <ButtonImg
+        )}
+        <div class={isKeyboardEnabled ? "m-1 W-100" : "m-1 show-low W-100"}>
+          <div class="jog-extra-buttons-container">
+            <Button
               m1
               tooltip
-              label={T("P13")}
-              data-tooltip={T("P13")}
-              icon={<ZapOff />}
-              id="btnMotorOff"
+              data-tooltip={T("P6")}
+              id="btnHXYZ"
               onclick={(e) => {
-                const cmd = useUiContextFn
-                  .getValue("motoroff")
-                  .replace(";", "\n");
                 e.target.blur();
-                SendCommand(cmd);
+                sendHomeCommand("");
               }}
-            />
-            <ButtonImg
+            >
+              <Home />
+              <span class="text-tiny">xyz</span>
+            </Button>
+            <Button
               m1
-              error
               tooltip
-              label={T("P15")}
-              icon={<AlertCircle />}
-              data-tooltip={T("P15")}
-              id="btnEStop"
+              data-tooltip={moveToTitleXY}
+              id="btnMoveXY"
               onclick={(e) => {
                 e.target.blur();
-                const cmd = useUiContextFn
-                  .getValue("emergencystop")
-                  .replace(";", "\n");
-                SendCommand(cmd);
+                sendMoveCommand("posxy");
               }}
-            />
+            >
+              <Crosshair />
+              <span class="text-tiny">xy</span>
+            </Button>
+            <Button
+              m1
+              tooltip
+              data-tooltip={moveToTitleZ}
+              id="btnMoveZ"
+              onclick={(e) => {
+                e.target.blur();
+                sendMoveCommand("posz");
+              }}
+            >
+              <Crosshair />
+              <span class="text-tiny">z</span>{" "}
+            </Button>
           </div>
+        </div>
+        <div class="jog-extra-buttons-container" style="margin-right:8px">
+          <ButtonImg
+            m1
+            tooltip
+            label={T("P13")}
+            data-tooltip={T("P13")}
+            icon={<ZapOff />}
+            id="btnMotorOff"
+            onclick={(e) => {
+              const cmd = useUiContextFn
+                .getValue("motoroff")
+                .replace(";", "\n");
+              e.target.blur();
+              SendCommand(cmd);
+            }}
+          />
+          <ButtonImg
+            m1
+            error
+            tooltip
+            label={T("P15")}
+            icon={<AlertCircle />}
+            data-tooltip={T("P15")}
+            id="btnEStop"
+            onclick={(e) => {
+              e.target.blur();
+              const cmd = useUiContextFn
+                .getValue("emergencystop")
+                .replace(";", "\n");
+              SendCommand(cmd);
+            }}
+          />
         </div>
       </div>
     </div>

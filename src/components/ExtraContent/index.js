@@ -271,50 +271,48 @@ const ExtraContent = ({
   if (target == "panel") {
     const displayIcon = iconsList[icon] ? iconsList[icon] : "";
     return (
-      <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-        <div class="panel mb-2 panel-dashboard">
-          <div class="navbar">
-            <span class="navbar-section  feather-icon-container">
-              {displayIcon}
-              <strong class="text-ellipsis">{T(label)}</strong>
+      <div class="panel mb-2 panel-dashboard">
+        <div class="navbar">
+          <span class="navbar-section  feather-icon-container">
+            {displayIcon}
+            <strong class="text-ellipsis">{T(label)}</strong>
+          </span>
+          <span class="navbar-section">
+            {refreshtime == 0 && (
+              <ButtonImg
+                xs
+                m1
+                nomin="yes"
+                icon={<RefreshCcw size="0.8rem" />}
+                onclick={() => {
+                  if (contentCache[id]) contentCache[id] = undefined;
+                  loadContent();
+                }}
+              />
+            )}
+            <span style="height: 100%;">
+              <button
+                class="btn btn-clear btn-close m-1"
+                aria-label="Close"
+                onclick={(e) => {
+                  panels.hide(id);
+                  clearInterval(timerIDs[id]);
+                }}
+              />
             </span>
-            <span class="navbar-section">
-              {refreshtime == 0 && (
-                <ButtonImg
-                  xs
-                  m1
-                  nomin="yes"
-                  icon={<RefreshCcw size="0.8rem" />}
-                  onclick={() => {
-                    if (contentCache[id]) contentCache[id] = undefined;
-                    loadContent();
-                  }}
-                />
-              )}
-              <span style="height: 100%;">
-                <button
-                  class="btn btn-clear btn-close m-1"
-                  aria-label="Close"
-                  onclick={(e) => {
-                    panels.hide(id);
-                    clearInterval(timerIDs[id]);
-                  }}
-                />
-              </span>
-            </span>
-          </div>
-          <div
-            class="panel-body panel-body-dashboard"
-            style="margin:0px 0px; padding: 0px 0px"
-          >
-            <MainContent />
-          </div>
-          {parseInt(refreshtime) > 0 && type != "extension" && (
-            <div class="panel-footer">
-              <ControlButtons />
-            </div>
-          )}
+          </span>
         </div>
+        <div
+          class="panel-body panel-body-dashboard"
+          style="margin:0px 0px; padding: 0px 0px"
+        >
+          <MainContent />
+        </div>
+        {parseInt(refreshtime) > 0 && type != "extension" && (
+          <div class="panel-footer">
+            <ControlButtons />
+          </div>
+        )}
       </div>
     );
   }
