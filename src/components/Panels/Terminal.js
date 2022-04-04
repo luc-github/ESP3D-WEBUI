@@ -32,7 +32,7 @@ import { useTargetContext } from "../../targets";
 import { useHttpQueue } from "../../hooks";
 import { espHttpURL } from "../Helpers";
 import { ButtonImg } from "../Controls";
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu } from "./";
 
 /*
  * Local const
@@ -130,7 +130,7 @@ const TerminalPanel = () => {
   const toggleVerboseMode = () => {
     terminal.isVerbose.current = !isVerbose;
     setIsVerbose(!isVerbose);
-  }
+  };
 
   const toggleAutoScroll = () => {
     if (!isAutoScrollPaused) {
@@ -140,108 +140,126 @@ const TerminalPanel = () => {
     terminal.isAutoScrollPaused.current = false;
     setIsAutoScrollPaused(false);
     scrollToBottom();
-  }
+  };
 
   const menu = [
     {
       label: T("S76"),
-      displayToggle: () => <span class="feather-icon-container"> {isVerbose ? (<CheckCircle size="0.8rem" />) : (<Circle size="0.8rem" />)} </span>,
+      displayToggle: () => (
+        <span class="feather-icon-container">
+          {" "}
+          {isVerbose ? (
+            <CheckCircle size="0.8rem" />
+          ) : (
+            <Circle size="0.8rem" />
+          )}{" "}
+        </span>
+      ),
       onClick: toggleVerboseMode,
     },
     {
       label: T("S77"),
-      displayToggle: () => <span class="feather-icon-container">
-        {isAutoScroll ? (isAutoScrollPaused ? (<PauseCircle size="0.8rem" />) : (<CheckCircle size="0.8rem" />)) : (<Circle size="0.8rem" />)}</span>,
+      displayToggle: () => (
+        <span class="feather-icon-container">
+          {isAutoScroll ? (
+            isAutoScrollPaused ? (
+              <PauseCircle size="0.8rem" />
+            ) : (
+              <CheckCircle size="0.8rem" />
+            )
+          ) : (
+            <Circle size="0.8rem" />
+          )}
+        </span>
+      ),
       onClick: toggleAutoScroll,
     },
     { divider: true },
     {
       label: T("S79"),
-      onClick: (e) => { terminal.clear(); },
-      icon: <span class="btn btn-clear" aria-label="Close" />
-    }
-  ]
+      onClick: (e) => {
+        terminal.clear();
+      },
+      icon: <span class="btn btn-clear" aria-label="Close" />,
+    },
+  ];
 
   return (
-    <div className="column col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-3 mb-2">
-      <div class="panel mb-2 panel-dashboard">
-        <div class="navbar">
-          <span class="navbar-section feather-icon-container">
-            <Terminal />
-            <strong class="text-ellipsis">{T("Terminal")}</strong>
+    <div class="panel panel-dashboard">
+      <div class="navbar">
+        <span class="navbar-section feather-icon-container">
+          <Terminal />
+          <strong class="text-ellipsis">{T("Terminal")}</strong>
+        </span>
+        <span class="navbar-section">
+          <span style="height: 100%;">
+            <PanelMenu items={menu} />
+            <span
+              class="btn btn-clear btn-close m-1"
+              aria-label="Close"
+              onclick={(e) => {
+                panels.hide(id);
+              }}
+            />
           </span>
-          <span class="navbar-section">
-            <span style="height: 100%;">
-              <PanelMenu items={menu} />
-              <span
-                class="btn btn-clear btn-close m-1"
-                aria-label="Close"
-                onclick={(e) => {
-                  panels.hide(id);
-                }}
-              />
-            </span>
-          </span>
-        </div>
-        <div class="input-group m-2">
-          <input
-            type="text"
-            class="form-input"
-            onInput={onInput}
-            onkeyup={onKeyUp}
-            ref={inputRef}
-            value={terminal.input.current}
-            placeholder={T("S80")}
-          />
-          <ButtonImg
-            group
-            ltooltip
-            data-tooltip={T("S82")}
-            label={T("S81")}
-            icon={<Send />}
-            onClick={onSend}
-          />
-        </div>
-        <div
-          ref={terminalOutput}
-          class="panel-body panel-body-dashboard terminal m-1"
-          onScroll={(e) => {
-            if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
-              terminal.isAutoScrollPaused.current = true;
-              setIsAutoScrollPaused(true);
+        </span>
+      </div>
+      <div class="input-group m-2">
+        <input
+          type="text"
+          class="form-input"
+          onInput={onInput}
+          onkeyup={onKeyUp}
+          ref={inputRef}
+          value={terminal.input.current}
+          placeholder={T("S80")}
+        />
+        <ButtonImg
+          group
+          ltooltip
+          data-tooltip={T("S82")}
+          label={T("S81")}
+          icon={<Send />}
+          onClick={onSend}
+        />
+      </div>
+      <div
+        ref={terminalOutput}
+        class="panel-body panel-body-dashboard terminal m-1"
+        onScroll={(e) => {
+          if (lastPos > e.target.scrollTop && terminal.isAutoScroll.current) {
+            terminal.isAutoScrollPaused.current = true;
+            setIsAutoScrollPaused(true);
+          }
+          if (
+            terminal.isAutoScrollPaused.current &&
+            Math.abs(
+              e.target.scrollTop + e.target.offsetHeight - e.target.scrollHeight
+            ) < 5
+          ) {
+            terminal.isAutoScrollPaused.current = false;
+            setIsAutoScrollPaused(false);
+          }
+          lastPos = e.target.scrollTop;
+        }}
+      >
+        {terminal.content &&
+          terminal.content.map((line) => {
+            let className = "";
+            switch (line.type) {
+              case "echo":
+                className = "echo";
+                break;
+              case "error":
+                className = "error";
+                break;
+              default:
+              //do nothing
             }
-            if (
-              terminal.isAutoScrollPaused.current &&
-              Math.abs(
-                e.target.scrollTop +
-                e.target.offsetHeight -
-                e.target.scrollHeight
-              ) < 5
-            ) {
-              terminal.isAutoScrollPaused.current = false;
-              setIsAutoScrollPaused(false);
-            }
-            lastPos = e.target.scrollTop;
-          }}
-        >
-          {terminal.content &&
-            terminal.content.map((line) => {
-              let className = "";
-              switch (line.type) {
-                case "echo":
-                  className = "echo";
-                  break;
-                case "error":
-                  className = "error";
-                  break;
-                default:
-                //do nothing
-              }
-              if (isVerbose || isVerbose == line.isverboseOnly)
-                return <pre class={className}>{line.content}</pre>;
-            })}
-          <div ref={messagesEndRef} />
-        </div>
+            if (isVerbose || isVerbose == line.isverboseOnly)
+              return <pre class={className}>{line.content}</pre>;
+          })}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );
