@@ -1,5 +1,4 @@
-import { Fragment, h } from "preact";
-import { MoreVertical as MoreVerticalIcon } from 'preact-feather';
+import { h } from "preact";
 import { ChevronDown } from "preact-feather";
 
 const Menu = ({ items }) => {
