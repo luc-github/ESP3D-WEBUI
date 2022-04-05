@@ -18,14 +18,14 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { EmergencyButton } from "../Controls";
+import { EmergencyButton } from "../../Controls";
 
-const DashboardButtonsBar = () => {
+const QuickButtonsBar = () => {
   return (
-    <div class="dashboard-buttons-bar">
+    <div class="quick-buttons-bar">
       <EmergencyButton />
     </div>
   );
 };
 
-export { DashboardButtonsBar };
+export { QuickButtonsBar };

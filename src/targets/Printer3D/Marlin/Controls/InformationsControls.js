@@ -1,8 +1,8 @@
 /*
- informations.js - ESP3D WebUI Informations file
+ Informations.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
- 
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -17,17 +17,20 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { InformationsControls, QuickButtonsBar } from "../targets";
-const Informations = () => {
+import { Fragment, h } from "preact";
+import { PositionsControls } from "../../../../components/Panels/Jog";
+import { TemperaturesControls } from "../../../../components/Panels/Temperatures";
+import { useUiContextFn } from "../../../../contexts";
+
+const InformationsControls = () => {
   return (
-    <div id="infopage" class="container m-2">
-      <InformationsControls />
-      <div class="information-buttons-bar m-2">
-        <QuickButtonsBar />
-      </div>
-    </div>
+    <Fragment>
+      {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
+      {useUiContextFn.getValue("showtemperaturespanel") && (
+        <TemperaturesControls />
+      )}
+    </Fragment>
   );
 };
 
-export { Informations };
+export { InformationsControls };

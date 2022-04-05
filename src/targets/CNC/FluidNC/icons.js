@@ -40,33 +40,6 @@ const Fan = ({ height = "1.2em" }) => (
 );
 
 /*
- *bed icon
- * default height is 1.2em
- */
-const Bed = ({ height = "1.2em" }) => (
-  <svg height={height} viewBox="0 0 180 140">
-    <g>
-      <path
-        style="fill:currentColor;stroke:#ffffff;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="m 7.59,115 c 49.61,0 99.41,0 148.41,0 10,1 10,17 1,19 -50,0 -99.6,0 -149.41,0 -11.05,0 -10.88,-19 0,-19 0,0 0,0 0,0"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="M 40.4,4.85 C 49.4,17.9 56.2,35 50.7,50.9 46.6,63.4 38.2,76 42,89.7 c 1.3,5.1 3.6,9.9 6.8,14.3"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="M 75.5,4.85 C 85,17.7 91.3,35 85.8,50.9 82.1,63.5 73.7,76 77.6,89.7 78.4,95 81,99.8 84.5,104"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="m 111,4.7 c 5,8.2 10,17.2 11,27.1 2,7.7 0,15.7 -3,22.7 -4,10.9 -9,22.8 -6,34.8 1,6 3,10 7,14.7"
-      />
-    </g>
-  </svg>
-);
-
-/*
  *feedrate icon
  * default height is 1.2m
  */
@@ -104,24 +77,10 @@ const FlowRate = ({ height = "1.0em" }) => (
   </svg>
 );
 
-/*
- *extruder icon
- * default height is 1.2m
- */
-const Extruder = ({ height = "1.2em" }) => (
-  <svg height={height} viewBox="-6 0 32 26.5">
-    <path
-      d="M6.05 1.1C10.35 1.1 14.45 1.1 18.65 1.1C19.65 1.1 19.85 2.77 19.85 4.07C19.85 5.57 18.85 5.87 18.05 5.87C14.05 5.87 10.05 5.87 6.05 5.87C5.15 5.87 4.95 4.17 5.05 3.07C5.05 1.91 5.55 1.1 6.05 1.1C6.05 1.1 6.05 1.1 6.05 1.1M5.65 8.27C9.95 8.27 14.35 8.27 18.75 8.27C19.75 8.27 19.95 10.57 19.75 11.97C19.35 13.47 18.35 12.97 17.55 12.97C13.55 12.97 9.65 12.97 5.65 12.97C4.65 13.07 4.45 10.87 4.75 9.47C4.85 8.77 5.25 8.27 5.65 8.27C5.65 8.27 5.65 8.27 5.65 8.27M6.25 15.67C10.35 15.67 14.35 15.67 18.35 15.67C19.45 15.67 19.75 16.47 19.55 17.17C19.55 17.97 19.55 18.87 19.55 19.57C19.35 20.37 18.35 20.47 17.65 20.37C13.85 20.37 10.05 20.37 6.25 20.37C5.25 20.37 4.95 19.47 5.05 18.87C5.05 18.07 5.05 17.27 5.05 16.37C5.15 15.97 5.65 15.67 6.25 15.67C6.25 15.67 6.25 15.67 6.25 15.67M7.35 20.37C9.15 18.57 10.95 16.77 12.75 14.87C14.45 16.77 16.05 18.57 17.65 20.37C15.95 22.17 14.15 23.97 12.25 25.67C10.65 23.97 9.05 22.17 7.35 20.37C7.35 20.37 7.35 20.37 7.35 20.37M9.85 1.25C11.55 1.25 13.55 1.25 15.35 1.25C16.35 1.43 16.95 2.47 16.85 3.37C16.85 7.77 16.85 12.07 16.85 16.47C16.75 17.57 15.55 18.27 14.45 18.17C12.75 18.17 11.15 18.17 9.45 18.07C8.35 17.97 7.75 16.97 7.95 15.87C7.95 11.57 7.95 7.17 7.95 2.77C8.05 1.96 8.85 1.23 9.85 1.25C9.85 1.25 9.85 1.25 9.85 1.25"
-      style="fill:currentColor;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-    />
-  </svg>
-);
 const iconsTarget = {
   Fan: <Fan />,
-  Bed: <Bed />,
   FeedRate: <FeedRate />,
   FlowRate: <FlowRate />,
-  Extruder: <Extruder />,
 };
 
-export { Fan, Bed, FeedRate, FlowRate, Extruder, iconsTarget };
+export { Fan, FeedRate, FlowRate, iconsTarget };

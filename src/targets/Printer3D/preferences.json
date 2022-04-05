@@ -43,6 +43,14 @@
           "depend":[{"id":"showextruderctrls", "value":true}]
         },
         {
+          "id": "heatextruder",
+          "type": "text",
+          "label": "P91",
+          "value": "M104 S$ T#",
+          "help": "P94",
+          "depend":[{"id":"showextruderctrls", "value":true}]
+        },
+        {
           "id": "showbedctrls",
           "type": "boolean",
           "label": "P83",
@@ -67,6 +75,14 @@
           "depend":[{"id":"showbedctrls", "value":true}]
         },
         {
+          "id": "heatbed",
+          "type": "text",
+          "label": "P92",
+          "value": "M140 S$",
+          "help": "P94",
+          "depend":[{"id":"showbedctrls", "value":true}]
+        },
+        {
           "id": "showchamberctrls",
           "type": "boolean",
           "label": "P84",
@@ -87,6 +103,14 @@
           "append": "P72",
           "value": "50;90;110",
           "help": "S97",
+          "depend":[{"id":"showchamberctrls", "value":true}]
+        },
+        {
+          "id": "heatchamber",
+          "type": "text",
+          "label": "P93",
+          "value": "M141 S$",
+          "help": "P94",
           "depend":[{"id":"showchamberctrls", "value":true}]
         },
         {

@@ -1,5 +1,13 @@
 {
   "settings": {
+    "general":[
+      {
+        "id": "emergencystop",
+        "type": "text",
+        "label": "P15",
+        "value": "M112"
+      }
+    ],
     "polling": [
       {
         "id": "pollingcommands",
@@ -23,12 +31,6 @@
         "type": "text",
         "label": "P13",
         "value": "M84"
-      },
-      {
-        "id": "emergencystop",
-        "type": "text",
-        "label": "P15",
-        "value": "M112"
       }
     ],
     "files":[ 

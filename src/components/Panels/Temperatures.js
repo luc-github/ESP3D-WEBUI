@@ -19,18 +19,12 @@ Temperatures.js - ESP3D WebUI component file
 import { Fragment, h } from "preact";
 import { T } from "../Translations";
 import { useUiContext, useUiContextFn } from "../../contexts";
-import { useEffect, useState, useRef } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { ButtonImg, Loading, Field } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { Thermometer, Flag, Power, Send } from "preact-feather";
-import {
-  iconsTarget,
-  useTargetContextFn,
-  useTargetContext,
-} from "../../targets";
-
-let temp_value = 0;
+import { Thermometer, Power, Send } from "preact-feather";
+import { useTargetContext } from "../../targets";
 
 /*
  * Local const
@@ -61,6 +55,17 @@ const isVisible = (tool) => {
   return setting[tool] != undefined
     ? useUiContextFn.getValue(setting[tool])
     : false;
+};
+
+const heaterCommand = (tool, index, value) => {
+  if (tool == "T" || tool == "B" || tool == "C") {
+    const cmd = useUiContextFn.getValue(
+      tool == "T" ? "heatextruder" : tool == "B" ? "heatbed" : "heatchamber"
+    );
+    if (cmd)
+      return cmd.replace("#", index).replace("$", value).replace(";", "\n");
+  }
+  return "";
 };
 
 const sensorName = (tool, index, size) => {
@@ -108,6 +113,21 @@ const TemperaturesControls = () => {
 };
 
 const TemperatureInputControl = ({ tool, index, size }) => {
+  const { toasts } = useUiContext();
+  const { createNewRequest } = useHttpFn;
+  const sendCommand = (command) => {
+    createNewRequest(
+      espHttpURL("command", { cmd: command }).toString(),
+      { method: "GET", echo: command },
+      {
+        onSuccess: (result) => {},
+        onFail: (error) => {
+          toasts.addToast({ content: error, type: "error" });
+          console.log(error);
+        },
+      }
+    );
+  };
   //we won't handle modified state just handle error
   //too many user cases where changing value to show button is not suitable
   const [validation, setvalidation] = useState({
@@ -167,6 +187,7 @@ const TemperatureInputControl = ({ tool, index, size }) => {
         onClick={(e) => {
           e.target.blur();
           console.log("Stop heating ", tool, index);
+          sendCommand(heaterCommand(tool, index, 0));
         }}
       />
       <div>
@@ -197,6 +218,9 @@ const TemperatureInputControl = ({ tool, index, size }) => {
         onClick={(e) => {
           e.target.blur();
           console.log("Set temperature for ", tool, index);
+          sendCommand(
+            heaterCommand(tool, index, target_temperatures[tool][index].current)
+          );
         }}
       />
     </div>
@@ -204,26 +228,10 @@ const TemperatureInputControl = ({ tool, index, size }) => {
 };
 
 const TemperaturesPanel = () => {
-  const { panels, uisettings } = useUiContext();
+  const { panels } = useUiContext();
   const { temperatures } = useTargetContext();
-  const { createNewRequest } = useHttpFn;
   const id = "temperaturesPanel";
   console.log(id);
-  const sendCommand = (cmd) => {
-    createNewRequest(
-      espHttpURL("command", { cmd }).toString(),
-      { method: "GET", echo: cmd },
-      {
-        onSuccess: (result) => {
-          processData("response", result);
-        },
-        onFail: (error) => {
-          console.log(error);
-          processData("error", error);
-        },
-      }
-    );
-  };
 
   let hasTemp = false;
   Object.keys(temperatures).forEach((tool) => {

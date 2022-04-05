@@ -1,8 +1,8 @@
 /*
- informations.js - ESP3D WebUI Informations file
+ index.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
- 
+
  This code is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
@@ -18,16 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { InformationsControls, QuickButtonsBar } from "../targets";
-const Informations = () => {
-  return (
-    <div id="infopage" class="container m-2">
-      <InformationsControls />
-      <div class="information-buttons-bar m-2">
-        <QuickButtonsBar />
-      </div>
-    </div>
-  );
-};
+import { QuickButtonsBar } from "./QuickButtonsBar";
+import { InformationsControls } from "./InformationsControls";
 
-export { Informations };
+export { QuickButtonsBar, InformationsControls };

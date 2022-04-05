@@ -26,6 +26,12 @@ import {
 import { useDatasContext } from "../../../contexts";
 import { processor } from "./processor";
 import { isVerboseOnly } from "./stream";
+import {
+  isTemperatures,
+  getTemperatures,
+  isPositions,
+  getPositions,
+} from "./filters";
 
 /*
  * Local const
@@ -36,10 +42,24 @@ const useTargetContext = () => useContext(TargetContext);
 const useTargetContextFn = {};
 
 const TargetContextProvider = ({ children }) => {
+  //format is x:value, y:value, z:value
   const [positions, setPositions] = useState({
     x: "?",
     y: "?",
     z: "?",
+  });
+
+  //format tool:["0":{current:xxx target:xxx}, "1":{current:xxx target:xxx}, ...]
+  //index is same as printer
+  //Cooler: [], //0->1 is only for laser so out of scope
+  const [temperatures, setTemperaturess] = useState({
+    T: [], //0->8 T0->T8 Extruders
+    R: [], //0->1 R Redondant
+    B: [], //0->1 B Bed
+    C: [], //0->1  Chamber
+    P: [], //0->1 Probe
+    M: [], //0->1 M Board
+    L: [], //0->1 L is only for laser so should beout of scope
   });
 
   const { terminal } = useDatasContext();
@@ -54,23 +74,20 @@ const TargetContextProvider = ({ children }) => {
   const dispatchInternally = (type, data) => {
     //files
     processor.handle(type, data);
-    //temperature
-    if (type === "stream") {
-      //console.log("stream", data);
-    }
     //sensors
-    //positions
+
     if (type === "stream") {
-      //format is : "X:-50.00 Y:127.00 Z:145.00 E:0.00 Count X: 0 Y:10160 Z:116000"
-      let regex_position =
-        /X:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*Y:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*Z:\s*([+,-]?[0-9]*\.?[0-9]+)?\s*E/;
-      let result = null;
-      if ((result = regex_position.exec(data)) !== null) {
-        setPositions({ x: result[1], y: result[2], z: result[3] });
+      if (isTemperatures(data)) {
+        const t = getTemperatures(data);
+        setTemperaturess(t);
+      } else if (isPositions(data)) {
+        const p = getPositions(data);
+        setPositions(p);
       }
     }
     //etc...
   };
+
   const processData = (type, data) => {
     if (data.length > 0) {
       if (type == "stream") {
@@ -155,6 +172,7 @@ const TargetContextProvider = ({ children }) => {
 
   const store = {
     positions,
+    temperatures,
     processData,
   };
 

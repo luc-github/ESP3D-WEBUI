@@ -14,9 +14,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import LangRessourceSubTarget from "SubTargetDir/Translations/en.json";
-import LangRessourceTarget from "TargetDir/Translations/en.json";
-import LangRessourceBase from "TargetDir/../Translations/en.json";
+import LangRessourceSubTarget from "SubTargetDir/translations/en.json";
+import LangRessourceTarget from "TargetDir/translations/en.json";
+import LangRessourceBase from "TargetDir/../translations/en.json";
 import listLanguagePacks from "./languages.json";
 
 /*

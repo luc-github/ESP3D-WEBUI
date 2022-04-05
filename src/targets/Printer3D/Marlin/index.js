@@ -23,8 +23,7 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
-import { InformationsControls } from "./InformationsControls";
-import { DashboardButtonsBar } from "./DashboardButtonsBar";
+import { InformationsControls, QuickButtonsBar } from "./Controls";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -58,5 +57,5 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
-  DashboardButtonsBar,
+  QuickButtonsBar,
 };

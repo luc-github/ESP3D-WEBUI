@@ -40,33 +40,6 @@ const Fan = ({ height = "1.2em" }) => (
 );
 
 /*
- *bed icon
- * default height is 1.2em
- */
-const Bed = ({ height = "1.2em" }) => (
-  <svg height={height} viewBox="0 0 180 140">
-    <g>
-      <path
-        style="fill:currentColor;stroke:#ffffff;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="m 7.59,115 c 49.61,0 99.41,0 148.41,0 10,1 10,17 1,19 -50,0 -99.6,0 -149.41,0 -11.05,0 -10.88,-19 0,-19 0,0 0,0 0,0"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="M 40.4,4.85 C 49.4,17.9 56.2,35 50.7,50.9 46.6,63.4 38.2,76 42,89.7 c 1.3,5.1 3.6,9.9 6.8,14.3"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="M 75.5,4.85 C 85,17.7 91.3,35 85.8,50.9 82.1,63.5 73.7,76 77.6,89.7 78.4,95 81,99.8 84.5,104"
-      />
-      <path
-        style="fill:none;stroke:currentColor;stroke-width:12;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-        d="m 111,4.7 c 5,8.2 10,17.2 11,27.1 2,7.7 0,15.7 -3,22.7 -4,10.9 -9,22.8 -6,34.8 1,6 3,10 7,14.7"
-      />
-    </g>
-  </svg>
-);
-
-/*
  *feedrate icon
  * default height is 1.2m
  */
@@ -118,10 +91,9 @@ const Extruder = ({ height = "1.2em" }) => (
 );
 const iconsTarget = {
   Fan: <Fan />,
-  Bed: <Bed />,
   FeedRate: <FeedRate />,
   FlowRate: <FlowRate />,
   Extruder: <Extruder />,
 };
 
-export { Fan, Bed, FeedRate, FlowRate, Extruder, iconsTarget };
+export { Fan, FeedRate, FlowRate, Extruder, iconsTarget };

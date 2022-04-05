@@ -18,9 +18,9 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact";
-import { PositionsControls } from "../../../components/Panels/Jog";
-import { TemperaturesControls } from "../../../components/Panels/Temperatures";
-import { useUiContextFn } from "../../../contexts";
+import { PositionsControls } from "../../../../components/Panels/Jog";
+import { TemperaturesControls } from "../../../../components/Panels/Temperatures";
+import { useUiContextFn } from "../../../../contexts";
 
 const InformationsControls = () => {
   return (
