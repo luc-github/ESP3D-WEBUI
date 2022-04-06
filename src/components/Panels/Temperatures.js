@@ -173,6 +173,7 @@ const TemperatureInputControl = ({ tool, index, size }) => {
     target_temperatures[tool][index] = {
       current: 0,
       max: max > 0 ? max : null,
+      stopcmd: heaterCommand(tool, index, 0),
     };
 
   return (
@@ -181,22 +182,23 @@ const TemperatureInputControl = ({ tool, index, size }) => {
       <ButtonImg
         id={"btn-stop-" + tool + index}
         class="temperature-ctrl-stop m-1"
-        icon={<Power color="red" />}
+        icon={<Power />}
         tooltip
         data-tooltip={T("P38")}
         onClick={(e) => {
           e.target.blur();
           console.log("Stop heating ", tool, index);
-          sendCommand(heaterCommand(tool, index, 0));
+          sendCommand(target_temperatures[tool][index].stopcmd);
         }}
       />
+      <div class="m-1" />
       <div>
         <Field
           id={"input-" + tool + index}
           type="number"
           value={target_temperatures[tool][index].current}
           min="0"
-          step="0.1"
+          step="0.5"
           max={max > 0 ? max : null}
           width="5rem"
           extra="dropList"
@@ -230,9 +232,22 @@ const TemperatureInputControl = ({ tool, index, size }) => {
 const TemperaturesPanel = () => {
   const { panels } = useUiContext();
   const { temperatures } = useTargetContext();
+  const { createNewRequest } = useHttpFn;
+  const sendCommand = (command) => {
+    createNewRequest(
+      espHttpURL("command", { cmd: command }).toString(),
+      { method: "GET", echo: command },
+      {
+        onSuccess: (result) => {},
+        onFail: (error) => {
+          toasts.addToast({ content: error, type: "error" });
+          console.log(error);
+        },
+      }
+    );
+  };
   const id = "temperaturesPanel";
   console.log(id);
-
   let hasTemp = false;
   Object.keys(temperatures).forEach((tool) => {
     if (temperatures[tool].length != 0) hasTemp = true;
@@ -281,6 +296,26 @@ const TemperaturesPanel = () => {
                 </Fragment>
               );
             })}
+            <div class="temperature-extra-buttons-container">
+              <ButtonImg
+                id="stop-all"
+                icon={<Power />}
+                label={T("P40")}
+                tooltip
+                data-tooltip={T("P38")}
+                onClick={(e) => {
+                  e.target.blur();
+                  console.log("Stop all temperatures");
+                  Object.keys(target_temperatures).forEach((tool) => {
+                    if (target_temperatures[tool].length == 0) return;
+                    target_temperatures[tool].forEach((temp, index) => {
+                      sendCommand(temp.stopcmd);
+                    });
+                  });
+                }}
+              />
+            </div>
+            <div class="m-2" />
           </Fragment>
         )}
         {!hasTemp && (
