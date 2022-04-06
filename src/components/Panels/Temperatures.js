@@ -112,7 +112,7 @@ const TemperaturesControls = () => {
                   )}
                 >
                   <div class="temperatures-header">
-                    {tool == "T" ? "E" : tool}
+                    {tool}
                     {temperatures[tool].length > 1 ? index : ""}
                   </div>
                   <div class="temperatures-value">{temp.current}</div>

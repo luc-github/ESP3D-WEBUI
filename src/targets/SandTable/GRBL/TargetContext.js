@@ -71,7 +71,9 @@ const TargetContextProvider = ({ children }) => {
           try {
             const mpos_array = result[0].split(":")[1].split("|")[0].split(",");
             const precision = mpos_array[0].split(".")[1].length;
-            const pos = mpos_array.map((e) => parseFloat(e).toFixed(precision));
+            const pos = mpos_array.map((e) =>
+              parseFloat(e).toFixed(precision).toString()
+            );
 
             //Work coordinates
             if ((result = WCO_pattern.exec(data)) !== null) {
@@ -81,7 +83,9 @@ const TargetContextProvider = ({ children }) => {
                   .split("|")[0]
                   .split(",");
                 wpos = wpos_array.map((e, index) =>
-                  (pos[index] - parseFloat(e)).toFixed(precision)
+                  (parseFloat(pos[index]) - parseFloat(e))
+                    .toFixed(precision)
+                    .toString()
                 );
               } catch (e) {
                 console.error(e);

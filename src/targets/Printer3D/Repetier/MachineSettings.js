@@ -51,10 +51,10 @@ machineSetting.totalToSave = 0;
 const MachineSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [collected, setCollected] = useState("0 B");
-  const [showSave, setShowSave] = useState(false);
-  const progressBar = {};
   const { createNewRequest, abortRequest } = useHttpFn;
   const { modals, toasts, uisettings } = useUiContext();
+  const [showSave, setShowSave] = useState(false);
+  const progressBar = {};
   const id = "Machine Tab";
   const sendSerialCmd = (cmd, updateUI) => {
     createNewRequest(

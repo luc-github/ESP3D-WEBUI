@@ -23,7 +23,7 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
-import { InformationsControls } from "./InformationsControls";
+import { InformationsControls, QuickButtonsBar } from "./Controls";
 import { AppLogo as WebUILogo } from "../../../components/Images/logo";
 import { AppLogo } from "./logo";
 import {
@@ -59,4 +59,5 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
+  QuickButtonsBar,
 };

@@ -23,15 +23,15 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
-import { InformationsControls } from "./InformationsControls";
+import { InformationsControls, QuickButtonsBar } from "./Controls";
+import { AppLogo } from "../../../components/Images/logo";
+import { Eye as WebUILogo } from "preact-feather";
 import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
 import realCommandsTable from "./realCommandsTable";
-import { AppLogo } from "../../../components/Images/logo";
-import { Eye as WebUILogo } from "preact-feather";
 
 const Target = "GRBL";
 const webUIbuild = "GS2";
@@ -59,4 +59,5 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
+  QuickButtonsBar,
 };

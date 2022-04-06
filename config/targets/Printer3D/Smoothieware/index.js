@@ -39,23 +39,7 @@ function Temperatures() {
   let T = Number(Math.floor(Math.random() * 215).toFixed(2));
   let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
   let B = Number(Math.floor(Math.random() * 45).toFixed(2));
-  return (
-    "ok T:" +
-    T +
-    " /200 R:" +
-    (T * 1.1).toFixed(2) +
-    " /200 B:" +
-    B +
-    " / 0 B1:" +
-    T +
-    " / 0 P:" +
-    (B * 1.3).toFixed(2) +
-    " / 0 C:" +
-    B * 2 +
-    " / 0 T1:" +
-    T1 +
-    " / 0 @1:0\n"
-  );
+  return "ok T:" + T + " /200 @255 B:" + B + " /0 @0 T1:" + T1 + " /0 @0\n";
 }
 
 const commandsQuery = (req, res, SendWS) => {

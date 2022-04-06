@@ -35,28 +35,6 @@ function hasEnabledAuthentication() {
   return enableAuthentication;
 }
 
-function sendTemperatures() {
-  let T = Number(Math.floor(Math.random() * 215).toFixed(2));
-  let T1 = Number(Math.floor(Math.random() * 215).toFixed(2));
-  let B = Number(Math.floor(Math.random() * 45).toFixed(2));
-  return (
-    "ok T:" +
-    T +
-    " /200 R:" +
-    (T * 1.1).toFixed(2) +
-    " /200 B:" +
-    B +
-    " / 0 B1:" +
-    T +
-    " / 0 P:" +
-    (B * 1.3).toFixed(2) +
-    " / 0 C:" +
-    B * 2 +
-    " / 0 T1:" +
-    T1 +
-    " / 0 @1:0\n"
-  );
-}
 
 const commandsQuery = (req, res, SendWS) => {
   let url = req.query.cmd ? req.query.cmd : req.originalUrl;
@@ -76,6 +54,16 @@ const commandsQuery = (req, res, SendWS) => {
     return;
   }
   lastconnection = Date.now();
+
+  if (url.indexOf("M114") != -1) {
+    let X = Number(Math.random() * 200.12).toFixed(2);
+    let Y = Number(Math.random() * 200.12).toFixed(2);
+    let Z = Number(Math.random() * 200.12).toFixed(2);
+    SendWS(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`);
+    res.send("");
+    return;
+  }
+
   if (url.indexOf("M20") != -1) {
     SendWS(
       "Begin file list\n" +
@@ -184,7 +172,7 @@ const commandsQuery = (req, res, SendWS) => {
   }
 
   if (url.indexOf("M105") != -1) {
-    SendWS(sendTemperatures());
+    SendWS(Temperatures());
     res.send("");
     return;
   }
@@ -198,7 +186,7 @@ const commandsQuery = (req, res, SendWS) => {
         FWTarget: "marlin",
         FWTargetID: "40",
         Setup: "Enabled",
-        SDConnection: "shared",
+        SDConnection: "none",
         SerialProtocol: "Socket",
         Authentication: "Disabled",
         WebCommunication: "Synchronous",
@@ -620,7 +608,7 @@ const configURI = (req, res) => {
       "mac: 80:7D:3A:C4:4E:DD<br/>" +
       "serial: ON<br/>" +
       "notification: OFF<br/>" +
-      "Target Fw: repetier<br/>" +
+      "Target Fw: marlin<br/>" +
       "FW ver: 3.0.0.a91<br/>" +
       "FW arch: ESP32 "
   );

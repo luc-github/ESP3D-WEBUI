@@ -44,11 +44,11 @@ function Temperatures() {
     T +
     " /200 B:" +
     B +
-    " / 0 B@:0 @:0 T0:" +
+    " /0 T0:" +
     T +
-    " / 0 @0:0 T1:" +
+    " /200 T1:" +
     T1 +
-    " / 0 @1:0\nok\n"
+    " /0 T1@:0 B@:0 @:255\nok\n"
   );
 }
 
@@ -299,7 +299,7 @@ const commandsQuery = (req, res, SendWS) => {
         WebCommunication: "Synchronous",
         WebSocketIP: "localhost",
         WebSocketPort: "81",
-        Hostname: "marlinesp3d",
+        Hostname: "esp3d",
         WiFiMode: "STA",
         WebUpdate: "Enabled",
         FileSystem: "LittleFS",
