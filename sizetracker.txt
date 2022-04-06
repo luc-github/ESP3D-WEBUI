@@ -14,4 +14,5 @@ File panel                  : 3.0.0.a.13    : 53.3KB	    |	     | 53.9KB + 3.2KB
 Code Refactoring	    : 3.0.0.a.14    : 53.0KB	    |	     | 53.9KB + 3.2KB = 57.1KB
 Machine Settings + Audio    : 3.0.0.a.15    : 54.7KB	    |	     | 57.1KB + 3.7KB = 58.8KB
 Machine Settings(1 btn save): 3.0.0.a.16    : 55.0KB        |        | 58.8KB
-Jog Panel		    : 3.0.0.a.17    : 61.2 KB	    |        | 58.8KB+9.4KB = 68.1KB	
+Jog Panel		    : 3.0.0.a.17    : 61.2 KB	    |        | 58.8KB+9.4KB = 68.1KB
+Temperature Panel + notifications	    :		 68.6KB	  :	    |      68.1 + 4.1 + 4.6= 76.8KB  | 
