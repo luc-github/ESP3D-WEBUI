@@ -126,6 +126,7 @@ path.std:hover {
   width: 100%;
 }
 
+.temperatures-container,
 .jog-container {
   display: flex;
   height: 100%;
@@ -232,6 +233,7 @@ path.std:hover {
 }
 
 .temperature-ctrls-container {
+  width: 100%;
   display: flex;
   justify-content: justify-content;
   align-items: center;

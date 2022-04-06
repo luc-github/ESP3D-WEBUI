@@ -273,7 +273,7 @@ const TemperaturesPanel = () => {
       </div>
       <div class="panel-body panel-body-dashboard">
         {hasTemp && (
-          <Fragment>
+          <div class="temperatures-container">
             <TemperaturesControls />
             {Object.keys(temperatures).map((tool) => {
               if (
@@ -296,7 +296,7 @@ const TemperaturesPanel = () => {
                 </Fragment>
               );
             })}
-            <div class="temperature-extra-buttons-container">
+            <div class="temperature-extra-buttons-container m-2">
               <ButtonImg
                 id="stop-all"
                 icon={<Power />}
@@ -315,8 +315,7 @@ const TemperaturesPanel = () => {
                 }}
               />
             </div>
-            <div class="m-2" />
-          </Fragment>
+          </div>
         )}
         {!hasTemp && (
           <div class="loading-panel">
