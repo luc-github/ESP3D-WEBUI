@@ -57,6 +57,23 @@ const isVisible = (tool) => {
     : false;
 };
 
+const preheatList = (tool) => {
+  if (tool == "T" || tool == "B" || tool == "C") {
+    const list = useUiContextFn.getValue(
+      tool == "T"
+        ? "extruderpreheat"
+        : tool == "B"
+        ? "bedpreheat"
+        : "chamberpreheat"
+    );
+    if (list)
+      return list.split(";").map((item) => {
+        return { display: item + T("P72"), value: item };
+      });
+  }
+  return "";
+};
+
 const heaterCommand = (tool, index, value) => {
   if (tool == "T" || tool == "B" || tool == "C") {
     const cmd = useUiContextFn.getValue(
@@ -175,7 +192,6 @@ const TemperatureInputControl = ({ tool, index, size }) => {
       max: max > 0 ? max : null,
       stopcmd: heaterCommand(tool, index, 0),
     };
-
   return (
     <div class="temperature-ctrls-container m-1">
       <div class="temperature-ctrl-name">{sensorName(tool, index, size)}</div>
@@ -187,7 +203,6 @@ const TemperatureInputControl = ({ tool, index, size }) => {
         data-tooltip={T("P38")}
         onClick={(e) => {
           e.target.blur();
-          console.log("Stop heating ", tool, index);
           sendCommand(target_temperatures[tool][index].stopcmd);
         }}
       />
@@ -202,6 +217,7 @@ const TemperatureInputControl = ({ tool, index, size }) => {
           max={max > 0 ? max : null}
           width="5rem"
           extra="dropList"
+          options={preheatList(tool)}
           setValue={(val, update) => {
             if (!update) target_temperatures[tool][index].current = val;
             setvalidation(generateValidation(tool, index));
@@ -219,7 +235,6 @@ const TemperatureInputControl = ({ tool, index, size }) => {
         data-tooltip={T("S43")}
         onClick={(e) => {
           e.target.blur();
-          console.log("Set temperature for ", tool, index);
           sendCommand(
             heaterCommand(tool, index, target_temperatures[tool][index].current)
           );
@@ -305,7 +320,6 @@ const TemperaturesPanel = () => {
                 data-tooltip={T("P38")}
                 onClick={(e) => {
                   e.target.blur();
-                  console.log("Stop all temperatures");
                   Object.keys(target_temperatures).forEach((tool) => {
                     if (target_temperatures[tool].length == 0) return;
                     target_temperatures[tool].forEach((temp, index) => {

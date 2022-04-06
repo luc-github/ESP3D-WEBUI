@@ -40,6 +40,20 @@
   height: 100%;
 }
 
+.selection-list {
+  list-style-type: none;
+}
+
+.item-selection-list {
+  cursor: pointer;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.item-selection-list:hover {
+  background-color: #f1f1fc;
+}
+
 .files-list {
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;

@@ -538,7 +538,7 @@ const FilesPanel = () => {
       const capabilities = ["CreateDir", "Upload"].filter((cap) =>
         files.capability(currentFS, cap)
       );
-      console.log("capabilities", capabilities);
+
       return rawMenuItems.filter((item) => {
         if (item.capability) return capabilities.includes(item.capability);
         if (item.divider && capabilities.length <= 0) return false;
