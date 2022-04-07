@@ -19,26 +19,20 @@ exportHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-function exportFeatures(features) {
-  const strippedFeature = {};
-  const filename = "export.json";
-  Object.keys(features).map((sectionId) => {
-    const section = features[sectionId];
-    strippedFeature[sectionId] = {};
-    Object.keys(section).map((subsectionId) => {
-      const subsection = section[subsectionId];
-      strippedFeature[sectionId][subsectionId] = [];
-      Object.keys(subsection).map((entryId) => {
-        const entry = subsection[entryId];
-        strippedFeature[sectionId][subsectionId].push({
-          id: entry.id,
-          label: entry.label,
-          value: entry.initial,
-        });
-      });
-    });
-  });
+function filterProperties(rawFeatures) {
+  return Object.keys(rawFeatures).reduce((acc, categoryName) => {
+    const category = rawFeatures[categoryName];
+    const subCategories = Object.keys(category).reduce((acc, subCatName) => {
+      const subCatSettings = category[subCatName].map(({ id, label, initial }) => ({ id, label, value: initial }))
+      return { ...acc, [subCatName]: subCatSettings };
+    }, {});
+    return { ...acc, [categoryName]: subCategories };
+  }, {});
+}
 
+function exportFeatures(features) {
+  const strippedFeature = filterProperties(features);
+  const filename = "export.json";
   const file = new Blob([JSON.stringify(strippedFeature, null, " ")], {
     type: "application/json",
   });
