@@ -22,16 +22,11 @@ exportHelper.js - ESP3D WebUI helper file
 function filterProperties(rawFeatures) {
   return Object.keys(rawFeatures).reduce((acc, categoryName) => {
     const category = rawFeatures[categoryName];
-    const subCategories = Object.keys(category).reduce((acc, subCategoryName) => {
-      const subCategorySettings = category[subCategoryName].map(setting => ({
-        id: setting.id,
-        label: setting.label,
-        value: setting.initial,
-      })
-      )
-      return { ...acc, [subCategoryName]: subCategorySettings };
+    const subCategories = Object.keys(category).reduce((acc, subCatName) => {
+      const subCatSettings = category[subCatName].map(({ id, label, initial }) => ({ id, label, value: initial }))
+      return { ...acc, [subCatName]: subCatSettings };
     }, {});
-    return { ...acc, [categoryName]: subCategories }
+    return { ...acc, [categoryName]: subCategories };
   }, {});
 }
 
