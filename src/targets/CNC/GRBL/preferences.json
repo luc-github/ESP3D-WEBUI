@@ -1,5 +1,13 @@
 {
   "settings": {
+    "general":[
+      {
+        "id": "emergencystop",
+        "type": "text",
+        "label": "P15",
+        "value": "#SAFETYDOOR#"
+      }
+    ],
     "polling": [
       {
         "id": "pollingcommands",

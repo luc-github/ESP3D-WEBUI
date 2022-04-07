@@ -5,7 +5,7 @@
         "id": "emergencystop",
         "type": "text",
         "label": "P15",
-        "value": "M112"
+        "value": "#SAFETYDOOR#"
       }
     ],
     "polling": [
