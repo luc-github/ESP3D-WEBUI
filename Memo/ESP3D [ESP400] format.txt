@@ -50,7 +50,6 @@ ESP3D [ESP400] format:
 {"F":"service/notification","P":"855","T":"S","V":" ","S":"127","H":"ts","M":"0"},
 {"F":"system/system","P":"461","T":"B","V":"40","H":"targetfw","O":[{"repetier":"50"},
 {"marlin":"20"},
-{"marlinkimbra":"35"},
 {"smoothieware":"40"},
 {"grbl":"10"},
 {"unknown":"0"}]},

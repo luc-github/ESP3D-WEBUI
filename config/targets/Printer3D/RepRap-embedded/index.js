@@ -527,7 +527,6 @@ const commandsQuery = (req, res, SendWS) => {
           O: [
             { repetier: "50" },
             { marlin: "20" },
-            { marlinkimbra: "35" },
             { smoothieware: "40" },
             { grbl: "10" },
             { unknown: "0" },

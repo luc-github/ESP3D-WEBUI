@@ -52,7 +52,7 @@ const TargetContextProvider = ({ children }) => {
   //format tool:["0":{current:xxx target:xxx}, "1":{current:xxx target:xxx}, ...]
   //index is same as printer
   //Cooler: [], //0->1 is only for laser so out of scope
-  const [temperatures, setTemperaturess] = useState({
+  const [temperatures, setTemperatures] = useState({
     T: [], //0->8 T0->T8 Extruders
     R: [], //0->1 R Redondant
     B: [], //0->1 B Bed
@@ -79,7 +79,8 @@ const TargetContextProvider = ({ children }) => {
     if (type === "stream") {
       if (isTemperatures(data)) {
         const t = getTemperatures(data);
-        setTemperaturess(t);
+        setTemperatures(t);
+        add2;
       } else if (isPositions(data)) {
         const p = getPositions(data);
         setPositions(p);

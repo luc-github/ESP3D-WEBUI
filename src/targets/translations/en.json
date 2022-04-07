@@ -307,7 +307,6 @@
   "targetfw": "Target firmware",
   "repetier": "Repetier",
   "marlin": "Marlin",
-  "marlinkimbra": "Marlin Kimbra",
   "smoothieware": "Smoothieware",
   "unknown": "Unknown",
   "baud": "Baud rate",

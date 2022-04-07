@@ -48,11 +48,12 @@ const TargetContextProvider = ({ children }) => {
     y: "?",
     z: "?",
   });
+  const MAX_TEMPERATURES_LIST_SIZE = 5;
 
   //format tool:["0":{current:xxx target:xxx}, "1":{current:xxx target:xxx}, ...]
   //index is same as printer
   //Cooler: [], //0->1 is only for laser so out of scope
-  const [temperatures, setTemperaturess] = useState({
+  const [temperatures, setTemperatures] = useState({
     T: [], //0->8 T0->T8 Extruders
     R: [], //0->1 R Redondant
     B: [], //0->1 B Bed
@@ -61,6 +62,23 @@ const TargetContextProvider = ({ children }) => {
     M: [], //0->1 M Board
     L: [], //0->1 L is only for laser so should beout of scope
   });
+
+  const [temperaturesList, setTemperaturesList] = useState([]);
+  const temperaturesListRef = useRef(temperaturesList);
+  temperaturesListRef.current = temperaturesList;
+  const add2TemperaturesList = (temperaturesSet) => {
+    if (temperaturesListRef.current.length >= MAX_TEMPERATURES_LIST_SIZE) {
+      temperaturesListRef.current.shift();
+    }
+    temperaturesListRef.current =
+      temperaturesListRef.current.concat(temperaturesSet);
+    setTemperaturesList(temperaturesListRef.current);
+  };
+
+  const clearTemperaturesList = () => {
+    temperaturesListRef.current = [];
+    setTemperaturesList([]);
+  };
 
   const { terminal } = useDatasContext();
   const dataBuffer = useRef({
@@ -79,7 +97,8 @@ const TargetContextProvider = ({ children }) => {
     if (type === "stream") {
       if (isTemperatures(data)) {
         const t = getTemperatures(data);
-        setTemperaturess(t);
+        setTemperatures(t);
+        add2TemperaturesList({ temperatures: t, time: new Date() });
       } else if (isPositions(data)) {
         const p = getPositions(data);
         setPositions(p);
@@ -173,6 +192,11 @@ const TargetContextProvider = ({ children }) => {
   const store = {
     positions,
     temperatures,
+    temperaturesList: {
+      current: temperaturesList,
+      clear: clearTemperaturesList,
+      add: add2TemperaturesList,
+    },
     processData,
   };
 
