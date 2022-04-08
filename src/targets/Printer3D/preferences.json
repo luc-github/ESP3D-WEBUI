@@ -146,6 +146,22 @@
           "value": true
         },
         {
+          "id": "efeedrate",
+          "type": "number",
+          "label": "P50",
+          "append": "P14",
+          "value": "400",
+          "min": "1"
+        },
+        {
+          "id": "extruderdistance",
+          "type": "text",
+          "label": "P55",
+          "value": "5;10;100",
+          "append": "P16",
+          "help": "S97"
+        },
+        {
           "id": "ismixedextruder",
           "type": "boolean",
           "label": "P49",
@@ -156,22 +172,16 @@
           "type": "text",
           "label": "P51",
           "help": "S97",
-          "value": "blue;red;green;#FF00FF"
-        },
-        {
-          "id": "efeedrate",
-          "type": "number",
-          "label": "P50",
-          "append": "P14",
-          "value": "400",
-          "min": "1"
+          "value": "blue;red;green;#FF00FF",
+          "depend":[{"id":"ismixedextruder", "value":true}]
         },
         {
           "id": "enumber",
           "type": "number",
           "label": "P52",
           "value": "1",
-          "min": "1"
+          "min": "1",
+          "depend":[{"id":"ismixedextruder", "value":true}]
         }
       ],
       "controls": [
