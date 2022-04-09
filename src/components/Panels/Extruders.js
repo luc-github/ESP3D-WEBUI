@@ -16,41 +16,209 @@ Extruders.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { Fragment, h } from "preact";
 import { T } from "../Translations";
-import { useUiContext } from "../../contexts";
-import { ButtonImg } from "../Controls";
+import { useState } from "preact/hooks";
+import { useUiContext, useUiContextFn } from "../../contexts";
+import { ButtonImg, Loading, Field } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { iconsTarget, useTargetContextFn } from "../../targets";
+import { iconsTarget, useTargetContext } from "../../targets";
+import { Plus, Minus, Edit3 } from "preact-feather";
+import { Menu as PanelMenu } from "./";
+import { showModal } from "../Modal";
+
+const extrudeDistance = [];
+const extruderFeedRate = { value: 0 };
+
+const distancesList = () => {
+  const list = useUiContextFn.getValue("extruderdistance");
+  if (list)
+    return list.split(";").map((item) => {
+      return { display: item + T("P16"), value: item };
+    });
+
+  return "";
+};
+
+const ExtruderInputControl = ({ index, size }) => {
+  const { toasts } = useUiContext();
+  const { createNewRequest } = useHttpFn;
+  const [validation, setvalidation] = useState({
+    message: null,
+    valid: true,
+    modified: false,
+  });
+  const generateValidation = (index) => {
+    let validation = {
+      message: null,
+      valid: true,
+      modified: false,
+    };
+    if (extrudeDistance[index] == 0 || extrudeDistance[index] <= 0) {
+      //No error message to keep all control aligned
+      //may be have a better way ?
+      // validation.message = T("S42");
+      validation.valid = false;
+    }
+    return validation;
+  };
+  const sendCommand = (command) => {
+    createNewRequest(
+      espHttpURL("command", { cmd: command }).toString(),
+      { method: "GET", echo: command },
+      {
+        onSuccess: (result) => {},
+        onFail: (error) => {
+          toasts.addToast({ content: error, type: "error" });
+          console.log(error);
+        },
+      }
+    );
+  };
+  const distances = distancesList();
+
+  if (extrudeDistance[index] === undefined) {
+    const valList = useUiContextFn.getValue("extruderdistance").split(";");
+    extrudeDistance[index] = valList[0];
+  }
+
+  return (
+    <div class="extruder-ctrls-container m-1">
+      <div class="extruder-ctrl-name">
+        {T("P41").replace("$", size == 1 ? "" : index + 1)}
+      </div>
+
+      <div class="m-1" />
+      <div>
+        <Field
+          id={"input-extruder-" + index}
+          type="number"
+          value={extrudeDistance[index]}
+          min="0"
+          step="0.5"
+          width="5rem"
+          extra="dropList"
+          options={distances}
+          setValue={(val, update) => {
+            if (!update) extrudeDistance[index] = val;
+            setvalidation(generateValidation(index));
+          }}
+          validation={validation}
+        />
+      </div>
+      <ButtonImg
+        id={"btn-extrude-plus" + index}
+        class={`extruder-ctrl-send m-2 ${
+          !validation.valid ? "d-invisible" : ""
+        }`}
+        icon={<Plus />}
+        tooltip
+        data-tooltip={T("P53")}
+        onClick={(e) => {
+          e.target.blur();
+          const cmd =
+            "T" +
+            index +
+            "\nG91\nG1 E" +
+            extrudeDistance[index] +
+            " F" +
+            extruderFeedRate.value +
+            "\nG90";
+          const cmds = cmd.split("\n");
+          cmds.forEach((cmd) => {
+            sendCommand(cmd);
+          });
+        }}
+      />
+      <ButtonImg
+        id={"btn-extrude-minus" + index}
+        class={`extruder-ctrl-send m-2 ${
+          !validation.valid ? "d-invisible" : ""
+        }`}
+        icon={<Minus />}
+        tooltip
+        data-tooltip={T("P53")}
+        onClick={(e) => {
+          e.target.blur();
+          const cmd =
+            "T" +
+            index +
+            "\nG91\nG1 E-" +
+            extrudeDistance[index] +
+            " F" +
+            extruderFeedRate.value +
+            "\nG90";
+          const cmds = cmd.split("\n");
+          cmds.forEach((cmd) => {
+            sendCommand(cmd);
+          });
+        }}
+      />
+    </div>
+  );
+};
 
 /*
  * Local const
  *
  */
 const ExtrudersPanel = () => {
-  const { panels, uisettings } = useUiContext();
-  const { processData } = useTargetContextFn;
-  const { createNewRequest } = useHttpFn;
+  const { panels, modals } = useUiContext();
+  const { temperatures } = useTargetContext();
+  if (extruderFeedRate.value == 0) {
+    extruderFeedRate.value = useUiContextFn.getValue("efeedrate");
+  }
+  const isMixedExtruder = !!useUiContextFn.getValue("ismixedextruder");
   const id = "extrudersPanel";
-  console.log(id);
-  const sendCommand = (cmd) => {
-    createNewRequest(
-      espHttpURL("command", { cmd }).toString(),
-      { method: "GET", echo: cmd },
-      {
-        onSuccess: (result) => {
-          processData("response", result);
+  //Set the current feedrate for extruder
+  const setFeedrateExtruder = () => {
+    let value = extruderFeedRate.value;
+    showModal({
+      modals,
+      title: T("P50"),
+      button2: { text: T("S28") },
+      button1: {
+        cb: () => {
+          if (value.length > 0.1) extruderFeedRate.value = value;
         },
-        onFail: (error) => {
-          console.log(error);
-          processData("error", error);
-        },
-      }
-    );
+        text: T("S43"),
+        id: "applyFrBtn",
+      },
+      icon: <Edit3 />,
+      id: "inputFeedrate",
+      content: (
+        <Fragment>
+          <div>{T("P50")}</div>
+          <input
+            class="form-input"
+            type="number"
+            step="0.1"
+            value={value}
+            onInput={(e) => {
+              value = e.target.value.trim();
+              if (value < 0.1) {
+                if (document.getElementById("applyFrBtn")) {
+                  document.getElementById("applyFrBtn").disabled = true;
+                }
+              } else {
+                if (document.getElementById("applyFrBtn")) {
+                  document.getElementById("applyFrBtn").disabled = false;
+                }
+              }
+            }}
+          />
+        </Fragment>
+      ),
+    });
   };
-
-  //const macroList = uisettings.getValue("macros");
+  const menu = [
+    {
+      label: T("P50"),
+      onClick: setFeedrateExtruder,
+    },
+  ];
+  console.log(id);
 
   return (
     <div class="panel panel-dashboard">
@@ -60,8 +228,9 @@ const ExtrudersPanel = () => {
           <strong class="text-ellipsis">{T("P36")}</strong>
         </span>
         <span class="navbar-section">
-          <span style="height: 100%;">
-            <button
+          <span class="H-100">
+            <PanelMenu items={menu} />
+            <span
               class="btn btn-clear btn-close m-1"
               aria-label="Close"
               onclick={(e) => {
@@ -71,7 +240,28 @@ const ExtrudersPanel = () => {
           </span>
         </span>
       </div>
-      <div class="panel-body panel-body-dashboard"></div>
+      <div class="panel-body panel-body-dashboard">
+        <div class="extruders-container">
+          {!isMixedExtruder &&
+            temperatures["T"].map((temp, index) => {
+              return (
+                <ExtruderInputControl
+                  index={index}
+                  size={temperatures["T"].length}
+                />
+              );
+            })}
+
+          {temperatures["T"].length == 0 && (
+            <div class="loading-panel">
+              <div class="m-2">
+                <div class="m-1">{T("P89")}</div>
+                <Loading />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

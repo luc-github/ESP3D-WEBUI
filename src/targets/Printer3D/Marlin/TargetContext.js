@@ -80,7 +80,6 @@ const TargetContextProvider = ({ children }) => {
       if (isTemperatures(data)) {
         const t = getTemperatures(data);
         setTemperatures(t);
-        add2;
       } else if (isPositions(data)) {
         const p = getPositions(data);
         setPositions(p);

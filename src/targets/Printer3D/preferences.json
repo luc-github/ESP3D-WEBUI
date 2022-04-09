@@ -160,28 +160,6 @@
           "value": "5;10;100",
           "append": "P16",
           "help": "S97"
-        },
-        {
-          "id": "ismixedextruder",
-          "type": "boolean",
-          "label": "P49",
-          "value": false
-        },
-        {
-          "id": "ecolors",
-          "type": "text",
-          "label": "P51",
-          "help": "S97",
-          "value": "blue;red;green;#FF00FF",
-          "depend":[{"id":"ismixedextruder", "value":true}]
-        },
-        {
-          "id": "enumber",
-          "type": "number",
-          "label": "P52",
-          "value": "1",
-          "min": "1",
-          "depend":[{"id":"ismixedextruder", "value":true}]
         }
       ],
       "controls": [
