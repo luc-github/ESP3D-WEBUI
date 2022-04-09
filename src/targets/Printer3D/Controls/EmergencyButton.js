@@ -45,9 +45,9 @@ const EmergencyButton = () => {
   return (
     <ButtonImg
       m1
-      error
       rtooltip
       label={T("P15")}
+      className="emergency-btn"
       icon={<AlertCircle />}
       data-tooltip={T("P15")}
       id="btnEStop"

@@ -20,6 +20,24 @@
   background-color: #f1f1fc;
 }
 
+.emergency-btn{
+  color:#FF5160;
+  background-color:#FFFFFF;
+  border-color:#FF5160;
+}
+
+.emergency-btn:hover{
+  background-color:#FF0000;
+  color:#FFFFFF;
+}
+
+.emergency-btn:active{
+  color:#FF0000;
+  background-color:#FFFFFF;
+}
+
+
+
 .itemEditor {
   display: flex;
   flex-direction: column;
