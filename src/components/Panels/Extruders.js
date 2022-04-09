@@ -97,7 +97,7 @@ const ExtruderInputControl = ({ index, size }) => {
           value={extrudeDistance[index]}
           min="0"
           step="0.5"
-          width="5rem"
+          width="4rem"
           extra="dropList"
           options={distances}
           setValue={(val, update) => {

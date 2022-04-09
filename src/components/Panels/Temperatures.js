@@ -215,7 +215,7 @@ const TemperatureInputControl = ({ tool, index, size }) => {
           min="0"
           step="0.5"
           max={max > 0 ? max : null}
-          width="5rem"
+          width="4rem"
           extra="dropList"
           options={preheatList(tool)}
           setValue={(val, update) => {
