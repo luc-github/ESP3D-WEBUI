@@ -40,6 +40,10 @@ const distancesList = () => {
 
   return "";
 };
+const mixedExtrudersWeight = [];
+const MixedExtruderControl = () => {
+  return <div class="mixed-extruder-control">Mixed extruders</div>;
+};
 
 const ExtruderInputControl = ({ index, size }) => {
   const { toasts } = useUiContext();
@@ -251,8 +255,8 @@ const ExtrudersPanel = () => {
                 />
               );
             })}
-
-          {temperatures["T"].length == 0 && (
+          {isMixedExtruder && <MixedExtruderControl />}
+          {!isMixedExtruder && temperatures["T"].length == 0 && (
             <div class="loading-panel">
               <div class="m-2">
                 <div class="m-1">{T("P89")}</div>

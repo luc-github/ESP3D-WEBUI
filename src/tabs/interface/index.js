@@ -46,6 +46,12 @@ const InterfaceTab = () => {
       valid: true,
       modified: true,
     };
+    if (fieldData.step) {
+      if (fieldData.value % fieldData.step !== 0) {
+        validation.message = <Flag size="1rem" color="red" />;
+        validation.valid = false;
+      }
+    }
     if (fieldData.type == "list") {
       const stringified = JSON.stringify(fieldData.value);
       //check new item or modified item

@@ -62,7 +62,7 @@
   "openextrudersonstart": true,
   "efeedrate": "400",
   "extruderdistance": "5;10;100",
-  "ismixedextruder": false,
+  "ismixedextruder": true,
   "ecolors": "blue;red;green;#FF00FF",
   "enumber": "1",
   "showfanspanel": true,

@@ -34,6 +34,7 @@ import {
   formatStatus,
   compareStrings,
   replaceVariables,
+  isFloat,
 } from "./strings";
 import {
   limitArr,
@@ -68,4 +69,5 @@ export {
   removeEntriesByIDs,
   sortedFilesList,
   splitArrayByLines,
+  isFloat,
 };

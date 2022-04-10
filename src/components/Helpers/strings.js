@@ -79,6 +79,10 @@ const formatStatus = (status) => {
   return status;
 };
 
+const isFloat = (n) => {
+  return Number(n) === n && n % 1 !== 0;
+};
+
 export {
   capitalize,
   hslToHex,
@@ -87,4 +91,5 @@ export {
   formatFileSizeToString,
   formatStatus,
   replaceVariables,
+  isFloat,
 };
