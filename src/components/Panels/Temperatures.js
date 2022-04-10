@@ -195,51 +195,57 @@ const TemperatureInputControl = ({ tool, index, size }) => {
   return (
     <div class="temperature-ctrls-container m-1">
       <div class="temperature-ctrl-name">{sensorName(tool, index, size)}</div>
-      <ButtonImg
-        id={"btn-stop-" + tool + index}
-        class="temperature-ctrl-stop m-1"
-        icon={<Power />}
-        tooltip
-        data-tooltip={T("P38")}
-        onClick={(e) => {
-          e.target.blur();
-          sendCommand(target_temperatures[tool][index].stopcmd);
-        }}
-      />
-      <div class="m-1" />
-      <div>
-        <Field
-          id={"input-" + tool + index}
-          type="number"
-          value={target_temperatures[tool][index].current}
-          min="0"
-          step="0.5"
-          max={max > 0 ? max : null}
-          width="4rem"
-          extra="dropList"
-          options={preheatList(tool)}
-          setValue={(val, update) => {
-            if (!update) target_temperatures[tool][index].current = val;
-            setvalidation(generateValidation(tool, index));
+      <div class="temperature-ctrls-container2">
+        <ButtonImg
+          id={"btn-stop-" + tool + index}
+          class="temperature-ctrl-stop m-1"
+          icon={<Power />}
+          tooltip
+          data-tooltip={T("P38")}
+          onClick={(e) => {
+            e.target.blur();
+            sendCommand(target_temperatures[tool][index].stopcmd);
           }}
-          validation={validation}
+        />
+        <div class="m-1" />
+        <div>
+          <Field
+            id={"input-" + tool + index}
+            type="number"
+            value={target_temperatures[tool][index].current}
+            min="0"
+            step="0.5"
+            max={max > 0 ? max : null}
+            width="4rem"
+            extra="dropList"
+            options={preheatList(tool)}
+            setValue={(val, update) => {
+              if (!update) target_temperatures[tool][index].current = val;
+              setvalidation(generateValidation(tool, index));
+            }}
+            validation={validation}
+          />
+        </div>
+        <ButtonImg
+          id={"btn-send" + tool + index}
+          class={`temperature-ctrl-send ${
+            !validation.valid ? "d-invisible" : ""
+          }`}
+          icon={<Send />}
+          tooltip
+          data-tooltip={T("S43")}
+          onClick={(e) => {
+            e.target.blur();
+            sendCommand(
+              heaterCommand(
+                tool,
+                index,
+                target_temperatures[tool][index].current
+              )
+            );
+          }}
         />
       </div>
-      <ButtonImg
-        id={"btn-send" + tool + index}
-        class={`temperature-ctrl-send ${
-          !validation.valid ? "d-invisible" : ""
-        }`}
-        icon={<Send />}
-        tooltip
-        data-tooltip={T("S43")}
-        onClick={(e) => {
-          e.target.blur();
-          sendCommand(
-            heaterCommand(tool, index, target_temperatures[tool][index].current)
-          );
-        }}
-      />
     </div>
   );
 };
