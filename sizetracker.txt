@@ -8,11 +8,13 @@ Features                    : 3.0.0.a5      : 36KB          |        | 41.2KB
 Interface                   : 3.0.0.a6      : 36.6KB        |        | 42KB
 UI language pack            : 3.0.0.a7      : 37.3KB        |        | 42.6KB
 Theme pack                  : 3.0.0.a8      : 37.5KB        |        | N/A 
-Extra Panels / Macros /     :               	            |	     | 
-Terminal                    : 3.0.0.a.12    : 50.4KB	    |	     | 42.6KB + 10.2KB + 1.1KB = 53.9KB
-File panel                  : 3.0.0.a.13    : 53.3KB	    |	     | 53.9KB + 3.2KB = 57.1KB
-Code Refactoring	    : 3.0.0.a.14    : 53.0KB	    |	     | 53.9KB + 3.2KB = 57.1KB
-Machine Settings + Audio    : 3.0.0.a.15    : 54.7KB	    |	     | 57.1KB + 3.7KB = 58.8KB
+Extra Panels / Macros /     :               :	            |        | 
+Terminal                    : 3.0.0.a.12    : 50.4KB	      |	   | 42.6KB + 10.2KB + 1.1KB = 53.9KB
+File panel                  : 3.0.0.a.13    : 53.3KB	      |	   | 53.9KB + 3.2KB = 57.1KB
+Code Refactoring	          : 3.0.0.a.14    : 53.0KB	      |	   | 53.9KB + 3.2KB = 57.1KB
+Machine Settings + Audio    : 3.0.0.a.15    : 54.7KB	      |	   | 57.1KB + 3.7KB = 58.8KB
 Machine Settings(1 btn save): 3.0.0.a.16    : 55.0KB        |        | 58.8KB
-Jog Panel		    : 3.0.0.a.17    : 61.2 KB	    |        | 58.8KB+9.4KB = 68.1KB
-Temperature Panel + notifications	    :		 68.6KB	  :	    |      68.1 + 4.1 + 4.6= 76.8KB  | 
+Jog Panel		          : 3.0.0.a.17    : 61.2KB	      |        | 58.8KB+9.4KB = 68.1KB
+Temperature Panel +         :               :               |        | 
+notifications      	    :		        : 68.6KB 	      |        | 68.1 + 4.1 + 4.6= 76.8KB
+Extruders Panel		    :               : 70.2KB        |        | 76.8 + 4.5 = 81.3KB
