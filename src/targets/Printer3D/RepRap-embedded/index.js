@@ -23,13 +23,18 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
-import { InformationsControls } from "./InformationsControls";
+import {
+  InformationsControls,
+  QuickButtonsBar,
+  MixedExtrudersControl,
+} from "./Controls";
 import {
   TargetContextProvider,
   useTargetContext,
   useTargetContextFn,
 } from "./TargetContext";
-import { AppLogo, AppLogo as WebUILogo } from "../../../components/Images/logo";
+import { AppLogo } from "../../../components/Images/logo";
+import { Eye as WebUILogo } from "preact-feather";
 
 const Target = "RepRap";
 const webUIbuild = "RRe2";
@@ -56,4 +61,6 @@ export {
   variablesList,
   AppLogo,
   WebUILogo,
+  QuickButtonsBar,
+  MixedExtrudersControl,
 };

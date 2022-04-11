@@ -66,6 +66,7 @@ const Input = ({
   depend,
   help,
   button,
+  disabled,
   ...rest
 }) => {
   const dependId = [];
@@ -261,6 +262,7 @@ const Input = ({
       data-tooltip={T(help)}
     >
       <input
+        disabled={disabled}
         spellcheck="false"
         class="form-input"
         {...props}

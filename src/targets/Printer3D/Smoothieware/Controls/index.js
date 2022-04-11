@@ -20,5 +20,6 @@
 import { h } from "preact";
 import { QuickButtonsBar } from "./QuickButtonsBar";
 import { InformationsControls } from "./InformationsControls";
+import { MixedExtrudersControl } from "./MixedExtrudersControl";
 
-export { QuickButtonsBar, InformationsControls };
+export { QuickButtonsBar, InformationsControls, MixedExtrudersControl };

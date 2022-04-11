@@ -1,5 +1,5 @@
 /*
- Informations.js - ESP3D WebUI Target file
+ MixedExtrudersControl.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,16 +17,13 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact";
-import { PositionsControls } from "../../../components/Panels/Jog";
-import { useUiContextFn } from "../../../contexts";
+import { h } from "preact";
+import { T } from "../../../../components/Translations";
 
-const InformationsControls = () => {
-  return (
-    <Fragment>
-      {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
-    </Fragment>
-  );
+const MixedExtrudersControl = ({ feedrate }) => {
+  console.log("feedrate", feedrate);
+
+  return <div>{T("S199")}</div>;
 };
 
-export { InformationsControls };
+export { MixedExtrudersControl };

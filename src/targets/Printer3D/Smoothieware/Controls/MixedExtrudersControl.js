@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI Target file
+ MixedExtrudersControl.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,8 +18,12 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact";
-import { QuickButtonsBar } from "./QuickButtonsBar";
-import { InformationsControls } from "./InformationsControls";
-import { MixedExtrudersControl } from "./MixedExtrudersControl";
+import { T } from "../../../../components/Translations";
 
-export { QuickButtonsBar, InformationsControls, MixedExtrudersControl };
+const MixedExtrudersControl = ({ feedrate }) => {
+  console.log("feedrate", feedrate);
+
+  return <div>{T("S199")}</div>;
+};
+
+export { MixedExtrudersControl };

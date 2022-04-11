@@ -52,7 +52,7 @@
           "type": "text",
           "label": "P51",
           "help": "S97",
-          "value": "blue;red;green;#FF00FF",
+          "value": "blue;red;green;#FF00FF;cyan;black",
           "depend":[{"id":"ismixedextruder", "value":true}]
         },
         {

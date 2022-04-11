@@ -23,7 +23,11 @@ import { useUiContext, useUiContextFn } from "../../contexts";
 import { ButtonImg, Loading, Field } from "../Controls";
 import { useHttpFn } from "../../hooks";
 import { espHttpURL } from "../Helpers";
-import { iconsTarget, useTargetContext } from "../../targets";
+import {
+  iconsTarget,
+  useTargetContext,
+  MixedExtrudersControl,
+} from "SubTargetDir";
 import { Plus, Minus, Edit3 } from "preact-feather";
 import { Menu as PanelMenu } from "./";
 import { showModal } from "../Modal";
@@ -39,10 +43,6 @@ const distancesList = () => {
     });
 
   return "";
-};
-const mixedExtrudersWeight = [];
-const MixedExtruderControl = () => {
-  return <div class="mixed-extruder-control">Mixed extruders</div>;
 };
 
 const ExtruderInputControl = ({ index, size }) => {
@@ -83,8 +83,7 @@ const ExtruderInputControl = ({ index, size }) => {
   const distances = distancesList();
 
   if (extrudeDistance[index] === undefined) {
-    const valList = useUiContextFn.getValue("extruderdistance").split(";");
-    extrudeDistance[index] = valList[0];
+    extrudeDistance[index] = distances[0].value;
   }
 
   return (
@@ -103,6 +102,7 @@ const ExtruderInputControl = ({ index, size }) => {
           step="0.5"
           width="4rem"
           extra="dropList"
+          append={T("P16")}
           options={distances}
           setValue={(val, update) => {
             if (!update) extrudeDistance[index] = val;
@@ -142,7 +142,7 @@ const ExtruderInputControl = ({ index, size }) => {
         }`}
         icon={<Minus />}
         tooltip
-        data-tooltip={T("P53")}
+        data-tooltip={T("P54")}
         onClick={(e) => {
           e.target.blur();
           const cmd =
@@ -255,7 +255,9 @@ const ExtrudersPanel = () => {
                 />
               );
             })}
-          {isMixedExtruder && <MixedExtruderControl />}
+          {isMixedExtruder && (
+            <MixedExtrudersControl feedrate={extruderFeedRate} />
+          )}
           {!isMixedExtruder && temperatures["T"].length == 0 && (
             <div class="loading-panel">
               <div class="m-2">

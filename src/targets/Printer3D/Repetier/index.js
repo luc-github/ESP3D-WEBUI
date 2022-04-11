@@ -23,7 +23,11 @@ import { files } from "./files";
 import { processor } from "./processor";
 import { defaultPanelsList } from "./panels";
 import { MachineSettings } from "./MachineSettings";
-import { InformationsControls, QuickButtonsBar } from "./Controls";
+import {
+  InformationsControls,
+  QuickButtonsBar,
+  MixedExtrudersControl,
+} from "./Controls";
 import {
   TargetContextProvider,
   useTargetContext,
@@ -58,4 +62,5 @@ export {
   AppLogo,
   WebUILogo,
   QuickButtonsBar,
+  MixedExtrudersControl,
 };
