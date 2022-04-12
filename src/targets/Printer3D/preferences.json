@@ -138,7 +138,49 @@
           "type": "boolean",
           "label": "S93",
           "value": true
+        },
+        {
+          "id": "showextruderchart",
+          "type": "boolean",
+          "label": "P82",
+          "value": true
+        },
+        {
+          "id": "showbedchart",
+          "type": "boolean",
+          "label": "P83",
+          "value": true
+        },
+        {
+          "id": "showchamberchart",
+          "type": "boolean",
+          "label": "P84",
+          "value": true
+        },
+        {
+          "id": "showprobechart",
+          "type": "boolean",
+          "label": "P85",
+          "value": true
+        },{
+          "id": "showredondantchart",
+          "type": "boolean",
+          "label": "P86",
+          "value": true
+        },
+        {
+          "id": "showboardchart",
+          "type": "boolean",
+          "label": "P87",
+          "value": true
+        },
+        {
+          "id": "showsensorchart",
+          "type": "boolean",
+          "label": "P88",
+          "value": true
         }
+
       ],
       "extruders": [
         {

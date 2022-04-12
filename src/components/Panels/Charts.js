@@ -51,16 +51,35 @@ const sensorName = (tool, index, size) => {
         : ""
 }
 
-const lineRef = {}
-const chart = {}
+const chartColors = [
+    "255,128,128", //pink
+    "0,0,255", //dark blue
+    "0,128,0", //dark green
+    "198,165,0", //gold
+    "255,0,0", //red
+    "0,0,128", //blue
+    "128,255,128", //light green
+    "255,128,0", //orange
+    "178,0,255", //purple
+    "0,128,128", //green blue
+    "128,128,0", //kaki
+    "128,128,128", //grey
+    "0,0,0", //purple
+]
 
 const ChartsPanel = () => {
     const { panels } = useUiContext()
     const { temperatures, temperaturesList } = useTargetContext()
-
+    const lineRef = useRef()
+    const chart = useRef()
     const id = "chartsPanel"
     console.log(id)
-    const smoothieChart = useRef(null)
+    const smoothieChart1 = useRef(null)
+    const smoothieChart2 = useRef(null)
+    const smoothieChart3 = useRef(null)
+    const chart1 = useRef()
+    const chart2 = useRef()
+    const chart3 = useRef()
 
     const smoothieOpt = {
         millisPerPixel: 100,
@@ -105,11 +124,18 @@ const ChartsPanel = () => {
         // if (temperatures[tool].length != 0) hasTemp = true
     })
     useEffect(() => {
-        const canvas = smoothieChart.current
-        chart.current = new SmoothieChart(smoothieOpt2)
-        chart.current.streamTo(canvas, 3000)
+        chart1.current = new SmoothieChart(smoothieOpt2)
+        chart1.current.streamTo(smoothieChart1.current, 3000)
+        chart2.current = new SmoothieChart(smoothieOpt2)
+        chart2.current.streamTo(smoothieChart2.current, 3000)
+        chart3.current = new SmoothieChart(smoothieOpt2)
+        chart3.current.streamTo(smoothieChart3.current, 3000)
         lineRef.current = new TimeSeries()
-        chart.current.addTimeSeries(lineRef.current, { strokeStyle: "#a55eea" })
+        chart1.current.addTimeSeries(lineRef.current, {
+            lineWidth: 1,
+            strokeStyle: "#a55eea",
+            fillStyle: "rgba(255, 128, 255, 0.3)",
+        })
         temperaturesList.current.forEach((entry, index) => {
             lineRef.current.append(entry.time, entry.temperatures.T[0].current)
         })
@@ -118,7 +144,7 @@ const ChartsPanel = () => {
         if (temperatures.T.length != 0) {
             lineRef.current.append(
                 Date.now(),
-                parseFloat(temperatures.T[0].current)
+                parseFloat(temperatures.T[0].value)
             )
         }
     }, [temperatures])
@@ -142,12 +168,27 @@ const ChartsPanel = () => {
                 </span>
             </div>
             <div class="panel-body panel-body-dashboard">
-                <div class="loading-panel">
+                <div style="display:flex; flex-direction:column;height:100%; justify-content:space-between">
                     <canvas
-                        id="chart"
+                        class="chart"
+                        id="chart1"
                         width="340"
                         height="100"
-                        ref={smoothieChart}
+                        ref={smoothieChart1}
+                    />
+                    <canvas
+                        class="chart"
+                        id="chart2"
+                        width="340"
+                        height="100"
+                        ref={smoothieChart2}
+                    />
+                    <canvas
+                        class="chart"
+                        id="chart3"
+                        width="340"
+                        height="100"
+                        ref={smoothieChart3}
                     />
                 </div>
             </div>
