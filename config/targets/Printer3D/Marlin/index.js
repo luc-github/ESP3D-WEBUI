@@ -33,15 +33,17 @@ const temperatures = {
             value: roomTemperature,
             target: 0,
             lastTime: -1,
-            heatspeed: 0.4,
-            coolspeed: 0.5,
+            heatspeed: 0.6,
+            coolspeed: 0.8,
+            variation: 0.5,
         },
         {
             value: 20,
             target: 0,
             lastTime: -1,
-            heatspeed: 0.4,
+            heatspeed: 0.6,
             coolspeed: 0.8,
+            variation: 0.5,
         },
     ],
     B: [
@@ -51,6 +53,7 @@ const temperatures = {
             lastTime: -1,
             heatspeed: 0.2,
             coolspeed: 0.8,
+            variation: 0.5,
         },
     ],
     C: [
@@ -58,8 +61,9 @@ const temperatures = {
             value: roomTemperature,
             target: 0,
             lastTime: -1,
-            heatspeed: 0.4,
+            heatspeed: 0.6,
             coolspeed: 0.8,
+            variation: 0.5,
         },
     ],
     P: [{ value: roomTemperature, sameas: "T", lastTime: -1, variation: 0.5 }], //let say probe is 50% of extruder temperature
@@ -75,20 +79,23 @@ const updateTemperature = (entry, time) => {
     const v = Math.random() * 5
     //heater
     if (typeof entry.target != "undefined") {
-        if (entry.target == 0 || entry.target < entry.value + 5) {
-            entry.value =
-                entry.value - (entry.coolspeed * (time - entry.lastTime)) / 1000
-        } else {
+        const target = entry.target == 0 ? roomTemperature : entry.target
+        if (entry.value + 5 < target) {
             entry.value =
                 entry.value + (entry.heatspeed * (time - entry.lastTime)) / 1000
-        }
-
-        if (entry.value > entry.target && entry.target != 0) {
-            entry.value = v > 2.5 ? entry.target + v : entry.target - v
-        }
-        if (entry.value < roomTemperature) {
+        } else if (entry.value - 5 > target) {
             entry.value =
-                v > 2.5 ? roomTemperature + v / 4 : roomTemperature - v / 4
+                entry.value - (entry.coolspeed * (time - entry.lastTime)) / 1000
+        } else if (target - 2 < entry.value && entry.value < target + 2) {
+            entry.value = target + entry.variation * (Math.random() - 0.5)
+        } else if (entry.value < target) {
+            entry.value =
+                entry.value +
+                ((entry.heatspeed / 3) * (time - entry.lastTime)) / 1000
+        } else {
+            entry.value =
+                entry.value -
+                ((entry.coolspeed / 3) * (time - entry.lastTime)) / 1000
         }
     }
     //sensor
@@ -99,15 +106,15 @@ const updateTemperature = (entry, time) => {
             entry.value < 2 * roomTemperature
         ) {
             //probe is same as room temperature if under 40 degres
-            entry.value = entry.value =
+            entry.value =
                 v > 2.5 ? roomTemperature + v / 2 : roomTemperature - v / 2
         } else {
             entry.value =
                 v > 2.5
                     ? temperatures[entry.sameas][0].value * entry.variation +
-                      v / 2
+                      v / 4
                     : temperatures[entry.sameas][0].value * entry.variation -
-                      v / 2
+                      v / 4
         }
     } else {
         entry.value =
