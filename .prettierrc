@@ -1,0 +1,18 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 4,
+  "semi": false,
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "parser": "babel"
+      }
+    },
+    {"files": "*.scss",
+      "options": {
+        "parser": "scss"
+      }
+    }
+  ]
+}

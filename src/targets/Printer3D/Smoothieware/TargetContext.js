@@ -48,7 +48,7 @@ const TargetContextProvider = ({ children }) => {
     y: "?",
     z: "?",
   });
-  const MAX_TEMPERATURES_LIST_SIZE = 5;
+  const MAX_TEMPERATURES_LIST_SIZE = 400;
 
   //format tool:["0":{current:xxx target:xxx}, "1":{current:xxx target:xxx}, ...]
   //index is same as printer

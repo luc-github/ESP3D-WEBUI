@@ -14,12 +14,6 @@
           "value": true
         },
         {
-          "id": "showgraphctrls",
-          "type": "boolean",
-          "label": "P88",
-          "value": true
-        },
-        {
           "id": "showextruderctrls",
           "type": "boolean",
           "label": "P82",
@@ -129,6 +123,20 @@
           "id": "showboardctrls",
           "type": "boolean",
           "label": "P87",
+          "value": true
+        }
+      ],
+      "charts":[
+        {
+          "id": "showchartspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openchartsonstart",
+          "type": "boolean",
+          "label": "S93",
           "value": true
         }
       ],
