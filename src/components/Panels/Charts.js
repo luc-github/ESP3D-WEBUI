@@ -24,6 +24,7 @@ import { ButtonImg, Loading } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
 import { SmoothieChart, TimeSeries } from "smoothie"
+import { Menu as PanelMenu } from "./"
 
 /*
  * Local const
@@ -136,6 +137,35 @@ const isChartVisible = (index) => {
     return false
 }
 
+const isDataVisible = (index, temperatures) => {
+    //this could be automate using a map and the charts object descriptions
+    //but I am lazy to do it and benefit is arguable
+    if (index == 0) {
+        if (
+            (temperatures.T && temperatures.T.length > 0) ||
+            (temperatures.R && temperatures.R.length > 0)
+        ) {
+            return true
+        }
+    }
+    if (index == 1) {
+        if (
+            (temperatures.B && temperatures.B.length > 0) ||
+            (temperatures.C && temperatures.C.length > 0) ||
+            (temperatures.P && temperatures.P.length > 0) ||
+            (temperatures.M && temperatures.M.length > 0)
+        ) {
+            return true
+        }
+    }
+    if (index == 2) {
+        if (temperatures.S && temperatures.S.length > 0) {
+            return true
+        }
+    }
+    return false
+}
+
 const chartColors = [
     "255,128,128", //pink
     "0,0,255", //dark blue
@@ -176,27 +206,20 @@ const smoothieOptions = {
 }
 
 const colorIndex = (chart, tool, index) => {
-    let found = false
-    let i = Object.keys(chart.series).reduce((acc, key) => {
-        if (!found) {
-            for (let j = 0; j < chart.series[key].length; j++) {
-                if (key == tool && j == index) {
-                    found = true
-                } else {
-                    acc++
-                }
-            }
+    const arrayTool = Object.keys(chart.series)
+    let i = 0
+    for (let j = 0; j < arrayTool.length; j++) {
+        if (arrayTool[j] == tool) {
+            i = i + index
+            break
+        } else {
+            i = i + chart.series[arrayTool[j]].length
         }
-        return acc
-    }, 0)
-
-    console.log(tool, index, " colorIndex:", i)
-
+    }
     return i
 }
 
 const createTimeSeries = (chart, tool, index) => {
-    console.log("createTimeSeries", tool, index)
     chart.series[tool][index] = new TimeSeries()
     chart.chart.addTimeSeries(chart.series[tool][index], {
         lineWidth: 1,
@@ -206,7 +229,6 @@ const createTimeSeries = (chart, tool, index) => {
 
 const /* Creating the charts. */
     buildCharts = (temperaturesList, delay) => {
-        console.log("buildCharts", temperaturesList, delay)
         //we parse each chart
         charts.forEach((chart, index) => {
             //check is visible
@@ -217,10 +239,8 @@ const /* Creating the charts. */
                 Object.keys(chart.series).forEach((tool) => {
                     //if tool is visible
                     if (isVisible(tool)) {
-                        console.log(tool, "is visible", temperaturesList)
                         //for each index of tool
                         if (temperaturesList.length > 0) {
-                            console.log(temperaturesList[0].temperatures[tool])
                             if (temperaturesList[0].temperatures[tool])
                                 temperaturesList[0].temperatures[tool].forEach(
                                     (entry, num) => {
@@ -229,12 +249,6 @@ const /* Creating the charts. */
                                             //fill with existing data from temperaturesList
                                             temperaturesList.forEach(
                                                 (entry) => {
-                                                    console.log(
-                                                        "add ",
-                                                        entry.temperatures[
-                                                            tool
-                                                        ][num]
-                                                    )
                                                     chart.series[tool][
                                                         num
                                                     ].append(
@@ -273,7 +287,6 @@ const updateCharts = (temperatures) => {
                     //for each index of tool
                     if (temperatures[tool]) {
                         temperatures[tool].map((entry, num) => {
-                            //console.log(chart.series[tool])
                             //if serie do not exists create it
                             if (
                                 typeof chart.series[tool][num] == "undefined" ||
@@ -282,7 +295,6 @@ const updateCharts = (temperatures) => {
                                 createTimeSeries(chart, tool, num) //create new serie
                             }
                             //add new data to the serie
-                            //console.log(tool, num, chart.series[tool][num])
                             chart.series[tool][num].append(
                                 Date.now(),
                                 parseFloat(temperatures[tool][num].value)
@@ -296,10 +308,43 @@ const updateCharts = (temperatures) => {
 }
 
 const sensorName = (tool, index, size) => {
-    const name = { T: "P41", B: "P37", C: "P43", P: "P42", R: "P44", M: "P90" }
+    const name = {
+        T: "P41",
+        B: "P37",
+        C: "P43",
+        P: "P42",
+        R: "P44",
+        M: "P90",
+        S: "sensor",
+    }
     return name[tool] != undefined
         ? T(name[tool]).replace("$", size == 1 ? "" : index + 1)
         : ""
+}
+
+const Legendes = ({ index, temperatures, temperaturesList }) => {
+    const labels = []
+    //to workareound a display glich that I do not understand
+    //we wait at least 2 data to display the legend
+    if (temperaturesList.current.length < 2) return
+    Object.keys(charts[index].series).forEach((tool) => {
+        if (isVisible(tool)) {
+            temperatures[tool].map((entry, num) => {
+                labels.push(
+                    <div
+                        className="legend-name"
+                        style={`color:rgb(${
+                            chartColors[colorIndex(charts[index], tool, num)]
+                        })`}
+                    >
+                        {sensorName(tool, num, temperatures[tool].length)}
+                    </div>
+                )
+            })
+        }
+    })
+
+    return <div className="chart-legend">{labels}</div>
 }
 
 const ChartsPanel = () => {
@@ -309,6 +354,28 @@ const ChartsPanel = () => {
     charts[1].ref = useRef(null)
     charts[1].ref = useRef(null)
     const id = "chartsPanel"
+    const clearCharts = () => {
+        temperaturesList.clear()
+        charts.forEach((chart) => {
+            if (chart.chart) {
+                Object.keys(chart.series).forEach((tool) => {
+                    if (chart.series[tool]) {
+                        chart.series[tool].forEach((serie) => {
+                            if (serie) {
+                                serie.clear()
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
+    const menu = [
+        {
+            label: T("P58"),
+            onClick: clearCharts,
+        },
+    ]
     console.log(id)
 
     useEffect(() => {
@@ -326,8 +393,9 @@ const ChartsPanel = () => {
                     <strong class="text-ellipsis">{T("P56")}</strong>
                 </span>
                 <span class="navbar-section">
-                    <span style="height: 100%;">
-                        <button
+                    <span class="H-100">
+                        <PanelMenu items={menu} />
+                        <span
                             class="btn btn-clear btn-close m-1"
                             aria-label="Close"
                             onclick={(e) => {
@@ -338,34 +406,57 @@ const ChartsPanel = () => {
                 </span>
             </div>
             <div class="panel-body panel-body-dashboard">
-                <div style="display:flex; flex-direction:column;height:100%; justify-content:space-between">
+                <div class="charts-container">
                     {isChartVisible(0) && (
-                        <canvas
-                            class="chart"
-                            id="chart1"
-                            width="340"
-                            height="100"
-                            ref={charts[0].ref}
-                        />
+                        <div class="charts-subcontainer">
+                            <canvas
+                                class="chart"
+                                id="chart1"
+                                width="320"
+                                height="100"
+                                ref={charts[0].ref}
+                            />
+                            <Legendes
+                                index="0"
+                                temperatures={temperatures}
+                                temperaturesList={temperaturesList}
+                            />
+                        </div>
                     )}
+
                     {isChartVisible(1) && (
-                        <canvas
-                            class="chart"
-                            id="chart2"
-                            width="340"
-                            height="100"
-                            ref={charts[1].ref}
-                        />
+                        <div class="charts-subcontainer">
+                            <canvas
+                                class="chart"
+                                id="chart2"
+                                width="320"
+                                height="100"
+                                ref={charts[1].ref}
+                            />
+                            <Legendes
+                                index="1"
+                                temperatures={temperatures}
+                                temperaturesList={temperaturesList}
+                            />
+                        </div>
                     )}
                     {isChartVisible(2) && (
-                        <canvas
-                            class="chart"
-                            id="chart3"
-                            width="340"
-                            height="100"
-                            ref={charts[2].ref}
-                        />
+                        <div class="charts-subcontainer">
+                            <canvas
+                                class="chart"
+                                id="chart3"
+                                width="320"
+                                height="100"
+                                ref={charts[2].ref}
+                            />
+                            <Legendes
+                                index="2"
+                                temperatures={temperatures}
+                                temperaturesList={temperaturesList}
+                            />
+                        </div>
                     )}
+                    <div class="m-1" />
                 </div>
             </div>
         </div>

@@ -18,4 +18,4 @@ Jog Panel		          : 3.0.0.a.17    : 61.2KB	      |        | 58.8KB+9.4KB = 68
 Temperature Panel +         :               :               |        | 
 notifications      	    :		        : 68.6KB 	      |        | 68.1 + 4.1 + 4.6= 76.8KB
 Extruders Panel		    :               : 70.2KB        |        | 76.8 + 4.5 = 81.3KB
-Charts Panel                :               : 74.5KB		|        | 81.3 + 6.2 = 87.5KB	<= need to update when done
+Charts Panel                :               : 75.0KB		|        | 81.3 + 6.2 = 87.5KB	

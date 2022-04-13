@@ -144,6 +144,11 @@
           "type": "boolean",
           "label": "P82",
           "value": true
+        },{
+          "id": "showredondantchart",
+          "type": "boolean",
+          "label": "P86",
+          "value": true
         },
         {
           "id": "showbedchart",
@@ -161,11 +166,6 @@
           "id": "showprobechart",
           "type": "boolean",
           "label": "P85",
-          "value": true
-        },{
-          "id": "showredondantchart",
-          "type": "boolean",
-          "label": "P86",
           "value": true
         },
         {

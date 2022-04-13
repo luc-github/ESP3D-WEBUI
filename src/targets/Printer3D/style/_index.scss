@@ -28,6 +28,28 @@ text.scl {
   user-select: none;
 }
 
+.charts-subcontainer,
+.charts-container{
+  display:flex; 
+  flex-direction:column;
+  height:100%; 
+  justify-content:space-around
+}
+
+.chart-legend{
+  display:flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+}
+.legend-name{
+  font-size:0.8rem;
+  margin-right:5px;
+}
+
+.charts-subcontainer{
+  justify-content:center;
+}
+
 .chart{
   margin-top: 10px;
   margin-bottom: 10px;
