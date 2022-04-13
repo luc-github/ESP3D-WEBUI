@@ -30,25 +30,90 @@ import { SmoothieChart, TimeSeries } from "smoothie"
  *
  */
 
+// Chart data organization
+const charts = [
+    {
+        //chart 1 (index =0)
+        chart: {}, //SmoothieChart
+        ref: {}, //SmoothieChart reference
+        series: {
+            //TimeSeries
+            //extruders
+            T: [{}, {}, {}, {}, {}, {}],
+
+            //redondant
+            R: [{}],
+        },
+    },
+    {
+        //chart 2
+        chart: {}, //SmoothieChart
+        ref: {}, //SmoothieChart reference
+        series:
+            //TimeSeries
+            {
+                //Bed
+                B: [{}],
+                //chamber
+                C: [{}],
+                //probe
+                P: [{}],
+                //chamber
+                C: [{}],
+                //motherboard
+                M: [{}],
+            },
+    },
+    {
+        //chart 3
+        chart: {}, //SmoothieChart
+        ref: {}, //SmoothieChart reference
+        series:
+            //TimeSeries
+            {
+                //sensors
+                S: [{}],
+            },
+    },
+]
+
 const isVisible = (tool) => {
     const setting = {
-        T: "showextruderctrls",
-        B: "showbedctrls",
-        C: "showchamberctrls",
-        P: "showprobectrls",
-        R: "showredondantctrls",
-        M: "showboardctrls",
+        T: "showextruderchart",
+        B: "showbedchart",
+        C: "showchamberchart",
+        P: "showprobechart",
+        R: "showredondantchart",
+        M: "showboardchart",
+        S: "showsensorchart",
     }
     return setting[tool] != undefined
         ? useUiContextFn.getValue(setting[tool])
         : false
 }
 
-const sensorName = (tool, index, size) => {
-    const name = { T: "P41", B: "P37", C: "P43", P: "P42", R: "P44", M: "P90" }
-    return name[tool] != undefined
-        ? T(name[tool]).replace("$", size == 1 ? "" : index + 1)
-        : ""
+const isChartVisible = (index) => {
+    if (index == 0) {
+        if (isVisible("T") || isVisible("R")) {
+            return true
+        }
+    }
+    if (index == 1) {
+        if (
+            isVisible("B") ||
+            isVisible("C") ||
+            isVisible("M") ||
+            isVisible("P")
+        ) {
+            return true
+        }
+    }
+    if (index == 2) {
+        if (isVisible("S")) {
+            return true
+        }
+    }
+    return false
 }
 
 const chartColors = [
@@ -66,38 +131,94 @@ const chartColors = [
     "128,128,128", //grey
     "0,0,0", //purple
 ]
+const buildCharts = (temperaturesList, delay) => {
+    //we parse each chart
+    charts.forEach((chart, index) => {
+        //check is visible
+        if (isChartVisible(index)) {
+            //create the chart
+            chart.chart = new SmoothieChart(smoothieOptions)
+            //parse defined tools
+            Object.keys(chart.series).forEach((tool) => {
+                //if tool is visible
+                if (isVisible(tool)) {
+                    //for each index of tool
+                    temperaturesList[tool].forEach(
+                        (temperaturesList, index) => {
+                            //create new serie
+                            chart.series[tool][index] = new TimeSeries()
+                            chart.chart.current.addTimeSeries(
+                                chart.series[tool][index],
+                                {
+                                    lineWidth: 1,
+                                    strokeStyle:
+                                        "rgb(" + chartColors[index] + ")",
+                                }
+                            )
+                            //fill with existing data from temperaturesList
+                            temperaturesList.current.forEach((entry) => {
+                                chart.series[tool][index].append(
+                                    entry.time,
+                                    entry.temperatures[tool][index].value
+                                )
+                            })
+                        }
+                    )
+                } else {
+                    chart.series[tool] = []
+                }
+            })
+            //add the chart to the page
+            chart.chart.streamTo(chart.ref, delay)
+        } else {
+            //no display so no need datas
+            chart.chart = null
+            chart.series = []
+        }
+    })
+}
 
+const updateCharts = (temperatures) => {
+    charts.forEach((chart, index) => {
+        //check is visible
+        if (isChartVisible(index)) {
+            //parse defined tools
+            Object.keys(chart.series).forEach((tool) => {
+                //if tool is visible
+                if (isVisible(tool)) {
+                    //for each index of tool
+                    temperatures[tool].forEach((entry, index) => {
+                        //add new data to the serie
+                        chart.series[tool][index].append(
+                            Date.now(),
+                            parseFloat(temperatures[tool][index].value)
+                        )
+                    })
+                }
+            })
+        }
+    })
+}
+
+const sensorName = (tool, index, size) => {
+    const name = { T: "P41", B: "P37", C: "P43", P: "P42", R: "P44", M: "P90" }
+    return name[tool] != undefined
+        ? T(name[tool]).replace("$", size == 1 ? "" : index + 1)
+        : ""
+}
+
+const lineRef = {}
+const chart = {}
+const smoothieChart1 = {}
+const chart1 = {}
 const ChartsPanel = () => {
     const { panels } = useUiContext()
     const { temperatures, temperaturesList } = useTargetContext()
-    const lineRef = useRef()
-    const chart = useRef()
+
     const id = "chartsPanel"
     console.log(id)
-    const smoothieChart1 = useRef(null)
-    const smoothieChart2 = useRef(null)
-    const smoothieChart3 = useRef(null)
-    const chart1 = useRef()
-    const chart2 = useRef()
-    const chart3 = useRef()
 
-    const smoothieOpt = {
-        millisPerPixel: 100,
-        labels: { fillStyle: "#dadee4" },
-        grid: {
-            fillStyle: "#ffffff",
-            strokeStyle: "#eef0f3",
-            sharpLines: true,
-            millisPerLine: 10000,
-            verticalSections: 3,
-            borderVisible: false,
-            limitFPS: 15,
-            maxValue: 400,
-            minValue: -20,
-        },
-        limitFPS: 15,
-    }
-    const smoothieOpt2 = {
+    const smoothieOptions = {
         responsive: true,
         tooltip: false,
         millisPerPixel: 200,
@@ -120,25 +241,17 @@ const ChartsPanel = () => {
         },
     }
 
-    Object.keys(temperatures).forEach((tool) => {
-        // if (temperatures[tool].length != 0) hasTemp = true
-    })
     useEffect(() => {
-        chart1.current = new SmoothieChart(smoothieOpt2)
-        chart1.current.streamTo(smoothieChart1.current, 3000)
-        chart2.current = new SmoothieChart(smoothieOpt2)
-        chart2.current.streamTo(smoothieChart2.current, 3000)
-        chart3.current = new SmoothieChart(smoothieOpt2)
-        chart3.current.streamTo(smoothieChart3.current, 3000)
+        chart1.current = new SmoothieChart(smoothieOptions)
         lineRef.current = new TimeSeries()
         chart1.current.addTimeSeries(lineRef.current, {
             lineWidth: 1,
             strokeStyle: "#a55eea",
-            fillStyle: "rgba(255, 128, 255, 0.3)",
         })
         temperaturesList.current.forEach((entry, index) => {
-            lineRef.current.append(entry.time, entry.temperatures.T[0].current)
+            lineRef.current.append(entry.time, entry.temperatures.T[0].value)
         })
+        chart1.current.streamTo(smoothieChart1.current, 3000)
     }, [])
     useEffect(() => {
         if (temperatures.T.length != 0) {
@@ -169,27 +282,15 @@ const ChartsPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <div style="display:flex; flex-direction:column;height:100%; justify-content:space-between">
-                    <canvas
-                        class="chart"
-                        id="chart1"
-                        width="340"
-                        height="100"
-                        ref={smoothieChart1}
-                    />
-                    <canvas
-                        class="chart"
-                        id="chart2"
-                        width="340"
-                        height="100"
-                        ref={smoothieChart2}
-                    />
-                    <canvas
-                        class="chart"
-                        id="chart3"
-                        width="340"
-                        height="100"
-                        ref={smoothieChart3}
-                    />
+                    {isChartVisible(0) && (
+                        <canvas
+                            class="chart"
+                            id="chart1"
+                            width="340"
+                            height="100"
+                            ref={smoothieChart1}
+                        />
+                    )}
                 </div>
             </div>
         </div>
