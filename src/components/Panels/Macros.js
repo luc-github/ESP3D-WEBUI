@@ -16,160 +16,164 @@ Macros.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { T } from "../Translations";
-import { Cast } from "preact-feather";
-import { useUiContext } from "../../contexts";
-import { ButtonImg } from "../Controls";
-import { useHttpFn } from "../../hooks";
-import { espHttpURL, replaceVariables } from "../Helpers";
-import { iconsFeather } from "../Images";
+import { h } from "preact"
+import { T } from "../Translations"
+import { Cast } from "preact-feather"
+import { useUiContext } from "../../contexts"
+import { ButtonImg } from "../Controls"
+import { useHttpFn } from "../../hooks"
+import { espHttpURL, replaceVariables } from "../Helpers"
+import { iconsFeather } from "../Images"
 import {
-  iconsTarget,
-  useTargetContextFn,
-  files,
-  variablesList,
-} from "../../targets";
+    iconsTarget,
+    useTargetContextFn,
+    files,
+    variablesList,
+} from "../../targets"
 
 /*
  * Local const
  *
  */
 const MacrosPanel = () => {
-  const { panels, uisettings } = useUiContext();
-  const { processData } = useTargetContextFn;
-  const { createNewRequest } = useHttpFn;
-  const iconsList = { ...iconsTarget, ...iconsFeather };
-  const id = "macrosPanel";
-  console.log(id);
-  const sendCommand = (cmd) => {
-    createNewRequest(
-      espHttpURL("command", { cmd }).toString(),
-      { method: "GET", echo: replaceVariables(variablesList, cmd, true) },
-      {
-        onSuccess: (result) => {
-          processData("response", result);
-        },
-        onFail: (error) => {
-          console.log(error);
-          processData("error", error);
-        },
-      }
-    );
-  };
-
-  const macroList = uisettings.getValue("macros");
-  const macroButtons = macroList.reduce((acc, curr) => {
-    const item = curr.value.reduce((accumulator, current) => {
-      accumulator[current.name] = current.initial;
-      return accumulator;
-    }, {});
-    acc.push(item);
-    return acc;
-  }, []);
-  const processMacro = (action, type) => {
-    switch (type) {
-      case "FS":
-        //[ESP700] //ESP700 should send status to telnet / websocket
-        //Todo: handle response from ESP700
-        sendCommand("[ESP700]" + action);
-        break;
-      case "SD":
-        //get command accoring target FW
-        const response = files.command("SD", "play", "", action);
-        const cmds = response.cmd.split("\n");
-        cmds.forEach((cmd) => {
-          sendCommand(cmd);
-        });
-
-        break;
-      //TODO:
-      //TFT SD ? same as above
-      //TFT USB ? same as above
-      case "URI":
-        //open new page or silent command
-        const uri = action.trim().replace("[SILENT]", "");
-        if (action.trim().startsWith("[SILENT]")) {
-          const uri = action.trim().replace("[SILENT]", "");
-          var myInit = { method: "GET", mode: "cors", cache: "default" };
-          fetch(uri, myInit)
-            .then(function (response) {
-              if (response.ok) {
-                console.log("Request succeeded");
-              } else {
-                console.log("Request failed");
-              }
-            })
-            .catch(function (error) {
-              console.log("Request failed: " + error.message);
-            });
-        } else {
-          window.open(action);
-        }
-        break;
-      case "CMD":
-        //split by ; and show in terminal
-        const commandsList = action.trim().split(";");
-        commandsList.forEach((element) => {
-          sendCommand(replaceVariables(variablesList, element));
-        });
-        break;
-      default:
-        console.log("type:", type, " action:", action);
-        break;
+    const { panels, uisettings } = useUiContext()
+    const { processData } = useTargetContextFn
+    const { createNewRequest } = useHttpFn
+    const iconsList = { ...iconsTarget, ...iconsFeather }
+    const id = "macrosPanel"
+    console.log(id)
+    const sendCommand = (cmd) => {
+        createNewRequest(
+            espHttpURL("command", { cmd }).toString(),
+            { method: "GET", echo: replaceVariables(variablesList, cmd, true) },
+            {
+                onSuccess: (result) => {
+                    processData("response", result)
+                },
+                onFail: (error) => {
+                    console.log(error)
+                    processData("error", error)
+                },
+            }
+        )
     }
-  };
 
-  return (
-    <div class="panel panel-dashboard">
-      <div class="navbar">
-        <span class="navbar-section feather-icon-container">
-          <Cast />
-          <strong class="text-ellipsis">{T("macros")}</strong>
-        </span>
-        <span class="navbar-section">
-          <span style="height: 100%;">
-            <button
-              class="btn btn-clear btn-close m-1"
-              aria-label="Close"
-              onclick={(e) => {
-                panels.hide(id);
-              }}
-            />
-          </span>
-        </span>
-      </div>
-      <div class="panel-body panel-body-dashboard">
-        <div class="macro-buttons-panel">
-          {macroButtons.map((element) => {
-            const displayIcon = iconsList[element.icon]
-              ? iconsList[element.icon]
-              : "";
-            return (
-              <ButtonImg
-                m1
-                label={element.name}
-                icon={displayIcon}
-                onclick={(e) => {
-                  e.target.blur();
-                  processMacro(element.action, element.type);
-                }}
-              />
-            );
-          })}
+    const macroList = uisettings.getValue("macros")
+    const macroButtons = macroList.reduce((acc, curr) => {
+        const item = curr.value.reduce((accumulator, current) => {
+            accumulator[current.name] = current.initial
+            return accumulator
+        }, {})
+        acc.push(item)
+        return acc
+    }, [])
+    const processMacro = (action, type) => {
+        switch (type) {
+            case "FS":
+                //[ESP700] //ESP700 should send status to telnet / websocket
+                //Todo: handle response from ESP700
+                sendCommand("[ESP700]" + action)
+                break
+            case "SD":
+                //get command accoring target FW
+                const response = files.command("SD", "play", "", action)
+                const cmds = response.cmd.split("\n")
+                cmds.forEach((cmd) => {
+                    sendCommand(cmd)
+                })
+
+                break
+            //TODO:
+            //TFT SD ? same as above
+            //TFT USB ? same as above
+            case "URI":
+                //open new page or silent command
+                const uri = action.trim().replace("[SILENT]", "")
+                if (action.trim().startsWith("[SILENT]")) {
+                    const uri = action.trim().replace("[SILENT]", "")
+                    var myInit = {
+                        method: "GET",
+                        mode: "cors",
+                        cache: "default",
+                    }
+                    fetch(uri, myInit)
+                        .then(function (response) {
+                            if (response.ok) {
+                                console.log("Request succeeded")
+                            } else {
+                                console.log("Request failed")
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log("Request failed: " + error.message)
+                        })
+                } else {
+                    window.open(action)
+                }
+                break
+            case "CMD":
+                //split by ; and show in terminal
+                const commandsList = action.trim().split(";")
+                commandsList.forEach((element) => {
+                    sendCommand(replaceVariables(variablesList, element))
+                })
+                break
+            default:
+                console.log("type:", type, " action:", action)
+                break
+        }
+    }
+
+    return (
+        <div class="panel panel-dashboard">
+            <div class="navbar">
+                <span class="navbar-section feather-icon-container">
+                    <Cast />
+                    <strong class="text-ellipsis">{T("macros")}</strong>
+                </span>
+                <span class="navbar-section">
+                    <span style="height: 100%;">
+                        <button
+                            class="btn btn-clear btn-close m-1"
+                            aria-label="Close"
+                            onclick={(e) => {
+                                panels.hide(id)
+                            }}
+                        />
+                    </span>
+                </span>
+            </div>
+            <div class="panel-body panel-body-dashboard">
+                <div class="macro-buttons-panel">
+                    {macroButtons.map((element) => {
+                        const displayIcon = iconsList[element.icon]
+                            ? iconsList[element.icon]
+                            : ""
+                        return (
+                            <ButtonImg
+                                m1
+                                label={element.name}
+                                icon={displayIcon}
+                                onclick={(e) => {
+                                    e.target.blur()
+                                    processMacro(element.action, element.type)
+                                }}
+                            />
+                        )
+                    })}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
+    )
+}
 
 const MacrosPanelElement = {
-  id: "macrosPanel",
-  content: <MacrosPanel />,
-  name: "macros",
-  icon: "Cast",
-  show: "showmacrospanel",
-  onstart: "openmacrosonstart",
-};
+    id: "macrosPanel",
+    content: <MacrosPanel />,
+    name: "macros",
+    icon: "Cast",
+    show: "showmacrospanel",
+    onstart: "openmacrosonstart",
+}
 
-export { MacrosPanel, MacrosPanelElement };
+export { MacrosPanel, MacrosPanelElement }

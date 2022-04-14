@@ -15,37 +15,37 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { Info } from "preact-feather";
+import { h } from "preact"
+import { Info } from "preact-feather"
 
 const showProgressModal = ({ modals, title, button1, content }) => {
-  const id = "progression";
-  const defaultCb1 = () => {
-    modals.removeModal(modals.getModalIndex(id));
-    if (button1 && button1.cb) button1.cb();
-  };
+    const id = "progression"
+    const defaultCb1 = () => {
+        modals.removeModal(modals.getModalIndex(id))
+        if (button1 && button1.cb) button1.cb()
+    }
 
-  if (modals.getModalIndex(id) == -1)
-    modals.addModal({
-      id: id,
-      title: (
-        <div
-          class="text-primary feather-icon-container"
-          style="line-height:24px!important"
-        >
-          <Info />
-          <label>{title}</label>
-        </div>
-      ),
-      content: content,
-      footer: (
-        <button class="btn mx-2" onClick={defaultCb1}>
-          {button1.text}
-        </button>
-      ),
-      //overlay: true,
-      hideclose: true,
-    });
-};
+    if (modals.getModalIndex(id) == -1)
+        modals.addModal({
+            id: id,
+            title: (
+                <div
+                    class="text-primary feather-icon-container"
+                    style="line-height:24px!important"
+                >
+                    <Info />
+                    <label>{title}</label>
+                </div>
+            ),
+            content: content,
+            footer: (
+                <button class="btn mx-2" onClick={defaultCb1}>
+                    {button1.text}
+                </button>
+            ),
+            //overlay: true,
+            hideclose: true,
+        })
+}
 
-export { showProgressModal };
+export { showProgressModal }

@@ -17,56 +17,62 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { h } from "preact"
 
 const FormGroup = ({
-  className,
-  inline,
-  validation = null,
-  children,
-  label,
-  id,
-  type,
+    className,
+    inline,
+    validation = null,
+    children,
+    label,
+    id,
+    type,
 }) => {
-  const getValidationClass = (validation) => {
-    if (validation !== null && validation.valid == true) {
-      if (validation.modified) return `form-group has-modification`;
-      if (validation.success) return `form-group has-success`;
+    const getValidationClass = (validation) => {
+        if (validation !== null && validation.valid == true) {
+            if (validation.modified) return `form-group has-modification`
+            if (validation.success) return `form-group has-success`
+        }
+        if (validation != null && validation.valid == false)
+            return `form-group has-error`
+        return `form-group`
     }
-    if (validation != null && validation.valid == false)
-      return `form-group has-error`;
-    return `form-group`;
-  };
-  return (
-    <div
-      class={`${className ? className : ""} ${getValidationClass(validation)}`}
-      id={id ? "group-" + id : ""}
-    >
-      <div class={inline ? "columns mt-2" : "flex-cols"}>
-        {label && (
-          <label
-            class={
-              inline && type == "boolean"
-                ? "d-none"
-                : `form-label text-dark ${inline ? "column col-auto" : ""}`
-            }
-            htmlFor={id}
-          >
-            {label}
-          </label>
-        )}
-
-        {children}
-      </div>
-      {validation && validation.message && (
+    return (
         <div
-          className={`form-input-hint ${inline ? "text-left" : "text-center"}`}
+            class={`${className ? className : ""} ${getValidationClass(
+                validation
+            )}`}
+            id={id ? "group-" + id : ""}
         >
-          {validation.message}
-        </div>
-      )}
-    </div>
-  );
-};
+            <div class={inline ? "columns mt-2" : "flex-cols"}>
+                {label && (
+                    <label
+                        class={
+                            inline && type == "boolean"
+                                ? "d-none"
+                                : `form-label text-dark ${
+                                      inline ? "column col-auto" : ""
+                                  }`
+                        }
+                        htmlFor={id}
+                    >
+                        {label}
+                    </label>
+                )}
 
-export default FormGroup;
+                {children}
+            </div>
+            {validation && validation.message && (
+                <div
+                    className={`form-input-hint ${
+                        inline ? "text-left" : "text-center"
+                    }`}
+                >
+                    {validation.message}
+                </div>
+            )}
+        </div>
+    )
+}
+
+export default FormGroup

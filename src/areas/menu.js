@@ -17,15 +17,15 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { Navbar } from "../components/Navbar";
+import { h } from "preact"
+import { Navbar } from "../components/Navbar"
 
 const Menu = () => {
-  return (
-    <div id="menu" class="menu-container">
-      <Navbar />
-    </div>
-  );
-};
+    return (
+        <div id="menu" class="menu-container">
+            <Navbar />
+        </div>
+    )
+}
 
-export { Menu };
+export { Menu }

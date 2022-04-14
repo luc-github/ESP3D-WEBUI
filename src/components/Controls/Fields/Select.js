@@ -17,57 +17,61 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact";
-import { useEffect } from "preact/hooks";
-import { useSettingsContext } from "../../../contexts";
+import { Fragment, h } from "preact"
+import { useEffect } from "preact/hooks"
+import { useSettingsContext } from "../../../contexts"
 
 const Option = ({ label, ...props }) => {
-  const { connectionSettings } = useSettingsContext();
-  //Condition for camera - no need to display if none setup
-  if (props.value == "camera") {
-    if (connectionSettings.current.Cam_name) {
-      return <option {...props}>{connectionSettings.current.Cam_name}</option>;
-    } else return null;
-  }
-  return <option {...props}>{label}</option>;
-};
+    const { connectionSettings } = useSettingsContext()
+    //Condition for camera - no need to display if none setup
+    if (props.value == "camera") {
+        if (connectionSettings.current.Cam_name) {
+            return (
+                <option {...props}>
+                    {connectionSettings.current.Cam_name}
+                </option>
+            )
+        } else return null
+    }
+    return <option {...props}>{label}</option>
+}
 
 const Select = ({
-  label = "",
-  id = "",
-  options = [],
-  inline,
-  setValue,
-  value,
-  button,
-  ...rest
+    label = "",
+    id = "",
+    options = [],
+    inline,
+    setValue,
+    value,
+    button,
+    ...rest
 }) => {
-  const optionList = options.map((option) => <Option {...option} />);
-  const props = {
-    id,
-    name: id,
-  };
-  const onChange = (e) => {
-    if (setValue) setValue(e.target.value);
-  };
-  useEffect(() => {
-    //to update state
-    if (setValue) setValue(null, true);
-  }, [value]);
+    const optionList = options.map((option) => <Option {...option} />)
+    const props = {
+        id,
+        name: id,
+    }
+    const onChange = (e) => {
+        if (setValue) setValue(e.target.value)
+    }
+    useEffect(() => {
+        //to update state
+        if (setValue) setValue(null, true)
+    }, [value])
 
-  return (
-    <Fragment>
-      <select
-        class={`form-select ${inline ? "column" : ""}`}
-        {...props}
-        {...rest}
-        value={value}
-        onChange={onChange}
-      >
-        {optionList}
-      </select>
-      {button}
-    </Fragment>
-  );
-};
-export default Select;
+    return (
+        <Fragment>
+            <select
+                class={`form-select ${inline ? "column" : ""}`}
+                {...props}
+                {...rest}
+                value={value}
+                onChange={onChange}
+            >
+                {optionList}
+            </select>
+            {button}
+        </Fragment>
+    )
+}
+export default Select

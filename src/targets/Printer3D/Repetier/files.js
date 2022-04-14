@@ -17,96 +17,96 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { FLASH } from "../../FLASH-source";
-import { DIRECTSD } from "./DIRECTSD-source";
-import { SD } from "./SD-source";
-import { useSettingsContext, useUiContextFn } from "../../../contexts";
+import { h } from "preact"
+import { FLASH } from "../../FLASH-source"
+import { DIRECTSD } from "./DIRECTSD-source"
+import { SD } from "./SD-source"
+import { useSettingsContext, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
-  {
-    value: "FLASH",
-    name: "S137",
-    depend: () => {
-      return useUiContextFn.getValue("showfilespanel");
+    {
+        value: "FLASH",
+        name: "S137",
+        depend: () => {
+            return useUiContextFn.getValue("showfilespanel")
+        },
     },
-  },
-  {
-    value: "SD",
-    name: "S190",
-    depend: () => {
-      const { connectionSettings } = useSettingsContext();
-      return (
-        useUiContextFn.getValue("sd") &&
-        connectionSettings.current.SDConnection == "none"
-      );
+    {
+        value: "SD",
+        name: "S190",
+        depend: () => {
+            const { connectionSettings } = useSettingsContext()
+            return (
+                useUiContextFn.getValue("sd") &&
+                connectionSettings.current.SDConnection == "none"
+            )
+        },
     },
-  },
-  {
-    value: "DIRECTSD",
-    name: "S190",
-    depend: () => {
-      const { connectionSettings } = useSettingsContext();
-      return (
-        useUiContextFn.getValue("sd") &&
-        connectionSettings.current.SDConnection != "none"
-      );
+    {
+        value: "DIRECTSD",
+        name: "S190",
+        depend: () => {
+            const { connectionSettings } = useSettingsContext()
+            return (
+                useUiContextFn.getValue("sd") &&
+                connectionSettings.current.SDConnection != "none"
+            )
+        },
     },
-  },
-  {
-    value: "TFTSD",
-    name: "S188",
-    depend: () => {
-      return useUiContextFn.getValue("tftsd");
+    {
+        value: "TFTSD",
+        name: "S188",
+        depend: () => {
+            return useUiContextFn.getValue("tftsd")
+        },
     },
-  },
-  {
-    value: "TFTUSB",
-    name: "S189",
-    depend: () => {
-      return useUiContextFn.getValue("tftusb");
+    {
+        value: "TFTUSB",
+        name: "S189",
+        depend: () => {
+            return useUiContextFn.getValue("tftusb")
+        },
     },
-  },
-];
+]
 
 const capabilities = {
-  FLASH: FLASH.capabilities,
-  DIRECTSD: DIRECTSD.capabilities,
-  SD: SD.capabilities,
-  TFTUSB: {},
-  TFTSD: {},
-};
+    FLASH: FLASH.capabilities,
+    DIRECTSD: DIRECTSD.capabilities,
+    SD: SD.capabilities,
+    TFTUSB: {},
+    TFTSD: {},
+}
 
 const commands = {
-  FLASH: FLASH.commands,
-  DIRECTSD: DIRECTSD.commands,
-  SD: SD.commands,
-  TFTUSB: {},
-  TFTSD: {},
-};
+    FLASH: FLASH.commands,
+    DIRECTSD: DIRECTSD.commands,
+    SD: SD.commands,
+    TFTUSB: {},
+    TFTSD: {},
+}
 
 function capability() {
-  const [filesystem, cap, ...rest] = arguments;
-  if (capabilities[filesystem] && capabilities[filesystem][cap])
-    return capabilities[filesystem][cap](...rest);
-  console.log("Unknow capability ", cmd, " for ", filesystem);
-  return false;
+    const [filesystem, cap, ...rest] = arguments
+    if (capabilities[filesystem] && capabilities[filesystem][cap])
+        return capabilities[filesystem][cap](...rest)
+    console.log("Unknow capability ", cmd, " for ", filesystem)
+    return false
 }
 
 function command() {
-  const [filesystem, cmd, ...rest] = arguments;
-  if (commands[filesystem] && commands[filesystem][cmd])
-    return commands[filesystem][cmd](...rest);
-  console.log("Unknow command ", cmd, " for ", filesystem);
-  return { type: "error" };
+    const [filesystem, cmd, ...rest] = arguments
+    if (commands[filesystem] && commands[filesystem][cmd])
+        return commands[filesystem][cmd](...rest)
+    console.log("Unknow command ", cmd, " for ", filesystem)
+    return { type: "error" }
 }
 
 //everything in one object
 const files = {
-  command,
-  capability,
-  supported: supportedFileSystems,
-};
+    command,
+    capability,
+    supported: supportedFileSystems,
+}
 
-export { files };
+export { files }

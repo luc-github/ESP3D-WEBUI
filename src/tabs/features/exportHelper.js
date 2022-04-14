@@ -20,38 +20,43 @@ exportHelper.js - ESP3D WebUI helper file
 */
 
 function filterProperties(rawFeatures) {
-  return Object.keys(rawFeatures).reduce((acc, categoryName) => {
-    const category = rawFeatures[categoryName];
-    const subCategories = Object.keys(category).reduce((acc, subCatName) => {
-      const subCatSettings = category[subCatName].map(({ id, label, initial }) => ({ id, label, value: initial }))
-      return { ...acc, [subCatName]: subCatSettings };
-    }, {});
-    return { ...acc, [categoryName]: subCategories };
-  }, {});
+    return Object.keys(rawFeatures).reduce((acc, categoryName) => {
+        const category = rawFeatures[categoryName]
+        const subCategories = Object.keys(category).reduce(
+            (acc, subCatName) => {
+                const subCatSettings = category[subCatName].map(
+                    ({ id, label, initial }) => ({ id, label, value: initial })
+                )
+                return { ...acc, [subCatName]: subCatSettings }
+            },
+            {}
+        )
+        return { ...acc, [categoryName]: subCategories }
+    }, {})
 }
 
 function exportFeatures(features) {
-  const strippedFeature = filterProperties(features);
-  const filename = "export.json";
-  const file = new Blob([JSON.stringify(strippedFeature, null, " ")], {
-    type: "application/json",
-  });
-  if (window.navigator.msSaveOrOpenBlob)
-    // IE10+
-    window.navigator.msSaveOrOpenBlob(file, filename);
-  else {
-    // Others
-    const a = document.createElement("a");
-    const url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 0);
-  }
+    const strippedFeature = filterProperties(features)
+    const filename = "export.json"
+    const file = new Blob([JSON.stringify(strippedFeature, null, " ")], {
+        type: "application/json",
+    })
+    if (window.navigator.msSaveOrOpenBlob)
+        // IE10+
+        window.navigator.msSaveOrOpenBlob(file, filename)
+    else {
+        // Others
+        const a = document.createElement("a")
+        const url = URL.createObjectURL(file)
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(function () {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+        }, 0)
+    }
 }
 
-export { exportFeatures };
+export { exportFeatures }

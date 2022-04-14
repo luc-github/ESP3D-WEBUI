@@ -18,36 +18,36 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { Router } from "../../components/Router";
-import { FeaturesTab } from "../../tabs/features";
-import { InterfaceTab } from "../../tabs/interface";
-import { MachineTab } from "../../tabs/machine";
-import { TabBar } from "../../components/TabBar";
-import { T } from "../../components/Translations";
+import { h } from "preact"
+import { Router } from "../../components/Router"
+import { FeaturesTab } from "../../tabs/features"
+import { InterfaceTab } from "../../tabs/interface"
+import { MachineTab } from "../../tabs/machine"
+import { TabBar } from "../../components/TabBar"
+import { T } from "../../components/Translations"
 
 const routes = {
-  FEATURES: {
-    component: <FeaturesTab />,
-    path: "/settings/features",
-  },
-  INTERFACE: {
-    component: <InterfaceTab />,
-    path: "/settings/interface",
-  },
-  MACHINE: {
-    component: <MachineTab />,
-    path: "/settings/machine",
-  },
-};
+    FEATURES: {
+        component: <FeaturesTab />,
+        path: "/settings/features",
+    },
+    INTERFACE: {
+        component: <InterfaceTab />,
+        path: "/settings/interface",
+    },
+    MACHINE: {
+        component: <MachineTab />,
+        path: "/settings/machine",
+    },
+}
 
 const Settings = () => {
-  return (
-    <div id="settings" class="container">
-      <TabBar />
-      <Router routesList={routes} localDefault={"/settings/features"} />
-    </div>
-  );
-};
+    return (
+        <div id="settings" class="container">
+            <TabBar />
+            <Router routesList={routes} localDefault={"/settings/features"} />
+        </div>
+    )
+}
 
-export default Settings;
+export default Settings

@@ -16,82 +16,88 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
-import { Search } from "preact-feather";
-import { showModal } from "../../Modal";
-import { ScanPacksList } from "../ScanPacksList";
-import { useUiContext } from "../../../contexts";
-import { T, getLanguageName } from "../../Translations";
+import { h } from "preact"
+import { useEffect, useState } from "preact/hooks"
+import { Search } from "preact-feather"
+import { showModal } from "../../Modal"
+import { ScanPacksList } from "../ScanPacksList"
+import { useUiContext } from "../../../contexts"
+import { T, getLanguageName } from "../../Translations"
 
 const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
-  const props = {
-    id,
-    name: id,
-  };
-  const [displayValue, setDisplayValue] = useState(
-    id == "language" ? T("lang") : T("none")
-  );
-  const { modals } = useUiContext();
-  const defaultDisplayValue = id == "language" ? T("lang", true) : T("none");
-  const onChange = (value) => {
-    if (setValue) setValue(value);
+    const props = {
+        id,
+        name: id,
+    }
+    const [displayValue, setDisplayValue] = useState(
+        id == "language" ? T("lang") : T("none")
+    )
+    const { modals } = useUiContext()
+    const defaultDisplayValue = id == "language" ? T("lang", true) : T("none")
+    const onChange = (value) => {
+        if (setValue) setValue(value)
 
-    setDisplayValue(
-      value == "default"
-        ? defaultDisplayValue
-        : id == "language"
-        ? getLanguageName(value)
-        : value.replace("theme-", "").replace(".gz", "")
-    );
-  };
+        setDisplayValue(
+            value == "default"
+                ? defaultDisplayValue
+                : id == "language"
+                ? getLanguageName(value)
+                : value.replace("theme-", "").replace(".gz", "")
+        )
+    }
 
-  let ScanPacks = null;
-  const refreshList = () => {
-    if (ScanPacks) ScanPacks();
-  };
-  useEffect(() => {
-    //to update state
-    if (setValue) setValue(null, true);
-    setDisplayValue(
-      value == "default"
-        ? defaultDisplayValue
-        : id == "language"
-        ? getLanguageName(value)
-        : value.replace("theme-", "").replace(".gz", "")
-    );
-  }, [value]);
+    let ScanPacks = null
+    const refreshList = () => {
+        if (ScanPacks) ScanPacks()
+    }
+    useEffect(() => {
+        //to update state
+        if (setValue) setValue(null, true)
+        setDisplayValue(
+            value == "default"
+                ? defaultDisplayValue
+                : id == "language"
+                ? getLanguageName(value)
+                : value.replace("theme-", "").replace(".gz", "")
+        )
+    }, [value])
 
-  return (
-    <div class={`input-group ${inline ? "column" : ""} `}>
-      <span
-        class="form-input"
-        style="cursor: pointer;"
-        readonly
-        value={id == "language" ? T("lang") : T("none")}
-        onClick={(e) => {
-          e.target.blur();
-          const modalId = `${id}Pickup`;
-          showModal({
-            modals,
-            title: id == "language" ? T("S177") : T("S182"),
-            button2: { text: T("S24") },
-            button1: { cb: refreshList, text: T("S50"), noclose: true },
-            icon: <Search />,
-            id: modalId,
-            content: (
-              <ScanPacksList
-                id={modalId}
-                setValue={onChange}
-                refreshfn={(scanpacks) => (ScanPacks = scanpacks)}
-              />
-            ),
-          });
-        }}
-      >
-        {displayValue}
-      </span>
-    </div>
-  );
-};
-export default PickUp;
+    return (
+        <div class={`input-group ${inline ? "column" : ""} `}>
+            <span
+                class="form-input"
+                style="cursor: pointer;"
+                readonly
+                value={id == "language" ? T("lang") : T("none")}
+                onClick={(e) => {
+                    e.target.blur()
+                    const modalId = `${id}Pickup`
+                    showModal({
+                        modals,
+                        title: id == "language" ? T("S177") : T("S182"),
+                        button2: { text: T("S24") },
+                        button1: {
+                            cb: refreshList,
+                            text: T("S50"),
+                            noclose: true,
+                        },
+                        icon: <Search />,
+                        id: modalId,
+                        content: (
+                            <ScanPacksList
+                                id={modalId}
+                                setValue={onChange}
+                                refreshfn={(scanpacks) =>
+                                    (ScanPacks = scanpacks)
+                                }
+                            />
+                        ),
+                    })
+                }}
+            >
+                {displayValue}
+            </span>
+        </div>
+    )
+}
+export default PickUp

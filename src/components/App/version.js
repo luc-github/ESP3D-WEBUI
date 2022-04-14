@@ -15,11 +15,11 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { webUIbuild } from "../../targets";
-export const webUIversion = "3.0.0-a1";
+import { h } from "preact"
+import { webUIbuild } from "../../targets"
+export const webUIversion = "3.0.0-a1"
 export const Esp3dVersion = () => (
-  <span>
-    {webUIversion}.{webUIbuild}
-  </span>
-);
+    <span>
+        {webUIversion}.{webUIbuild}
+    </span>
+)

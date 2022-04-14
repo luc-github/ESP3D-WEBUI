@@ -17,29 +17,29 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { RouterContextProvider, useRouterContext } from "./RouterContext";
+import { h } from "preact"
+import { RouterContextProvider, useRouterContext } from "./RouterContext"
 import {
-  HttpQueueContextProvider,
-  useHttpQueueContext,
-} from "./HttpQueueContext";
-import { UiContextProvider, useUiContext, useUiContextFn } from "./UiContext";
-import { SettingsContextProvider, useSettingsContext } from "./SettingsContext";
-import { DatasContextProvider, useDatasContext } from "./DatasContext";
-import { WsContextProvider, useWsContext } from "./WsContext";
+    HttpQueueContextProvider,
+    useHttpQueueContext,
+} from "./HttpQueueContext"
+import { UiContextProvider, useUiContext, useUiContextFn } from "./UiContext"
+import { SettingsContextProvider, useSettingsContext } from "./SettingsContext"
+import { DatasContextProvider, useDatasContext } from "./DatasContext"
+import { WsContextProvider, useWsContext } from "./WsContext"
 
 export {
-  RouterContextProvider,
-  useRouterContext,
-  HttpQueueContextProvider,
-  useHttpQueueContext,
-  UiContextProvider,
-  useUiContext,
-  useUiContextFn,
-  SettingsContextProvider,
-  useSettingsContext,
-  DatasContextProvider,
-  useDatasContext,
-  WsContextProvider,
-  useWsContext,
-};
+    RouterContextProvider,
+    useRouterContext,
+    HttpQueueContextProvider,
+    useHttpQueueContext,
+    UiContextProvider,
+    useUiContext,
+    useUiContextFn,
+    SettingsContextProvider,
+    useSettingsContext,
+    DatasContextProvider,
+    useDatasContext,
+    WsContextProvider,
+    useWsContext,
+}

@@ -17,120 +17,121 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { canProcessFile } from "../../helpers";
+import { h } from "preact"
+import { canProcessFile } from "../../helpers"
 import {
-  formatFileSizeToString,
-  sortedFilesList,
-  formatStatus,
-  filterResultFiles,
-} from "../../../components/Helpers";
+    formatFileSizeToString,
+    sortedFilesList,
+    formatStatus,
+    filterResultFiles,
+} from "../../../components/Helpers"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
-  const elements = line.split(" ");
-  if (elements.length != 2) return acc;
-  //TODO: check it is valid file name / size
-  //check size is number ?
-  //filename ?
-  acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) });
-  return acc;
-};
+    const elements = line.split(" ")
+    if (elements.length != 2) return acc
+    //TODO: check it is valid file name / size
+    //check size is number ?
+    //filename ?
+    acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) })
+    return acc
+}
 
 const capabilities = {
-  Process: (path, filename) => {
-    return canProcessFile(filename);
-  },
-  UseFilters: () => true,
-  IsFlatFS: () => true,
-  Upload: (path, filename, eMsg = false) => {
-    if (eMsg) return "E1";
-    //TODO
-    //check 8.1 if become true
-    return false;
-  },
-  UploadMultiple: () => {
-    return false;
-  },
-  Download: () => {
-    return false;
-  },
-  DeleteFile: () => {
-    return true;
-  },
-  DeleteDir: () => {
-    return false;
-  },
-  CreateDir: () => {
-    return true;
-  },
-};
+    Process: (path, filename) => {
+        return canProcessFile(filename)
+    },
+    UseFilters: () => true,
+    IsFlatFS: () => true,
+    Upload: (path, filename, eMsg = false) => {
+        if (eMsg) return "E1"
+        //TODO
+        //check 8.1 if become true
+        return false
+    },
+    UploadMultiple: () => {
+        return false
+    },
+    Download: () => {
+        return false
+    },
+    DeleteFile: () => {
+        return true
+    },
+    DeleteDir: () => {
+        return false
+    },
+    CreateDir: () => {
+        return true
+    },
+}
 
 const commands = {
-  list: (path, filename) => {
-    return { type: "cmd", cmd: "M21\nM20" };
-  },
-  formatResult: (result) => {
-    const res = {};
-    const files = result.content.reduce((acc, line) => {
-      return formatFileSerialLine(acc, line);
-    }, []);
-    res.files = sortedFilesList(files);
-    res.status = formatStatus(result.status);
-    return res;
-  },
-  filterResult: (data, path) => {
-    const res = {};
-    res.files = sortedFilesList(filterResultFiles(data.files, path));
-    res.status = formatStatus(data.status);
-    return res;
-  },
-  play: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
-    };
-  },
-  delete: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
-    };
-  },
-  createdir: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "M32 " + path + (path == "/" ? "" : "/") + filename,
-    };
-  },
-};
+    list: (path, filename) => {
+        return { type: "cmd", cmd: "M21\nM20" }
+    },
+    formatResult: (result) => {
+        const res = {}
+        const files = result.content.reduce((acc, line) => {
+            return formatFileSerialLine(acc, line)
+        }, [])
+        res.files = sortedFilesList(files)
+        res.status = formatStatus(result.status)
+        return res
+    },
+    filterResult: (data, path) => {
+        const res = {}
+        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        res.status = formatStatus(data.status)
+        return res
+    },
+    play: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+        }
+    },
+    delete: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+        }
+    },
+    createdir: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "M32 " + path + (path == "/" ? "" : "/") + filename,
+        }
+    },
+}
 
 const responseSteps = {
-  list: {
-    start: (data) => data.startsWith("Begin file list"),
-    end: (data) => data.startsWith("End file list"),
-    error: (data) => {
-      return (
-        data.indexOf("error") != -1 || data.indexOf("echo:No SD card") != -1
-      );
+    list: {
+        start: (data) => data.startsWith("Begin file list"),
+        end: (data) => data.startsWith("End file list"),
+        error: (data) => {
+            return (
+                data.indexOf("error") != -1 ||
+                data.indexOf("echo:No SD card") != -1
+            )
+        },
     },
-  },
-  delete: {
-    start: (data) => data.startsWith("File deleted"),
-    end: (data) => data.startsWith("ok"),
-    error: (data) => {
-      return data.startsWith("Deletion failed");
+    delete: {
+        start: (data) => data.startsWith("File deleted"),
+        end: (data) => data.startsWith("ok"),
+        error: (data) => {
+            return data.startsWith("Deletion failed")
+        },
     },
-  },
-  createdir: {
-    start: (data) => data.startsWith("Directory created"),
-    end: (data) => data.startsWith("Directory created"),
-    error: (data) => {
-      return data.startsWith("Creation failed");
+    createdir: {
+        start: (data) => data.startsWith("Directory created"),
+        end: (data) => data.startsWith("Directory created"),
+        error: (data) => {
+            return data.startsWith("Creation failed")
+        },
     },
-  },
-};
+}
 
-const SD = { capabilities, commands, responseSteps };
+const SD = { capabilities, commands, responseSteps }
 
-export { SD };
+export { SD }

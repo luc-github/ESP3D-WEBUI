@@ -17,62 +17,62 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 import {
-  MachineSettings,
-  defaultPanelsList,
-  Target,
-  files,
-  processor,
-  fwUrl,
-  Name,
-  iconsTarget,
-  restartdelay,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-  webUIbuild,
-  InformationsControls,
-  variablesList,
-  AppLogo,
-  WebUILogo,
-  QuickButtonsBar,
-} from "SubTargetDir";
-import defaultPreferencesSubTarget from "SubTargetDir/preferences.json";
-import defaultPreferencesTarget from "TargetDir/preferences.json";
-import defaultPreferencesBase from "./preferences.json";
-import { mergeJSON } from "../components/Helpers";
+    MachineSettings,
+    defaultPanelsList,
+    Target,
+    files,
+    processor,
+    fwUrl,
+    Name,
+    iconsTarget,
+    restartdelay,
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+    webUIbuild,
+    InformationsControls,
+    variablesList,
+    AppLogo,
+    WebUILogo,
+    QuickButtonsBar,
+} from "SubTargetDir"
+import defaultPreferencesSubTarget from "SubTargetDir/preferences.json"
+import defaultPreferencesTarget from "TargetDir/preferences.json"
+import defaultPreferencesBase from "./preferences.json"
+import { mergeJSON } from "../components/Helpers"
 
 /*
  * Local const
  *
  */
 const defaultPreferences = mergeJSON(
-  mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
-  defaultPreferencesSubTarget
-);
+    mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
+    defaultPreferencesSubTarget
+)
 
-const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0";
+const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"
 
 export {
-  MachineSettings,
-  Target,
-  defaultPreferences,
-  files,
-  processor,
-  defaultPanelsList,
-  fwUrl,
-  webUiUrl,
-  Name,
-  iconsTarget,
-  restartdelay,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-  webUIbuild,
-  InformationsControls,
-  variablesList,
-  AppLogo,
-  WebUILogo,
-  QuickButtonsBar,
-};
+    MachineSettings,
+    Target,
+    defaultPreferences,
+    files,
+    processor,
+    defaultPanelsList,
+    fwUrl,
+    webUiUrl,
+    Name,
+    iconsTarget,
+    restartdelay,
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+    webUIbuild,
+    InformationsControls,
+    variablesList,
+    AppLogo,
+    WebUILogo,
+    QuickButtonsBar,
+}

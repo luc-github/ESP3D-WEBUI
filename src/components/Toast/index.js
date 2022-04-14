@@ -15,55 +15,60 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { useEffect } from "preact/hooks";
-import { useUiContext } from "../../contexts";
-import { Toast as SpectreToast } from "../Controls";
-import { T } from "../Translations";
+import { h } from "preact"
+import { useEffect } from "preact/hooks"
+import { useUiContext } from "../../contexts"
+import { Toast as SpectreToast } from "../Controls"
+import { T } from "../Translations"
 
 /*
  * Local const
  *
  */
 const Toast = ({ index, type = "", children, timeout = 2000, remove }) => {
-  useEffect(() => {
-    let timer;
-    if (timeout) {
-      timer = setTimeout(() => {
-        remove(index);
-      }, timeout);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+    useEffect(() => {
+        let timer
+        if (timeout) {
+            timer = setTimeout(() => {
+                remove(index)
+            }, timeout)
+            return () => clearTimeout(timer)
+        }
+    }, [])
 
-  return (
-    <SpectreToast {...{ [type]: true }}>
-      <SpectreToast.Close
-        onClick={() => {
-          remove(index);
-        }}
-      />
-      {children}
-    </SpectreToast>
-  );
-};
+    return (
+        <SpectreToast {...{ [type]: true }}>
+            <SpectreToast.Close
+                onClick={() => {
+                    remove(index)
+                }}
+            />
+            {children}
+        </SpectreToast>
+    )
+}
 
 const ToastsContainer = () => {
-  const { toasts } = useUiContext();
-  return (
-    toasts.toastList && (
-      <div class="toasts-container">
-        {toasts.toastList.map((toast) => {
-          const { id, type, content } = toast;
-          return (
-            <Toast remove={toasts.removeToast} index={id} type={type} key={id}>
-              {T(content)}
-            </Toast>
-          );
-        })}
-      </div>
+    const { toasts } = useUiContext()
+    return (
+        toasts.toastList && (
+            <div class="toasts-container">
+                {toasts.toastList.map((toast) => {
+                    const { id, type, content } = toast
+                    return (
+                        <Toast
+                            remove={toasts.removeToast}
+                            index={id}
+                            type={type}
+                            key={id}
+                        >
+                            {T(content)}
+                        </Toast>
+                    )
+                })}
+            </div>
+        )
     )
-  );
-};
+}
 
-export { ToastsContainer };
+export { ToastsContainer }

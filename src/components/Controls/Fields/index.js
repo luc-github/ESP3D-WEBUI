@@ -17,24 +17,24 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
-import Boolean from "./Boolean";
-import FormGroup from "./FormGroup";
-import Input from "./Input";
-import Select from "./Select";
-import PickUp from "./PickUp";
-import ItemsList from "./ItemsList";
-import IconSelect from "./IconSelect";
-import LabelCtrl from "./Label";
+import Boolean from "./Boolean"
+import FormGroup from "./FormGroup"
+import Input from "./Input"
+import Select from "./Select"
+import PickUp from "./PickUp"
+import ItemsList from "./ItemsList"
+import IconSelect from "./IconSelect"
+import LabelCtrl from "./Label"
 
 export {
-  Boolean,
-  FormGroup,
-  Input,
-  Select,
-  PickUp,
-  ItemsList,
-  IconSelect,
-  LabelCtrl,
-};
+    Boolean,
+    FormGroup,
+    Input,
+    Select,
+    PickUp,
+    ItemsList,
+    IconSelect,
+    LabelCtrl,
+}

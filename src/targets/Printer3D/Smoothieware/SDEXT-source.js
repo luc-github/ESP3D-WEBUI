@@ -17,121 +17,122 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
-import { canProcessFile } from "../../helpers";
+import { canProcessFile } from "../../helpers"
 import {
-  formatFileSizeToString,
-  sortedFilesList,
-  formatStatus,
-  filterResultFiles,
-} from "../../../components/Helpers";
+    formatFileSizeToString,
+    sortedFilesList,
+    formatStatus,
+    filterResultFiles,
+} from "../../../components/Helpers"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
-  if (line.endsWith("/")) {
-    acc.push({ name: line.substring(0, line.length - 1), size: -1 });
-  } else {
-    const pos = line.lastIndexOf(" ");
-    if (pos != -1) {
-      //TODO: check it is valid file name / size
-      //check size is number ?
-      //filename ?
-      acc.push({
-        name: line.substring(0, pos),
-        size: formatFileSizeToString(line.substring(pos + 1)),
-      });
+    if (line.endsWith("/")) {
+        acc.push({ name: line.substring(0, line.length - 1), size: -1 })
+    } else {
+        const pos = line.lastIndexOf(" ")
+        if (pos != -1) {
+            //TODO: check it is valid file name / size
+            //check size is number ?
+            //filename ?
+            acc.push({
+                name: line.substring(0, pos),
+                size: formatFileSizeToString(line.substring(pos + 1)),
+            })
+        }
     }
-  }
 
-  return acc;
-};
+    return acc
+}
 
 const capabilities = {
-  Process: (path, filename) => {
-    return canProcessFile(filename);
-  },
-  UseFilters: () => true,
-  IsFlatFS: () => false,
-  Upload: (path, filename, eMsg = false) => {
-    if (eMsg) return "E1";
-    //TODO
-    //check 8.1 if become true
-    return false;
-  },
-  UploadMultiple: () => {
-    return false;
-  },
-  Download: () => {
-    return false;
-  },
-  DeleteFile: () => {
-    return true;
-  },
-  DeleteDir: () => {
-    return false;
-  },
-  CreateDir: () => {
-    return false;
-  },
-};
+    Process: (path, filename) => {
+        return canProcessFile(filename)
+    },
+    UseFilters: () => true,
+    IsFlatFS: () => false,
+    Upload: (path, filename, eMsg = false) => {
+        if (eMsg) return "E1"
+        //TODO
+        //check 8.1 if become true
+        return false
+    },
+    UploadMultiple: () => {
+        return false
+    },
+    Download: () => {
+        return false
+    },
+    DeleteFile: () => {
+        return true
+    },
+    DeleteDir: () => {
+        return false
+    },
+    CreateDir: () => {
+        return false
+    },
+}
 
 const commands = {
-  list: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: `echo BeginFiles\nls -s /sd${path}\necho EndFiles\n`,
-    };
-  },
-  formatResult: (result) => {
-    const res = {};
-    const files = result.content.reduce((acc, line) => {
-      if (line.startsWith("echo:")) return acc;
-      return formatFileSerialLine(acc, line);
-    }, []);
-    res.files = sortedFilesList(files);
-    res.status = formatStatus(result.status);
-    return res;
-  },
-  filterResult: (data, path) => {
-    const res = {};
-    res.files = sortedFilesList(filterResultFiles(data.files, path));
-    res.status = formatStatus(data.status);
-    return res;
-  },
-  play: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
-    };
-  },
-  delete: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
-    };
-  },
-};
+    list: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: `echo BeginFiles\nls -s /sd${path}\necho EndFiles\n`,
+        }
+    },
+    formatResult: (result) => {
+        const res = {}
+        const files = result.content.reduce((acc, line) => {
+            if (line.startsWith("echo:")) return acc
+            return formatFileSerialLine(acc, line)
+        }, [])
+        res.files = sortedFilesList(files)
+        res.status = formatStatus(result.status)
+        return res
+    },
+    filterResult: (data, path) => {
+        const res = {}
+        res.files = sortedFilesList(filterResultFiles(data.files, path))
+        res.status = formatStatus(data.status)
+        return res
+    },
+    play: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+        }
+    },
+    delete: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+        }
+    },
+}
 
 const responseSteps = {
-  list: {
-    start: (data) => data.startsWith("echo: BeginFiles"),
-    end: (data) => data.startsWith("echo: EndFiles"),
-    error: (data) => {
-      return (
-        data.indexOf("error") != -1 || data.indexOf("echo: No SD card") != -1
-      );
+    list: {
+        start: (data) => data.startsWith("echo: BeginFiles"),
+        end: (data) => data.startsWith("echo: EndFiles"),
+        error: (data) => {
+            return (
+                data.indexOf("error") != -1 ||
+                data.indexOf("echo: No SD card") != -1
+            )
+        },
     },
-  },
-  delete: {
-    start: (data) => data.startsWith("File deleted"),
-    end: (data) => data.startsWith("ok"),
-    error: (data) => {
-      return data.startsWith("Deletion failed");
+    delete: {
+        start: (data) => data.startsWith("File deleted"),
+        end: (data) => data.startsWith("ok"),
+        error: (data) => {
+            return data.startsWith("Deletion failed")
+        },
     },
-  },
-};
+}
 
-const SDEXT = { capabilities, commands, responseSteps };
+const SDEXT = { capabilities, commands, responseSteps }
 
-export { SDEXT };
+export { SDEXT }

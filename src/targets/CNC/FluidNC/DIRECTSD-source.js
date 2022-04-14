@@ -17,97 +17,97 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { sortedFilesList, formatStatus } from "../../../components/Helpers";
-import { canProcessFile } from "../../helpers";
+import { h } from "preact"
+import { sortedFilesList, formatStatus } from "../../../components/Helpers"
+import { canProcessFile } from "../../helpers"
 
 const capabilities = {
-  Process: (path, filename) => {
-    return canProcessFile(filename);
-  },
-  UseFilters: () => true,
-  IsFlatFS: () => false,
-  Upload: () => {
-    return true;
-  },
-  Mount: () => {
-    return false;
-  },
-  UploadMultiple: () => {
-    return true;
-  },
-  Download: () => {
-    return true;
-  },
-  DeleteFile: () => {
-    return true;
-  },
-  DeleteDir: () => {
-    return true;
-  },
-  CreateDir: () => {
-    return true;
-  },
-};
+    Process: (path, filename) => {
+        return canProcessFile(filename)
+    },
+    UseFilters: () => true,
+    IsFlatFS: () => false,
+    Upload: () => {
+        return true
+    },
+    Mount: () => {
+        return false
+    },
+    UploadMultiple: () => {
+        return true
+    },
+    Download: () => {
+        return true
+    },
+    DeleteFile: () => {
+        return true
+    },
+    DeleteDir: () => {
+        return true
+    },
+    CreateDir: () => {
+        return true
+    },
+}
 
 const commands = {
-  list: (path, filename) => {
-    return {
-      type: "url",
-      url: "sdfiles",
-      args: { path, action: "list" },
-    };
-  },
-  upload: (path, filename) => {
-    return {
-      type: "url",
-      url: "sdfiles",
-      args: { path },
-    };
-  },
-  formatResult: (resultTxT) => {
-    const res = JSON.parse(resultTxT);
-    res.files = sortedFilesList(res.files);
-    res.status = formatStatus(res.status);
-    return res;
-  },
+    list: (path, filename) => {
+        return {
+            type: "url",
+            url: "sdfiles",
+            args: { path, action: "list" },
+        }
+    },
+    upload: (path, filename) => {
+        return {
+            type: "url",
+            url: "sdfiles",
+            args: { path },
+        }
+    },
+    formatResult: (resultTxT) => {
+        const res = JSON.parse(resultTxT)
+        res.files = sortedFilesList(res.files)
+        res.status = formatStatus(res.status)
+        return res
+    },
 
-  deletedir: (path, filename) => {
-    return {
-      type: "url",
-      url: "sdfiles",
-      args: { path, action: "deletedir", filename },
-    };
-  },
-  delete: (path, filename) => {
-    return {
-      type: "url",
-      url: "sdfiles",
-      args: { path, action: "delete", filename },
-    };
-  },
-  createdir: (path, filename) => {
-    return {
-      type: "url",
-      url: "sdfiles",
-      args: { path, action: "createdir", filename },
-    };
-  },
-  download: (path, filename) => {
-    return {
-      type: "url",
-      url: path + (path.endsWith("/") ? "" : "/") + "sd/" + filename,
-      args: {},
-    };
-  },
-  play: (path, filename) => {
-    return {
-      type: "cmd",
-      cmd: "$SD/Run=" + path + (path == "/" ? "" : "/") + filename + "\n",
-    };
-  },
-};
+    deletedir: (path, filename) => {
+        return {
+            type: "url",
+            url: "sdfiles",
+            args: { path, action: "deletedir", filename },
+        }
+    },
+    delete: (path, filename) => {
+        return {
+            type: "url",
+            url: "sdfiles",
+            args: { path, action: "delete", filename },
+        }
+    },
+    createdir: (path, filename) => {
+        return {
+            type: "url",
+            url: "sdfiles",
+            args: { path, action: "createdir", filename },
+        }
+    },
+    download: (path, filename) => {
+        return {
+            type: "url",
+            url: path + (path.endsWith("/") ? "" : "/") + "sd/" + filename,
+            args: {},
+        }
+    },
+    play: (path, filename) => {
+        return {
+            type: "cmd",
+            cmd: "$SD/Run=" + path + (path == "/" ? "" : "/") + filename + "\n",
+        }
+    },
+}
 
-const DIRECTSD = { capabilities, commands };
+const DIRECTSD = { capabilities, commands }
 
-export { DIRECTSD };
+export { DIRECTSD }

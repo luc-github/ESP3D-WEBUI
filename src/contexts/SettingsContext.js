@@ -16,58 +16,58 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact";
-import { useRef, useContext } from "preact/hooks";
-import { useUiContext } from "./UiContext";
+import { h, createContext } from "preact"
+import { useRef, useContext } from "preact/hooks"
+import { useUiContext } from "./UiContext"
 
 /*
  * Local const
  *
  */
-const SettingsContext = createContext("SettingsContext");
-const useSettingsContext = () => useContext(SettingsContext);
+const SettingsContext = createContext("SettingsContext")
+const useSettingsContext = () => useContext(SettingsContext)
 
 const SettingsContextProvider = ({ children }) => {
-  const { uisettings } = useUiContext();
-  const interfaceValues = useRef({});
-  const connectionValues = useRef({});
-  const featuresValues = useRef({});
-  const pollingInterval = useRef({});
+    const { uisettings } = useUiContext()
+    const interfaceValues = useRef({})
+    const connectionValues = useRef({})
+    const featuresValues = useRef({})
+    const pollingInterval = useRef({})
 
-  function startPolling(pollingFunction, parameters) {
-    const settings = parameters != undefined ? parameters : uisettings;
-    stopPolling();
-    if (uisettings.getValue("enablepolling", settings)) {
-      if (pollingFunction)
-        pollingInterval.current = setInterval(
-          pollingFunction,
-          uisettings.getValue("pollingrefresh", settings)
-        );
+    function startPolling(pollingFunction, parameters) {
+        const settings = parameters != undefined ? parameters : uisettings
+        stopPolling()
+        if (uisettings.getValue("enablepolling", settings)) {
+            if (pollingFunction)
+                pollingInterval.current = setInterval(
+                    pollingFunction,
+                    uisettings.getValue("pollingrefresh", settings)
+                )
+        }
     }
-  }
 
-  /*
-   * Stop polling query
-   */
-  function stopPolling() {
-    if (pollingInterval.current != null) {
-      clearInterval(pollingInterval.current);
+    /*
+     * Stop polling query
+     */
+    function stopPolling() {
+        if (pollingInterval.current != null) {
+            clearInterval(pollingInterval.current)
+        }
+        pollingInterval.current = null
     }
-    pollingInterval.current = null;
-  }
 
-  const store = {
-    interfaceSettings: interfaceValues,
-    connectionSettings: connectionValues,
-    featuresSettings: featuresValues,
-    activity: { startPolling, stopPolling },
-  };
+    const store = {
+        interfaceSettings: interfaceValues,
+        connectionSettings: connectionValues,
+        featuresSettings: featuresValues,
+        activity: { startPolling, stopPolling },
+    }
 
-  return (
-    <SettingsContext.Provider value={store}>
-      {children}
-    </SettingsContext.Provider>
-  );
-};
+    return (
+        <SettingsContext.Provider value={store}>
+            {children}
+        </SettingsContext.Provider>
+    )
+}
 
-export { SettingsContextProvider, useSettingsContext };
+export { SettingsContextProvider, useSettingsContext }

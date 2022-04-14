@@ -16,61 +16,63 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact";
-import { useRef, useContext, useState } from "preact/hooks";
-import { limitArr } from "../components/Helpers";
+import { h, createContext } from "preact"
+import { useRef, useContext, useState } from "preact/hooks"
+import { limitArr } from "../components/Helpers"
 
 /*
  * Local const
  *
  */
-const DatasContext = createContext("DatasContext");
-const useDatasContext = () => useContext(DatasContext);
+const DatasContext = createContext("DatasContext")
+const useDatasContext = () => useContext(DatasContext)
 
 const DatasContextProvider = ({ children }) => {
-  const isAutoScroll = useRef(true);
-  const isAutoScrollPaused = useRef(undefined);
-  const isVerbose = useRef(undefined);
-  const terminalBuffer = useRef([]);
-  const [terminalContent, setTerminalContent] = useState([]);
-  const [terminalInputHistory, setTerminalInputHistory] = useState([]);
-  const terminalInput = useRef();
+    const isAutoScroll = useRef(true)
+    const isAutoScrollPaused = useRef(undefined)
+    const isVerbose = useRef(undefined)
+    const terminalBuffer = useRef([])
+    const [terminalContent, setTerminalContent] = useState([])
+    const [terminalInputHistory, setTerminalInputHistory] = useState([])
+    const terminalInput = useRef()
 
-  const clearTerminal = () => {
-    terminalBuffer.current = [];
-    setTerminalContent([]);
-  };
+    const clearTerminal = () => {
+        terminalBuffer.current = []
+        setTerminalContent([])
+    }
 
-  const addTerminalContent = (element) => {
-    const newData = limitArr(
-      [...terminalBuffer.current, element],
-      isAutoScrollPaused.current ? 600 : isAutoScroll.current ? 300 : 400
-    );
-    terminalBuffer.current = newData;
-    setTerminalContent(newData);
-  };
+    const addTerminalContent = (element) => {
+        const newData = limitArr(
+            [...terminalBuffer.current, element],
+            isAutoScrollPaused.current ? 600 : isAutoScroll.current ? 300 : 400
+        )
+        terminalBuffer.current = newData
+        setTerminalContent(newData)
+    }
 
-  const addTerminalInputHistory = (element) => {
-    setTerminalInputHistory(limitArr([...terminalInputHistory, element], 50));
-  };
+    const addTerminalInputHistory = (element) => {
+        setTerminalInputHistory(
+            limitArr([...terminalInputHistory, element], 50)
+        )
+    }
 
-  const store = {
-    terminal: {
-      input: terminalInput,
-      content: terminalContent,
-      add: addTerminalContent,
-      clear: clearTerminal,
-      inputHistory: terminalInputHistory,
-      addInputHistory: addTerminalInputHistory,
-      isAutoScroll,
-      isVerbose,
-      isAutoScrollPaused,
-    },
-  };
+    const store = {
+        terminal: {
+            input: terminalInput,
+            content: terminalContent,
+            add: addTerminalContent,
+            clear: clearTerminal,
+            inputHistory: terminalInputHistory,
+            addInputHistory: addTerminalInputHistory,
+            isAutoScroll,
+            isVerbose,
+            isAutoScrollPaused,
+        },
+    }
 
-  return (
-    <DatasContext.Provider value={store}>{children}</DatasContext.Provider>
-  );
-};
+    return (
+        <DatasContext.Provider value={store}>{children}</DatasContext.Provider>
+    )
+}
 
-export { DatasContextProvider, useDatasContext };
+export { DatasContextProvider, useDatasContext }

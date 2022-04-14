@@ -13,54 +13,54 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import LangRessourceSubTarget from "SubTargetDir/translations/en.json";
-import LangRessourceTarget from "TargetDir/translations/en.json";
-import LangRessourceBase from "TargetDir/../translations/en.json";
-import listLanguagePacks from "./languages.json";
+import { h } from "preact"
+import LangRessourceSubTarget from "SubTargetDir/translations/en.json"
+import LangRessourceTarget from "TargetDir/translations/en.json"
+import LangRessourceBase from "TargetDir/../translations/en.json"
+import listLanguagePacks from "./languages.json"
 
 /*
  * Local const
  *
  */
 const baseLangRessource = {
-  ...LangRessourceSubTarget,
-  ...LangRessourceTarget,
-  ...LangRessourceBase,
-};
+    ...LangRessourceSubTarget,
+    ...LangRessourceTarget,
+    ...LangRessourceBase,
+}
 
-let currentLanguage = baseLangRessource;
+let currentLanguage = baseLangRessource
 
-const setCurrentLanguage = (lang) => (currentLanguage = lang);
+const setCurrentLanguage = (lang) => (currentLanguage = lang)
 
 /*
  * Give text from id according language selection
  * give language base text if no corresponding id
  */
 function T(id, base = false, ressourcelanguage = null) {
-  let translatedText = base
-    ? baseLangRessource[id]
-    : ressourcelanguage
-    ? ressourcelanguage[id]
-    : currentLanguage[id];
-  if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
-    return id;
-  if (typeof translatedText === "undefined") {
-    translatedText = baseLangRessource[id];
+    let translatedText = base
+        ? baseLangRessource[id]
+        : ressourcelanguage
+        ? ressourcelanguage[id]
+        : currentLanguage[id]
+    if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
+        return id
     if (typeof translatedText === "undefined") {
-      translatedText = id;
+        translatedText = baseLangRessource[id]
+        if (typeof translatedText === "undefined") {
+            translatedText = id
+        }
     }
-  }
-  return translatedText;
+    return translatedText
 }
 
 function getLanguageName(languagePack) {
-  const id = languagePack.replace("lang-", "").replace(".json", "");
-  let lang = listLanguagePacks[id];
-  if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
-    return id;
-  if (typeof lang === "undefined") return languagePack;
-  return lang;
+    const id = languagePack.replace("lang-", "").replace(".json", "")
+    let lang = listLanguagePacks[id]
+    if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
+        return id
+    if (typeof lang === "undefined") return languagePack
+    return lang
 }
 
-export { T, getLanguageName, setCurrentLanguage, baseLangRessource };
+export { T, getLanguageName, setCurrentLanguage, baseLangRessource }

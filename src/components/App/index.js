@@ -18,42 +18,42 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 import {
-  RouterContextProvider,
-  HttpQueueContextProvider,
-  UiContextProvider,
-  SettingsContextProvider,
-  DatasContextProvider,
-  WsContextProvider,
-} from "../../contexts";
-import { TargetContextProvider } from "../../targets";
-import { ToastsContainer } from "../Toast";
-import { Modal } from "../Modal";
-import { ContentContainer } from "../../areas";
+    RouterContextProvider,
+    HttpQueueContextProvider,
+    UiContextProvider,
+    SettingsContextProvider,
+    DatasContextProvider,
+    WsContextProvider,
+} from "../../contexts"
+import { TargetContextProvider } from "../../targets"
+import { ToastsContainer } from "../Toast"
+import { Modal } from "../Modal"
+import { ContentContainer } from "../../areas"
 
 const App = () => {
-  return (
-    <div id="app">
-      <DatasContextProvider>
-        <TargetContextProvider>
-          <RouterContextProvider>
-            <UiContextProvider>
-              <HttpQueueContextProvider>
-                <SettingsContextProvider>
-                  <WsContextProvider>
-                    <ToastsContainer />
-                    <Modal />
-                    <ContentContainer />
-                  </WsContextProvider>
-                </SettingsContextProvider>
-              </HttpQueueContextProvider>
-            </UiContextProvider>
-          </RouterContextProvider>
-        </TargetContextProvider>
-      </DatasContextProvider>
-    </div>
-  );
-};
+    return (
+        <div id="app">
+            <DatasContextProvider>
+                <TargetContextProvider>
+                    <RouterContextProvider>
+                        <UiContextProvider>
+                            <HttpQueueContextProvider>
+                                <SettingsContextProvider>
+                                    <WsContextProvider>
+                                        <ToastsContainer />
+                                        <Modal />
+                                        <ContentContainer />
+                                    </WsContextProvider>
+                                </SettingsContextProvider>
+                            </HttpQueueContextProvider>
+                        </UiContextProvider>
+                    </RouterContextProvider>
+                </TargetContextProvider>
+            </DatasContextProvider>
+        </div>
+    )
+}
 
-export { App };
+export { App }

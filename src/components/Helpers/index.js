@@ -16,58 +16,58 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { espHttpURL, getCookie, isLimitedEnvironment } from "./http";
-import { getBrowserTime } from "./time";
+import { h } from "preact"
+import { espHttpURL, getCookie, isLimitedEnvironment } from "./http"
+import { getBrowserTime } from "./time"
 import {
-  createComponent,
-  disableNode,
-  disableUI,
-  generateUID,
-  getColClasses,
-} from "./components";
+    createComponent,
+    disableNode,
+    disableUI,
+    generateUID,
+    getColClasses,
+} from "./components"
 import {
-  beautifyJSONString,
-  capitalize,
-  hslToHex,
-  formatFileSizeToString,
-  formatStatus,
-  compareStrings,
-  replaceVariables,
-  isFloat,
-} from "./strings";
+    beautifyJSONString,
+    capitalize,
+    hslToHex,
+    formatFileSizeToString,
+    formatStatus,
+    compareStrings,
+    replaceVariables,
+    isFloat,
+} from "./strings"
 import {
-  limitArr,
-  mergeJSON,
-  removeEntriesByIDs,
-  splitArrayByLines,
-} from "./arrays";
-import { dispatchToExtensions } from "./html";
-import { sortedFilesList, filterResultFiles } from "./filters";
+    limitArr,
+    mergeJSON,
+    removeEntriesByIDs,
+    splitArrayByLines,
+} from "./arrays"
+import { dispatchToExtensions } from "./html"
+import { sortedFilesList, filterResultFiles } from "./filters"
 
 export {
-  beautifyJSONString,
-  capitalize,
-  replaceVariables,
-  compareStrings,
-  createComponent,
-  disableNode,
-  disableUI,
-  dispatchToExtensions,
-  espHttpURL,
-  filterResultFiles,
-  formatStatus,
-  generateUID,
-  getBrowserTime,
-  getColClasses,
-  getCookie,
-  hslToHex,
-  isLimitedEnvironment,
-  limitArr,
-  mergeJSON,
-  formatFileSizeToString,
-  removeEntriesByIDs,
-  sortedFilesList,
-  splitArrayByLines,
-  isFloat,
-};
+    beautifyJSONString,
+    capitalize,
+    replaceVariables,
+    compareStrings,
+    createComponent,
+    disableNode,
+    disableUI,
+    dispatchToExtensions,
+    espHttpURL,
+    filterResultFiles,
+    formatStatus,
+    generateUID,
+    getBrowserTime,
+    getColClasses,
+    getCookie,
+    hslToHex,
+    isLimitedEnvironment,
+    limitArr,
+    mergeJSON,
+    formatFileSizeToString,
+    removeEntriesByIDs,
+    sortedFilesList,
+    splitArrayByLines,
+    isFloat,
+}

@@ -20,72 +20,74 @@ formatHelper.js - ESP3D WebUI helper file
 */
 
 const getFieldTypeName = ({ value, type, options }) => {
-  if (options !== undefined) return "select"; //boolean
-  if (type === "B") return "number"; //byte is input number
-  if (type === "I") return "number"; //integer is input number
-  //if (type === "S" && value === "********") return "password"; //input password
-  if (type === "S") return "text"; //input text
-  return "text"; //default
-};
+    if (options !== undefined) return "select" //boolean
+    if (type === "B") return "number" //byte is input number
+    if (type === "I") return "number" //integer is input number
+    //if (type === "S" && value === "********") return "password"; //input password
+    if (type === "S") return "text" //input text
+    return "text" //default
+}
 
 const generateFormattedSelectOptionList = (rawOpt) => {
-  return [...rawOpt].map((opt) => {
-    const key = Object.keys(opt)[0];
-    return { label: key, value: opt[key] };
-  });
-};
+    return [...rawOpt].map((opt) => {
+        const key = Object.keys(opt)[0]
+        return { label: key, value: opt[key] }
+    })
+}
 
 const formatSettingItem = (settingItem) => {
-  const { F, P, T, V, H, O: options, M, S, MS, R } = settingItem;
-  let settingFieldProps = {
-    id: P,
-    initial: V,
-    label: H,
-    type: T,
-    value: V,
-    cast: T,
-  };
-  if (Array.isArray(options) && options !== undefined)
-    settingFieldProps.options = generateFormattedSelectOptionList(options);
-  if (R !== undefined) settingFieldProps.needRestart = R;
-  if (S !== undefined) settingFieldProps.max = parseInt(S);
-  if (M !== undefined) {
-    settingFieldProps.min = parseInt(M);
-    if (MS !== undefined) {
-      settingFieldProps.minSecondary = parseInt(MS);
-      if (parseInt(MS) < parseInt(M)) {
-        //be sure Min is small than Min Secondary
-        settingFieldProps.min = parseInt(MS);
-        settingFieldProps.minSecondary = parseInt(M);
-      }
+    const { F, P, T, V, H, O: options, M, S, MS, R } = settingItem
+    let settingFieldProps = {
+        id: P,
+        initial: V,
+        label: H,
+        type: T,
+        value: V,
+        cast: T,
     }
-  }
-  if (T === "A") settingFieldProps.format = "ip";
-  settingFieldProps.type = getFieldTypeName(settingFieldProps);
-  return settingFieldProps;
-};
+    if (Array.isArray(options) && options !== undefined)
+        settingFieldProps.options = generateFormattedSelectOptionList(options)
+    if (R !== undefined) settingFieldProps.needRestart = R
+    if (S !== undefined) settingFieldProps.max = parseInt(S)
+    if (M !== undefined) {
+        settingFieldProps.min = parseInt(M)
+        if (MS !== undefined) {
+            settingFieldProps.minSecondary = parseInt(MS)
+            if (parseInt(MS) < parseInt(M)) {
+                //be sure Min is small than Min Secondary
+                settingFieldProps.min = parseInt(MS)
+                settingFieldProps.minSecondary = parseInt(M)
+            }
+        }
+    }
+    if (T === "A") settingFieldProps.format = "ip"
+    settingFieldProps.type = getFieldTypeName(settingFieldProps)
+    return settingFieldProps
+}
 
 const formatStructure = (settings) =>
-  settings.reduce((acc, curVal) => {
-    const data = formatSettingItem(curVal);
-    const [section, subSection] = curVal.F.split("/");
-    if (Object.prototype.hasOwnProperty.call(acc, section)) {
-      //if section exist
-      if (Object.prototype.hasOwnProperty.call(acc[section], subSection)) {
-        // if subsection exist
-        const fields = [...acc[section][subSection], data];
-        return {
-          ...acc,
-          [section]: { ...acc[section], [subSection]: [...fields] },
-        };
-      }
-      //else add subsection
-      return {
-        ...acc,
-        [section]: { ...acc[section], [subSection]: [data] },
-      };
-    } //add new section
-    return { ...acc, [section]: { [subSection]: [data] } };
-  }, {});
+    settings.reduce((acc, curVal) => {
+        const data = formatSettingItem(curVal)
+        const [section, subSection] = curVal.F.split("/")
+        if (Object.prototype.hasOwnProperty.call(acc, section)) {
+            //if section exist
+            if (
+                Object.prototype.hasOwnProperty.call(acc[section], subSection)
+            ) {
+                // if subsection exist
+                const fields = [...acc[section][subSection], data]
+                return {
+                    ...acc,
+                    [section]: { ...acc[section], [subSection]: [...fields] },
+                }
+            }
+            //else add subsection
+            return {
+                ...acc,
+                [section]: { ...acc[section], [subSection]: [data] },
+            }
+        } //add new section
+        return { ...acc, [section]: { [subSection]: [data] } }
+    }, {})
 
-export { formatStructure };
+export { formatStructure }

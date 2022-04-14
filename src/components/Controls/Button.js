@@ -15,8 +15,8 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { createComponent } from "../Helpers";
+import { h } from "preact"
+import { createComponent } from "../Helpers"
 
 /*
  * Local const
@@ -24,30 +24,30 @@ import { createComponent } from "../Helpers";
  */
 
 const modifiers = {
-  donotdisable: "do-not-disable",
-  group: "input-group-btn",
-  link: "btn-link",
-  primary: "btn-primary",
-  error: "btn-error",
-  success: "btn-success",
-  lg: "btn-lg",
-  sm: "btn-sm",
-  xs: "btn-xs",
-  block: "btn-block",
-  action: "btn-action",
-  circle: "s-circle",
-  active: "active",
-  disable: "disable",
-  loading: "loading",
-  tooltip: "tooltip",
-  btooltip: "tooltip-bottom",
-  ltooltip: "tooltip tooltip-left",
-  rtooltip: "tooltip tooltip-right",
-  mx2: "mx-2",
-  m05: "m-05",
-  m2: "m-2",
-  m1: "m-1",
-};
-const Button = createComponent("button", "btn", modifiers);
+    donotdisable: "do-not-disable",
+    group: "input-group-btn",
+    link: "btn-link",
+    primary: "btn-primary",
+    error: "btn-error",
+    success: "btn-success",
+    lg: "btn-lg",
+    sm: "btn-sm",
+    xs: "btn-xs",
+    block: "btn-block",
+    action: "btn-action",
+    circle: "s-circle",
+    active: "active",
+    disable: "disable",
+    loading: "loading",
+    tooltip: "tooltip",
+    btooltip: "tooltip-bottom",
+    ltooltip: "tooltip tooltip-left",
+    rtooltip: "tooltip tooltip-right",
+    mx2: "mx-2",
+    m05: "m-05",
+    m2: "m-2",
+    m1: "m-1",
+}
+const Button = createComponent("button", "btn", modifiers)
 
-export default Button;
+export default Button

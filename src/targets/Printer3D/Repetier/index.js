@@ -17,50 +17,50 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { iconsTarget } from "./icons";
-import { files } from "./files";
-import { processor } from "./processor";
-import { defaultPanelsList } from "./panels";
-import { MachineSettings } from "./MachineSettings";
+import { h } from "preact"
+import { iconsTarget } from "./icons"
+import { files } from "./files"
+import { processor } from "./processor"
+import { defaultPanelsList } from "./panels"
+import { MachineSettings } from "./MachineSettings"
 import {
-  InformationsControls,
-  QuickButtonsBar,
-  MixedExtrudersControl,
-} from "./Controls";
+    InformationsControls,
+    QuickButtonsBar,
+    MixedExtrudersControl,
+} from "./Controls"
 import {
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-} from "./TargetContext";
-import { AppLogo } from "../../../components/Images/logo";
-import { Eye as WebUILogo } from "preact-feather";
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+} from "./TargetContext"
+import { AppLogo } from "../../../components/Images/logo"
+import { Eye as WebUILogo } from "preact-feather"
 
-const Target = "Repetier";
-const webUIbuild = "R2";
-const Name = "ESP3D";
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0";
-const variablesList = [];
-const restartdelay = 30;
+const Target = "Repetier"
+const webUIbuild = "R2"
+const Name = "ESP3D"
+const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
+const variablesList = []
+const restartdelay = 30
 
 export {
-  MachineSettings,
-  Target,
-  fwUrl,
-  Name,
-  files,
-  iconsTarget,
-  processor,
-  restartdelay,
-  defaultPanelsList,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-  webUIbuild,
-  InformationsControls,
-  variablesList,
-  AppLogo,
-  WebUILogo,
-  QuickButtonsBar,
-  MixedExtrudersControl,
-};
+    MachineSettings,
+    Target,
+    fwUrl,
+    Name,
+    files,
+    iconsTarget,
+    processor,
+    restartdelay,
+    defaultPanelsList,
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+    webUIbuild,
+    InformationsControls,
+    variablesList,
+    AppLogo,
+    WebUILogo,
+    QuickButtonsBar,
+    MixedExtrudersControl,
+}

@@ -15,17 +15,17 @@ Toast.js - ESP3D WebUI component file
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { createComponent } from "../Helpers";
+import { h } from "preact"
+import { createComponent } from "../Helpers"
 
 const modifiers = {
-  primary: "toast-primary",
-  success: "toast-success",
-  warning: "toast-warning",
-  error: "toast-error",
-};
+    primary: "toast-primary",
+    success: "toast-success",
+    warning: "toast-warning",
+    error: "toast-error",
+}
 
-const Toast = createComponent("div", "toast", modifiers);
-Toast.Close = createComponent("button", "btn btn-clear float-right");
+const Toast = createComponent("div", "toast", modifiers)
+Toast.Close = createComponent("button", "btn btn-clear float-right")
 
-export default Toast;
+export default Toast

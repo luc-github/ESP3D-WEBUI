@@ -15,50 +15,54 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import Button from "./Button";
+import { h } from "preact"
+import Button from "./Button"
 
 /*
  * Local const
  *
  */
 const ButtonImg = ({
-  label,
-  icon,
-  width,
-  nomin,
-  style,
-  showlow,
-  className,
-  ...rest
+    label,
+    icon,
+    width,
+    nomin,
+    style,
+    showlow,
+    className,
+    ...rest
 }) => {
-  return (
-    <Button
-      class={`feather-icon-container ${className ? className : ""}`}
-      {...rest}
-      style={
-        (nomin ? style : "min-width:2rem;" + style) +
-        ";display:inline-block;white-space: nowrap;"
-      }
-    >
-      <div style="overflow:hidden!important;white-space: nowrap;text-overflow:ellipsis!important;cursor: pointer;pointer-events: none;">
-        {icon}
-        {label && (
-          <label
-            class={
-              width ? `${showlow ? "" : "hide-low"}` : showlow ? "" : "hide-low"
-            }
+    return (
+        <Button
+            class={`feather-icon-container ${className ? className : ""}`}
+            {...rest}
             style={
-              "display:inline" +
-              (width ? "max-width:" + width : "max-width:3rem")
+                (nomin ? style : "min-width:2rem;" + style) +
+                ";display:inline-block;white-space: nowrap;"
             }
-          >
-            {label}
-          </label>
-        )}
-      </div>
-    </Button>
-  );
-};
+        >
+            <div style="overflow:hidden!important;white-space: nowrap;text-overflow:ellipsis!important;cursor: pointer;pointer-events: none;">
+                {icon}
+                {label && (
+                    <label
+                        class={
+                            width
+                                ? `${showlow ? "" : "hide-low"}`
+                                : showlow
+                                ? ""
+                                : "hide-low"
+                        }
+                        style={
+                            "display:inline" +
+                            (width ? "max-width:" + width : "max-width:3rem")
+                        }
+                    >
+                        {label}
+                    </label>
+                )}
+            </div>
+        </Button>
+    )
+}
 
-export default ButtonImg;
+export default ButtonImg

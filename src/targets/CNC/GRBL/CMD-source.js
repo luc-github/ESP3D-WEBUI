@@ -17,73 +17,73 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
 const formatCapabilityLine = (acc, line) => {
-  //TODO:
-  //isolate description
-  //sort enabled
-  //sort disabled
-  acc.push({ data: line });
-  return acc;
-};
+    //TODO:
+    //isolate description
+    //sort enabled
+    //sort disabled
+    acc.push({ data: line })
+    return acc
+}
 
 const formatEepromLine = (acc, line) => {
-  //format G20 / G21
-  //it is comment
-  if (line.startsWith("$")) {
-    //it is setting
-    const data = line.split("=");
-    acc.push({ type: "comment", value: data[0] });
-    acc.push({
-      type: "text",
-      value: data[1],
-      initial: data[1],
-      cmd: data[0],
-    });
-  }
+    //format G20 / G21
+    //it is comment
+    if (line.startsWith("$")) {
+        //it is setting
+        const data = line.split("=")
+        acc.push({ type: "comment", value: data[0] })
+        acc.push({
+            type: "text",
+            value: data[1],
+            initial: data[1],
+            cmd: data[0],
+        })
+    }
 
-  return acc;
-};
+    return acc
+}
 
-const capabilities = {};
+const capabilities = {}
 
 const commands = {
-  eeprom: () => {
-    return { type: "cmd", cmd: "$$" };
-  },
-  formatEeprom: (result) => {
-    const res = result.reduce((acc, line) => {
-      return formatEepromLine(acc, line);
-    }, []);
-    return res;
-  },
-};
+    eeprom: () => {
+        return { type: "cmd", cmd: "$$" }
+    },
+    formatEeprom: (result) => {
+        const res = result.reduce((acc, line) => {
+            return formatEepromLine(acc, line)
+        }, [])
+        return res
+    },
+}
 
 const responseSteps = {
-  eeprom: {
-    start: (data) => data.startsWith("$"),
-    end: (data) => data.startsWith("ok"),
-    error: (data) => {
-      return data.indexOf("error") != -1;
+    eeprom: {
+        start: (data) => data.startsWith("$"),
+        end: (data) => data.startsWith("ok"),
+        error: (data) => {
+            return data.indexOf("error") != -1
+        },
     },
-  },
-};
+}
 
 function capability() {
-  const [cap, ...rest] = arguments;
-  if (capabilities[cap]) return capabilities[cap](...rest);
-  console.log("Unknow capability ", cap);
-  return false;
+    const [cap, ...rest] = arguments
+    if (capabilities[cap]) return capabilities[cap](...rest)
+    console.log("Unknow capability ", cap)
+    return false
 }
 
 function command() {
-  const [cmd, ...rest] = arguments;
-  if (commands[cmd]) return commands[cmd](...rest);
-  console.log("Unknow command ", cmd);
-  return { type: "error" };
+    const [cmd, ...rest] = arguments
+    if (commands[cmd]) return commands[cmd](...rest)
+    console.log("Unknow command ", cmd)
+    return { type: "error" }
 }
 
-const CMD = { capability, command, responseSteps };
+const CMD = { capability, command, responseSteps }
 
-export { CMD };
+export { CMD }

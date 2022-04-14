@@ -17,22 +17,23 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
+import { h } from "preact"
 
 const FieldGroup = ({ className, children, label, id }) => {
-  return (
-    <fieldset
-      class={
-        `${className ? className : ""}` + " fieldset-top-separator field-group"
-      }
-      id={id}
-    >
-      <legend>
-        <label class="m-1">{label}</label>
-      </legend>
-      <div class="field-group-content">{children}</div>
-    </fieldset>
-  );
-};
+    return (
+        <fieldset
+            class={
+                `${className ? className : ""}` +
+                " fieldset-top-separator field-group"
+            }
+            id={id}
+        >
+            <legend>
+                <label class="m-1">{label}</label>
+            </legend>
+            <div class="field-group-content">{children}</div>
+        </fieldset>
+    )
+}
 
-export default FieldGroup;
+export default FieldGroup

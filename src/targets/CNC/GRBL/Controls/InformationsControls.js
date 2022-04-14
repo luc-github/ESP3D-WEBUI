@@ -17,16 +17,16 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact";
-import { PositionsControls } from "../../../../components/Panels/JogCNC";
-import { useUiContextFn } from "../../../../contexts";
+import { Fragment, h } from "preact"
+import { PositionsControls } from "../../../../components/Panels/JogCNC"
+import { useUiContextFn } from "../../../../contexts"
 
 const InformationsControls = () => {
-  return (
-    <Fragment>
-      {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
-    </Fragment>
-  );
-};
+    return (
+        <Fragment>
+            {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
+        </Fragment>
+    )
+}
 
-export { InformationsControls };
+export { InformationsControls }

@@ -14,65 +14,65 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
 function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
+    let name = cname + "="
+    let decodedCookie = decodeURIComponent(document.cookie)
+    let ca = decodedCookie.split(";")
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while (c.charAt(0) == " ") {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+    return ""
 }
 
 //generate an URL with server host and base address
 //args is array of argumments: [{'cmd':'[ESP800]},...]
 const espHttpURL = (base = "", args) => {
-  const url = base.startsWith("http")
-    ? new URL(base)
-    : new URL(
-        "http://" +
-          window.location.host +
-          (base.startsWith("/") ? "" : "/") +
-          base
-      );
-  if (args)
-    Object.keys(args).forEach((key) => {
-      url.searchParams.append(key, args[key]);
-    });
-  return url;
-};
-
-function isLimitedEnvironment(mode) {
-  let sitesList = [
-    "clients3.google.com", //Android Captive Portal Detection
-    "connectivitycheck.",
-    //Apple iPhone, iPad with iOS 6 Captive Portal Detection
-    "apple.com",
-    ".akamaitechnologies.com",
-    //Apple iPhone, iPad with iOS 7, 8, 9 and recent versions of OS X
-    "www.appleiphonecell.com",
-    "www.itools.info",
-    "www.ibook.info",
-    "www.airport.us",
-    "www.thinkdifferent.us",
-    ".akamaiedge.net",
-    //Windows
-    ".msftncsi.com",
-    "microsoft.com",
-  ];
-  if (mode != "AP") return false;
-  for (let i = 0; i < sitesList.length; i++) {
-    if (document.location.host.indexOf(sitesList[i]) != -1) return true;
-  }
-  return false;
+    const url = base.startsWith("http")
+        ? new URL(base)
+        : new URL(
+              "http://" +
+                  window.location.host +
+                  (base.startsWith("/") ? "" : "/") +
+                  base
+          )
+    if (args)
+        Object.keys(args).forEach((key) => {
+            url.searchParams.append(key, args[key])
+        })
+    return url
 }
 
-export { espHttpURL, getCookie, isLimitedEnvironment };
+function isLimitedEnvironment(mode) {
+    let sitesList = [
+        "clients3.google.com", //Android Captive Portal Detection
+        "connectivitycheck.",
+        //Apple iPhone, iPad with iOS 6 Captive Portal Detection
+        "apple.com",
+        ".akamaitechnologies.com",
+        //Apple iPhone, iPad with iOS 7, 8, 9 and recent versions of OS X
+        "www.appleiphonecell.com",
+        "www.itools.info",
+        "www.ibook.info",
+        "www.airport.us",
+        "www.thinkdifferent.us",
+        ".akamaiedge.net",
+        //Windows
+        ".msftncsi.com",
+        "microsoft.com",
+    ]
+    if (mode != "AP") return false
+    for (let i = 0; i < sitesList.length; i++) {
+        if (document.location.host.indexOf(sitesList[i]) != -1) return true
+    }
+    return false
+}
+
+export { espHttpURL, getCookie, isLimitedEnvironment }

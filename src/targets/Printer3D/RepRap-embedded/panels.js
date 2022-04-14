@@ -17,23 +17,23 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { FilesPanelElement } from "../../../components/Panels/Files";
-import { MacrosPanelElement } from "../../../components/Panels/Macros";
-import { TerminalPanelElement } from "../../../components/Panels/Terminal";
-import { JogPanelElement } from "../../../components/Panels/Jog";
-import { ExtrudersPanelElement } from "../../../components/Panels/Extruders";
-import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures";
-import { NotificationsPanelElement } from "../../../components/Panels/Notifications";
+import { h } from "preact"
+import { FilesPanelElement } from "../../../components/Panels/Files"
+import { MacrosPanelElement } from "../../../components/Panels/Macros"
+import { TerminalPanelElement } from "../../../components/Panels/Terminal"
+import { JogPanelElement } from "../../../components/Panels/Jog"
+import { ExtrudersPanelElement } from "../../../components/Panels/Extruders"
+import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures"
+import { NotificationsPanelElement } from "../../../components/Panels/Notifications"
 
 const defaultPanelsList = [
-  FilesPanelElement,
-  TerminalPanelElement,
-  MacrosPanelElement,
-  JogPanelElement,
-  ExtrudersPanelElement,
-  TemperaturesPanelElement,
-  NotificationsPanelElement,
-];
+    FilesPanelElement,
+    TerminalPanelElement,
+    MacrosPanelElement,
+    JogPanelElement,
+    ExtrudersPanelElement,
+    TemperaturesPanelElement,
+    NotificationsPanelElement,
+]
 
-export { defaultPanelsList };
+export { defaultPanelsList }

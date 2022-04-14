@@ -17,9 +17,9 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { QuickButtonsBar } from "./QuickButtonsBar";
-import { InformationsControls } from "./InformationsControls";
-import { MixedExtrudersControl } from "./MixedExtrudersControl";
+import { h } from "preact"
+import { QuickButtonsBar } from "./QuickButtonsBar"
+import { InformationsControls } from "./InformationsControls"
+import { MixedExtrudersControl } from "./MixedExtrudersControl"
 
-export { QuickButtonsBar, InformationsControls, MixedExtrudersControl };
+export { QuickButtonsBar, InformationsControls, MixedExtrudersControl }

@@ -17,12 +17,12 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { MachineSettings } from "../../targets";
+import { h } from "preact"
+import { MachineSettings } from "../../targets"
 
 const MachineTab = () => {
-  console.log("Machine");
-  return <MachineSettings />;
-};
+    console.log("Machine")
+    return <MachineSettings />
+}
 
-export { MachineTab };
+export { MachineTab }

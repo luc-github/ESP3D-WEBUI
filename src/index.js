@@ -18,10 +18,10 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 if (process.env.NODE_ENV === "development") {
-  require("preact/debug");
+    require("preact/debug")
 }
-import { h, render } from "preact";
-import { App } from "./components/App";
-import "./style/index.scss";
-import "SubTargetDir/style/index.scss";
-render(<App />, document.body);
+import { h, render } from "preact"
+import { App } from "./components/App"
+import "./style/index.scss"
+import "SubTargetDir/style/index.scss"
+render(<App />, document.body)

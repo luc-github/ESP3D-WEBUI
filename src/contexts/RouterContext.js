@@ -16,31 +16,33 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact";
-import { useContext, useState, useRef } from "preact/hooks";
+import { h, createContext } from "preact"
+import { useContext, useState, useRef } from "preact/hooks"
 
 /*
  * Local const
  *
  */
-const RouterContext = createContext("RouterContext");
-const useRouterContext = () => useContext(RouterContext);
+const RouterContext = createContext("RouterContext")
+const useRouterContext = () => useContext(RouterContext)
 const RouterContextProvider = ({ children }) => {
-  const defaultRoute = useRef("/about");
-  const activeTab = useRef("/settings/features");
-  const [activeRoute, setActiveRoute] = useState(defaultRoute.current);
-  const [routes, setRoutes] = useState({});
-  const store = {
-    activeRoute,
-    setActiveRoute,
-    routes,
-    setRoutes,
-    defaultRoute,
-    activeTab,
-  };
-  return (
-    <RouterContext.Provider value={store}>{children}</RouterContext.Provider>
-  );
-};
+    const defaultRoute = useRef("/about")
+    const activeTab = useRef("/settings/features")
+    const [activeRoute, setActiveRoute] = useState(defaultRoute.current)
+    const [routes, setRoutes] = useState({})
+    const store = {
+        activeRoute,
+        setActiveRoute,
+        routes,
+        setRoutes,
+        defaultRoute,
+        activeTab,
+    }
+    return (
+        <RouterContext.Provider value={store}>
+            {children}
+        </RouterContext.Provider>
+    )
+}
 
-export { RouterContextProvider, useRouterContext };
+export { RouterContextProvider, useRouterContext }

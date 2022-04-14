@@ -16,54 +16,54 @@ EmergencyButton.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { AlertCircle } from "preact-feather";
-import { useHttpFn } from "../../../hooks";
-import { espHttpURL, replaceVariables } from "../../../components/Helpers";
-import { useUiContext, useUiContextFn } from "../../../contexts";
-import { T } from "../../../components/Translations";
-import { ButtonImg } from "../../../components/Controls";
-import realCommandsTable from "SubTargetDir/realCommandsTable";
+import { h } from "preact"
+import { AlertCircle } from "preact-feather"
+import { useHttpFn } from "../../../hooks"
+import { espHttpURL, replaceVariables } from "../../../components/Helpers"
+import { useUiContext, useUiContextFn } from "../../../contexts"
+import { T } from "../../../components/Translations"
+import { ButtonImg } from "../../../components/Controls"
+import realCommandsTable from "SubTargetDir/realCommandsTable"
 
 const EmergencyButton = () => {
-  const { toasts } = useUiContext();
+    const { toasts } = useUiContext()
 
-  const { createNewRequest } = useHttpFn;
-  const SendCommand = (command) => {
-    createNewRequest(
-      {
-        method: "GET",
-        echo: replaceVariables(realCommandsTable, command, true),
-      }, //need to see real command as it is not printable
-      {
-        onSuccess: (result) => {},
-        onFail: (error) => {
-          toasts.addToast({ content: error, type: "error" });
-          console.log(error);
-        },
-      }
-    );
-  };
+    const { createNewRequest } = useHttpFn
+    const SendCommand = (command) => {
+        createNewRequest(
+            {
+                method: "GET",
+                echo: replaceVariables(realCommandsTable, command, true),
+            }, //need to see real command as it is not printable
+            {
+                onSuccess: (result) => {},
+                onFail: (error) => {
+                    toasts.addToast({ content: error, type: "error" })
+                    console.log(error)
+                },
+            }
+        )
+    }
 
-  return (
-    <ButtonImg
-      m1
-      rtooltip
-      label={T("P15")}
-      className="emergency-btn"
-      icon={<AlertCircle />}
-      data-tooltip={T("P15")}
-      id="btnEStop"
-      onclick={(e) => {
-        e.target.blur();
-        const cmd = replaceVariables(
-          realCommandsTable,
-          useUiContextFn.getValue("emergencystop")
-        ).replace(";", "\n");
-        SendCommand(cmd);
-      }}
-    />
-  );
-};
+    return (
+        <ButtonImg
+            m1
+            rtooltip
+            label={T("P15")}
+            className="emergency-btn"
+            icon={<AlertCircle />}
+            data-tooltip={T("P15")}
+            id="btnEStop"
+            onclick={(e) => {
+                e.target.blur()
+                const cmd = replaceVariables(
+                    realCommandsTable,
+                    useUiContextFn.getValue("emergencystop")
+                ).replace(";", "\n")
+                SendCommand(cmd)
+            }}
+        />
+    )
+}
 
-export { EmergencyButton };
+export { EmergencyButton }

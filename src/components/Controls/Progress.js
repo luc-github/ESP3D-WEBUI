@@ -15,8 +15,8 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { useEffect, useRef } from "preact/hooks";
+import { h } from "preact"
+import { useEffect, useRef } from "preact/hooks"
 
 /*
  * Local const
@@ -24,39 +24,39 @@ import { useEffect, useRef } from "preact/hooks";
  */
 
 const Progress = ({ progressBar, max = 100, precision = -1 }) => {
-  const progressValue = useRef(0);
-  const progressValueDisplay = useRef();
-  let calculationDone = false;
-  let prec = precision != -1 ? precision : 0;
-  const updateProgress = (value) => {
-    if (precision == -1) {
-      if (value == 0) prec = 0;
-      else {
-        if (!calculationDone) {
-          //if step is very small let's increase precision to show the changes
-          if ((value / max) * 100 < 0.001) prec = 2;
-          else if ((value / max) * 100 < 0.01) prec = 1;
-          calculationDone = true;
+    const progressValue = useRef(0)
+    const progressValueDisplay = useRef()
+    let calculationDone = false
+    let prec = precision != -1 ? precision : 0
+    const updateProgress = (value) => {
+        if (precision == -1) {
+            if (value == 0) prec = 0
+            else {
+                if (!calculationDone) {
+                    //if step is very small let's increase precision to show the changes
+                    if ((value / max) * 100 < 0.001) prec = 2
+                    else if ((value / max) * 100 < 0.01) prec = 1
+                    calculationDone = true
+                }
+            }
         }
-      }
+        const val = ((value / max) * 100).toFixed(prec)
+        if (progressValue.current) {
+            progressValue.current.value = val
+            progressValueDisplay.current.innerHTML = val + "%"
+        }
     }
-    const val = ((value / max) * 100).toFixed(prec);
-    if (progressValue.current) {
-      progressValue.current.value = val;
-      progressValueDisplay.current.innerHTML = val + "%";
-    }
-  };
-  useEffect(() => {
-    progressBar.update = updateProgress;
-    calculationDone = false;
-    updateProgress(0);
-  }, []);
-  return (
-    <center>
-      <progress ref={progressValue} value="0" max="100" />
-      <label style="margin-left:15px" ref={progressValueDisplay}></label>
-    </center>
-  );
-};
+    useEffect(() => {
+        progressBar.update = updateProgress
+        calculationDone = false
+        updateProgress(0)
+    }, [])
+    return (
+        <center>
+            <progress ref={progressValue} value="0" max="100" />
+            <label style="margin-left:15px" ref={progressValueDisplay}></label>
+        </center>
+    )
+}
 
-export default Progress;
+export default Progress

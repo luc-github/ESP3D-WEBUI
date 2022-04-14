@@ -17,47 +17,47 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { iconsTarget } from "./icons";
-import { files } from "./files";
-import { processor } from "./processor";
-import { defaultPanelsList } from "./panels";
-import { MachineSettings } from "./MachineSettings";
-import { InformationsControls, QuickButtonsBar } from "./Controls";
-import { AppLogo as WebUILogo } from "../../../components/Images/logo";
-import { AppLogo } from "./logo";
+import { h } from "preact"
+import { iconsTarget } from "./icons"
+import { files } from "./files"
+import { processor } from "./processor"
+import { defaultPanelsList } from "./panels"
+import { MachineSettings } from "./MachineSettings"
+import { InformationsControls, QuickButtonsBar } from "./Controls"
+import { AppLogo as WebUILogo } from "../../../components/Images/logo"
+import { AppLogo } from "./logo"
 import {
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-} from "./TargetContext";
-import realCommandsTable from "./realCommandsTable";
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+} from "./TargetContext"
+import realCommandsTable from "./realCommandsTable"
 
-const Target = "FluidNC";
-const webUIbuild = "F2";
-const Name = "FluidNC";
-const fwUrl = "https://github.com/bdring/FluidNC";
+const Target = "FluidNC"
+const webUIbuild = "F2"
+const Name = "FluidNC"
+const fwUrl = "https://github.com/bdring/FluidNC"
 
-const restartdelay = 30;
-const variablesList = [...realCommandsTable];
+const restartdelay = 30
+const variablesList = [...realCommandsTable]
 
 export {
-  MachineSettings,
-  Target,
-  fwUrl,
-  Name,
-  files,
-  iconsTarget,
-  processor,
-  restartdelay,
-  defaultPanelsList,
-  TargetContextProvider,
-  useTargetContext,
-  useTargetContextFn,
-  webUIbuild,
-  InformationsControls,
-  variablesList,
-  AppLogo,
-  WebUILogo,
-  QuickButtonsBar,
-};
+    MachineSettings,
+    Target,
+    fwUrl,
+    Name,
+    files,
+    iconsTarget,
+    processor,
+    restartdelay,
+    defaultPanelsList,
+    TargetContextProvider,
+    useTargetContext,
+    useTargetContextFn,
+    webUIbuild,
+    InformationsControls,
+    variablesList,
+    AppLogo,
+    WebUILogo,
+    QuickButtonsBar,
+}

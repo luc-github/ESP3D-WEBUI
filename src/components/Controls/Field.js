@@ -17,65 +17,65 @@ Field.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact";
+import { Fragment, h } from "preact"
 import {
-  FormGroup,
-  Input,
-  Select,
-  Boolean,
-  PickUp,
-  ItemsList,
-  IconSelect,
-  LabelCtrl,
-} from "./Fields";
+    FormGroup,
+    Input,
+    Select,
+    Boolean,
+    PickUp,
+    ItemsList,
+    IconSelect,
+    LabelCtrl,
+} from "./Fields"
 
 const Field = (props) => {
-  const { type, id } = props;
-  switch (type) {
-    case "label":
-      return (
-        <FormGroup {...props}>
-          <LabelCtrl {...props} />
-        </FormGroup>
-      );
-    case "list":
-      return (
-        <Fragment>
-          <ItemsList {...props} />
-          <FormGroup {...props} />
-        </Fragment>
-      );
-    case "pickup":
-      return (
-        <FormGroup {...props}>
-          <PickUp {...props} />
-        </FormGroup>
-      );
-    case "icon":
-      return (
-        <FormGroup {...props}>
-          <IconSelect {...props} />
-        </FormGroup>
-      );
-    case "select":
-      return (
-        <FormGroup {...props}>
-          <Select {...props} />
-        </FormGroup>
-      );
-    case "boolean":
-      return (
-        <FormGroup {...props}>
-          <Boolean {...props} />
-        </FormGroup>
-      );
-    default:
-      //input
-      return (
-        <FormGroup {...props}>
-          <Input {...props} />
-        </FormGroup>
-      );
-  }
-};
-export { Field };
+    const { type, id } = props
+    switch (type) {
+        case "label":
+            return (
+                <FormGroup {...props}>
+                    <LabelCtrl {...props} />
+                </FormGroup>
+            )
+        case "list":
+            return (
+                <Fragment>
+                    <ItemsList {...props} />
+                    <FormGroup {...props} />
+                </Fragment>
+            )
+        case "pickup":
+            return (
+                <FormGroup {...props}>
+                    <PickUp {...props} />
+                </FormGroup>
+            )
+        case "icon":
+            return (
+                <FormGroup {...props}>
+                    <IconSelect {...props} />
+                </FormGroup>
+            )
+        case "select":
+            return (
+                <FormGroup {...props}>
+                    <Select {...props} />
+                </FormGroup>
+            )
+        case "boolean":
+            return (
+                <FormGroup {...props}>
+                    <Boolean {...props} />
+                </FormGroup>
+            )
+        default:
+            //input
+            return (
+                <FormGroup {...props}>
+                    <Input {...props} />
+                </FormGroup>
+            )
+    }
+}
+export { Field }

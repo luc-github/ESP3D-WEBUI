@@ -15,27 +15,27 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { HelpCircle } from "preact-feather";
-import { showModal } from "./genericModal";
+import { h } from "preact"
+import { HelpCircle } from "preact-feather"
+import { showModal } from "./genericModal"
 
 const showConfirmationModal = ({
-  modals,
-  title,
-  content,
-  button1,
-  button2,
-}) => {
-  showModal({
     modals,
     title,
     content,
     button1,
     button2,
-    id: "confirmation",
-    icon: <HelpCircle />,
-    hideclose: true,
-  });
-};
+}) => {
+    showModal({
+        modals,
+        title,
+        content,
+        button1,
+        button2,
+        id: "confirmation",
+        icon: <HelpCircle />,
+        hideclose: true,
+    })
+}
 
-export { showConfirmationModal };
+export { showConfirmationModal }

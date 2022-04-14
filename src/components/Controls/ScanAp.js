@@ -16,94 +16,104 @@ ScanAp.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact";
-import { useState, useEffect } from "preact/hooks";
-import { ButtonImg, Loading } from "./../Controls";
-import { useHttpQueue } from "../../hooks";
-import { espHttpURL } from "../../components/Helpers";
-import { useUiContext } from "../../contexts";
-import { T } from "./../Translations";
-import { Lock, CheckCircle } from "preact-feather";
+import { Fragment, h } from "preact"
+import { useState, useEffect } from "preact/hooks"
+import { ButtonImg, Loading } from "./../Controls"
+import { useHttpQueue } from "../../hooks"
+import { espHttpURL } from "../../components/Helpers"
+import { useUiContext } from "../../contexts"
+import { T } from "./../Translations"
+import { Lock, CheckCircle } from "preact-feather"
 
 const ScanApList = ({ id, setValue, refreshfn }) => {
-  const { modals, toasts } = useUiContext();
-  const [isLoading, setIsLoading] = useState(true);
+    const { modals, toasts } = useUiContext()
+    const [isLoading, setIsLoading] = useState(true)
 
-  const [APList, setApList] = useState([]);
-  const { createNewRequest } = useHttpQueue();
-  const ScanNetworks = () => {
-    setIsLoading(true);
-    createNewRequest(
-      espHttpURL("command", { cmd: "[ESP410]json=yes" }).toString(),
-      { method: "GET" },
-      {
-        onSuccess: (result) => {
-          setIsLoading(false);
-          const jsonResult = JSON.parse(result);
-          if (
-            jsonResult.cmd != 410 ||
-            jsonResult.status == "error" ||
-            !jsonResult.data
-          ) {
-            toasts.addToast({ content: T("S194"), type: "error" });
-            return;
-          }
-          setApList(jsonResult.data);
-        },
-        onFail: (error) => {
-          setIsLoading(false);
-          toasts.addToast({ content: error, type: "error" });
-          setApList([]);
-        },
-      }
-    );
-  };
-  useEffect(() => {
-    ScanNetworks();
-    refreshfn(ScanNetworks);
-  }, []);
-  return (
-    <Fragment>
-      {isLoading && <Loading />}
+    const [APList, setApList] = useState([])
+    const { createNewRequest } = useHttpQueue()
+    const ScanNetworks = () => {
+        setIsLoading(true)
+        createNewRequest(
+            espHttpURL("command", { cmd: "[ESP410]json=yes" }).toString(),
+            { method: "GET" },
+            {
+                onSuccess: (result) => {
+                    setIsLoading(false)
+                    const jsonResult = JSON.parse(result)
+                    if (
+                        jsonResult.cmd != 410 ||
+                        jsonResult.status == "error" ||
+                        !jsonResult.data
+                    ) {
+                        toasts.addToast({ content: T("S194"), type: "error" })
+                        return
+                    }
+                    setApList(jsonResult.data)
+                },
+                onFail: (error) => {
+                    setIsLoading(false)
+                    toasts.addToast({ content: error, type: "error" })
+                    setApList([])
+                },
+            }
+        )
+    }
+    useEffect(() => {
+        ScanNetworks()
+        refreshfn(ScanNetworks)
+    }, [])
+    return (
+        <Fragment>
+            {isLoading && <Loading />}
 
-      {!isLoading && (
-        <table class="table">
-          <thead class="hide-low">
-            <tr>
-              <th>{T("SSID")}</th>
-              <th>{T("signal")}</th>
-              <th>{T("S49")}</th>
-              <th>{T("S48")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {APList.map((e) => {
-              return (
-                <tr>
-                  <td>{e.SSID.replace("&#39;", "'").replace("&#34;", '"')}</td>
-                  <td>{e.SIGNAL}%</td>
-                  <td>{e.IS_PROTECTED ? <Lock /> : ""}</td>
-                  <td>
-                    <ButtonImg
-                      m2
-                      ltooltip
-                      data-tooltip={T("S51")}
-                      icon={<CheckCircle />}
-                      onClick={() => {
-                        setValue(
-                          e.SSID.replace("&#39;", "'").replace("&#34;", '"')
-                        );
-                        modals.removeModal(modals.getModalIndex(id));
-                      }}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </Fragment>
-  );
-};
-export { ScanApList };
+            {!isLoading && (
+                <table class="table">
+                    <thead class="hide-low">
+                        <tr>
+                            <th>{T("SSID")}</th>
+                            <th>{T("signal")}</th>
+                            <th>{T("S49")}</th>
+                            <th>{T("S48")}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {APList.map((e) => {
+                            return (
+                                <tr>
+                                    <td>
+                                        {e.SSID.replace("&#39;", "'").replace(
+                                            "&#34;",
+                                            '"'
+                                        )}
+                                    </td>
+                                    <td>{e.SIGNAL}%</td>
+                                    <td>{e.IS_PROTECTED ? <Lock /> : ""}</td>
+                                    <td>
+                                        <ButtonImg
+                                            m2
+                                            ltooltip
+                                            data-tooltip={T("S51")}
+                                            icon={<CheckCircle />}
+                                            onClick={() => {
+                                                setValue(
+                                                    e.SSID.replace(
+                                                        "&#39;",
+                                                        "'"
+                                                    ).replace("&#34;", '"')
+                                                )
+                                                modals.removeModal(
+                                                    modals.getModalIndex(id)
+                                                )
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            )}
+        </Fragment>
+    )
+}
+export { ScanApList }

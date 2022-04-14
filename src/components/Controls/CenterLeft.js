@@ -15,27 +15,31 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
 /*
  * Local const
  *
  */
 const CenterLeft = ({ bordered, children }) => {
-  return (
-    <center>
-      <div
-        class={
-          bordered
-            ? `${bordered == "warning" ? "bordered_warning" : "bordered "} m-2`
-            : ""
-        }
-        style="display: inline-block;text-align: left;"
-      >
-        {children}
-      </div>
-    </center>
-  );
-};
+    return (
+        <center>
+            <div
+                class={
+                    bordered
+                        ? `${
+                              bordered == "warning"
+                                  ? "bordered_warning"
+                                  : "bordered "
+                          } m-2`
+                        : ""
+                }
+                style="display: inline-block;text-align: left;"
+            >
+                {children}
+            </div>
+        </center>
+    )
+}
 
-export default CenterLeft;
+export default CenterLeft

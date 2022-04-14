@@ -16,86 +16,95 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { useEffect } from "preact/hooks";
-import { useUiContext } from "../../../contexts";
-import { ButtonImg } from "../../Controls";
-import { iconsFeather } from "../../Images";
-import { iconsTarget } from "../../../targets";
-import { showModal } from "../../Modal";
-import { Search } from "preact-feather";
+import { h } from "preact"
+import { useEffect } from "preact/hooks"
+import { useUiContext } from "../../../contexts"
+import { ButtonImg } from "../../Controls"
+import { iconsFeather } from "../../Images"
+import { iconsTarget } from "../../../targets"
+import { showModal } from "../../Modal"
+import { Search } from "preact-feather"
 
-import { T } from "./../../Translations";
+import { T } from "./../../Translations"
 
 /*
  * Local const
  *
  */
 const IconSelect = ({
-  id,
-  label,
-  validation,
-  value,
-  type,
-  setValue,
-  inline,
-  ...rest
+    id,
+    label,
+    validation,
+    value,
+    type,
+    setValue,
+    inline,
+    ...rest
 }) => {
-  const onChange = (e) => {
-    //if (setValue) setValue(e.target.checked);
-  };
-  const { modals } = useUiContext();
-  const iconsList = { ...iconsTarget, ...iconsFeather };
-  const showList = (e) => {
-    const content = (
-      <div>
-        {Object.keys(iconsList).map((element) => {
-          const displayIcon = iconsList[element] ? iconsList[element] : "";
-          const onSelect = (e) => {
-            setValue(element);
-            modals.removeModal(modals.getModalIndex(modalId));
-          };
-          if (value == element)
-            return (
-              <ButtonImg
-                m05
-                primary
-                btn-xs
-                icon={displayIcon}
-                onclick={onSelect}
-              />
-            );
-          else return <ButtonImg m05 icon={displayIcon} onclick={onSelect} />;
-        })}
-      </div>
-    );
-    const modalId = "iconSelection";
-    //TODO generate icon list and current selected
-    //modals.removeModal(modals.getModalIndex(modalId));
-    showModal({
-      modals,
-      title: T("S134"),
-      button2: { text: T("S24") },
-      icon: <Search />,
-      id: modalId,
-      content,
-    });
-  };
-  const controlIcon = iconsList[value] ? iconsList[value] : "";
-  useEffect(() => {
-    //to update state
-    if (setValue) setValue(null, true);
-  }, [value]);
-  return (
-    <div class={`input-group ${inline ? "column" : ""} `}>
-      <ButtonImg
-        m1
-        icon={controlIcon}
-        onClick={showList}
-        style="max-width:2rem;"
-      />
-    </div>
-  );
-};
+    const onChange = (e) => {
+        //if (setValue) setValue(e.target.checked);
+    }
+    const { modals } = useUiContext()
+    const iconsList = { ...iconsTarget, ...iconsFeather }
+    const showList = (e) => {
+        const content = (
+            <div>
+                {Object.keys(iconsList).map((element) => {
+                    const displayIcon = iconsList[element]
+                        ? iconsList[element]
+                        : ""
+                    const onSelect = (e) => {
+                        setValue(element)
+                        modals.removeModal(modals.getModalIndex(modalId))
+                    }
+                    if (value == element)
+                        return (
+                            <ButtonImg
+                                m05
+                                primary
+                                btn-xs
+                                icon={displayIcon}
+                                onclick={onSelect}
+                            />
+                        )
+                    else
+                        return (
+                            <ButtonImg
+                                m05
+                                icon={displayIcon}
+                                onclick={onSelect}
+                            />
+                        )
+                })}
+            </div>
+        )
+        const modalId = "iconSelection"
+        //TODO generate icon list and current selected
+        //modals.removeModal(modals.getModalIndex(modalId));
+        showModal({
+            modals,
+            title: T("S134"),
+            button2: { text: T("S24") },
+            icon: <Search />,
+            id: modalId,
+            content,
+        })
+    }
+    const controlIcon = iconsList[value] ? iconsList[value] : ""
+    useEffect(() => {
+        //to update state
+        if (setValue) setValue(null, true)
+    }, [value])
+    return (
+        <div class={`input-group ${inline ? "column" : ""} `}>
+            <ButtonImg
+                m1
+                icon={controlIcon}
+                onClick={showList}
+                style="max-width:2rem;"
+            />
+        </div>
+    )
+}
 
-export default IconSelect;
+export default IconSelect

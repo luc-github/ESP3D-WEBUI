@@ -17,57 +17,57 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
 const formatYamlLine = (acc, line) => {
-  console.log(line);
-  if (line.indexOf(":") != -1 && !line.startsWith("[")) {
-    acc.push(line);
-  }
+    console.log(line)
+    if (line.indexOf(":") != -1 && !line.startsWith("[")) {
+        acc.push(line)
+    }
 
-  return acc;
-};
+    return acc
+}
 
 const commands = {
-  configFileName: () => {
-    return { type: "cmd", cmd: "$Config/Filename" };
-  },
-  yamlFile: () => {
-    return { type: "cmd", cmd: "$CD" };
-  },
-};
+    configFileName: () => {
+        return { type: "cmd", cmd: "$Config/Filename" }
+    },
+    yamlFile: () => {
+        return { type: "cmd", cmd: "$CD" }
+    },
+}
 
 const responseSteps = {
-  yamlFile: {
-    start: (data) => data.startsWith("[MSG: BeginData]"),
-    end: (data) => data.startsWith("[MSG: EndData]"),
-    error: (data) => {
-      return data.startsWith("error:");
+    yamlFile: {
+        start: (data) => data.startsWith("[MSG: BeginData]"),
+        end: (data) => data.startsWith("[MSG: EndData]"),
+        error: (data) => {
+            return data.startsWith("error:")
+        },
     },
-  },
-  configFileName: {
-    start: (data) => data.startsWith("$Config/Filename="),
-    end: (data) => data.startsWith("$Config/Filename="),
-    error: (data) => {
-      return data.startsWith("error:");
+    configFileName: {
+        start: (data) => data.startsWith("$Config/Filename="),
+        end: (data) => data.startsWith("$Config/Filename="),
+        error: (data) => {
+            return data.startsWith("error:")
+        },
     },
-  },
-};
+}
 
 function capability() {
-  const [cap, ...rest] = arguments;
-  if (capabilities[cap]) return capabilities[cap](...rest);
-  console.log("Unknow capability ", cap);
-  return false;
+    const [cap, ...rest] = arguments
+    if (capabilities[cap]) return capabilities[cap](...rest)
+    console.log("Unknow capability ", cap)
+    return false
 }
 
 function command() {
-  const [cmd, ...rest] = arguments;
-  if (commands[cmd]) return commands[cmd](...rest);
-  console.log("Unknow command ", cmd);
-  return { type: "error" };
+    const [cmd, ...rest] = arguments
+    if (commands[cmd]) return commands[cmd](...rest)
+    console.log("Unknow command ", cmd)
+    return { type: "error" }
 }
 
-const CMD = { capability, command, responseSteps };
+const CMD = { capability, command, responseSteps }
 
-export { CMD };
+export { CMD }

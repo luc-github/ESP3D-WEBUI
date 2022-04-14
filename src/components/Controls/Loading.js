@@ -15,17 +15,17 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { createComponent } from "../Helpers";
+import { h } from "preact"
+import { createComponent } from "../Helpers"
 
 /*
  * Local const
  *
  */
 const modifiers = {
-  lg: "loading-lg",
-  large: "loading-lg",
-};
-const Loading = createComponent("div", "loading", modifiers);
+    lg: "loading-lg",
+    large: "loading-lg",
+}
+const Loading = createComponent("div", "loading", modifiers)
 
-export default Loading;
+export default Loading

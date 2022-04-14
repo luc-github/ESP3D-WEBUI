@@ -17,20 +17,20 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import ExtraContent from "../../components/ExtraContent";
+import { h } from "preact"
+import ExtraContent from "../../components/ExtraContent"
 
 const ExtraPage = ({ id, source, refreshtime, label, type }) => {
-  return (
-    <ExtraContent
-      id={id}
-      label={label}
-      source={source}
-      refreshtime={refreshtime}
-      type={type}
-      target="page"
-    />
-  );
-};
+    return (
+        <ExtraContent
+            id={id}
+            label={label}
+            source={source}
+            refreshtime={refreshtime}
+            type={type}
+            target="page"
+        />
+    )
+}
 
-export default ExtraPage;
+export default ExtraPage

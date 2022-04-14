@@ -17,15 +17,15 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { useEffect } from "preact/hooks";
+import { h } from "preact"
+import { useEffect } from "preact/hooks"
 
 const LabelCtrl = ({ label = "", id = "", value = "", setValue, ...rest }) => {
-  useEffect(() => {
-    //to update state when import or show first time as value will never change because it is a label not an input
-    if (setValue) setValue(null, true);
-  }, [value]);
-  return null;
-};
+    useEffect(() => {
+        //to update state when import or show first time as value will never change because it is a label not an input
+        if (setValue) setValue(null, true)
+    }, [value])
+    return null
+}
 
-export default LabelCtrl;
+export default LabelCtrl

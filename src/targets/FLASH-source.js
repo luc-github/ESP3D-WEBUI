@@ -17,88 +17,88 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { sortedFilesList, formatStatus } from "../components/Helpers";
+import { h } from "preact"
+import { sortedFilesList, formatStatus } from "../components/Helpers"
 
 const capabilities = {
-  Process: () => false,
-  UseFilters: () => false,
-  IsFlatFS: () => false,
-  Upload: () => {
-    return true;
-  },
-  Mount: () => {
-    return false;
-  },
-  UploadMultiple: () => {
-    return true;
-  },
-  Download: () => {
-    return true;
-  },
-  DeleteFile: () => {
-    return true;
-  },
-  DeleteDir: () => {
-    return true;
-  },
-  CreateDir: () => {
-    return true;
-  },
-};
+    Process: () => false,
+    UseFilters: () => false,
+    IsFlatFS: () => false,
+    Upload: () => {
+        return true
+    },
+    Mount: () => {
+        return false
+    },
+    UploadMultiple: () => {
+        return true
+    },
+    Download: () => {
+        return true
+    },
+    DeleteFile: () => {
+        return true
+    },
+    DeleteDir: () => {
+        return true
+    },
+    CreateDir: () => {
+        return true
+    },
+}
 
 const commands = {
-  list: (path, filename) => {
-    return {
-      type: "url",
-      url: "files",
-      args: { path, action: "list" },
-    };
-  },
-  upload: (path, filename) => {
-    return {
-      type: "url",
-      url: "files",
-      args: { path },
-    };
-  },
-  formatResult: (resultTxT) => {
-    const res = JSON.parse(resultTxT);
-    res.files = sortedFilesList(res.files);
-    res.status = formatStatus(res.status);
-    return res;
-  },
+    list: (path, filename) => {
+        return {
+            type: "url",
+            url: "files",
+            args: { path, action: "list" },
+        }
+    },
+    upload: (path, filename) => {
+        return {
+            type: "url",
+            url: "files",
+            args: { path },
+        }
+    },
+    formatResult: (resultTxT) => {
+        const res = JSON.parse(resultTxT)
+        res.files = sortedFilesList(res.files)
+        res.status = formatStatus(res.status)
+        return res
+    },
 
-  deletedir: (path, filename) => {
-    return {
-      type: "url",
-      url: "files",
-      args: { path, action: "deletedir", filename },
-    };
-  },
-  delete: (path, filename) => {
-    return {
-      type: "url",
-      url: "files",
-      args: { path, action: "delete", filename },
-    };
-  },
-  createdir: (path, filename) => {
-    return {
-      type: "url",
-      url: "files",
-      args: { path, action: "createdir", filename },
-    };
-  },
-  download: (path, filename) => {
-    return {
-      type: "url",
-      url: path + (path.endsWith("/") ? "" : "/") + filename,
-      args: {},
-    };
-  },
-};
+    deletedir: (path, filename) => {
+        return {
+            type: "url",
+            url: "files",
+            args: { path, action: "deletedir", filename },
+        }
+    },
+    delete: (path, filename) => {
+        return {
+            type: "url",
+            url: "files",
+            args: { path, action: "delete", filename },
+        }
+    },
+    createdir: (path, filename) => {
+        return {
+            type: "url",
+            url: "files",
+            args: { path, action: "createdir", filename },
+        }
+    },
+    download: (path, filename) => {
+        return {
+            type: "url",
+            url: path + (path.endsWith("/") ? "" : "/") + filename,
+            args: {},
+        }
+    },
+}
 
-const FLASH = { capabilities, commands };
+const FLASH = { capabilities, commands }
 
-export { FLASH };
+export { FLASH }

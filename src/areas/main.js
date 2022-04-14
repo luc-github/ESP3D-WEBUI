@@ -18,90 +18,90 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
-import { useState, useEffect, useRef } from "preact/hooks";
-import { Router } from "../components/Router";
-import { useUiContext, useSettingsContext } from "../contexts";
-import About from "../pages/about";
-import Dashboard from "../pages/dashboard";
-import Settings from "../pages/settings";
-import ExtraPage from "../pages/extrapages";
-import { Informations } from "../areas/informations";
-import { FooterContainer } from "./footer";
-import { processor } from "../targets";
+import { useState, useEffect, useRef } from "preact/hooks"
+import { Router } from "../components/Router"
+import { useUiContext, useSettingsContext } from "../contexts"
+import About from "../pages/about"
+import Dashboard from "../pages/dashboard"
+import Settings from "../pages/settings"
+import ExtraPage from "../pages/extrapages"
+import { Informations } from "../areas/informations"
+import { FooterContainer } from "./footer"
+import { processor } from "../targets"
 
 const defRoutes = {
-  DASHBOARD: {
-    component: <Dashboard />,
-    path: "/dashboard",
-  },
-  ABOUT: {
-    component: <About />,
-    path: "/about",
-  },
-  SETTINGS: {
-    component: <Settings />,
-    path: "/settings",
-  },
-  INFORMATIONS: {
-    component: <Informations />,
-    path: "/informations",
-  },
-};
+    DASHBOARD: {
+        component: <Dashboard />,
+        path: "/dashboard",
+    },
+    ABOUT: {
+        component: <About />,
+        path: "/about",
+    },
+    SETTINGS: {
+        component: <Settings />,
+        path: "/settings",
+    },
+    INFORMATIONS: {
+        component: <Informations />,
+        path: "/informations",
+    },
+}
 
 const MainContainer = () => {
-  const { uisettings, modals } = useUiContext();
-  const { connectionSettings } = useSettingsContext();
-  const [routes, setRoutes] = useState({ ...defRoutes });
+    const { uisettings, modals } = useUiContext()
+    const { connectionSettings } = useSettingsContext()
+    const [routes, setRoutes] = useState({ ...defRoutes })
 
-  const newroutes = () => {
-    if (uisettings.getValue("showextracontents")) {
-      const extraContents = uisettings.getValue("extracontents");
-      const extraPages = extraContents.reduce((acc, curr) => {
-        const item = curr.value.reduce((accumulator, current) => {
-          accumulator[current.name] = current.initial;
-          return accumulator;
-        }, {});
+    const newroutes = () => {
+        if (uisettings.getValue("showextracontents")) {
+            const extraContents = uisettings.getValue("extracontents")
+            const extraPages = extraContents.reduce((acc, curr) => {
+                const item = curr.value.reduce((accumulator, current) => {
+                    accumulator[current.name] = current.initial
+                    return accumulator
+                }, {})
 
-        if (item.target == "page") {
-          acc["EXTRA-" + curr.id] = {
-            component: (
-              <ExtraPage
-                id={curr.id}
-                label={item.name}
-                source={item.source}
-                refreshtime={item.refreshtime}
-                type={item.type}
-              />
-            ),
-            path: "/extrapage/" + curr.id,
-          };
+                if (item.target == "page") {
+                    acc["EXTRA-" + curr.id] = {
+                        component: (
+                            <ExtraPage
+                                id={curr.id}
+                                label={item.name}
+                                source={item.source}
+                                refreshtime={item.refreshtime}
+                                type={item.type}
+                            />
+                        ),
+                        path: "/extrapage/" + curr.id,
+                    }
+                }
+                return acc
+            }, routes)
+            return extraPages
+        } else {
+            return defRoutes
         }
-        return acc;
-      }, routes);
-      return extraPages;
-    } else {
-      return defRoutes;
     }
-  };
 
-  useEffect(() => {
-    setRoutes(newroutes);
-  }, [uisettings]);
+    useEffect(() => {
+        setRoutes(newroutes)
+    }, [uisettings])
 
-  useEffect(() => {
-    setInterval(() => {
-      processor.handle();
-    }, 10000);
-  }, []);
+    useEffect(() => {
+        setInterval(() => {
+            processor.handle()
+        }, 10000)
+    }, [])
 
-  return (
-    <div id="main" class="main-page-container">
-      <Router routesList={routes} />
-      <FooterContainer />
-    </div>
-  );
-};
+    return (
+        <div id="main" class="main-page-container">
+            <Router routesList={routes} />
+            <FooterContainer />
+        </div>
+    )
+}
 
-export { MainContainer };
+export { MainContainer }

@@ -16,80 +16,80 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
 const capitalize = (s) =>
-  typeof s === "string" ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+    typeof s === "string" ? s.charAt(0).toUpperCase() + s.slice(1) : ""
 
 function compareStrings(a, b) {
-  // case-insensitive comparison
-  a = a.toLowerCase();
-  b = b.toLowerCase();
-  return a < b ? -1 : a > b ? 1 : 0;
+    // case-insensitive comparison
+    a = a.toLowerCase()
+    b = b.toLowerCase()
+    return a < b ? -1 : a > b ? 1 : 0
 }
 
 function formatFileSizeToString(size) {
-  if (size === -1) return "";
-  const units = ["B", "KB", "MB", "GB"];
-  let i = 0;
-  while (size >= 1024) {
-    size /= 1024;
-    ++i;
-  }
-  return `${size.toFixed(2)} ${units[i]}`;
+    if (size === -1) return ""
+    const units = ["B", "KB", "MB", "GB"]
+    let i = 0
+    while (size >= 1024) {
+        size /= 1024
+        ++i
+    }
+    return `${size.toFixed(2)} ${units[i]}`
 }
 
 const hslToHex = (h, s, l) => {
-  l /= 100;
-  const a = (s * Math.min(l, 1 - l)) / 100;
-  const f = (n) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, "0"); // convert to Hex and prefix "0" if needed
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-};
+    l /= 100
+    const a = (s * Math.min(l, 1 - l)) / 100
+    const f = (n) => {
+        const k = (n + h / 30) % 12
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+        return Math.round(255 * color)
+            .toString(16)
+            .padStart(2, "0") // convert to Hex and prefix "0" if needed
+    }
+    return `#${f(0)}${f(8)}${f(4)}`
+}
 
 const beautifyJSONString = (jsonstring) => {
-  try {
-    return JSON.stringify(JSON.parse(jsonstring), null, " ");
-  } catch (e) {
-    return "error";
-  }
-};
+    try {
+        return JSON.stringify(JSON.parse(jsonstring), null, " ")
+    } catch (e) {
+        return "error"
+    }
+}
 
 //replace several variable from a string
 //array format [{name,value},...]
 function replaceVariables(arrayRef, string, reverted = false) {
-  return arrayRef.reduce((acc, curr) => {
-    if (reverted) {
-      return acc.replace(curr.value, curr.name);
-    } else {
-      return acc.replaceAll(curr.name, curr.value);
-    }
-  }, string);
+    return arrayRef.reduce((acc, curr) => {
+        if (reverted) {
+            return acc.replace(curr.value, curr.name)
+        } else {
+            return acc.replaceAll(curr.name, curr.value)
+        }
+    }, string)
 }
 
 //Format status
 const formatStatus = (status) => {
-  if (status.toUpperCase().indexOf("OK") != -1) return "S126";
-  if (status.toUpperCase().indexOf("ERROR") != -1) return "S22";
-  return status;
-};
+    if (status.toUpperCase().indexOf("OK") != -1) return "S126"
+    if (status.toUpperCase().indexOf("ERROR") != -1) return "S22"
+    return status
+}
 
 const isFloat = (n) => {
-  return Number(n) === n && n % 1 !== 0;
-};
+    return Number(n) === n && n % 1 !== 0
+}
 
 export {
-  capitalize,
-  hslToHex,
-  beautifyJSONString,
-  compareStrings,
-  formatFileSizeToString,
-  formatStatus,
-  replaceVariables,
-  isFloat,
-};
+    capitalize,
+    hslToHex,
+    beautifyJSONString,
+    compareStrings,
+    formatFileSizeToString,
+    formatStatus,
+    replaceVariables,
+    isFloat,
+}

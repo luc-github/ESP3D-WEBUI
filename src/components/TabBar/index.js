@@ -18,63 +18,63 @@ TabNar.js - ESP3D WebUI Tabs bar file
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { Link } from "../Router";
-import { T } from "../Translations";
-import { AppLogo, WebUILogo, Target } from "../../targets";
-import { useSettingsContext, useUiContext } from "../../contexts";
-import { Tool } from "preact-feather";
+import { h } from "preact"
+import { Link } from "../Router"
+import { T } from "../Translations"
+import { AppLogo, WebUILogo, Target } from "../../targets"
+import { useSettingsContext, useUiContext } from "../../contexts"
+import { Tool } from "preact-feather"
 
 /*
  * Local const
  *
  */
 const defaultLinks = [
-  {
-    label: "S36",
-    icon: <AppLogo height="24px" />,
-    href: "/settings/features",
-  },
-  {
-    label: "S17",
-    icon: <WebUILogo height="24px" />,
-    href: "/settings/interface",
-  },
-  { label: Target, icon: <Tool />, href: "/settings/machine" },
-];
+    {
+        label: "S36",
+        icon: <AppLogo height="24px" />,
+        href: "/settings/features",
+    },
+    {
+        label: "S17",
+        icon: <WebUILogo height="24px" />,
+        href: "/settings/interface",
+    },
+    { label: Target, icon: <Tool />, href: "/settings/machine" },
+]
 const TabBar = () => {
-  const { connectionSettings } = useSettingsContext();
-  const { uisettings } = useUiContext();
+    const { connectionSettings } = useSettingsContext()
+    const { uisettings } = useUiContext()
 
-  return (
-    <ul class="tab tab-block">
-      {defaultLinks &&
-        defaultLinks.map(({ label, icon, href }) => {
-          if (
-            href == "/settings/machine" &&
-            !uisettings.getValue("showmachinesettings")
-          )
-            return;
-          return (
-            <li class="tab-item">
-              <Link
-                className={
-                  connectionSettings.current.FWTarget == 0 &&
-                  href == "/settings/machine"
-                    ? "d-none"
-                    : "btn btn-link no-box feather-icon-container"
-                }
-                activeClassName="active"
-                href={href}
-              >
-                {icon}
-                <label class="hide-low">{T(label)}</label>
-              </Link>
-            </li>
-          );
-        })}
-    </ul>
-  );
-};
+    return (
+        <ul class="tab tab-block">
+            {defaultLinks &&
+                defaultLinks.map(({ label, icon, href }) => {
+                    if (
+                        href == "/settings/machine" &&
+                        !uisettings.getValue("showmachinesettings")
+                    )
+                        return
+                    return (
+                        <li class="tab-item">
+                            <Link
+                                className={
+                                    connectionSettings.current.FWTarget == 0 &&
+                                    href == "/settings/machine"
+                                        ? "d-none"
+                                        : "btn btn-link no-box feather-icon-container"
+                                }
+                                activeClassName="active"
+                                href={href}
+                            >
+                                {icon}
+                                <label class="hide-low">{T(label)}</label>
+                            </Link>
+                        </li>
+                    )
+                })}
+        </ul>
+    )
+}
 
-export { TabBar };
+export { TabBar }

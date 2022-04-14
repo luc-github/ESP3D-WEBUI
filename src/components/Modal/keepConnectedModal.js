@@ -15,64 +15,64 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { HelpCircle } from "preact-feather";
-import { useUiContext } from "../../contexts";
-import { useHttpQueue } from "../../hooks";
-import { T } from "../../components/Translations";
-import { espHttpURL } from "../../components/Helpers";
+import { h } from "preact"
+import { HelpCircle } from "preact-feather"
+import { useUiContext } from "../../contexts"
+import { useHttpQueue } from "../../hooks"
+import { T } from "../../components/Translations"
+import { espHttpURL } from "../../components/Helpers"
 
 /*
  * Local const
  *
  */
 const showKeepConnected = () => {
-  const { modals } = useUiContext();
-  const { createNewRequest } = useHttpQueue();
-  const id = "keepconnected";
-  const clickKeepConnected = () => {
-    createNewRequest(
-      espHttpURL("command", { PING: "Yes" }).toString(),
-      { method: "GET" },
-      {
-        onSuccess: (result) => {
-          //TODO:Need to do something ? TBD
-        },
-        onFail: (error) => {
-          //TODO:Need to do something ? TBD
-        },
-      }
-    );
-    modals.removeModal(modals.getModalIndex(id));
-  };
-  const clickCancel = () => {
-    modals.removeModal(modals.getModalIndex(id));
-  };
-  if (modals.getModalIndex(id) == -1)
-    modals.addModal({
-      id: id,
-      title: (
-        <div
-          class="text-primary feather-icon-container"
-          style="line-height:24px!important"
-        >
-          <HelpCircle />
-          <label>{T("S145")}</label>
-        </div>
-      ),
-      content: T("S153"),
-      footer: (
-        <div>
-          <button class="btn mx-2" onClick={clickKeepConnected}>
-            {T("S27")}
-          </button>
-          <button class="btn mx-2" onClick={clickCancel}>
-            {T("S28")}
-          </button>
-        </div>
-      ),
-      //overlay: true,
-      hideclose: false,
-    });
-};
-export { showKeepConnected };
+    const { modals } = useUiContext()
+    const { createNewRequest } = useHttpQueue()
+    const id = "keepconnected"
+    const clickKeepConnected = () => {
+        createNewRequest(
+            espHttpURL("command", { PING: "Yes" }).toString(),
+            { method: "GET" },
+            {
+                onSuccess: (result) => {
+                    //TODO:Need to do something ? TBD
+                },
+                onFail: (error) => {
+                    //TODO:Need to do something ? TBD
+                },
+            }
+        )
+        modals.removeModal(modals.getModalIndex(id))
+    }
+    const clickCancel = () => {
+        modals.removeModal(modals.getModalIndex(id))
+    }
+    if (modals.getModalIndex(id) == -1)
+        modals.addModal({
+            id: id,
+            title: (
+                <div
+                    class="text-primary feather-icon-container"
+                    style="line-height:24px!important"
+                >
+                    <HelpCircle />
+                    <label>{T("S145")}</label>
+                </div>
+            ),
+            content: T("S153"),
+            footer: (
+                <div>
+                    <button class="btn mx-2" onClick={clickKeepConnected}>
+                        {T("S27")}
+                    </button>
+                    <button class="btn mx-2" onClick={clickCancel}>
+                        {T("S28")}
+                    </button>
+                </div>
+            ),
+            //overlay: true,
+            hideclose: false,
+        })
+}
+export { showKeepConnected }

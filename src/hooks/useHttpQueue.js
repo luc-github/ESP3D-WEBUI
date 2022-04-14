@@ -16,114 +16,123 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
-import { useState, useRef } from "preact/hooks";
-import { useHttpQueueContext } from "../contexts";
-import { generateUID } from "../components/Helpers";
+import { h } from "preact"
+import { useState, useRef } from "preact/hooks"
+import { useHttpQueueContext } from "../contexts"
+import { generateUID } from "../components/Helpers"
 
-const useHttpFn = {};
+const useHttpFn = {}
 
 /*
  * Local const
  *
  */
 const useHttpQueue = () => {
-  const {
-    addInQueue,
-    addInTopQueue,
-    removeRequests,
-    getCurrentRequest,
-    processRequests,
-  } = useHttpQueueContext();
-  const [killOnUnmount, setKillOnUnmount] = useState(true);
-  const localRequests = useRef([]);
-
-  const createNewTopRequest = (url, params, callbacks = {}) => {
     const {
-      onSuccess: onSuccessCb,
-      onFail: onFailCb,
-      onProgress: onProgressCb,
-    } = callbacks;
-    const id = params.id ? params.id : generateUID();
-    localRequests.current = [...localRequests.current, id];
-    addInTopQueue({
-      id,
-      url,
-      params,
-      onSuccess: (result) => {
-        if (onSuccessCb) onSuccessCb(result);
-      },
-      onProgress: (e) => {
-        if (onProgressCb) onProgressCb(e);
-      },
-      onFail: onFailCb
-        ? (error) => {
-            if (onFailCb) onFailCb(error);
-          }
-        : null,
-    });
-  };
+        addInQueue,
+        addInTopQueue,
+        removeRequests,
+        getCurrentRequest,
+        processRequests,
+    } = useHttpQueueContext()
+    const [killOnUnmount, setKillOnUnmount] = useState(true)
+    const localRequests = useRef([])
 
-  const createNewRequest = (url, params, callbacks = {}) => {
-    const {
-      onSuccess: onSuccessCb,
-      onFail: onFailCb,
-      onProgress: onProgressCb,
-    } = callbacks;
-    const id = params.id ? params.id : generateUID();
-
-    if (params.max != undefined) {
-      const totalInQueue = localRequests.current.reduce((total, current) => {
-        if (id == current) return total + 1;
-        else return total;
-      }, 0);
-      if (totalInQueue >= params.max) return;
+    const createNewTopRequest = (url, params, callbacks = {}) => {
+        const {
+            onSuccess: onSuccessCb,
+            onFail: onFailCb,
+            onProgress: onProgressCb,
+        } = callbacks
+        const id = params.id ? params.id : generateUID()
+        localRequests.current = [...localRequests.current, id]
+        addInTopQueue({
+            id,
+            url,
+            params,
+            onSuccess: (result) => {
+                if (onSuccessCb) onSuccessCb(result)
+            },
+            onProgress: (e) => {
+                if (onProgressCb) onProgressCb(e)
+            },
+            onFail: onFailCb
+                ? (error) => {
+                      if (onFailCb) onFailCb(error)
+                  }
+                : null,
+        })
     }
-    localRequests.current = [...localRequests.current, id];
-    addInQueue({
-      id,
-      url,
-      params,
-      onSuccess: (result) => {
-        if (onSuccessCb) onSuccessCb(result);
-        localRequests.current.splice(localRequests.current.indexOf(id), 1);
-      },
-      onProgress: (e) => {
-        if (onProgressCb) onProgressCb(e);
-      },
-      onFail: (error) => {
-        localRequests.current.splice(localRequests.current.indexOf(id), 1);
-        if (onFailCb) onFailCb(error);
-      },
-    });
-  };
 
-  const abortRequest = (id) => {
-    if (id) {
-      removeRequests(id);
+    const createNewRequest = (url, params, callbacks = {}) => {
+        const {
+            onSuccess: onSuccessCb,
+            onFail: onFailCb,
+            onProgress: onProgressCb,
+        } = callbacks
+        const id = params.id ? params.id : generateUID()
+
+        if (params.max != undefined) {
+            const totalInQueue = localRequests.current.reduce(
+                (total, current) => {
+                    if (id == current) return total + 1
+                    else return total
+                },
+                0
+            )
+            if (totalInQueue >= params.max) return
+        }
+        localRequests.current = [...localRequests.current, id]
+        addInQueue({
+            id,
+            url,
+            params,
+            onSuccess: (result) => {
+                if (onSuccessCb) onSuccessCb(result)
+                localRequests.current.splice(
+                    localRequests.current.indexOf(id),
+                    1
+                )
+            },
+            onProgress: (e) => {
+                if (onProgressCb) onProgressCb(e)
+            },
+            onFail: (error) => {
+                localRequests.current.splice(
+                    localRequests.current.indexOf(id),
+                    1
+                )
+                if (onFailCb) onFailCb(error)
+            },
+        })
     }
-    const currentRequest = getCurrentRequest();
-    if (currentRequest) {
-      currentRequest.abort();
-    } else {
-      // Toaster no current request
+
+    const abortRequest = (id) => {
+        if (id) {
+            removeRequests(id)
+        }
+        const currentRequest = getCurrentRequest()
+        if (currentRequest) {
+            currentRequest.abort()
+        } else {
+            // Toaster no current request
+        }
     }
-  };
 
-  const processRequestsNow = () => {
-    processRequests();
-  };
+    const processRequestsNow = () => {
+        processRequests()
+    }
 
-  useHttpFn.createNewRequest = createNewRequest;
-  useHttpFn.abortRequest = abortRequest;
+    useHttpFn.createNewRequest = createNewRequest
+    useHttpFn.abortRequest = abortRequest
 
-  return {
-    createNewRequest,
-    processRequestsNow,
-    createNewTopRequest,
-    abortRequest,
-    setKillOnUnmount,
-  };
-};
+    return {
+        createNewRequest,
+        processRequestsNow,
+        createNewTopRequest,
+        abortRequest,
+        setKillOnUnmount,
+    }
+}
 
-export { useHttpQueue, useHttpFn };
+export { useHttpQueue, useHttpFn }

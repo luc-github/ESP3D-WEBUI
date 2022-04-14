@@ -20,63 +20,73 @@ exportHelper.js - ESP3D WebUI helper file
 */
 
 function exportPreferences(preferencesSettings, asFile = true) {
-  const preferences = {};
-  const filename = "preferences.json";
-  preferences.settings = {};
-  if (preferencesSettings.custom)
-    preferences.custom = preferencesSettings.custom;
-  for (let key in preferencesSettings.settings) {
-    for (let subkey in preferencesSettings.settings[key]) {
-      if (preferencesSettings.settings[key][subkey].id) {
-        if (preferencesSettings.settings[key][subkey].type == "group") {
-          preferencesSettings.settings[key][subkey].value.forEach((element) => {
-            preferences.settings[element.id] = asFile
-              ? element.initial
-              : element.value;
-          });
-        } else if (preferencesSettings.settings[key][subkey].type == "list") {
-          const itemsList = [];
-          preferencesSettings.settings[key][subkey].value.forEach((element) => {
-            const item = {};
-            item.id = element.id;
-            element.value.forEach((setting) => {
-              item[setting.name] = asFile ? setting.initial : setting.value;
-            });
-            itemsList.push(item);
-          });
-          preferences.settings[preferencesSettings.settings[key][subkey].id] =
-            itemsList;
-        } else {
-          preferences.settings[preferencesSettings.settings[key][subkey].id] =
-            asFile
-              ? preferencesSettings.settings[key][subkey].initial
-              : preferencesSettings.settings[key][subkey].value;
+    const preferences = {}
+    const filename = "preferences.json"
+    preferences.settings = {}
+    if (preferencesSettings.custom)
+        preferences.custom = preferencesSettings.custom
+    for (let key in preferencesSettings.settings) {
+        for (let subkey in preferencesSettings.settings[key]) {
+            if (preferencesSettings.settings[key][subkey].id) {
+                if (preferencesSettings.settings[key][subkey].type == "group") {
+                    preferencesSettings.settings[key][subkey].value.forEach(
+                        (element) => {
+                            preferences.settings[element.id] = asFile
+                                ? element.initial
+                                : element.value
+                        }
+                    )
+                } else if (
+                    preferencesSettings.settings[key][subkey].type == "list"
+                ) {
+                    const itemsList = []
+                    preferencesSettings.settings[key][subkey].value.forEach(
+                        (element) => {
+                            const item = {}
+                            item.id = element.id
+                            element.value.forEach((setting) => {
+                                item[setting.name] = asFile
+                                    ? setting.initial
+                                    : setting.value
+                            })
+                            itemsList.push(item)
+                        }
+                    )
+                    preferences.settings[
+                        preferencesSettings.settings[key][subkey].id
+                    ] = itemsList
+                } else {
+                    preferences.settings[
+                        preferencesSettings.settings[key][subkey].id
+                    ] = asFile
+                        ? preferencesSettings.settings[key][subkey].initial
+                        : preferencesSettings.settings[key][subkey].value
+                }
+            }
         }
-      }
     }
-  }
-  if (asFile) {
-    const file = new Blob([JSON.stringify(preferences, null, " ")], {
-      type: "application/json",
-    });
-    if (window.navigator.msSaveOrOpenBlob)
-      // IE10+
-      window.navigator.msSaveOrOpenBlob(file, filename);
-    else {
-      // Others
-      const a = document.createElement("a");
-      const url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function () {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 0);
+    if (asFile) {
+        const file = new Blob([JSON.stringify(preferences, null, " ")], {
+            type: "application/json",
+        })
+        if (window.navigator.msSaveOrOpenBlob)
+            // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename)
+        else {
+            // Others
+            const a = document.createElement("a")
+            const url = URL.createObjectURL(file)
+            a.href = url
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 0)
+        }
     }
-  }
-  return preferences;
+    return preferences
 }
 
-export { exportPreferences };
+export { exportPreferences }

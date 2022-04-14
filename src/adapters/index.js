@@ -17,8 +17,8 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact";
+import { h } from "preact"
 
-import { httpAdapter } from "./httpAdapter";
+import { httpAdapter } from "./httpAdapter"
 
-export { httpAdapter };
+export { httpAdapter }

@@ -16,34 +16,34 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import { useEffect } from "preact/hooks";
-import { useUiContext } from "../../../contexts";
-import { iconsFeather } from "../../Images";
-import { iconsTarget } from "../../../targets";
-import { ButtonImg } from "../../Controls";
-import { T } from "./../../Translations";
+import { h } from "preact"
+import { useEffect } from "preact/hooks"
+import { useUiContext } from "../../../contexts"
+import { iconsFeather } from "../../Images"
+import { iconsTarget } from "../../../targets"
+import { ButtonImg } from "../../Controls"
+import { T } from "./../../Translations"
 
 /*
  * Local const
  *
  */
 const MacroButton = ({ itemData }) => {
-  const onClick = (e) => {
-    console.log("Click");
-  };
-  const iconsList = { ...iconsTarget, ...iconsFeather };
-  const controlIcon = iconsList[itemData.icon] ? iconsList[itemData.icon] : "";
-  useEffect(() => {}, []);
-  return (
-    <ButtonImg
-      m1
-      icon={controlIcon}
-      label={itemData.name}
-      onClick={onClick}
-      style="max-width:2rem;"
-    />
-  );
-};
+    const onClick = (e) => {
+        console.log("Click")
+    }
+    const iconsList = { ...iconsTarget, ...iconsFeather }
+    const controlIcon = iconsList[itemData.icon] ? iconsList[itemData.icon] : ""
+    useEffect(() => {}, [])
+    return (
+        <ButtonImg
+            m1
+            icon={controlIcon}
+            label={itemData.name}
+            onClick={onClick}
+            style="max-width:2rem;"
+        />
+    )
+}
 
-export default MacroButton;
+export default MacroButton

@@ -16,46 +16,46 @@ Files.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact";
-import ExtraContent from "../ExtraContent";
+import { h } from "preact"
+import ExtraContent from "../ExtraContent"
 
 /*
  * Local const
  *
  */
 const ExtraPanel = ({ id, source, refreshtime, label, type, icon }) => {
-  return (
-    <ExtraContent
-      label={label}
-      icon={icon}
-      id={id}
-      source={source}
-      refreshtime={refreshtime}
-      type={type}
-      target="panel"
-    />
-  );
-};
+    return (
+        <ExtraContent
+            label={label}
+            icon={icon}
+            id={id}
+            source={source}
+            refreshtime={refreshtime}
+            type={type}
+            target="panel"
+        />
+    )
+}
 
 const ExtraPanelElement = (element, id) => {
-  console.log("Panel ", id);
-  return {
-    id,
-    content: (
-      <ExtraPanel
-        label={element.name}
-        icon={element.icon}
-        id={id}
-        source={element.source}
-        refreshtime={element.refreshtime}
-        type={element.type}
-      />
-    ),
-    name: element.name,
-    icon: element.icon,
-    show: "showextracontents",
-    onstart: "openextrapanelsonstart",
-  };
-};
+    console.log("Panel ", id)
+    return {
+        id,
+        content: (
+            <ExtraPanel
+                label={element.name}
+                icon={element.icon}
+                id={id}
+                source={element.source}
+                refreshtime={element.refreshtime}
+                type={element.type}
+            />
+        ),
+        name: element.name,
+        icon: element.icon,
+        show: "showextracontents",
+        onstart: "openextrapanelsonstart",
+    }
+}
 
-export { ExtraPanel, ExtraPanelElement };
+export { ExtraPanel, ExtraPanelElement }

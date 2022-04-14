@@ -20,45 +20,50 @@ importHelper.js - ESP3D WebUI helper file
 */
 
 function importFeatures(currentFeaturesData, importedFeatures) {
-  const currentFeatures = JSON.parse(JSON.stringify(currentFeaturesData));
-  let haserrors = false;
-  Object.keys(importedFeatures).map((sectionId) => {
-    const section = importedFeatures[sectionId];
-    Object.keys(section).map((subsectionId) => {
-      const subsection = section[subsectionId];
-      Object.keys(subsection).map((entryId) => {
-        const entry = subsection[entryId];
-        if (
-          currentFeatures &&
-          currentFeatures[sectionId] &&
-          Array.isArray(currentFeatures[sectionId][subsectionId])
-        ) {
-          const featureId = currentFeatures[sectionId][subsectionId].find(
-            (element) => element.id === entry.id
-          );
-          if (featureId) {
-            featureId.value = entry.value;
-          } else {
-            //TODO: TBD
-            haserrors = true;
-            console.log(
-              "Cannot find entry:",
-              sectionId,
-              ".",
-              subsectionId,
-              ".",
-              entry.id
-            );
-          }
-        } else {
-          //TODO: TBD
-          haserrors = true;
-          console.log("Cannot find section:", sectionId, ".", subsectionId);
-        }
-      });
-    });
-  });
-  return [currentFeatures, haserrors];
+    const currentFeatures = JSON.parse(JSON.stringify(currentFeaturesData))
+    let haserrors = false
+    Object.keys(importedFeatures).map((sectionId) => {
+        const section = importedFeatures[sectionId]
+        Object.keys(section).map((subsectionId) => {
+            const subsection = section[subsectionId]
+            Object.keys(subsection).map((entryId) => {
+                const entry = subsection[entryId]
+                if (
+                    currentFeatures &&
+                    currentFeatures[sectionId] &&
+                    Array.isArray(currentFeatures[sectionId][subsectionId])
+                ) {
+                    const featureId = currentFeatures[sectionId][
+                        subsectionId
+                    ].find((element) => element.id === entry.id)
+                    if (featureId) {
+                        featureId.value = entry.value
+                    } else {
+                        //TODO: TBD
+                        haserrors = true
+                        console.log(
+                            "Cannot find entry:",
+                            sectionId,
+                            ".",
+                            subsectionId,
+                            ".",
+                            entry.id
+                        )
+                    }
+                } else {
+                    //TODO: TBD
+                    haserrors = true
+                    console.log(
+                        "Cannot find section:",
+                        sectionId,
+                        ".",
+                        subsectionId
+                    )
+                }
+            })
+        })
+    })
+    return [currentFeatures, haserrors]
 }
 
-export { importFeatures };
+export { importFeatures }
