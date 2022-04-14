@@ -155,6 +155,9 @@ const TargetContextProvider = ({ children }) => {
                     }
                 })
             } else if (type == "response") {
+                //ignore such answer unless need to check response
+                //this response is to workaround some response lost when no response
+                if (data.startsWith("ESP3D says:")) return
                 const isverboseOnly = isVerboseOnly(type, data)
                 dispatchInternally(type, data)
                 //format the output if needed
