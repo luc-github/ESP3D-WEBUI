@@ -211,7 +211,6 @@ const MachineSettings = () => {
         ) {
             setCollected("O B")
             setIsLoading(true)
-            console.log(response.cmd)
             sendSerialCmd(response.cmd)
         }
     }

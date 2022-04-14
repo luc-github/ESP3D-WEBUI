@@ -328,7 +328,7 @@ const Legendes = ({ index, temperatures, temperaturesList }) => {
     //we wait at least 2 data to display the legend
     if (temperaturesList.current.length < 2) return
     Object.keys(charts[index].series).forEach((tool) => {
-        if (isVisible(tool)) {
+        if (isVisible(tool) && temperatures[tool]) {
             temperatures[tool].map((entry, num) => {
                 labels.push(
                     <div
