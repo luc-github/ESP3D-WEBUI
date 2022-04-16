@@ -1,7 +1,7 @@
 {
-  "name": "base",
-  "version": "1.0.0",
-  "description": "base for webpack project",
+  "name": "ESP3D-WEBUI",
+  "version": "3.0.0",
+  "description": "Web UI for ESP3D V3 based FW ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
