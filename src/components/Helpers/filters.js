@@ -22,6 +22,7 @@ import { compareStrings } from "./strings"
 
 //sort files alphabeticaly then folders alphabeticaly
 const sortedFilesList = (filesList) => {
+    if (typeof filesList == "undefined") return []
     filesList.sort(function (a, b) {
         return compareStrings(a.name, b.name)
     })
