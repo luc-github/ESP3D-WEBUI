@@ -30,30 +30,28 @@
  * @returns {Function} return.abort
  * @returns {XHR} return.xhr
  */
-const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
+const httpAdapter = (url, params = {}, setUploadProgress = () => { }) => {
     const { method = "GET", headers = {}, body = null, id = null } = params
     const sanitizedMethod = method.trim().toUpperCase()
     const xhr = new XMLHttpRequest()
-    if (id && id.startsWith("download")) {
-        xhr.responseType = "blob"
-        xhr.addEventListener("progress", (e) => {
-            const done = e.position || e.loaded
-            const total = e.totalSize || e.total
-            const perc = Math.floor((done / total) * 1000) / 10
-            setUploadProgress(perc)
-        })
-    } else {
-        xhr.upload.addEventListener("progress", (e) => {
-            const done = e.position || e.loaded
-            const total = e.totalSize || e.total
-            const perc = Math.floor((done / total) * 1000) / 10
-            setUploadProgress(perc)
-        })
+    if (id && id.startsWith("download")) { xhr.responseType = "blob" }
+    xhr.upload.addEventListener("progress", (e) => {
+        const done = e.position || e.loaded
+        const total = e.totalSize || e.total
+        const perc = Math.floor((done / total) * 1000) / 10
+        setUploadProgress(perc)
+    })
+
+    const cacheBustedUrl = (url) => {
+        const parsedUrl = new URL(url)
+        let params = parsedUrl.searchParams;
+        (params.get("t") == null) && params.append("t", Date.now())
+        return parsedUrl.toString()
     }
 
     xhr.open(
         sanitizedMethod,
-        url + (/\?/.test(url) ? "&" : "?") + "t=" + new Date().getTime(),
+        cacheBustedUrl(url),
         true
     ) //Bypassing the cache
 
@@ -64,17 +62,14 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
         headers.forEach((value, header) => xhr.setRequestHeader(header, value))
     //handle Headers()
     else
-        Object.keys(headers).forEach((header) =>
-            xhr.setRequestHeader(header, headers[header])
-        ) //handle Object headers
+        Object.entries(headers).forEach((header, value) => xhr.setRequestHeader(header, value)) //handle Object headers
 
     const response = new Promise((resolve, reject) => {
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response)
             else {
                 const e = new Error(
-                    `${xhr.status ? xhr.status : ""}${
-                        xhr.statusText ? ` - ${xhr.statusText}` : ""
+                    `${xhr.status ? xhr.status : ""}${xhr.statusText ? ` - ${xhr.statusText}` : ""
                     }`
                 )
                 e.code = xhr.status
@@ -83,8 +78,7 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
         }
         xhr.onerror = () => {
             const e = new Error(
-                `${xhr.status ? xhr.status : "Connection time out"}${
-                    xhr.status && xhr.statusText ? ` - ${xhr.statusText}` : ""
+                `${xhr.status ? xhr.status : "Connection time out"}${xhr.status && xhr.statusText ? ` - ${xhr.statusText}` : ""
                 }`
             )
             e.code = xhr.status
