@@ -127,9 +127,9 @@ const InterfaceTab = () => {
         //get source item
         const sourceItemValue =
           datavalue[
-            datavalue.findIndex((element) => {
-              return element.id == sourceId + "-source";
-            })
+          datavalue.findIndex((element) => {
+            return element.id == sourceId + "-source";
+          })
           ];
         //force /snap as source
         sourceItemValue.value = "/snap";
@@ -224,7 +224,7 @@ const InterfaceTab = () => {
     formData.append("myfiles", file, preferencesFileName);
     setIsLoading(true);
     createNewRequest(
-      espHttpURL("files").toString(),
+      espHttpURL("files"),
       { method: "POST", id: "preferences", body: formData },
       {
         onSuccess: (result) => {

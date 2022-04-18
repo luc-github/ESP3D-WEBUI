@@ -123,10 +123,10 @@ const MixedExtrudersControl = ({ feedrate }) => {
 
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }).toString(),
+            espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: (result) => { },
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
                     console.log(error)
@@ -213,7 +213,7 @@ const MixedExtrudersControl = ({ feedrate }) => {
                                         )
                                     if (
                                         mixedExtrudersWeight.length - 2 <=
-                                            nblocked &&
+                                        nblocked &&
                                         !mixedExtrudersWeight[index].locked
                                     )
                                         return

@@ -112,7 +112,7 @@ const MachineSettings = () => {
 
     const sendSerialCmd = (cmd, updateUI) => {
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", echo: cmd },
             {
                 onSuccess: (result) => {
@@ -176,7 +176,7 @@ const MachineSettings = () => {
         if (e) e.target.blur()
         setIsLoading(true)
         createNewRequest(
-            espHttpURL(currentConfig).toString(),
+            espHttpURL(currentConfig),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -212,7 +212,7 @@ const MachineSettings = () => {
         formData.append("myfiles", file, filename)
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("files").toString(),
+            espHttpURL("files"),
             { method: "POST", id: "yamlconfig", body: formData },
             {
                 onSuccess: (result) => {
@@ -472,7 +472,7 @@ const MachineSettings = () => {
                                                         inline="true"
                                                         type={
                                                             element.type ==
-                                                            "section"
+                                                                "section"
                                                                 ? "label"
                                                                 : "text"
                                                         }

@@ -32,7 +32,7 @@ const showKeepConnected = () => {
     const id = "keepconnected"
     const clickKeepConnected = () => {
         createNewRequest(
-            espHttpURL("command", { PING: "Yes" }).toString(),
+            espHttpURL("command", { PING: "Yes" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {

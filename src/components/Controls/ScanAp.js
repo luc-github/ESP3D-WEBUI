@@ -34,7 +34,7 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
     const ScanNetworks = () => {
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("command", { cmd: "[ESP410]json=yes" }).toString(),
+            espHttpURL("command", { cmd: "[ESP410]json=yes" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {

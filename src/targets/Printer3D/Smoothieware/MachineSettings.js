@@ -61,7 +61,7 @@ const MachineSettings = () => {
     const id = "Machine Tab"
     const sendSerialCmd = (cmd, updateUI) => {
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", echo: cmd },
             {
                 onSuccess: (result) => {
@@ -85,7 +85,7 @@ const MachineSettings = () => {
         )
         console.log(cmd)
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", id: "saveMachineSetting" },
             {
                 onSuccess: (result) => {
@@ -134,7 +134,7 @@ const MachineSettings = () => {
             //if overide do M500
             if (!configSelected) {
                 createNewRequest(
-                    espHttpURL("command", { cmd: "M500" }).toString(),
+                    espHttpURL("command", { cmd: "M500" }),
                     { method: "GET", id: "saveMachineSetting" },
                     {
                         onSuccess: (result) => {
@@ -242,7 +242,7 @@ const MachineSettings = () => {
 
     const restartBoard = () => {
         createNewRequest(
-            espHttpURL("command", { cmd: "reset" }).toString(),
+            espHttpURL("command", { cmd: "reset" }),
             { method: "GET", id: "saveMachineSetting" },
             {
                 onSuccess: (result) => {
@@ -442,17 +442,16 @@ const MachineSettings = () => {
                                         return (
                                             <div
                                                 class="text-small text-gray text-italic text-left"
-                                                style={`margin-left:2rem;${
-                                                    machineSettings.cache[
+                                                style={`margin-left:2rem;${machineSettings.cache[
+                                                    index + 1
+                                                ]
+                                                    ? machineSettings.cache[
                                                         index + 1
-                                                    ]
-                                                        ? machineSettings.cache[
-                                                              index + 1
-                                                          ].type == "help"
-                                                            ? ""
-                                                            : "margin-bottom:1rem"
+                                                    ].type == "help"
+                                                        ? ""
                                                         : "margin-bottom:1rem"
-                                                }`}
+                                                    : "margin-bottom:1rem"
+                                                    }`}
                                             >
                                                 {element.value}
                                             </div>

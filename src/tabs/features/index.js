@@ -56,7 +56,7 @@ const FeaturesTab = () => {
     const getFeatures = () => {
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("command", { cmd: "[ESP400]json=yes" }).toString(),
+            espHttpURL("command", { cmd: "[ESP400]json=yes" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -139,7 +139,7 @@ const FeaturesTab = () => {
             entry.value +
             " json=yes"
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", id: "ESP401" },
             {
                 onSuccess: (result) => {
@@ -248,7 +248,7 @@ const FeaturesTab = () => {
      */
     function reStartBoard() {
         createNewRequest(
-            espHttpURL("command", { cmd: "[ESP444]RESTART" }).toString(),
+            espHttpURL("command", { cmd: "[ESP444]RESTART" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -275,10 +275,10 @@ const FeaturesTab = () => {
                 const importFile = e.target.result
                 try {
                     const importData = JSON.parse(importFile)
-                    ;[featuresSettings.current, haserrors] = importFeatures(
-                        featuresSettings.current,
-                        importData
-                    )
+                        ;[featuresSettings.current, haserrors] = importFeatures(
+                            featuresSettings.current,
+                            importData
+                        )
                     if (haserrors) {
                         toasts.addToast({ content: "S56", type: "error" })
                     }
@@ -321,7 +321,7 @@ const FeaturesTab = () => {
                     } else if (typeof fieldData.minSecondary != undefined) {
                         if (
                             fieldData.value.trim().length <
-                                fieldData.minSecondary &&
+                            fieldData.minSecondary &&
                             fieldData.value.trim().length > fieldData.min
                         ) {
                             validation.valid = false
@@ -448,22 +448,22 @@ const FeaturesTab = () => {
                                                                         const Options =
                                                                             options
                                                                                 ? options.reduce(
-                                                                                      (
-                                                                                          acc,
-                                                                                          curval
-                                                                                      ) => {
-                                                                                          return [
-                                                                                              ...acc,
-                                                                                              {
-                                                                                                  label: T(
-                                                                                                      curval.label
-                                                                                                  ),
-                                                                                                  value: curval.value,
-                                                                                              },
-                                                                                          ]
-                                                                                      },
-                                                                                      []
-                                                                                  )
+                                                                                    (
+                                                                                        acc,
+                                                                                        curval
+                                                                                    ) => {
+                                                                                        return [
+                                                                                            ...acc,
+                                                                                            {
+                                                                                                label: T(
+                                                                                                    curval.label
+                                                                                                ),
+                                                                                                value: curval.value,
+                                                                                            },
+                                                                                        ]
+                                                                                    },
+                                                                                    []
+                                                                                )
                                                                                 : null
                                                                         return (
                                                                             <Field
@@ -476,7 +476,7 @@ const FeaturesTab = () => {
                                                                                 extra={
                                                                                     subsectionId ==
                                                                                         "sta" &&
-                                                                                    label ==
+                                                                                        label ==
                                                                                         "SSID"
                                                                                         ? "scan"
                                                                                         : null

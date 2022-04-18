@@ -44,7 +44,7 @@ const MacrosPanel = () => {
     console.log(id)
     const sendCommand = (cmd) => {
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", echo: replaceVariables(variablesList, cmd, true) },
             {
                 onSuccess: (result) => {

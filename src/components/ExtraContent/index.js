@@ -86,7 +86,7 @@ const ExtraContent = ({
             } else {
                 const idquery = type == "content" ? type + id : "download" + id
                 createNewRequest(
-                    espHttpURL(pageSource).toString(),
+                    espHttpURL(pageSource),
                     { method: "GET", id: idquery, max: 2 },
                     {
                         onSuccess: (result) => {

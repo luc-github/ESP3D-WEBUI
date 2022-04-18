@@ -78,7 +78,7 @@ const ContentContainer = () => {
                     createNewRequest(
                         espHttpURL("command", {
                             cmd: eventMsg.data.content,
-                        }).toString(),
+                        }),
                         { method: "GET" },
                         {
                             onSuccess: (result) => {
@@ -118,7 +118,7 @@ const ContentContainer = () => {
                         espHttpURL(
                             eventMsg.data.url,
                             eventMsg.data.args
-                        ).toString(),
+                        ),
                         { method: "GET" },
                         {
                             onSuccess: (result) => {
@@ -181,7 +181,7 @@ const ContentContainer = () => {
                         espHttpURL(
                             eventMsg.data.url,
                             eventMsg.data.args
-                        ).toString(),
+                        ),
                         {
                             method: "POST",
                             id: eventMsg.data.id,
@@ -236,7 +236,7 @@ const ContentContainer = () => {
                         espHttpURL(
                             eventMsg.data.url,
                             eventMsg.data.args
-                        ).toString(),
+                        ),
                         { method: "GET", id: "download" },
                         {
                             onSuccess: (result) => {
@@ -323,15 +323,15 @@ const ContentContainer = () => {
                         title: T(content.title),
                         button2: content.bt2Txt
                             ? {
-                                  cb: cb2,
-                                  text: T(content.bt2Txt),
-                              }
+                                cb: cb2,
+                                text: T(content.bt2Txt),
+                            }
                             : null,
                         button1: content.bt1Txt
                             ? {
-                                  cb: cb1,
-                                  text: T(content.bt1Txt),
-                              }
+                                cb: cb1,
+                                text: T(content.bt1Txt),
+                            }
                             : null,
                         icon:
                             content.style == "question" ? (

@@ -70,7 +70,7 @@ const FilesPanel = () => {
 
     const sendSerialCmd = (cmd) => {
         createNewRequest(
-            espHttpURL("command", { cmd: cmd }).toString(),
+            espHttpURL("command", { cmd: cmd }),
             { method: "GET", echo: cmd },
             {
                 onSuccess: (result) => {
@@ -88,7 +88,7 @@ const FilesPanel = () => {
 
     const sendURLCmd = (cmd) => {
         createNewRequest(
-            espHttpURL(cmd.url, cmd.args).toString(),
+            espHttpURL(cmd.url, cmd.args),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -197,8 +197,8 @@ const FilesPanel = () => {
                     "myfiles",
                     file,
                     currentPath[currentFS] +
-                        (currentPath[currentFS] == "/" ? "" : "/") +
-                        file.name
+                    (currentPath[currentFS] == "/" ? "" : "/") +
+                    file.name
                 )
             }
             //now do request
@@ -282,7 +282,7 @@ const FilesPanel = () => {
             content: <Progress progressBar={progressBar} max="100" />,
         })
         createNewRequest(
-            espHttpURL(cmd.url, cmd.args).toString(),
+            espHttpURL(cmd.url, cmd.args),
             { method: "GET", id: "download" },
             {
                 onSuccess: (result) => {
@@ -441,7 +441,7 @@ const FilesPanel = () => {
             const cmd = files.command(currentFS, "list", currentPath[currentFS])
             if (cmd.type == "url") {
                 createNewRequest(
-                    espHttpURL(cmd.url, cmd.args).toString(),
+                    espHttpURL(cmd.url, cmd.args),
                     { method: "GET" },
                     {
                         onSuccess: (result) => {
@@ -723,14 +723,13 @@ const FilesPanel = () => {
                                 return (
                                     <div class="file-line form-control">
                                         <div
-                                            class={`feather-icon-container file-line-name ${
-                                                files.capability(
-                                                    fileSystem,
-                                                    "Download"
-                                                ) || line.size == -1
-                                                    ? "file-line-action"
-                                                    : ""
-                                            }`}
+                                            class={`feather-icon-container file-line-name ${files.capability(
+                                                fileSystem,
+                                                "Download"
+                                            ) || line.size == -1
+                                                ? "file-line-action"
+                                                : ""
+                                                }`}
                                             onclick={(e) => {
                                                 ElementClicked(e, line)
                                             }}
@@ -752,39 +751,39 @@ const FilesPanel = () => {
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
-                                                        <ButtonImg
-                                                            m1
-                                                            ltooltip
-                                                            data-tooltip={T(
-                                                                "S74"
-                                                            )}
-                                                            icon={<Play />}
-                                                            onClick={(e) => {
-                                                                e.target.blur()
-                                                                //TODO print file
-                                                                const cmd =
-                                                                    files.command(
-                                                                        currentFS,
-                                                                        "play",
-                                                                        currentPath[
+                                                            <ButtonImg
+                                                                m1
+                                                                ltooltip
+                                                                data-tooltip={T(
+                                                                    "S74"
+                                                                )}
+                                                                icon={<Play />}
+                                                                onClick={(e) => {
+                                                                    e.target.blur()
+                                                                    //TODO print file
+                                                                    const cmd =
+                                                                        files.command(
+                                                                            currentFS,
+                                                                            "play",
+                                                                            currentPath[
                                                                             currentFS
-                                                                        ],
-                                                                        line.name
+                                                                            ],
+                                                                            line.name
+                                                                        )
+                                                                    sendSerialCmd(
+                                                                        cmd.cmd
                                                                     )
-                                                                sendSerialCmd(
-                                                                    cmd.cmd
-                                                                )
-                                                            }}
-                                                        />
-                                                    )}
+                                                                }}
+                                                            />
+                                                        )}
                                                     {!files.capability(
                                                         currentFS,
                                                         "Process",
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
-                                                        <div style="width:2rem" />
-                                                    )}
+                                                            <div style="width:2rem" />
+                                                        )}
                                                 </Fragment>
                                             )}
                                             <ButtonImg

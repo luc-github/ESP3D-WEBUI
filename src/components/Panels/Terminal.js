@@ -116,7 +116,7 @@ const TerminalPanel = () => {
             inputHistoryIndex = terminal.inputHistory.length - 1
             processData("echo", cmd)
             createNewRequest(
-                espHttpURL("command", { cmd }).toString(),
+                espHttpURL("command", { cmd }),
                 { method: "GET" },
                 {
                     onSuccess: (result) => {
@@ -251,8 +251,8 @@ const TerminalPanel = () => {
                         terminal.isAutoScrollPaused.current &&
                         Math.abs(
                             e.target.scrollTop +
-                                e.target.offsetHeight -
-                                e.target.scrollHeight
+                            e.target.offsetHeight -
+                            e.target.scrollHeight
                         ) < 5
                     ) {
                         terminal.isAutoScrollPaused.current = false

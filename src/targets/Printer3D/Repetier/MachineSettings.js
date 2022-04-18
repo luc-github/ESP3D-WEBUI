@@ -58,7 +58,7 @@ const MachineSettings = () => {
     const id = "Machine Tab"
     const sendSerialCmd = (cmd, updateUI) => {
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", echo: cmd },
             {
                 onSuccess: (result) => {
@@ -78,7 +78,7 @@ const MachineSettings = () => {
     const saveEntry = (entry, index, total) => {
         const { type, cmd } = CMD.command("eepromset", entry)
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", id: "saveMachineSetting" },
             {
                 onSuccess: (result) => {
