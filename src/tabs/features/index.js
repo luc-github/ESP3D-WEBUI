@@ -63,6 +63,7 @@ const FeaturesTab = () => {
                     try {
                         const jsonResult = JSON.parse(result)
                         if (
+                            !jsonResult ||
                             jsonResult.cmd != 400 ||
                             jsonResult.status == "error" ||
                             !jsonResult.data
@@ -145,7 +146,9 @@ const FeaturesTab = () => {
                 onSuccess: (result) => {
                     try {
                         progressBar.update(index + 1)
+                        const jsonResult = JSON.parse(result)
                         if (
+                            !jsonResult ||
                             jsonResult.cmd != 401 ||
                             jsonResult.status == "error" ||
                             !jsonResult.data
