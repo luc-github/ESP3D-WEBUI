@@ -77,7 +77,7 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
                     </thead>
                     <tbody>
                         {APList.map((e) => {
-                            const SSID = e.ssid.replace("&#39;", "'").replace("&#34;", '"')
+                            const SSID = e.SSID.replace("&#39;", "'").replace("&#34;", '"')
                             return (
                                 <tr>
                                     <td>{SSID}</td>
