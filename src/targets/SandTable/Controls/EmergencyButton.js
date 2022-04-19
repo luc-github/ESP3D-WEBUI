@@ -31,13 +31,13 @@ const EmergencyButton = () => {
     const { createNewRequest } = useHttpFn
     const SendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }).toString(),
+            espHttpURL("command", { cmd: command }),
             {
                 method: "GET",
                 echo: replaceVariables(realCommandsTable, command, true),
             }, //need to see real command as it is not printable
             {
-                onSuccess: (result) => {},
+                onSuccess: (result) => { },
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
                     console.log(error)

@@ -51,7 +51,7 @@ const MachineSettings = () => {
     const id = "Machine Tab"
     const sendSerialCmd = (cmd, updateUI) => {
         createNewRequest(
-            espHttpURL("command", { cmd }).toString(),
+            espHttpURL("command", { cmd }),
             { method: "GET", echo: cmd },
             {
                 onSuccess: (result) => {

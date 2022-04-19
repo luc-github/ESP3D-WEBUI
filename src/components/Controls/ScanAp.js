@@ -34,7 +34,7 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
     const ScanNetworks = () => {
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("command", { cmd: "[ESP410]json=yes" }).toString(),
+            espHttpURL("command", { cmd: "[ESP410]json=yes" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -65,7 +65,6 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
     return (
         <Fragment>
             {isLoading && <Loading />}
-
             {!isLoading && (
                 <table class="table">
                     <thead class="hide-low">
@@ -78,14 +77,10 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
                     </thead>
                     <tbody>
                         {APList.map((e) => {
+                            const SSID = e.SSID.replace("&#39;", "'").replace("&#34;", '"')
                             return (
                                 <tr>
-                                    <td>
-                                        {e.SSID.replace("&#39;", "'").replace(
-                                            "&#34;",
-                                            '"'
-                                        )}
-                                    </td>
+                                    <td>{SSID}</td>
                                     <td>{e.SIGNAL}%</td>
                                     <td>{e.IS_PROTECTED ? <Lock /> : ""}</td>
                                     <td>
@@ -95,15 +90,8 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
                                             data-tooltip={T("S51")}
                                             icon={<CheckCircle />}
                                             onClick={() => {
-                                                setValue(
-                                                    e.SSID.replace(
-                                                        "&#39;",
-                                                        "'"
-                                                    ).replace("&#34;", '"')
-                                                )
-                                                modals.removeModal(
-                                                    modals.getModalIndex(id)
-                                                )
+                                                setValue(SSID);
+                                                modals.removeModal(modals.getModalIndex(id))
                                             }}
                                         />
                                     </td>

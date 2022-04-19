@@ -56,7 +56,7 @@ const useSettings = () => {
                 cmd: "[ESP800]json=yes",
                 time: getBrowserTime(),
                 version: webUIversion,
-            }).toString(),
+            }),
             { method: "GET", id: "connection" },
             {
                 onSuccess: (result) => {
@@ -92,15 +92,15 @@ const useSettings = () => {
                             content: T("S124").replace(
                                 "%s",
                                 connectionSettings.current.WebSocketIP +
-                                    (connectionSettings.current.WebSocketPort !=
+                                (connectionSettings.current.WebSocketPort !=
                                     "81"
-                                        ? ":" +
-                                          (parseInt(
-                                              connectionSettings.current
-                                                  .WebSocketPort
-                                          ) -
-                                              1)
-                                        : "")
+                                    ? ":" +
+                                    (parseInt(
+                                        connectionSettings.current
+                                            .WebSocketPort
+                                    ) -
+                                        1)
+                                    : "")
                             ),
                             hideclose: true,
                         })
@@ -143,7 +143,7 @@ const useSettings = () => {
             if (elem) elem.parentNode.removeChild(elem)
             if (themepack != "default") {
                 createNewRequest(
-                    espHttpURL(themepack).toString(),
+                    espHttpURL(themepack),
                     { method: "GET" },
                     {
                         onSuccess: (result) => {
@@ -180,7 +180,7 @@ const useSettings = () => {
             }
         }
         createNewRequest(
-            espHttpURL("preferences.json").toString(),
+            espHttpURL("preferences.json"),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -283,7 +283,7 @@ const useSettings = () => {
                             setLoading(false)
                         }
                         createNewRequest(
-                            espHttpURL(languagepack).toString(),
+                            espHttpURL(languagepack),
                             { method: "GET" },
                             {
                                 onSuccess: (result) => {

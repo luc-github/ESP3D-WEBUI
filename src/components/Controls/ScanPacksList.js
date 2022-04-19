@@ -34,7 +34,7 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
     const ScanPacks = () => {
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("files", { path: "/" }).toString(),
+            espHttpURL("files", { path: "/" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -111,17 +111,17 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
                                             >
                                                 {id == "languagePickup"
                                                     ? getLanguageName(
-                                                          e.name.replace(
-                                                              ".gz",
-                                                              ""
-                                                          )
-                                                      )
+                                                        e.name.replace(
+                                                            ".gz",
+                                                            ""
+                                                        )
+                                                    )
                                                     : e.name
-                                                          .replace(".gz", "")
-                                                          .replace(
-                                                              "theme-",
-                                                              ""
-                                                          )}
+                                                        .replace(".gz", "")
+                                                        .replace(
+                                                            "theme-",
+                                                            ""
+                                                        )}
                                             </span>
                                         </td>
 

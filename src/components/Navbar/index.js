@@ -105,7 +105,7 @@ const Navbar = () => {
         const formData = new FormData()
         formData.append("DISCONNECT", "YES")
         createNewRequest(
-            espHttpURL("login").toString(),
+            espHttpURL("login"),
             { method: "POST", id: "login", body: formData },
             {
                 onSuccess: (result) => {
@@ -183,10 +183,10 @@ const Navbar = () => {
                                         href == "/about"
                                             ? "navbar-brand logo no-box "
                                             : connectionSettings.current
-                                                  .FWTarget == 0 &&
-                                              href == "/dashboard"
-                                            ? "d-none"
-                                            : "btn btn-link no-box feather-icon-container"
+                                                .FWTarget == 0 &&
+                                                href == "/dashboard"
+                                                ? "d-none"
+                                                : "btn btn-link no-box feather-icon-container"
                                     }
                                     activeClassName="active"
                                     href={href}
@@ -293,7 +293,7 @@ const Navbar = () => {
                     <span
                         className={
                             connectionSettings.current.Authentication ==
-                            "Disabled"
+                                "Disabled"
                                 ? "d-none"
                                 : "btn btn-link no-box mx-2 feather-icon-container"
                         }

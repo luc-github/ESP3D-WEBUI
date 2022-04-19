@@ -87,10 +87,10 @@ const JogPanel = () => {
     //Send a request to the ESP
     const SendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }).toString(),
+            espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: (result) => { },
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
                     console.log(error)

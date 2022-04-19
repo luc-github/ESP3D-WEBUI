@@ -105,7 +105,7 @@ const About = () => {
     const getProps = () => {
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("command", { cmd: "[ESP420]json=yes" }).toString(),
+            espHttpURL("command", { cmd: "[ESP420]json=yes" }),
             { method: "GET" },
             {
                 onSuccess: (result) => {

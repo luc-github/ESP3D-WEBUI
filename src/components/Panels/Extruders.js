@@ -69,10 +69,10 @@ const ExtruderInputControl = ({ index, size, hasdivider }) => {
   };
   const sendCommand = (command) => {
     createNewRequest(
-      espHttpURL("command", { cmd: command }).toString(),
+      espHttpURL("command", { cmd: command }),
       { method: "GET", echo: command },
       {
-        onSuccess: (result) => {},
+        onSuccess: (result) => { },
         onFail: (error) => {
           toasts.addToast({ content: error, type: "error" });
           console.log(error);
@@ -113,9 +113,8 @@ const ExtruderInputControl = ({ index, size, hasdivider }) => {
         </div>
         <ButtonImg
           id={"btn-extrude-plus" + index}
-          class={`extruder-ctrl-send m-2 ${
-            !validation.valid ? "d-invisible" : ""
-          }`}
+          class={`extruder-ctrl-send m-2 ${!validation.valid ? "d-invisible" : ""
+            }`}
           icon={<Plus />}
           tooltip
           data-tooltip={T("P53")}
@@ -137,9 +136,8 @@ const ExtruderInputControl = ({ index, size, hasdivider }) => {
         />
         <ButtonImg
           id={"btn-extrude-minus" + index}
-          class={`extruder-ctrl-send m-2 ${
-            !validation.valid ? "d-invisible" : ""
-          }`}
+          class={`extruder-ctrl-send m-2 ${!validation.valid ? "d-invisible" : ""
+            }`}
           icon={<Minus />}
           tooltip
           data-tooltip={T("P54")}

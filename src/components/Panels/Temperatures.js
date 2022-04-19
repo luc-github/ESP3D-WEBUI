@@ -63,8 +63,8 @@ const preheatList = (tool) => {
             tool == "T"
                 ? "extruderpreheat"
                 : tool == "B"
-                ? "bedpreheat"
-                : "chamberpreheat"
+                    ? "bedpreheat"
+                    : "chamberpreheat"
         )
         if (list)
             return list.split(";").map((item) => {
@@ -80,8 +80,8 @@ const heaterCommand = (tool, index, value) => {
             tool == "T"
                 ? "heatextruder"
                 : tool == "B"
-                ? "heatbed"
-                : "heatchamber"
+                    ? "heatbed"
+                    : "heatchamber"
         )
         if (cmd)
             return cmd
@@ -147,10 +147,10 @@ const TemperatureInputControl = ({ tool, index, size }) => {
     const { createNewRequest } = useHttpFn
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }).toString(),
+            espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: (result) => { },
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
                     console.log(error)
@@ -187,7 +187,7 @@ const TemperatureInputControl = ({ tool, index, size }) => {
             target_temperatures[tool][index].current < 0 ||
             (target_temperatures[tool][index].max &&
                 target_temperatures[tool][index].current >
-                    target_temperatures[tool][index].max)
+                target_temperatures[tool][index].max)
         ) {
             //No error message to keep all control aligned
             //may be have a better way ?
@@ -244,9 +244,8 @@ const TemperatureInputControl = ({ tool, index, size }) => {
                 </div>
                 <ButtonImg
                     id={"btn-send" + tool + index}
-                    class={`temperature-ctrl-send ${
-                        !validation.valid ? "d-invisible" : ""
-                    }`}
+                    class={`temperature-ctrl-send ${!validation.valid ? "d-invisible" : ""
+                        }`}
                     icon={<Send />}
                     tooltip
                     data-tooltip={T("S43")}
@@ -272,10 +271,10 @@ const TemperaturesPanel = () => {
     const { createNewRequest } = useHttpFn
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }).toString(),
+            espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: (result) => { },
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
                     console.log(error)
