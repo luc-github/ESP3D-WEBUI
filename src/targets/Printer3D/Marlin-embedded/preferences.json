@@ -38,7 +38,10 @@
         "id": "sd",
         "type": "boolean",
         "label": "S190",
-        "value": false
+        "value": false,
+        "depend":[
+          {"connection_id":"SDConnection", "value":"=='shared'"}
+        ]
       }],
       "extruders":[
         {
