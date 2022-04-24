@@ -194,35 +194,67 @@ const commandsQuery = (req, res, SendWS) => {
         res.send("")
         return
     }
+    if (url.indexOf("M20 L") != -1) {
+        SendWS(
+            "echo:SD card ok\n" +
+                "ok\n" +
+                "Begin file listt\n" +
+                "V2T-TEST.GCO 569266 V2T-TEST.GCO\n" +
+                "DFQ-PI~1.GCO 1490254 DFq-pika2.gco\n" +
+                "VJ1-TEST.GCO 569266 VJ1-TEST.GCO\n" +
+                "XRP-SU~1.GCO 569266 xRP-SupportChain-Body.gcod\n" +
+                "RGW-PI~1.GCO 1490254 rgw-pika2.gco\n" +
+                "PIKA2~1.GCO 1635116 pika2.gcode\n" +
+                "UJP-PI~1.GCO 1573255 ujp-pika2.gcode\n" +
+                "CTEST/INDEXH~1.GZ 69111 /index.html.gz\n" +
+                "PIKA2.GCO 1635116 PIKA2.GCO\n" +
+                "MACRO1.GCO 19 MACRO1.GCO\n" +
+                "INDEX_~1.GZ 78055 index.html.gz\n" +
+                "GCODE/TESTLO~1.GCO 25 /testlongname.gcode\n" +
+                "GCODE/TESTCUBE.GCO 353194 /TESTCUBE.GCO\n" +
+                "RESOUR~1/GCODE/APPLE~1.GCO 8140 resources//Apple.gcode\n" +
+                "RESOUR~1/GCODE/BANANA~1.GCO 7554 resources//Banana.gcode\n" +
+                "RESOUR~1/GCODE/CHERRY~1.GCO 6465 resources//Cherry.gcode\n" +
+                "RESOUR~1/GCODE/PEACH~1.GCO 8467 resources//Peach.gcode\n" +
+                "RESOUR~1/GCODE/PEAR~1.GCO 6010 resources//Pear.gcode\n" +
+                "TESTCUBE.GCO 353194 TESTCUBE.GCO\n" +
+                "TEST1.GCO 1143935 TEST1.GCO\n" +
+                "End file list\n" +
+                "ok"
+        )
+        res.send("")
+        return
+    }
 
     if (url.indexOf("M20") != -1) {
         SendWS(
-            "Begin file list\n" +
-                "CUBE2.GCO 210240\n" +
-                "CUBE01.GCO 2089832\n" +
-                "SUPPORT2.GCO 4613256\n" +
-                "ARCHIVE/CUBE.GCO 210240\n" +
-                "ARCHIVE/CUBE-C~1.GCO 210240\n" +
-                "NEWFOL~1/SUPPORT2.GCO 4613256\n" +
+            "echo:SD card ok\n" +
+                "ok\n" +
+                "Begin file list\n" +
+                "V2T-TEST.GCO 569266\n" +
+                "DFQ-PI~1.GCO 1490254\n" +
+                "VJ1-TEST.GCO 569266\n" +
+                "XRP-SU~1.GCO 569266\n" +
+                "RGW-PI~1.GCO 1490254\n" +
+                "PIKA2~1.GCO 1635116\n" +
+                "UJP-PI~1.GCO 1573255\n" +
+                "CTEST/INDEXH~1.GZ 69111\n" +
+                "PIKA2.GCO 1635116\n" +
+                "MACRO1.GCO 19\n" +
+                "INDEX_~1.GZ 78055\n" +
+                "GCODE/TESTLO~1.GCO 25\n" +
+                "GCODE/TESTCUBE.GCO 353194\n" +
+                "RESOUR~1/GCODE/APPLE~1.GCO 8140\n" +
+                "RESOUR~1/GCODE/BANANA~1.GCO 7554\n" +
+                "RESOUR~1/GCODE/CHERRY~1.GCO 6465\n" +
+                "RESOUR~1/GCODE/PEACH~1.GCO 8467\n" +
+                "RESOUR~1/GCODE/PEAR~1.GCO 6010\n" +
+                "TESTCUBE.GCO 353194\n" +
+                "118.GCO 41\n" +
+                "TEST1.GCO 1143935\n" +
                 "End file list\n" +
                 "ok\n"
         )
-        /* SendWS(
-      "Begin file list\n" +
-        "COOL_V~1.GCO 66622272\n" +
-        "415%VA~1.GCO 66622272\n" +
-        "/ARCHIEVE/SUBDIR/TWISTY~1.GCO 1040\n" +
-        "/ARCHIEVE/STEEL-~1.GCO 2040\n" +
-        "/ARCHIEVE/STEEL_~1.GCO 2040\n" +
-        "/ARCHIEVE/RET229~1.GCO 2050\n" +
-        "/ARCHIEVE/FILE__~1.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~2.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~3.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~4.GCO 1050\n" +
-        "/ARCHIEVE/FILE__~5.GCO 1050\n" +
-        "End file list\n" +
-        "ok\n"
-    );*/
         res.send("")
         return
     }

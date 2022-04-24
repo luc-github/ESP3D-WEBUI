@@ -87,6 +87,7 @@
     "P92": "Bed command",
     "P93": "Chamber command",
     "P94":"$ is temperature, # is tool index",
+    "P95": "SD List command",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls"

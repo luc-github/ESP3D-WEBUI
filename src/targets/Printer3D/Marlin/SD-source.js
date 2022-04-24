@@ -25,15 +25,37 @@ import {
     formatStatus,
     filterResultFiles,
 } from "../../../components/Helpers"
+import { useUiContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
-    const elements = line.split(" ")
-    if (elements.length != 2) return acc
-    //TODO: check it is valid file name / size
-    //check size is number ?
-    //filename ?
-    acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) })
+    const regex_nameOnly = /^(.*\.G.{0,2})$/g
+    const regex_shortName = /^(.*\.G.{0,2})\s([0-9]*)$/g
+    const regex_longName = /^(.*\.G.{0,2})\s([0-9]*)\s(.*)$/g
+
+    let elements = regex_longName.exec(line)
+    if (elements === null) {
+        elements = regex_shortName.exec(line)
+        if (elements === null) {
+            elements = regex_nameOnly.exec(line)
+            if (elements === null) {
+                return acc
+            } else {
+                acc.push({ name: line, size: "" })
+            }
+        } else {
+            acc.push({
+                name: elements[1],
+                size: formatFileSizeToString(elements[2]),
+            })
+        }
+    } else {
+        acc.push({
+            name: elements[3],
+            size: formatFileSizeToString(elements[2]),
+        })
+    }
+
     return acc
 }
 
@@ -68,7 +90,10 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        return { type: "cmd", cmd: "M21\nM20" }
+        return {
+            type: "cmd",
+            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+        }
     },
     formatResult: (result) => {
         const res = {}

@@ -29,14 +29,15 @@ function compareStrings(a, b) {
 }
 
 function formatFileSizeToString(size) {
-    if (size === -1) return ""
+    let formatedSize = parseInt(size)
+    if (formatedSize === -1 || isNaN(formatedSize)) return ""
     const units = ["B", "KB", "MB", "GB"]
     let i = 0
-    while (size >= 1024) {
-        size /= 1024
+    while (formatedSize >= 1024) {
+        formatedSize /= 1024
         ++i
     }
-    return `${size.toFixed(2)} ${units[i]}`
+    return `${formatedSize.toFixed(2)} ${units[i]}`
 }
 
 const hslToHex = (h, s, l) => {

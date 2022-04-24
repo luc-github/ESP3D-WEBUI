@@ -126,7 +126,6 @@ const FilesPanel = () => {
                         "formatResult",
                         feedback
                     )
-                    console.log(filesListCache[currentFS])
                     //check if flatFS and filter if necessary
                     if (files.capability(currentFS, "IsFlatFS")) {
                         setFilesList(
@@ -197,8 +196,8 @@ const FilesPanel = () => {
                     "myfiles",
                     file,
                     currentPath[currentFS] +
-                    (currentPath[currentFS] == "/" ? "" : "/") +
-                    file.name
+                        (currentPath[currentFS] == "/" ? "" : "/") +
+                        file.name
                 )
             }
             //now do request
@@ -723,13 +722,14 @@ const FilesPanel = () => {
                                 return (
                                     <div class="file-line form-control">
                                         <div
-                                            class={`feather-icon-container file-line-name ${files.capability(
-                                                fileSystem,
-                                                "Download"
-                                            ) || line.size == -1
-                                                ? "file-line-action"
-                                                : ""
-                                                }`}
+                                            class={`feather-icon-container file-line-name ${
+                                                files.capability(
+                                                    fileSystem,
+                                                    "Download"
+                                                ) || line.size == -1
+                                                    ? "file-line-action"
+                                                    : ""
+                                            }`}
                                             onclick={(e) => {
                                                 ElementClicked(e, line)
                                             }}
@@ -751,39 +751,39 @@ const FilesPanel = () => {
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
-                                                            <ButtonImg
-                                                                m1
-                                                                ltooltip
-                                                                data-tooltip={T(
-                                                                    "S74"
-                                                                )}
-                                                                icon={<Play />}
-                                                                onClick={(e) => {
-                                                                    e.target.blur()
-                                                                    //TODO print file
-                                                                    const cmd =
-                                                                        files.command(
-                                                                            currentFS,
-                                                                            "play",
-                                                                            currentPath[
+                                                        <ButtonImg
+                                                            m1
+                                                            ltooltip
+                                                            data-tooltip={T(
+                                                                "S74"
+                                                            )}
+                                                            icon={<Play />}
+                                                            onClick={(e) => {
+                                                                e.target.blur()
+                                                                //TODO print file
+                                                                const cmd =
+                                                                    files.command(
+                                                                        currentFS,
+                                                                        "play",
+                                                                        currentPath[
                                                                             currentFS
-                                                                            ],
-                                                                            line.name
-                                                                        )
-                                                                    sendSerialCmd(
-                                                                        cmd.cmd
+                                                                        ],
+                                                                        line.name
                                                                     )
-                                                                }}
-                                                            />
-                                                        )}
+                                                                sendSerialCmd(
+                                                                    cmd.cmd
+                                                                )
+                                                            }}
+                                                        />
+                                                    )}
                                                     {!files.capability(
                                                         currentFS,
                                                         "Process",
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
-                                                            <div style="width:2rem" />
-                                                        )}
+                                                        <div style="width:2rem" />
+                                                    )}
                                                 </Fragment>
                                             )}
                                             <ButtonImg
