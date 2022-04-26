@@ -18,6 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { useUiContextFn } from "../../../contexts"
 
 //Marlin Temperatures
 //ok T:25.00 /120.00 B:25.00 /0.00 @:127 B@:0
@@ -32,6 +33,7 @@ const isTemperatures = (str) => {
 }
 
 const getTemperatures = (str) => {
+    const isMKS = useUiContextFn.getValue("SerialProtocol") == "MKS"
     let result = null
     const response = {
         T: [], //0->8 T0->T8 Extruders
@@ -51,10 +53,12 @@ const getTemperatures = (str) => {
     //result[4] = target
     //Note :on multiple extruders T is the active one, it will be erased by the next T0
     while ((result = regex_search.exec(str)) !== null) {
-        response[result[1]][result[2] == "" ? 0 : result[2]] = {
-            value: result[3],
-            target: result[4],
-        }
+        //MKS always have T0,T1,B even no second extruder is present neither bed
+        if (!isMKS && parseFloat(result[3]) != 0)
+            response[result[1]][result[2] == "" ? 0 : result[2]] = {
+                value: result[3],
+                target: result[4],
+            }
     }
     return response
 }
