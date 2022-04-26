@@ -36,13 +36,20 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
     const xhr = new XMLHttpRequest()
     if (id && id.startsWith("download")) {
         xhr.responseType = "blob"
+        xhr.addEventListener("progress", (e) => {
+            const done = e.position || e.loaded
+            const total = e.totalSize || e.total
+            const perc = Math.floor((done / total) * 1000) / 10
+            setUploadProgress(perc)
+        })
+    } else {
+        xhr.upload.addEventListener("progress", (e) => {
+            const done = e.position || e.loaded
+            const total = e.totalSize || e.total
+            const perc = Math.floor((done / total) * 1000) / 10
+            setUploadProgress(perc)
+        })
     }
-    xhr.addEventListener("progress", (e) => {
-        const done = e.position || e.loaded
-        const total = e.totalSize || e.total
-        const perc = Math.floor((done / total) * 1000) / 10
-        setUploadProgress(perc)
-    })
 
     const cacheBustedUrl = (url) => {
         const parsedUrl = new URL(url)
