@@ -30,7 +30,8 @@ function compareStrings(a, b) {
 
 function formatFileSizeToString(size) {
     let formatedSize = parseInt(size)
-    if (formatedSize === -1 || isNaN(formatedSize)) return ""
+    if (formatedSize === -1 || isNaN(formatedSize) || size.length == 0)
+        return ""
     const units = ["B", "KB", "MB", "GB"]
     let i = 0
     while (formatedSize >= 1024) {
