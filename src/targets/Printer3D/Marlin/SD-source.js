@@ -29,33 +29,64 @@ import { useUiContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
-    const regex_nameOnly = /^(.*\.G.{0,2})$/g
-    const regex_shortName = /^(.*\.G.{0,2})\s([0-9]*)$/g
-    const regex_longName = /^(.*\.G.{0,2})\s([0-9]*)\s(.*)$/g
-
-    let elements = regex_longName.exec(line)
-    if (elements === null) {
-        elements = regex_shortName.exec(line)
-        if (elements === null) {
-            elements = regex_nameOnly.exec(line)
-            if (elements === null) {
-                return acc
+    //possible format and corresponding regexp extract
+    const regList = [
+        {
+            regex: "^(.*\\.GCODE)\\s([0-9]*)$",
+            extract: (res) => {
+                return { name: res[1], size: res[3] }
+            },
+        },
+        {
+            regex: "^(.*\\.GCODE)\\s([0-9]*)\\s(.*\\.GCODE)$",
+            extract: (res) => {
+                return { name: res[4], size: res[3] }
+            },
+        },
+        {
+            regex: "^(.*\\.GCODE)$",
+            extract: (res) => {
+                return { name: res[1], size: "" }
+            },
+        },
+    ]
+    //get extension list
+    const extList = useUiContextFn.getValue("filesfilter")
+    const filter =
+        "(" +
+        extList.split(";").reduce((acc, item) => {
+            if (acc.length == 0) {
+                acc = item.trim()
             } else {
-                acc.push({ name: line, size: "" })
+                acc += "|" + item.trim()
             }
-        } else {
-            acc.push({
-                name: elements[1],
-                size: formatFileSizeToString(elements[2]),
-            })
-        }
-    } else {
-        acc.push({
-            name: elements[3],
-            size: formatFileSizeToString(elements[2]),
-        })
-    }
+            return acc
+        }, "") +
+        ")"
 
+    for (let i = 0; i < regList.length; i++) {
+        let regFn
+        try {
+            regFn = regList[i].regex.replaceAll("GCODE", filter)
+            //console.log("regex is :", regFn)
+            const reg_ex = new RegExp(regFn, "ig")
+            const result = reg_ex.exec(line)
+            if (result) {
+                //console.log(result)
+                const extract = regList[i].extract(result)
+                //console.log(regList[i].extract(result))
+                acc.push({
+                    name: extract.name,
+                    size: formatFileSizeToString(extract.size),
+                })
+                return acc
+            }
+        } catch (e) {
+            console.log("error in regex", regFn, e)
+            return acc
+        }
+    }
+    //nothing was found
     return acc
 }
 
