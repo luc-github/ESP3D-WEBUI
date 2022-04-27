@@ -141,6 +141,7 @@ const FilesPanel = () => {
                     }
                 }
             } else {
+                //this is affected only by serial commands
                 if (
                     feedback.command == "delete" ||
                     feedback.command == "createdir"
@@ -207,13 +208,25 @@ const FilesPanel = () => {
                 {
                     onSuccess: (result) => {
                         modals.removeModal(modals.getModalIndex("upload"))
-                        filesListCache[currentFS] = files.command(
+                        const cmdpost = files.command(
                             currentFS,
-                            "formatResult",
-                            result
+                            "postUpload",
+                            currentPath[currentFS],
+                            fileref.current.files[0].name
                         )
-                        setFilesList(filesListCache[currentFS])
-                        setIsLoading(false)
+                        if (cmdpost.type == "error" || cmdpost.type == "none") {
+                            filesListCache[currentFS] = files.command(
+                                currentFS,
+                                "formatResult",
+                                result
+                            )
+                            setFilesList(filesListCache[currentFS])
+                            setIsLoading(false)
+                        } else {
+                            if (cmdpost.type == "refresh") {
+                                onRefresh(null, cmdpost.arg)
+                            }
+                        }
                     },
                     onFail: (error) => {
                         modals.removeModal(modals.getModalIndex("upload"))
@@ -473,7 +486,7 @@ const FilesPanel = () => {
     }
 
     useEffect(() => {
-        if (uisettings.getValue("autoload") && currentFS == "") {
+        if (useUiContextFn.getValue("autoload") && currentFS == "") {
             currentFS = "FLASH"
             onSelectFS()
         }
@@ -786,50 +799,64 @@ const FilesPanel = () => {
                                                     )}
                                                 </Fragment>
                                             )}
-                                            <ButtonImg
-                                                m1
-                                                ltooltip
-                                                data-tooltip={
-                                                    line.size == -1
-                                                        ? T("S101")
-                                                        : T("S100")
-                                                }
-                                                icon={<Trash2 />}
-                                                onClick={(e) => {
-                                                    e.target.blur()
-                                                    const content = (
-                                                        <Fragment>
-                                                            <div>
-                                                                {line.size == -1
-                                                                    ? T("S101")
-                                                                    : T("S100")}
-                                                                :
-                                                            </div>
-                                                            <center>
-                                                                <li>
-                                                                    {line.name}
-                                                                </li>
-                                                            </center>
-                                                        </Fragment>
-                                                    )
-                                                    showConfirmationModal({
-                                                        modals,
-                                                        title: T("S26"),
-                                                        content,
-                                                        button1: {
-                                                            cb: () => {
-                                                                deleteCommand(
-                                                                    line
-                                                                )
+                                            {files.capability(
+                                                currentFS,
+                                                "DeleteFile",
+                                                currentPath[currentFS],
+                                                line.name
+                                            ) && (
+                                                <ButtonImg
+                                                    m1
+                                                    ltooltip
+                                                    data-tooltip={
+                                                        line.size == -1
+                                                            ? T("S101")
+                                                            : T("S100")
+                                                    }
+                                                    icon={<Trash2 />}
+                                                    onClick={(e) => {
+                                                        e.target.blur()
+                                                        const content = (
+                                                            <Fragment>
+                                                                <div>
+                                                                    {line.size ==
+                                                                    -1
+                                                                        ? T(
+                                                                              "S101"
+                                                                          )
+                                                                        : T(
+                                                                              "S100"
+                                                                          )}
+                                                                    :
+                                                                </div>
+                                                                <center>
+                                                                    <li>
+                                                                        {
+                                                                            line.name
+                                                                        }
+                                                                    </li>
+                                                                </center>
+                                                            </Fragment>
+                                                        )
+                                                        showConfirmationModal({
+                                                            modals,
+                                                            title: T("S26"),
+                                                            content,
+                                                            button1: {
+                                                                cb: () => {
+                                                                    deleteCommand(
+                                                                        line
+                                                                    )
+                                                                },
+                                                                text: T("S27"),
                                                             },
-                                                            text: T("S27"),
-                                                        },
-                                                        button2: {
-                                                            text: T("S28"),
-                                                        },
-                                                    })
-                                                }}
-                                            />
+                                                            button2: {
+                                                                text: T("S28"),
+                                                            },
+                                                        })
+                                                    }}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 )

@@ -26,6 +26,7 @@ import { useUiContext } from "./UiContext"
  */
 const SettingsContext = createContext("SettingsContext")
 const useSettingsContext = () => useContext(SettingsContext)
+const useSettingsContextFn = {}
 
 const SettingsContextProvider = ({ children }) => {
     const { uisettings } = useUiContext()
@@ -33,6 +34,8 @@ const SettingsContextProvider = ({ children }) => {
     const connectionValues = useRef({})
     const featuresValues = useRef({})
     const pollingInterval = useRef({})
+
+    useSettingsContextFn.getValue = (val) => connectionValues.current[val]
 
     function startPolling(pollingFunction, parameters) {
         const settings = parameters != undefined ? parameters : uisettings
@@ -70,4 +73,4 @@ const SettingsContextProvider = ({ children }) => {
     )
 }
 
-export { SettingsContextProvider, useSettingsContext }
+export { SettingsContextProvider, useSettingsContext, useSettingsContextFn }

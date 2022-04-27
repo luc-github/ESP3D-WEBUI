@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { useUiContextFn } from "../../../contexts"
+import { useSettingsContextFn } from "../../../contexts"
 
 //Marlin Temperatures
 //ok T:25.00 /120.00 B:25.00 /0.00 @:127 B@:0
@@ -33,7 +33,7 @@ const isTemperatures = (str) => {
 }
 
 const getTemperatures = (str) => {
-    const isMKS = useUiContextFn.getValue("SerialProtocol") == "MKS"
+    const isMKS = useSettingsContextFn.getValue("SerialProtocol") == "MKS"
     let result = null
     const response = {
         T: [], //0->8 T0->T8 Extruders

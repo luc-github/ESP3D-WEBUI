@@ -25,7 +25,7 @@ import {
     formatStatus,
     filterResultFiles,
 } from "../../../components/Helpers"
-import { useUiContextFn } from "../../../contexts"
+import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
@@ -100,7 +100,7 @@ const capabilities = {
         if (eMsg) return "E1"
         //TODO
         //check 8.1 if become true
-        return false
+        return useSettingsContextFn.getValue("SerialProtocol") == "MKS"
     },
     UploadMultiple: () => {
         return false
@@ -109,7 +109,7 @@ const capabilities = {
         return false
     },
     DeleteFile: () => {
-        return true
+        return useSettingsContextFn.getValue("SerialProtocol") != "MKS"
     },
     DeleteDir: () => {
         return false
@@ -125,6 +125,28 @@ const commands = {
             type: "cmd",
             cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
         }
+    },
+    upload: (path, filename) => {
+        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS")
+            return {
+                type: "url",
+                url: "upload",
+                args: { path },
+            }
+        //other is not supported so return list command for safety
+        return {
+            type: "cmd",
+            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+        }
+    },
+    postUpload: (path, filename) => {
+        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS") {
+            return {
+                type: "refresh",
+                arg: false,
+            }
+        }
+        return { type: "none" }
     },
     formatResult: (result) => {
         const res = {}
