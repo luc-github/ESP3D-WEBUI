@@ -86,7 +86,7 @@ const responseSteps = {
         },
     },
     eeprom: {
-        start: (data) => data.startsWith("echo:") && data.indexOf("G2") != -1,
+        start: (data) => data.startsWith("echo:;"),
         end: (data) => data.startsWith("ok"),
         error: (data) => {
             return (
