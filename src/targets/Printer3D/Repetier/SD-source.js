@@ -25,6 +25,7 @@ import {
     formatStatus,
     filterResultFiles,
 } from "../../../components/Helpers"
+import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
@@ -68,7 +69,10 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        return { type: "cmd", cmd: "M21\nM20" }
+        return {
+            type: "cmd",
+            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+        }
     },
     formatResult: (result) => {
         const res = {}

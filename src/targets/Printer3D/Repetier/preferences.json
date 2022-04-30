@@ -39,7 +39,20 @@
         "type": "boolean",
         "label": "S190",
         "value": false
-      }],
+      },
+      {
+        "id": "sdlistcmd",
+        "type": "text",
+        "label": "P95",
+        "value": "M21;M20",
+        "help": "S97",
+        "depend":[
+          {"id":"sd",
+            "value": true},
+            {"connection_id":"SDConnection", "value":"=='none'"}
+        ]
+      }
+    ],
       "extruders":[
         {
           "id": "ismixedextruder",

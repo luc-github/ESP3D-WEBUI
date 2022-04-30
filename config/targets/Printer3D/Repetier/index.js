@@ -146,7 +146,7 @@ function Temperatures() {
         Number(temperatures["B"][0].value).toFixed(2) +
         " /" +
         Number(temperatures["B"][0].target).toFixed(2) +
-        "T0:" +
+        " T0:" +
         Number(temperatures["T"][0].value).toFixed(2) +
         " /" +
         Number(temperatures["T"][0].target).toFixed(2) +
@@ -322,7 +322,7 @@ const commandsQuery = (req, res, SendWS) => {
         res.send("")
         return
     }
-if (url.indexOf("M104") != -1) {
+    if (url.indexOf("M104") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const reg_ex_index = /T([0-9])/
         const result_target = reg_ex_temp.exec(url)
@@ -340,7 +340,6 @@ if (url.indexOf("M104") != -1) {
         res.send("")
         return
     }
-
 
     if (url.indexOf("M20") != -1) {
         SendWS(

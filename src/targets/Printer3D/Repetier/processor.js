@@ -110,7 +110,12 @@ const processStream = (type = "stream", data = "") => {
         }
 
         //error or got end without start
-        if (step.error(data) || (step.end(data) && !onGoingQuery.started)) {
+        if (
+            step.error(data) ||
+            (step.end(data) &&
+                !onGoingQuery.started &&
+                !data.startsWith("wait"))
+        ) {
             stopCatchResponse()
             if (onGoingQuery.feedback)
                 onGoingQuery.feedback({
