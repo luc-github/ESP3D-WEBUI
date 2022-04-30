@@ -801,7 +801,9 @@ const FilesPanel = () => {
                                             )}
                                             {files.capability(
                                                 currentFS,
-                                                "DeleteFile",
+                                                line.size == -1
+                                                    ? "DeleteDir"
+                                                    : "DeleteFile",
                                                 currentPath[currentFS],
                                                 line.name
                                             ) && (

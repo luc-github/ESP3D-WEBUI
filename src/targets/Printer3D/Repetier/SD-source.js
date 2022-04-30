@@ -29,12 +29,23 @@ import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
+    const directory_regex = /(.*\/)$/gi
+    const file_regex = /(.*)\s([0-9]*)$/gi
     const elements = line.split(" ")
-    if (elements.length != 2) return acc
-    //TODO: check it is valid file name / size
-    //check size is number ?
-    //filename ?
-    acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) })
+    let result = directory_regex.exec(line)
+    if (result) {
+        //it is a dir
+        acc.push({ name: result[1], size: -1 })
+    } else {
+        result = file_regex.exec(line)
+        if (result) {
+            //it is a file
+            acc.push({
+                name: result[1],
+                size: formatFileSizeToString(result[2]),
+            })
+        }
+    }
     return acc
 }
 

@@ -60,7 +60,7 @@ const filterResultFiles = (files, path) => {
             if (name.startsWith(p + "/")) {
                 let newpath = name.substring(p.length + 1)
                 //it is file or subfile ?
-                if (newpath.indexOf("/") == -1) {
+                if (newpath.indexOf("/") == -1 && newpath.length > 0) {
                     //file
                     acc.push({ name: newpath, size: element.size })
                 } else {
@@ -69,7 +69,10 @@ const filterResultFiles = (files, path) => {
                         0,
                         newpath.indexOf("/")
                     )
-                    if (!folderList.includes(foldername)) {
+                    if (
+                        !folderList.includes(foldername) &&
+                        foldername.length > 0
+                    ) {
                         folderList.push(foldername)
                         acc.push({ name: foldername, size: "-1" })
                     }
