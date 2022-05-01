@@ -49,7 +49,11 @@ const formatFileSerialLine = (acc, line) => {
 
 const capabilities = {
     Process: (path, filename) => {
-        return canProcessFile(filename)
+        return (
+            canProcessFile(filename) &&
+            path.indexOf(" ") == -1 &&
+            filename.indexOf(" ") == -1
+        )
     },
     UseFilters: () => true,
     IsFlatFS: () => false,
@@ -65,8 +69,8 @@ const capabilities = {
     Download: () => {
         return false
     },
-    DeleteFile: () => {
-        return true
+    DeleteFile: (path, filename) => {
+        return path.indexOf(" ") == -1 && filename.indexOf(" ") == -1
     },
     DeleteDir: () => {
         return false
@@ -102,13 +106,20 @@ const commands = {
     play: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            cmd: "play " + "/sd" + path + (path == "/" ? "" : "/") + filename,
         }
     },
     delete: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+            cmd:
+                "rm " +
+                "/sd" +
+                path +
+                (path == "/" ? "" : "/") +
+                filename +
+                "\necho:delete:" +
+                filename,
         }
     },
 }
@@ -125,10 +136,16 @@ const responseSteps = {
         },
     },
     delete: {
-        start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok"),
+        start: (data) => {
+            if (data.startsWith("Could not delete")) return false
+            else return true
+        },
+        end: (data) => {
+            if (data.startsWith("Could not delete")) return false
+            else return true
+        }, //no feedback for delete success
         error: (data) => {
-            return data.startsWith("Deletion failed")
+            return data.startsWith("Could not delete")
         },
     },
 }

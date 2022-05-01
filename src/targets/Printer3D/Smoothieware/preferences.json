@@ -33,14 +33,31 @@
         "value": "M84"
       }
     ],
-  "files":[ {
+  "files":[
+    {
+      "id": "sd",
+      "type": "boolean",
+      "label": "S190",
+      "value": true
+    }, 
+    {
+      "id": "is_sd_direct",
+      "type": "boolean",
+      "depend":[
+        {"connection_id":"SDConnection", "value":"!='none'"},
+        {"id":"sd", "value": true}
+      ],
+      "label": "SM5",
+      "value": false
+    },
+    {
     "id": "sdext",
     "type": "boolean",
     "label": "S191",
     "value": false
   }, 
   {
-    "id": "isextrasd_direct",
+    "id": "is_extra_sd_direct",
     "type": "boolean",
     "depend":[
       {"connection_id":"SDConnection", "value":"!='none'"},

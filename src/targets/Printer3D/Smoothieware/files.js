@@ -21,7 +21,9 @@ import { h } from "preact"
 import { FLASH } from "../../FLASH-source"
 import { DIRECTSD } from "./DIRECTSD-source"
 import { SD } from "./SD-source"
-import { useSettingsContext, useUiContextFn } from "../../../contexts"
+import { DIRECTSDEXT } from "./DIRECTSDEXT-source"
+import { SDEXT } from "./SDEXT-source"
+import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -36,10 +38,9 @@ const supportedFileSystems = [
         value: "SD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
                 useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection == "none"
+                !useUiContextFn.getValue("is_sd_direct")
             )
         },
     },
@@ -47,10 +48,9 @@ const supportedFileSystems = [
         value: "DIRECTSD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
-                useUiContextFn.getValue("directsd") &&
-                connectionSettings.current.SDConnection != "none"
+                useUiContextFn.getValue("is_sd_direct") &&
+                useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
     },
@@ -58,21 +58,19 @@ const supportedFileSystems = [
         value: "SDEXT",
         name: "S191",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
-                useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection == "none"
+                useUiContextFn.getValue("sdext") &&
+                !useUiContextFn.getValue("is_extra_sd_direct")
             )
         },
     },
     {
         value: "DIRECTSDEXT",
-        name: "S190",
+        name: "S191",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
-                useUiContextFn.getValue("directsd") &&
-                connectionSettings.current.SDConnection != "none"
+                useUiContextFn.getValue("is_extra_sd_direct") &&
+                useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
     },
@@ -96,8 +94,8 @@ const capabilities = {
     FLASH: FLASH.capabilities,
     DIRECTSD: DIRECTSD.capabilities,
     SD: SD.capabilities,
-
-    SDEXT: {},
+    DIRECTSDEXT: DIRECTSDEXT.capabilities,
+    SDEXT: SDEXT.capabilities,
     TFTUSB: {},
     TFTSD: {},
 }
@@ -106,7 +104,8 @@ const commands = {
     FLASH: FLASH.commands,
     DIRECTSD: DIRECTSD.commands,
     SD: SD.commands,
-    SDEXT: {},
+    DIRECTSDEXT: DIRECTSDEXT.commands,
+    SDEXT: SDEXT.commands,
     TFTUSB: {},
     TFTSD: {},
 }

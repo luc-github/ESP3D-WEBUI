@@ -49,7 +49,11 @@ const formatFileSerialLine = (acc, line) => {
 
 const capabilities = {
     Process: (path, filename) => {
-        return canProcessFile(filename)
+        return (
+            canProcessFile(filename) &&
+            path.indexOf(" ") == -1 &&
+            filename.indexOf(" ") == -1
+        )
     },
     UseFilters: () => true,
     IsFlatFS: () => false,
@@ -66,7 +70,7 @@ const capabilities = {
         return false
     },
     DeleteFile: () => {
-        return true
+        return false
     },
     DeleteDir: () => {
         return false
@@ -80,7 +84,7 @@ const commands = {
     list: (path, filename) => {
         return {
             type: "cmd",
-            cmd: `echo BeginFiles\nls -s /sd${path}\necho EndFiles\n`,
+            cmd: `echo BeginFiles\nls -s /ext${path}\necho EndFiles\n`,
         }
     },
     formatResult: (result) => {
@@ -102,13 +106,7 @@ const commands = {
     play: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
-        }
-    },
-    delete: (path, filename) => {
-        return {
-            type: "cmd",
-            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+            cmd: "play " + "/ext" + path + (path == "/" ? "" : "/") + filename,
         }
     },
 }
@@ -122,13 +120,6 @@ const responseSteps = {
                 data.indexOf("error") != -1 ||
                 data.indexOf("echo: No SD card") != -1
             )
-        },
-    },
-    delete: {
-        start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok"),
-        error: (data) => {
-            return data.startsWith("Deletion failed")
         },
     },
 }

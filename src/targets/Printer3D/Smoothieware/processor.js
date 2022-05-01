@@ -19,6 +19,7 @@
 */
 import { h } from "preact"
 import { SD } from "./SD-source"
+import { SDEXT } from "./SDEXT-source"
 import { CMD } from "./CMD-source"
 import { disableUI } from "../../../components/Helpers"
 
@@ -62,6 +63,7 @@ const stopCatchResponse = () => {
 //steps
 const responseSteps = {
     SD: SD.responseSteps,
+    SDEXT: SDEXT.responseSteps,
     CMD: CMD.responseSteps,
 }
 

@@ -142,12 +142,10 @@ function Temperatures() {
         Number(temperatures["T"][0].value).toFixed(2) +
         " /" +
         Number(temperatures["T"][0].target).toFixed(2) +
-        
         " @0 B:" +
         Number(temperatures["B"][0].value).toFixed(2) +
         " /" +
         Number(temperatures["B"][0].target).toFixed(2) +
-        
         "@0 T1:" +
         Number(temperatures["T"][1].value).toFixed(2) +
         " /" +
@@ -207,6 +205,22 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    if (url.indexOf("ls -s /ext") != -1) {
+        if (url.indexOf("echo BeginFiles") != -1) SendWS("echo: BeginFiles\n")
+        SendWS(
+            "system volume information/\n" +
+                "pattern-holder2.gcode 9754891\n" +
+                "config.txt 23136\n" +
+                "webif/\n" +
+                "acerlogo.jpeg 6257\n" +
+                "a.dat 6257\n" +
+                "firmware.cur.printer 389776\n"
+        )
+        if (url.indexOf("echo EndFiles") != -1) SendWS("echo: EndFiles\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M20") != -1) {
         SendWS(
             "Begin file list\n" +
@@ -249,7 +263,7 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-  if (url.indexOf("M140") != -1) {
+    if (url.indexOf("M140") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const result_target = reg_ex_temp.exec(url)
         temperatures["B"][0].target = parseFloat(result_target[1])
@@ -257,7 +271,7 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-     if (url.indexOf("M104") != -1) {
+    if (url.indexOf("M104") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const reg_ex_index = /T([0-9])/
         const result_target = reg_ex_temp.exec(url)
