@@ -133,7 +133,7 @@ const responseSteps = {
     },
     delete: {
         start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok"),
+        end: (data) => data.startsWith("wait"),
         error: (data) => {
             return data.startsWith("Deletion failed")
         },
