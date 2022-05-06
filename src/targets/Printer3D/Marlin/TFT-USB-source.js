@@ -190,7 +190,7 @@ const commands = {
     delete: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+            cmd: "M30 U:" + path + (path == "/" ? "" : "/") + filename,
         }
     },
 }
