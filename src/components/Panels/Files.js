@@ -224,7 +224,10 @@ const FilesPanel = () => {
                             setIsLoading(false)
                         } else {
                             if (cmdpost.type == "refresh") {
-                                onRefresh(null, cmdpost.arg)
+                                //this is needed because the board is still busy
+                                setTimeout(() => {
+                                    onRefresh(null, cmdpost.arg)
+                                }, cmdpost.timeOut)
                             }
                         }
                     },

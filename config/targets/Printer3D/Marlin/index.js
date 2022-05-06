@@ -23,6 +23,7 @@ const wscolor = chalk.cyan
 const expresscolor = chalk.green
 const commandcolor = chalk.white
 const enableAuthentication = false
+const SERIAL_PROTOCOL = "MKS"
 let lastconnection = Date.now()
 let logindone = false
 const sessiontTime = 60000
@@ -191,6 +192,22 @@ const commandsQuery = (req, res, SendWS) => {
         let Y = Number(Math.random() * 200.12).toFixed(2)
         let Z = Number(Math.random() * 200.12).toFixed(2)
         SendWS(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`)
+        res.send("")
+        return
+    }
+    if (url.indexOf("M20 1:") != -1) {
+        SendWS(
+            "Begin file list\n" +
+                "System Volume Information.DIR\n" +
+                "mycode3.gco\n" +
+                "CUBE.GCO\n" +
+                "bak_pic.DIR\n" +
+                "bak_font.DIR\n" +
+                "macro1.g\n" +
+                "BAK.DIR\n" +
+                "End file list\n" +
+                "ok\n"
+        )
         res.send("")
         return
     }
@@ -377,7 +394,7 @@ const commandsQuery = (req, res, SendWS) => {
                 FWTargetID: "40",
                 Setup: "Enabled",
                 SDConnection: "none",
-                SerialProtocol: "Socket",
+                SerialProtocol: SERIAL_PROTOCOL,
                 Authentication: "Disabled",
                 WebCommunication: "Synchronous",
                 WebSocketIP: "localhost",

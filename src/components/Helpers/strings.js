@@ -29,6 +29,7 @@ function compareStrings(a, b) {
 }
 
 function formatFileSizeToString(size) {
+    if (size == -1) return size
     let formatedSize = parseInt(size)
     if (formatedSize === -1 || isNaN(formatedSize) || size.length == 0)
         return ""

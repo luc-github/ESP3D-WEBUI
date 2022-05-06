@@ -21,6 +21,8 @@ import { h } from "preact"
 import { FLASH } from "../../FLASH-source"
 import { DIRECTSD } from "./DIRECTSD-source"
 import { SD } from "./SD-source"
+import { TFTSD } from "./TFT-SD-source"
+import { TFTUSB } from "./TFT-USB-source"
 import { useSettingsContext, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
@@ -74,16 +76,16 @@ const capabilities = {
     FLASH: FLASH.capabilities,
     DIRECTSD: DIRECTSD.capabilities,
     SD: SD.capabilities,
-    TFTUSB: {},
-    TFTSD: {},
+    TFTUSB: TFTUSB.capabilities,
+    TFTSD: TFTSD.capabilities,
 }
 
 const commands = {
     FLASH: FLASH.commands,
     DIRECTSD: DIRECTSD.commands,
     SD: SD.commands,
-    TFTUSB: {},
-    TFTSD: {},
+    TFTUSB: TFTUSB.commands,
+    TFTSD: TFTSD.commands,
 }
 
 function capability() {

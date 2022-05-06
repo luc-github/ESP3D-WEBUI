@@ -1,5 +1,5 @@
 /*
- SD-source.js - ESP3D WebUI Target file
+ TFT-USB-source.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -32,15 +32,9 @@ const formatFileSerialLine = (acc, line) => {
     //possible format and corresponding regexp extract
     const regList = [
         {
-            regex: "^(.*\\.GCODE)\\s([0-9]*)$",
+            regex: "^(.*).DIR$",
             extract: (res) => {
-                return { name: res[1], size: res[3] }
-            },
-        },
-        {
-            regex: "^(.*\\.GCODE)\\s([0-9]*)\\s(.*\\.GCODE)$",
-            extract: (res) => {
-                return { name: res[4], size: res[3] }
+                return { name: res[1], size: -1 }
             },
         },
         {
@@ -95,7 +89,7 @@ const capabilities = {
         return canProcessFile(filename)
     },
     UseFilters: () => true,
-    IsFlatFS: () => true,
+    IsFlatFS: () => false,
     Upload: (path, filename, eMsg = false) => {
         if (eMsg) return "E1"
         //TODO
@@ -121,10 +115,16 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        return {
-            type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
-        }
+        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS") {
+            return {
+                type: "cmd",
+                cmd: "M998 0\r\nM20 0:" + path,
+            }
+        } else
+            return {
+                type: "cmd",
+                cmd: "M20 U:" + path,
+            }
     },
     upload: (path, filename) => {
         if (useSettingsContextFn.getValue("SerialProtocol") == "MKS")
@@ -165,9 +165,26 @@ const commands = {
         return res
     },
     play: (path, filename) => {
-        return {
-            type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+        if (useSettingsContextFn.getValue("SerialProtocol") != "MKS") {
+            return {
+                type: "cmd",
+                cmd:
+                    "M23 U:" +
+                    path +
+                    (path == "/" ? "" : "/") +
+                    filename +
+                    "\nM24",
+            }
+        } else {
+            return {
+                type: "cmd",
+                cmd:
+                    "M23 M998 0\r\n1:" +
+                    path +
+                    (path == "/" ? "" : "/") +
+                    filename +
+                    "\nM24",
+            }
         }
     },
     delete: (path, filename) => {
@@ -186,7 +203,6 @@ const responseSteps = {
             return (
                 data.indexOf("error") != -1 ||
                 data.indexOf("echo:No SD card") != -1 ||
-                data.indexOf('echo:Unknown command: "M21"') != -1 ||
                 data.indexOf('echo:Unknown command: "M20"') != -1
             )
         },
@@ -200,6 +216,6 @@ const responseSteps = {
     },
 }
 
-const SD = { capabilities, commands, responseSteps }
+const TFTUSB = { capabilities, commands, responseSteps }
 
-export { SD }
+export { TFTUSB }
