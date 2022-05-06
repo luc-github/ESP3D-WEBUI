@@ -32,7 +32,10 @@ const formatFileSerialLine = (acc, line) => {
     //possible format and corresponding regexp extract
     const regList = [
         {
-            regex: "^(.*).DIR$",
+            regex:
+                useSettingsContextFn.getValue("SerialProtocol") == "MKS"
+                    ? "^(.*).DIR$"
+                    : "^\\/(.*)\\/$",
             extract: (res) => {
                 return { name: res[1], size: -1 }
             },
