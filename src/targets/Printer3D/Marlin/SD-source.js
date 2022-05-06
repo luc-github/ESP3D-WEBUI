@@ -186,6 +186,7 @@ const responseSteps = {
             return (
                 data.indexOf("error") != -1 ||
                 data.indexOf("echo:No SD card") != -1 ||
+                data.indexOf("echo:No media") != -1 ||
                 data.indexOf('echo:Unknown command: "M21"') != -1 ||
                 data.indexOf('echo:Unknown command: "M20"') != -1
             )
