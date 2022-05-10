@@ -1,5 +1,19 @@
   {
     "settings": {
+      "status": [
+        {
+          "id": "showstatuspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openstatusonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        }
+      ],
       "temperatures": [
         {
           "id": "showtemperaturespanel",
@@ -305,6 +319,20 @@
           "type": "number",
           "label": "P75",
           "value": "100"
+        }
+      ],
+      "controls": [
+        {
+          "id": "showextracontrolspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openextracontrolsonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
         }
       ]
     }

@@ -88,7 +88,10 @@
     "P93": "Chamber command",
     "P94":"$ is temperature, # is tool index",
     "P95": "SD List command",
+    "P96":"Extra Controls",
+    "P97":"Print status",
     "processing": "Processing",
     "heating": "Heating",
-    "controls": "Extra Controls"
+    "controls": "Extra Controls panel",
+    "status": "Status panel"
 }
