@@ -192,7 +192,8 @@
           "id": "showsensorchart",
           "type": "boolean",
           "label": "P88",
-          "value": true
+          "value": true,
+          "depend":[{"id":"showsensorctrls", "value":true}]
         }
 
       ],
@@ -226,44 +227,7 @@
           "help": "S97"
         }
       ],
-      "controls": [
-        {
-          "id": "showfanspanel",
-          "type": "boolean",
-          "label": "P45",
-          "value": true
-        },
-        {
-          "id": "openfansonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "showspeedpanel",
-          "type": "boolean",
-          "label": "P46",
-          "value": false
-        },
-        {
-          "id": "openspeedonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "showflowratepanel",
-          "type": "boolean",
-          "label": "P47",
-          "value": false
-        },
-        {
-          "id": "openflowrateonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        }
-      ],
+     
       "files": [
         {
           "id": "filesfilter",
@@ -332,6 +296,30 @@
           "id": "openextracontrolsonstart",
           "type": "boolean",
           "label": "S93",
+          "value": true
+        },
+        {
+          "id": "showfanctrls",
+          "type": "boolean",
+          "label": "P45",
+          "value": true
+        },
+        {
+          "id": "showspeedctrls",
+          "type": "boolean",
+          "label": "P46",
+          "value": true
+        },
+        {
+          "id": "showflowratectrls",
+          "type": "boolean",
+          "label": "P47",
+          "value": true
+        },
+        {
+          "id": "showsensorctrls",
+          "type": "boolean",
+          "label": "P88",
           "value": true
         }
       ]
