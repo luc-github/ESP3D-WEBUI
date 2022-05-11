@@ -54,7 +54,7 @@ const getTemperatures = (str) => {
     //Note :on multiple extruders T is the active one, it will be erased by the next T0
     while ((result = regex_search.exec(str)) !== null) {
         //MKS always have T0,T1,B even no second extruder is present neither bed
-        if (!isMKS && parseFloat(result[3]) != 0)
+        if (!(isMKS && parseFloat(result[3]) == 0))
             response[result[1]][result[2] == "" ? 0 : result[2]] = {
                 value: result[3],
                 target: result[4],
