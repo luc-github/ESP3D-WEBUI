@@ -305,16 +305,49 @@
           "value": true
         },
         {
+          "id": "fanpresets",
+          "type": "text",
+          "label": "P104",
+          "value": "0;20;50;75;100",
+          "min": "0",
+          "max": "100",
+          "append": "%",
+          "help": "S97",
+          "depend":[{"id":"showfanctrls", "value":true}]
+        },
+        {
           "id": "showspeedctrls",
           "type": "boolean",
           "label": "P46",
           "value": true
         },
         {
+          "id": "speedpresets",
+          "type": "text",
+          "label": "P105",
+          "value": "20;50;75;100;125;150;175;200;250;300",
+          "min": "1",
+          "max": "300",
+          "append": "%",
+          "help": "S97",
+          "depend":[{"id":"showspeedctrls", "value":true}]
+        },
+        {
           "id": "showflowratectrls",
           "type": "boolean",
           "label": "P47",
           "value": true
+        },
+        {
+          "id": "flowratepresets",
+          "type": "text",
+          "label": "P106",
+          "value": "20;50;75;100;125;150;175;200;250;300",
+          "min": "1",
+          "max": "300",
+          "append": "%",
+          "help": "S97",
+          "depend":[{"id":"showflowratectrls", "value":true}]
         },
         {
           "id": "showsensorctrls",
