@@ -33,7 +33,6 @@ const formatFileSerialLine = (lines) => {
     const extRegExp = new RegExp(`([a-zA-Z0-9]+)`, 'gm')
     const extensionsPattern = [...filesFilter.matchAll(extRegExp)].map(item => item[1].trim()).join('|')
     const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s*)*(?<longpath>.*)*$`
-    console.log(`filenamesStringParserPattern: ${filenamesStringParserPattern}`)
     return lines.reduce((acc, file) => {
         const fileRegex = new RegExp(filenamesStringParserPattern, "ig")
         const m = fileRegex.exec(file.trim())
