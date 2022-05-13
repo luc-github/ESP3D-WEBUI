@@ -37,10 +37,7 @@ const formatFileSerialLine = (lines) => {
     return lines.reduce((acc, file) => {
         const fileRegex = new RegExp(filenamesStringParserPattern, "ig")
         const m = fileRegex.exec(file.trim())
-        if (m) {
-            console.log(m.groups);
-            return [...acc, { name: (m.groups.longpath || m.groups.shortpath).trim(), size: formatFileSizeToString(m.groups.size) }]
-        }
+        if (m) return [...acc, { name: (m.groups.longpath || m.groups.shortpath).trim(), size: formatFileSizeToString(m.groups.size) }]
         return acc
     }, [])
 }
