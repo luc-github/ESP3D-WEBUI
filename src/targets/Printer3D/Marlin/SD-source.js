@@ -29,12 +29,10 @@ import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (lines) => {
-    console.log("lines", lines);
     const filesFilter = useUiContextFn.getValue("filesfilter") //get extension list
     const extRegExp = new RegExp(`([a-zA-Z0-9]+)`, 'gm')
     const extensionsPattern = [...filesFilter.matchAll(extRegExp)].map(item => item[1].trim()).join('|')
     const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s*)*(?<longpath>.*)*$`
-    // const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s)*(?<longpath>.*)*$`
     console.log(`filenamesStringParserPattern: ${filenamesStringParserPattern}`)
     return lines.reduce((acc, file) => {
         const fileRegex = new RegExp(filenamesStringParserPattern, "ig")
