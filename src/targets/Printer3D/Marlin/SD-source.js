@@ -28,66 +28,23 @@ import {
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
-const formatFileSerialLine = (acc, line) => {
-    //possible format and corresponding regexp extract
-    const regList = [
-        {
-            regex: "^(.*\\.GCODE)\\s([0-9]*)$",
-            extract: (res) => {
-                return { name: res[1], size: res[3] }
-            },
-        },
-        {
-            regex: "^(.*\\.GCODE)\\s([0-9]*)\\s(.*\\.GCODE)$",
-            extract: (res) => {
-                return { name: res[4], size: res[3] }
-            },
-        },
-        {
-            regex: "^(.*\\.GCODE)$",
-            extract: (res) => {
-                return { name: res[1], size: "" }
-            },
-        },
-    ]
-    //get extension list
-    const extList = useUiContextFn.getValue("filesfilter")
-    const filter =
-        "(" +
-        extList.split(";").reduce((acc, item) => {
-            if (acc.length == 0) {
-                acc = item.trim()
-            } else {
-                acc += "|" + item.trim()
-            }
-            return acc
-        }, "") +
-        ")"
-
-    for (let i = 0; i < regList.length; i++) {
-        let regFn
-        try {
-            regFn = regList[i].regex.replaceAll("GCODE", filter)
-            //console.log("regex is :", regFn)
-            const reg_ex = new RegExp(regFn, "ig")
-            const result = reg_ex.exec(line)
-            if (result) {
-                //console.log(result)
-                const extract = regList[i].extract(result)
-                //console.log(regList[i].extract(result))
-                acc.push({
-                    name: extract.name,
-                    size: formatFileSizeToString(extract.size),
-                })
-                return acc
-            }
-        } catch (e) {
-            console.log("error in regex", regFn, e)
-            return acc
+const formatFileSerialLine = (lines) => {
+    console.log("lines", lines);
+    const filesFilter = useUiContextFn.getValue("filesfilter") //get extension list
+    const extRegExp = new RegExp(`([a-zA-Z0-9]+)`, 'gm')
+    const extensionsPattern = [...filesFilter.matchAll(extRegExp)].map(item => item[1].trim()).join('|')
+    const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s*)*(?<longpath>.*)*$`
+    // const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s)*(?<longpath>.*)*$`
+    console.log(`filenamesStringParserPattern: ${filenamesStringParserPattern}`)
+    return lines.reduce((acc, file) => {
+        const fileRegex = new RegExp(filenamesStringParserPattern, "ig")
+        const m = fileRegex.exec(file.trim())
+        if (m) {
+            console.log(m.groups);
+            return [...acc, { name: (m.groups.longpath || m.groups.shortpath).trim(), size: formatFileSizeToString(m.groups.size) }]
         }
-    }
-    //nothing was found
-    return acc
+        return acc
+    }, [])
 }
 
 const capabilities = {
@@ -150,13 +107,11 @@ const commands = {
         return { type: "none" }
     },
     formatResult: (result) => {
-        const res = {}
-        const files = result.content.reduce((acc, line) => {
-            return formatFileSerialLine(acc, line)
-        }, [])
-        res.files = sortedFilesList(files)
-        res.status = formatStatus(result.status)
-        return res
+        const files = formatFileSerialLine(result.content)
+        return {
+            files: sortedFilesList(files),
+            status: formatStatus(result.status),
+        }
     },
     filterResult: (data, path) => {
         const res = {}
