@@ -31,6 +31,16 @@ import {
     getTemperatures,
     isPositions,
     getPositions,
+    isPrintStatus,
+    getPrintStatus,
+    isPrintFileName,
+    getPrintFileName,
+    isStatus,
+    getStatus,
+    isFlowRate,
+    getFlowRate,
+    isFeedRate,
+    getFeedRate,
 } from "./filters"
 
 /*
@@ -102,6 +112,21 @@ const TargetContextProvider = ({ children }) => {
             } else if (isPositions(data)) {
                 const p = getPositions(data)
                 setPositions(p)
+            } else if (isPrintStatus(data)) {
+                const p = getPrintStatus(data)
+                console.log(p) //setPrintStatus(p)
+            } else if (isPrintFileName(data)) {
+                const p = getPrintFileName(data)
+                console.log(p) //setPrintFileName(p)
+            } else if (isStatus(data)) {
+                const p = getStatus(data)
+                console.log(p) //setStatus(p)
+            } else if (isFlowRate(data)) {
+                const p = getFlowRate(data)
+                console.log(p) //setFlowRate(p)
+            } else if (isFeedRate(data)) {
+                const p = getFeedRate(data)
+                console.log(p) //setFeedRate(p)
             }
         }
         //etc...
