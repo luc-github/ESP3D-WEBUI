@@ -1,0 +1,39 @@
+## What's Changed
+
+# Fixes
+* Fix wrong source show in file panel
+* Fix SSID with ' not properly transfered from dialog box  to control
+* Fix macro panel overload UI on some resolutions
+* Fix moving buttons in grbl
+* Fix SD icon and create dir displayed on GRBL thanks  @Wesie
+* Fix Abort button for marlin-embedded and marlinkimbra thanks @GerogeFu
+* Fix always need to save preferences even no change
+* Fix display glitch
+* Fix Repetier ok 0 still visible with verbose mode off
+* Fix Setup not working anymore due to breaking changes in GRBL_ESP32
+* Fix T is not T0 when heating T1 and so display wrong value thanks @Drzet
+* Fix typo thanks @terjeio
+* Fix bug with pure GRBL no receiving commands feedback thanks @jjhamb
+* Fix pur GRBL not managing positions properly
+* Fix some typo - thanks @kondorzs
+* Fix smoothieware cannot list sub directory - thanks @sns5400
+* Fix missing translation for SD
+
+# Additions
+* Add ; Linear Units: as legend for G21 in Marlin
+* Add more filter to files list if unwished output pop up thanks @badbod
+* Add Surfacing Wizard (GRBL panel) thanks @cotepat
+* Add BTT USB DISK and onBoard SD support
+* Add firmware checks for temperature controls
+* Add support for Marlin T0 redundant, probe and chamber temperatures - thanks @BToersche
+* Add bin.gz as accepted extension for FW update
+
+# New languages / update
+* Add Turkish language thanks @DusDus
+* Add Hungarian thanks @kondorzs
+* Add Traditional Chinese. thanks @Engineer2Designer
+* Add Japanese language thanks @nyarurato
+* Update German language thanks @Wesie
+* Update German language thanks @duramson
+
+**Full Changelog**: https://github.com/luc-github/ESP3D-WEBUI/compare/v2.1...V2.1.1
