@@ -32,11 +32,14 @@ const formatFileSerialLine = (lines) => {
     const filesFilter = useUiContextFn.getValue("filesfilter") //get extension list
     const extRegExp = new RegExp("([\$a-zA-Z0-9!#\u0020\+\-]+)", 'g')
     const extensionsPattern = [...filesFilter.matchAll(extRegExp)].map(item => item[1].trim()).join('|')
-    const filenamesStringParserPattern = `^(?<shortpath>.*\\.(^${extensionsPattern}))\\s(?<size>\\d+)(^\\s*)*(?<longpath>.*)*$`
+    const lineParserPattern = `^(?:(?<path>.*\\.(?:${extensionsPattern}))? *(?<size>\\d+)? )?(?:(?<pathAlt>.*\\.(?:${extensionsPattern}))? *((?<sizeAlt>\\d*) *)?)$`
     return lines.reduce((acc, file) => {
-        const fileRegex = new RegExp(filenamesStringParserPattern, "ig")
+        const fileRegex = new RegExp(lineParserPattern, "ig")
         const m = fileRegex.exec(file.trim())
-        if (m) return [...acc, { name: (m.groups.longpath || m.groups.shortpath).trim(), size: formatFileSizeToString(m.groups.size) }]
+        if (m) {
+            const { path, size, pathAlt, sizeAlt } = m.groups
+            return [...acc, { name: (pathAlt || path), size: formatFileSizeToString(sizeAlt || size) }]
+        }
         return acc
     }, [])
 }
