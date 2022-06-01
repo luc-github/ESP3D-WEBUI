@@ -1,0 +1,202 @@
+  {
+    "settings": {
+      "general": [
+        {
+          "id": "language",
+          "type": "pickup",
+          "label": "S68",
+          "value": "default"
+        },
+        {
+          "id": "theme",
+          "type": "pickup",
+          "label": "S181",
+          "value": "default"
+        },
+        {
+          "id": "autoload",
+          "type": "boolean",
+          "label": "S64",
+          "value": true
+        },
+        {
+          "id": "mobileview",
+          "type": "boolean",
+          "label": "S122",
+          "value": false
+        },
+        {
+          "id": "audio",
+          "type": "boolean",
+          "label": "S170",
+          "value": false
+        },
+        {
+          "id": "hapticfeedback",
+          "type": "boolean",
+          "label": "S176",
+          "value": false
+        },
+        {
+          "id": "audiofeedback",
+          "type": "boolean",
+          "label": "S200",
+          "value": false,
+          "depend": [
+            {
+              "id": "audio",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "showinformationpage",
+          "type": "boolean",
+          "label": "S196",
+          "value": true
+        },
+        {
+          "id": "showmachinesettings",
+          "type": "boolean",
+          "label": "S197",
+          "value": true
+        }
+      ],
+      "polling": [
+        {
+          "id": "enablepolling",
+          "type": "boolean",
+          "label": "S112",
+          "value": false
+        },
+        {
+          "id": "pollingrefresh",
+          "type": "number",
+          "label": "S113",
+          "min": "1",
+          "max": "360000",
+          "append": "S114",
+          "value": "3000"
+        },
+        {
+          "id": "pollingcommands",
+          "type": "text",
+          "label": "S115",
+          "help": "S97",
+          "value": ""
+        }
+      ],
+      "terminal": [
+        {
+          "id": "showterminalpanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openterminalonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        },
+        {
+          "id": "verbose",
+          "type": "boolean",
+          "label": "S76",
+          "value": true
+        },
+        {
+          "id": "autoscroll",
+          "type": "boolean",
+          "label": "S77",
+          "value": true
+        }
+      ],
+      "files": [
+        {
+          "id": "showfilespanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openfilesonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        }
+      ],
+      "jog": [
+        {
+          "id": "showjogpanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openjogonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": true
+        }
+      ],
+      "notification": [
+        {
+          "id": "shownotificationspanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "opennotificationsonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        },
+        {
+          "id": "notifautoscroll",
+          "type": "boolean",
+          "label": "S77",
+          "value": true
+        }
+      ],
+      "macros": [
+        {
+          "id": "showmacrospanel",
+          "type": "boolean",
+          "label": "S63",
+          "value": true
+        },
+        {
+          "id": "openmacrosonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        },
+        {
+          "id": "macros",
+          "type": "list",
+          "value": []
+        }
+      ],
+      "extracontents": [
+        {
+          "id": "showextracontents",
+          "type": "boolean",
+          "label": "S63",
+          "value": false
+        },
+        {
+          "id": "openextrapanelsonstart",
+          "type": "boolean",
+          "label": "S93",
+          "value": false
+        },
+        {
+          "id": "extracontents",
+          "type": "list",
+          "value": []
+        }
+      ]
+    }
+  }

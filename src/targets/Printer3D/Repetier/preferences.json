@@ -1,0 +1,202 @@
+{
+  "settings": {
+    "general":[
+      {
+        "id": "emergencystop",
+        "type": "text",
+        "label": "P15",
+        "value": "M112"
+      }
+    ],
+    "polling": [
+      {
+        "id": "pollingcommands",
+        "type": "text",
+        "label": "S115",
+        "help": "S97",
+        "value": "M105"
+      }
+    ],
+    "jog": [
+      {
+        "id": "homecmd",
+        "type": "text",
+        "label": "P73",
+        "value": "G28 $",
+        "help": "P74"
+      }
+      ,
+      {
+        "id": "motoroff",
+        "type": "text",
+        "label": "P13",
+        "value": "M84"
+      }
+    ],
+    "files":[ 
+      {
+        "id": "sd",
+        "type": "boolean",
+        "label": "S190",
+        "value": false
+      },
+      {
+        "id": "sdlistcmd",
+        "type": "text",
+        "label": "P95",
+        "value": "M21;M20",
+        "help": "S97",
+        "depend":[
+          {"id":"sd",
+            "value": true},
+            {"connection_id":"SDConnection", "value":"=='none'"}
+        ]
+      }
+    ],
+      "extruders":[
+        {
+          "id": "ismixedextruder",
+          "type": "boolean",
+          "label": "P49",
+          "value": false
+        },
+        {
+          "id": "ecolors",
+          "type": "text",
+          "label": "P51",
+          "help": "S97",
+          "value": "blue;red;green;#FF00FF;cyan;black",
+          "depend":[{"id":"ismixedextruder", "value":true}]
+        },
+        {
+          "id": "enumber",
+          "type": "number",
+          "label": "P52",
+          "value": "1",
+          "min": "1",
+          "max" : "12",
+          "step": "1",
+          "depend":[{"id":"ismixedextruder", "value":true}]
+        }
+      ],
+      "controls": [
+        {
+          "id": "flowcontrolsgroup",
+          "type": "group",
+          "label": "",
+          "depend":[
+            {"id":"showflowratectrls",
+              "value": true}
+          ],
+          "value":[
+            {
+              "id": "flowratecmd",
+              "type": "text",
+              "label": "P106",
+              "value": "T#;M221 S$",
+              "help": "P94"
+            }
+          ]
+        }
+      ],
+      "status":[
+        {
+          "id": "sdcommands",
+          "type": "group",
+          "label": "P101",
+          "depend":[
+            {"id":"sd",
+              "value": true}
+          ],
+          "value":[
+            {
+              "id": "sdpausecmd",
+              "type": "text",
+              "label": "P98",
+              "value": "M25",
+              "help": "S97"
+            },
+            {
+              "id": "sdresumecmd",
+              "type": "text",
+              "label": "P99",
+              "value": "M24",
+              "help": "S97"
+            },
+            {
+              "id": "sdstopcmd",
+              "type": "text",
+              "label": "P100",
+              "value": "M524",
+              "help": "S97"
+            }
+        ]
+      },
+      {
+        "id": "tftsdcommands",
+        "type": "group",
+        "label": "P102",
+        "depend":[
+          {"id":"tftsd",
+            "value": true}
+        ],
+        "value":[
+          {
+            "id": "tftsdpausecmd",
+            "type": "text",
+            "label": "P98",
+            "value": "M25",
+            "help": "S97"
+          },
+          {
+            "id": "tftsdresumecmd",
+            "type": "text",
+            "label": "P99",
+            "value": "M24",
+            "help": "S97"
+          },
+          {
+            "id": "tftsdstopcmd",
+            "type": "text",
+            "label": "P100",
+            "value": "M524",
+            "help": "S97"
+          }
+      ]
+    }
+    ,{
+      "id": "tftusbcommands",
+      "type": "group",
+      "label": "P103",
+      "depend":[
+        {"id":"tftusb",
+          "value": true}
+      ],
+      "value":[
+        {
+          "id": "tftusbpausecmd",
+          "type": "text",
+          "label": "P98",
+          "value": "M25",
+          "help": "S97"
+        },
+        {
+          "id": "tftusbresumecmd",
+          "type": "text",
+          "label": "P99",
+          "value": "M24",
+          "help": "S97"
+        },
+        {
+          "id": "tftusbstopcmd",
+          "type": "text",
+          "label": "P100",
+          "value": "M524",
+          "help": "S97"
+        }
+    ]
+  }
+
+      ]
+  }
+}

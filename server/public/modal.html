@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+        if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="modalpanel")){
+            if (eventMsg.data.type=="modal"){
+                const line =  eventMsg.data.content;
+                const resultPanel = document.getElementById("output");
+                resultPanel.innerHTML += "<br><span class='text-bold'>"+line.initiator.content.id+"</span> modal sent <span class='text-primary'>"+ line.response+"</span><br>";   
+                if (line.response == "create" && line.inputData)   resultPanel.innerHTML += "Text entered is <span class='text-primary'>"+ line.inputData+"</span><br>";   
+                resultPanel.innerHTML += "<hr>";
+            }
+        }
+    }
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  }
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'modal', target:'webui', id:'modalpanel', content:{title:'This is tile', id:'simple_modal',style:'default',bt1Txt:'S126', response1:'ok', text:'some text', overlay:true}});">Simple Modal</button>
+    <button class="btn m-1" onclick="sendMessage({type:'modal', target:'webui', id:'modalpanel', content:{title:'S26', id:'confirm_modal',style:'question',bt1Txt:'S27', response1:'yes',bt2Txt:'S28', response2:'cancel', text:'S30',hideclose:true}});">Confirmation Modal</button>
+    <button class="btn m-1" onclick="sendMessage({type:'modal', target:'webui', id:'modalpanel', content:{title:'S90', id:'input_modal',style:'input',bt1Txt:'S106', response1:'create',bt2Txt:'S28', response2:'cancel', text:'S104',hideclose:true}});">Input Modal</button>
+   
+    <div class="container m-2" id="output">
+    </div>
+</div>
+

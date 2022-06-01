@@ -1,0 +1,49 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+      if (msg.type=="cmd"){ 
+        const resultPanel = document.getElementById("terminal");
+        resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + msg.content.replace("\n", "<br/>").replace("\r", "")  ;
+        resultPanel.scrollTop = resultPanel.scrollHeight
+      }
+  }
+
+  function processMessage(eventMsg){
+      if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="terminal")){
+          if (eventMsg.data.type=="cmd"){
+            const line =  eventMsg.data.content
+            if (line.status=="success"){
+              const resultPanel = document.getElementById("terminal");
+              resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + line.response.replace("\n", "<br/>") ;
+              resultPanel.scrollTop = resultPanel.scrollHeight
+            }
+            if (line.status=="error"){
+              //TBD
+            }
+          }
+      }
+  }
+
+  function sendCommand(){
+      sendMessage({type: "cmd", target: "webui", id: "terminal",content: document.getElementById("command").value});
+      document.getElementById('command').value=''; 
+  }
+
+      
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  };
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'cmd', target:'webui', id:'terminal',content:'[ESP111]'});">[ESP111]</button>
+    <div class="input-group">
+        <input type="text" class="form-input" id="command"  />
+        <button class="btn btn-black input-group-btn" onclick="sendCommand()">Send</button>
+    </div>
+    <div class="container m-2">
+    <pre id="terminal" class="bg-primary p-2" style="min-height: 200px;"></pre>
+    </div>
+</div>
+

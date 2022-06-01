@@ -1,0 +1,14 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'sound', target:'webui', content:'beep'});">Beep</button>
+    <button class="btn m-1" onclick="sendMessage({type:'sound', target:'webui', content:'error'});">Beep Error</button>
+    <button class="btn m-1" onclick="sendMessage({type:'sound', target:'webui', content:'seq', seq:[{ f: 1046, d: 200 },{ f: 1318, d: 100 }]});">Beep Sequence</button>
+    
+</div>
+

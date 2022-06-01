@@ -1,0 +1,12 @@
+@import "../../style/index";
+@import "../../../../style/index.scss";
+
+.yaml-editor {
+  outline: none;
+  height: 400px;
+  border: 0.05rem solid #dadee4;
+  border-radius: $border-radius;
+  padding: 0.5rem 0.5rem;
+  width: 90%;
+  max-width: 500px;
+}

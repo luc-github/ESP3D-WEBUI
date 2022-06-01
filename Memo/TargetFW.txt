@@ -1,0 +1,7 @@
+fluidnc: 60
+repetier: 50
+smoothieware: 40
+marlin_embedded: 30
+marlin: 20
+grbl: 10 
+unknown: 0
