@@ -96,8 +96,7 @@ const commands = {
     download: (path, filename) => {
         return {
             type: "url",
-            url: path + (path.endsWith("/") ? "" : "/") + "sd/" + filename,
-            args: {},
+            url: "/sd" + path + (path.endsWith("/") ? "" : "/") + filename,
         }
     },
     play: (path, filename) => {
