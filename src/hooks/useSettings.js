@@ -53,9 +53,7 @@ const useSettings = () => {
     const getConnectionSettings = (next) => {
         createNewRequest(
             espHttpURL("command", {
-                cmd: "[ESP800]json=yes",
-                time: getBrowserTime(),
-                version: webUIversion,
+                cmd: `[ESP800]json=yes time=${getBrowserTime()} version=${webUIversion}`,
             }),
             { method: "GET", id: "connection" },
             {
@@ -92,15 +90,15 @@ const useSettings = () => {
                             content: T("S124").replace(
                                 "%s",
                                 connectionSettings.current.WebSocketIP +
-                                (connectionSettings.current.WebSocketPort !=
+                                    (connectionSettings.current.WebSocketPort !=
                                     "81"
-                                    ? ":" +
-                                    (parseInt(
-                                        connectionSettings.current
-                                            .WebSocketPort
-                                    ) -
-                                        1)
-                                    : "")
+                                        ? ":" +
+                                          (parseInt(
+                                              connectionSettings.current
+                                                  .WebSocketPort
+                                          ) -
+                                              1)
+                                        : "")
                             ),
                             hideclose: true,
                         })
