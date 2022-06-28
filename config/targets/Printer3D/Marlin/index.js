@@ -402,7 +402,7 @@ const commandsQuery = (req, res, SendWS) => {
                 FWTarget: "marlin",
                 FWTargetID: "40",
                 Setup: "Enabled",
-                SDConnection: "none",
+                SDConnection: "direct",
                 SerialProtocol: SERIAL_PROTOCOL,
                 Authentication: "Disabled",
                 WebCommunication: "Synchronous",

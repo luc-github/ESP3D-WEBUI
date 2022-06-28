@@ -25,6 +25,9 @@ import {
     disableUI,
     generateUID,
     getColClasses,
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
 } from "./components"
 import {
     beautifyJSONString,
@@ -60,6 +63,9 @@ export {
     generateUID,
     getBrowserTime,
     getColClasses,
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
     getCookie,
     hslToHex,
     isLimitedEnvironment,

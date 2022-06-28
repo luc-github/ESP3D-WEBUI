@@ -17,6 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { useUiContextFn } from "../../contexts"
 
 const getColClasses = ({ col, ...responsive }) => {
     const responsiveClasses = Object.keys(responsive).reduce(
@@ -75,4 +76,67 @@ function disableUI(state = true) {
     disableNode(document.getElementById("menu"), state)
 }
 
-export { createComponent, disableNode, disableUI, generateUID, getColClasses }
+const generateDependIds = (depend, settings) => {
+    const dependIds = []
+    if (Array.isArray(depend)) {
+        depend.forEach((d) => {
+            if (d.id) {
+                const element = useUiContextFn.getElement(d.id, settings)
+                dependIds.push(element.value)
+            }
+            if (d.ids) {
+                dependIds.push(...generateDependIds(d.ids, settings))
+            }
+        })
+    }
+    return dependIds
+}
+//this won't change as it is initalised with [ESP800] which is call at start
+const connectionDepend = (depend, settings) => {
+    if (Array.isArray(depend)) {
+        return depend.reduce((acc, d) => {
+            if (d.connection_id && settings[d.connection_id]) {
+                const quote = d.value.trim().endsWith("'") ? "'" : ""
+                return (
+                    acc &&
+                    eval(quote + settings[d.connection_id] + quote + d.value)
+                )
+            }
+            return acc
+        }, true)
+    }
+    return true
+}
+
+//this is dynamic as it is depending on the preferences settings
+const settingsDepend = (depend, settings, isOr) => {
+    if (Array.isArray(depend)) {
+        return depend.reduce(
+            (acc, d) => {
+                if (d.id) {
+                    const element = useUiContextFn.getElement(d.id, settings)
+                    if (isOr) {
+                        return acc || element.value === d.value
+                    } else return acc && element.value === d.value
+                }
+                if (d.ids) {
+                    return acc && settingsDepend(d.ids, settings, true)
+                }
+                return acc
+            },
+            isOr ? false : true
+        )
+    }
+    return true
+}
+
+export {
+    createComponent,
+    disableNode,
+    disableUI,
+    generateUID,
+    getColClasses,
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
+}

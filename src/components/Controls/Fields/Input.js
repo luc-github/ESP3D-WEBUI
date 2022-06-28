@@ -29,6 +29,11 @@ import {
     useUiContextFn,
     useSettingsContext,
 } from "../../../contexts"
+import {
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
+} from "../../Helpers"
 
 const Reveal = ({ applyTo }) => {
     const [reveal, setReveal] = useState(false)
@@ -74,33 +79,12 @@ const Input = ({
     disabled,
     ...rest
 }) => {
-    const dependId = []
-    const dependValue = []
-    const dependCondition = []
-    const dependElement = []
     const { interfaceSettings, connectionSettings } = useSettingsContext()
-    if (depend) {
-        depend.forEach((d) => {
-            if (d.id) {
-                const element = useUiContextFn.getElement(
-                    d.id,
-                    interfaceSettings.current.settings
-                )
-                if (element) {
-                    dependElement.push(element)
-                    dependId.push(element.value)
-                    dependValue.push(d.value)
-                }
-            }
-            if (d.connection_id) {
-                if (connectionSettings.current.Axis) {
-                    dependCondition.push({
-                        value: eval(connectionSettings.current.Axis + d.value),
-                    })
-                }
-            }
-        })
-    }
+    const dependIds = generateDependIds(
+        depend,
+        interfaceSettings.current.settings
+    )
+    const canshow = connectionDepend(depend, connectionSettings.current)
     const { step } = rest
     const inputref = useRef()
     const onInput = (e) => {
@@ -122,30 +106,18 @@ const Input = ({
     }
 
     useEffect(() => {
-        //if any dependId is true then visible is true
-        if (dependId.length > 0 || dependCondition.length > 0) {
-            let visible = false
-            dependElement.forEach((d, index) => {
-                if (d.value == dependValue[index]) visible = true
-            })
-            //if dependCondition is false when visible is true (dependId) => visible is false
-            //if dependCondition is true when visible is false and no dependId => visible is true
-            dependCondition.forEach((d) => {
-                if (dependId.length == 0) {
-                    if (d.value) visible = true
-                } else {
-                    if (!d.value) visible = false
-                }
-            })
+        let visible =
+            canshow &&
+            settingsDepend(depend, interfaceSettings.current.settings)
+        if (document.getElementById(id))
             document.getElementById(id).style.display = visible
                 ? "block"
                 : "none"
-            if (document.getElementById("group-" + id))
-                document.getElementById("group-" + id).style.display = visible
-                    ? "block"
-                    : "none"
-        }
-    }, [...dependId])
+        if (document.getElementById("group-" + id))
+            document.getElementById("group-" + id).style.display = visible
+                ? "block"
+                : "none"
+    }, [...dependIds])
 
     useEffect(() => {
         //to update state when import- but why ?
