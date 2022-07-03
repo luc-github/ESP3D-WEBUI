@@ -27,9 +27,9 @@ import {
     PauseCircle,
 } from "preact-feather"
 import { useUiContext, useDatasContext, useUiContextFn } from "../../contexts"
-import { useTargetContext } from "../../targets"
+import { useTargetContext, variablesList } from "../../targets"
 import { useHttpQueue } from "../../hooks"
-import { espHttpURL } from "../Helpers"
+import { espHttpURL, replaceVariables } from "../Helpers"
 import { ButtonImg } from "../Controls"
 import { Menu as PanelMenu } from "./"
 
@@ -117,7 +117,9 @@ const TerminalPanel = () => {
             inputHistoryIndex = terminal.inputHistory.length - 1
             processData("echo", cmd)
             createNewRequest(
-                espHttpURL("command", { cmd }),
+                espHttpURL("command", {
+                    cmd: replaceVariables(variablesList, cmd),
+                }),
                 { method: "GET" },
                 {
                     onSuccess: (result) => {
