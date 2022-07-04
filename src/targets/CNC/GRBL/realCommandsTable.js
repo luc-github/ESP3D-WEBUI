@@ -36,7 +36,7 @@ const realCommandsTable = [
     { name: "#SSO-1#", value: "\x9D" },
     { name: "#T-SPINDLESTOP#", value: "\x9E" },
     { name: "#T-FLOODCOOLANT#", value: "\xA0" },
-    { name: "#T-FLOODCOOLANT#", value: "\xA1" },
+    { name: "#T-MISTCOOLANT#", value: "\xA1" },
 ]
 
 export default realCommandsTable
