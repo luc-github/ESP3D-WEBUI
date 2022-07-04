@@ -1637,11 +1637,13 @@ const JogPanel = () => {
                         id="btnMotorOff"
                         onclick={(e) => {
                             useUiContextFn.haptic()
-                            const cmd = useUiContextFn
+                            const cmds = useUiContextFn
                                 .getValue("motoroff")
-                                .replace(";", "\n")
+                                .split(";")
                             e.target.blur()
-                            SendCommand(cmd)
+                            cmds.forEach((cmd) => {
+                                SendCommand(cmd)
+                            })
                         }}
                     />
                 </div>

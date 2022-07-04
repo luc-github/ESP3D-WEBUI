@@ -139,7 +139,7 @@ const commands = {
         //other is not supported so return list command for safety
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdlistcmd"),
         }
     },
     postUpload: (path, filename) => {

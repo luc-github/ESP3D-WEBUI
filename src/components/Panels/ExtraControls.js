@@ -70,7 +70,6 @@ const controlCommand = (pos, index, value) => {
             return cmd
                 .replace("#", index)
                 .replace("$", pos == 0 ? (parseInt(value) * 255) / 100 : value)
-                .replace(";", "\n")
     }
     return ""
 }
@@ -269,13 +268,14 @@ const ExtraInputControl = ({ element, index, size, pos }) => {
                     onClick={(e) => {
                         useUiContextFn.haptic()
                         e.target.blur()
-                        sendCommand(
-                            controlCommand(
-                                pos,
-                                index,
-                                target_values[pos][index].current
-                            )
-                        )
+                        const cmds = controlCommand(
+                            pos,
+                            index,
+                            target_values[pos][index].current
+                        ).split(";")
+                        cmds.forEach((cmd) => {
+                            sendCommand(cmd)
+                        })
                         element.list.current[index] =
                             target_values[pos][index].current
                     }}

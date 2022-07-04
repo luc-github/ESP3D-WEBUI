@@ -82,7 +82,11 @@ const MachineSettings = () => {
             { method: "GET", id: "saveMachineSetting" },
             {
                 onSuccess: (result) => {
-                    if (progressBar.update) progressBar.update(index + 1)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(index + 1)
                     try {
                         entry.initial = entry.value.trim()
                     } catch (e) {
@@ -94,7 +98,11 @@ const MachineSettings = () => {
                     }
                 },
                 onFail: (error) => {
-                    if (progressBar.update) progressBar.update(index + 1)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(index + 1)
                     console.log(error)
                     toasts.addToast({ content: error, type: "error" })
                     processSaving()

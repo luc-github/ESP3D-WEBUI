@@ -281,6 +281,7 @@ const commandsQuery = (req, res, SendWS) => {
     if (url.indexOf("ESP600") != -1) {
         const text = url.substring(8)
         SendWS(text, false)
+        res.send("")
         return
     }
 

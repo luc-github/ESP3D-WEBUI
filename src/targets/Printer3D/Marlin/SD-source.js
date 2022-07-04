@@ -30,15 +30,23 @@ import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (lines) => {
     const filesFilter = useUiContextFn.getValue("filesfilter") //get extension list
-    const extRegExp = new RegExp("([\$a-zA-Z0-9!#\u0020\+\-]+)", 'g')
-    const extensionsPattern = [...filesFilter.matchAll(extRegExp)].map(item => item[1].trim()).join('|')
+    const extRegExp = new RegExp("([$a-zA-Z0-9!#\u0020+-]+)", "g")
+    const extensionsPattern = [...filesFilter.matchAll(extRegExp)]
+        .map((item) => item[1].trim())
+        .join("|")
     const lineParserPattern = `^(?:(?<path>.*\\.(?:${extensionsPattern}))? *(?<size>\\d+)? )?(?:(?<pathAlt>.*\\.(?:${extensionsPattern}))? *((?<sizeAlt>\\d*) *)?)$`
     return lines.reduce((acc, file) => {
         const fileRegex = new RegExp(lineParserPattern, "ig")
         const m = fileRegex.exec(file.trim())
         if (m) {
             const { path, size, pathAlt, sizeAlt } = m.groups
-            return [...acc, { name: (pathAlt || path), size: formatFileSizeToString(sizeAlt || size) }]
+            return [
+                ...acc,
+                {
+                    name: pathAlt || path,
+                    size: formatFileSizeToString(sizeAlt || size),
+                },
+            ]
         }
         return acc
     }, [])
@@ -77,7 +85,7 @@ const commands = {
     list: (path, filename) => {
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdlistcmd"),
         }
     },
     upload: (path, filename) => {
@@ -90,7 +98,7 @@ const commands = {
         //other is not supported so return list command for safety
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdlistcmd"),
         }
     },
     postUpload: (path, filename) => {

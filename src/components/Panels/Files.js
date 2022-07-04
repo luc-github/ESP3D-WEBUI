@@ -69,22 +69,25 @@ const FilesPanel = () => {
         setFilesList(filesListCache[currentFS])
     }
 
-    const sendSerialCmd = (cmd) => {
-        createNewRequest(
-            espHttpURL("command", { cmd: cmd }),
-            { method: "GET", echo: cmd },
-            {
-                onSuccess: (result) => {
-                    //Result is handled on ws so just do nothing
-                },
-                onFail: (error) => {
-                    console.log(error)
-                    processor.startCatchResponse()
-                    setIsLoading(false)
-                    toasts.addToast({ content: error, type: "error" })
-                },
-            }
-        )
+    const sendSerialCmd = (command) => {
+        const cmds = command.split(";")
+        cmds.forEach((cmd) => {
+            createNewRequest(
+                espHttpURL("command", { cmd: cmd }),
+                { method: "GET", echo: cmd },
+                {
+                    onSuccess: (result) => {
+                        //Result is handled on ws so just do nothing
+                    },
+                    onFail: (error) => {
+                        console.log(error)
+                        processor.stopCatchResponse()
+                        setIsLoading(false)
+                        toasts.addToast({ content: error, type: "error" })
+                    },
+                }
+            )
+        })
     }
 
     const sendURLCmd = (cmd) => {
@@ -238,7 +241,11 @@ const FilesPanel = () => {
                         setIsLoading(false)
                     },
                     onProgress: (e) => {
-                        if (progressBar.update) progressBar.update(e)
+                        if (
+                            progressBar.update &&
+                            typeof progressBar.update === "function"
+                        )
+                            progressBar.update(e)
                     },
                 }
             )
@@ -302,7 +309,11 @@ const FilesPanel = () => {
             { method: "GET", id: "download" },
             {
                 onSuccess: (result) => {
-                    progressBar.update(100)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(100)
                     setTimeout(() => {
                         modals.removeModal(modals.getModalIndex("progression"))
                     }, 2000)
@@ -332,7 +343,11 @@ const FilesPanel = () => {
                     toasts.addToast({ content: error, type: "error" })
                 },
                 onProgress: (e) => {
-                    if (progressBar.update) progressBar.update(e)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(e)
                 },
             }
         )

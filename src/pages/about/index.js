@@ -221,7 +221,11 @@ const About = () => {
             { method: "POST", id: "upload", body: formData },
             {
                 onSuccess: (result) => {
-                    if (progressBar.update) progressBar.update(100)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(100)
                     modals.removeModal(modals.getModalIndex("upload"))
                     Disconnect(isFwUpdate ? "restart" : "connecting")
                     if (isFwUpdate) {
@@ -235,7 +239,11 @@ const About = () => {
                     toasts.addToast({ content: error, type: "error" })
                 },
                 onProgress: (e) => {
-                    progressBar.update(e)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(e)
                 },
             }
         )

@@ -42,8 +42,13 @@ const Progress = ({ progressBar, max = 100, precision = -1 }) => {
         }
         const val = ((value / max) * 100).toFixed(prec)
         if (progressValue.current) {
-            progressValue.current.value = val
-            progressValueDisplay.current.innerHTML = val + "%"
+            if (val == Infinity) {
+                progressValue.current.value = 100
+                progressValueDisplay.current.innerHTML = "100%"
+            } else {
+                progressValue.current.value = val
+                progressValueDisplay.current.innerHTML = val + "%"
+            }
         }
     }
     useEffect(() => {

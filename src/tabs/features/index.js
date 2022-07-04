@@ -150,7 +150,11 @@ const FeaturesTab = () => {
             {
                 onSuccess: (result) => {
                     try {
-                        progressBar.update(index + 1)
+                        if (
+                            progressBar.update &&
+                            typeof progressBar.update === "function"
+                        )
+                            progressBar.update(index + 1)
                         const jsonResult = JSON.parse(result)
                         if (
                             !jsonResult ||
@@ -181,7 +185,11 @@ const FeaturesTab = () => {
                     }
                 },
                 onFail: (error) => {
-                    progressBar.update(index + 1)
+                    if (
+                        progressBar.update &&
+                        typeof progressBar.update === "function"
+                    )
+                        progressBar.update(index + 1)
                     console.log(error)
                     toasts.addToast({ content: error, type: "error" })
                     if (index == total - 1) {

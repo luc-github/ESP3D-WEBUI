@@ -83,11 +83,7 @@ const heaterCommand = (tool, index, value) => {
                 ? "heatbed"
                 : "heatchamber"
         )
-        if (cmd)
-            return cmd
-                .replace("#", index)
-                .replace("$", value)
-                .replace(";", "\n")
+        if (cmd) return cmd.replace("#", index).replace("$", value)
     }
     return ""
 }
@@ -273,17 +269,20 @@ const TemperaturesPanel = () => {
     const { temperatures } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const sendCommand = (command) => {
-        createNewRequest(
-            espHttpURL("command", { cmd: command }),
-            { method: "GET", echo: command },
-            {
-                onSuccess: (result) => {},
-                onFail: (error) => {
-                    toasts.addToast({ content: error, type: "error" })
-                    console.log(error)
-                },
-            }
-        )
+        const cmds = command.split(";")
+        cmds.forEach((cmd) => {
+            createNewRequest(
+                espHttpURL("command", { cmd }),
+                { method: "GET", echo: cmd },
+                {
+                    onSuccess: (result) => {},
+                    onFail: (error) => {
+                        toasts.addToast({ content: error, type: "error" })
+                        console.log(error)
+                    },
+                }
+            )
+        })
     }
     const id = "temperaturesPanel"
     console.log(id)

@@ -58,11 +58,13 @@ const EmergencyButton = () => {
             onclick={(e) => {
                 useUiContextFn.haptic()
                 e.target.blur()
-                const cmd = replaceVariables(
+                const cmds = replaceVariables(
                     realCommandsTable,
                     useUiContextFn.getValue("emergencystop")
-                ).replace(";", "\n")
-                SendCommand(cmd)
+                ).split(";")
+                cmds.forEach((cmd) => {
+                    SendCommand(cmd)
+                })
             }}
         />
     )

@@ -31,6 +31,7 @@ const EmergencyButton = () => {
     const { createNewRequest } = useHttpFn
     const SendCommand = (command) => {
         createNewRequest(
+            espHttpURL("command", { cmd: command }),
             {
                 method: "GET",
                 echo: replaceVariables(realCommandsTable, command, true),
@@ -57,11 +58,12 @@ const EmergencyButton = () => {
             onclick={(e) => {
                 useUiContextFn.haptic()
                 e.target.blur()
-                const cmd = replaceVariables(
-                    realCommandsTable,
-                    useUiContextFn.getValue("emergencystop")
-                ).replace(";", "\n")
-                SendCommand(cmd)
+                const cmds = useUiContextFn.getValue("emergencystop").split(";")
+                cmds.forEach((cmdi) => {
+                    const cmd = replaceVariables(realCommandsTable, cmdi)
+                    SendCommand(cmd)
+                    console.log(cmd)
+                })
             }}
         />
     )

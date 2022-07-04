@@ -1138,11 +1138,13 @@ const JogPanel = () => {
                         onclick={(e) => {
                             useUiContextFn.haptic()
                             e.target.blur()
-                            const cmd = replaceVariables(
+                            const cmds = replaceVariables(
                                 realCommandsTable,
                                 useUiContextFn.getValue("disablecmd")
-                            ).replace(";", "\n")
-                            SendCommand(cmd)
+                            ).split(";")
+                            cmds.forEach((cmd) => {
+                                SendCommand(cmd)
+                            })
                         }}
                     />
                     <ButtonImg
@@ -1159,11 +1161,13 @@ const JogPanel = () => {
                         onclick={(e) => {
                             useUiContextFn.haptic()
                             e.target.blur()
-                            const cmd = replaceVariables(
+                            const cmds = replaceVariables(
                                 realCommandsTable,
                                 useUiContextFn.getValue("jogstopcmd")
-                            ).replace(";", "\n")
-                            SendCommand(cmd)
+                            ).split(";")
+                            cmds.forEach((cmd) => {
+                                SendCommand(cmd)
+                            })
                         }}
                     />
                 </div>

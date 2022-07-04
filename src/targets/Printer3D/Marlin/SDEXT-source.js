@@ -85,7 +85,7 @@ const commands = {
     list: (path, filename) => {
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdextlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdextlistcmd"),
         }
     },
     upload: (path, filename) => {
@@ -98,7 +98,7 @@ const commands = {
         //other is not supported so return list command for safety
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdextlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdextlistcmd"),
         }
     },
     postUpload: (path, filename) => {

@@ -15,7 +15,7 @@ const WebSocket = require("ws")
 let currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
-let sensorInterval = 0
+let sensorInterval = -1
 
 //const serverpath = path.normalize(__dirname + "/../server/public/");
 
@@ -295,11 +295,13 @@ wss.on("connection", (socket, request) => {
             client.send(`activeID:${currentID}`)
         }
     })
-    clearInterval(sensorInterval)
-    sensorInterval = setInterval(() => {
-        const sensorTxt = "SENSOR:10[C] 15[%]"
-        SendWS(sensorTxt, false, false)
-    }, 3000)
+    if (sensorInterval != -1) {
+        clearInterval(sensorInterval)
+        sensorInterval = setInterval(() => {
+            const sensorTxt = "SENSOR:10[C] 15[%]"
+            SendWS(sensorTxt, false, false)
+        }, 3000)
+    }
     currentID++
     socket.on("message", (message) => {
         console.log(wscolor("[ws] received:", message))

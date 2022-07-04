@@ -81,7 +81,7 @@ const commands = {
     list: (path, filename) => {
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd").replace(";", "\n"),
+            cmd: useUiContextFn.getValue("sdlistcmd"),
         }
     },
     formatResult: (result) => {
