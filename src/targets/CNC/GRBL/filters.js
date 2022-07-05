@@ -169,7 +169,7 @@ const getStates = (str) => {
                         ? "feed_rate"
                         : cur[0] == "T"
                         ? "active_tool"
-                        : "spindel_speed"
+                        : "spindle_speed"
                 ] = { value: parseFloat(cur.substring(1)) }
             } else {
                 const gcode_parser_modes = [
@@ -217,11 +217,17 @@ const getStates = (str) => {
 }
 
 const isMessage = (str) => {
-    return false
+    const reg_search = /\[MSG:.*\]/g
+    return reg_search.test(str)
 }
 
 const getMessage = (str) => {
-    return ""
+    let result = null
+    const reg_search = /\[MSG:(?<msg>.*)\]/g
+    if ((result = reg_search.exec(str)) !== null) {
+        return result.groups.msg
+    }
+    return result
 }
 
 const isSensor = (str) => {

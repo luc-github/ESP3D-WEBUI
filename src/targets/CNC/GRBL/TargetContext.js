@@ -26,7 +26,14 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
-import { isStatus, getStatus, isStates, getStates } from "./filters"
+import {
+    isStatus,
+    getStatus,
+    isStates,
+    getStates,
+    isMessage,
+    getMessage,
+} from "./filters"
 
 /*
  * Local const
@@ -42,6 +49,7 @@ const TargetContextProvider = ({ children }) => {
     })
     const [status, setStatus] = useState({})
     const [states, setStates] = useState({})
+    const [message, setMessage] = useState()
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
         stream: "",
@@ -66,11 +74,20 @@ const TargetContextProvider = ({ children }) => {
                 if (response.status) {
                     setStatus(response.status)
                 }
+                //more to set
+                //....
             }
-            if (isStates(data)) {
-                const response = getStates(data)
-                console.log(response)
-                setStates(response)
+            //prefiltering
+            if (data[0] === "[") {
+                if (isStates(data)) {
+                    const response = getStates(data)
+                    setStates(response)
+                }
+
+                if (isMessage(data)) {
+                    const response = getMessage(data)
+                    setMessage(response)
+                }
             }
         }
         //etc...

@@ -74,6 +74,13 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    if (url.indexOf("SIM:") != -1) {
+        const response = url.substring(url.indexOf("SIM:") + 4)
+        SendWS(response + "\n" + "ok\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("ESP800") != -1) {
         res.json({
             cmd: "800",
