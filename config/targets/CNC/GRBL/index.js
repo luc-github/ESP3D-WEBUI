@@ -66,7 +66,9 @@ const commandsQuery = (req, res, SendWS) => {
                 "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100>\n"
             )
         if (countStatus > 2)
-            SendWS("<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0>\n")
+            SendWS(
+                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:XYP>\n"
+            )
         if (countStatus == 10) countStatus = 0
         res.send("")
         return
@@ -149,6 +151,11 @@ const commandsQuery = (req, res, SendWS) => {
             status: "ok",
             data: [{ SSID: "luc-ext1", SIGNAL: "52", IS_PROTECTED: "1" }],
         })
+        return
+    }
+    if (url.indexOf("$G") != -1) {
+        SendWS("[GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]\n")
+        res.send("")
         return
     }
 

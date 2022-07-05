@@ -26,11 +26,7 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
-
-/*
- * Local variables
- */
-let wpos = []
+import { isStatus, getStatus, isStates, getStates } from "./filters"
 
 /*
  * Local const
@@ -44,7 +40,8 @@ const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",
     })
-
+    const [status, setStatus] = useState({})
+    const [states, setStates] = useState({})
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
         stream: "",
@@ -60,60 +57,20 @@ const TargetContextProvider = ({ children }) => {
         //sensors
         //status
         if (type === "stream") {
-            //format is : <...>
-            const status_patern = /<?(.*)>/
-            if (status_patern.test(data)) {
-                const mpos_pattern =
-                    /\|MPos:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i
-                const WCO_pattern =
-                    /\|WCO:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i
-                let result = null
-                //Machine positions
-                if ((result = mpos_pattern.exec(data)) !== null) {
-                    try {
-                        const mpos_array = result[0]
-                            .split(":")[1]
-                            .split("|")[0]
-                            .split(",")
-                        const precision = mpos_array[0].split(".")[1].length
-                        const pos = mpos_array.map((e) =>
-                            parseFloat(e).toFixed(precision).toString()
-                        )
-
-                        //Work coordinates
-                        if ((result = WCO_pattern.exec(data)) !== null) {
-                            try {
-                                const wpos_array = result[0]
-                                    .split(":")[1]
-                                    .split("|")[0]
-                                    .split(",")
-                                wpos = wpos_array.map((e, index) =>
-                                    (parseFloat(pos[index]) - parseFloat(e))
-                                        .toFixed(precision)
-                                        .toString()
-                                )
-                            } catch (e) {
-                                console.error(e)
-                            }
-                        }
-                        setPositions({
-                            x: pos[0],
-                            y: pos.length > 1 ? pos[1] : undefined,
-                            z: pos.length > 2 ? pos[2] : undefined,
-                            a: pos.length > 3 ? pos[3] : undefined,
-                            b: pos.length > 4 ? pos[4] : undefined,
-                            c: pos.length > 5 ? pos[5] : undefined,
-                            wx: wpos.length > 0 ? wpos[0] : undefined,
-                            wy: wpos.length > 1 ? wpos[1] : undefined,
-                            wz: wpos.length > 2 ? wpos[2] : undefined,
-                            wa: wpos.length > 3 ? wpos[3] : undefined,
-                            wb: wpos.length > 4 ? wpos[4] : undefined,
-                            wc: wpos.length > 5 ? wpos[5] : undefined,
-                        })
-                    } catch (e) {
-                        console.error(e)
-                    }
+            //status
+            if (isStatus(data)) {
+                const response = getStatus(data)
+                if (response.positions) {
+                    setPositions(response.positions)
                 }
+                if (response.status) {
+                    setStatus(response.status)
+                }
+            }
+            if (isStates(data)) {
+                const response = getStates(data)
+                console.log(response)
+                setStates(response)
             }
         }
         //etc...
