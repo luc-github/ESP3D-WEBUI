@@ -216,6 +216,10 @@ const getStates = (str) => {
     return res
 }
 
+////////////////////////////////////////////////////////
+//
+// Message format is :  [MSG:MSG_TEXT]
+
 const isMessage = (str) => {
     const reg_search = /\[MSG:.*\]/g
     return reg_search.test(str)
@@ -229,6 +233,111 @@ const getMessage = (str) => {
     }
     return result
 }
+
+////////////////////////////////////////////////////////
+//
+// error format is :  error:error_CODE
+
+const isError = (str) => {
+    const reg_search = /error:[0-9]+/g
+    return reg_search.test(str)
+}
+
+const getError = (str) => {
+    let result = null
+    const reg_search = /error:(?<code>.*)/g
+    if ((result = reg_search.exec(str)) !== null) {
+        return result.groups.code
+    }
+    return result
+}
+
+////////////////////////////////////////////////////////
+//
+// ALARM format is :  ALARM:ALARM_CODE
+
+const isAlarm = (str) => {
+    const reg_search = /ALARM:[0-9]+/g
+    return reg_search.test(str)
+}
+
+const getAlarm = (str) => {
+    let result = null
+    const reg_search = /ALARM:(?<code>.*)/g
+    if ((result = reg_search.exec(str)) !== null) {
+        return result.groups.code
+    }
+    return result
+}
+
+////////////////////////////////////////////////////////
+//
+//  gcode parameters $# output format is : [G54:], [G55:], [G56:], [G57:], [G58:], [G59:], [G28:], [G30:], [G92:], [TLO:], and [PRB:]
+
+const isGcodeParameter = (str) => {
+    const reg_search = /\[(G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):.+\]/g
+    return reg_search.test(str)
+}
+
+const getGcodeParameter = (str) => {
+    let result = null
+    const reg_search =
+        /\[(?<code>G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):(?<data>.+)\]/g
+    if ((result = reg_search.exec(str)) !== null) {
+        const datacontent = result.groups.data.split(":")
+        result = { code: result.groups.code, data: datacontent[0].split(",") }
+        if (datacontent.length > 1) {
+            result.success = datacontent[1] == "1"
+        }
+    }
+    return result
+}
+
+////////////////////////////////////////////////////////
+//
+// Version format is :  [VER:VERSION:xxx]
+
+const isVersion = (str) => {
+    const reg_search = /\[VER:.+\]/g
+    return reg_search.test(str)
+}
+
+const getVersion = (str) => {
+    let result = null
+    const reg_search = /\[VER:(?<version>[^:]+):(?<string>.*)\]/g
+    if ((result = reg_search.exec(str)) !== null) {
+        return { value: result.groups.version, string: result.groups.string }
+    }
+    return result
+}
+
+////////////////////////////////////////////////////////
+//
+// OPT format is :  [OPT:,15,128]
+
+const isOptions = (str) => {
+    const reg_search = /\[OPT:.+\]/g
+    return reg_search.test(str)
+}
+
+const getOptions = (str) => {
+    let result = null
+    const reg_search = /\[OPT:(?<data>.+)\]/g
+    if ((result = reg_search.exec(str)) !== null) {
+        const datacontent = result.groups.data.split(",")
+
+        result = {
+            options: datacontent[0].split(""),
+            blockBufffer: datacontent[1],
+            rxBuffer: datacontent[2],
+        }
+    }
+    return result
+}
+
+////////////////////////////////////////////////////////
+//
+// Sensor format is : SENSOR:SENSOR_DATA]
 
 const isSensor = (str) => {
     return str.startsWith("SENSOR:")
@@ -254,4 +363,14 @@ export {
     getMessage,
     isSensor,
     getSensor,
+    isAlarm,
+    getAlarm,
+    isError,
+    getError,
+    isGcodeParameter,
+    getGcodeParameter,
+    isVersion,
+    getVersion,
+    isOptions,
+    getOptions,
 }

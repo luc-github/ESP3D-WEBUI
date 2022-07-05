@@ -33,6 +33,16 @@ import {
     getStates,
     isMessage,
     getMessage,
+    isAlarm,
+    getAlarm,
+    isError,
+    getError,
+    isGcodeParameter,
+    getGcodeParameter,
+    isVersion,
+    getVersion,
+    isOptions,
+    getOptions,
 } from "./filters"
 
 /*
@@ -50,6 +60,12 @@ const TargetContextProvider = ({ children }) => {
     const [status, setStatus] = useState({})
     const [states, setStates] = useState({})
     const [message, setMessage] = useState()
+    const [alarmCode, setAlarmCode] = useState(0)
+    const [errorCode, setErrorCode] = useState(0)
+    const [gcodeParameters, setGcodeParameters] = useState({})
+    const [grblVersion, setGrblVersion] = useState({})
+    const [grblSettings, setGrblSettings] = useState({})
+    const gcodeParametersRef = useRef({})
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
         stream: "",
@@ -77,6 +93,17 @@ const TargetContextProvider = ({ children }) => {
                 //more to set
                 //....
             }
+            //ALARM
+            if (isAlarm(data)) {
+                const response = getAlarm(data)
+                setAlarmCode(response)
+            }
+
+            //error
+            if (isError(data)) {
+                const response = getError(data)
+                setErrorCode(response)
+            }
             //prefiltering
             if (data[0] === "[") {
                 if (isStates(data)) {
@@ -87,6 +114,26 @@ const TargetContextProvider = ({ children }) => {
                 if (isMessage(data)) {
                     const response = getMessage(data)
                     setMessage(response)
+                }
+                if (isGcodeParameter(data)) {
+                    const response = getGcodeParameter(data)
+                    gcodeParametersRef.current[response.code] = {
+                        data: [...response.data],
+                    }
+                    if (typeof response.success !== "undefined") {
+                        gcodeParametersRef.current[response.code].success =
+                            response.success
+                    }
+                    setGcodeParameters(gcodeParametersRef.current)
+                }
+                if (isVersion(data)) {
+                    const response = getVersion(data)
+                    setGrblVersion(response)
+                }
+                if (isOptions(data)) {
+                    const response = getOptions(data)
+                    console.log("options", response)
+                    setGrblSettings(response)
                 }
             }
         }
