@@ -31,39 +31,48 @@ import { espHttpURL } from "../Helpers"
  */
 
 const StatusControls = () => {
-    const { status } = useTargetContext()
+    const { status, message, alarmCode, errorCode } = useTargetContext()
     if (!useUiContextFn.getValue("showstatuspanel")) return null
-    return null
     return (
         <Fragment>
-            {1 && (
+            {status.state && (
                 <div class="status-ctrls">
                     <div
                         class="extra-control mt-1 tooltip tooltip-bottom"
                         data-tooltip={T("CN34")}
                     >
-                        <div class="extra-control-header">
-                            {"status.printState.status"}
+                        <div
+                            class={`extra-control-header big-text ${
+                                status.state == "Alarm" ||
+                                status.state == "Error"
+                                    ? "text-light bg-error"
+                                    : (status.state == "Door") |
+                                      (status.state == "Hold")
+                                    ? "text-light bg-warning"
+                                    : status.state == "Sleep"
+                                    ? "text-light bg-dark"
+                                    : ""
+                            }`}
+                        >
+                            {T(status.state)}
                         </div>
-                        {1 && (
+                        {status.code && (
                             <div class="extra-control-value">
-                                {"status.filename"}
+                                {T(status.state + ":" + status.code)}
                             </div>
                         )}
-                        <div class="extra-control-value">
-                            {"status.printState.progress"}%
-                        </div>
-                    </div>
-                </div>
-            )}
-            {1 && (
-                <div class="status-ctrls">
-                    <div
-                        class="status-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("CN34")}
-                    >
-                        <div class="status-control-header">{T("CN34")}</div>
-                        <div class="status-control-value">{"status.state"}</div>
+                        {message && (
+                            <div class="extra-control-value">{T(message)}</div>
+                        )}
+                        {(alarmCode != 0 || errorCode != 0) && (
+                            <div class="extra-control-value text-error">
+                                {T(
+                                    alarmCode != 0
+                                        ? "ALARM:" + alarmCode
+                                        : "error:" + errorCode
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -179,7 +188,7 @@ const StatusPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
-                Status Panel
+
                 {1 &&
                     deviceList.map((device) => {
                         if (

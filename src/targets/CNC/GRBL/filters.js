@@ -140,7 +140,6 @@ const getStatus = (str) => {
             console.error(e)
         }
     }
-    console.log(res)
     return res
 }
 
@@ -247,7 +246,7 @@ const getError = (str) => {
     let result = null
     const reg_search = /error:(?<code>.*)/g
     if ((result = reg_search.exec(str)) !== null) {
-        return result.groups.code
+        return parseInt(result.groups.code)
     }
     return result
 }
@@ -265,7 +264,7 @@ const getAlarm = (str) => {
     let result = null
     const reg_search = /ALARM:(?<code>.*)/g
     if ((result = reg_search.exec(str)) !== null) {
-        return result.groups.code
+        return parseInt(result.groups.code)
     }
     return result
 }

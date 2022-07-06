@@ -45,6 +45,8 @@ import {
     getOptions,
 } from "./filters"
 
+let lastStatus = null
+
 /*
  * Local const
  *
@@ -89,20 +91,46 @@ const TargetContextProvider = ({ children }) => {
                 }
                 if (response.status) {
                     setStatus(response.status)
+                    if (lastStatus !== response.status) {
+                        lastStatus = response.status
+                        if (
+                            !(
+                                response.status.state == "Alarm" ||
+                                response.status.state == "Idle" ||
+                                response.status.state == "Sleep"
+                            )
+                        )
+                            setMessage("")
+                        if (
+                            !(
+                                response.status.state == "Alarm" ||
+                                response.status.state == "Error"
+                            )
+                        ) {
+                            setAlarmCode(0)
+                            setErrorCode(0)
+                        }
+                    }
                 }
-                //more to set
+                //more to set+
                 //....
             }
             //ALARM
             if (isAlarm(data)) {
                 const response = getAlarm(data)
                 setAlarmCode(response)
+                setErrorCode(0)
+                setMessage("")
+                setStatus({ state: "Alarm" })
             }
 
             //error
             if (isError(data)) {
                 const response = getError(data)
                 setErrorCode(response)
+                setAlarmCode(0)
+                setMessage("")
+                setStatus({ state: "Error" })
             }
             //prefiltering
             if (data[0] === "[") {
@@ -113,6 +141,7 @@ const TargetContextProvider = ({ children }) => {
 
                 if (isMessage(data)) {
                     const response = getMessage(data)
+                    console.log("message", response)
                     setMessage(response)
                 }
                 if (isGcodeParameter(data)) {
@@ -228,6 +257,13 @@ const TargetContextProvider = ({ children }) => {
 
     const store = {
         positions,
+        status,
+        message,
+        alarmCode,
+        errorCode,
+        gcodeParameters,
+        grblVersion,
+        grblSettings,
         processData,
     }
 
