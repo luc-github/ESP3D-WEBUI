@@ -1,5 +1,61 @@
 {
   "settings": {
+    "status": [
+      {
+        "id": "showstatuspanel",
+        "type": "boolean",
+        "label": "S63",
+        "value": true
+      },
+      {
+        "id": "openstatusonstart",
+        "type": "boolean",
+        "label": "S93",
+        "value": true
+      }
+    ],
+    "probe": [
+      {
+        "id": "showprobepanel",
+        "type": "boolean",
+        "label": "S63",
+        "value": true
+      },
+      {
+        "id": "openprobeonstart",
+        "type": "boolean",
+        "label": "S93",
+        "value": true
+      }
+    ],
+    "laser": [
+      {
+        "id": "showlaserpanel",
+        "type": "boolean",
+        "label": "S63",
+        "value": true
+      },
+      {
+        "id": "openlaseronstart",
+        "type": "boolean",
+        "label": "S93",
+        "value": true
+      }
+    ],
+    "spindle": [
+      {
+        "id": "showspindlepanel",
+        "type": "boolean",
+        "label": "S63",
+        "value": true
+      },
+      {
+        "id": "openspindleonstart",
+        "type": "boolean",
+        "label": "S93",
+        "value": true
+      }
+    ],
     "jog": [
       {
         "id": "axis",

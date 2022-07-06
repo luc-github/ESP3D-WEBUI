@@ -6,6 +6,54 @@
   width: 100%;
 }
 
+
+.status-ctrls,
+.extra-ctrls{
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.extra-ctrls {
+  flex-wrap: wrap;
+}
+
+.status-control,
+.extra-control {
+  display: flex;
+  flex-direction: column;
+  min-width: 3rem;
+  border: 0.05rem solid #dadee4;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.status-control-header,
+.extra-control-header {
+  border-radius: 5px 5px 0px 0px;
+  border-bottom: 0.05rem solid #dadee4;
+  color: #5755d9;
+  background-color: #f1f1fc;
+  text-align: center;
+  font-weight: bold;
+  font-size: 70%;
+  width: 100%;
+}
+
+.status-control-value,
+.extra-control-value{
+  text-align: center;
+  color: #5755d9;
+  font-size: 80%;
+  width: 100%;
+  height: 100%;
+}
+.status-control-value{
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+
 .jog-container {
   display: flex;
   height: 100%;
