@@ -25,6 +25,7 @@ import {
     CheckCircle,
     Circle,
     PauseCircle,
+    Eye,
 } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { Menu as PanelMenu } from "./"
@@ -166,6 +167,11 @@ const NotificationsPanel = () => {
                                 break
                             case "success":
                                 icon = <CheckCircle size="1rem" />
+                                classText = "text-success"
+                                break
+                            case "warning":
+                                icon = <Eye size="1rem" />
+                                classText = "text-warning"
                                 break
                             default:
                                 break

@@ -100,6 +100,7 @@ const WsContextProvider = ({ children }) => {
                     case "NOTIFICATION":
                         //Show notification
                         console.log("Notification: " + stdOutData)
+
                         toasts.addToast({
                             content: (
                                 <label class="m-1">
@@ -108,7 +109,13 @@ const WsContextProvider = ({ children }) => {
                                     )}
                                 </label>
                             ),
-                            type: "notification",
+                            type: eventLine[1].startsWith("Error")
+                                ? "error"
+                                : eventLine[1].startsWith("Success")
+                                ? "success"
+                                : eventLine[1].startsWith("Warning")
+                                ? "warning"
+                                : "notification",
                         })
                         break
                     case "ERROR":
