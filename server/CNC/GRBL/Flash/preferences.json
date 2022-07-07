@@ -36,7 +36,6 @@
   "homecmd": "$H#",
   "zerocmd": "G10 L20 P0 #",
   "jogstopcmd": "#SAFETYDOOR#",
-  "disablecmd": "$SLP",
   "shownotificationspanel": true,
   "opennotificationsonstart": false,
   "notifautoscroll": true,

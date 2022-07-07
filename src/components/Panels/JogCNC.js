@@ -20,7 +20,6 @@ import { Fragment, h } from "preact"
 import {
     Move,
     Home,
-    ZapOff,
     ChevronDown,
     CheckCircle,
     Circle,
@@ -1124,53 +1123,31 @@ const JogPanel = () => {
                             </label>
                             <MoreHorizontal />
                         </Button>
+                        <ButtonImg
+                            m1
+                            tooltip
+                            label={T("CN23")}
+                            id="btnStop"
+                            icon={
+                                <span class="text-error">
+                                    <StopCircle />
+                                </span>
+                            }
+                            data-tooltip={T("CN23")}
+                            onclick={(e) => {
+                                useUiContextFn.haptic()
+                                e.target.blur()
+                                const cmds = replaceVariables(
+                                    realCommandsTable,
+                                    useUiContextFn.getValue("jogstopcmd")
+                                ).split(";")
+                                cmds.forEach((cmd) => {
+                                    SendCommand(cmd)
+                                })
+                            }}
+                        />
                     </div>
                 )}
-
-                <div class="jog-extra-buttons-container">
-                    <ButtonImg
-                        m1
-                        tooltip
-                        label={T("CN22")}
-                        data-tooltip={T("CN22")}
-                        id="btnDisable"
-                        icon={<ZapOff />}
-                        onclick={(e) => {
-                            useUiContextFn.haptic()
-                            e.target.blur()
-                            const cmds = replaceVariables(
-                                realCommandsTable,
-                                useUiContextFn.getValue("disablecmd")
-                            ).split(";")
-                            cmds.forEach((cmd) => {
-                                SendCommand(cmd)
-                            })
-                        }}
-                    />
-                    <ButtonImg
-                        m1
-                        tooltip
-                        label={T("CN23")}
-                        id="btnStop"
-                        icon={
-                            <span class="text-error">
-                                <StopCircle />
-                            </span>
-                        }
-                        data-tooltip={T("CN23")}
-                        onclick={(e) => {
-                            useUiContextFn.haptic()
-                            e.target.blur()
-                            const cmds = replaceVariables(
-                                realCommandsTable,
-                                useUiContextFn.getValue("jogstopcmd")
-                            ).split(";")
-                            cmds.forEach((cmd) => {
-                                SendCommand(cmd)
-                            })
-                        }}
-                    />
-                </div>
             </div>
         </div>
     )

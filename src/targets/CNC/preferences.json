@@ -274,13 +274,6 @@
         "label": "CN23",
         "value": "#SAFETYDOOR#",
         "help": "S97"
-      },
-      {
-        "id": "disablecmd",
-        "type": "text",
-        "label": "CN22",
-        "value": "$SLP",
-        "help": "S97"
       }
     ]
   }
