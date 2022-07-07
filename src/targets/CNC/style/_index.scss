@@ -41,6 +41,20 @@
   width: 100%;
 }
 
+.status-buttons-container,
+.extra-ctrls-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:0.5rem
+}
+
+
+.status-buttons-container,
+.extra-ctrls-container{
+  justify-content: space-around;
+}
 
 .status-control-value,
 .extra-control-value{

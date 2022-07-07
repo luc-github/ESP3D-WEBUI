@@ -19,11 +19,13 @@
 */
 import { Fragment, h } from "preact"
 import { PositionsControls } from "../../../../components/Panels/JogCNC"
+import { StatusControls } from "../../../../components/Panels/StatusCNC"
 import { useUiContextFn } from "../../../../contexts"
 
 const InformationsControls = () => {
     return (
         <Fragment>
+            <StatusControls />
             {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
         </Fragment>
     )
