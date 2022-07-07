@@ -272,7 +272,7 @@
         "id": "jogstopcmd",
         "type": "text",
         "label": "CN23",
-        "value": "#SAFETYDOOR#",
+        "value": "#JOGCANCEL#",
         "help": "S97"
       }
     ]
