@@ -118,7 +118,7 @@ const TerminalPanel = () => {
             processData("echo", cmd)
             createNewRequest(
                 espHttpURL("command", {
-                    cmd: replaceVariables(variablesList, cmd),
+                    cmd: replaceVariables(variablesList.commands, cmd),
                 }),
                 { method: "GET" },
                 {

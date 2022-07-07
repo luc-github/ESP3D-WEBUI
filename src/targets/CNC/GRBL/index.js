@@ -21,6 +21,7 @@ import { h } from "preact"
 import { iconsTarget } from "./icons"
 import { files } from "./files"
 import { processor } from "./processor"
+import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings } from "./MachineSettings"
 import {
@@ -43,8 +44,11 @@ const Name = "ESP3D"
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
 
 const restartdelay = 30
-const variablesList = [...realCommandsTable]
-
+const variablesList = {
+    commands: [...realCommandsTable],
+    modes: [...gcode_parser_modes],
+}
+console.log(variablesList)
 export {
     MachineSettings,
     Target,

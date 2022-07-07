@@ -50,7 +50,14 @@
   padding:0.5rem
 }
 
-
+.states-buttons-container {
+  align-items: center;
+  display: flex;
+  padding:0.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-evenly;
+}
 .status-buttons-container,
 .extra-ctrls-container{
   justify-content: space-around;

@@ -258,6 +258,7 @@ const TargetContextProvider = ({ children }) => {
     const store = {
         positions,
         status,
+        states,
         message,
         alarmCode,
         errorCode,

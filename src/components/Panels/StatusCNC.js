@@ -21,7 +21,7 @@ import { T } from "../Translations"
 import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg } from "../Controls"
+import { ButtonImg, Button } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { Unlock, Power, Moon } from "preact-feather"
@@ -83,7 +83,7 @@ const StatusControls = () => {
 
 const StatusPanel = () => {
     const { toasts, panels } = useUiContext()
-    const { status } = useTargetContext()
+    const { status, states } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "statusPanel"
     const hidePanel = () => {
@@ -118,7 +118,7 @@ const StatusPanel = () => {
     const sendCommand = (command) => {
         createNewRequest(
             espHttpURL("command", {
-                cmd: replaceVariables(variablesList, command),
+                cmd: replaceVariables(variablesList.commands, command),
             }),
             { method: "GET", echo: command },
             {
@@ -149,7 +149,41 @@ const StatusPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
-
+                {states &&
+                    Object.keys(states).length > 0 &&
+                    variablesList.modes && (
+                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                            <legend>
+                                <label class="m-1 buttons-bar-label">
+                                    {T("CN44")}
+                                </label>
+                            </legend>
+                            <div class="field-group-content maxwidth">
+                                <div class="states-buttons-container">
+                                    {variablesList.modes.map((element) => {
+                                        if (states[element.id]) {
+                                            return (
+                                                <Button
+                                                    m1
+                                                    tooltip
+                                                    data-tooltip={T(
+                                                        element.label
+                                                    )}
+                                                    onClick={(e) => {
+                                                        useUiContextFn.haptic()
+                                                        e.target.blur()
+                                                        //TBD if need to change value from here
+                                                    }}
+                                                >
+                                                    {states[element.id].value}
+                                                </Button>
+                                            )
+                                        }
+                                    })}
+                                </div>
+                            </div>
+                        </fieldset>
+                    )}
                 {buttonsList.map((list) => {
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">

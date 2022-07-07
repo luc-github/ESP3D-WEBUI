@@ -39,7 +39,10 @@ const Name = "ESP3D"
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
 
 const restartdelay = 30
-const variablesList = [...realCommandsTable]
+const variablesList = {
+    commands: [...realCommandsTable],
+    gcode_parser_modes: [],
+}
 
 export {
     MachineSettings,

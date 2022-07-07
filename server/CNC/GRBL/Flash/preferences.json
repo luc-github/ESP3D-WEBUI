@@ -12,7 +12,7 @@
   "emergencystop": "#SAFETYDOOR#",
   "enablepolling": true,
   "pollingrefresh": "3000",
-  "pollingcommands": "?",
+  "pollingcommands": "?;$G",
   "showterminalpanel": true,
   "openterminalonstart": true,
   "verbose": true,

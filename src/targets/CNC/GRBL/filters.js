@@ -19,7 +19,7 @@
 */
 import { h } from "preact"
 import { useSettingsContextFn } from "../../../contexts"
-
+import { gcode_parser_modes } from "./gcode_parser_modes"
 /*
  * Local variables
  */
@@ -171,37 +171,6 @@ const getStates = (str) => {
                         : "spindle_speed"
                 ] = { value: parseFloat(cur.substring(1)) }
             } else {
-                const gcode_parser_modes = [
-                    {
-                        id: "motion_mode",
-                        values: [
-                            "G0",
-                            "G1",
-                            "G2",
-                            "G3",
-                            "G38.2",
-                            "G38.3",
-                            "G38.4",
-                            "G38.5",
-                            "G80",
-                        ],
-                    },
-                    {
-                        id: "coordinate_system_select",
-                        values: ["G54", "G55", "G56", "G57", "G58", "G59"],
-                    },
-                    { id: "plane_select", values: ["G17", "G18", "G19"] },
-                    { id: "distance_mode", values: ["G90", "G91"] },
-                    { id: "units", values: ["G20", "G21"] },
-                    { id: "feed_rate_mode", values: ["G93", "G94"] },
-                    { id: "arc_distance_mode", values: ["G91.1"] },
-                    { id: "cutter_compensation_mode", values: ["G40"] },
-                    { id: "tool_length_offset_mode", values: ["G43.1", "G49"] },
-                    { id: "control_mode", values: ["M0", "M1", "M2", "M30"] },
-                    { id: "spindle_mode", values: ["M3", "M4", "M5"] },
-                    { id: "coolant_mode", values: ["M7", "M8", "M9"] },
-                    { id: "override_control", values: ["M56"] },
-                ]
                 gcode_parser_modes.forEach((mode) => {
                     if (mode.values.includes(cur)) {
                         acc[mode.id] = { value: cur }
@@ -211,7 +180,6 @@ const getStates = (str) => {
             return acc
         }, {})
     }
-    console.log(res)
     return res
 }
 
