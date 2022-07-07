@@ -1,5 +1,5 @@
 /*
- index.js - ESP3D WebUI Target file
+ Informations.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -17,8 +17,27 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { EmergencyButton } from "./EmergencyButton"
-import { BackgroundContainer } from ".//BackgroundContainer"
+import { Fragment, h } from "preact"
+import { useEffect } from "preact/hooks"
+import { useTargetContext } from "../.."
+import { useUiContext } from "../../../contexts"
+import { T } from "../../../components/Translations"
 
-export { EmergencyButton, BackgroundContainer }
+const BackgroundContainer = () => {
+    const { alarmCode, errorCode } = useTargetContext()
+    const { toasts } = useUiContext()
+    useEffect(() => {
+        if (alarmCode != 0 || errorCode != 0) {
+            toasts.addToast({
+                type: "error",
+                content: T(
+                    alarmCode != 0 ? "ALARM:" + alarmCode : "error:" + errorCode
+                ),
+            })
+        }
+    }, [alarmCode, errorCode])
+
+    return null
+}
+
+export { BackgroundContainer }

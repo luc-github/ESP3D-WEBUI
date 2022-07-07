@@ -154,7 +154,9 @@ const StatusPanel = () => {
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
                             <legend>
-                                <label class="m-1">{T(list.name)}</label>
+                                <label class="m-1 buttons-bar-label">
+                                    {T(list.name)}
+                                </label>
                             </legend>
                             <div class="field-group-content maxwidth">
                                 <div class="status-buttons-container">

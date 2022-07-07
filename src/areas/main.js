@@ -29,7 +29,7 @@ import Settings from "../pages/settings"
 import ExtraPage from "../pages/extrapages"
 import { Informations } from "../areas/informations"
 import { FooterContainer } from "./footer"
-import { processor } from "../targets"
+import { processor, BackgroundContainer } from "../targets"
 
 const defRoutes = {
     DASHBOARD: {
@@ -98,6 +98,7 @@ const MainContainer = () => {
 
     return (
         <div id="main" class="main-page-container">
+            <BackgroundContainer />
             <Router routesList={routes} />
             <FooterContainer />
         </div>

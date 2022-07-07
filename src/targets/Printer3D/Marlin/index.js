@@ -27,6 +27,7 @@ import {
     InformationsControls,
     QuickButtonsBar,
     MixedExtrudersControl,
+    BackgroundContainer,
 } from "./Controls"
 import {
     TargetContextProvider,
@@ -63,4 +64,5 @@ export {
     WebUILogo,
     QuickButtonsBar,
     MixedExtrudersControl,
+    BackgroundContainer,
 }

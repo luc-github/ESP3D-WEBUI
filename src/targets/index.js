@@ -37,7 +37,9 @@ import {
     AppLogo,
     WebUILogo,
     QuickButtonsBar,
+    BackgroundContainer,
 } from "SubTargetDir"
+
 import defaultPreferencesSubTarget from "SubTargetDir/preferences.json"
 import defaultPreferencesTarget from "TargetDir/preferences.json"
 import defaultPreferencesBase from "./preferences.json"
@@ -75,4 +77,5 @@ export {
     AppLogo,
     WebUILogo,
     QuickButtonsBar,
+    BackgroundContainer,
 }

@@ -20,5 +20,5 @@
 import { h } from "preact"
 import { QuickButtonsBar } from "./QuickButtonsBar"
 import { InformationsControls } from "./InformationsControls"
-
-export { QuickButtonsBar, InformationsControls }
+import { BackgroundContainer } from "../../Controls/BackgroundContainer"
+export { QuickButtonsBar, InformationsControls, BackgroundContainer }
