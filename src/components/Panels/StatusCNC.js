@@ -24,7 +24,7 @@ import { useTargetContext, variablesList } from "../../targets"
 import { ButtonImg, Button } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
-import { Unlock, Power, Moon } from "preact-feather"
+import { Unlock, Power, Moon, Play, Pause } from "preact-feather"
 
 /*
  * Local const
@@ -109,6 +109,29 @@ const StatusPanel = () => {
                     cmd: "$SLP",
                     icon: <Moon />,
                     desc: T("CN43"),
+                },
+                {
+                    cmd: "!",
+                    icon: <Pause />,
+                    desc: T("Hold"),
+                    depend: [
+                        "Door",
+                        "Sleep",
+                        "Alarm",
+                        "Error",
+                        "Check",
+                        "Run",
+                        "Idle",
+                        "Home",
+                        "Jog",
+                        "?",
+                    ],
+                },
+                {
+                    cmd: "~",
+                    icon: <Play />,
+                    desc: T("CN61"),
+                    depend: ["Hold"],
                 },
             ],
         },
@@ -197,18 +220,28 @@ const StatusPanel = () => {
                             </legend>
                             <div class="field-group-content maxwidth">
                                 <div class="status-buttons-container">
-                                    {list.buttons.map((button) => (
-                                        <ButtonImg
-                                            icon={button.icon}
-                                            tooltip
-                                            data-tooltip={T(button.desc)}
-                                            onClick={(e) => {
-                                                useUiContextFn.haptic()
-                                                e.target.blur()
-                                                sendCommand(button.cmd)
-                                            }}
-                                        />
-                                    ))}
+                                    {list.buttons.map((button) => {
+                                        if (button.depend) {
+                                            if (
+                                                !button.depend.includes(
+                                                    status.state
+                                                )
+                                            )
+                                                return
+                                        }
+                                        return (
+                                            <ButtonImg
+                                                icon={button.icon}
+                                                tooltip
+                                                data-tooltip={T(button.desc)}
+                                                onClick={(e) => {
+                                                    useUiContextFn.haptic()
+                                                    e.target.blur()
+                                                    sendCommand(button.cmd)
+                                                }}
+                                            />
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </fieldset>

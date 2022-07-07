@@ -59,6 +59,7 @@
     "CN58": "Active tool",
     "CN59": "Spindle speed",
     "CN60": "Feed rate",
+    "CN61": "Resume",
     "status": "Status panel",
     "laser": "Laser panel",
     "spindle": "Spindle panel",

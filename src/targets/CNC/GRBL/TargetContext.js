@@ -60,7 +60,7 @@ const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",
     })
-    const [status, setStatus] = useState({})
+    const [status, setStatus] = useState({ state: "?" })
     const [states, setStates] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
