@@ -45,7 +45,8 @@ import {
     getOptions,
 } from "./filters"
 
-let lastStatus = null
+const lastStatus = {}
+const lastStates = {}
 
 /*
  * Local const
@@ -91,8 +92,8 @@ const TargetContextProvider = ({ children }) => {
                 }
                 if (response.status) {
                     setStatus(response.status)
-                    if (lastStatus !== response.status) {
-                        lastStatus = response.status
+                    if (lastStatus.current !== response.status) {
+                        lastStatus.current = response.status
                         if (
                             !(
                                 response.status.state == "Alarm" ||
@@ -111,6 +112,15 @@ const TargetContextProvider = ({ children }) => {
                             setErrorCode(0)
                         }
                     }
+                }
+                if (response.f) {
+                    //Update state accordingly
+                    if (!lastStates.current) lastStates.current = {}
+                    if (typeof response.f.value != "undefined")
+                        lastStates.current.F = { value: response.f.value }
+                    if (typeof response.f.rpm != "undefined")
+                        lastStates.current.S = { value: response.f.rpm }
+                    setStates(lastStates.current)
                 }
                 //more to set+
                 //....
@@ -135,8 +145,8 @@ const TargetContextProvider = ({ children }) => {
             //prefiltering
             if (data[0] === "[") {
                 if (isStates(data)) {
-                    const response = getStates(data)
-                    setStates(response)
+                    lastStates.current = getStates(data)
+                    setStates(lastStates.current)
                 }
 
                 if (isMessage(data)) {

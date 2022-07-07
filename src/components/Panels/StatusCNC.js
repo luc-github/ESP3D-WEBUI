@@ -175,6 +175,9 @@ const StatusPanel = () => {
                                                         //TBD if need to change value from here
                                                     }}
                                                 >
+                                                    {element.pre
+                                                        ? element.pre
+                                                        : null}
                                                     {states[element.id].value}
                                                 </Button>
                                             )

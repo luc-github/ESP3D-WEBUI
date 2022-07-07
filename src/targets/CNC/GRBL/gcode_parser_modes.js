@@ -50,9 +50,9 @@ const gcode_parser_modes = [
     { id: "spindle_mode", values: ["M3", "M4", "M5"], label: "CN55" },
     { id: "coolant_mode", values: ["M7", "M8", "M9"], label: "CN56" },
     { id: "override_control", values: ["M56"], label: "CN57" },
-    { id: "T", values: [], label: "CN58" },
-    { id: "S", values: [], label: "CN59" },
-    { id: "F", values: [], label: "CN60" },
+    { id: "T", pre: "T", label: "CN58" },
+    { id: "S", pre: "S", label: "CN59" },
+    { id: "F", pre: "F", label: "CN60" },
 ]
 
 export { gcode_parser_modes }
