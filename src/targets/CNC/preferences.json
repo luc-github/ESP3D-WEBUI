@@ -54,6 +54,27 @@
         "type": "boolean",
         "label": "S93",
         "value": true
+      },
+      {
+        "id": "spindlespeed",
+        "type": "number",
+        "label": "CN59",
+        "value": 1000,
+        "min": 0
+      }
+    ],
+    "overrides": [
+      {
+        "id": "showoverridespanel",
+        "type": "boolean",
+        "label": "S63",
+        "value": true
+      },
+      {
+        "id": "openoverridesonstart",
+        "type": "boolean",
+        "label": "S93",
+        "value": true
       }
     ],
     "jog": [

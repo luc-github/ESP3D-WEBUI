@@ -18,13 +18,12 @@
 
 import { Fragment, h } from "preact"
 import { T } from "../Translations"
-import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
 import { ButtonImg, Button } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
-import { Unlock, Power, Moon, Play, Pause } from "preact-feather"
+import { Layers, Unlock, RefreshCcw, Moon, Play, Pause } from "preact-feather"
 
 /*
  * Local const
@@ -102,7 +101,7 @@ const StatusPanel = () => {
                 },
                 {
                     cmd: "#SOFTRESET#",
-                    icon: <Power />,
+                    icon: <RefreshCcw />,
                     desc: T("CN41"),
                 },
                 {
@@ -153,6 +152,7 @@ const StatusPanel = () => {
             }
         )
     }
+
     return (
         <div class="panel panel-dashboard">
             <div class="navbar">

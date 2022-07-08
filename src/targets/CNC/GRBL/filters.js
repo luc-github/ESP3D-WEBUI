@@ -43,6 +43,7 @@ const getStatus = (str) => {
         a: {},
         ln: {},
         f: {},
+        rpm: {},
         bf: {},
     }
     const mpos_pattern = /\|MPos:(?<mpos>[^\|>]+)/i
@@ -70,7 +71,7 @@ const getStatus = (str) => {
     if ((result = fs_patern.exec(str)) !== null) {
         const r = result.groups.fs.split(",")
         res.f.value = r[0]
-        res.f.rpm = r[1]
+        res.rpm.value = r[1]
     }
     //feed rate
     if ((result = f_patern.exec(str)) !== null) {
@@ -98,7 +99,9 @@ const getStatus = (str) => {
     //extract override values
     if ((result = ov_patern.exec(str)) !== null) {
         const ov = result.groups.ov.split(",")
-        res.ov = { speed: ov[0], feed: ov[1], spindle: ov[2] }
+        res.ov = { feed: ov[0], rapid: ov[1], spindle: ov[2] }
+    } else {
+        res.ov = null
     }
     //extract positions
     if ((result = mpos_pattern.exec(str)) !== null) {
@@ -172,7 +175,7 @@ const getStates = (str) => {
                 ] = { value: parseFloat(cur.substring(1)) }
             } else {
                 gcode_parser_modes.forEach((mode) => {
-                    if (mode.values.includes(cur)) {
+                    if (mode.values && mode.values.includes(cur)) {
                         acc[mode.id] = { value: cur }
                     }
                 })

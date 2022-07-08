@@ -27,6 +27,7 @@ import { StatusPanelElement } from "../../../components/Panels/StatusCNC"
 import { ProbePanelElement } from "../../../components/Panels/ProbeCNC"
 import { LaserPanelElement } from "../../../components/Panels/LaserCNC"
 import { SpindlePanelElement } from "../../../components/Panels/SpindleCNC"
+import { OverridesPanelElement } from "../../../components/Panels/OverridesCNC"
 
 const defaultPanelsList = [
     FilesPanelElement,
@@ -38,6 +39,7 @@ const defaultPanelsList = [
     ProbePanelElement,
     LaserPanelElement,
     SpindlePanelElement,
+    OverridesPanelElement,
 ]
 
 export { defaultPanelsList }

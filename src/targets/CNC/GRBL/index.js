@@ -48,7 +48,6 @@ const variablesList = {
     commands: [...realCommandsTable],
     modes: [...gcode_parser_modes],
 }
-console.log(variablesList)
 export {
     MachineSettings,
     Target,

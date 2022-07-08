@@ -61,6 +61,7 @@ const TargetContextProvider = ({ children }) => {
         x: "?",
     })
     const [status, setStatus] = useState({ state: "?" })
+    const [overrides, setOverrides] = useState({})
     const [states, setStates] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
@@ -113,13 +114,17 @@ const TargetContextProvider = ({ children }) => {
                         }
                     }
                 }
+                if (response.ov) {
+                    console.log("overrides", response.ov)
+                    setOverrides(response.ov)
+                }
                 if (response.f) {
                     //Update state accordingly
                     if (!lastStates.current) lastStates.current = {}
                     if (typeof response.f.value != "undefined")
                         lastStates.current.F = { value: response.f.value }
-                    if (typeof response.f.rpm != "undefined")
-                        lastStates.current.S = { value: response.f.rpm }
+                    if (typeof response.rpm.value != "undefined")
+                        lastStates.current.S = { value: response.rpm.value }
                     setStates(lastStates.current)
                 }
                 //more to set+
@@ -272,6 +277,7 @@ const TargetContextProvider = ({ children }) => {
         message,
         alarmCode,
         errorCode,
+        overrides,
         gcodeParameters,
         grblVersion,
         grblSettings,

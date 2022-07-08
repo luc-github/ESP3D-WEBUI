@@ -25,6 +25,7 @@ import Button from "./Button"
 const ButtonImg = ({
     label,
     icon,
+    iconRight,
     width,
     nomin,
     style,
@@ -42,7 +43,7 @@ const ButtonImg = ({
             }
         >
             <div style="overflow:hidden!important;white-space: nowrap;text-overflow:ellipsis!important;cursor: pointer;pointer-events: none;">
-                {icon}
+                {iconRight ? "" : icon}
                 {label && (
                     <label
                         class={
@@ -60,6 +61,7 @@ const ButtonImg = ({
                         {label}
                     </label>
                 )}
+                {iconRight ? icon : ""}
             </div>
         </Button>
     )

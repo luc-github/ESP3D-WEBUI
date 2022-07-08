@@ -18,7 +18,7 @@ SpindleCNC.js - ESP3D WebUI component file
 
 import { Fragment, h } from "preact"
 import { T } from "../Translations"
-import { Target } from "preact-feather"
+import { Repeat } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
 import { ButtonImg } from "../Controls"
@@ -30,31 +30,32 @@ import { espHttpURL, replaceVariables } from "../Helpers"
  *
  */
 
-const SpindleControls = () => {
-    const { states } = useTargetContext()
-    if (!useUiContextFn.getValue("showspindlepanel")) return null
+const OverridesControls = () => {
+    const { overrides } = useTargetContext()
+    if (!useUiContextFn.getValue("showoverridespanel")) return null
 
-    const states_array = [
-        { id: "F", label: "CN9" },
-        { id: "S", label: "CN64" },
+    const overrides_array = [
+        { id: "spindle", label: "CN64", tooltip: "CN67" },
+        { id: "feed", label: "CN9", tooltip: "CN68" },
+        { id: "rapid", label: "CN63", tooltip: "CN69" },
     ]
     return (
         <Fragment>
-            {states && (states.F || states.S) && (
+            {overrides && (
                 <div class="status-ctrls">
-                    {states_array.map((element) => {
-                        if (states[element.id]) {
+                    {overrides_array.map((element) => {
+                        if (overrides[element.id]) {
                             return (
                                 <div
                                     class="extra-control mt-1 tooltip tooltip-bottom"
-                                    data-tooltip={T(element.label)}
+                                    data-tooltip={T(element.tooltip)}
                                 >
                                     <div class="extra-control-header">
                                         {T(element.label)}
                                     </div>
 
                                     <div class="extra-control-value">
-                                        {states[element.id].value}
+                                        {overrides[element.id]}%
                                     </div>
                                 </div>
                             )
@@ -66,17 +67,17 @@ const SpindleControls = () => {
     )
 }
 
-const SpindlePanel = () => {
+const OverridesPanel = () => {
     const { toasts, panels } = useUiContext()
     const { createNewRequest } = useHttpFn
-    const id = "SpindlePanel"
+    const id = "OverridesPanel"
     const hidePanel = () => {
         useUiContextFn.haptic()
         panels.hide(id)
     }
 
     const buttons_list = [
-        /*   {
+        {
             label: "CN67",
             buttons: [
                 {
@@ -108,10 +109,61 @@ const SpindlePanel = () => {
                 },
             ],
         },
-*/
+        {
+            label: "CN68",
+            buttons: [
+                {
+                    label: "-10%",
+                    tooltip: "CN68",
+                    command: "#FO-10#",
+                },
+                {
+                    label: "-1%",
+                    tooltip: "CN68",
+                    command: "#FO-1#",
+                },
+                {
+                    label: "100%",
+                    tooltip: "CN66",
+                    command: "#FO100#",
+                },
+                {
+                    iconRight: true,
+                    label: "+1%",
+                    tooltip: "CN68",
+                    command: "#FO+1#",
+                },
+                {
+                    iconRight: true,
+                    label: "+10%",
+                    tooltip: "CN68",
+                    command: "#FO+10#",
+                },
+            ],
+        },
+        {
+            label: "CN69",
+            buttons: [
+                {
+                    label: "25%",
+                    tooltip: "CN69",
+                    command: "#RO25#",
+                },
+                {
+                    label: "50%",
+                    tooltip: "CN69",
+                    command: "#RO50#",
+                },
+                {
+                    label: "100%",
+                    tooltip: "CN66",
+                    command: "#RO100#",
+                },
+            ],
+        },
     ]
 
-    console.log("Spindle panel")
+    console.log("Overrides panel")
     const sendCommand = (command) => {
         createNewRequest(
             espHttpURL("command", {
@@ -131,8 +183,8 @@ const SpindlePanel = () => {
         <div class="panel panel-dashboard">
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
-                    <Target />
-                    <strong class="text-ellipsis">{T("CN36")}</strong>
+                    <Repeat />
+                    <strong class="text-ellipsis">{T("CN65")}</strong>
                 </span>
                 <span class="navbar-section">
                     <span style="height: 100%;">
@@ -145,7 +197,7 @@ const SpindlePanel = () => {
                 </span>
             </div>
             <div class="panel-body panel-body-dashboard">
-                <SpindleControls />
+                <OverridesControls />
                 {buttons_list.map((item) => {
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
@@ -156,13 +208,18 @@ const SpindlePanel = () => {
                             </legend>
                             <div class="field-group-content maxwidth">
                                 <div class="states-buttons-container">
-                                    {item.buttons.map((button) => {
+                                    {item.buttons.map((button, index) => {
                                         return (
                                             <ButtonImg
                                                 icon={button.icon}
+                                                className={
+                                                    item.buttons.length / 2 >
+                                                    index
+                                                        ? "tooltip tooltip-right"
+                                                        : "tooltip tooltip-left"
+                                                }
                                                 iconRight={button.iconRight}
                                                 label={T(button.label)}
-                                                tooltip
                                                 data-tooltip={T(button.tooltip)}
                                                 onClick={(e) => {
                                                     useUiContextFn.haptic()
@@ -182,13 +239,13 @@ const SpindlePanel = () => {
     )
 }
 
-const SpindlePanelElement = {
-    id: "SpindlePanel",
-    content: <SpindlePanel />,
-    name: "CN36",
-    icon: "Target",
-    show: "showspindlepanel",
-    onstart: "openspindleonstart",
+const OverridesPanelElement = {
+    id: "OverridesPanel",
+    content: <OverridesPanel />,
+    name: "CN65",
+    icon: "Repeat",
+    show: "showoverridespanel",
+    onstart: "openoverridesonstart",
 }
 
-export { SpindlePanel, SpindlePanelElement, SpindleControls }
+export { OverridesPanel, OverridesPanelElement, OverridesControls }
