@@ -79,7 +79,11 @@
         "id": "showMistctrls",
         "type": "boolean",
         "label": "CN73",
-        "value": true
+        "value": true,
+        "depend": [{
+          "id": "showCoolantctrls",
+          "value": true
+        }]
       },
       {
         "id": "showM7ctrls",
