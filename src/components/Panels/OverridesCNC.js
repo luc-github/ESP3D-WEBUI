@@ -211,14 +211,13 @@ const OverridesPanel = () => {
                                     {item.buttons.map((button, index) => {
                                         return (
                                             <ButtonImg
-                                                icon={button.icon}
+                                                mt1
                                                 className={
                                                     item.buttons.length / 2 >
                                                     index
                                                         ? "tooltip tooltip-right"
                                                         : "tooltip tooltip-left"
                                                 }
-                                                iconRight={button.iconRight}
                                                 label={T(button.label)}
                                                 data-tooltip={T(button.tooltip)}
                                                 onClick={(e) => {

@@ -47,6 +47,7 @@ const modifiers = {
     m05: "m-05",
     m2: "m-2",
     m1: "m-1",
+    mt1: "mt-1",
 }
 const Button = createComponent("button", "btn", modifiers)
 

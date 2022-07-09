@@ -61,6 +61,35 @@
         "label": "CN59",
         "value": 1000,
         "min": 0
+      },
+      {
+        "id": "showM4ctrls",
+        "type": "boolean",
+        "label": "CN70",
+        "value": true
+      },
+      {
+        "id": "showCoolantctrls",
+        "type": "boolean",
+        "label": "CN72",
+        "value": true
+      },
+      
+      {
+        "id": "showMistctrls",
+        "type": "boolean",
+        "label": "CN73",
+        "value": true
+      },
+      {
+        "id": "showM7ctrls",
+        "type": "boolean",
+        "label": "CN71",
+        "value": false,
+        "depend": [{
+          "id": "showMistctrls",
+          "value": true
+        }]
       }
     ],
     "overrides": [

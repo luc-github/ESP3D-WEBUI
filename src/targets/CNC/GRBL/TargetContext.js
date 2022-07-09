@@ -115,7 +115,6 @@ const TargetContextProvider = ({ children }) => {
                     }
                 }
                 if (response.ov) {
-                    console.log("overrides", response.ov)
                     setOverrides(response.ov)
                 }
                 if (response.f) {

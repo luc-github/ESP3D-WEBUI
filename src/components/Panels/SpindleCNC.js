@@ -17,18 +17,25 @@ SpindleCNC.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
+import { useState } from "preact/hooks"
 import { T } from "../Translations"
-import { Target } from "preact-feather"
-import { useUiContext, useUiContextFn } from "../../contexts"
+import { Target, Zap, Wind, CloudDrizzle } from "preact-feather"
+import {
+    useUiContext,
+    useUiContextFn,
+    useSettingsContext,
+} from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg } from "../Controls"
+import { ButtonImg, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL, replaceVariables } from "../Helpers"
+import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
 
 /*
  * Local const
  *
  */
+
+const spindleSpeedValue = {}
 
 const SpindleControls = () => {
     const { states } = useTargetContext()
@@ -68,47 +75,108 @@ const SpindleControls = () => {
 
 const SpindlePanel = () => {
     const { toasts, panels } = useUiContext()
+    const { interfaceSettings } = useSettingsContext()
+    const { status, states } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "SpindlePanel"
     const hidePanel = () => {
         useUiContextFn.haptic()
         panels.hide(id)
     }
+    if (typeof spindleSpeedValue.current === "undefined") {
+        spindleSpeedValue.current = useUiContextFn.getValue("spindlespeed")
+    }
 
     const buttons_list = [
-        /*   {
-            label: "CN67",
+        {
+            label: "CN55",
             buttons: [
                 {
-                    label: "-10%",
-                    tooltip: "CN67",
-                    command: "#SSO-10#",
+                    label: "M3",
+                    tooltip: "CN74",
+                    command: "M3 S#",
+                    useinput: true,
+                    mode: "spindle_mode",
                 },
                 {
-                    label: "-1%",
-                    tooltip: "CN67",
-                    command: "#SSO-1#",
+                    label: "M4",
+                    tooltip: "CN75",
+                    command: "M4 S#",
+                    useinput: true,
+                    mode: "spindle_mode",
+                    depend: [{ id: "showM4ctrls", value: true }],
                 },
                 {
-                    label: "100%",
-                    tooltip: "CN66",
-                    command: "#SSO100#",
+                    label: "M5",
+                    tooltip: "CN76",
+                    command: "M5",
+                    mode: "spindle_mode",
+                },
+            ],
+            control: {
+                id: "spindlespeedInput",
+                type: "number",
+                label: "CN59",
+                value: spindleSpeedValue,
+                min: 0,
+            },
+        },
+        {
+            label: "CN56",
+            depend: [{ id: "showCoolantctrls", value: true }],
+            buttons: [
+                {
+                    label: "M7",
+                    tooltip: "CN77",
+                    command: "M7",
+                    depend: [{ id: "showM7ctrls", value: true }],
+                    mode: "coolant_mode",
                 },
                 {
-                    iconRight: true,
-                    label: "+1%",
-                    tooltip: "CN67",
-                    command: "#SSO+1#",
+                    label: "M8",
+                    tooltip: "CN78",
+                    command: "M8",
+                    mode: "coolant_mode",
                 },
                 {
-                    iconRight: true,
-                    label: "+10%",
-                    tooltip: "CN67",
-                    command: "#SSO+10#",
+                    label: "M9",
+                    tooltip: "CN79",
+                    command: "M9",
+                    mode: "coolant_mode",
                 },
             ],
         },
-*/
+        {
+            label: "CN80",
+            buttons: [
+                {
+                    icon: <Zap />,
+                    tooltip: "CN81",
+                    command: "#T-SPINDLESTOP#",
+                    depend: [{ states: ["Hold"] }],
+                },
+                {
+                    icon: <Wind />,
+                    tooltip: "CN82",
+                    tooltipclassic: true,
+                    command: "#T-FLOODCOOLANT#",
+                    depend: [
+                        { states: ["Idle", "Run", "Hold"] },
+                        { id: "showCoolantctrls", value: true },
+                    ],
+                },
+                {
+                    icon: <CloudDrizzle />,
+                    tooltip: "CN83",
+                    command: "#T-MISTCOOLANT#",
+                    depend: [
+                        { states: ["Idle", "Run", "Hold"] },
+                        { id: "showCoolantctrls", value: true },
+                        { id: "showMistctrls", value: true },
+                    ],
+                },
+            ],
+        },
     ]
 
     console.log("Spindle panel")
@@ -127,6 +195,30 @@ const SpindlePanel = () => {
             }
         )
     }
+    //we won't handle modified state just handle error
+    //too many user cases where changing value to show button is not suitable
+    const [validation, setvalidation] = useState({
+        message: null,
+        valid: true,
+        modified: false,
+    })
+
+    const generateValidation = (value) => {
+        let validation = {
+            message: null,
+            valid: true,
+            modified: false,
+        }
+        if (value == 0 || value < 0) {
+            //No error message to keep all control aligned
+            //may be have a better way ?
+            // validation.message = T("S42");
+            validation.valid = false
+        }
+
+        return validation
+    }
+
     return (
         <div class="panel panel-dashboard">
             <div class="navbar">
@@ -147,6 +239,16 @@ const SpindlePanel = () => {
             <div class="panel-body panel-body-dashboard">
                 <SpindleControls />
                 {buttons_list.map((item) => {
+                    if (item.depend) {
+                        if (
+                            !settingsDepend(
+                                item.depend,
+                                interfaceSettings.current.settings
+                            )
+                        )
+                            return null
+                    }
+
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
                             <legend>
@@ -156,23 +258,113 @@ const SpindlePanel = () => {
                             </legend>
                             <div class="field-group-content maxwidth">
                                 <div class="states-buttons-container">
-                                    {item.buttons.map((button) => {
+                                    {item.buttons.map((button, index) => {
+                                        if (button.depend) {
+                                            if (
+                                                !settingsDepend(
+                                                    button.depend,
+                                                    interfaceSettings.current
+                                                        .settings
+                                                )
+                                            )
+                                                return null
+                                            let index = button.depend.findIndex(
+                                                (element) => {
+                                                    return element.states
+                                                }
+                                            )
+                                            if (index !== -1) {
+                                                if (
+                                                    !button.depend[
+                                                        index
+                                                    ].states.includes(
+                                                        status.state
+                                                    )
+                                                )
+                                                    return null
+                                            }
+                                        }
+                                        let classname = "tooltip"
+                                        if (!item.tooltipclassic) {
+                                            if (
+                                                item.buttons.length / 2 >
+                                                index
+                                            ) {
+                                                classname += " tooltip-right"
+                                            } else {
+                                                classname += " tooltip-left"
+                                            }
+                                        }
+                                        if (
+                                            states &&
+                                            button.mode &&
+                                            states[button.mode]
+                                        ) {
+                                            if (
+                                                states[button.mode].value ==
+                                                button.label
+                                            ) {
+                                                classname += " btn-primary"
+                                            }
+                                        }
                                         return (
                                             <ButtonImg
-                                                icon={button.icon}
-                                                iconRight={button.iconRight}
+                                                disabled={
+                                                    button.useinput
+                                                        ? !validation.valid
+                                                        : false
+                                                }
                                                 label={T(button.label)}
-                                                tooltip
+                                                icon={button.icon}
+                                                className={classname}
+                                                iconRight={button.iconRight}
                                                 data-tooltip={T(button.tooltip)}
                                                 onClick={(e) => {
                                                     useUiContextFn.haptic()
                                                     e.target.blur()
-                                                    sendCommand(button.command)
+                                                    if (button.useinput) {
+                                                        sendCommand(
+                                                            button.command.replace(
+                                                                "S#",
+                                                                "S" +
+                                                                    spindleSpeedValue.current
+                                                            )
+                                                        )
+                                                    } else
+                                                        sendCommand(
+                                                            button.command
+                                                        )
                                                 }}
                                             />
                                         )
                                     })}
                                 </div>
+                                {item.control && (
+                                    <div>
+                                        <Field
+                                            id={item.control.id}
+                                            inline
+                                            width="4rem"
+                                            label={T(item.control.label)}
+                                            type={item.control.type}
+                                            min={item.control.min}
+                                            value={item.control.value.current}
+                                            setValue={(val, update = false) => {
+                                                if (!update) {
+                                                    item.control.value.current =
+                                                        val
+                                                }
+                                                setvalidation(
+                                                    generateValidation(
+                                                        item.control.value
+                                                            .current
+                                                    )
+                                                )
+                                            }}
+                                            validation={validation}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </fieldset>
                     )

@@ -51,12 +51,12 @@
 }
 
 .states-buttons-container {
+  width: 100%;
   align-items: center;
   display: flex;
   padding:0.5rem;
   flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-evenly;
+  justify-content: space-around;
 }
 .status-buttons-container,
 .extra-ctrls-container{

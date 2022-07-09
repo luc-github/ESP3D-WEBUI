@@ -52,6 +52,13 @@
   "showlaserpanel": true,
   "openlaseronstart": true,
   "showspindlepanel": true,
-  "openspindleonstart": true
+  "openspindleonstart": true,
+  "spindlespeed": 1000,
+  "showM4ctrls": true,
+  "showCoolantctrls": true,
+  "showMistctrls": false,
+  "showM7ctrls": false,
+  "showoverridespanel": true,
+  "openoverridesonstart": true
  }
 }
