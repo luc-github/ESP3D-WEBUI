@@ -248,6 +248,68 @@ const SpindlePanel = () => {
                         )
                             return null
                     }
+                    const content = item.buttons.map((button, index) => {
+                        if (button.depend) {
+                            if (
+                                !settingsDepend(
+                                    button.depend,
+                                    interfaceSettings.current.settings
+                                )
+                            )
+                                return null
+                            let index = button.depend.findIndex((element) => {
+                                return element.states
+                            })
+                            if (index !== -1) {
+                                if (
+                                    !button.depend[index].states.includes(
+                                        status.state
+                                    )
+                                )
+                                    return null
+                            }
+                        }
+                        let classname = "tooltip"
+                        if (!item.tooltipclassic) {
+                            if (item.buttons.length / 2 > index) {
+                                classname += " tooltip-right"
+                            } else {
+                                classname += " tooltip-left"
+                            }
+                        }
+                        if (states && button.mode && states[button.mode]) {
+                            if (states[button.mode].value == button.label) {
+                                classname += " btn-primary"
+                            }
+                        }
+                        return (
+                            <ButtonImg
+                                disabled={
+                                    button.useinput ? !validation.valid : false
+                                }
+                                label={T(button.label)}
+                                icon={button.icon}
+                                className={classname}
+                                iconRight={button.iconRight}
+                                data-tooltip={T(button.tooltip)}
+                                onClick={(e) => {
+                                    useUiContextFn.haptic()
+                                    e.target.blur()
+                                    if (button.useinput) {
+                                        sendCommand(
+                                            button.command.replace(
+                                                "S#",
+                                                "S" + spindleSpeedValue.current
+                                            )
+                                        )
+                                    } else sendCommand(button.command)
+                                }}
+                            />
+                        )
+                    })
+
+                    if (!(content.filter((item) => item != null).length != 0))
+                        return null
 
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
@@ -258,86 +320,7 @@ const SpindlePanel = () => {
                             </legend>
                             <div class="field-group-content maxwidth">
                                 <div class="states-buttons-container">
-                                    {item.buttons.map((button, index) => {
-                                        if (button.depend) {
-                                            if (
-                                                !settingsDepend(
-                                                    button.depend,
-                                                    interfaceSettings.current
-                                                        .settings
-                                                )
-                                            )
-                                                return null
-                                            let index = button.depend.findIndex(
-                                                (element) => {
-                                                    return element.states
-                                                }
-                                            )
-                                            if (index !== -1) {
-                                                if (
-                                                    !button.depend[
-                                                        index
-                                                    ].states.includes(
-                                                        status.state
-                                                    )
-                                                )
-                                                    return null
-                                            }
-                                        }
-                                        let classname = "tooltip"
-                                        if (!item.tooltipclassic) {
-                                            if (
-                                                item.buttons.length / 2 >
-                                                index
-                                            ) {
-                                                classname += " tooltip-right"
-                                            } else {
-                                                classname += " tooltip-left"
-                                            }
-                                        }
-                                        if (
-                                            states &&
-                                            button.mode &&
-                                            states[button.mode]
-                                        ) {
-                                            if (
-                                                states[button.mode].value ==
-                                                button.label
-                                            ) {
-                                                classname += " btn-primary"
-                                            }
-                                        }
-                                        return (
-                                            <ButtonImg
-                                                disabled={
-                                                    button.useinput
-                                                        ? !validation.valid
-                                                        : false
-                                                }
-                                                label={T(button.label)}
-                                                icon={button.icon}
-                                                className={classname}
-                                                iconRight={button.iconRight}
-                                                data-tooltip={T(button.tooltip)}
-                                                onClick={(e) => {
-                                                    useUiContextFn.haptic()
-                                                    e.target.blur()
-                                                    if (button.useinput) {
-                                                        sendCommand(
-                                                            button.command.replace(
-                                                                "S#",
-                                                                "S" +
-                                                                    spindleSpeedValue.current
-                                                            )
-                                                        )
-                                                    } else
-                                                        sendCommand(
-                                                            button.command
-                                                        )
-                                                }}
-                                            />
-                                        )
-                                    })}
+                                    {content}
                                 </div>
                                 {item.control && (
                                     <div>
