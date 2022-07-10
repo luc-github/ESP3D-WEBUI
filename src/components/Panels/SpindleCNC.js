@@ -39,36 +39,54 @@ const spindleSpeedValue = {}
 
 const SpindleControls = () => {
     const { states } = useTargetContext()
+    const { interfaceSettings } = useSettingsContext()
     if (!useUiContextFn.getValue("showspindlepanel")) return null
-
     const states_array = [
-        { id: "F", label: "CN9" },
-        { id: "S", label: "CN64" },
+        { id: "feed_rate", label: "CN9" },
+        { id: "spindle_speed", label: "CN64" },
+        { id: "spindle_mode", label: "CN91" },
+        {
+            id: "coolant_mode",
+            label: "CN38",
+            depend: [{ id: "showCoolantctrls", value: true }],
+        },
     ]
     return (
         <Fragment>
-            {states && (states.F || states.S) && (
-                <div class="status-ctrls">
-                    {states_array.map((element) => {
-                        if (states[element.id]) {
-                            return (
-                                <div
-                                    class="extra-control mt-1 tooltip tooltip-bottom"
-                                    data-tooltip={T(element.label)}
-                                >
-                                    <div class="extra-control-header">
-                                        {T(element.label)}
-                                    </div>
+            {states &&
+                (states.spindle_speed ||
+                    states.feed_rate ||
+                    states.spindle_mode) && (
+                    <div class="status-ctrls">
+                        {states_array.map((element) => {
+                            if (states[element.id]) {
+                                if (element.depend) {
+                                    if (
+                                        !settingsDepend(
+                                            element.depend,
+                                            interfaceSettings.current.settings
+                                        )
+                                    )
+                                        return null
+                                }
+                                return (
+                                    <div
+                                        class="extra-control mt-1 tooltip tooltip-bottom"
+                                        data-tooltip={T(element.label)}
+                                    >
+                                        <div class="extra-control-header">
+                                            {T(element.label)}
+                                        </div>
 
-                                    <div class="extra-control-value">
-                                        {states[element.id].value}
+                                        <div class="extra-control-value">
+                                            {states[element.id].value}
+                                        </div>
                                     </div>
-                                </div>
-                            )
-                        }
-                    })}
-                </div>
-            )}
+                                )
+                            }
+                        })}
+                    </div>
+                )}
         </Fragment>
     )
 }

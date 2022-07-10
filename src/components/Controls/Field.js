@@ -27,6 +27,7 @@ import {
     ItemsList,
     IconSelect,
     LabelCtrl,
+    Slider,
 } from "./Fields"
 
 const Field = (props) => {
@@ -61,6 +62,12 @@ const Field = (props) => {
             return (
                 <FormGroup {...props}>
                     <Select {...props} />
+                </FormGroup>
+            )
+        case "slider":
+            return (
+                <FormGroup {...props}>
+                    <Slider {...props} />
                 </FormGroup>
             )
         case "boolean":

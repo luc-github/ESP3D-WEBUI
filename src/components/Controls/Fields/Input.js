@@ -252,6 +252,10 @@ const Input = ({
             </div>
         )
     }
+    //we can do a better way to remove class by doing a split a fitter on several key name and then join
+    //but this is a quick fix
+    let classAddition = ""
+    if (rest.class) classAddition = rest.class.replace("form-input", "")
     return (
         <div
             class={`input-group ${inline ? "column" : ""} ${
@@ -269,7 +273,11 @@ const Input = ({
                 {...rest}
                 onInput={onInput}
             />
-            {append && <span class="input-group-addon">{T(append)}</span>}
+            {append && (
+                <span class={`input-group-addon  ${classAddition}`}>
+                    {T(append)}
+                </span>
+            )}
             {button}
         </div>
     )

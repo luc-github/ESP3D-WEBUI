@@ -27,6 +27,7 @@ import PickUp from "./PickUp"
 import ItemsList from "./ItemsList"
 import IconSelect from "./IconSelect"
 import LabelCtrl from "./Label"
+import Slider from "./Slider"
 
 export {
     Boolean,
@@ -37,4 +38,5 @@ export {
     ItemsList,
     IconSelect,
     LabelCtrl,
+    Slider,
 }

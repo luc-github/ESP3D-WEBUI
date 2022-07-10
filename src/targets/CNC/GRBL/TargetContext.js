@@ -121,9 +121,13 @@ const TargetContextProvider = ({ children }) => {
                     //Update state accordingly
                     if (!lastStates.current) lastStates.current = {}
                     if (typeof response.f.value != "undefined")
-                        lastStates.current.F = { value: response.f.value }
+                        lastStates.current.feed_rate = {
+                            value: response.f.value,
+                        }
                     if (typeof response.rpm.value != "undefined")
-                        lastStates.current.S = { value: response.rpm.value }
+                        lastStates.current.spindle_speed = {
+                            value: response.rpm.value,
+                        }
                     setStates(lastStates.current)
                 }
                 //more to set+

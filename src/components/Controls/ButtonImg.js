@@ -31,15 +31,21 @@ const ButtonImg = ({
     style,
     showlow,
     className,
+    disabled,
     ...rest
 }) => {
+    //if no icon, show label always
+    if (!icon) showlow = true
     return (
         <Button
             class={`feather-icon-container ${className ? className : ""}`}
             {...rest}
+            disabled={disabled}
             style={
-                (nomin ? style : "min-width:2rem;" + style) +
-                ";display:inline-block;white-space: nowrap;"
+                `${
+                    (nomin ? style : "min-width:2rem;" + style) +
+                    ";display:inline-block;white-space: nowrap;"
+                }` + `${disabled ? "pointer;pointer-events: none;" : ""}`
             }
         >
             <div style="overflow:hidden!important;white-space: nowrap;text-overflow:ellipsis!important;cursor: pointer;pointer-events: none;">

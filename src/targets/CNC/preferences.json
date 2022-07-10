@@ -40,6 +40,38 @@
         "type": "boolean",
         "label": "S93",
         "value": true
+      },
+      {
+        "id": "laser",
+        "type": "group",
+        "label": "CN90",
+        "value": [
+          {
+            "id": "lasertest",
+            "type": "number",
+            "label": "CN85",
+            "value": 10,
+            "append": "S114",
+            "min": 1
+          },
+          {
+            "id": "lasertestprecent",
+            "type": "number",
+            "label": "CN89",
+            "value": 20,
+            "append": "%",
+            "min": 0,
+            "max": 100
+          }
+
+        ]
+      },
+      {
+        "id": "lasermax",
+        "type": "number",
+        "label": "CN84",
+        "value": 1000,
+        "min": 1
       }
     ],
     "spindle": [
@@ -74,26 +106,29 @@
         "label": "CN72",
         "value": true
       },
-      
       {
         "id": "showMistctrls",
         "type": "boolean",
         "label": "CN73",
         "value": true,
-        "depend": [{
-          "id": "showCoolantctrls",
-          "value": true
-        }]
+        "depend": [
+          {
+            "id": "showCoolantctrls",
+            "value": true
+          }
+        ]
       },
       {
         "id": "showM7ctrls",
         "type": "boolean",
         "label": "CN71",
         "value": false,
-        "depend": [{
-          "id": "showMistctrls",
-          "value": true
-        }]
+        "depend": [
+          {
+            "id": "showMistctrls",
+            "value": true
+          }
+        ]
       }
     ],
     "overrides": [

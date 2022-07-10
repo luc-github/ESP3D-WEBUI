@@ -21,6 +21,7 @@ import { Fragment, h } from "preact"
 import { PositionsControls } from "../../../../components/Panels/JogCNC"
 import { StatusControls } from "../../../../components/Panels/StatusCNC"
 import { SpindleControls } from "../../../../components/Panels/SpindleCNC"
+import { LaserControls } from "../../../../components/Panels/LaserCNC"
 import { OverridesControls } from "../../../../components/Panels/OverridesCNC"
 import { useUiContextFn } from "../../../../contexts"
 
@@ -30,6 +31,7 @@ const InformationsControls = () => {
             <StatusControls />
             {useUiContextFn.getValue("showjogpanel") && <PositionsControls />}
             <SpindleControls />
+            {!useUiContextFn.getValue("showspindlepanel") && <LaserControls />}
             <OverridesControls />
         </Fragment>
     )

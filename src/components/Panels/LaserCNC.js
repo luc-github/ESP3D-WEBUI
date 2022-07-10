@@ -17,54 +17,54 @@ LaserCNC.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
+import { useState } from "preact/hooks"
 import { T } from "../Translations"
-import { Loader, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
-import { useUiContext, useUiContextFn } from "../../contexts"
-import { useTargetContext } from "../../targets"
-import { ButtonImg } from "../Controls"
+import { Loader, Sun, Power } from "preact-feather"
+import {
+    useUiContext,
+    useUiContextFn,
+    useSettingsContext,
+} from "../../contexts"
+import { useTargetContext, variablesList } from "../../targets"
+import { ButtonImg, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL } from "../Helpers"
+import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
 
 /*
  * Local const
  *
  */
+const laserPercentage = {}
+const lasertestduration = {}
+const laserMaxPower = {}
 
 const LaserControls = () => {
-    //const { status } = useTargetContext()
+    const { states } = useTargetContext()
     if (!useUiContextFn.getValue("showlaserpanel")) return null
-    return null
+
+    const states_array = [{ id: "spindle_mode", label: "CN91" }]
     return (
         <Fragment>
-            {1 && (
+            {states && states.spindle_mode && (
                 <div class="status-ctrls">
-                    <div
-                        class="extra-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("CN35")}
-                    >
-                        <div class="extra-control-header">
-                            {"status.printState.status"}
-                        </div>
-                        {0 && (
-                            <div class="extra-control-value">
-                                {"status.filename"}
-                            </div>
-                        )}
-                        <div class="extra-control-value">
-                            {"status.printState.progress"}%
-                        </div>
-                    </div>
-                </div>
-            )}
-            {1 && (
-                <div class="status-ctrls">
-                    <div
-                        class="status-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("PCN35")}
-                    >
-                        <div class="status-control-header">{T("CN35")}</div>
-                        <div class="status-control-value">{"status.state"}</div>
-                    </div>
+                    {states_array.map((element) => {
+                        if (states[element.id]) {
+                            return (
+                                <div
+                                    class="extra-control mt-1 tooltip tooltip-bottom"
+                                    data-tooltip={T(element.label)}
+                                >
+                                    <div class="extra-control-header">
+                                        {T(element.label)}
+                                    </div>
+
+                                    <div class="extra-control-value">
+                                        {states[element.id].value}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    })}
                 </div>
             )}
         </Fragment>
@@ -73,7 +73,7 @@ const LaserControls = () => {
 
 const LaserPanel = () => {
     const { toasts, panels } = useUiContext()
-    //const { status } = useTargetContext()
+    const { states } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "laserPanel"
     const hidePanel = () => {
@@ -82,9 +82,29 @@ const LaserPanel = () => {
     }
 
     console.log("Laser panel")
+    if (typeof laserPercentage.current === "undefined") {
+        laserPercentage.current = useUiContextFn.getValue("lasertestprecent")
+    }
+    if (typeof lasertestduration.current === "undefined") {
+        lasertestduration.current = useUiContextFn.getValue("lasertest")
+    }
+    if (typeof laserMaxPower.current === "undefined") {
+        laserMaxPower.current = useUiContextFn.getValue("lasermax")
+    }
+
+    const hasError = () => {
+        return !(
+            laserPercentage.valid &&
+            lasertestduration.valid &&
+            laserMaxPower.valid
+        )
+    }
+
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }),
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
             { method: "GET", echo: command },
             {
                 onSuccess: (result) => {},
@@ -95,6 +115,124 @@ const LaserPanel = () => {
             }
         )
     }
+    const laser_controls = [
+        {
+            label: "CN90",
+            id: "laser_group",
+            controls: [
+                {
+                    id: "maximum_power",
+                    elements: [
+                        {
+                            id: "maximum_power",
+                            type: "number",
+                            label: "CN84",
+                            tooltip: "CN84",
+                            min: 0,
+                            value: laserMaxPower,
+                        },
+                    ],
+                },
+
+                {
+                    id: "test_laser",
+                    elements: [
+                        {
+                            id: "test_laser_duration",
+                            type: "number",
+                            label: "CN85",
+                            tooltip: "CN85",
+                            append: "S114",
+                            min: 0,
+                            value: lasertestduration,
+                        },
+                    ],
+                },
+                {
+                    id: "laser_power",
+                    elements: [
+                        {
+                            id: "laser_power_slider",
+                            type: "slider",
+                            label: "CN89",
+                            tooltip: "CN89",
+                            min: 0,
+                            max: 100,
+                            value: laserPercentage,
+                            append: "%",
+                        },
+                    ],
+                },
+
+                {
+                    id: "laser_buttons",
+                    elements: [
+                        {
+                            id: "laser_test",
+                            icon: <Sun />,
+                            type: "button",
+                            label: "CN86",
+                            tooltip: "CN88",
+                            useinput: "true",
+                            command: "M3 S#",
+                            desc: "M3",
+                            mode: "spindle_mode",
+                            onclick: () => {
+                                const commands = [
+                                    "G1 F1",
+                                    () => {
+                                        return (
+                                            "M3 S" +
+                                            (
+                                                (parseInt(
+                                                    laserMaxPower.current
+                                                ) *
+                                                    parseInt(
+                                                        laserPercentage.current
+                                                    )) /
+                                                100
+                                            ).toString()
+                                        )
+                                    },
+                                    () => {
+                                        return (
+                                            "G4 P" +
+                                            (
+                                                parseFloat(
+                                                    lasertestduration.current
+                                                ) / 1000
+                                            ).toString()
+                                        )
+                                    },
+                                    "M5 S0",
+                                ]
+                                commands.forEach((command) => {
+                                    if (typeof command === "function") {
+                                        sendCommand(command())
+                                    } else {
+                                        sendCommand(command)
+                                    }
+                                })
+                            },
+                        },
+                        {
+                            id: "laser_off",
+                            icon: <Power />,
+                            type: "button",
+                            label: "CN23",
+                            tooltip: "CN87",
+                            desc: "M5",
+                            command: "M5 S0",
+                            mode: "spindle_mode",
+                            onclick: () => {
+                                sendCommand("M5 S0")
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    ]
     return (
         <div class="panel panel-dashboard">
             <div class="navbar">
@@ -114,7 +252,145 @@ const LaserPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <LaserControls />
-                Laser Panel
+                {laser_controls.map((block) => {
+                    return (
+                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                            <legend>
+                                <label class="m-1 buttons-bar-label">
+                                    {T(block.label)}
+                                </label>
+                            </legend>
+                            <div class="field-group-content maxwidth">
+                                {block.controls.map((control) => {
+                                    return (
+                                        <div class="states-buttons-container">
+                                            {control.elements.map((element) => {
+                                                if (element.type === "button") {
+                                                    let classname = "tooltip"
+                                                    if (
+                                                        states &&
+                                                        element.mode &&
+                                                        states[element.mode]
+                                                    ) {
+                                                        if (
+                                                            states[element.mode]
+                                                                .value ==
+                                                            element.desc
+                                                        ) {
+                                                            classname +=
+                                                                " btn-primary"
+                                                        }
+                                                    }
+                                                    return (
+                                                        <ButtonImg
+                                                            label={T(
+                                                                element.label
+                                                            )}
+                                                            disabled={
+                                                                element.useinput
+                                                                    ? hasError()
+                                                                    : false
+                                                            }
+                                                            icon={element.icon}
+                                                            tooltip
+                                                            iconRight={
+                                                                element.iconRight
+                                                            }
+                                                            data-tooltip={T(
+                                                                element.tooltip
+                                                            )}
+                                                            mode={element.mode}
+                                                            useinput={
+                                                                element.useinput
+                                                            }
+                                                            onclick={
+                                                                element.onclick
+                                                            }
+                                                        />
+                                                    )
+                                                } else {
+                                                    //we won't handle modified state just handle error
+                                                    //too many user cases where changing value to show button is not suitable
+                                                    const [
+                                                        validation,
+                                                        setvalidation,
+                                                    ] = useState({
+                                                        message: null,
+                                                        valid: true,
+                                                        modified: false,
+                                                    })
+
+                                                    const generateValidation = (
+                                                        element
+                                                    ) => {
+                                                        let validation = {
+                                                            message: null,
+                                                            valid: true,
+                                                            modified: false,
+                                                        }
+                                                        if (
+                                                            element.value
+                                                                .current <
+                                                                element.min ||
+                                                            element.value
+                                                                .current
+                                                                .length === 0
+                                                        ) {
+                                                            //No error message to keep all control aligned
+                                                            //may be have a better way ?
+                                                            // validation.message = T("S42");
+                                                            validation.valid = false
+                                                        }
+                                                        element.value.valid =
+                                                            validation.valid
+                                                        return validation
+                                                    }
+
+                                                    return (
+                                                        <Field
+                                                            inline
+                                                            id={element.id}
+                                                            type={element.type}
+                                                            label={T(
+                                                                element.label
+                                                            )}
+                                                            append={
+                                                                element.append
+                                                            }
+                                                            min={element.min}
+                                                            max={element.max}
+                                                            value={
+                                                                element.value
+                                                                    .current
+                                                            }
+                                                            setValue={(
+                                                                val,
+                                                                update = false
+                                                            ) => {
+                                                                if (!update) {
+                                                                    element.value.current =
+                                                                        val
+                                                                }
+                                                                setvalidation(
+                                                                    generateValidation(
+                                                                        element
+                                                                    )
+                                                                )
+                                                            }}
+                                                            validation={
+                                                                validation
+                                                            }
+                                                        />
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </fieldset>
+                    )
+                })}
             </div>
         </div>
     )
