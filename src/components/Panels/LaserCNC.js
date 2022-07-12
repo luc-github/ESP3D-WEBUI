@@ -25,7 +25,7 @@ import {
     useUiContextFn,
     useSettingsContext,
 } from "../../contexts"
-import { useTargetContext, variablesList } from "../../targets"
+import { useTargetContext, variablesList, eventsList } from "../../targets"
 import { ButtonImg, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
@@ -38,8 +38,18 @@ const laserPercentage = {}
 const lasertestduration = {}
 const laserMaxPower = {}
 
+/*
+ * Callback function when reset is detected
+ *
+ */ const onReset = (data) => {
+    console.log("reset Happend:", data)
+    //Todo: TBD
+}
+
 const LaserControls = () => {
     const { states } = useTargetContext()
+    //Add callback to reset event
+    eventsList.on("reset", onReset)
     if (!useUiContextFn.getValue("showlaserpanel")) return null
 
     const states_array = [{ id: "spindle_mode", label: "CN91" }]

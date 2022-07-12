@@ -40,7 +40,29 @@ const Target = "RepRap"
 const webUIbuild = "RR2"
 const Name = "ESP3D"
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
-const variablesList = []
+const variablesList = {
+    commands: [],
+    addCommand: (variable) => addObjectItem(commands, "name", variable),
+    removeCommand: (name) => removeObjectItem(commands, "name", name),
+}
+const eventsList = {
+    evts: [],
+    on: (event, fn) => {
+        if (typeof eventsList.evts[event] === "undefined") {
+            eventsList.evts[event] = []
+        }
+        addObjectItem(eventsList.evts[event], "fn", { fn: fn })
+    },
+    off: (event, fn) => {
+        removeObjectItem(variablesList.evts[event], "fn", fn)
+    },
+    emit: (event, data) => {
+        if (eventsList.evts[event])
+            eventsList.evts[event].forEach((element) => {
+                if (typeof element.fn === "function") element.fn(data)
+            })
+    },
+}
 const restartdelay = 30
 
 export {
@@ -59,6 +81,7 @@ export {
     webUIbuild,
     InformationsControls,
     variablesList,
+    eventsList,
     AppLogo,
     WebUILogo,
     QuickButtonsBar,

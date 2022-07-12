@@ -324,6 +324,14 @@ const getSensor = (str) => {
     return result
 }
 
+////////////////////////////////////////////////////////
+//
+// Reset
+const isReset = (str) => {
+    const reg_search = /^Grbl\s[0-9]+.[0-9]+[a-z]+\s\['\$'\sfor\shelp\]/g
+    return reg_search.test(str)
+}
+
 export {
     isStatus,
     getStatus,
@@ -343,4 +351,5 @@ export {
     getVersion,
     isOptions,
     getOptions,
+    isReset,
 }

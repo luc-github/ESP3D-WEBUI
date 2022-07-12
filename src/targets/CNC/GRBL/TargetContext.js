@@ -26,6 +26,7 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
+import { eventsList } from "."
 import {
     isStatus,
     getStatus,
@@ -43,6 +44,7 @@ import {
     getVersion,
     isOptions,
     getOptions,
+    isReset,
 } from "./filters"
 
 const lastStatus = {}
@@ -140,6 +142,7 @@ const TargetContextProvider = ({ children }) => {
                 setErrorCode(0)
                 setMessage("")
                 setStatus({ state: "Alarm" })
+                eventsList.emit("alarm", data)
             }
 
             //error
@@ -149,6 +152,7 @@ const TargetContextProvider = ({ children }) => {
                 setAlarmCode(0)
                 setMessage("")
                 setStatus({ state: "Error" })
+                eventsList.emit("error", data)
             }
             //prefiltering
             if (data[0] === "[") {
@@ -159,7 +163,6 @@ const TargetContextProvider = ({ children }) => {
 
                 if (isMessage(data)) {
                     const response = getMessage(data)
-                    console.log("message", response)
                     setMessage(response)
                 }
                 if (isGcodeParameter(data)) {
@@ -179,9 +182,11 @@ const TargetContextProvider = ({ children }) => {
                 }
                 if (isOptions(data)) {
                     const response = getOptions(data)
-                    console.log("options", response)
                     setGrblSettings(response)
                 }
+            }
+            if (isReset(data)) {
+                eventsList.emit("reset", data)
             }
         }
         //etc...

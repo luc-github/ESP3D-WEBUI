@@ -25,7 +25,7 @@ import {
     useUiContextFn,
     useSettingsContext,
 } from "../../contexts"
-import { useTargetContext, variablesList } from "../../targets"
+import { useTargetContext, variablesList, eventsList } from "../../targets"
 import { ButtonImg, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
@@ -37,9 +37,19 @@ import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
 
 const spindleSpeedValue = {}
 
+/*
+ * Callback function when reset is detected
+ *
+ */ const onReset = (data) => {
+    console.log("reset Happend:", data)
+    //Todo: TBD
+}
+
 const SpindleControls = () => {
     const { states } = useTargetContext()
     const { interfaceSettings } = useSettingsContext()
+    //Add callback to reset event
+    eventsList.on("reset", onReset)
     if (!useUiContextFn.getValue("showspindlepanel")) return null
     const states_array = [
         { id: "feed_rate", label: "CN9" },

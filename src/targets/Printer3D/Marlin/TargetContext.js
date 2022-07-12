@@ -22,6 +22,7 @@ import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
+    addObjectItem,
 } from "../../../components/Helpers"
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
@@ -43,6 +44,8 @@ import {
     getFeedRate,
     isSensor,
     getSensor,
+    isPrinterCapability,
+    getPrinterCapability,
 } from "./filters"
 
 /*
@@ -52,6 +55,7 @@ import {
 const TargetContext = createContext("TargetContext")
 const useTargetContext = () => useContext(TargetContext)
 const useTargetContextFn = {}
+const printerCapabilities = []
 
 const TargetContextProvider = ({ children }) => {
     //format is x:value, y:value, z:value
@@ -172,6 +176,14 @@ const TargetContextProvider = ({ children }) => {
                 const p = getFeedRate(data)
                 feedsRate.current[p.index] = p.value
                 setFeedRate(feedsRate.current)
+            } else if (isPrinterCapability(data)) {
+                const res = getPrinterCapability(data)
+                res.forEach((cap) => {
+                    addObjectItem(printerCapabilities, "name", {
+                        name: cap.name,
+                        value: cap.value,
+                    })
+                })
             }
         } else if (type === "core") {
             if (isSensor(data)) {

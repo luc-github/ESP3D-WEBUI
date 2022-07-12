@@ -172,6 +172,12 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    if (url.indexOf("\x18") != -1) {
+        SendWS("Grbl 1.1f ['$' for help]\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("$#") != -1) {
         SendWS(
             "[G54:4.000,0.000,0.000]\n" +

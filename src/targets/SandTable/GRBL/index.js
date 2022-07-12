@@ -46,6 +46,24 @@ const variablesList = {
     removeCommand: (name) => removeObjectItem(commands, "name", name),
     modes: [],
 }
+const eventsList = {
+    evts: [],
+    on: (event, fn) => {
+        if (typeof eventsList.evts[event] === "undefined") {
+            eventsList.evts[event] = []
+        }
+        addObjectItem(eventsList.evts[event], "fn", { fn: fn })
+    },
+    off: (event, fn) => {
+        removeObjectItem(variablesList.evts[event], "fn", fn)
+    },
+    emit: (event, data) => {
+        if (eventsList.evts[event])
+            eventsList.evts[event].forEach((element) => {
+                if (typeof element.fn === "function") element.fn(data)
+            })
+    },
+}
 
 export {
     MachineSettings,
@@ -63,6 +81,7 @@ export {
     webUIbuild,
     InformationsControls,
     variablesList,
+    eventsList,
     AppLogo,
     WebUILogo,
     QuickButtonsBar,

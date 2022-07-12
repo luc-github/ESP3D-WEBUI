@@ -84,12 +84,19 @@ function mergeJSON(o1, o2) {
 }
 
 const addObjectItem = (src, entry, variable) => {
-    if (src.length == 0) return [variable]
     let i = src.findIndex((element) => element[entry] == variable[entry])
     if (i == -1) {
-        src.push(variable)
+        src.push(JSON.parse(JSON.stringify(variable)))
     } else {
-        src[i] = variable
+        if (variable[entry]) src[i] = variable
+        else {
+            console.log(
+                "error addObjectItem",
+                variable,
+                " has no entry: ",
+                entry
+            )
+        }
     }
     return src
 }
