@@ -37,6 +37,7 @@ import {
 import realCommandsTable from "./realCommandsTable"
 import { AppLogo } from "../../../components/Images/logo"
 import { Eye as WebUILogo } from "preact-feather"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "GRBL"
 const webUIbuild = "G2"
@@ -46,6 +47,10 @@ const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
 const restartdelay = 30
 const variablesList = {
     commands: [...realCommandsTable],
+    addCommand: (variable) =>
+        addObjectItem(variablesList.commands, "name", variable),
+    removeCommand: (name) =>
+        removeObjectItem(variablesList.commands, "name", name),
     modes: [...gcode_parser_modes],
 }
 export {

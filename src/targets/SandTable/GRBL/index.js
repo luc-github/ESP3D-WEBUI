@@ -32,6 +32,7 @@ import {
     useTargetContextFn,
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "GRBL"
 const webUIbuild = "GS2"
@@ -41,7 +42,9 @@ const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
 const restartdelay = 30
 const variablesList = {
     commands: [...realCommandsTable],
-    gcode_parser_modes: [],
+    addCommand: (variable) => addObjectItem(commands, "name", variable),
+    removeCommand: (name) => removeObjectItem(commands, "name", name),
+    modes: [],
 }
 
 export {

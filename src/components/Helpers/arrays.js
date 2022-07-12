@@ -83,4 +83,30 @@ function mergeJSON(o1, o2) {
     return tempNewObj
 }
 
-export { limitArr, mergeJSON, removeEntriesByIDs, splitArrayByLines }
+const addObjectItem = (src, entry, variable) => {
+    if (src.length == 0) return [variable]
+    let i = src.findIndex((element) => element[entry] == variable[entry])
+    if (i == -1) {
+        src.push(variable)
+    } else {
+        src[i] = variable
+    }
+    return src
+}
+
+const removeObjectItem = (src, entry, entryValue) => {
+    let i = src.findIndex((element) => element[entry] == entryValue)
+    if (i != -1) {
+        src.splice(i, 1)
+    }
+    return src
+}
+
+export {
+    limitArr,
+    mergeJSON,
+    removeEntriesByIDs,
+    splitArrayByLines,
+    addObjectItem,
+    removeObjectItem,
+}

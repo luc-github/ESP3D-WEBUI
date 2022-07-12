@@ -44,6 +44,8 @@ import {
     mergeJSON,
     removeEntriesByIDs,
     splitArrayByLines,
+    addObjectItem,
+    removeObjectItem,
 } from "./arrays"
 import { dispatchToExtensions } from "./html"
 import { sortedFilesList, filterResultFiles } from "./filters"
@@ -75,5 +77,7 @@ export {
     removeEntriesByIDs,
     sortedFilesList,
     splitArrayByLines,
+    addObjectItem,
+    removeObjectItem,
     isFloat,
 }

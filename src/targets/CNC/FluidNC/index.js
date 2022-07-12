@@ -41,7 +41,7 @@ const fwUrl = "https://github.com/bdring/FluidNC"
 const restartdelay = 30
 const variablesList = {
     commands: [...realCommandsTable],
-    gcode_parser_modes: [],
+    modes: [],
 }
 
 export {

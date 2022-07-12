@@ -130,6 +130,7 @@ const LaserPanel = () => {
                             tooltip: "CN84",
                             min: 0,
                             value: laserMaxPower,
+                            variableName: "#lasermax#",
                         },
                     ],
                 },
@@ -371,11 +372,26 @@ const LaserPanel = () => {
                                                                     element.value.current =
                                                                         val
                                                                 }
-                                                                setvalidation(
+                                                                const validationObj =
                                                                     generateValidation(
                                                                         element
                                                                     )
+                                                                setvalidation(
+                                                                    validationObj
                                                                 )
+                                                                if (
+                                                                    validationObj.valid &&
+                                                                    element.variableName
+                                                                ) {
+                                                                    variablesList.addCommand(
+                                                                        {
+                                                                            name: element.variableName,
+                                                                            value: element
+                                                                                .value
+                                                                                .current,
+                                                                        }
+                                                                    )
+                                                                }
                                                             }}
                                                             validation={
                                                                 validation
