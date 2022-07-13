@@ -82,7 +82,7 @@ const StatusControls = () => {
 
 const StatusPanel = () => {
     const { toasts, panels } = useUiContext()
-    const { status, states } = useTargetContext()
+    const { status, states, pinsStates } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "statusPanel"
     const hidePanel = () => {
@@ -152,6 +152,8 @@ const StatusPanel = () => {
             }
         )
     }
+    console.log("state", states)
+    console.log("variablesList.modes", variablesList.modes)
 
     return (
         <div class="panel panel-dashboard">
@@ -172,8 +174,44 @@ const StatusPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
+                {pinsStates && Object.keys(pinsStates).length > 0 && (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1 buttons-bar-label">
+                                {T("CN92")}
+                            </label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            <div class="states-buttons-container">
+                                {Object.keys(pinsStates).map((pin) => {
+                                    return (
+                                        <div
+                                            class={`badge-container m-1 s-circle ${
+                                                pinsStates[pin]
+                                                    ? "bg-primary"
+                                                    : "bg-secondary"
+                                            }`}
+                                        >
+                                            <div
+                                                class={`badge-label m-1 s-circle ${
+                                                    pinsStates[pin]
+                                                        ? "bg-primary text-white"
+                                                        : "bg-secondary text-primary"
+                                                }`}
+                                            >
+                                                {pin}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </fieldset>
+                )}
+
                 {states &&
                     Object.keys(states).length > 0 &&
+                    states["motion_mode"] &&
                     variablesList.modes && (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
                             <legend>

@@ -90,6 +90,7 @@
     "CN89": "% of maximum power",
     "CN90": "Laser Test",
     "CN91": "Mode",
+    "CN92": "Input pins",
     "status": "Status panel",
     "laser": "Laser panel",
     "spindle": "Spindle panel",

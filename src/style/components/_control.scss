@@ -5,6 +5,19 @@
   display: flex;
 }
 
+.badge-container {
+  border: 0.05rem solid #5755d9 ;
+  text-align: center;
+  width:1.8rem;
+  height:1.8rem;
+  padding:0.1rem 0.1rem 0.1rem 0.1rem;
+}
+
+.badge-label {
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
 .btn-xs {
   font-size: 0.4rem;
   height: 1rem;

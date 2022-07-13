@@ -63,11 +63,11 @@ const commandsQuery = (req, res, SendWS) => {
             )
         if (countStatus == 2)
             SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100>\n"
+                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
             )
         if (countStatus > 2)
             SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:XYP>\n"
+                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:P>\n"
             )
         if (countStatus == 10) countStatus = 0
         res.send("")

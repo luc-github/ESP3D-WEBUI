@@ -49,6 +49,7 @@ import {
 
 const lastStatus = {}
 const lastStates = {}
+const lastPins = {}
 
 /*
  * Local const
@@ -64,6 +65,7 @@ const TargetContextProvider = ({ children }) => {
     })
     const [status, setStatus] = useState({ state: "?" })
     const [overrides, setOverrides] = useState({})
+    const [pinsStates, setPinStates] = useState(lastPins)
     const [states, setStates] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
@@ -90,6 +92,22 @@ const TargetContextProvider = ({ children }) => {
             //status
             if (isStatus(data)) {
                 const response = getStatus(data)
+                //For Pn we need to keep the last value to keep trace the pin is detected or not,
+                //so we can display the pin icon when disabled even no data is received
+                if (
+                    Object.keys(lastPins).length > 0 ||
+                    Object.keys(response.pn).length > 0
+                ) {
+                    Object.keys(response.pn).forEach((key) => {
+                        lastPins[key] = response.pn[key]
+                    })
+                    Object.keys(lastPins).forEach((key) => {
+                        if (!response.pn[key]) {
+                            lastPins[key] = false
+                        }
+                    })
+                }
+                setPinStates(lastPins)
                 if (response.positions) {
                     setPositions(response.positions)
                 }
@@ -282,6 +300,7 @@ const TargetContextProvider = ({ children }) => {
         positions,
         status,
         states,
+        pinsStates,
         message,
         alarmCode,
         errorCode,
