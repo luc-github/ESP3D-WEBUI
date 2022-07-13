@@ -42,12 +42,14 @@ const MacrosPanel = () => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const id = "macrosPanel"
     console.log(id)
-    const sendCommand = (cmd) => {
+    const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd }),
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
             {
                 method: "GET",
-                echo: replaceVariables(variablesList.commands, cmd, true),
+                echo: replaceVariables(variablesList.commands, command, true),
             },
             {
                 onSuccess: (result) => {
@@ -117,10 +119,8 @@ const MacrosPanel = () => {
             case "CMD":
                 //split by ; and show in terminal
                 const commandsList = action.trim().split(";")
-                commandsList.forEach((element) => {
-                    sendCommand(
-                        replaceVariables(variablesList.commands, element)
-                    )
+                commandsList.forEach((command) => {
+                    sendCommand(command)
                 })
                 break
             default:

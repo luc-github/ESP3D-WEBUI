@@ -23,7 +23,7 @@ import { espHttpURL, replaceVariables } from "../../../components/Helpers"
 import { useUiContext, useUiContextFn } from "../../../contexts"
 import { T } from "../../../components/Translations"
 import { ButtonImg } from "../../../components/Controls"
-import realCommandsTable from "SubTargetDir/realCommandsTable"
+import { variablesList } from "../../../targets"
 
 const EmergencyButton = () => {
     const { toasts } = useUiContext()
@@ -31,10 +31,12 @@ const EmergencyButton = () => {
     const { createNewRequest } = useHttpFn
     const SendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }),
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
             {
                 method: "GET",
-                echo: replaceVariables(realCommandsTable, command, true),
+                echo: replaceVariables(variablesList.commands, command, true),
             }, //need to see real command as it is not printable
             {
                 onSuccess: (result) => {},
@@ -59,8 +61,7 @@ const EmergencyButton = () => {
                 useUiContextFn.haptic()
                 e.target.blur()
                 const cmds = useUiContextFn.getValue("emergencystop").split(";")
-                cmds.forEach((cmdi) => {
-                    const cmd = replaceVariables(realCommandsTable, cmdi)
+                cmds.forEach((cmd) => {
                     SendCommand(cmd)
                     console.log(cmd)
                 })

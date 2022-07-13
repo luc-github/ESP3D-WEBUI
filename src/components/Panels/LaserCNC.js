@@ -115,7 +115,10 @@ const LaserPanel = () => {
             espHttpURL("command", {
                 cmd: replaceVariables(variablesList.commands, command),
             }),
-            { method: "GET", echo: command },
+            {
+                method: "GET",
+                echo: replaceVariables(variablesList.commands, command, true),
+            },
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {
@@ -140,7 +143,7 @@ const LaserPanel = () => {
                             tooltip: "CN84",
                             min: 0,
                             value: laserMaxPower,
-                            variableName: "#lasermax#",
+                            variableName: "#laser_max#",
                         },
                     ],
                 },

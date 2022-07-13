@@ -26,7 +26,7 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
-import { eventsList } from "."
+import { eventsList, variablesList } from "."
 import {
     isStatus,
     getStatus,
@@ -110,6 +110,31 @@ const TargetContextProvider = ({ children }) => {
                 setPinStates(lastPins)
                 if (response.positions) {
                     setPositions(response.positions)
+                    const names = [
+                        "x",
+                        "y",
+                        "z",
+                        "a",
+                        "b",
+                        "c",
+                        "wx",
+                        "wy",
+                        "wz",
+                        "wa",
+                        "wb",
+                        "wc",
+                    ]
+                    names.forEach((element) => {
+                        let name = "#pos_" + element + "#"
+                        variablesList.addCommand({
+                            name: name,
+                            value: parseFloat(
+                                response.positions[element]
+                                    ? response.positions[element]
+                                    : 0
+                            ),
+                        })
+                    })
                 }
                 if (response.status) {
                     setStatus(response.status)
@@ -191,6 +216,21 @@ const TargetContextProvider = ({ children }) => {
                     if (typeof response.success !== "undefined") {
                         gcodeParametersRef.current[response.code].success =
                             response.success
+                    }
+                    if (gcodeParametersRef.current.PRB) {
+                        //the PRB is x y z even
+                        gcodeParametersRef.current.PRB.data.map(
+                            (value, index) => {
+                                let name =
+                                    "#prb_" +
+                                    String.fromCharCode(120 + index) +
+                                    "#"
+                                variablesList.addCommand({
+                                    name: name,
+                                    value: parseFloat(value),
+                                })
+                            }
+                        )
                     }
                     setGcodeParameters(gcodeParametersRef.current)
                 }

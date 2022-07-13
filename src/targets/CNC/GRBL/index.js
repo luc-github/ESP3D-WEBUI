@@ -35,6 +35,7 @@ import {
     useTargetContextFn,
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
+import variablesTable from "./variablesTable"
 import { AppLogo } from "../../../components/Images/logo"
 import { Eye as WebUILogo } from "preact-feather"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
@@ -46,7 +47,7 @@ const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
 
 const restartdelay = 30
 const variablesList = {
-    commands: [...realCommandsTable],
+    commands: [...realCommandsTable, ...variablesTable],
     addCommand: (variable) =>
         addObjectItem(variablesList.commands, "name", variable),
     removeCommand: (name) =>

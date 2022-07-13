@@ -19,7 +19,7 @@
   "autoscroll": true,
   "showfilespanel": false,
   "openfilesonstart": true,
-  "showjogpanel": false,
+  "showjogpanel": true,
   "openjogonstart": true,
   "showx": true,
   "showy": true,

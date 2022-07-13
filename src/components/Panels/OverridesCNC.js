@@ -169,7 +169,10 @@ const OverridesPanel = () => {
             espHttpURL("command", {
                 cmd: replaceVariables(variablesList.commands, command),
             }),
-            { method: "GET", echo: command },
+            {
+                method: "GET",
+                echo: replaceVariables(variablesList.commands, command, true),
+            },
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {

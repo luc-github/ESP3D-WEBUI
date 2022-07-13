@@ -65,12 +65,18 @@ const beautifyJSONString = (jsonstring) => {
 
 //replace several variable from a string
 //array format [{name,value},...]
-function replaceVariables(arrayRef, string, reverted = false) {
+function replaceVariables(
+    arrayRef,
+    string,
+    onlyprintable = false,
+    reverted = false
+) {
     if (Array.isArray(arrayRef)) {
         return arrayRef.reduce((acc, curr) => {
             if (reverted) {
                 return acc.replace(curr.value, curr.name)
             } else {
+                if (onlyprintable && curr.notprintable) return acc
                 return acc.replaceAll(curr.name, curr.value)
             }
         }, string)

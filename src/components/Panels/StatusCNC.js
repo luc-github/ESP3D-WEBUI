@@ -142,7 +142,10 @@ const StatusPanel = () => {
             espHttpURL("command", {
                 cmd: replaceVariables(variablesList.commands, command),
             }),
-            { method: "GET", echo: command },
+            {
+                method: "GET",
+                echo: replaceVariables(variablesList.commands, command, true),
+            },
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {
@@ -152,8 +155,6 @@ const StatusPanel = () => {
             }
         )
     }
-    console.log("state", states)
-    console.log("variablesList.modes", variablesList.modes)
 
     return (
         <div class="panel panel-dashboard">

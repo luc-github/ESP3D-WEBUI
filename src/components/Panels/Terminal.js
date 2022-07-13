@@ -115,7 +115,10 @@ const TerminalPanel = () => {
             }
 
             inputHistoryIndex = terminal.inputHistory.length - 1
-            processData("echo", cmd)
+            processData(
+                "echo",
+                replaceVariables(variablesList.commands, cmd, true)
+            )
             createNewRequest(
                 espHttpURL("command", {
                     cmd: replaceVariables(variablesList.commands, cmd),

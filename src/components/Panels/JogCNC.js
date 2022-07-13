@@ -35,9 +35,7 @@ import { T } from "../Translations"
 import { Loading, Button, ButtonImg, CenterLeft } from "../Controls"
 import { useEffect, useState } from "preact/hooks"
 import { showModal } from "../Modal"
-import { useTargetContext } from "../../targets"
-//specific of this component and target
-import realCommandsTable from "SubTargetDir/realCommandsTable"
+import { useTargetContext, variablesList } from "../../targets"
 
 let currentFeedRate = []
 let currentJogDistance = 100
@@ -201,10 +199,12 @@ const JogPanel = () => {
     //Send a request to the ESP
     const SendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }),
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
             {
                 method: "GET",
-                echo: replaceVariables(realCommandsTable, command, true), //need to see real command as it is not printable
+                echo: replaceVariables(variablesList.commands, command, true), //need to see the command sent but keep the not printable command as variable
             },
             {
                 onSuccess: (result) => {},
@@ -1137,10 +1137,9 @@ const JogPanel = () => {
                             onclick={(e) => {
                                 useUiContextFn.haptic()
                                 e.target.blur()
-                                const cmds = replaceVariables(
-                                    realCommandsTable,
-                                    useUiContextFn.getValue("jogstopcmd")
-                                ).split(";")
+                                const cmds = useUiContextFn
+                                    .getValue("jogstopcmd")
+                                    .split(";")
                                 cmds.forEach((cmd) => {
                                     SendCommand(cmd)
                                 })
