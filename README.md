@@ -7,7 +7,7 @@ Rewrite per @alxblog suggestion to use proper Preactjs API and lighter code: use
 
 Only compatible with [ESP3DLib v2](https://github.com/luc-github/ESP3DLib/tree/2-0) - which will be merged to [ESP3D 3.0](https://github.com/luc-github/ESP3D/tree/3.0) later
 
-[Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0-rewrite) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0-rewrite?style=plastic) [![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/3.0-rewrite?style=plastic)](https://travis-ci.org/github/luc-github/ESP3D-WEBUI)
+[Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic) [![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/3.0?style=plastic)](https://travis-ci.org/github/luc-github/ESP3D-WEBUI)
 
 ### Setup development tools
 
