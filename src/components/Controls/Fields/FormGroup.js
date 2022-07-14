@@ -35,11 +35,11 @@ const FormGroup = ({
         }
         if (validation != null && validation.valid == false)
             return `form-group has-error`
-        return `form-group`
+        return `${inline ? "form-group-inline " : ""} form-group`
     }
     return (
         <div
-            class={`${className ? className : ""} ${getValidationClass(
+            class={`${className ? className + " " : ""}${getValidationClass(
                 validation
             )}`}
             id={id ? "group-" + id : ""}

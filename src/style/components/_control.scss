@@ -10,10 +10,12 @@
   text-align: center;
   width:1.8rem;
   height:1.8rem;
+  display: inline-block;
   padding:0.1rem 0.1rem 0.1rem 0.1rem;
 }
 
 .badge-label {
+  text-align: center;
   font-size: 0.7rem;
   font-weight: bold;
 }
@@ -366,6 +368,9 @@ a label {
 .tooltip > svg,
 .tooltip > span {
   pointer-events: none;
+}
+.form-group-inline{
+  margin-bottom: .4rem;
 }
 
 .form-group .form-label,

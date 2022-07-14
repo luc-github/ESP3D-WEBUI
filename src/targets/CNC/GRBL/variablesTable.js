@@ -34,6 +34,8 @@ const variablesTable = [
     { name: "#prb_y#", value: 0 },
     { name: "#prb_z#", value: 0 },
     { name: "#laser_max#", value: 0 },
+    { name: "#selected_axis#", value: "X" },
+    { name: "#probe_thickness#", value: 0 },
 ]
 
 export default variablesTable

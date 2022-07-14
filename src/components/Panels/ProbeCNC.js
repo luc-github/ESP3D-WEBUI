@@ -17,62 +17,74 @@ ProbeCNC.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
+import { useState } from "preact/hooks"
 import { T } from "../Translations"
 import { Underline, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
-import { useUiContext, useUiContextFn } from "../../contexts"
-import { useTargetContext } from "../../targets"
-import { ButtonImg } from "../Controls"
+import {
+    useUiContext,
+    useUiContextFn,
+    useSettingsContext,
+} from "../../contexts"
+import { useTargetContext, variablesList, eventsList } from "../../targets"
+import { ButtonImg, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL } from "../Helpers"
+import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
 
 /*
  * Local const
  *
  */
 
+const maxprobe = {}
+const probefeedrate = {}
+const probethickness = {}
+const probetype = {}
+const probeaxis = {}
+
 const ProbeControls = () => {
-    //const { status } = useTargetContext()
+    const { gcodeParameters, pinsStates } = useTargetContext()
     if (!useUiContextFn.getValue("showprobepanel")) return null
-    return null
     return (
         <Fragment>
-            {1 && (
-                <div class="status-ctrls">
-                    <div
-                        class="extra-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("CN37")}
-                    >
-                        <div class="extra-control-header">
-                            {"status.printState.status"}
-                        </div>
-                        {0 && (
-                            <div class="extra-control-value">
-                                {"status.filename"}
-                            </div>
-                        )}
+            <div class="status-ctrls">
+                <div
+                    class="extra-control mt-1 tooltip tooltip-bottom"
+                    data-tooltip={T("CN103")}
+                >
+                    <div class="extra-control-header">{T("CN104")}</div>
+                    <div class="extra-control-value">
+                        {gcodeParameters.PRB
+                            ? T(gcodeParameters.PRB.success ? "CN101" : "CN102")
+                            : "?"}
+                    </div>
+                    {pinsStates && (
                         <div class="extra-control-value">
-                            {"status.printState.progress"}%
+                            <div
+                                class={`badge-container m-1 s-circle ${
+                                    pinsStates.P ? "bg-primary" : "bg-secondary"
+                                }`}
+                            >
+                                <div
+                                    class={`badge-label m-1 s-circle ${
+                                        pinsStates.P
+                                            ? "bg-primary text-white"
+                                            : "bg-secondary text-primary"
+                                    }`}
+                                >
+                                    P
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-            )}
-            {1 && (
-                <div class="status-ctrls">
-                    <div
-                        class="status-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("CN37")}
-                    >
-                        <div class="status-control-header">{T("CN37")}</div>
-                        <div class="status-control-value">{"status.state"}</div>
-                    </div>
-                </div>
-            )}
+            </div>
         </Fragment>
     )
 }
 
 const ProbePanel = () => {
     const { toasts, panels } = useUiContext()
+    const { interfaceSettings } = useSettingsContext()
     //const { status } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "ProbePanel"
@@ -82,10 +94,35 @@ const ProbePanel = () => {
     }
 
     console.log("Probe panel")
+    if (typeof maxprobe.current === "undefined") {
+        maxprobe.current = useUiContextFn.getValue("maxprobe")
+    }
+    if (typeof probefeedrate.current === "undefined") {
+        probefeedrate.current = useUiContextFn.getValue("probefeedrate")
+    }
+    if (typeof probethickness.current === "undefined") {
+        probethickness.current = useUiContextFn.getValue("probethickness")
+    }
+    if (typeof probetype.current === "undefined") {
+        probetype.current = "G38.2"
+    }
+    if (typeof probeaxis.current === "undefined") {
+        probeaxis.current = "Z"
+    }
+
+    const hasError = () => {
+        return !(probefeedrate.valid && probethickness.valid && maxprobe.valid)
+    }
+
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }),
-            { method: "GET", echo: command },
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
+            {
+                method: "GET",
+                echo: replaceVariables(variablesList.commands, command, true),
+            },
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {
@@ -95,6 +132,149 @@ const ProbePanel = () => {
             }
         )
     }
+    const probe_controls = [
+        {
+            label: "",
+            id: "probe_group",
+            controls: [
+                {
+                    id: "probe_type",
+                    elements: [
+                        {
+                            id: "probe_axis",
+                            type: "select",
+                            label: "CN99",
+                            tooltip: "CN98",
+                            options: [
+                                {
+                                    label: "X",
+                                    value: "X",
+                                    depend: [{ id: "showx", value: true }],
+                                },
+                                {
+                                    label: "Y",
+                                    value: "Y",
+                                    depend: [{ id: "showy", value: true }],
+                                },
+                                {
+                                    label: "Z",
+                                    value: "Z",
+                                    depend: [{ id: "showz", value: true }],
+                                },
+                            ],
+                            value: probeaxis,
+                            variableName: "#selected_axis#",
+                        },
+                        {
+                            id: "probe_type",
+                            type: "select",
+                            label: "CN98",
+                            tooltip: "CN98",
+                            options: [
+                                { label: "G38.2", value: "G38.2" },
+                                { label: "G38.3", value: "G38.3" },
+                                { label: "G38.4", value: "G38.4" },
+                                { label: "G38.5", value: "G38.5" },
+                            ],
+                            value: probetype,
+                        },
+                    ],
+                },
+                {
+                    id: "probe_max",
+                    elements: [
+                        {
+                            id: "probe_max_distance",
+                            type: "number",
+                            label: "CN93",
+                            tooltip: "CN93",
+                            min: 1,
+                            value: maxprobe,
+                            append: "CN96",
+                        },
+                    ],
+                },
+
+                {
+                    id: "probe_feedrate",
+                    elements: [
+                        {
+                            id: "probe_feedrate",
+                            type: "number",
+                            label: "CN9",
+                            tooltip: "CN9",
+                            append: "CN1",
+                            min: 1,
+                            value: probefeedrate,
+                        },
+                    ],
+                },
+                {
+                    id: "probe_thickness",
+                    elements: [
+                        {
+                            id: "probe_thickness",
+                            type: "number",
+                            label: "CN94",
+                            tooltip: "CN94",
+                            min: 1,
+                            value: probethickness,
+                            append: "CN96",
+                            variableName: "#probe_thickness#",
+                        },
+                    ],
+                },
+
+                {
+                    id: "probe_buttons",
+                    elements: [
+                        {
+                            id: "probe_button",
+                            icon: <Underline />,
+                            type: "button",
+                            label: "CN37",
+                            tooltip: "CN100",
+                            onclick: () => {
+                                const commands = [
+                                    "G91",
+                                    () => {
+                                        const signe =
+                                            probetype.current == "G38.2" ||
+                                            probetype.current == "G38.3"
+                                                ? "-"
+                                                : ""
+                                        return (
+                                            probetype.current +
+                                            " " +
+                                            probeaxis.current +
+                                            signe +
+                                            maxprobe.current +
+                                            " F" +
+                                            probefeedrate.current
+                                        )
+                                    },
+                                    "G90",
+
+                                    ...useUiContextFn
+                                        .getValue("probepostcommand")
+                                        .split(";"),
+                                ]
+
+                                commands.forEach((command) => {
+                                    if (typeof command === "function") {
+                                        sendCommand(command())
+                                    } else {
+                                        sendCommand(command)
+                                    }
+                                })
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    ]
+
     return (
         <div class="panel panel-dashboard">
             <div class="navbar">
@@ -114,7 +294,195 @@ const ProbePanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <ProbeControls />
-                Probe Panel
+                {probe_controls.map((block) => {
+                    return (
+                        <fieldset
+                            class={`field-group${
+                                block.label.length > 0
+                                    ? " fieldset-top-separator fieldset-bottom-separator"
+                                    : ""
+                            }`}
+                        >
+                            <legend>
+                                {block.label.length > 0 && (
+                                    <label class="m-1 buttons-bar-label">
+                                        {T(block.label)}
+                                    </label>
+                                )}
+                            </legend>
+
+                            <div class="field-group-content maxwidth text-dark">
+                                {block.controls.map((control) => {
+                                    return (
+                                        <div class="states-buttons-container">
+                                            {control.elements.map((element) => {
+                                                if (element.type === "button") {
+                                                    let classname = "tooltip"
+                                                    return (
+                                                        <ButtonImg
+                                                            label={T(
+                                                                element.label
+                                                            )}
+                                                            disabled={
+                                                                element.useinput
+                                                                    ? hasError()
+                                                                    : false
+                                                            }
+                                                            icon={element.icon}
+                                                            tooltip
+                                                            iconRight={
+                                                                element.iconRight
+                                                            }
+                                                            data-tooltip={T(
+                                                                element.tooltip
+                                                            )}
+                                                            mode={element.mode}
+                                                            useinput={
+                                                                element.useinput
+                                                            }
+                                                            onclick={
+                                                                element.onclick
+                                                            }
+                                                        />
+                                                    )
+                                                } else {
+                                                    //we won't handle modified state just handle error
+                                                    //too many user cases where changing value to show button is not suitable
+                                                    const [
+                                                        validation,
+                                                        setvalidation,
+                                                    ] = useState({
+                                                        message: null,
+                                                        valid: true,
+                                                        modified: false,
+                                                    })
+
+                                                    const generateValidation = (
+                                                        element
+                                                    ) => {
+                                                        let validation = {
+                                                            message: null,
+                                                            valid: true,
+                                                            modified: false,
+                                                        }
+                                                        if (
+                                                            element.type ===
+                                                                "select" &&
+                                                            -1 ==
+                                                                filterOptions(
+                                                                    element.options
+                                                                ).findIndex(
+                                                                    (item) =>
+                                                                        item.value ==
+                                                                        element
+                                                                            .value
+                                                                            .current
+                                                                )
+                                                        ) {
+                                                            element.value.current =
+                                                                filterOptions(
+                                                                    element.options
+                                                                )[0].value
+                                                        }
+                                                        if (
+                                                            element.type ===
+                                                                "number" &&
+                                                            (element.value
+                                                                .current <
+                                                                element.min ||
+                                                                element.value
+                                                                    .current
+                                                                    .length ===
+                                                                    0)
+                                                        ) {
+                                                            //No error message to keep all control aligned
+                                                            //may be have a better way ?
+                                                            // validation.message = T("S42");
+                                                            validation.valid = false
+                                                        }
+                                                        element.value.valid =
+                                                            validation.valid
+                                                        return validation
+                                                    }
+                                                    const filterOptions = (
+                                                        options
+                                                    ) => {
+                                                        if (options)
+                                                            return options.filter(
+                                                                (option) => {
+                                                                    return settingsDepend(
+                                                                        option.depend,
+                                                                        interfaceSettings
+                                                                            .current
+                                                                            .settings
+                                                                    )
+                                                                }
+                                                            )
+                                                        return options
+                                                    }
+                                                    return (
+                                                        <Field
+                                                            inline
+                                                            id={element.id}
+                                                            type={element.type}
+                                                            label={T(
+                                                                element.label
+                                                            )}
+                                                            append={
+                                                                element.append
+                                                            }
+                                                            options={filterOptions(
+                                                                element.options
+                                                            )}
+                                                            min={element.min}
+                                                            max={element.max}
+                                                            value={
+                                                                element.value
+                                                                    .current
+                                                            }
+                                                            setValue={(
+                                                                val,
+                                                                update = false
+                                                            ) => {
+                                                                if (!update) {
+                                                                    element.value.current =
+                                                                        val
+                                                                }
+                                                                const validationObj =
+                                                                    generateValidation(
+                                                                        element
+                                                                    )
+                                                                setvalidation(
+                                                                    validationObj
+                                                                )
+                                                                if (
+                                                                    validationObj.valid &&
+                                                                    element.variableName
+                                                                ) {
+                                                                    variablesList.addCommand(
+                                                                        {
+                                                                            name: element.variableName,
+                                                                            value: element
+                                                                                .value
+                                                                                .current,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            }}
+                                                            validation={
+                                                                validation
+                                                            }
+                                                        />
+                                                    )
+                                                }
+                                            })}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </fieldset>
+                    )
+                })}
             </div>
         </div>
     )

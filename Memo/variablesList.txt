@@ -12,6 +12,7 @@ Note: if variable is unknown, then 0 is set to it
 - From UI
 * Probe Panel
 Probe thickness : #probe_thickness#
+Selected axis : #selected_axis#
 
 * Laser CNC Panel
 Maximum value of laser: #laser_max#

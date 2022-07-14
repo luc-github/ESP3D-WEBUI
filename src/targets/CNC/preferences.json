@@ -26,6 +26,37 @@
         "type": "boolean",
         "label": "S93",
         "value": true
+      },
+      {
+        "id": "probefeedrate",
+        "type": "number",
+        "label": "CN9",
+        "append": "CN1",
+        "value": 20,
+        "min": 1
+      },
+      {
+        "id": "maxprobe",
+        "type": "number",
+        "label": "CN93",
+        "value": 15,
+        "append": "CN96",
+        "min": 1
+      },
+      {
+        "id": "probethickness",
+        "type": "number",
+        "label": "CN94",
+        "value": "1",
+        "append": "CN96",
+        "min": 0
+      },
+      {
+        "id": "probepostcommand",
+        "type": "text",
+        "label": "CN95",
+        "value": "G10 L20 P1 #selected_axis##probe_thickness#",
+        "append": "S97"
       }
     ],
     "laser": [
