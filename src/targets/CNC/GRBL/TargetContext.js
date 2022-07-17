@@ -45,6 +45,8 @@ import {
     isOptions,
     getOptions,
     isReset,
+    isStreamingStatus,
+    getStreamingStatus,
 } from "./filters"
 
 const lastStatus = {}
@@ -67,6 +69,7 @@ const TargetContextProvider = ({ children }) => {
     const [overrides, setOverrides] = useState({})
     const [pinsStates, setPinStates] = useState(lastPins)
     const [states, setStates] = useState({})
+    const [streamStatus, setStreamStatus] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
     const [errorCode, setErrorCode] = useState(0)
@@ -247,9 +250,18 @@ const TargetContextProvider = ({ children }) => {
                 eventsList.emit("reset", data)
             }
         }
+        if (type === "response") {
+            //check if the response is a command answer
+            if (data[0] === "{") {
+                if (isStreamingStatus(data)) {
+                    const status = getStreamingStatus(data)
+                    setStreamStatus(status)
+                }
+            }
+        }
         //etc...
     }
-    const processData = (type, data) => {
+    const processData = (type, data, noecho = false) => {
         if (data.length > 0) {
             if (type == "stream") {
                 //TODO
@@ -312,18 +324,20 @@ const TargetContextProvider = ({ children }) => {
                             isverboseOnly,
                         })
                     else {
-                        terminal.add({
-                            type,
-                            content: newbuffer,
-                            isverboseOnly,
-                        })
+                        if (!noecho)
+                            terminal.add({
+                                type,
+                                content: newbuffer,
+                                isverboseOnly,
+                            })
                     }
                 } else {
-                    terminal.add({
-                        type,
-                        content: data,
-                        isverboseOnly,
-                    })
+                    if (!noecho)
+                        terminal.add({
+                            type,
+                            content: data,
+                            isverboseOnly,
+                        })
                 }
             } else {
                 const isverboseOnly = isVerboseOnly(type, data)
@@ -338,6 +352,7 @@ const TargetContextProvider = ({ children }) => {
 
     const store = {
         positions,
+        streamStatus,
         status,
         states,
         pinsStates,

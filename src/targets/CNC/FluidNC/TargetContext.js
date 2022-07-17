@@ -118,7 +118,7 @@ const TargetContextProvider = ({ children }) => {
         }
         //etc...
     }
-    const processData = (type, data) => {
+    const processData = (type, data, noecho = false) => {
         if (data.length > 0) {
             if (type == "stream") {
                 //TODO

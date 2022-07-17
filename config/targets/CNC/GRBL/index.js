@@ -151,7 +151,30 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
-
+    if (url.indexOf("701") != -1) {
+        if (url.indexOf("json") != -1) {
+            res.json({
+                cmd: "701",
+                status: "ok",
+                data: {
+                    status: "processing",
+                    total: "1000",
+                    processed: "100",
+                    type: "SD",
+                    name: "test.gcode",
+                    code: 3,
+                },
+            })
+            /*res.json({
+                cmd: "701",
+                status: "ok",
+                data: "no stream",
+            })*/
+        } else {
+            res.send("no stream\n")
+        }
+        return
+    }
     if (url.indexOf("ESP410") != -1) {
         res.json({
             cmd: "410",
@@ -160,6 +183,7 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
+
     if (url.indexOf("$G") != -1) {
         SendWS("[GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]\n")
         res.send("")

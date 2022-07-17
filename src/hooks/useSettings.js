@@ -32,7 +32,7 @@ import {
     setCurrentLanguage,
     T,
 } from "../components/Translations"
-import { defaultPreferences } from "../targets"
+import { defaultPreferences, useTargetContextFn } from "../targets"
 import {
     importPreferences,
     formatPreferences,
@@ -47,6 +47,7 @@ import { showModal } from "../components/Modal"
 const useSettings = () => {
     const { createNewRequest } = useHttpQueue()
     const { toasts, modals, connection, uisettings } = useUiContext()
+    const { processData } = useTargetContextFn
     const { interfaceSettings, connectionSettings, activity } =
         useSettingsContext()
     const { defaultRoute, setActiveRoute } = useRouterContext()
@@ -235,7 +236,18 @@ const useSettings = () => {
                                         },
                                         {
                                             onSuccess: (result) => {
-                                                //TODO:TBD
+                                                if (
+                                                    cmd.startsWith("[ESP") &&
+                                                    !result.startsWith(
+                                                        "ESP3D says:"
+                                                    )
+                                                ) {
+                                                    processData(
+                                                        "response",
+                                                        result,
+                                                        result.startsWith("{")
+                                                    )
+                                                }
                                             },
                                             onFail: (error) => {
                                                 toasts.addToast({

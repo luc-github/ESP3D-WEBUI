@@ -31,7 +31,8 @@ import { Layers, Unlock, RefreshCcw, Moon, Play, Pause } from "preact-feather"
  */
 
 const StatusControls = () => {
-    const { status, message, alarmCode, errorCode } = useTargetContext()
+    const { status, message, alarmCode, errorCode, streamStatus } =
+        useTargetContext()
     if (!useUiContextFn.getValue("showstatuspanel")) return null
     return (
         <Fragment>
@@ -56,6 +57,26 @@ const StatusControls = () => {
                         >
                             {T(status.state)}
                         </div>
+                        {streamStatus.status && (
+                            <div class="extra-control-value">
+                                {T(streamStatus.status)}
+                                {streamStatus.name
+                                    ? ` (${streamStatus.type}) ${
+                                          streamStatus.name
+                                      } ${(
+                                          (streamStatus.processed /
+                                              streamStatus.total) *
+                                          100
+                                      ).toFixed(0)}%`
+                                    : ""}
+                            </div>
+                        )}
+                        {streamStatus.code && (
+                            <div class="extra-control-value text-error">
+                                {T("S22")}
+                                {": " + streamStatus.code}
+                            </div>
+                        )}
                         {status.code && (
                             <div class="extra-control-value">
                                 {T(status.state + ":" + status.code)}

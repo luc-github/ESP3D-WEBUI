@@ -331,7 +331,23 @@ const isReset = (str) => {
     const reg_search = /^Grbl\s[0-9]+.[0-9]+[a-z]+\s\['\$'\sfor\shelp\]/g
     return reg_search.test(str)
 }
+////////////////////////////////////////////////////////
+//
+// Streaming status
+const isStreamingStatus = (str) => {
+    try {
+        const res = JSON.parse(str)
+        if (res.cmd == "701" && typeof res.data != "undefined") return true
+    } catch (e) {
+        return false
+    }
+}
 
+const getStreamingStatus = (str) => {
+    const res = JSON.parse(str)
+    if (res.data.status) return res.data
+    return { status: res.data }
+}
 export {
     isStatus,
     getStatus,
@@ -352,4 +368,6 @@ export {
     isOptions,
     getOptions,
     isReset,
+    isStreamingStatus,
+    getStreamingStatus,
 }
