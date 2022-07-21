@@ -24,6 +24,11 @@ body {
   flex: 0 1 auto;
 }
 
+.flex-row-between {
+  display: flex;
+  justify-content:space-between;
+}
+
 .main-page-container {
   flex: 1 1 auto;
   overflow-y: auto;

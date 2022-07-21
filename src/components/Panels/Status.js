@@ -25,6 +25,39 @@ import { ButtonImg } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 
+const TimeControl = ({ label, time }) => {
+    if (!time) return null
+    return (
+        <div class="extra-control-value flex-row-between">
+            <div class="m-1">{T(label)}:</div>
+            {time.day && time.day > 0 && (
+                <div class="m-1">
+                    {time.day}
+                    {T("P108")}
+                </div>
+            )}
+            {((time.day && time.day > 0) || time.hour > 0) && (
+                <div class="m-1">
+                    {time.hour}
+                    {T("P109")}
+                </div>
+            )}
+            {((time.day && time.day > 0) || time.hour > 0 || time.min > 0) && (
+                <div class="m-1">
+                    {time.min}
+                    {T("P110")}
+                </div>
+            )}
+            {time.sec && (
+                <div class="m-1">
+                    {time.sec}
+                    {T("P111")}
+                </div>
+            )}
+        </div>
+    )
+}
+
 /*
  * Local const
  *
@@ -49,9 +82,22 @@ const StatusControls = () => {
                                 {status.filename}
                             </div>
                         )}
-                        <div class="extra-control-value">
-                            {status.printState.progress}%
-                        </div>
+                        {status.printState.printing && (
+                            <Fragment>
+                                <div class="extra-control-value">
+                                    {status.printState.progress}%
+                                </div>
+
+                                <TimeControl
+                                    label="P105"
+                                    time={status.printTime}
+                                />
+                                <TimeControl
+                                    label="P112"
+                                    time={status.printLeftTime}
+                                />
+                            </Fragment>
+                        )}
                     </div>
                 </div>
             )}

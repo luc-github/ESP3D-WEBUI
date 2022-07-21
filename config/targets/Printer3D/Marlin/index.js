@@ -320,6 +320,19 @@ const commandsQuery = (req, res, SendWS) => {
         res.send("")
         return
     }
+
+    if (url.indexOf("M27") != -1) {
+        SendWS("SD printing byte 100/1000\n")
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("M31") != -1) {
+        SendWS("echo:Print time: 12h 15m 13s\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M115") != -1) {
         SendWS(
             "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +

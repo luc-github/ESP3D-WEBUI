@@ -128,6 +128,22 @@ const TargetContextProvider = ({ children }) => {
         setSensorDataList(sensorDataListRef.current)
     }
 
+    const estimatedTime = (progress, time) => {
+        const total =
+            (time.day ? parseInt(time.day) * 24 * 60 * 60 : 0) +
+            (time.hour ? parseInt(time.hour) * 60 * 60 : 0) +
+            (time.min ? parseInt(time.min) * 60 : 0) +
+            (time.sec ? parseInt(time.sec) : 0)
+        const totalSecondsLeft = (total * (100 - progress)) / progress
+        return {
+            year: null,
+            day: Math.floor((totalSecondsLeft % (86400 * 30)) / 86400),
+            hour: Math.floor((totalSecondsLeft % 86400) / 3600),
+            min: Math.floor((totalSecondsLeft % 3600) / 60),
+            sec: totalSecondsLeft % 60,
+        }
+    }
+
     const clearSensorDataList = () => {
         sensorDataListRef.current = []
         setSensorDataList([])
@@ -157,7 +173,25 @@ const TargetContextProvider = ({ children }) => {
                 setPositions(p)
             } else if (isPrintStatus(data)) {
                 const p = getPrintStatus(data)
-                globalStatus.current.printState = p
+                if (p.time) {
+                    globalStatus.current.printTime = p.time
+                } else {
+                    globalStatus.current.printState = p
+                    if (!p.printing) {
+                        globalStatus.current.printTime = null
+                        globalStatus.current.printLeftTime = null
+                    }
+                }
+                if (
+                    globalStatus.current.printTime &&
+                    globalStatus.current.printState &&
+                    globalStatus.current.printState.progress
+                ) {
+                    globalStatus.current.printLeftTime = estimatedTime(
+                        globalStatus.current.printState.progress,
+                        globalStatus.current.printTime
+                    )
+                }
                 setStatus(globalStatus.current)
             } else if (isPrintFileName(data)) {
                 const p = getPrintFileName(data)

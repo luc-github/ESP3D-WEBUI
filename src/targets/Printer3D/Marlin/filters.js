@@ -103,6 +103,9 @@ const isPrintStatus = (str) => {
     if ((result = reg_search2.exec(str)) !== null) {
         return true
     }
+    if (str.startsWith("echo:Print time:")) {
+        return true
+    }
     return false
 }
 
@@ -126,6 +129,22 @@ const getPrintStatus = (str) => {
                 parseInt(result[2])
             ).toFixed(2),
         }
+    }
+    if (str.startsWith("echo:Print time:")) {
+        const regex_search =
+            /echo:Print time:\s((?<year>[0-9]*)y\s)*((?<day>[0-9]*)d\s)*((?<hour>[0-9]*)h\s)*((?<min>[0-9]*)m\s)*((?<sec>[0-9]*)s)/
+        result = regex_search.exec(str)
+        let isprinting = false
+        const printTime = Object.keys(result.groups).reduce((acc, curr) => {
+            if (result.groups[curr] != null) {
+                if (parseInt(result.groups[curr]) != 0) {
+                    isprinting = true
+                }
+            }
+            acc[curr] = result.groups[curr]
+            return acc
+        }, {})
+        return { time: printTime, printing: isprinting }
     }
     return { status: "Unknown", printing: false, progress: 0 }
 }
