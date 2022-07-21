@@ -23,6 +23,11 @@ import { MacrosPanelElement } from "../../../components/Panels/Macros"
 import { TerminalPanelElement } from "../../../components/Panels/Terminal"
 import { JogPanelElement } from "../../../components/Panels/JogCNC"
 import { NotificationsPanelElement } from "../../../components/Panels/Notifications"
+import { StatusPanelElement } from "../../../components/Panels/StatusCNC"
+import { ProbePanelElement } from "../../../components/Panels/ProbeCNC"
+import { LaserPanelElement } from "../../../components/Panels/LaserCNC"
+import { SpindlePanelElement } from "../../../components/Panels/SpindleCNC"
+import { OverridesPanelElement } from "../../../components/Panels/OverridesCNC"
 
 const defaultPanelsList = [
     FilesPanelElement,
@@ -30,6 +35,11 @@ const defaultPanelsList = [
     MacrosPanelElement,
     JogPanelElement,
     NotificationsPanelElement,
+    StatusPanelElement,
+    ProbePanelElement,
+    LaserPanelElement,
+    SpindlePanelElement,
+    OverridesPanelElement,
 ]
 
 export { defaultPanelsList }

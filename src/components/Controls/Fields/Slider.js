@@ -40,16 +40,22 @@ const Slider = ({
     label,
     validation,
     value = false,
+    min = 0,
+    max = 100,
+    adjustValue,
     type,
     depend,
     setValue,
     append,
     inline,
+    disabled,
     ...rest
 }) => {
     const onInput = (e) => {
         if (e) useUiContextFn.haptic()
-        if (setValue) setValue(e.target.value)
+        if (setValue) {
+            setValue(parseFloat(e.target.value))
+        }
     }
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     const dependIds = generateDependIds(
@@ -85,6 +91,16 @@ const Slider = ({
                     type="range"
                     min="0"
                     max="100"
+                    disabled={disabled}
+                    onClick={(e) => {
+                        //to workaround the slider bug not updating the value if overboundary
+                        if (adjustValue) {
+                            const adjustedValue = adjustValue(id)
+                            if (e.target.value != adjustedValue) {
+                                setValue(adjustValue(id))
+                            }
+                        }
+                    }}
                 />
             </div>
             <Input
@@ -97,6 +113,7 @@ const Slider = ({
                 value={value}
                 type="number"
                 inline={inline}
+                disabled={disabled}
                 {...rest}
                 class="show-low form-input text-center"
             />

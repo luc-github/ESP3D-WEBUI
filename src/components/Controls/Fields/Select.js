@@ -20,6 +20,11 @@
 import { Fragment, h } from "preact"
 import { useEffect } from "preact/hooks"
 import { useSettingsContext, useUiContextFn } from "../../../contexts"
+import {
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
+} from "../../Helpers"
 
 const Option = ({ label, ...props }) => {
     const { connectionSettings } = useSettingsContext()
@@ -40,6 +45,7 @@ const Select = ({
     label = "",
     id = "",
     options = [],
+    depend,
     inline,
     setValue,
     value,
@@ -55,6 +61,25 @@ const Select = ({
         if (e) useUiContextFn.haptic()
         if (setValue) setValue(e.target.value)
     }
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    const dependIds = generateDependIds(
+        depend,
+        interfaceSettings.current.settings
+    )
+
+    const canshow = connectionDepend(depend, connectionSettings.current)
+
+    useEffect(() => {
+        let visible =
+            canshow &&
+            settingsDepend(depend, interfaceSettings.current.settings)
+        document.getElementById(id).style.display = visible ? "block" : "none"
+        if (document.getElementById("group-" + id))
+            document.getElementById("group-" + id).style.display = visible
+                ? "block"
+                : "none"
+    }, [...dependIds])
+
     useEffect(() => {
         //to update state
         if (setValue) setValue(null, true)

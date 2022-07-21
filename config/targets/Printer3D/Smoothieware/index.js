@@ -268,6 +268,18 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    if (url.indexOf("M115") != -1) {
+        //FIRMWARE_NAME:Smoothieware, FIRMWARE_URL:http%3A//smoothieware.org, X-SOURCE_CODE_URL:https://github.com/Smoothieware/Smoothieware, FIRMWARE_VERSION:edge-f7df5f1, PROTOCOL_VERSION:1.0, X-FIRMWARE_BUILD_DATE:Aug 14 2021 21:01:19, X-SYSTEM_CLOCK:100MHz, X-AXES:5, X-GRBL_MODE:0, X-ARCS:1, X-CNC:0, X-MSD:1, X-WARNING:deprecated_MCU
+        //ok
+
+        SendWS(
+            "FIRMWARE_NAME:Smoothieware, FIRMWARE_URL:http%3A//smoothieware.org, X-SOURCE_CODE_URL:https://github.com/Smoothieware/Smoothieware, FIRMWARE_VERSION:edge-f7df5f1, PROTOCOL_VERSION:1.0, X-FIRMWARE_BUILD_DATE:Aug 14 2021 21:01:19, X-SYSTEM_CLOCK:100MHz, X-AXES:5, X-GRBL_MODE:0, X-ARCS:1, X-CNC:0, X-MSD:1, X-WARNING:deprecated_MCU\n" +
+                "ok\n"
+        )
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M140") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const result_target = reg_ex_temp.exec(url)

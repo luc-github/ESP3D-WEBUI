@@ -1,5 +1,5 @@
 
-                                            printer(Marlin)    grbl   size in 3.0 (Marlin)
+                                            printer(Marlin)       size in 3.0 (Marlin)
 Base code                   : 3.0.0.a1      : 21.2KB        |        | 27KB
 WS/Http/Auth/Menu           : 3.0.0.a2      : 28.4KB        |        | 34.15KB
 Icons & Mobile view         : 3.0.0.a3      : 29.8KB        |        |
@@ -20,4 +20,17 @@ notifications               :               : 68.6KB        |        | 68.1 + 4.
 Extruders Panel             :               : 70.2KB        |        | 76.8 + 4.5 = 81.3KB
 Charts Panel                :               : 75.0KB        |        | 81.3 + 6.2 = 87.5KB
 Extra controls Panel        :               : 78.3KB        |        | 87.5 + 3.6 = 91.1KB
-Print status                :               : 78.5KB        |        | 91.1 + 0.6 = 91.4kb
+Print status                :               : 78.5KB        |        | 91.1 + 0.6 = 91.4Kb
+Mixed extruder bug fixes    :			  :			|	   |
+Variables API               :               :               |        |
+Multiples Commands bug fix  :               :               |        |
+ProgressBar bug fix	    :               :               |        |
+Libraries version bump      :               :               |        |
+More dependcies allowed	    :               :               |        |
+Add Color in notifications  :               :               |        |
+Extra SD for ESP32Cam       :			  : 81.2 KB       |        |   
+            
+
+                                                             grbl   size in 3.0 
+Base code                   : 3.0.0.a1      : 21.2KB        |        | 27KB
+CNC UI                      :               : 74.1KB        |        | 91.4Kb

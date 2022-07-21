@@ -221,6 +221,50 @@ const getFeedRate = (str) => {
     return null
 }
 
+////////////////////////////////////////////////////////
+//
+// Printer capabbility
+//Format is:
+//FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff
+//Cap:SERIAL_XON_XOFF:0
+//...
+const isPrinterCapability = (str) => {
+    const reg_search1 = /^Cap:([^:]+):[0-1]$/
+    if (str.startsWith("FIRMWARE_NAME:") || reg_search1.test(str)) {
+        return true
+    }
+    return false
+}
+
+const getPrinterCapability = (str) => {
+    let result = null
+    const res = []
+    const reg_search1 = /^Cap:(?<item>[^:]+):(?<value>[0-1])$/
+    const reg_search2 =
+        /^FIRMWARE_NAME:(?<firmware_name>[^\(]+)\s\((?<firmware_date>[^\)]*)\)\sSOURCE_CODE_URL:(?<source_code_url>.+?(?=\sPROTOCOL_VERSION))\sPROTOCOL_VERSION:(?<protocol_version>.+?(?=\sMACHINE_TYPE))\sMACHINE_TYPE:(?<machine_type>.+?(?=\sEXTRUDER_COUNT))\sEXTRUDER_COUNT:(?<extruder_count>.+?(?=\sUUID))\sUUID:(?<uuid>.+)/
+    if (str.startsWith("FIRMWARE_NAME:")) {
+        if ((result = reg_search2.exec(str)) !== null) {
+            Object.keys(result.groups).forEach((key) => {
+                res.push({
+                    name: key.toUpperCase(),
+                    value: result.groups[key],
+                })
+            })
+        } else {
+            res.push({
+                name: "FIRMWARE_NAME",
+                value: str.split(":")[1].split(" "),
+            })
+        }
+    } else if ((result = reg_search1.exec(str)) !== null) {
+        res.push({ name: result.groups.item, value: result.groups.value })
+    }
+    return res
+}
+
+////////////////////////////////////////////////////////
+//
+//Feed rate
 const isSensor = (str) => {
     return str.startsWith("SENSOR:")
 }
@@ -253,4 +297,6 @@ export {
     getFeedRate,
     isSensor,
     getSensor,
+    isPrinterCapability,
+    getPrinterCapability,
 }

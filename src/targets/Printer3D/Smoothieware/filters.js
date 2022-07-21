@@ -224,6 +224,34 @@ const getFeedRate = (str) => {
     return null
 }
 
+////////////////////////////////////////////////////////
+//
+// Printer capabbility
+//Format is:
+//FIRMWARE_NAME:Smoothieware, FIRMWARE_URL:http%3A//smoothieware.org, X-SOURCE_CODE_URL:https://github.com/Smoothieware/Smoothieware, FIRMWARE_VERSION:edge-f7df5f1, PROTOCOL_VERSION:1.0, X-FIRMWARE_BUILD_DATE:Aug 14 2021 21:01:19, X-SYSTEM_CLOCK:100MHz, X-AXES:5, X-GRBL_MODE:0, X-ARCS:1, X-CNC:0, X-MSD:1, X-WARNING:deprecated_MCU
+//...
+const isPrinterCapability = (str) => {
+    const reg_search1 = /^Cap:([^:]+):[0-1]$/
+    if (str.startsWith("FIRMWARE_NAME:") || reg_search1.test(str)) {
+        return true
+    }
+    return false
+}
+
+const getPrinterCapability = (str) => {
+    let result = null
+    const res = str.split(",").reduce((acc, cur) => {
+        const sp = cur.split(":")
+        acc.push({ name: sp[0], value: sp.slice(1).join(":") })
+        return acc
+    }, [])
+
+    return res
+}
+
+////////////////////////////////////////////////////////
+//
+//Sensor
 const isSensor = (str) => {
     return str.startsWith("SENSOR:")
 }
@@ -256,4 +284,6 @@ export {
     getFeedRate,
     isSensor,
     getSensor,
+    isPrinterCapability,
+    getPrinterCapability,
 }

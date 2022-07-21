@@ -97,6 +97,7 @@ const commands = {
         return {
             type: "url",
             url: "/sd" + path + (path.endsWith("/") ? "" : "/") + filename,
+            args: {},
         }
     },
     play: (path, filename) => {

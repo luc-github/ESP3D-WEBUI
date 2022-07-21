@@ -34,17 +34,23 @@ import {
     useTargetContext,
     useTargetContextFn,
 } from "./TargetContext"
+import variablesTable from "./variablesTable"
 import { AppLogo } from "../../../components/Images/logo"
 import { Eye as WebUILogo } from "preact-feather"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "Marlin"
 const webUIbuild = "M2"
 const Name = "ESP3D"
 const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
+
+const restartdelay = 30
 const variablesList = {
-    commands: [],
-    addCommand: (variable) => addObjectItem(commands, "name", variable),
-    removeCommand: (name) => removeObjectItem(commands, "name", name),
+    commands: [ ...variablesTable],
+    addCommand: (variable) =>
+        addObjectItem(variablesList.commands, "name", variable),
+    removeCommand: (name) =>
+        removeObjectItem(variablesList.commands, "name", name),
 }
 const eventsList = {
     evts: [],
@@ -64,7 +70,6 @@ const eventsList = {
             })
     },
 }
-const restartdelay = 30
 
 export {
     MachineSettings,

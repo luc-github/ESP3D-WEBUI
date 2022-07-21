@@ -22,6 +22,7 @@ import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
+    addObjectItem,
 } from "../../../components/Helpers"
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
@@ -45,6 +46,8 @@ import {
     getSensor,
     isFanSpeed,
     getFanSpeed,
+    isPrinterCapability,
+    getPrinterCapability,
 } from "./filters"
 
 /*
@@ -54,6 +57,7 @@ import {
 const TargetContext = createContext("TargetContext")
 const useTargetContext = () => useContext(TargetContext)
 const useTargetContextFn = {}
+const printerCapabilities = []
 
 const TargetContextProvider = ({ children }) => {
     //format is x:value, y:value, z:value
@@ -141,10 +145,7 @@ const TargetContextProvider = ({ children }) => {
     })
 
     const dispatchInternally = (type, data) => {
-        //files
         processor.handle(type, data)
-        //sensors
-
         if (type === "stream") {
             if (isTemperatures(data)) {
                 const t = getTemperatures(data)
@@ -178,6 +179,14 @@ const TargetContextProvider = ({ children }) => {
                 const p = getFanSpeed(data)
                 fansSpeed.current[p.index] = p.value
                 setFanSpeed(fansSpeed.current)
+            } else if (isPrinterCapability(data)) {
+                const res = getPrinterCapability(data)
+                res.forEach((cap) => {
+                    addObjectItem(printerCapabilities, "name", {
+                        name: cap.name,
+                        value: cap.value,
+                    })
+                })
             }
         } else if (type === "core") {
             if (isSensor(data)) {
@@ -192,7 +201,7 @@ const TargetContextProvider = ({ children }) => {
         //etc...
     }
 
-    const processData = (type, data) => {
+    const processData = (type, data, noecho = false) => {
         if (data.length > 0) {
             if (type == "stream") {
                 //TODO
@@ -255,18 +264,20 @@ const TargetContextProvider = ({ children }) => {
                             isverboseOnly,
                         })
                     else {
-                        terminal.add({
-                            type,
-                            content: newbuffer,
-                            isverboseOnly,
-                        })
+                        if (!noecho)
+                            terminal.add({
+                                type,
+                                content: newbuffer,
+                                isverboseOnly,
+                            })
                     }
                 } else {
-                    terminal.add({
-                        type,
-                        content: data,
-                        isverboseOnly,
-                    })
+                    if (!noecho)
+                        terminal.add({
+                            type,
+                            content: data,
+                            isverboseOnly,
+                        })
                 }
             } else {
                 if (type != "core") {
@@ -291,7 +302,6 @@ const TargetContextProvider = ({ children }) => {
         fanSpeed: {
             current: fanSpeed,
             set: (index, value) => {
-                console.log("set fan speed", index, "=", value)
                 fansSpeed[index] = value
                 setFanSpeed(fanSpeed)
             },

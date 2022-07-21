@@ -13,8 +13,6 @@
     "dev-printer-repetier": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Repetier concurrently \"npm run server\" \"npm run front\"",
     "dev-printer-smoothieware": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Smoothieware concurrently \"npm run server\" \"npm run front\"",
     "dev-printer-marlin-embedded": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Marlin-embedded concurrently \"npm run server\" \"npm run front\"",
-    "dev-printer-reprap-embedded": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=RepRap-embedded concurrently \"npm run server\" \"npm run front\"",
-    "dev-printer-reprap": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=RepRap concurrently \"npm run server\" \"npm run front\"",
     "dev-sand-grbl": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=GRBL concurrently \"npm run server\" \"npm run front\"",
     "dev-sand-fluidnc": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=FluidNC concurrently \"npm run server\" \"npm run front\"",
     "dev": "concurrently \"npm run server\" \"npm run front\"",
@@ -22,14 +20,12 @@
     "printer-marlin": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Marlin webpack --config config/webpack.prod.js",
     "printer-smoothieware": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Smoothieware webpack --config config/webpack.prod.js",
     "printer-marlin-embedded": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Marlin-embedded webpack --config config/webpack.prod.js",
-    "printer-reprap": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=RepRap webpack --config config/webpack.prod.js",
-    "printer-reprap-embedded": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=RepRap-embedded webpack --config config/webpack.prod.js",
     "cnc-grbl": "cross-env TARGET_ENV=CNC SUBTARGET_ENV=GRBL webpack --config config/webpack.prod.js",
     "cnc-fluidnc": "cross-env TARGET_ENV=CNC SUBTARGET_ENV=FluidNC webpack --config config/webpack.prod.js",
     "sand-grbl": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=GRBL webpack --config config/webpack.prod.js",
     "sand-fluidnc": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=FluidNC webpack --config config/webpack.prod.js",
     "build": "webpack --config config/webpack.prod.js",
-    "buildprinter": "npm run printer-marlin && npm run printer-repetier && npm run printer-smoothieware && npm run printer-reprap && npm run printer-reprap-embedded && npm run printer-marlin-embedded",
+    "buildprinter": "npm run printer-marlin && npm run printer-repetier && npm run printer-smoothieware && npm run printer-marlin-embedded",
     "buildcnc": "npm run cnc-grbl && npm run cnc-fluidnc",
     "buildsand": "npm run sand-grbl && npm run sand-fluidnc",
     "buildall": "npm run buildsand && npm run buildprinter  && npm run buildcnc",
@@ -72,7 +68,7 @@
     "webpack-dev-server": "^4.9.2"
   },
   "dependencies": {
-    "preact": "^10.8.2",
+    "preact": "^10.10.0",
     "preact-feather": "^4.2.1",
     "smoothie": "^1.36.0",
     "spectre.css": "luc-github/spectre"

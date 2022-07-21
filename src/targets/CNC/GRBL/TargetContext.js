@@ -340,8 +340,10 @@ const TargetContextProvider = ({ children }) => {
                         })
                 }
             } else {
-                const isverboseOnly = isVerboseOnly(type, data)
-                terminal.add({ type, content: data, isverboseOnly })
+                if (type != "core") {
+                    const isverboseOnly = isVerboseOnly(type, data)
+                    terminal.add({ type, content: data, isverboseOnly })
+                }
                 dispatchInternally(type, data)
             }
             dispatchToExtensions(type, data)

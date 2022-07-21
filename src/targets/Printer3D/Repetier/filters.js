@@ -174,9 +174,11 @@ const getPrintFileName = (str) => {
 //fatal:Heater/sensor error - Printer stopped and heaters disabled due to this error. Fix error and restart with M999.
 
 const isStatus = (str) => {
-    let result = null
-    const reg_search1 = /[busy:|fatal:|Error:]\s(.*)/i
-    if ((result = reg_search1.exec(str)) !== null) {
+    if (
+        str.startsWith("busy:") ||
+        str.startsWith("fatal:") ||
+        str.startsWith("error:")
+    ) {
         return true
     }
     return false
@@ -184,11 +186,8 @@ const isStatus = (str) => {
 
 const getStatus = (str) => {
     let result = null
-    const reg_search1 = /[busy:|Error:|fatal:]|\s(.*)/i
-    if ((result = reg_search1.exec(str)) !== null) {
-        return result[1]
-    }
-    return "Unknown"
+    return str
+    //return str.split(":").slice(1).join(":")
 }
 
 ////////////////////////////////////////////////////////
@@ -243,6 +242,60 @@ const getFlowRate = (str) => {
 
 ////////////////////////////////////////////////////////
 //
+// Printer capabbility
+//Format is:
+//FIRMWARE_NAME:Repetier_1.0.4 COMPILED:Apr 30 2022 FIRMWARE_URL:https://github.com/repetier/Repetier-Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 REPETIER_PROTOCOL:3
+//Cap:PROGRESS:1
+//Cap:AUTOREPORT_TEMP:1
+//Cap:HOST_RESCUE:1
+//Cap:EEPROM:1
+//Printed filament:0.00m Printing time:0 days 0 hours 0 min
+//PrinterMode:FFF
+//...
+const isPrinterCapability = (str) => {
+    const reg_search1 = /^Cap:([^:]+):[0-1]$/
+    if (
+        str.startsWith("FIRMWARE_NAME:") ||
+        str.startsWith("Printed filament:") ||
+        str.startsWith("PrinterMode:") ||
+        reg_search1.test(str)
+    ) {
+        return true
+    }
+    return false
+}
+
+const getPrinterCapability = (str) => {
+    let result = null
+    const res = []
+    const reg_search1 = /^Cap:(?<item>[^:]+):(?<value>[0-1])$/
+    const reg_search2 =
+        /^FIRMWARE_NAME:(?<firmware_name>.+?(?=\COMPILED:))\sCOMPILED:(?<compilation_date>.+?(?=\sFIRMWARE_URL:))\sFIRMWARE_URL:(?<source_code_url>.+?(?=\sPROTOCOL_VERSION))\sPROTOCOL_VERSION:(?<protocol_version>.+?(?=\sMACHINE_TYPE))\sMACHINE_TYPE:(?<machine_type>.+?(?=\sEXTRUDER_COUNT))\sEXTRUDER_COUNT:(?<extruder_count>.+?(?=\sREPETIER_PROTOCOL))\sREPETIER_PROTOCOL:(?<repetier_protocol>.+)/
+    if (str.startsWith("FIRMWARE_NAME:")) {
+        if ((result = reg_search2.exec(str)) !== null) {
+            Object.keys(result.groups).forEach((key) => {
+                res.push({
+                    name: key.toUpperCase(),
+                    value: result.groups[key],
+                })
+            })
+        } else {
+            res.push({
+                name: "FIRMWARE_NAME",
+                value: str.split(":")[1].split(" "),
+            })
+        }
+    } else if ((result = reg_search1.exec(str)) !== null) {
+        res.push({ name: result.groups.item, value: result.groups.value })
+    } else {
+        const sp = str.split(":")
+        res.push({ name: sp[0], value: sp.slice(1).join(":") })
+    }
+    return res
+}
+
+////////////////////////////////////////////////////////
+//
 //Feed rate
 const isFeedRate = (str) => {
     let result = null
@@ -263,6 +316,9 @@ const getFeedRate = (str) => {
     return null
 }
 
+////////////////////////////////////////////////////////
+//
+//Sensor
 const isSensor = (str) => {
     return str.startsWith("SENSOR:")
 }
@@ -293,8 +349,10 @@ export {
     getFlowRate,
     isFeedRate,
     getFeedRate,
-    isSensor,
-    getSensor,
     isFanSpeed,
     getFanSpeed,
+    isSensor,
+    getSensor,
+    isPrinterCapability,
+    getPrinterCapability,
 }

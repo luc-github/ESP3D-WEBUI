@@ -23,7 +23,11 @@ import { files } from "./files"
 import { processor } from "./processor"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings } from "./MachineSettings"
-import { InformationsControls, QuickButtonsBar } from "./Controls"
+import {
+    InformationsControls,
+    QuickButtonsBar,
+    BackgroundContainer,
+} from "./Controls"
 import { AppLogo as WebUILogo } from "../../../components/Images/logo"
 import { AppLogo } from "./logo"
 import {
@@ -32,6 +36,7 @@ import {
     useTargetContextFn,
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "FluidNC"
 const webUIbuild = "F2"
@@ -41,6 +46,8 @@ const fwUrl = "https://github.com/bdring/FluidNC"
 const restartdelay = 30
 const variablesList = {
     commands: [...realCommandsTable],
+    addCommand: (variable) => addObjectItem(commands, "name", variable),
+    removeCommand: (name) => removeObjectItem(commands, "name", name),
     modes: [],
 }
 const eventsList = {
@@ -82,4 +89,5 @@ export {
     AppLogo,
     WebUILogo,
     QuickButtonsBar,
+    BackgroundContainer,
 }

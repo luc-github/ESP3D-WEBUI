@@ -25,16 +25,31 @@ import {
     formatStatus,
     filterResultFiles,
 } from "../../../components/Helpers"
+import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
 //Extract information from string - specific to FW / source
-const formatFileSerialLine = (acc, line) => {
-    const elements = line.split(" ")
-    if (elements.length != 2) return acc
-    //TODO: check it is valid file name / size
-    //check size is number ?
-    //filename ?
-    acc.push({ name: elements[0], size: formatFileSizeToString(elements[1]) })
-    return acc
+const formatFileSerialLine = (lines) => {
+    const filesFilter = useUiContextFn.getValue("filesfilter") //get extension list
+    const extRegExp = new RegExp("([$a-zA-Z0-9!#\u0020+-]+)", "g")
+    const extensionsPattern = [...filesFilter.matchAll(extRegExp)]
+        .map((item) => item[1].trim())
+        .join("|")
+    const lineParserPattern = `^(?:(?<path>.*\\.(?:${extensionsPattern}))? *(?<size>\\d+)? )?(?:(?<pathAlt>.*\\.(?:${extensionsPattern}))? *((?<sizeAlt>\\d*) *)?)$`
+    return lines.reduce((acc, file) => {
+        const fileRegex = new RegExp(lineParserPattern, "ig")
+        const m = fileRegex.exec(file.trim())
+        if (m) {
+            const { path, size, pathAlt, sizeAlt } = m.groups
+            return [
+                ...acc,
+                {
+                    name: pathAlt || path,
+                    size: formatFileSizeToString(sizeAlt || size),
+                },
+            ]
+        }
+        return acc
+    }, [])
 }
 
 const capabilities = {
@@ -68,16 +83,17 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        return { type: "cmd", cmd: "M21\nM20" }
+        return {
+            type: "cmd",
+            cmd: useUiContextFn.getValue("sdlistcmd"),
+        }
     },
     formatResult: (result) => {
-        const res = {}
-        const files = result.content.reduce((acc, line) => {
-            return formatFileSerialLine(acc, line)
-        }, [])
-        res.files = sortedFilesList(files)
-        res.status = formatStatus(result.status)
-        return res
+        const files = formatFileSerialLine(result.content)
+        return {
+            files: sortedFilesList(files),
+            status: formatStatus(result.status),
+        }
     },
     filterResult: (data, path) => {
         const res = {}

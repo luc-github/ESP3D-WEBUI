@@ -5,6 +5,23 @@
   display: flex;
 }
 
+input[type=range]{
+  pointer-events: none;
+  cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{/*Webkit Browsers like Chrome and Safari*/
+  pointer-events: auto;
+  cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{/*Firefox*/
+  pointer-events: auto;
+  cursor:pointer;
+}
+input[type=range]::-ms-thumb{/*Internet Explorer*/
+  pointer-events: auto;
+  cursor:pointer;
+}
+
 .badge-container {
   border: 0.05rem solid #5755d9 ;
   text-align: center;

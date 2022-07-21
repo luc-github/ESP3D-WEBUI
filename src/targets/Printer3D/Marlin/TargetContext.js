@@ -198,7 +198,7 @@ const TargetContextProvider = ({ children }) => {
         //etc...
     }
 
-    const processData = (type, data) => {
+    const processData = (type, data, noecho = false) => {
         if (data.length > 0) {
             if (type == "stream") {
                 //TODO
@@ -261,18 +261,20 @@ const TargetContextProvider = ({ children }) => {
                             isverboseOnly,
                         })
                     else {
-                        terminal.add({
-                            type,
-                            content: newbuffer,
-                            isverboseOnly,
-                        })
+                        if (!noecho)
+                            terminal.add({
+                                type,
+                                content: newbuffer,
+                                isverboseOnly,
+                            })
                     }
                 } else {
-                    terminal.add({
-                        type,
-                        content: data,
-                        isverboseOnly,
-                    })
+                    if (!noecho)
+                        terminal.add({
+                            type,
+                            content: data,
+                            isverboseOnly,
+                        })
                 }
             } else {
                 if (type != "core") {

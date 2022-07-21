@@ -35,7 +35,7 @@ const StatusControls = () => {
     if (!useUiContextFn.getValue("showstatuspanel")) return null
     return (
         <Fragment>
-            {status.printState.status != "Unknown" && (
+            {status.printState && status.printState.status != "Unknown" && (
                 <div class="status-ctrls">
                     <div
                         class="extra-control mt-1 tooltip tooltip-bottom"
@@ -44,7 +44,7 @@ const StatusControls = () => {
                         <div class="extra-control-header">
                             {status.printState.status}
                         </div>
-                        {status.filename.length > 0 && (
+                        {status.filename && status.filename.length > 0 && (
                             <div class="extra-control-value">
                                 {status.filename}
                             </div>
@@ -55,7 +55,7 @@ const StatusControls = () => {
                     </div>
                 </div>
             )}
-            {status.state.length > 0 && (
+            {status.state && status.state.length > 0 && (
                 <div class="status-ctrls">
                     <div
                         class="status-control mt-1 tooltip tooltip-bottom"
@@ -178,7 +178,8 @@ const StatusPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
-                {status.printState.printing &&
+                {status.printState &&
+                    status.printState.printing &&
                     deviceList.map((device) => {
                         if (
                             !device.depend.every((d) =>

@@ -398,12 +398,21 @@ const commandsQuery = (req, res, SendWS) => {
     }
     if (url.indexOf("M115") != -1) {
         SendWS(
-            "FIRMWARE_NAME:Repetier_0.92.10 FIRMWARE_URL:https://github.com/luc-github/Repetier-Firmware-0.92/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:DaVinci EXTRUDER_COUNT:2 REPETIER_PROTOCOL:3\n" +
+            "FIRMWARE_NAME:Repetier_1.0.4 COMPILED:Apr 30 2022 FIRMWARE_URL:https://github.com/repetier/Repetier-Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 REPETIER_PROTOCOL:3\n" +
                 "Cap:PROGRESS:1\n" +
                 "Cap:AUTOREPORT_TEMP:1\n" +
-                "Cap:EEPROM:0\n" +
-                "Cap:TOGGLE_LIGHTS:1\n" +
-                "Printed filament:19.23m Printing time:0 days 6 hours 43 min\n"
+                "Cap:HOST_RESCUE:1\n" +
+                "Cap:EEPROM:1\n" +
+                "Cap:AUTOLEVEL:0\n" +
+                "Cap:Z_PROBE:0\n" +
+                "Cap:SOFTWARE_POWER:0\n" +
+                "Cap:TOGGLE_LIGHTS:0\n" +
+                "Cap:PAUSESTOP:1\n" +
+                "Cap:PREHEAT:1\n" +
+                "Cap:EMERGENCY_PARSER:1\n" +
+                "Printed filament:0.00m Printing time:0 days 0 hours 0 min\n" +
+                "PrinterMode:FFF\n" +
+                "ok\n"
         )
         res.send("")
         return

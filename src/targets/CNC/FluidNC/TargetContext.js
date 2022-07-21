@@ -26,11 +26,32 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
+import { eventsList, variablesList } from "."
+import {
+    isStatus,
+    getStatus,
+    isStates,
+    getStates,
+    isMessage,
+    getMessage,
+    isAlarm,
+    getAlarm,
+    isError,
+    getError,
+    isGcodeParameter,
+    getGcodeParameter,
+    isVersion,
+    getVersion,
+    isOptions,
+    getOptions,
+    isReset,
+    isStreamingStatus,
+    getStreamingStatus,
+} from "./filters"
 
-/*
- * Local variables
- */
-let wpos = []
+const lastStatus = {}
+const lastStates = {}
+const lastPins = {}
 
 /*
  * Local const
@@ -44,7 +65,18 @@ const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",
     })
-
+    const [status, setStatus] = useState({ state: "?" })
+    const [overrides, setOverrides] = useState({})
+    const [pinsStates, setPinStates] = useState(lastPins)
+    const [states, setStates] = useState({})
+    const [streamStatus, setStreamStatus] = useState({})
+    const [message, setMessage] = useState()
+    const [alarmCode, setAlarmCode] = useState(0)
+    const [errorCode, setErrorCode] = useState(0)
+    const [gcodeParameters, setGcodeParameters] = useState({})
+    const [grblVersion, setGrblVersion] = useState({})
+    const [grblSettings, setGrblSettings] = useState({})
+    const gcodeParametersRef = useRef({})
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
         stream: "",
@@ -60,59 +92,170 @@ const TargetContextProvider = ({ children }) => {
         //sensors
         //status
         if (type === "stream") {
-            //format is : <...>
-            const status_patern = /<?(.*)>/
-            if (status_patern.test(data)) {
-                const mpos_pattern =
-                    /\|MPos:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i
-                const WCO_pattern =
-                    /\|WCO:(\s*([+,-]?[0-9]*\.?[0-9]+)?[,\|>])*/i
-                let result = null
-                //Machine positions
-                if ((result = mpos_pattern.exec(data)) !== null) {
-                    try {
-                        const mpos_array = result[0]
-                            .split(":")[1]
-                            .split("|")[0]
-                            .split(",")
-                        const precision = mpos_array[0].split(".")[1].length
-                        const pos = mpos_array.map((e) =>
-                            parseFloat(e).toFixed(precision).toString()
-                        )
-
-                        //Work coordinates
-                        if ((result = WCO_pattern.exec(data)) !== null) {
-                            try {
-                                const wpos_array = result[0]
-                                    .split(":")[1]
-                                    .split("|")[0]
-                                    .split(",")
-                                wpos = wpos_array.map((e, index) =>
-                                    (parseFloat(pos[index]) - parseFloat(e))
-                                        .toFixed(precision)
-                                        .toString()
-                                )
-                            } catch (e) {
-                                console.error(e)
-                            }
+            //status
+            if (isStatus(data)) {
+                const response = getStatus(data)
+                //For Pn we need to keep the last value to keep trace the pin is detected or not,
+                //so we can display the pin icon when disabled even no data is received
+                if (
+                    Object.keys(lastPins).length > 0 ||
+                    Object.keys(response.pn).length > 0
+                ) {
+                    Object.keys(response.pn).forEach((key) => {
+                        lastPins[key] = response.pn[key]
+                    })
+                    Object.keys(lastPins).forEach((key) => {
+                        if (!response.pn[key]) {
+                            lastPins[key] = false
                         }
-                        setPositions({
-                            x: pos[0],
-                            y: pos.length > 1 ? pos[1] : undefined,
-                            z: pos.length > 2 ? pos[2] : undefined,
-                            a: pos.length > 3 ? pos[3] : undefined,
-                            b: pos.length > 4 ? pos[4] : undefined,
-                            c: pos.length > 5 ? pos[5] : undefined,
-                            wx: wpos.length > 0 ? wpos[0] : undefined,
-                            wy: wpos.length > 1 ? wpos[1] : undefined,
-                            wz: wpos.length > 2 ? wpos[2] : undefined,
-                            wa: wpos.length > 3 ? wpos[3] : undefined,
-                            wb: wpos.length > 4 ? wpos[4] : undefined,
-                            wc: wpos.length > 5 ? wpos[5] : undefined,
+                    })
+                }
+                setPinStates(lastPins)
+                if (response.positions) {
+                    setPositions(response.positions)
+                    const names = [
+                        "x",
+                        "y",
+                        "z",
+                        "a",
+                        "b",
+                        "c",
+                        "wx",
+                        "wy",
+                        "wz",
+                        "wa",
+                        "wb",
+                        "wc",
+                    ]
+                    names.forEach((element) => {
+                        let name = "#pos_" + element + "#"
+                        variablesList.addCommand({
+                            name: name,
+                            value: parseFloat(
+                                response.positions[element]
+                                    ? response.positions[element]
+                                    : 0
+                            ),
                         })
-                    } catch (e) {
-                        console.error(e)
+                    })
+                }
+                if (response.status) {
+                    setStatus(response.status)
+                    if (lastStatus.current !== response.status) {
+                        lastStatus.current = response.status
+                        if (
+                            !(
+                                response.status.state == "Alarm" ||
+                                response.status.state == "Idle" ||
+                                response.status.state == "Sleep"
+                            )
+                        )
+                            setMessage("")
+                        if (
+                            !(
+                                response.status.state == "Alarm" ||
+                                response.status.state == "Error"
+                            )
+                        ) {
+                            setAlarmCode(0)
+                            setErrorCode(0)
+                        }
                     }
+                }
+                if (response.ov) {
+                    setOverrides(response.ov)
+                }
+                if (response.f) {
+                    //Update state accordingly
+                    if (!lastStates.current) lastStates.current = {}
+                    if (typeof response.f.value != "undefined")
+                        lastStates.current.feed_rate = {
+                            value: response.f.value,
+                        }
+                    if (typeof response.rpm.value != "undefined")
+                        lastStates.current.spindle_speed = {
+                            value: response.rpm.value,
+                        }
+                    setStates(lastStates.current)
+                }
+                //more to set+
+                //....
+            }
+            //ALARM
+            if (isAlarm(data)) {
+                const response = getAlarm(data)
+                setAlarmCode(response)
+                setErrorCode(0)
+                setMessage("")
+                setStatus({ state: "Alarm" })
+                eventsList.emit("alarm", data)
+            }
+
+            //error
+            if (isError(data)) {
+                const response = getError(data)
+                setErrorCode(response)
+                setAlarmCode(0)
+                setMessage("")
+                setStatus({ state: "Error" })
+                eventsList.emit("error", data)
+            }
+            //prefiltering
+            if (data[0] === "[") {
+                if (isStates(data)) {
+                    lastStates.current = getStates(data)
+                    setStates(lastStates.current)
+                }
+
+                if (isMessage(data)) {
+                    const response = getMessage(data)
+                    setMessage(response)
+                }
+                if (isGcodeParameter(data)) {
+                    const response = getGcodeParameter(data)
+                    gcodeParametersRef.current[response.code] = {
+                        data: [...response.data],
+                    }
+                    if (typeof response.success !== "undefined") {
+                        gcodeParametersRef.current[response.code].success =
+                            response.success
+                    }
+                    if (gcodeParametersRef.current.PRB) {
+                        //the PRB is x y z even
+                        gcodeParametersRef.current.PRB.data.map(
+                            (value, index) => {
+                                let name =
+                                    "#prb_" +
+                                    String.fromCharCode(120 + index) +
+                                    "#"
+                                variablesList.addCommand({
+                                    name: name,
+                                    value: parseFloat(value),
+                                })
+                            }
+                        )
+                    }
+                    setGcodeParameters(gcodeParametersRef.current)
+                }
+                if (isVersion(data)) {
+                    const response = getVersion(data)
+                    setGrblVersion(response)
+                }
+                if (isOptions(data)) {
+                    const response = getOptions(data)
+                    setGrblSettings(response)
+                }
+            }
+            if (isReset(data)) {
+                eventsList.emit("reset", data)
+            }
+        }
+        if (type === "response") {
+            //check if the response is a command answer
+            if (data[0] === "{") {
+                if (isStreamingStatus(data)) {
+                    const status = getStreamingStatus(data)
+                    setStreamStatus(status)
                 }
             }
         }
@@ -181,22 +324,26 @@ const TargetContextProvider = ({ children }) => {
                             isverboseOnly,
                         })
                     else {
-                        terminal.add({
-                            type,
-                            content: newbuffer,
-                            isverboseOnly,
-                        })
+                        if (!noecho)
+                            terminal.add({
+                                type,
+                                content: newbuffer,
+                                isverboseOnly,
+                            })
                     }
                 } else {
-                    terminal.add({
-                        type,
-                        content: data,
-                        isverboseOnly,
-                    })
+                    if (!noecho)
+                        terminal.add({
+                            type,
+                            content: data,
+                            isverboseOnly,
+                        })
                 }
             } else {
-                const isverboseOnly = isVerboseOnly(type, data)
-                terminal.add({ type, content: data, isverboseOnly })
+                if (type != "core") {
+                    const isverboseOnly = isVerboseOnly(type, data)
+                    terminal.add({ type, content: data, isverboseOnly })
+                }
                 dispatchInternally(type, data)
             }
             dispatchToExtensions(type, data)
@@ -207,6 +354,17 @@ const TargetContextProvider = ({ children }) => {
 
     const store = {
         positions,
+        streamStatus,
+        status,
+        states,
+        pinsStates,
+        message,
+        alarmCode,
+        errorCode,
+        overrides,
+        gcodeParameters,
+        grblVersion,
+        grblSettings,
         processData,
     }
 

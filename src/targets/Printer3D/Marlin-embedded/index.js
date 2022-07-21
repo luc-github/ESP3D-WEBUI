@@ -27,23 +27,30 @@ import {
     InformationsControls,
     QuickButtonsBar,
     MixedExtrudersControl,
+    BackgroundContainer,
 } from "./Controls"
 import {
     TargetContextProvider,
     useTargetContext,
     useTargetContextFn,
 } from "./TargetContext"
+import variablesTable from "./variablesTable"
 import { AppLogo as WebUILogo } from "../../../components/Images/logo"
 import { AppLogo } from "./logo"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "Marlin"
 const webUIbuild = "Me2"
 const Name = "Marlin"
 const fwUrl = "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin"
+
+const restartdelay = 30
 const variablesList = {
-    commands: [],
-    addCommand: (variable) => addObjectItem(commands, "name", variable),
-    removeCommand: (name) => removeObjectItem(commands, "name", name),
+    commands: [ ...variablesTable],
+    addCommand: (variable) =>
+        addObjectItem(variablesList.commands, "name", variable),
+    removeCommand: (name) =>
+        removeObjectItem(variablesList.commands, "name", name),
 }
 const eventsList = {
     evts: [],
@@ -63,7 +70,6 @@ const eventsList = {
             })
     },
 }
-const restartdelay = 30
 
 export {
     MachineSettings,
@@ -86,4 +92,5 @@ export {
     WebUILogo,
     QuickButtonsBar,
     MixedExtrudersControl,
+    BackgroundContainer,
 }

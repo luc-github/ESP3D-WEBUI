@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { Plus, Minus, Lock, Unlock } from "preact-feather"
+import { Plus, Minus, Lock, Unlock, Sliders } from "preact-feather"
 import { useState } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../../../contexts"
 import { T } from "../../../../components/Translations"
@@ -124,6 +124,10 @@ const MixedExtrudersControl = ({ feedrate }) => {
     }
 
     const sendCommand = (command) => {
+        if (command.length == 0) {
+            console.log("no command to send")
+            // return
+        }
         createNewRequest(
             espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
@@ -156,9 +160,23 @@ const MixedExtrudersControl = ({ feedrate }) => {
         }
         return validation
     }
+    //to workaround the slider bug not updating the value if overboundary
+    const adjustValue = (id) => {
+        let newtotal = mixedExtrudersWeight.reduce(
+            (acc, cur) => acc + parseFloat(cur.value),
+            0
+        )
+        const index = parseInt(id.replace("extruder-weight-", ""))
+        const value = parseFloat(mixedExtrudersWeight[index].value)
+        if (newtotal < 100) {
+            const diff = 100 - newtotal
+            return value + diff
+        } else return value
+    }
 
     return (
         <div class="mixed-extruders-container">
+            <div class="m-1" />
             {weights.map((item, index) => {
                 const [locked, setLocked] = useState(item.locked)
                 const [validation, setvalidation] = useState({
@@ -196,7 +214,9 @@ const MixedExtrudersControl = ({ feedrate }) => {
                             }
                         >
                             <div class="label">
-                                {String.fromCharCode(65 + index)}
+                                {String.fromCharCode(
+                                    65 + (index < 4 ? index : index + 3)
+                                )}
                             </div>
                         </div>
                         {mixedExtrudersWeight.length > 2 && (
@@ -232,9 +252,11 @@ const MixedExtrudersControl = ({ feedrate }) => {
 
                         <Field
                             disabled={item.locked}
-                            type="number"
+                            id={`extruder-weight-${index}`}
+                            type="slider"
                             width="4rem"
                             disable
+                            adjustValue={adjustValue}
                             min="0"
                             max="100"
                             step="1"
@@ -273,15 +295,7 @@ const MixedExtrudersControl = ({ feedrate }) => {
                                                 ].value = save
                                             }
                                         } else {
-                                            console.log(
-                                                "adjustWeights error",
-                                                mixedExtrudersWeight.reduce(
-                                                    (acc, cur) =>
-                                                        acc +
-                                                        parseFloat(cur.value),
-                                                    0
-                                                )
-                                            )
+                                            console.log("Error adjust:")
                                             console.log(hasError)
                                         }
                                     }
@@ -296,7 +310,29 @@ const MixedExtrudersControl = ({ feedrate }) => {
                     </div>
                 )
             })}
-
+            <div
+                class={
+                    hasError.reduce((acc, cur) => acc || cur, false)
+                        ? "d-none"
+                        : "extruder-extrude-controls-container m-2"
+                }
+            >
+                <ButtonImg
+                    tooltip
+                    icon={<Sliders />}
+                    label={T("S43")}
+                    data-tooltip={T("P107")}
+                    onClick={(e) => {
+                        useUiContextFn.haptic()
+                        e.target.blur()
+                        const cmdmx = mixSetCommand()
+                        const cmds = cmdmx.split("\n")
+                        cmds.forEach((cmd) => {
+                            sendCommand(cmd)
+                        })
+                    }}
+                />
+            </div>
             <div
                 class={
                     hasError.reduce((acc, cur) => acc || cur, false)
@@ -359,20 +395,21 @@ const MixedExtrudersControl = ({ feedrate }) => {
                     onClick={(e) => {
                         useUiContextFn.haptic()
                         e.target.blur()
-                        const cmd =
+                        const cmdext =
                             mixSetCommand() +
                             "\nG91\nG1 E-" +
                             extrudeDistance[0] +
                             " F" +
                             feedrate.value +
                             "\nG90"
-                        const cmds = cmd.split("\n")
+                        const cmds = cmdext.split("\n")
                         cmds.forEach((cmd) => {
                             sendCommand(cmd)
                         })
                     }}
                 />
             </div>
+            <div class="m-2" />
         </div>
     )
 }

@@ -267,7 +267,7 @@ const getPrinterCapability = (str) => {
 
 ////////////////////////////////////////////////////////
 //
-//Feed rate
+//Sensor
 const isSensor = (str) => {
     return str.startsWith("SENSOR:")
 }

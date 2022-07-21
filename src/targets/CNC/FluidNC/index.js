@@ -21,17 +21,24 @@ import { h } from "preact"
 import { iconsTarget } from "./icons"
 import { files } from "./files"
 import { processor } from "./processor"
+import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings } from "./MachineSettings"
-import { InformationsControls, QuickButtonsBar } from "./Controls"
-import { AppLogo as WebUILogo } from "../../../components/Images/logo"
-import { AppLogo } from "./logo"
+import {
+    InformationsControls,
+    QuickButtonsBar,
+    BackgroundContainer,
+} from "./Controls"
 import {
     TargetContextProvider,
     useTargetContext,
     useTargetContextFn,
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
+import variablesTable from "./variablesTable"
+import { AppLogo as WebUILogo } from "../../../components/Images/logo"
+import { AppLogo } from "./logo"
+import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "FluidNC"
 const webUIbuild = "F2"
@@ -40,8 +47,12 @@ const fwUrl = "https://github.com/bdring/FluidNC"
 
 const restartdelay = 30
 const variablesList = {
-    commands: [...realCommandsTable],
-    modes: [],
+    commands: [...realCommandsTable, ...variablesTable],
+    addCommand: (variable) =>
+        addObjectItem(variablesList.commands, "name", variable),
+    removeCommand: (name) =>
+        removeObjectItem(variablesList.commands, "name", name),
+    modes: [...gcode_parser_modes],
 }
 const eventsList = {
     evts: [],
@@ -82,4 +93,5 @@ export {
     AppLogo,
     WebUILogo,
     QuickButtonsBar,
+    BackgroundContainer,
 }
