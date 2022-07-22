@@ -276,6 +276,7 @@ const StatusPanelElement = {
     icon: "Layers",
     show: "showstatuspanel",
     onstart: "openstatusonstart",
+    settingid: "status",
 }
 
 export { StatusPanel, StatusPanelElement, StatusControls }

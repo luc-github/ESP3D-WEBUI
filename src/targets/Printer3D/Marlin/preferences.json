@@ -7,6 +7,34 @@
                 "label": "P15",
                 "value": "M112",
                 "help": "S97"
+            },
+            {
+                "id": "fixedpanels",
+                "type": "boolean",
+                "label": "S203",
+                "value": false
+            },
+            {
+                "id": "panelsorder",
+                "depend":[{
+                    "id":"fixedpanels", "value":true
+                }],
+                "fixed": true,
+                "type": "list",
+                "label": "S202",
+                "value": [
+                    { "id": "Files", "name": "files" },
+                    { "id": "Terminal", "name": "terminal" },
+                    { "id": "Jog", "name": "jog", "value": "jog" },
+                    { "id": "Extruders", "name": "extruders" },
+                    { "id": "Temperatures", "name": "temperatures" },
+                    { "id": "Charts", "name": "charts" },
+                    { "id": "Status", "name": "status" },
+                    { "id": "Controls", "name": "controls" },
+                    { "id": "Notifications", "name": "notification" },
+                    { "id": "Macros", "name": "macros" },
+                    { "id": "Extracontents", "name": "extracontents" }
+                ]
             }
         ],
         "polling": [

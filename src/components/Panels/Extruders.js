@@ -294,6 +294,7 @@ const ExtrudersPanelElement = {
     icon: "Extruder",
     show: "showextruderspanel",
     onstart: "openextrudersonstart",
+    settingid: "extruders",
 }
 
 export { ExtrudersPanel, ExtrudersPanelElement }

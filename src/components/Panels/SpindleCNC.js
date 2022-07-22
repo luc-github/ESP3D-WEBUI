@@ -395,6 +395,7 @@ const SpindlePanelElement = {
     icon: "Target",
     show: "showspindlepanel",
     onstart: "openspindleonstart",
+    settingid: "spindle",
 }
 
 export { SpindlePanel, SpindlePanelElement, SpindleControls }

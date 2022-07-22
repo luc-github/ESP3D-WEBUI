@@ -361,6 +361,7 @@ const ExtraControlsPanelElement = {
     icon: "Sliders",
     show: "showextracontrolspanel",
     onstart: "openextracontrolsonstart",
+    settingid: "controls",
 }
 
 export { ExtraControlsPanel, ExtraControlsPanelElement, ExtraControls }

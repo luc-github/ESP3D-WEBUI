@@ -7,7 +7,35 @@
         "label": "P15",
         "value": "#SAFETYDOOR#",
         "help": "S97"
-      }
+      },
+      {
+        "id": "fixedpanels",
+        "type": "boolean",
+        "label": "S203",
+        "value": false
+    },
+    {
+        "id": "panelsorder",
+        "fixed": true,
+        "depend":[{
+            "id":"fixedpanels", "value":true
+        }],
+        "type": "list",
+        "label": "S202",
+        "value": [
+            { "id": "Files", "name": "files" },
+            { "id": "Terminal", "name": "terminal" },
+            { "id": "Jog", "name": "jog", "value": "jog" },
+            { "id": "Laser", "name": "laser" },
+            { "id": "Spindle", "name": "spindle" },
+            { "id": "Probe", "name": "probe" },
+            { "id": "Status", "name": "status" },
+            { "id": "Overrrides", "name": "overrides" },
+            { "id": "Notifications", "name": "notification" },
+            { "id": "Macros", "name": "macros" },
+            { "id": "Extracontents", "name": "extracontents" }
+        ]
+    }
     ],
     "polling": [
       {

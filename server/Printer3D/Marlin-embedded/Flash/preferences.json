@@ -10,6 +10,54 @@
   "showinformationpage": true,
   "showmachinesettings": true,
   "emergencystop": "M112",
+  "fixedpanels": true,
+  "panelsorder": [
+   {
+    "id": "Files",
+    "name": "files"
+   },
+   {
+    "id": "Terminal",
+    "name": "terminal"
+   },
+   {
+    "id": "Jog",
+    "name": "jog",
+    "value": "jog"
+   },
+   {
+    "id": "Extruders",
+    "name": "extruders"
+   },
+   {
+    "id": "Temperatures",
+    "name": "temperatures"
+   },
+   {
+    "id": "Charts",
+    "name": "charts"
+   },
+   {
+    "id": "Status",
+    "name": "status"
+   },
+   {
+    "id": "Controls",
+    "name": "controls"
+   },
+   {
+    "id": "Notifications",
+    "name": "notification"
+   },
+   {
+    "id": "Macros",
+    "name": "macros"
+   },
+   {
+    "id": "Extracontents",
+    "name": "extracontents"
+   }
+  ],
   "enablepolling": false,
   "pollingrefresh": "3000",
   "pollingcommands": "M105",
@@ -22,7 +70,7 @@
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
   "tftsd": false,
   "tftusb": false,
-  "sd": true,
+  "sd": false,
   "showjogpanel": true,
   "openjogonstart": true,
   "xyfeedrate": "1000",
@@ -82,9 +130,9 @@
   "openextrudersonstart": true,
   "efeedrate": "400",
   "extruderdistance": "5;10;100",
-  "ismixedextruder": true,
+  "ismixedextruder": false,
+  "enumber": "1",
   "ecolors": "blue;red;green;#FF00FF;cyan;black",
-  "enumber": "3",
   "showextracontrolspanel": true,
   "openextracontrolsonstart": true,
   "showfanctrls": true,

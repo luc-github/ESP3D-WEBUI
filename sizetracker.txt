@@ -28,9 +28,11 @@ ProgressBar bug fix	    :               :               |        |
 Libraries version bump      :               :               |        |
 More dependcies allowed	    :               :               |        |
 Add Color in notifications  :               :               |        |
-Extra SD for ESP32Cam       :			  : 81.2 KB       |        |   
+Extra SD for ESP32Cam       :			  : 81.2KB        |        |   
+Panels fixed order	    :               : 82.2KB	      |        |		    
             
 
                                                              grbl   size in 3.0 
 Base code                   : 3.0.0.a1      : 21.2KB        |        | 27KB
 CNC UI                      :               : 74.1KB        |        | 91.4Kb
+Panels fixed order	    :               : 74.8KB	      |        |

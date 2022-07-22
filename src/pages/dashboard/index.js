@@ -26,24 +26,56 @@ import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 
+const fixedPanels = []
+
 const Dashboard = () => {
     console.log("Dashboard")
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { panels, uisettings } = useUiContext()
     const menuPanelsList = useRef()
+    const isfixed = uisettings.getValue("fixedpanels")
 
     useEffect(() => {
         if (!panels.initDone && panels.list.length != 0) {
-            panels.setVisibles(
-                panels.list.reduce((acc, curr) => {
-                    if (
-                        uisettings.getValue(curr.onstart) &&
-                        uisettings.getValue(curr.show)
+            if (isfixed && fixedPanels.length == 0) {
+                const panelOrder = uisettings.getValue("panelsorder")
+                panelOrder.forEach((panel) => {
+                    fixedPanels.push({
+                        index: panel.index,
+                        id: panel.value[0].value,
+                    })
+                })
+                panels.setPanelsOrder(fixedPanels)
+                const newList = fixedPanels.reduce((acc, panel) => {
+                    const paneldesc = panels.list.filter(
+                        (p) => p.settingid == panel.id
                     )
-                        acc.push(curr)
+                    if (paneldesc.length > 0) acc.push(...paneldesc)
                     return acc
                 }, [])
-            )
+                panels.set([...newList])
+                panels.setVisibles(
+                    newList.reduce((acc, curr) => {
+                        if (
+                            uisettings.getValue(curr.onstart) &&
+                            uisettings.getValue(curr.show)
+                        )
+                            acc.push(curr)
+                        return acc
+                    }, [])
+                )
+            } else {
+                panels.setVisibles(
+                    panels.list.reduce((acc, curr) => {
+                        if (
+                            uisettings.getValue(curr.onstart) &&
+                            uisettings.getValue(curr.show)
+                        )
+                            acc.push(curr)
+                        return acc
+                    }, [])
+                )
+            }
 
             panels.setInitDone(true)
         } else {
@@ -54,6 +86,7 @@ const Dashboard = () => {
             })
         }
     })
+
     useEffect(() => {
         if (uisettings.getValue("showextracontents")) {
             const extraContents = uisettings.getValue("extracontents")
@@ -72,6 +105,8 @@ const Dashboard = () => {
         } else {
             panels.set([...defaultPanelsList])
         }
+
+        /* */
         //now remove if any visible that is not in list
         panels.visibles.forEach((element) => {
             if (!uisettings.getValue(element.show)) panels.hide(element.id)
@@ -140,7 +175,10 @@ const Dashboard = () => {
                                                 if (isVisible) {
                                                     panels.hide(panel.id)
                                                 } else {
-                                                    panels.show(panel.id)
+                                                    panels.show(
+                                                        panel.id,
+                                                        isfixed
+                                                    )
                                                 }
                                                 setVisible(!isVisible)
                                             }}

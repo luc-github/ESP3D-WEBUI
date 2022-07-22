@@ -34,6 +34,7 @@ const UiContext = createContext("uiContext")
 const useUiContext = () => useContext(UiContext)
 const UiContextProvider = ({ children }) => {
     const [panelsList, setPanelsList] = useState([])
+    const [panelsOrder, setPanelsOrder] = useState([])
     const [visiblePanelsList, setVisiblePanelsList] = useState([])
     const uiRefreshPaused = useRef({})
     const timersList = useRef({})
@@ -63,11 +64,28 @@ const UiContextProvider = ({ children }) => {
         )
     }
 
-    const addToVisibles = (id) => {
-        setVisiblePanelsList([
-            ...panelsList.filter((element) => element.id == id),
-            ...visiblePanelsList.filter((element) => element.id != id),
-        ])
+    const addToVisibles = (id, fixed) => {
+        if (fixed && panelsOrder.length > 0) {
+            const unSortedVisiblePanelsList = [
+                ...visiblePanelsList.filter((element) => element.id != id),
+                ...panelsList.filter((element) => element.id == id),
+            ]
+            const sortedVisiblePanelsList = [
+                ...panelsOrder.reduce((acc, panel) => {
+                    const paneldesc = unSortedVisiblePanelsList.filter(
+                        (p) => p.settingid == panel.id
+                    )
+                    if (paneldesc.length > 0) acc.push(...paneldesc)
+                    return acc
+                }, []),
+            ]
+            setVisiblePanelsList([...sortedVisiblePanelsList])
+        } else {
+            setVisiblePanelsList([
+                ...panelsList.filter((element) => element.id == id),
+                ...visiblePanelsList.filter((element) => element.id != id),
+            ])
+        }
     }
 
     const addToast = (newToast) => {
@@ -325,6 +343,7 @@ const UiContextProvider = ({ children }) => {
             show: addToVisibles,
             initDone: initPanelsVisibles,
             setInitDone: setInitPanelsVisibles,
+            setPanelsOrder: setPanelsOrder,
         },
         uisettings: {
             current: uiSettings,

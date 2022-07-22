@@ -206,6 +206,8 @@
     "S199": "Not yet supported",
     "S200": "Audio feedback",
     "S201": "Invalid user name or password",
+    "S202": "Panels order",
+    "S203": "Fixed panels order",
     "processing": "Processing",
     "no stream": "No stream",
     "pause stream": "Pause stream",

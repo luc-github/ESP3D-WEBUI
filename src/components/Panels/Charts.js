@@ -482,6 +482,7 @@ const ChartsPanelElement = {
     icon: "Image",
     show: "showchartspanel",
     onstart: "openchartsonstart",
+    settingid: "charts",
 }
 
 export { ChartsPanel, ChartsPanelElement }

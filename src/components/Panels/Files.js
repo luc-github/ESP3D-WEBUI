@@ -934,6 +934,7 @@ const FilesPanelElement = {
     icon: "HardDrive",
     show: "showfilespanel",
     onstart: "openfilesonstart",
+    settingid: "files",
 }
 
 export { FilesPanel, FilesPanelElement }

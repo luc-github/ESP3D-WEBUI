@@ -1159,6 +1159,7 @@ const JogPanelElement = {
     icon: "Move",
     show: "showjogpanel",
     onstart: "openjogonstart",
+    settingid: "jog",
 }
 
 export { JogPanel, JogPanelElement, PositionsControls }

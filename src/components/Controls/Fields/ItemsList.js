@@ -22,10 +22,15 @@ import { ButtonImg } from "../../Controls"
 import { T } from "../../Translations"
 import { iconsFeather } from "../../Images"
 import { iconsTarget } from "../../../targets"
-import { generateUID } from "../../Helpers"
+import {
+    generateUID,
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
+} from "../../Helpers"
 import { Field } from "../../Controls"
 import { formatItem } from "../../../tabs/interface/importHelper"
-import { useUiContextFn } from "../../../contexts"
+import { useUiContextFn, useSettingsContext } from "../../../contexts"
 import {
     Plus,
     ArrowUp,
@@ -46,16 +51,19 @@ const ItemControl = ({
     index,
     completeList,
     idList,
+    depend,
     setValue,
     validationfn,
+    fixed,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
-    const icon =
-        value[value.findIndex((element) => element.id == id + "-icon")].value
-    const name =
-        value[value.findIndex((element) => element.id == id + "-name")].value
+    const indexIcon = value.findIndex((element) => element.id == id + "-icon")
+    const indexName = value.findIndex((element) => element.id == id + "-name")
+    const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
+    const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
+
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
@@ -86,6 +94,7 @@ const ItemControl = ({
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [completeList])
+
     let colorStyle
     if (
         JSON.stringify(value).includes('"hasmodified":true') ||
@@ -127,29 +136,34 @@ const ItemControl = ({
                     )}
 
                     <div class="item-list-name">
+                        {!fixed && (
+                            <ButtonImg
+                                m2
+                                tooltip
+                                data-tooltip={T("S94")}
+                                style={colorStyle}
+                                label={name}
+                                icon={controlIcon}
+                                width="100px"
+                                onClick={(e) => {
+                                    useUiContextFn.haptic()
+                                    e.target.blur()
+                                    onEdit(true)
+                                }}
+                            />
+                        )}
+                        {fixed && <label class="m-1">{T(name)}</label>}
+                    </div>
+
+                    {!fixed && (
                         <ButtonImg
                             m2
                             tooltip
-                            data-tooltip={T("S94")}
-                            style={colorStyle}
-                            label={name}
-                            icon={controlIcon}
-                            width="100px"
-                            onClick={(e) => {
-                                useUiContextFn.haptic()
-                                e.target.blur()
-                                onEdit(true)
-                            }}
+                            data-tooltip={T("S37")}
+                            icon={<Trash2 />}
+                            onClick={removeItem}
                         />
-                    </div>
-
-                    <ButtonImg
-                        m2
-                        tooltip
-                        data-tooltip={T("S37")}
-                        icon={<Trash2 />}
-                        onClick={removeItem}
-                    />
+                    )}
                 </div>
             )}
             {editionMode && (
@@ -258,8 +272,17 @@ const ItemsList = ({
     type,
     setValue,
     inline,
+    fixed,
+    depend,
     ...rest
 }) => {
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    const dependIds = generateDependIds(
+        depend,
+        interfaceSettings.current.settings
+    )
+    const canshow = connectionDepend(depend, connectionSettings.current)
+
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
@@ -274,31 +297,43 @@ const ItemsList = ({
         value.unshift(formatedNewItem)
         setValue(value)
     }
+
     useEffect(() => {
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [value])
-    const content = (
-        <ButtonImg
-            m2
-            label={id == "macros" ? T("S128") : T("S156")}
-            tooltip
-            data-tooltip={id == "macros" ? T("S128") : T("S156")}
-            icon={<Plus />}
-            onClick={addItem}
-        />
-    )
+
+    useEffect(() => {
+        let visible =
+            canshow &&
+            settingsDepend(depend, interfaceSettings.current.settings)
+        if (document.getElementById(id))
+            document.getElementById(id).style.display = visible
+                ? "block"
+                : "none"
+        if (document.getElementById("group-" + id))
+            document.getElementById("group-" + id).style.display = visible
+                ? "block"
+                : "none"
+    }, [...dependIds])
+
     return (
-        <fieldset class="fieldset-top-separator fieldset-bottom-separator">
+        <fieldset
+            id={id}
+            class="fieldset-top-separator fieldset-bottom-separator field-group"
+        >
             <legend>
-                <ButtonImg
-                    m2
-                    label={id == "macros" ? T("S128") : T("S156")}
-                    tooltip
-                    data-tooltip={id == "macros" ? T("S128") : T("S156")}
-                    icon={<Plus />}
-                    onClick={addItem}
-                />
+                {!fixed && (
+                    <ButtonImg
+                        m2
+                        label={id == "macros" ? T("S128") : T("S156")}
+                        tooltip
+                        data-tooltip={id == "macros" ? T("S128") : T("S156")}
+                        icon={<Plus />}
+                        onClick={addItem}
+                    />
+                )}
+                {fixed && <label class="m-1">{T(label)}</label>}
             </legend>
 
             <div class="items-group-content">
@@ -312,6 +347,7 @@ const ItemsList = ({
                                 idList={id}
                                 validationfn={validationfn}
                                 setValue={setValue}
+                                fixed={fixed}
                             />
                         )
                     })}

@@ -495,6 +495,7 @@ const ProbePanelElement = {
     icon: "Underline",
     show: "showprobepanel",
     onstart: "openprobeonstart",
+    settingid: "probe",
 }
 
 export { ProbePanel, ProbePanelElement, ProbeControls }

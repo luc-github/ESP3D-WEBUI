@@ -181,6 +181,7 @@ const MacrosPanelElement = {
     icon: "Cast",
     show: "showmacrospanel",
     onstart: "openmacrosonstart",
+    settingid: "macros",
 }
 
 export { MacrosPanel, MacrosPanelElement }

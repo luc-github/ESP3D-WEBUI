@@ -45,7 +45,7 @@ const FormGroup = ({
             id={id ? "group-" + id : ""}
         >
             <div class={inline ? "columns mt-2" : "flex-cols"}>
-                {label && (
+                {type != "list" && label && (
                     <label
                         class={
                             inline && type == "boolean"

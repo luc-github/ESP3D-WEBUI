@@ -200,6 +200,7 @@ const NotificationsPanelElement = {
     icon: "MessageSquare",
     show: "shownotificationspanel",
     onstart: "opennotificationsonstart",
+    settingid: "notification",
 }
 
 export { NotificationsPanel, NotificationsPanelElement }

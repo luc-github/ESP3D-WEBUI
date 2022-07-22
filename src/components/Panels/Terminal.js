@@ -300,6 +300,7 @@ const TerminalPanelElement = {
     icon: "Terminal",
     show: "showterminalpanel",
     onstart: "openterminalonstart",
+    settingid: "terminal",
 }
 
 export { TerminalPanel, TerminalPanelElement }
