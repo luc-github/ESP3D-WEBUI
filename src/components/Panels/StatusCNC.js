@@ -23,7 +23,18 @@ import { useTargetContext, variablesList } from "../../targets"
 import { ButtonImg, Button } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
-import { Layers, Unlock, RefreshCcw, Moon, Play, Pause } from "preact-feather"
+import {
+    Layers,
+    Unlock,
+    RefreshCcw,
+    Moon,
+    Play,
+    Pause,
+    PauseCircle,
+    PlayCircle,
+    StopCircle,
+    CheckCircle,
+} from "preact-feather"
 
 /*
  * Local const
@@ -103,7 +114,7 @@ const StatusControls = () => {
 
 const StatusPanel = () => {
     const { toasts, panels } = useUiContext()
-    const { status, states, pinsStates } = useTargetContext()
+    const { status, states, pinsStates, streamStatus } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "statusPanel"
     const hidePanel = () => {
@@ -113,7 +124,6 @@ const StatusPanel = () => {
     const buttonsList = [
         {
             name: "CN40",
-            depend: ["sd"],
             buttons: [
                 {
                     cmd: "$X",
@@ -152,6 +162,46 @@ const StatusPanel = () => {
                     icon: <Play />,
                     desc: T("CN61"),
                     depend: ["Hold"],
+                },
+            ],
+        },
+        {
+            name: "S204",
+            depend: () => {
+                return streamStatus.status != "no stream" || streamStatus.code
+            },
+            buttons: [
+                {
+                    cmd: "[ESP701]action=PAUSE",
+                    icon: <PauseCircle />,
+                    desc: T("S184"),
+                    depend: () => {
+                        return streamStatus.status == "processing"
+                    },
+                },
+                {
+                    cmd: "[ESP701]action=RESUME",
+                    icon: <PlayCircle />,
+                    desc: T("CN61"),
+                    depend: () => {
+                        return streamStatus.status == "pause"
+                    },
+                },
+                {
+                    cmd: "[ESP701]action=ABORT",
+                    icon: <StopCircle />,
+                    desc: T("S205"),
+                    depend: () => {
+                        return streamStatus.status != "no stream"
+                    },
+                },
+                {
+                    cmd: "[ESP701]action=CLEAR_ERROR",
+                    icon: <CheckCircle />,
+                    desc: T("S206"),
+                    depend: () => {
+                        return streamStatus.code
+                    },
                 },
             ],
         },
@@ -271,6 +321,16 @@ const StatusPanel = () => {
                         </fieldset>
                     )}
                 {buttonsList.map((list) => {
+                    if (list.depend) {
+                        if (list.depend) {
+                            if (typeof list.depend === "function") {
+                                if (!list.depend()) {
+                                    return
+                                }
+                            } else if (!list.depend.includes(status.state))
+                                return
+                        }
+                    }
                     return (
                         <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
                             <legend>
@@ -283,6 +343,13 @@ const StatusPanel = () => {
                                     {list.buttons.map((button) => {
                                         if (button.depend) {
                                             if (
+                                                typeof button.depend ===
+                                                "function"
+                                            ) {
+                                                if (!button.depend()) {
+                                                    return
+                                                }
+                                            } else if (
                                                 !button.depend.includes(
                                                     status.state
                                                 )
@@ -319,6 +386,7 @@ const StatusPanelElement = {
     icon: "Layers",
     show: "showstatuspanel",
     onstart: "openstatusonstart",
+    settingid: "status",
 }
 
 export { StatusPanel, StatusPanelElement, StatusControls }
