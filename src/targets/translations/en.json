@@ -211,6 +211,8 @@
     "S204": "Stream commands",
     "S205": "Abort",
     "S206": "Clear stream error",
+    "S207": "Add command(s)",
+    "panels": "Panels",
     "processing": "Processing",
     "no stream": "No stream",
     "pause": "Stream on hold",

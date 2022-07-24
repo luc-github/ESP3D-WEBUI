@@ -41,6 +41,7 @@ import {
 } from "preact-feather"
 import defaultPanel from "./def_panel.json"
 import defaultMacro from "./def_macro.json"
+import defaultPolling from "./def_polling.json"
 
 /*
  * Local const
@@ -55,6 +56,7 @@ const ItemControl = ({
     setValue,
     validationfn,
     fixed,
+    sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
@@ -111,29 +113,30 @@ const ItemControl = ({
             {!editionMode && (
                 <div class="fields-line">
                     {((index > 0 && completeList.length > 1) ||
-                        (index == 0 && completeList.length > 1)) && (
-                        <div class="item-list-move">
-                            {index > 0 && completeList.length > 1 && (
-                                <ButtonImg
-                                    m1
-                                    tooltip
-                                    data-tooltip={T("S38")}
-                                    icon={<ArrowUp />}
-                                    onClick={upItem}
-                                />
-                            )}
-                            {completeList.length != 1 &&
-                                index < completeList.length - 1 && (
+                        (index == 0 && completeList.length > 1)) &&
+                        sorted && (
+                            <div class="item-list-move">
+                                {index > 0 && completeList.length > 1 && (
                                     <ButtonImg
                                         m1
                                         tooltip
-                                        data-tooltip={T("S39")}
-                                        icon={<ArrowDown />}
-                                        onClick={downItem}
+                                        data-tooltip={T("S38")}
+                                        icon={<ArrowUp />}
+                                        onClick={upItem}
                                     />
                                 )}
-                        </div>
-                    )}
+                                {completeList.length != 1 &&
+                                    index < completeList.length - 1 && (
+                                        <ButtonImg
+                                            m1
+                                            tooltip
+                                            data-tooltip={T("S39")}
+                                            icon={<ArrowDown />}
+                                            onClick={downItem}
+                                        />
+                                    )}
+                            </div>
+                        )}
 
                     <div class="item-list-name">
                         {!fixed && (
@@ -182,7 +185,7 @@ const ItemControl = ({
                             class="float-right"
                         />
                         <div>
-                            {index > 0 && completeList.length > 1 && (
+                            {index > 0 && completeList.length > 1 && sorted && (
                                 <ButtonImg
                                     m1
                                     tooltip
@@ -192,6 +195,7 @@ const ItemControl = ({
                                 />
                             )}
                             {completeList.length != 1 &&
+                                sorted &&
                                 index < completeList.length - 1 && (
                                     <ButtonImg
                                         m1
@@ -273,6 +277,7 @@ const ItemsList = ({
     setValue,
     inline,
     fixed,
+    sorted,
     depend,
     ...rest
 }) => {
@@ -287,7 +292,13 @@ const ItemsList = ({
         useUiContextFn.haptic()
         e.target.blur()
         const newItem = JSON.parse(
-            JSON.stringify(id == "macros" ? defaultMacro : defaultPanel)
+            JSON.stringify(
+                id == "macros"
+                    ? defaultMacro
+                    : id == "pollingcmds"
+                    ? defaultPolling
+                    : defaultPanel
+            )
         )
         newItem.id = generateUID()
         newItem.name += " " + newItem.id
@@ -326,9 +337,21 @@ const ItemsList = ({
                 {!fixed && (
                     <ButtonImg
                         m2
-                        label={id == "macros" ? T("S128") : T("S156")}
+                        label={
+                            id == "macros"
+                                ? T("S128")
+                                : id == "pollingcmds"
+                                ? T("S207")
+                                : T("S156")
+                        }
                         tooltip
-                        data-tooltip={id == "macros" ? T("S128") : T("S156")}
+                        data-tooltip={
+                            id == "macros"
+                                ? T("S128")
+                                : id == "pollingcmds"
+                                ? T("S207")
+                                : T("S156")
+                        }
                         icon={<Plus />}
                         onClick={addItem}
                     />
@@ -348,6 +371,7 @@ const ItemsList = ({
                                 validationfn={validationfn}
                                 setValue={setValue}
                                 fixed={fixed}
+                                sorted={sorted}
                             />
                         )
                     })}

@@ -7,7 +7,9 @@
                 "label": "P15",
                 "value": "M112",
                 "help": "S97"
-            },
+            }
+        ],
+        "panels": [
             {
                 "id": "fixedpanels",
                 "type": "boolean",
@@ -17,9 +19,13 @@
             {
                 "id": "panelsorder",
                 "fixed": true,
-                "depend":[{
-                    "id":"fixedpanels", "value":true
-                }],
+                "sorted": true,
+                "depend": [
+                    {
+                        "id": "fixedpanels",
+                        "value": true
+                    }
+                ],
                 "type": "list",
                 "label": "S202",
                 "value": [
@@ -39,11 +45,24 @@
         ],
         "polling": [
             {
-                "id": "pollingcommands",
-                "type": "text",
+                "id": "pollingcmds",
+                "depend": [
+                    {
+                        "id": "enablepolling",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "sorted": false,
                 "label": "S115",
-                "help": "S97",
-                "value": "M105"
+                "value": [
+                    {
+                        "id": "samplepolling",
+                        "name": "3s",
+                        "cmds": "M105",
+                        "refreshtime": "3000"
+                    }
+                ]
             }
         ],
         "jog": [

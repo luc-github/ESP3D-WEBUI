@@ -51,6 +51,34 @@ const useSettings = () => {
     const { interfaceSettings, connectionSettings, activity } =
         useSettingsContext()
     const { defaultRoute, setActiveRoute } = useRouterContext()
+    const sendCommand = (cmd, id) => {
+        createNewRequest(
+            espHttpURL("command", {
+                cmd,
+            }).toString(),
+            {
+                method: "GET",
+                id: id,
+                max: 1,
+            },
+            {
+                onSuccess: (result) => {
+                    if (
+                        cmd.startsWith("[ESP") &&
+                        !result.startsWith("ESP3D says:")
+                    ) {
+                        processData("response", result, result.startsWith("{"))
+                    }
+                },
+                onFail: (error) => {
+                    toasts.addToast({
+                        content: error,
+                        type: "error",
+                    })
+                },
+            }
+        )
+    }
     const getConnectionSettings = (next) => {
         createNewRequest(
             espHttpURL("command", {
@@ -205,63 +233,59 @@ const useSettings = () => {
                         console.log("error")
                     }
                     interfaceSettings.current = preferences
-                    //to force refresh of full UI
-                    /*connection.setConnectionState({
-            connected: connection.connectionState.connected,
-            authenticate: connection.connectionState.authenticate,
-            page: connection.connectionState.page,
-            updating: true,
-          });*/
-                    //polling commands
 
-                    activity.startPolling(() => {
-                        const cmdsString = uisettings
-                            .getValue("pollingcommands", preferences.settings)
-                            .trim()
-                        if (cmdsString.length > 0) {
-                            let cmdsList = cmdsString.split(";")
-                            let index = 0
-                            for (let cmd of cmdsList) {
-                                const idpolling = "polling" + index
-                                cmd = cmd.trim()
-                                if (cmd.length > 0) {
-                                    createNewRequest(
-                                        espHttpURL("command", {
+                    //polling commands
+                    if (
+                        uisettings.getValue(
+                            "enablepolling",
+                            preferences.settings
+                        )
+                    ) {
+                        const pollingList = uisettings.getValue(
+                            "pollingcmds",
+                            preferences.settings
+                        )
+                        if (Array.isArray(pollingList)) {
+                            pollingList.forEach((cmdEntry) => {
+                                const cmds = cmdEntry.value
+                                    .find((item) => item.name == "cmds")
+                                    .value.trim()
+                                    .split(";")
+                                const refreshtime = parseInt(
+                                    cmdEntry.value.find(
+                                        (item) => item.name == "refreshtime"
+                                    ).value
+                                )
+                                //Send commands at start
+                                if (cmds.length > 0) {
+                                    cmds.forEach((cmd, index) => {
+                                        sendCommand(
                                             cmd,
-                                        }).toString(),
-                                        {
-                                            method: "GET",
-                                            id: idpolling,
-                                            max: 1,
-                                        },
-                                        {
-                                            onSuccess: (result) => {
-                                                if (
-                                                    cmd.startsWith("[ESP") &&
-                                                    !result.startsWith(
-                                                        "ESP3D says:"
-                                                    )
-                                                ) {
-                                                    processData(
-                                                        "response",
-                                                        result,
-                                                        result.startsWith("{")
-                                                    )
-                                                }
-                                            },
-                                            onFail: (error) => {
-                                                toasts.addToast({
-                                                    content: error,
-                                                    type: "error",
-                                                })
-                                            },
-                                        }
-                                    )
+                                            cmdEntry.id + "-" + index
+                                        )
+                                    })
                                 }
-                                index++
-                            }
+                                if (refreshtime != 0) {
+                                    if (cmds.length > 0) {
+                                        activity.startPolling(
+                                            cmdEntry.id,
+                                            refreshtime,
+                                            () => {
+                                                cmds.forEach((cmd, index) => {
+                                                    sendCommand(
+                                                        cmd,
+                                                        cmdEntry.id +
+                                                            "-" +
+                                                            index
+                                                    )
+                                                })
+                                            }
+                                        )
+                                    }
+                                }
+                            })
                         }
-                    }, preferences.settings)
+                    }
 
                     //Mobile view
                     if (uisettings.getValue("mobileview", preferences.settings))

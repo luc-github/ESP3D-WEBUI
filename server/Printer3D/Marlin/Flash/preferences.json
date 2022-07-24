@@ -9,6 +9,7 @@
   "audiofeedback": false,
   "showinformationpage": true,
   "showmachinesettings": true,
+  "emergencystop": "M112",
   "fixedpanels": true,
   "panelsorder": [
    {
@@ -57,10 +58,15 @@
     "name": "extracontents"
    }
   ],
-  "emergencystop": "M112",
-  "enablepolling": false,
-  "pollingrefresh": "3000",
-  "pollingcommands": "M105",
+  "enablepolling": true,
+  "pollingcmds": [
+   {
+    "id": "samplepolling",
+    "name": "3s",
+    "cmds": "M105",
+    "refreshtime": "3000"
+   }
+  ],
   "showterminalpanel": true,
   "openterminalonstart": true,
   "verbose": true,

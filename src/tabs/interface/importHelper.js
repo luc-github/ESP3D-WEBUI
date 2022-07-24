@@ -34,6 +34,11 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
             newItem.initial = itemData[key]
             if (index == -1) newItem.newItem = true
             switch (key) {
+                case "cmds":
+                    newItem.type = "text"
+                    newItem.label = "S115"
+                    newItem.help = "S97"
+                    break
                 case "name":
                     newItem.type = "text"
                     newItem.label = "S129"
