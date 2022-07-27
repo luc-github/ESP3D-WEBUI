@@ -32,7 +32,7 @@ import { useSettingsContextFn } from "../../../contexts"
 //echo:busy: processing
 
 const isTemperatures = (str) => {
-    const regex_search = /T:.*\s@:[0-1]/g
+    const regex_search = /T:.*\s@:[0-9]*/g
     return regex_search.test(str)
 }
 
