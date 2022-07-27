@@ -57,14 +57,16 @@
 ## CNC Features
   * Target firmware configuration
   * Jog control / monitoring
-  * Job control / monitoring
+  * Laser control
+  * Spindle control
   * Status monitoring
+  * Probing control / monitoring
+  * Code streaming using ESP3D V3
   * TBD...
 
 ## Sand Table Features
   * Target firmware configuration
   * Jog control / monitoring
-  * Job control / monitoring
   * Status monitoring
   * TBD...
 
