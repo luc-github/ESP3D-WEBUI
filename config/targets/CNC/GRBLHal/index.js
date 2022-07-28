@@ -88,7 +88,7 @@ const commandsQuery = (req, res, SendWS) => {
             data: {
                 FWVersion: "3.0.0.a111",
                 FWTarget: "grblhal",
-                FWTargetID: "10",
+                FWTargetID: "80",
                 Setup: "Enabled",
                 SDConnection: "direct",
                 SerialProtocol: "Socket",

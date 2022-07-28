@@ -40,7 +40,7 @@ import { AppLogo } from "../../../components/Images/logo"
 import { Eye as WebUILogo } from "preact-feather"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
-const Target = "GRBLHal"
+const Target = "grblHAL"
 const webUIbuild = "GH2"
 const Name = "grblHAL"
 const fwUrl = "https://github.com/grblHAL"
