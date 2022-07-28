@@ -123,12 +123,10 @@ const MachineSettings = () => {
     }
 
     const sendCommand = (element, setvalidation) => {
-        console.log("Send ", element.value)
-        sendSerialCmd(element.value.trim(), () => {
+        sendSerialCmd(`${element.cmd}=${element.value.trim()}`, () => {
             element.initial = element.value
             setvalidation(generateValidation(element))
         })
-
         //TODO: Should answer be checked ?
     }
 
