@@ -508,6 +508,11 @@ const FilesPanel = () => {
     useEffect(() => {
         if (useUiContextFn.getValue("autoload") && currentFS == "") {
             currentFS = "FLASH"
+            const fs = files.supported.find((element) => {
+                if (element.depend) if (element.depend()) return true
+                return false
+            })
+            currentFS = fs.value
             onSelectFS()
         }
         setupFileInput()
