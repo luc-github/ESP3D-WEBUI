@@ -19,8 +19,14 @@ import { h } from "preact"
 
 const realCommandsTable = [
     { name: "#SOFTRESET#", value: "\x18", notprintable: true },
+    { name: "#STATUSREPORT#", value: "\x80", notprintable: true },
+    { name: "#CYCLESTART#", value: "\x81", notprintable: true },
+    { name: "#FEEDHOLD#", value: "\x82", notprintable: true },
+    { name: "#PARSERREPORT#", value: "\x83", notprintable: true },
     { name: "#SAFETYDOOR#", value: "\x84", notprintable: true },
     { name: "#JOGCANCEL#", value: "\x85", notprintable: true },
+    { name: "#COMPLETEREPORT#", value: "\x87", notprintable: true },
+    { name: "#T-STOPSWITCH#", value: "\x88", notprintable: true },
     { name: "#FO100#", value: "\x90", notprintable: true },
     { name: "#FO+10#", value: "\x91", notprintable: true },
     { name: "#FO-10#", value: "\x92", notprintable: true },
@@ -37,6 +43,9 @@ const realCommandsTable = [
     { name: "#T-SPINDLESTOP#", value: "\x9E", notprintable: true },
     { name: "#T-FLOODCOOLANT#", value: "\xA0", notprintable: true },
     { name: "#T-MISTCOOLANT#", value: "\xA1", notprintable: true },
+    { name: "#PIDREPORT#", value: "\xA2", notprintable: true },
+    { name: "#TOOLCHANGE#", value: "\xA3", notprintable: true },
+    { name: "#T-PROBE#", value: "\xA4", notprintable: true },
 ]
 
 export default realCommandsTable

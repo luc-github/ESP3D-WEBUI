@@ -141,7 +141,7 @@ const StatusPanel = () => {
                     desc: T("CN43"),
                 },
                 {
-                    cmd: "!",
+                    cmd: "#FEEDHOLD#",
                     icon: <Pause />,
                     desc: T("Hold"),
                     depend: [
@@ -158,7 +158,7 @@ const StatusPanel = () => {
                     ],
                 },
                 {
-                    cmd: "~",
+                    cmd: "#CYCLESTART#",
                     icon: <Play />,
                     desc: T("CN61"),
                     depend: ["Hold"],
