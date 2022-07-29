@@ -99,7 +99,7 @@ const commandsQuery = (req, res, SendWS) => {
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
-                FileSystem: "LittleFS",
+                FileSystem: "none",
                 Time: "none",
                 CameraID: "4",
                 CameraName: "ESP32 Cam",

@@ -24,7 +24,7 @@ import { SD } from "./SD-source"
 import { SDEXT } from "./SDEXT-source"
 import { TFTSD } from "./TFT-SD-source"
 import { TFTUSB } from "./TFT-USB-source"
-import { useSettingsContext, useUiContextFn } from "../../../contexts"
+import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -32,17 +32,19 @@ const supportedFileSystems = [
         value: "FLASH",
         name: "S137",
         depend: () => {
-            return useUiContextFn.getValue("showfilespanel")
+            return (
+                useUiContextFn.getValue("flashfs") &&
+                useSettingsContextFn.getValue("FileSystem") != "none"
+            )
         },
     },
     {
         value: "SD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
                 useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection == "none"
+                useSettingsContextFn.getValue("SDConnection") == "none"
             )
         },
     },
@@ -50,10 +52,9 @@ const supportedFileSystems = [
         value: "DIRECTSD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
                 useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection != "none"
+                useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
     },

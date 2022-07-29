@@ -33,7 +33,10 @@ const supportedFileSystems = [
         value: "FLASH",
         name: "S137",
         depend: () => {
-            return useUiContextFn.getValue("showfilespanel")
+            return (
+                useUiContextFn.getValue("flashfs") &&
+                useSettingsContextFn.getValue("FileSystem") != "none"
+            )
         },
     },
     {

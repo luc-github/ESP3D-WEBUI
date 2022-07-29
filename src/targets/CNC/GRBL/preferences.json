@@ -74,6 +74,15 @@
                 "help": "S97"
             },
             {
+                "id": "flashfs",
+                "type": "boolean",
+                "depend": [
+                    { "connection_id": "FileSystem", "value": "!='none'" }
+                ],
+                "label": "S137",
+                "value": true
+            },
+            {
                 "id": "directsd",
                 "type": "boolean",
                 "depend": [
