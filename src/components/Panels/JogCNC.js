@@ -52,13 +52,20 @@ const PositionsControls = () => {
     return (
         <Fragment>
             <div class="jog-positions-ctrls m-1">
-                {typeof positions.x != "undefined" &&
+                {(typeof positions.x != "undefined" ||
+                    typeof positions.wx != "undefined") &&
                     useUiContextFn.getValue("showx") && (
                         <div class="jog-position-ctrl">
-                            <div class="jog-position-header">MPos X</div>
-                            <div class="m-1 jog-position-value">
-                                {positions.x}
-                            </div>
+                            {typeof positions.x != "undefined" && (
+                                <Fragment>
+                                    <div class="jog-position-sub-header">
+                                        MPos X
+                                    </div>
+                                    <div class="m-1 jog-position-value">
+                                        {positions.x}
+                                    </div>
+                                </Fragment>
+                            )}
                             {typeof positions.wx != "undefined" && (
                                 <Fragment>
                                     <div class="jog-position-sub-header">
@@ -71,13 +78,20 @@ const PositionsControls = () => {
                             )}
                         </div>
                     )}
-                {typeof positions.y != "undefined" &&
+                {(typeof positions.y != "undefined" ||
+                    typeof positions.wy != "undefined") &&
                     useUiContextFn.getValue("showy") && (
                         <div class="jog-position-ctrl">
-                            <div class="jog-position-header">MPos Y</div>
-                            <div class="m-1 jog-position-value">
-                                {positions.y}
-                            </div>
+                            {typeof positions.y != "undefined" && (
+                                <Fragment>
+                                    <div class="jog-position-sub-header">
+                                        MPos Y
+                                    </div>
+                                    <div class="m-1 jog-position-value">
+                                        {positions.y}
+                                    </div>
+                                </Fragment>
+                            )}
                             {typeof positions.wy != "undefined" && (
                                 <Fragment>
                                     <div class="jog-position-sub-header">
@@ -90,13 +104,20 @@ const PositionsControls = () => {
                             )}
                         </div>
                     )}
-                {typeof positions.z != "undefined" &&
+                {(typeof positions.z != "undefined" ||
+                    typeof positions.wz != "undefined") &&
                     useUiContextFn.getValue("showz") && (
                         <div class="jog-position-ctrl">
-                            <div class="jog-position-header">MPos Z</div>
-                            <div class="m-1 jog-position-value">
-                                {positions.z}
-                            </div>
+                            {typeof positions.z != "undefined" && (
+                                <Fragment>
+                                    <div class="jog-position-sub-header">
+                                        MPos Z
+                                    </div>
+                                    <div class="m-1 jog-position-value">
+                                        {positions.z}
+                                    </div>
+                                </Fragment>
+                            )}
                             {typeof positions.wz != "undefined" && (
                                 <Fragment>
                                     <div class="jog-position-sub-header">
@@ -110,15 +131,23 @@ const PositionsControls = () => {
                         </div>
                     )}
             </div>
-            {typeof positions.a != "undefined" &&
+            {(typeof positions.a != "undefined" ||
+                typeof positions.wa != "undefined") &&
                 useUiContextFn.getValue("showa") && (
                     <div class="jog-positions-ctrls m-1">
-                        {typeof positions.a != "undefined" && (
+                        {(typeof positions.a != "undefined" ||
+                            typeof positions.wa != "undefined") && (
                             <div class="jog-position-ctrl">
-                                <div class="jog-position-header">MPos A</div>
-                                <div class="m-1 jog-position-value">
-                                    {positions.a}
-                                </div>
+                                {typeof positions.a != "undefined" && (
+                                    <Fragment>
+                                        <div class="jog-position-sub-header">
+                                            MPos A
+                                        </div>
+                                        <div class="m-1 jog-position-value">
+                                            {positions.a}
+                                        </div>
+                                    </Fragment>
+                                )}
                                 {typeof positions.wa != "undefined" && (
                                     <Fragment>
                                         <div class="jog-position-sub-header">
@@ -131,15 +160,20 @@ const PositionsControls = () => {
                                 )}
                             </div>
                         )}
-                        {typeof positions.b != "undefined" &&
+                        {(typeof positions.b != "undefined" ||
+                            typeof positions.wb != "undefined") &&
                             useUiContextFn.getValue("showb") && (
                                 <div class="jog-position-ctrl">
-                                    <div class="jog-position-header">
-                                        MPos B
-                                    </div>
-                                    <div class="m-1 jog-position-value">
-                                        {positions.b}
-                                    </div>
+                                    {typeof positions.b != "undefined" && (
+                                        <Fragment>
+                                            <div class="jog-position-sub-header">
+                                                MPos B
+                                            </div>
+                                            <div class="m-1 jog-position-value">
+                                                {positions.b}
+                                            </div>
+                                        </Fragment>
+                                    )}
                                     {typeof positions.wb != "undefined" && (
                                         <Fragment>
                                             <div class="jog-position-sub-header">
@@ -152,15 +186,20 @@ const PositionsControls = () => {
                                     )}
                                 </div>
                             )}
-                        {typeof positions.c != "undefined" &&
+                        {(typeof positions.c != "undefined" ||
+                            typeof positions.wc != "undefined") &&
                             useUiContextFn.getValue("showc") && (
                                 <div class="jog-position-ctrl">
-                                    <div class="jog-position-header">
-                                        MPos C
-                                    </div>
-                                    <div class="m-1 jog-position-value">
-                                        {positions.C}
-                                    </div>
+                                    {typeof positions.c != "undefined" && (
+                                        <Fragment>
+                                            <div class="jog-position-sub-header">
+                                                MPos C
+                                            </div>
+                                            <div class="m-1 jog-position-value">
+                                                {positions.c}
+                                            </div>
+                                        </Fragment>
+                                    )}
                                     {typeof positions.wc != "undefined" && (
                                         <Fragment>
                                             <div class="jog-position-sub-header">
@@ -241,12 +280,12 @@ const JogPanel = () => {
         else selected_axis = axis + "0"
         if (axis.length == 0) {
             selected_axis = ""
-            if (positions.x) selected_axis += " X0"
-            if (positions.y) selected_axis += " Y0"
-            if (positions.z) selected_axis += " Z0"
-            if (positions.a) selected_axis += " A0"
-            if (positions.b) selected_axis += " B0"
-            if (positions.c) selected_axis += " C0"
+            if (positions.x || positions.wx) selected_axis += " X0"
+            if (positions.y || positions.wy) selected_axis += " Y0"
+            if (positions.z || positions.wz) selected_axis += " Z0"
+            if (positions.a || positions.wa) selected_axis += " A0"
+            if (positions.b || positions.wb) selected_axis += " B0"
+            if (positions.c || positions.wc) selected_axis += " C0"
         }
         const cmd = useUiContextFn
             .getValue("zerocmd")
@@ -295,11 +334,20 @@ const JogPanel = () => {
             clickBtn("btnStop")
         } else if (e.key == "(" || e.key == ")") {
             let axisList = []
-            if (positions.a && useUiContextFn.getValue("showa"))
+            if (
+                (positions.a || positions.wa) &&
+                useUiContextFn.getValue("showa")
+            )
                 axisList.push("A")
-            if (positions.b && useUiContextFn.getValue("showb"))
+            if (
+                (positions.b || positions.wb) &&
+                useUiContextFn.getValue("showb")
+            )
                 axisList.push("B")
-            if (positions.c && useUiContextFn.getValue("showc"))
+            if (
+                (positions.c || positions.wc) &&
+                useUiContextFn.getValue("showc")
+            )
                 axisList.push("C")
 
             if (axisList.length > 1) {
@@ -438,24 +486,26 @@ const JogPanel = () => {
     const showKeyboarHelp = () => {
         useUiContextFn.haptic()
         let help = ""
-        if (positions.x && useUiContextFn.getValue("showx")) {
+        if ((positions.x || positions.wx) && useUiContextFn.getValue("showx")) {
             help += T("CN24")
             if (useUiContextFn.getValue("homesingleaxis")) help += T("CN27")
         }
 
-        if (positions.y && useUiContextFn.getValue("showy")) {
+        if ((positions.y || positions.wy) && useUiContextFn.getValue("showy")) {
             help += T("CN25")
             if (useUiContextFn.getValue("homesingleaxis")) help += T("CN28")
         }
-        if (positions.z && useUiContextFn.getValue("showz")) {
+        if ((positions.z || positions.wz) && useUiContextFn.getValue("showz")) {
             help += T("CN26")
             if (useUiContextFn.getValue("homesingleaxis")) help += T("CN29")
         }
 
         if (
-            (positions.a && useUiContextFn.getValue("showa")) ||
-            (positions.b && useUiContextFn.getValue("showb")) ||
-            (positions.c && useUiContextFn.getValue("showc"))
+            ((positions.a || positions.wa) &&
+                useUiContextFn.getValue("showa")) ||
+            ((positions.b || positions.wb) &&
+                useUiContextFn.getValue("showb")) ||
+            ((positions.c || positions.wc) && useUiContextFn.getValue("showc"))
         ) {
             help += T("CN30")
             if (useUiContextFn.getValue("homesingleaxis")) help += T("CN31")
@@ -511,21 +561,21 @@ const JogPanel = () => {
         if (
             currentAxis == "-1" &&
             useUiContextFn.getValue("showa") &&
-            positions.a
+            (positions.a || positions.wa)
         ) {
             currentAxis = "A"
         }
         if (
             currentAxis == "-1" &&
             useUiContextFn.getValue("showb") &&
-            positions.b
+            (positions.b || positions.wb)
         ) {
             currentAxis = "B"
         }
         if (
             currentAxis == "-1" &&
             useUiContextFn.getValue("showc") &&
-            positions.c
+            (positions.c || positions.wc)
         ) {
             currentAxis = "C"
         }
@@ -550,9 +600,9 @@ const JogPanel = () => {
 
                             <ul class="menu">
                                 {((useUiContextFn.getValue("showx") &&
-                                    positions.x) ||
+                                    (positions.x || positions.wx)) ||
                                     (useUiContextFn.getValue("showy") &&
-                                        positions.y)) && (
+                                        (positions.y || positions.wy))) && (
                                     <li class="menu-item">
                                         <div
                                             class="menu-entry"
@@ -569,7 +619,7 @@ const JogPanel = () => {
                                         </div>
                                     </li>
                                 )}
-                                {positions.z &&
+                                {(positions.z || positions.wz) &&
                                     useUiContextFn.getValue("showz") && (
                                         <li class="menu-item">
                                             <div
@@ -703,199 +753,214 @@ const JogPanel = () => {
                 <PositionsControls />
                 <div class="m-1">
                     <div class="jog-buttons-main-container">
-                        {!positions.x &&
-                            !positions.y &&
-                            !positions.z &&
-                            !positions.a &&
-                            !positions.b &&
-                            !positions.c && <Loading large />}
-                        {positions.x && useUiContextFn.getValue("showx") && (
-                            <div class="m-1 jog-buttons-container">
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN12")}
-                                    id="btn+X"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("X+")
-                                    }}
-                                >
-                                    +X
-                                </Button>
-                                {useUiContextFn.getValue("homesingleaxis") && (
+                        {!(positions.x || positions.wx) &&
+                            !(positions.y || positions.wy) &&
+                            !(positions.z || positions.wz) &&
+                            !(positions.a || positions.wa) &&
+                            !(positions.b || positions.wb) &&
+                            !(positions.c || positions.wc) && <Loading large />}
+                        {(positions.x || positions.wx) &&
+                            useUiContextFn.getValue("showx") && (
+                                <div class="m-1 jog-buttons-container">
                                     <Button
                                         m2
                                         tooltip
-                                        data-tooltip={T("CN10")}
-                                        id="btnHX"
+                                        data-tooltip={T("CN12")}
+                                        id="btn+X"
                                         onclick={(e) => {
                                             useUiContextFn.haptic()
                                             e.target.blur()
-                                            sendHomeCommand("X")
+                                            sendJogCommand("X+")
                                         }}
                                     >
-                                        <Home size="1rem" />
+                                        +X
+                                    </Button>
+                                    {useUiContextFn.getValue(
+                                        "homesingleaxis"
+                                    ) && (
+                                        <Button
+                                            m2
+                                            tooltip
+                                            data-tooltip={T("CN10")}
+                                            id="btnHX"
+                                            onclick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                sendHomeCommand("X")
+                                            }}
+                                        >
+                                            <Home size="1rem" />
+                                            <span class="text-tiny">x</span>
+                                        </Button>
+                                    )}
+
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN19")}
+                                        id="btnZX"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendZeroCommand("X")
+                                        }}
+                                    >
+                                        &Oslash;
                                         <span class="text-tiny">x</span>
                                     </Button>
-                                )}
-
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN19")}
-                                    id="btnZX"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendZeroCommand("X")
-                                    }}
-                                >
-                                    &Oslash;
-                                    <span class="text-tiny">x</span>
-                                </Button>
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN13")}
-                                    id="btn-X"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("X-")
-                                    }}
-                                >
-                                    -X
-                                </Button>
-                            </div>
-                        )}
-                        {positions.y && useUiContextFn.getValue("showy") && (
-                            <div class="m-1 jog-buttons-container">
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN12")}
-                                    id="btn+Y"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("Y+")
-                                    }}
-                                >
-                                    +Y
-                                </Button>
-                                {useUiContextFn.getValue("homesingleaxis") && (
                                     <Button
                                         m2
                                         tooltip
-                                        data-tooltip={T("CN10")}
-                                        id="btnHY"
+                                        data-tooltip={T("CN13")}
+                                        id="btn-X"
                                         onclick={(e) => {
                                             useUiContextFn.haptic()
                                             e.target.blur()
-                                            sendHomeCommand("Y")
+                                            sendJogCommand("X-")
                                         }}
                                     >
-                                        <Home size="1rem" />
+                                        -X
+                                    </Button>
+                                </div>
+                            )}
+                        {(positions.y || positions.wy) &&
+                            useUiContextFn.getValue("showy") && (
+                                <div class="m-1 jog-buttons-container">
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN12")}
+                                        id="btn+Y"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendJogCommand("Y+")
+                                        }}
+                                    >
+                                        +Y
+                                    </Button>
+                                    {useUiContextFn.getValue(
+                                        "homesingleaxis"
+                                    ) && (
+                                        <Button
+                                            m2
+                                            tooltip
+                                            data-tooltip={T("CN10")}
+                                            id="btnHY"
+                                            onclick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                sendHomeCommand("Y")
+                                            }}
+                                        >
+                                            <Home size="1rem" />
+                                            <span class="text-tiny">y</span>
+                                        </Button>
+                                    )}
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN19")}
+                                        id="btnZY"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendZeroCommand("Y")
+                                        }}
+                                    >
+                                        &Oslash;
                                         <span class="text-tiny">y</span>
                                     </Button>
-                                )}
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN19")}
-                                    id="btnZY"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendZeroCommand("Y")
-                                    }}
-                                >
-                                    &Oslash;
-                                    <span class="text-tiny">y</span>
-                                </Button>
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN13")}
-                                    id="btn-Y"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("Y-")
-                                    }}
-                                >
-                                    -Y
-                                </Button>
-                            </div>
-                        )}
-                        {positions.z && useUiContextFn.getValue("showz") && (
-                            <div class="m-1 jog-buttons-container">
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN12")}
-                                    id="btn+Z"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("Z+")
-                                    }}
-                                >
-                                    +Z
-                                </Button>
-                                {useUiContextFn.getValue("homesingleaxis") && (
                                     <Button
                                         m2
                                         tooltip
-                                        data-tooltip={T("CN10")}
-                                        id="btnHZ"
+                                        data-tooltip={T("CN13")}
+                                        id="btn-Y"
                                         onclick={(e) => {
                                             useUiContextFn.haptic()
                                             e.target.blur()
-                                            sendHomeCommand("Z")
+                                            sendJogCommand("Y-")
                                         }}
                                     >
-                                        <Home size="1rem" />
+                                        -Y
+                                    </Button>
+                                </div>
+                            )}
+                        {(positions.z || positions.wz) &&
+                            useUiContextFn.getValue("showz") && (
+                                <div class="m-1 jog-buttons-container">
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN12")}
+                                        id="btn+Z"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendJogCommand("Z+")
+                                        }}
+                                    >
+                                        +Z
+                                    </Button>
+                                    {useUiContextFn.getValue(
+                                        "homesingleaxis"
+                                    ) && (
+                                        <Button
+                                            m2
+                                            tooltip
+                                            data-tooltip={T("CN10")}
+                                            id="btnHZ"
+                                            onclick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                sendHomeCommand("Z")
+                                            }}
+                                        >
+                                            <Home size="1rem" />
+                                            <span class="text-tiny">z</span>
+                                        </Button>
+                                    )}
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN19")}
+                                        id="btnZZ"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendZeroCommand("Z")
+                                        }}
+                                    >
+                                        &Oslash;
                                         <span class="text-tiny">z</span>
                                     </Button>
-                                )}
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN19")}
-                                    id="btnZZ"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendZeroCommand("Z")
-                                    }}
-                                >
-                                    &Oslash;
-                                    <span class="text-tiny">z</span>
-                                </Button>
-                                <Button
-                                    m2
-                                    tooltip
-                                    data-tooltip={T("CN13")}
-                                    id="btn-Z"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        e.target.blur()
-                                        sendJogCommand("Z-")
-                                    }}
-                                >
-                                    -Z
-                                </Button>
-                            </div>
-                        )}
+                                    <Button
+                                        m2
+                                        tooltip
+                                        data-tooltip={T("CN13")}
+                                        id="btn-Z"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            e.target.blur()
+                                            sendJogCommand("Z-")
+                                        }}
+                                    >
+                                        -Z
+                                    </Button>
+                                </div>
+                            )}
                         {(positions.x ||
+                            positions.wx ||
                             positions.y ||
+                            positions.wy ||
                             positions.z ||
+                            positions.wz ||
                             positions.a ||
+                            positions.wa ||
                             positions.b ||
-                            positions.c) && (
+                            positions.wb ||
+                            positions.c ||
+                            positions.wc) && (
                             <div class="m-1 p-2 jog-buttons-container">
                                 <div class="btn-group jog-distance-selector-container">
                                     <center class="jog-distance-selector-header">
@@ -997,9 +1062,12 @@ const JogPanel = () => {
                         )}
                     </div>
                 </div>
-                {((useUiContextFn.getValue("showa") && positions.a) ||
-                    (useUiContextFn.getValue("showb") && positions.b) ||
-                    (useUiContextFn.getValue("showc") && positions.c)) && (
+                {((useUiContextFn.getValue("showa") &&
+                    (positions.a || positions.wa)) ||
+                    (useUiContextFn.getValue("showb") &&
+                        (positions.b || positions.wb)) ||
+                    (useUiContextFn.getValue("showc") &&
+                        (positions.c || positions.wc))) && (
                     <div class="m-1 jog-buttons-container-horizontal">
                         <div class="form-group m-2 text-primary">
                             <select
@@ -1011,15 +1079,15 @@ const JogPanel = () => {
                                 }}
                                 value={currentSelectedAxis}
                             >
-                                {positions.a &&
+                                {(positions.a || positions.wa) &&
                                     useUiContextFn.getValue("showa") && (
                                         <option value="A">A</option>
                                     )}
-                                {positions.b &&
+                                {(positions.b || positions.wb) &&
                                     useUiContextFn.getValue("showb") && (
                                         <option value="B">B</option>
                                     )}
-                                {positions.c &&
+                                {(positions.c || positions.wc) &&
                                     useUiContextFn.getValue("showc") && (
                                         <option value="C">C</option>
                                     )}
@@ -1087,11 +1155,17 @@ const JogPanel = () => {
                     </div>
                 )}
                 {(positions.x ||
+                    positions.wx ||
                     positions.y ||
+                    positions.wy ||
                     positions.z ||
+                    positions.wz ||
                     positions.a ||
+                    positions.wa ||
                     positions.b ||
-                    positions.c) && (
+                    positions.wb ||
+                    positions.c ||
+                    positions.wc) && (
                     <div class="jog-extra-buttons-container">
                         <Button
                             m1

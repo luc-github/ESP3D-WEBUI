@@ -24,6 +24,7 @@ import { gcode_parser_modes } from "./gcode_parser_modes"
  * Local variables
  */
 let wpos = []
+let mpos = []
 
 ////////////////////////////////////////////////////////
 //
@@ -47,6 +48,7 @@ const getStatus = (str) => {
         bf: {},
     }
     const mpos_pattern = /\|MPos:(?<mpos>[^\|>]+)/i
+    const wpos_pattern = /\|WPos:(?<wpos>[^\|>]+)/i
     const WCO_pattern = /\|WCO:(?<wco>[^\|>]+)/i
     const status_pattern = /<(?<state>[^:\|]+):*(?<code>[^\|:]*)\|/i
     const ov_patern = /\|Ov:(?<ov>[^\|>]+)/i
@@ -103,12 +105,20 @@ const getStatus = (str) => {
     } else {
         res.ov = null
     }
+    //extract override values
+    if ((result = ov_patern.exec(str)) !== null) {
+        const ov = result.groups.ov.split(",")
+        res.ov = { feed: ov[0], rapid: ov[1], spindle: ov[2] }
+    } else {
+        res.ov = null
+    }
     //extract positions
+    //MPos
     if ((result = mpos_pattern.exec(str)) !== null) {
         try {
             const mpos_array = result.groups.mpos.split(",")
             const precision = mpos_array[0].split(".")[1].length
-            const pos = mpos_array.map((e) =>
+            mpos = mpos_array.map((e) =>
                 parseFloat(e).toFixed(precision).toString()
             )
 
@@ -117,7 +127,7 @@ const getStatus = (str) => {
                 try {
                     const wpos_array = result.groups.wco.split(",")
                     wpos = wpos_array.map((e, index) =>
-                        (parseFloat(pos[index]) - parseFloat(e))
+                        (parseFloat(mpos[index]) - parseFloat(e))
                             .toFixed(precision)
                             .toString()
                     )
@@ -125,23 +135,50 @@ const getStatus = (str) => {
                     console.error(e)
                 }
             }
-            res.positions = {
-                x: pos[0],
-                y: pos.length > 1 ? pos[1] : undefined,
-                z: pos.length > 2 ? pos[2] : undefined,
-                a: pos.length > 3 ? pos[3] : undefined,
-                b: pos.length > 4 ? pos[4] : undefined,
-                c: pos.length > 5 ? pos[5] : undefined,
-                wx: wpos.length > 0 ? wpos[0] : undefined,
-                wy: wpos.length > 1 ? wpos[1] : undefined,
-                wz: wpos.length > 2 ? wpos[2] : undefined,
-                wa: wpos.length > 3 ? wpos[3] : undefined,
-                wb: wpos.length > 4 ? wpos[4] : undefined,
-                wc: wpos.length > 5 ? wpos[5] : undefined,
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    //WPos
+    if ((result = wpos_pattern.exec(str)) !== null) {
+        try {
+            const wpos_array = result.groups.wpos.split(",")
+            const precision = wpos_array[0].split(".")[1].length
+            wpos = wpos_array.map((e) =>
+                parseFloat(e).toFixed(precision).toString()
+            )
+
+            //Work coordinates
+            if ((result = WCO_pattern.exec(str)) !== null) {
+                try {
+                    const mpos_array = result.groups.wco.split(",")
+                    mpos = mpos_array.map((e, index) =>
+                        (parseFloat(wpos[index]) + parseFloat(e))
+                            .toFixed(precision)
+                            .toString()
+                    )
+                } catch (e) {
+                    console.error(e)
+                }
             }
         } catch (e) {
             console.error(e)
         }
+    }
+    //export positions
+    res.positions = {
+        x: mpos.length > 1 ? mpos[0] : undefined,
+        y: mpos.length > 1 ? mpos[1] : undefined,
+        z: mpos.length > 2 ? mpos[2] : undefined,
+        a: mpos.length > 3 ? mpos[3] : undefined,
+        b: mpos.length > 4 ? mpos[4] : undefined,
+        c: mpos.length > 5 ? mpos[5] : undefined,
+        wx: wpos.length > 0 ? wpos[0] : undefined,
+        wy: wpos.length > 1 ? wpos[1] : undefined,
+        wz: wpos.length > 2 ? wpos[2] : undefined,
+        wa: wpos.length > 3 ? wpos[3] : undefined,
+        wb: wpos.length > 4 ? wpos[4] : undefined,
+        wc: wpos.length > 5 ? wpos[5] : undefined,
     }
     return res
 }

@@ -19,7 +19,8 @@
 */
 import { h } from "preact"
 import { FLASH } from "../../FLASH-source"
-import { useUiContextFn } from "../../../contexts"
+import { DIRECTSD } from "./DIRECTSD-source"
+import { useSettingsContext, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -28,6 +29,17 @@ const supportedFileSystems = [
         name: "S137",
         depend: () => {
             return useUiContextFn.getValue("showfilespanel")
+        },
+    },
+    {
+        value: "DIRECTSD",
+        name: "S190",
+        depend: () => {
+            const { connectionSettings } = useSettingsContext()
+            return (
+                useUiContextFn.getValue("directsd") &&
+                connectionSettings.current.SDConnection != "none"
+            )
         },
     },
     {
@@ -48,12 +60,14 @@ const supportedFileSystems = [
 
 const capabilities = {
     FLASH: FLASH.capabilities,
+    DIRECTSD: DIRECTSD.capabilities,
     TFTUSB: {},
     TFTSD: {},
 }
 
 const commands = {
     FLASH: FLASH.commands,
+    DIRECTSD: DIRECTSD.commands,
     TFTUSB: {},
     TFTSD: {},
 }

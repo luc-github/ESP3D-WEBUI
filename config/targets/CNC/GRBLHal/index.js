@@ -59,15 +59,15 @@ const commandsQuery = (req, res, SendWS) => {
         countStatus++
         if (countStatus == 1)
             SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
+                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
             )
         if (countStatus == 2)
             SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
+                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
             )
         if (countStatus > 2)
             SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:P>\n"
+                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:P>\n"
             )
         if (countStatus == 10) countStatus = 0
         res.send("")
@@ -186,6 +186,7 @@ const commandsQuery = (req, res, SendWS) => {
 
     if (url.indexOf("$G") != -1) {
         SendWS("[GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]\n")
+        //SendWS("[GC:G0 G54 G17 G21 G90 G94 G49 G98 G50 M5 M9 T0 F0 S0.]\n")
         res.send("")
         return
     }
