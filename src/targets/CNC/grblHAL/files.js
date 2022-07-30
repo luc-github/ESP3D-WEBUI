@@ -76,9 +76,10 @@ const commands = {
 
 function capability() {
     const [filesystem, cap, ...rest] = arguments
+    if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknown capability ", cmd, " for ", filesystem)
+    console.log("Unknown capability ", cap, " for ", filesystem)
     return false
 }
 

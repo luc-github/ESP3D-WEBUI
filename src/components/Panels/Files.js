@@ -415,14 +415,14 @@ const FilesPanel = () => {
             fileref.current.accept = "*"
         }
     }
-    const onSelectFS = (e) => {
+    const onSelectFS = (e, norefresh = false) => {
         if (e) currentFS = e.target.value
         setupFileInput()
         setFileSystem(currentFS)
         if (!currentPath[currentFS]) {
             currentPath[currentFS] = "/"
         }
-        onRefresh(e, true)
+        if (!norefresh) onRefresh(e, true)
     }
 
     const ElementClicked = (e, line) => {
@@ -506,14 +506,13 @@ const FilesPanel = () => {
     }
 
     useEffect(() => {
-        if (useUiContextFn.getValue("autoload") && currentFS == "") {
-            currentFS = "FLASH"
+        if (currentFS == "") {
             const fs = files.supported.find((element) => {
                 if (element.depend) if (element.depend()) return true
                 return false
             })
             currentFS = fs.value
-            onSelectFS()
+            onSelectFS(null, !useUiContextFn.getValue("autoload"))
         }
         setupFileInput()
     }, [])
