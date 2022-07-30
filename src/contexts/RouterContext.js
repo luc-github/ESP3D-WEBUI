@@ -18,6 +18,7 @@
 */
 import { h, createContext } from "preact"
 import { useContext, useState, useRef } from "preact/hooks"
+import { variablesList } from "../targets"
 
 /*
  * Local const
@@ -27,7 +28,11 @@ const RouterContext = createContext("RouterContext")
 const useRouterContext = () => useContext(RouterContext)
 const RouterContextProvider = ({ children }) => {
     const defaultRoute = useRef("/about")
-    const activeTab = useRef("/settings/features")
+    const activeTab = useRef(
+        variablesList.hideFeatures
+            ? "/settings/interface"
+            : "/settings/features"
+    )
     const [activeRoute, setActiveRoute] = useState(defaultRoute.current)
     const [routes, setRoutes] = useState({})
     const store = {

@@ -53,6 +53,7 @@ const variablesList = {
     removeCommand: (name) =>
         removeObjectItem(variablesList.commands, "name", name),
     modes: [...gcode_parser_modes],
+    hideFeatures: true,
 }
 const eventsList = {
     evts: [],
