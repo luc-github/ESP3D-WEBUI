@@ -154,6 +154,7 @@ const StatusPanel = () => {
                         "Idle",
                         "Home",
                         "Jog",
+                        "Tool",
                         "?",
                     ],
                 },

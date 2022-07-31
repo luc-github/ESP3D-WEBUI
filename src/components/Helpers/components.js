@@ -82,7 +82,7 @@ const generateDependIds = (depend, settings) => {
         depend.forEach((d) => {
             if (d.id) {
                 const element = useUiContextFn.getElement(d.id, settings)
-                dependIds.push(element.value)
+                if (element) dependIds.push(element.value)
             }
             if (d.ids) {
                 dependIds.push(...generateDependIds(d.ids, settings))
@@ -116,8 +116,12 @@ const settingsDepend = (depend, settings, isOr) => {
                 if (d.id) {
                     const element = useUiContextFn.getElement(d.id, settings)
                     if (isOr) {
-                        return acc || element.value === d.value
-                    } else return acc && element.value === d.value
+                        if (element) return acc || element.value === d.value
+                        return acc || false === d.value
+                    } else {
+                        if (element) return acc && element.value === d.value
+                        else return acc && false === d.value
+                    }
                 }
                 if (d.ids) {
                     return acc && settingsDepend(d.ids, settings, true)

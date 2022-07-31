@@ -511,8 +511,10 @@ const FilesPanel = () => {
                 if (element.depend) if (element.depend()) return true
                 return false
             })
-            currentFS = fs.value
-            onSelectFS(null, !useUiContextFn.getValue("autoload"))
+            if (fs) {
+                currentFS = fs.value
+                onSelectFS(null, !useUiContextFn.getValue("autoload"))
+            }
         }
         setupFileInput()
     }, [])

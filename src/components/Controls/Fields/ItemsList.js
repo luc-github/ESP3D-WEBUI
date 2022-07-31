@@ -235,6 +235,7 @@ const ItemControl = ({
                                           acc.push({
                                               label: T(curr.label),
                                               value: curr.value,
+                                              depend: curr.depend,
                                           })
                                           return acc
                                       }, [])

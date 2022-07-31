@@ -26,8 +26,16 @@ import {
     settingsDepend,
 } from "../../Helpers"
 
-const Option = ({ label, ...props }) => {
-    const { connectionSettings } = useSettingsContext()
+const Option = ({ label, depend, ...props }) => {
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    if (depend) {
+        const canshow = connectionDepend(depend, connectionSettings.current)
+        const canshow2 = settingsDepend(
+            depend,
+            interfaceSettings.current.settings
+        )
+        if (!canshow || !canshow2) return null
+    }
     //Condition for camera - no need to display if none setup
     if (props.value == "camera") {
         if (connectionSettings.current.CameraName) {
@@ -52,7 +60,6 @@ const Select = ({
     button,
     ...rest
 }) => {
-    const optionList = options.map((option) => <Option {...option} />)
     const props = {
         id,
         name: id,
@@ -66,7 +73,10 @@ const Select = ({
         depend,
         interfaceSettings.current.settings
     )
-
+    const optionList = options.map((option) => {
+        option.dependIds = dependIds
+        return <Option {...option} />
+    })
     const canshow = connectionDepend(depend, connectionSettings.current)
 
     useEffect(() => {

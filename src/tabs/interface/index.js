@@ -26,7 +26,11 @@ import {
 } from "../../contexts"
 import { ButtonImg, Loading } from "../../components/Controls"
 import { useHttpQueue, useSettings } from "../../hooks"
-import { espHttpURL } from "../../components/Helpers"
+import {
+    espHttpURL,
+    connectionDepend,
+    settingsDepend,
+} from "../../components/Helpers"
 import { T } from "../../components/Translations"
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather"
 import { Field, FieldGroup } from "../../components/Controls"
@@ -54,7 +58,7 @@ const InterfaceTab = () => {
     const { toasts, modals, connection } = useUiContext()
     const { createNewRequest, abortRequest } = useHttpQueue()
     const { getInterfaceSettings } = useSettings()
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     const [isLoading, setIsLoading] = useState(false)
     const [showSave, setShowSave] = useState(true)
     const inputFile = useRef(null)
@@ -129,6 +133,22 @@ const InterfaceTab = () => {
                 }
             }
         } else if (fieldData.type == "select") {
+            const opt = fieldData.options.find(
+                (element) => element.value == fieldData.value
+            )
+            if (opt && opt.depend) {
+                const canshow = connectionDepend(
+                    opt.depend,
+                    connectionSettings.current
+                )
+                const canshow2 = settingsDepend(
+                    opt.depend,
+                    interfaceSettings.current.settings
+                )
+                if (!canshow || !canshow2) {
+                    validation.valid = false
+                }
+            }
             if (fieldData.name == "type" && fieldData.value == "camera") {
                 //Update camera source automaticaly
                 //Note: is there a less complexe way to do ?

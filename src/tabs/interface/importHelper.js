@@ -60,8 +60,55 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S135"
                     if (origineId == "macros") {
                         newItem.options = [
-                            { label: "S137", value: "FS" },
-                            { label: "S138", value: "SD" },
+                            {
+                                label: "S137",
+                                value: "FS",
+                                depend: [
+                                    {
+                                        id: "flashfs",
+                                        value: true,
+                                    },
+
+                                    {
+                                        connection_id: "FileSystem",
+                                        value: "!='none'",
+                                    },
+                                ],
+                            },
+                            {
+                                label: "S138",
+                                value: "SD",
+                                depend: [
+                                    {
+                                        ids: [
+                                            {
+                                                id: "sd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "directsd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "ext",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "directsd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "tftsd",
+                                                value: true,
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        connection_id: "SDConnection",
+                                        value: "!='none'",
+                                    },
+                                ],
+                            },
                             { label: "S139", value: "URI" },
                             { label: "S140", value: "CMD" },
                         ]
@@ -73,7 +120,6 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                             { label: "S162", value: "camera" },
                         ]
                     }
-
                     break
                 case "target":
                     newItem.type = "select"

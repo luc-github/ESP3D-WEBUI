@@ -147,7 +147,8 @@ const TargetContextProvider = ({ children }) => {
                             !(
                                 response.status.state == "Alarm" ||
                                 response.status.state == "Idle" ||
-                                response.status.state == "Sleep"
+                                response.status.state == "Sleep" ||
+                                response.status.state == "Tool"
                             )
                         )
                             setMessage("")
