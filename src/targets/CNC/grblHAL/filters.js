@@ -212,7 +212,8 @@ const getStates = (str) => {
                 ] = { value: parseFloat(cur.substring(1)) }
             } else {
                 gcode_parser_modes.forEach((mode) => {
-                    if (mode.values && mode.values.includes(cur)) {
+                    const el = cur.split(":")[0]
+                    if (mode.values && mode.values.includes(el)) {
                         acc[mode.id] = { value: cur }
                     }
                 })
