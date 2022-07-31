@@ -33,6 +33,8 @@ const BitsArray = {
     fromArray: (arrayVal) => {
         this.bits = []
         this.size = arrayVal.length
+        //sanity check to have proper content
+        // so can handle false/true, 0/1, "0"/"1", empty
         for (let index = 0; index < this.size; index++) {
             if (arrayVal[index]) {
                 if (arrayVal[index] == "0") {
