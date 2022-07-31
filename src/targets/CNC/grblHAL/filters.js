@@ -283,14 +283,15 @@ const getAlarm = (str) => {
 //  gcode parameters $# output format is : [G54:], [G55:], [G56:], [G57:], [G58:], [G59:], [G28:], [G30:], [G92:], [TLO:], and [PRB:]
 
 const isGcodeParameter = (str) => {
-    const reg_search = /\[(G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):.+\]/g
+    const reg_search =
+        /\[(G54|G55|G56|G57|G58|G59|G59.1|G59.2|G59.3|G28|G30|G92|TLO|PRB):.+\]/g
     return reg_search.test(str)
 }
 
 const getGcodeParameter = (str) => {
     let result = null
     const reg_search =
-        /\[(?<code>G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):(?<data>.+)\]/g
+        /\[(?<code>G54|G55|G56|G57|G58|G59|G59.1|G59.2|G59.3|G28|G30|G92|TLO|PRB):(?<data>.+)\]/g
     if ((result = reg_search.exec(str)) !== null) {
         const datacontent = result.groups.data.split(":")
         result = { code: result.groups.code, data: datacontent[0].split(",") }
