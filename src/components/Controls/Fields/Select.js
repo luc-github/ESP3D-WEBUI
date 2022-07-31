@@ -74,11 +74,18 @@ const Select = ({
         interfaceSettings.current.settings
     )
     const optionList = options.map((option) => {
-        option.dependIds = dependIds
         return <Option {...option} />
     })
     const canshow = connectionDepend(depend, connectionSettings.current)
-
+    options.map((option) => {
+        if (option.depend) {
+            const deps = generateDependIds(
+                option.depend,
+                interfaceSettings.current.settings
+            )
+            dependIds.push(...deps)
+        }
+    })
     useEffect(() => {
         let visible =
             canshow &&
@@ -88,6 +95,7 @@ const Select = ({
             document.getElementById("group-" + id).style.display = visible
                 ? "block"
                 : "none"
+        if (setValue) setValue(null, true)
     }, [...dependIds])
 
     useEffect(() => {
