@@ -96,14 +96,19 @@ const commands = {
     download: (path, filename) => {
         return {
             type: "url",
-            url: "/sd" + path + (path.endsWith("/") ? "" : "/") + filename,
+            url: path + (path.endsWith("/") ? "" : "/") + filename,
             args: {},
         }
     },
     play: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "$F=" + path + (path == "/" ? "" : "/") + filename + "\n",
+            cmd:
+                "$F=" +
+                path +
+                (path.endsWith("/") ? "" : "/") +
+                filename +
+                "\n",
         }
     },
 }
