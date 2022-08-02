@@ -42,12 +42,16 @@ Format: `<label>:<message>`
 ### <u>binary mode</u>
 
 Reserved
--> stream data from ESP to WebUI
-[-> File transfert from WebUI to ESP : not implemented yet]
+
+-   from ESP to WebUI
+    stream data from ESP to WebUI
+
+-   from WEBUI to ESP  
+    [-> File transfert from WebUI to ESP : not implemented yet]
 
 ## Data websocket
 
-use sub protocol `arduino` (to be implemented)
+use sub protocol `arduino`
 
 ### <u>text mode</u>
 
