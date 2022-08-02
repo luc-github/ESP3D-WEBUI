@@ -37,7 +37,8 @@ can be in JSON or plain text
            "Hostname":"esp3d",
            "WiFiMode":"STA",
            "WebUpdate":"Enabled",
-           "FileSystem":"LittleFS",
+           "FlashFileSystem":"LittleFS",
+           "HostPath":"www",
            "Time":"none"
            }
 }
@@ -84,14 +85,18 @@ can be in JSON or plain text
         Ip address for the websocket terminal `192.168.2.117`
         * `WebSocketPort`
         Port for the web socket terminal `81`
+        * `WebSocketSubProtocol` (not yet implemented)
+        Sub protocol to be used (e.g: `webui-v3`)
         * `Hostname`
          Hostname of ESP3D or main Baord `esp3d`
         * `WiFiMode`
         Current wiFi mode in use can be `AP` or `STA`
         * `WebUpdate`
         Inform webUI the feature is available or not, can be `Enabled` or `Disabled`
-        * `FlashFileSystem`
+        * `FlashFileSystem` (currently `FileSystem`, to be updated soon )
         The file system used by ESP board can be `LittleFS`, `SPIFFS`, `Fat`, `none`
+        * `HostPath` (not yet implemented)
+        Path where the preferences.json and index.html.gz are stored and can be updated (e.g: `www`)
         * `Time`
         Type of time support
            * `none`
