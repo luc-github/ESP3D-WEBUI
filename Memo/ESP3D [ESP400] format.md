@@ -1,4 +1,8 @@
-ESP3D [ESP400] format:
+# ESP3D [ESP400] format
+
+Only sent in JSON format
+
+```
 {"Settings":[
 {"F":"network/network","P":"130","T":"S","V":"esp3d","H":"hostname","S":"32","M":"1"},
 {"F":"network/network","P":"0","T":"B","V":"1","H":"radio mode","O":[{"none":"0"},
@@ -65,28 +69,34 @@ ESP3D [ESP400] format:
 {"921600":"921600"}]},
 {"F":"system/system","P":"320","T":"I","V":"10000","H":"bootdelay","S":"40000","M":"0"},
 ]}
+```
 
-1 - key : Settings
-2 - value: array of data formated like this
-{"F":"network/network","P":"130","T":"S","V":"esp3d","H":"hostname","S":"32","M":"1"}
-or 
+1 - key : `Settings`  
+2 - value: array of data formated like this  
+{"F":"network/network","P":"130","T":"S","V":"esp3d","H":"hostname","S":"32","M":"1"}  
+or  
 {"F":"service/notification","P":"1004","T":"B","V":"1","H":"auto notif","O":[{"no":"0"},{"yes":"1"}]}
 
-F: is filter formated as section/sub-section, if section is same as sub-section, it means no sub-section
-P: is id (also position reference so it is unique)
-T: is type of data which can be:
-S: for string
-I: for integer
-T: for Byte
-A: for IP address / Mask
-V: is current value, if type is string and value is ********, (8 stars)then it is a password
-H: is label of value
-S: is max size if type is string, and max possible value if value is number (byte, integer)
-M: is min size if type is string, and min possible value if value is number (byte, integer)
-MS: is additionnal min size if type is string (e.g for password can be 0 or 8, so need additional min size), M should be the more minimal value
-so MS value must be between M and S 
-O: is an array of {label:value}
-R: need restart to be applied
+    -   F: is filter formated as section/sub-section, if section is same as sub-section, it means no sub-section
+    -   P: is id (also position reference so it is unique)
+    -   T: is type of data which can be:
+        -   S: for string
+        -   I: for integer
+        -   T: for Byte
+        -   A: for IP address / Mask
+        -   F: for float (only grblHal)
+        -   M: for bits mask (only grblHal)
+        -   X: for exclusive bitsfield (only grblHal)
+    -   V: is current value, if type is string and value is `********`, (8 stars) then it is a password
+    -   E: is integer for exactess / precision of float/double value (only grblHal)
+    -   U: is text unit of value (only grblHal)
+    -   H: is text label of value
+    -   S: is max size if type is string, and max possible value if value is number (byte, integer)
+    -   M: is min size if type is string, and min possible value if value is number (byte, integer)
+    -   MS: is additionnal min size if type is string (e.g for password can be 0 or 8, so need additional min size), M should be the more minimal value
+        so MS value must be between M and S
+    -   O: is an array of {label:value} used for possible values in selection or bits labels list
+    -   R: need restart to be applied
 
-Note: currently there is no float value so far, if needed a new type will be added in futur - TBD, 
+Note: if Type `M` and `X` use `O` entry to define the label / position, if `O` is `[]` then axis label are used according need `X`, `Y`, `Z`, `A`, `B`, `C`
 Note2 : the 2.1 Flag type is no more used, several entries are used instead grouped by sub-section
