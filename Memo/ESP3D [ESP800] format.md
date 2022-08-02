@@ -34,7 +34,7 @@ can be in JSON or plain text
            "WebCommunication":"Synchronous",
            "WebSocketIP":"192.168.2.117",
            "WebSocketPort":"81",
-           "WebSocketSubProtocol":"webui-3",
+           "WebSocketSubProtocol":"webui-v3",
            "Hostname":"esp3d",
            "WiFiMode":"STA",
            "WebUpdate":"Enabled",
