@@ -30,11 +30,10 @@
     * Marlin (1.x / 2.x)
     * Smoothieware (1.x / 2.x)
     * Repetier (1.x / 2.x)
-    * GRBL (TBD)
+    * GRBL (1.1h)
   * ESP3DLib
     * Marlin (2.x)
-  * GRBL_ESP32 (TBD)
-  * FluidNC (TBD)
+  * grblHal (ongoing)
   * Makerbase TFT (ESP3D)
   * Bigtreetech TFT (ESP3D)
 * Firmware NOT yet supported:
