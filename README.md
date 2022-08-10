@@ -38,7 +38,8 @@ npm run dev-<system>-<firmware>
 -   where `<system>` is `cnc` (CNC system, laser, spindle..) , `printer` (3D printer), `sand` (Sand Table)
 -   where `<firmware>` is :
     -   `grbl`, `grblhal` for `cnc`
-    -   `marlin`, `marlin-embedded` (esp3dlib), `repetier`, `smoothieware` for `printer` \* `grbl` for `sand`
+    -   `marlin`, `marlin-embedded` (esp3dlib), `repetier`, `smoothieware` for `printer` 
+    -   `grbl` for `sand`
 
 will open http://localhost:8088 which display the webUI using a local test server
 
@@ -61,7 +62,8 @@ npm run <system>-<firmware>
 -   where `<system>` is `cnc` (CNC system, laser, spindle..) , `printer` (3D printer), `sand` (Sand Table)
 -   where `<firmware>` is :
     -   `grbl`, `grblhal` for `cnc`
-    -   `marlin`, `marlin-embedded` (esp3dlib), `repetier`, `smoothieware` for `printer` \* `grbl` for `sand`
+    -   `marlin`, `marlin-embedded` (esp3dlib), `repetier`, `smoothieware` for `printer` 
+    -   `grbl` for `sand`
 
 # Chat
 
