@@ -58,7 +58,7 @@
     "name": "extracontents"
    }
   ],
-  "enablepolling": true,
+  "enablepolling": false,
   "pollingcmds": [
    {
     "id": "samplepolling",
@@ -74,6 +74,7 @@
   "showfilespanel": true,
   "openfilesonstart": true,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE",
+  "flashfs": true,
   "tftsd": false,
   "tftusb": false,
   "sd": true,
@@ -100,9 +101,9 @@
   "extracontents": [
    {
     "id": "1xkmvkgvv",
-    "name": "Panel",
+    "name": "My Page",
     "icon": "Meh",
-    "target": "panel",
+    "target": "page",
     "source": "/extra.html",
     "type": "content",
     "refreshtime": "0"

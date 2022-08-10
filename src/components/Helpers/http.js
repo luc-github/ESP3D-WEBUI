@@ -33,13 +33,18 @@ function getCookie(cname) {
 }
 
 //generate an URL with server host and base address
-//args is array of argumments: [{'cmd':'[ESP800]},...]
-const espHttpURL = (base = '', args = {}) => {
+//args is array of arguments: [{'cmd':'[ESP800]},...]
+const espHttpURL = (base = "", args = {}) => {
     const url = (() => {
-        try { return new URL(base) }
-        catch (error) { return new URL(base, `http://${window.location.host}`) }
+        try {
+            return new URL(base)
+        } catch (error) {
+            return new URL(base, `http://${window.location.host}`)
+        }
     })()
-    Object.entries(args).forEach(([key, value]) => url.searchParams.append(key, value))
+    Object.entries(args).forEach(([key, value]) =>
+        url.searchParams.append(key, value)
+    )
     return url.toString()
 }
 

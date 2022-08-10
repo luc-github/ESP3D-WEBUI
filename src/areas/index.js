@@ -115,10 +115,7 @@ const ContentContainer = () => {
                     break
                 case "query":
                     createNewRequest(
-                        espHttpURL(
-                            eventMsg.data.url,
-                            eventMsg.data.args
-                        ),
+                        espHttpURL(eventMsg.data.url, eventMsg.data.args),
                         { method: "GET" },
                         {
                             onSuccess: (result) => {
@@ -178,10 +175,7 @@ const ContentContainer = () => {
                     )
                     formData.append("myfiles", file, eventMsg.data.filename)
                     createNewRequest(
-                        espHttpURL(
-                            eventMsg.data.url,
-                            eventMsg.data.args
-                        ),
+                        espHttpURL(eventMsg.data.url, eventMsg.data.args),
                         {
                             method: "POST",
                             id: eventMsg.data.id,
@@ -233,10 +227,7 @@ const ContentContainer = () => {
                     break
                 case "download":
                     createNewRequest(
-                        espHttpURL(
-                            eventMsg.data.url,
-                            eventMsg.data.args
-                        ),
+                        espHttpURL(eventMsg.data.url, eventMsg.data.args),
                         { method: "GET", id: "download" },
                         {
                             onSuccess: (result) => {
@@ -323,15 +314,15 @@ const ContentContainer = () => {
                         title: T(content.title),
                         button2: content.bt2Txt
                             ? {
-                                cb: cb2,
-                                text: T(content.bt2Txt),
-                            }
+                                  cb: cb2,
+                                  text: T(content.bt2Txt),
+                              }
                             : null,
                         button1: content.bt1Txt
                             ? {
-                                cb: cb1,
-                                text: T(content.bt1Txt),
-                            }
+                                  cb: cb1,
+                                  text: T(content.bt1Txt),
+                              }
                             : null,
                         icon:
                             content.style == "question" ? (
@@ -416,9 +407,7 @@ const ContentContainer = () => {
     }
 
     useEffect(() => {
-        //To init settings
-        //to get language first
-        getInterfaceSettings(null, getConnectionSettings)
+        getConnectionSettings(getInterfaceSettings)
         window.addEventListener("message", processExtensionMessage, false)
     }, [])
     return <ViewContainer />

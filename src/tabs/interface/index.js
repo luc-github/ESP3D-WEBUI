@@ -22,6 +22,7 @@ import { useState, useRef } from "preact/hooks"
 import {
     useUiContext,
     useSettingsContext,
+    useSettingsContextFn,
     useUiContextFn,
 } from "../../contexts"
 import { ButtonImg, Loading } from "../../components/Controls"
@@ -64,7 +65,12 @@ const InterfaceTab = () => {
     const inputFile = useRef(null)
 
     console.log("Interface")
-
+    const isFlashFS =
+        useSettingsContextFn.getValue("FlashFileSystem") == "none"
+            ? false
+            : true
+    const isSDFS =
+        useSettingsContextFn.getValue("SDConnection") == "none" ? false : true
     const generateValidation = (fieldData) => {
         const validation = {
             message: <Flag size="1rem" />,
@@ -200,7 +206,12 @@ const InterfaceTab = () => {
             }
             if (fieldData.newItem) fieldData.hasmodified = true
         }
-        setShowSave(checkSaveStatus())
+
+        if (isFlashFS || isSDFS) {
+            setShowSave(checkSaveStatus())
+        } else {
+            setShowSave(false)
+        }
         if (!fieldData.hasmodified && !fieldData.haserror) {
             validation.message = null
             validation.valid = true
@@ -262,15 +273,18 @@ const InterfaceTab = () => {
         const blob = new Blob([preferencestosave], {
             type: "application/json",
         })
-        const preferencesFileName = "preferences.json"
+
+        const preferencesFileName =
+            useSettingsContextFn.getValue("HostUploadPath") + "preferences.json"
         const formData = new FormData()
         const file = new File([blob], preferencesFileName)
-        formData.append("path", "/")
+        formData.append("path", useSettingsContextFn.getValue("HostUploadPath"))
+        formData.append("creatPath", "true")
         formData.append(preferencesFileName + "S", preferencestosave.length)
         formData.append("myfiles", file, preferencesFileName)
         setIsLoading(true)
         createNewRequest(
-            espHttpURL("files"),
+            espHttpURL(useSettingsContextFn.getValue("HostTarget")),
             { method: "POST", id: "preferences", body: formData },
             {
                 onSuccess: (result) => {

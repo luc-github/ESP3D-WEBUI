@@ -26,7 +26,11 @@ import {
     isLimitedEnvironment,
 } from "../components/Helpers"
 import { useHttpQueue } from "../hooks/"
-import { useUiContext, useRouterContext } from "../contexts"
+import {
+    useUiContext,
+    useRouterContext,
+    useSettingsContextFn,
+} from "../contexts"
 import {
     baseLangRessource,
     setCurrentLanguage,
@@ -104,7 +108,48 @@ const useSettings = () => {
                     }
 
                     connectionSettings.current = jsonResult.data
+
                     document.title = connectionSettings.current.Hostname
+                    if (
+                        !connectionSettings.current.HostPath ||
+                        !connectionSettings.current.HostPath.length
+                    ) {
+                        connectionSettings.current.HostPath = "/"
+                    }
+
+                    if (!connectionSettings.current.HostPath.endsWith("/")) {
+                        connectionSettings.current.HostPath =
+                            connectionSettings.current.HostPath.concat("/")
+                    }
+                    if (connectionSettings.current.FlashFileSystem == "none") {
+                        // no flash filesystem so host path is on SD card
+                        connectionSettings.current.HostTarget = "sdfiles"
+                        connectionSettings.current.HostUploadPath =
+                            connectionSettings.current.HostPath
+                        connectionSettings.current.HostDownloadPath =
+                            connectionSettings.current.HostPath
+                    } else {
+                        //Flashs is supported but stil can use sd card to host files
+                        if (
+                            connectionSettings.current.HostPath.startsWith(
+                                "/sd/"
+                            ) &&
+                            connectionSettings.current.SDConnection != "none"
+                        ) {
+                            connectionSettings.current.HostTarget = "sdfiles"
+                            connectionSettings.current.HostUploadPath =
+                                connectionSettings.current.HostPath.substring(3)
+                            connectionSettings.current.HostDownloadPath =
+                                connectionSettings.current.HostPath
+                        } else {
+                            //Flash filesystem is supported and host files are on flash filesystem
+                            connectionSettings.current.HostTarget = "files"
+                            connectionSettings.current.HostUploadPath =
+                                connectionSettings.current.HostPath
+                            connectionSettings.current.HostDownloadPath =
+                                connectionSettings.current.HostPath
+                        }
+                    }
 
                     if (
                         isLimitedEnvironment(
@@ -134,12 +179,6 @@ const useSettings = () => {
                         return
                     }
 
-                    //SetupWs
-                    connection.setConnectionState({
-                        connected: true,
-                        authenticate: true,
-                        page: "connecting",
-                    })
                     if (jsonResult.FWTarget == 0) {
                         setActiveRoute("/settings")
                         defaultRoute.current = "/settings"
@@ -147,6 +186,7 @@ const useSettings = () => {
                         setActiveRoute("/dashboard")
                         defaultRoute.current = "/dashboard"
                     }
+                    if (next) next()
                 },
                 onFail: (error) => {
                     connection.setConnectionState({
@@ -165,12 +205,35 @@ const useSettings = () => {
 
     const getInterfaceSettings = (setLoading, next) => {
         interfaceSettings.current = { ...defaultPreferences }
+        const finalizeDisplay = () => {
+            //SetupWs
+            connection.setConnectionState({
+                connected: true,
+                authenticate: true,
+                page: "connecting",
+            })
+            document.title = connectionSettings.current.Hostname
+            console.log("Connected")
+        }
         function loadTheme(themepack) {
+            if (!themepack) {
+                if (next) next()
+                if (setLoading) {
+                    setLoading(false)
+                }
+                finalizeDisplay()
+                return
+            }
             const elem = document.getElementById("themestyle")
             if (elem) elem.parentNode.removeChild(elem)
+
             if (themepack != "default") {
+                console.log("Loading theme: " + themepack)
                 createNewRequest(
-                    espHttpURL(themepack),
+                    espHttpURL(
+                        useSettingsContextFn.getValue("HostDownloadPath") +
+                            themepack
+                    ),
                     { method: "GET" },
                     {
                         onSuccess: (result) => {
@@ -183,12 +246,14 @@ const useSettings = () => {
                             if (setLoading) {
                                 setLoading(false)
                             }
+                            finalizeDisplay()
                         },
                         onFail: (error) => {
                             if (next) next()
                             if (setLoading) {
                                 setLoading(false)
                             }
+                            finalizeDisplay()
                             console.log("error")
                             toasts.addToast({
                                 content: error + " " + themepack,
@@ -204,10 +269,14 @@ const useSettings = () => {
                 if (setLoading) {
                     setLoading(false)
                 }
+                finalizeDisplay()
             }
         }
         createNewRequest(
-            espHttpURL("preferences.json"),
+            espHttpURL(
+                useSettingsContextFn.getValue("HostDownloadPath") +
+                    "preferences.json"
+            ),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -317,7 +386,11 @@ const useSettings = () => {
                             setLoading(false)
                         }
                         createNewRequest(
-                            espHttpURL(languagepack),
+                            espHttpURL(
+                                useSettingsContextFn.getValue(
+                                    "HostDownloadPath"
+                                ) + languagepack
+                            ),
                             { method: "GET" },
                             {
                                 onSuccess: (result) => {

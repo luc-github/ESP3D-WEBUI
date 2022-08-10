@@ -77,7 +77,7 @@
                 "id": "flashfs",
                 "type": "boolean",
                 "depend": [
-                    { "connection_id": "FileSystem", "value": "!='none'" }
+                    { "connection_id": "FlashFileSystem", "value": "!='none'" }
                 ],
                 "label": "S137",
                 "value": true

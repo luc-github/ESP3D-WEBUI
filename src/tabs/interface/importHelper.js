@@ -70,7 +70,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                                     },
 
                                     {
-                                        connection_id: "FileSystem",
+                                        connection_id: "FlashFileSystem",
                                         value: "!='none'",
                                     },
                                 ],

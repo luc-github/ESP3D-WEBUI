@@ -322,7 +322,7 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (url.indexOf("M27") != -1) {
-        SendWS("SD printing byte 100/1000\n")
+        SendWS("SD printing byte 990/1000\n")
         res.send("")
         return
     }
@@ -420,11 +420,13 @@ const commandsQuery = (req, res, SendWS) => {
                 Authentication: "Disabled",
                 WebCommunication: "Synchronous",
                 WebSocketIP: "localhost",
+                WebSocketSubProtocol: "webui-V3",
                 WebSocketPort: "81",
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
-                FileSystem: "LittleFS",
+                FlashFileSystem: "LittleFS",
+                HostPath: "/",
                 Time: "none",
                 CameraID: "4",
                 CameraName: "ESP32 Cam",

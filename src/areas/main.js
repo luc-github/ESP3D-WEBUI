@@ -31,6 +31,8 @@ import { Informations } from "../areas/informations"
 import { FooterContainer } from "./footer"
 import { processor, BackgroundContainer } from "../targets"
 
+const mainRoutes = { current: {} }
+
 const defRoutes = {
     DASHBOARD: {
         component: <Dashboard />,
@@ -54,7 +56,7 @@ const MainContainer = () => {
     const { uisettings, modals } = useUiContext()
     const { connectionSettings } = useSettingsContext()
     const [routes, setRoutes] = useState({ ...defRoutes })
-
+    mainRoutes.current = { ...defRoutes }
     const newroutes = () => {
         if (uisettings.getValue("showextracontents")) {
             const extraContents = uisettings.getValue("extracontents")
@@ -80,14 +82,16 @@ const MainContainer = () => {
                 }
                 return acc
             }, routes)
+            mainRoutes.current = { ...extraPages }
             return extraPages
         } else {
+            mainRoutes.current = { ...defRoutes }
             return defRoutes
         }
     }
 
     useEffect(() => {
-        setRoutes(newroutes)
+        setRoutes(newroutes())
     }, [uisettings])
 
     useEffect(() => {
@@ -105,4 +109,4 @@ const MainContainer = () => {
     )
 }
 
-export { MainContainer }
+export { MainContainer, mainRoutes }

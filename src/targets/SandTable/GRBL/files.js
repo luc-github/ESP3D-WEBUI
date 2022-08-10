@@ -30,7 +30,7 @@ const supportedFileSystems = [
         depend: () => {
             return (
                 useUiContextFn.getValue("flashfs") &&
-                useSettingsContextFn.getValue("FileSystem") != "none"
+                useSettingsContextFn.getValue("FlashFileSystem") != "none"
             )
         },
     },

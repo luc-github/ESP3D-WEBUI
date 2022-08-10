@@ -34,6 +34,7 @@ import {
     useUiContextFn,
     useWsContext,
     useSettingsContext,
+    useSettingsContextFn,
 } from "../../contexts"
 import { Esp3dVersion } from "../../components/App/version"
 import { Github, RefreshCcw, UploadCloud, LifeBuoy, Info } from "preact-feather"
@@ -103,12 +104,17 @@ const About = () => {
     const { toasts, modals, uisettings } = useUiContext()
     const { Disconnect } = useWsContext()
     const { createNewRequest, abortRequest } = useHttpQueue()
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     const [isLoading, setIsLoading] = useState(true)
     const progressBar = {}
     const [props, setProps] = useState([...about])
     const [isFwUpdate, setIsFwUpdate] = useState(false)
     const inputFilesRef = useRef(0)
+    const isFlashFS =
+        connectionSettings.current.FlashFileSystem == "none" ? false : true
+    const isSDFS =
+        connectionSettings.current.SDConnection == "none" ? false : true
+
     const getProps = () => {
         setIsLoading(true)
         createNewRequest(
@@ -200,14 +206,22 @@ const About = () => {
     const uploadFiles = (e) => {
         const list = inputFilesRef.current.files
         const formData = new FormData()
-        formData.append("path", "/")
+        formData.append("path", useSettingsContextFn.getValue("HostUploadPath"))
+        formData.append("createPath", "true")
         if (list.length > 0) {
             for (let i = 0; i < list.length; i++) {
                 const file = list[i]
-                const arg = "/" + file.name + "S"
+                const arg =
+                    useSettingsContextFn.getValue("HostUploadPath") +
+                    file.name +
+                    "S"
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
-                formData.append("myfiles", file, "/" + file.name)
+                formData.append(
+                    "myfiles",
+                    file,
+                    useSettingsContextFn.getValue("HostUploadPath") + file.name
+                )
             }
         }
         showProgressModal({
@@ -216,8 +230,12 @@ const About = () => {
             button1: { cb: abortRequest, text: T("S28") },
             content: <Progress progressBar={progressBar} max="100" />,
         })
+        const base = isFwUpdate
+            ? "updatefw"
+            : useSettingsContextFn.getValue("HostTarget")
+        console.log(base)
         createNewRequest(
-            isFwUpdate ? espHttpURL("updatefw") : espHttpURL("files"),
+            espHttpURL(base),
             { method: "POST", id: "upload", body: formData },
             {
                 onSuccess: (result) => {
@@ -283,14 +301,9 @@ const About = () => {
     }
 
     useEffect(() => {
-        if (about.length != 0) {
-            setProps([...about])
-            setIsLoading(false)
-        } else {
-            if (uisettings.getValue("autoload")) getProps()
-            else setIsLoading(false)
-        }
-    }, [])
+        if (uisettings.getValue("autoload") && props.length == 0) getProps()
+        else setIsLoading(false)
+    })
 
     return (
         <div id="about" class="container">
@@ -330,15 +343,17 @@ const About = () => {
                                     icon={<Github />}
                                     onClick={onWebUiGit}
                                 />
-                                <ButtonImg
-                                    sm
-                                    mx2
-                                    tooltip
-                                    data-tooltip={T("S171")}
-                                    icon={<UploadCloud />}
-                                    label={T("S25")}
-                                    onClick={onWebUiUpdate}
-                                />
+                                {(isFlashFS || isSDFS) && (
+                                    <ButtonImg
+                                        sm
+                                        mx2
+                                        tooltip
+                                        data-tooltip={T("S171")}
+                                        icon={<UploadCloud />}
+                                        label={T("S25")}
+                                        onClick={onWebUiUpdate}
+                                    />
+                                )}
                             </li>
                             <li>
                                 <span class="text-primary">

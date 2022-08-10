@@ -10,7 +10,7 @@
   "showinformationpage": true,
   "showmachinesettings": true,
   "emergencystop": "#SAFETYDOOR#",
-  "fixedpanels": false,
+  "fixedpanels": true,
   "panelsorder": [
    {
     "id": "Files",
@@ -75,7 +75,7 @@
   "openfilesonstart": true,
   "filesfilter": "g;G;gco;GCO;gcode;GCODE;nc;txt",
   "flashfs": true,
-  "directsd": false,
+  "directsd": true,
   "showjogpanel": true,
   "openjogonstart": true,
   "showx": true,
