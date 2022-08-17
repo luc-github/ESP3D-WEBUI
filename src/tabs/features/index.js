@@ -215,8 +215,12 @@ const FeaturesTab = () => {
                 const subsection = section[subsectionId]
                 Object.keys(subsection).map((entryId) => {
                     const entry = subsection[entryId]
-                    if (entry.initial != entry.value) total++
-                    if (entry.needRestart == "1") needrestart = true
+                    if (entry.initial != entry.value) {
+                        total++
+                        if (entry.needRestart == "1") {
+                            needrestart = true
+                        }
+                    }
                 })
             })
         })

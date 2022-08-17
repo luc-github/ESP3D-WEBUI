@@ -338,5 +338,6 @@
     "light": "Light",
     "grbl": "Grbl",
     "SD updater": "SD updater",
-    "setup": "Setup mode"
+    "setup": "Setup mode",
+    "serial_bridge":"Serial Bridge"
 }
