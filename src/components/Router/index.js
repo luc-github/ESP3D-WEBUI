@@ -94,7 +94,7 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
                     for (const key in parentRoutes.current) {
                         if (
                             Object.prototype.hasOwnProperty.call(
-                                routesList,
+                                parentRoutes.current,
                                 key
                             )
                         ) {
