@@ -98,5 +98,5 @@ or
     -   O: is an array of {label:value} used for possible values in selection or bits labels list
     -   R: need restart to be applied
 
-Note: if Type `M` and `X` use `O` entry to define the label / position, if `O` is `[]` then axis label are used according need `X`, `Y`, `Z`, `A`, `B`, `C`
+Note: if Type `M` and `X` use `O` entry to define the label / position, if `O` is `[]` then axis label are used according need `X`, `Y`, `Z`, `A`, `B`, `C`  
 Note2 : the 2.1 Flag type is no more used, several entries are used instead grouped by sub-section
