@@ -74,14 +74,14 @@ const responseSteps = {
 function capability() {
     const [cap, ...rest] = arguments
     if (capabilities[cap]) return capabilities[cap](...rest)
-    console.log("Unknow capability ", cap)
+    //console.log("Unknow capability ", cap)
     return false
 }
 
 function command() {
     const [cmd, ...rest] = arguments
     if (commands[cmd]) return commands[cmd](...rest)
-    console.log("Unknow command ", cmd)
+    //console.log("Unknow command ", cmd)
     return { type: "error" }
 }
 

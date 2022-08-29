@@ -94,7 +94,7 @@ function capability() {
     if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknow capability ", cap, " for ", filesystem)
+    //console.log("Unknow capability ", cap, " for ", filesystem)
     return false
 }
 
@@ -102,7 +102,7 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknow command ", cmd, " for ", filesystem)
+    //console.log("Unknow command ", cmd, " for ", filesystem)
     return { type: "error" }
 }
 

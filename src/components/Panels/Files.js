@@ -190,10 +190,26 @@ const FilesPanel = () => {
             formData.append("path", currentPath[currentFS])
             for (let i = 0; i < list.length; i++) {
                 const file = list[i]
+
+                let fileName = ""
+                const needFormatFileName = files.command(
+                    currentFS,
+                    "needFormatFileName",
+                    currentPath[currentFS],
+                    fileref.current.files[0].name
+                )
+                if (
+                    needFormatFileName.type != "error" &&
+                    needFormatFileName.name
+                ) {
+                    fileName = needFormatFileName.name
+                } else {
+                    fileName = file.name
+                }
                 const arg =
                     currentPath[currentFS] +
                     (currentPath[currentFS] == "/" ? "" : "/") +
-                    file.name +
+                    fileName +
                     "S"
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
@@ -202,7 +218,7 @@ const FilesPanel = () => {
                     file,
                     currentPath[currentFS] +
                         (currentPath[currentFS] == "/" ? "" : "/") +
-                        file.name
+                        fileName
                 )
             }
             //now do request

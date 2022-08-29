@@ -102,7 +102,7 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknow command ", cmd, " for ", filesystem)
+    //console.log("Unknow command ", cmd, " for ", filesystem)
     return { type: "error" }
 }
 
