@@ -53,6 +53,7 @@ const commands = {
         return { type: "cmd", cmd: "$$" }
     },
     formatEeprom: (result) => {
+        if (!result || result.length == 0) return []
         const res = result.reduce((acc, line) => {
             return formatEepromLine(acc, line)
         }, [])

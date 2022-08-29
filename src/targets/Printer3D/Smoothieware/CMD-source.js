@@ -87,6 +87,7 @@ const commands = {
         return { type: "cmd", cmd: "M115" }
     },
     formatCapabilities: (result) => {
+        if (!result || result.length == 0) return []
         const capabilityList = result.reduce((acc, line) => {
             return formatCapabilityLine(acc, line)
         }, [])
@@ -111,6 +112,7 @@ const commands = {
         return { type: "cmd", cmd: "M503\necho overrideDone" }
     },
     formatConfig: (result) => {
+	if (!result || result.length == 0) return []
         const res = result.reduce((acc, line) => {
             if (line == "ok") return acc
             return formatConfigLine(acc, line)
@@ -118,6 +120,7 @@ const commands = {
         return res
     },
     formatOverride: (result) => {
+	if (!result || result.length == 0) return []
         const res = result.reduce((acc, line) => {
             if (line == "ok") return acc
             return formatOverrideLine(acc, line)

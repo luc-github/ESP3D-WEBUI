@@ -176,18 +176,19 @@ const MachineSettings = () => {
 
     const processFeedback = (feedback) => {
         if (feedback.status) {
-            if (feedback.command == "eeprom") {
+            if (feedback.status == "error") {
+                console.log("got error")
+                toasts.addToast({
+                    content: feedback.content
+                        ? `${T("S22")}:${T(feedback.content)}`
+                        : T("S4"),
+                    type: "error",
+                })
+            } else if (feedback.command == "eeprom") {
                 machineSetting.cache = CMD.command(
                     "formatEeprom",
                     feedback.content
                 )
-            }
-            if (feedback.status == "error") {
-                console.log("got error")
-                toasts.addToast({
-                    content: T("S4"),
-                    type: "error",
-                })
             }
         }
         setIsLoading(false)
@@ -218,7 +219,7 @@ const MachineSettings = () => {
                 processCallBack
             )
         ) {
-            setCollected("O B")
+            setCollected("0 B")
             setIsLoading(true)
             sendSerialCmd(response.cmd)
         }
@@ -260,8 +261,12 @@ const MachineSettings = () => {
     }
     useEffect(() => {
         if (uisettings.getValue("autoload") && machineSetting.cache == "") {
-            //load settings
-            onRefresh()
+            setIsLoading(true)
+            //do not call onRefresh directly as  WebSocket may still be connecting or just connected
+            // and we may have a race issue, the command go but does not have answer catched
+            setTimeout(() => {
+                onRefresh()
+            }, 1000)
         }
     }, [])
 

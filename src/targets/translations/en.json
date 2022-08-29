@@ -339,5 +339,6 @@
     "grbl": "Grbl",
     "SD updater": "SD updater",
     "setup": "Setup mode",
-    "serial_bridge":"Serial Bridge"
+    "serial_bridge": "Serial Bridge",
+    "timeout": "Timeout, did not get response in time"
 }

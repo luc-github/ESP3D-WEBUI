@@ -213,7 +213,6 @@ const useSettings = () => {
                 page: "connecting",
             })
             document.title = connectionSettings.current.Hostname
-            console.log("Connected")
         }
         function loadTheme(themepack) {
             if (!themepack) {
