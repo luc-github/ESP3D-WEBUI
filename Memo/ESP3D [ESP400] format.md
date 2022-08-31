@@ -82,7 +82,7 @@ or
     -   T: is type of data which can be:
         -   S: for string
         -   I: for integer
-        -   T: for Byte
+        -   B: for Byte
         -   A: for IP address / Mask
         -   F: for float (only grblHal)
         -   M: for bits mask (only grblHal)
