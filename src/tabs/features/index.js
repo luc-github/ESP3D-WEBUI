@@ -142,7 +142,7 @@ const FeaturesTab = () => {
             " T=" +
             entry.cast +
             " V=" +
-            entry.value +
+            entry.value.replaceAll(" ", "\\ ") +
             " json=yes"
         createNewRequest(
             espHttpURL("command", { cmd }),
