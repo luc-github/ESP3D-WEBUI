@@ -514,7 +514,7 @@ const commandsQuery = (req, res, SendWS) => {
 }
 
 const loginURI = (req, res) => {
-    if (req.body.DISCONNECT == "Yes") {
+    if (req.body.DISCONNECT == "YES") {
         res.status(401)
         logindone = false
     } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin") {

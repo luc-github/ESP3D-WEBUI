@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { useRef } from "preact/hooks"
+import { useRef, useState } from "preact/hooks"
 import { Lock } from "preact-feather"
 import { Field } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
@@ -28,20 +28,28 @@ import { espHttpURL } from "../../components/Helpers"
  * Local const
  *
  */
+const loginValue = { current: "" }
+
 const showLogin = () => {
     const { modals, connection } = useUiContext()
     const { createNewTopRequest, processRequestsNow } = useHttpQueue()
     const id = "login"
-    const loginValue = useRef("")
+
     const passwordValue = useRef("")
     const setLogin = (val) => {
-        loginValue.current = val ? val.trim() : ""
+        if (val) loginValue.current = val.trim()
     }
+    const [showError, setShowError] = useState(false)
     const setPassword = (val) => {
-        passwordValue.current = val ? val.trim() : ""
+        if (val) passwordValue.current = val.trim()
     }
     const clickLogin = () => {
-        console.log("login", loginValue.current, passwordValue.current)
+        console.log(
+            "login :",
+            loginValue.current,
+            " password:",
+            passwordValue.current
+        )
         useUiContextFn.haptic()
         const formData = new FormData()
         formData.append("SUBMIT", "YES")
@@ -53,9 +61,10 @@ const showLogin = () => {
             {
                 onSuccess: (result) => {
                     window.location.reload()
+                    setShowError(false)
                 },
                 onFail: (error) => {
-                    //TODO:Need to do something ? TBD
+                    setShowError(true)
                 },
             }
         )
@@ -91,7 +100,6 @@ const showLogin = () => {
                         id="login"
                         value={loginValue.current}
                         label={T("S146")}
-                        style="width:15rem"
                         setValue={setLogin}
                         inline
                         onkeydown={(e) => {
@@ -108,7 +116,6 @@ const showLogin = () => {
                         label={T("S147")}
                         id="password"
                         value={passwordValue.current}
-                        style="width:15rem"
                         setValue={setPassword}
                         inline
                         onkeydown={(e) => {
@@ -120,9 +127,11 @@ const showLogin = () => {
                             }
                         }}
                     />
-                    {loginValue.current && loginValue.current.length > 0 && (
-                        <div class="error-login-message">{T("S201")}</div>
-                    )}
+                    {loginValue.current &&
+                        loginValue.current.length > 0 &&
+                        showError && (
+                            <div class="error-login-message">{T("S201")}</div>
+                        )}
                 </div>
             ),
             footer: (
