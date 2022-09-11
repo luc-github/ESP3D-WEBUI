@@ -10,7 +10,7 @@ there are 2
 
 ## Terminal websocket
 
-use subprotocol `webui-v3` (to be implemented)
+use subprotocol `webui-v3`
 
 ### <u>text mode</u>
 

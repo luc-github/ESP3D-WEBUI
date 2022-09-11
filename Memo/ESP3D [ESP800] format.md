@@ -4,12 +4,12 @@ can be in JSON or plain text
 
 ## Input
 
-`[ESP800]json=yes time=2022-08-02-12-02-18 version=3.0.0-a11 setup=0`
+`[ESP800]<time=YYYY-MM-DDTHH:mm:ss> <version=3.0.0-a11> <setup=0/1> json=<no> pwd=<admin password>`
 
     * json=yes
     the output format
     * time=
-    to set ESP3D time using format : `YYYY`-`MM`-`DD`-`HH24`-`minutes`-`seconds`
+    to set ESP3D time using ISO 8601 format : `YYYY`-`MM`-`DD`T`HH`-`minutes`-`seconds`
     * version
     version of webUI
     * setup flag
@@ -34,7 +34,6 @@ can be in JSON or plain text
            "WebCommunication":"Synchronous",
            "WebSocketIP":"192.168.2.117",
            "WebSocketPort":"81",
-           "WebSocketSubProtocol":"webui-v3",
            "Hostname":"esp3d",
            "WiFiMode":"STA",
            "WebUpdate":"Enabled",
@@ -86,8 +85,6 @@ can be in JSON or plain text
         Ip address for the websocket terminal `192.168.2.117`
         * `WebSocketPort`
         Port for the web socket terminal `81`
-        * `WebSocketSubProtocol` (not yet implemented)
-        Sub protocol to be used (e.g: `webui-v3`)
         * `Hostname`
          Hostname of ESP3D or main Baord `esp3d`
         * `WiFiMode`
@@ -96,7 +93,7 @@ can be in JSON or plain text
         Inform webUI the feature is available or not, can be `Enabled` or `Disabled`
         * `FlashFileSystem` (currently `FileSystem`, to be updated soon )
         The file system used by ESP board can be `LittleFS`, `SPIFFS`, `Fat`, `none`
-        * `HostPath` (not yet implemented)
+        * `HostPath`
         Path where the preferences.json and index.html.gz are stored and can be updated (e.g: `www`)
         * `Time`
         Type of time support
