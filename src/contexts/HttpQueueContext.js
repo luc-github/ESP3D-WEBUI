@@ -24,6 +24,8 @@ import { useWsContext } from "./WsContext"
 import { useTargetContext } from "../targets"
 
 let counterNoAnswer = 0
+const MaxNoAnswerNb = 4
+
 /*
  * Local const
  *
@@ -105,7 +107,8 @@ const HttpQueueContextProvider = ({ children }) => {
             } else {
                 if (!e.code) {
                     counterNoAnswer++
-                    if (counterNoAnswer > 3) {
+                    console.log("Connection lost ?", counterNoAnswer)
+                    if (counterNoAnswer > MaxNoAnswerNb) {
                         Disconnect("connectionlost")
                     }
                 }

@@ -170,8 +170,12 @@ const WsContextProvider = ({ children }) => {
         //seems sometimes it disconnect so wait 3s and reconnect
         //if it is not a log off
         if (!isLogOff.current) {
-            if (!isPingPaused) reconnectCounter.current++
+            if (!isPingPaused) {
+                reconnectCounter.current++
+                console.log("reconnecting ", reconnectCounter.current)
+            }
             if (reconnectCounter.current >= maxReconnections) {
+                console.log("Reconnection over ", maxReconnections)
                 Disconnect("connectionlost")
             } else {
                 console.log("Ws connection lost")
