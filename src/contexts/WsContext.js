@@ -26,6 +26,7 @@ import {
 } from "../contexts"
 import { useHttpFn } from "../hooks"
 import { getCookie, splitArrayByLines } from "../components/Helpers"
+import { T } from "../components/Translations"
 
 /*
  * Local const
@@ -186,7 +187,7 @@ const WsContextProvider = ({ children }) => {
 
     const onErrorCB = (e) => {
         reconnectCounter.current++
-        toasts.addToast({ content: "S6", type: "error" })
+        toasts.addToast({ content: T("S6"), type: "error" })
         console.log("Error")
     }
     const setupWS = () => {
