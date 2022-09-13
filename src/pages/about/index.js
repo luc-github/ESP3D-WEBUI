@@ -375,15 +375,18 @@ const About = () => {
                                     icon={<Github />}
                                     onClick={onFWGit}
                                 />
-                                <ButtonImg
-                                    sm
-                                    mx2
-                                    tooltip
-                                    data-tooltip={T("S172")}
-                                    icon={<UploadCloud />}
-                                    label={T("S25")}
-                                    onClick={onFWUpdate}
-                                />
+                                {connectionSettings.current.WebUpdate ==
+                                    "Enabled" && (
+                                    <ButtonImg
+                                        sm
+                                        mx2
+                                        tooltip
+                                        data-tooltip={T("S172")}
+                                        icon={<UploadCloud />}
+                                        label={T("S25")}
+                                        onClick={onFWUpdate}
+                                    />
+                                )}
                             </li>
                             <CustomEntry />
                             <li>
