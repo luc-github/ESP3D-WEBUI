@@ -61,6 +61,11 @@ const TargetContext = createContext("TargetContext")
 const useTargetContext = () => useContext(TargetContext)
 const useTargetContextFn = {}
 
+useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
+    if (fieldData.id == "74") return true
+    return false
+}
+
 const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",

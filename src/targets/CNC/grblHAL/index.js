@@ -36,8 +36,8 @@ import {
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
 import variablesTable from "./variablesTable"
-import { AppLogo } from "../../../components/Images/logo"
-import { Eye as WebUILogo } from "preact-feather"
+import { AppLogo as WebUILogo } from "../../../components/Images/logo"
+import { AppLogo } from "./logo"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "grblHAL"
@@ -53,7 +53,7 @@ const variablesList = {
     removeCommand: (name) =>
         removeObjectItem(variablesList.commands, "name", name),
     modes: [...gcode_parser_modes],
-    hideFeatures: true,
+    hideFeatures: false,
 }
 const eventsList = {
     evts: [],

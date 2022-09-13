@@ -45,7 +45,7 @@ import { Field } from "../../components/Controls"
 import { formatStructure } from "./formatHelper"
 import { exportFeatures } from "./exportHelper"
 import { importFeatures } from "./importHelper"
-import { restartdelay } from "../../targets"
+import { restartdelay, useTargetContextFn } from "../../targets"
 
 const FeaturesTab = () => {
     const { toasts, modals, uisettings } = useUiContext()
@@ -494,10 +494,11 @@ const FeaturesTab = () => {
                                                                                     Options
                                                                                 }
                                                                                 extra={
-                                                                                    subsectionId ==
-                                                                                        "sta" &&
-                                                                                    label ==
-                                                                                        "SSID"
+                                                                                    useTargetContextFn.isStaId(
+                                                                                        subsectionId,
+                                                                                        label,
+                                                                                        fieldData
+                                                                                    )
                                                                                         ? "scan"
                                                                                         : null
                                                                                 }
