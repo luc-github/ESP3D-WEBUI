@@ -36,7 +36,7 @@ Format: `<label>:<message>`
     -   `NOTIFICATION:<message>`
         Forward the message sent by [ESP600] to webUI toast system
 
-    -   `SENSOR: <value>[<unit>] <value2>[<unit2>] ...
+    -   `SENSOR: <value>[<unit>] <value2>[<unit2>] ...`
         The sensor connected to ESP like DHT22
 
 -   from WebUI to ESP
