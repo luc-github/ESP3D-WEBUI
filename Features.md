@@ -34,7 +34,7 @@
         -   GRBL (1.1h)
     -   ESP3DLib
         -   Marlin (2.x) - currently need custom version of Marlin : https://github.com/luc-github/Marlin/tree/ESP3DLibV3.0
-    -   grblHal (ongoing)
+    -   grblHAL (ongoing)
     -   Makerbase TFT (ESP3D)
     -   Bigtreetech TFT (ESP3D)
 -   Firmware NOT yet supported:
