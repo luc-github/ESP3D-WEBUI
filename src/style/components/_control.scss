@@ -22,6 +22,10 @@ input[type=range]::-ms-thumb{/*Internet Explorer*/
   cursor:pointer;
 }
 
+.text-label{
+  margin-right:0.4rem;
+}
+
 .badge-container {
   border: 0.05rem solid #5755d9 ;
   text-align: center;

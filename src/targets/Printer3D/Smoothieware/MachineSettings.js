@@ -406,7 +406,7 @@ const MachineSettings = () => {
                                         setShowSave(checkSaveStatus())
                                     }}
                                 />
-                                <i class="form-icon"></i>{" "}
+                                <i class="form-icon"></i>
                                 {uisettings.getValue("configfilename")}
                             </label>
                             <label class="form-radio form-inline">

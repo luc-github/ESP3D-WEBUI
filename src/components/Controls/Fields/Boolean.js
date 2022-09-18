@@ -86,7 +86,7 @@ const Boolean = ({
                 {...inputCheckboxProps}
                 onChange={onChange}
             />
-            <i class="form-icon" />{" "}
+            <i class="form-icon" />
             <span class={inline ? "text-dark" : "d-none"}>{label}</span>
         </label>
     )

@@ -331,7 +331,9 @@ const About = () => {
                     <CenterLeft>
                         <ul>
                             <li>
-                                <span class="text-primary">{T("S150")}: </span>
+                                <span class="text-primary text-label">
+                                    {T("S150")}:{" "}
+                                </span>
                                 <span class="text-dark">
                                     <Esp3dVersion />
                                 </span>
@@ -356,8 +358,8 @@ const About = () => {
                                 )}
                             </li>
                             <li>
-                                <span class="text-primary">
-                                    {T("FW ver")}:{" "}
+                                <span class="text-primary text-label">
+                                    {T("FW ver")}:
                                 </span>
                                 <span class="text-dark">
                                     {props.find(
@@ -390,7 +392,9 @@ const About = () => {
                             </li>
                             <CustomEntry />
                             <li>
-                                <span class="text-primary">{T("S18")}: </span>
+                                <span class="text-primary text-label">
+                                    {T("S18")}:
+                                </span>
                                 <span class="text-dark">
                                     {getBrowserInformation()}
                                 </span>
@@ -399,8 +403,8 @@ const About = () => {
                                 if (id != "FW ver")
                                     return (
                                         <li>
-                                            <span class="text-primary">
-                                                {T(id)}:{" "}
+                                            <span class="text-primary text-label">
+                                                {T(id)}:
                                             </span>
                                             <span class="text-dark">
                                                 {T(value)}

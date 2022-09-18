@@ -1620,7 +1620,7 @@ const JogPanel = () => {
                             }}
                         >
                             <Crosshair />
-                            <span class="text-tiny">z</span>{" "}
+                            <span class="text-tiny">z</span>
                         </Button>
                     </div>
                 </div>
