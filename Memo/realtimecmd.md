@@ -57,7 +57,7 @@ Toggle commands
 ]
 ```
 
-## grblHal
+## grblHAL
 
 -   0x18 (ctrl-x) : Soft-Reset : #SOFTRESET#
 -   0x80 : Instead of ? for requesting a real-time report #STATUSREPORT#

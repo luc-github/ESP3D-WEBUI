@@ -1,7 +1,7 @@
 # Firmware names, ids, usages
 
 -   grblhal  
-    grblhal -80 - grblHal Fw
+    grblhal -80 - grblHAL Fw
 -   reprap  
     reprap -70 - NA
 -   fluidnc  
