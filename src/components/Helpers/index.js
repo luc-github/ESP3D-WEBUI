@@ -46,6 +46,7 @@ import {
     splitArrayByLines,
     addObjectItem,
     removeObjectItem,
+    BitsArray,
 } from "./arrays"
 import { dispatchToExtensions } from "./html"
 import { sortedFilesList, filterResultFiles } from "./filters"
@@ -80,4 +81,5 @@ export {
     addObjectItem,
     removeObjectItem,
     isFloat,
+    BitsArray,
 }

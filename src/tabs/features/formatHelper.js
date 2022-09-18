@@ -20,7 +20,8 @@ formatHelper.js - ESP3D WebUI helper file
 */
 
 const getFieldTypeName = ({ value, type, options }) => {
-    if (options !== undefined) return "select" //boolean
+    if (options !== undefined && !(type === "M" || type === "X"))
+        return "select" //boolean
     if (type === "B") return "number" //byte is input number
     if (type === "I") return "number" //integer is input number
     if (type === "F") return "number" //float is input number

@@ -28,7 +28,7 @@ let logindone = false
 const sessiontTime = 60000
 let countStatus = 0
 let change = false
-const emulationESP400 = true
+const emulationESP400 = false
 
 function getLastconnection() {
     return lastconnection
@@ -1562,7 +1562,7 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-    /* grblHAL with emulation*/
+    /* grblHAL with emulation
     if (url.indexOf("ESP400") != -1 && emulationESP400) {
         res.json({
             cmd: "400",
@@ -3058,7 +3058,7 @@ const commandsQuery = (req, res, SendWS) => {
             ],
         })
         return
-    }
+    }*/
     SendWS("ok\n")
     res.send("")
 }

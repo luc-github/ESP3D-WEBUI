@@ -22,8 +22,14 @@ input[type=range]::-ms-thumb{/*Internet Explorer*/
   cursor:pointer;
 }
 
+.control-fieldset{
+  color: black!important;
+  font-size: 0.8rem!important;
+}
+
 .text-label{
   margin-right:0.4rem;
+  
 }
 
 .badge-container {

@@ -485,6 +485,7 @@ const FeaturesTab = () => {
                                                                                       []
                                                                                   )
                                                                                 : null
+
                                                                         return (
                                                                             <Field
                                                                                 label={T(
@@ -501,6 +502,9 @@ const FeaturesTab = () => {
                                                                                     )
                                                                                         ? "scan"
                                                                                         : null
+                                                                                }
+                                                                                initial={
+                                                                                    initial
                                                                                 }
                                                                                 {...rest}
                                                                                 setValue={(
