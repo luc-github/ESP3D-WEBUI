@@ -28,6 +28,7 @@ let logindone = false
 const sessiontTime = 60000
 let countStatus = 0
 let change = false
+const emulationESP400 = true
 
 function getLastconnection() {
     return lastconnection
@@ -177,6 +178,21 @@ const commandsQuery = (req, res, SendWS) => {
         }
         return
     }
+
+    if (url.indexOf("ESP401") != -1) {
+        const reg_search1 = /P=(?<pos>[^\s]*)/i
+        let posres = null
+        if ((posres = reg_search1.exec(url)) == null) {
+            console.log("Cannot find P= in url")
+        }
+        res.json({
+            cmd: "401",
+            status: "ok",
+            data: posres.groups.pos ? posres.groups.pos : "Unknown position",
+        })
+        return
+    }
+
     if (url.indexOf("ESP410") != -1) {
         res.json({
             cmd: "410",
@@ -292,7 +308,1262 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-    if (url.indexOf("ESP400") != -1) {
+    /* grblHAL without emulation*/
+    if (url.indexOf("ESP400") != -1 && !emulationESP400) {
+        res.json({
+            cmd: "400",
+            status: "ok",
+            data: [
+                {
+                    F: "General/General",
+                    P: "10",
+                    T: "M",
+                    V: "511",
+                    H: "Status report options",
+                    O: [
+                        {
+                            "Position in machine coordinate": "0",
+                        },
+                        {
+                            "Buffer state": "1",
+                        },
+                        {
+                            "Line numbers": "2",
+                        },
+                        {
+                            "Feed & speed": "3",
+                        },
+                        {
+                            "Pin state": "4",
+                        },
+                        {
+                            "Work coordinate offset": "5",
+                        },
+                        {
+                            Overrides: "6",
+                        },
+                        {
+                            "Probe coordinates": "7",
+                        },
+                        {
+                            "Buffer sync on WCO change": "8",
+                        },
+                        {
+                            "Parser state": "9",
+                        },
+                        {
+                            "Alarm substatus": "10",
+                        },
+                        {
+                            "Run substatus": "11",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "11",
+                    T: "F",
+                    V: "0.010",
+                    H: "Junction deviation",
+                },
+                {
+                    F: "General/General",
+                    P: "12",
+                    T: "F",
+                    V: "0.002",
+                    H: "Arc tolerance",
+                },
+                {
+                    F: "General/General",
+                    P: "13#0",
+                    T: "B",
+                    V: "0",
+                    H: "Report in inches",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "28",
+                    T: "F",
+                    V: "0.100",
+                    H: "G73 Retract distance",
+                },
+                {
+                    F: "General/General",
+                    P: "32",
+                    T: "B",
+                    V: "0",
+                    H: "Mode of operation",
+                    O: [
+                        {
+                            Normal: "0",
+                        },
+                        {
+                            "Laser mode": "1",
+                        },
+                        {
+                            "Lathe mode": "2",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "39#0",
+                    T: "B",
+                    V: "1",
+                    H: "Enable legacy RT commands",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "62#0",
+                    T: "B",
+                    V: "0",
+                    H: "Sleep enable",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "63",
+                    T: "M",
+                    V: "2",
+                    H: "Feed hold actions",
+                    O: [
+                        {
+                            "Disable laser during hold": "0",
+                        },
+                        {
+                            "Restore spindle and coolant state on resume": "1",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "64#0",
+                    T: "B",
+                    V: "0",
+                    H: "Force init alarm",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "384#0",
+                    T: "B",
+                    V: "0",
+                    H: "Disable G92 persistence",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "General/General",
+                    P: "396",
+                    T: "I",
+                    V: "30",
+                    H: "WebUI timeout",
+                    S: "999",
+                },
+                {
+                    F: "General/General",
+                    P: "397",
+                    T: "I",
+                    V: "0",
+                    H: "WebUI auto report interval",
+                    R: "1",
+                    S: "9999",
+                },
+                {
+                    F: "Control signals/Control signals",
+                    P: "14",
+                    T: "M",
+                    V: "0",
+                    H: "Invert control pins",
+                    O: [
+                        {
+                            Reset: "0",
+                        },
+                        {
+                            "Feed hold": "1",
+                        },
+                        {
+                            "Cycle start": "2",
+                        },
+                    ],
+                },
+                {
+                    F: "Control signals/Control signals",
+                    P: "17",
+                    T: "M",
+                    V: "0",
+                    H: "Pullup disable control pins",
+                    O: [
+                        {
+                            Reset: "0",
+                        },
+                        {
+                            "Feed hold": "1",
+                        },
+                        {
+                            "Cycle start": "2",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert limit pins/Limits",
+                    P: "5#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert limit pins/Limits",
+                    P: "5#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert limit pins/Limits",
+                    P: "5#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Pullup disable limit pins/Limits",
+                    P: "18#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Pullup disable limit pins/Limits",
+                    P: "18#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Pullup disable limit pins/Limits",
+                    P: "18#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Limits/Limits",
+                    P: "20#0",
+                    T: "B",
+                    V: "0",
+                    H: "Soft limits enable",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Limits/Limits",
+                    P: "21",
+                    T: "X",
+                    V: "0",
+                    H: "Hard limits enable",
+                    O: [
+                        {
+                            Enable: "0",
+                        },
+                        {
+                            "Strict mode": "1",
+                        },
+                    ],
+                },
+                {
+                    F: "Coolant/Coolant",
+                    P: "15",
+                    T: "M",
+                    V: "0",
+                    H: "Invert coolant pins",
+                    O: [
+                        {
+                            Flood: "0",
+                        },
+                        {
+                            Mist: "1",
+                        },
+                    ],
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "9",
+                    T: "X",
+                    V: "1",
+                    H: "PWM Spindle",
+                    O: [
+                        {
+                            Enable: "0",
+                        },
+                        {
+                            "RPM controls spindle enable signal": "1",
+                        },
+                    ],
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "16",
+                    T: "M",
+                    V: "0",
+                    H: "Invert spindle signals",
+                    O: [
+                        {
+                            "Spindle enable": "0",
+                        },
+                        {
+                            PWM: "2",
+                        },
+                    ],
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "30",
+                    T: "F",
+                    V: "1000.000",
+                    H: "Maximum spindle speed",
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "31",
+                    T: "F",
+                    V: "0.000",
+                    H: "Minimum spindle speed",
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "33",
+                    T: "F",
+                    V: "5000.0",
+                    H: "Spindle PWM frequency",
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "34",
+                    T: "F",
+                    V: "0.0",
+                    H: "Spindle PWM off value",
+                    S: "100",
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "35",
+                    T: "F",
+                    V: "0.0",
+                    H: "Spindle PWM min value",
+                    S: "100",
+                },
+                {
+                    F: "Spindle/Spindle",
+                    P: "36",
+                    T: "F",
+                    V: "100.0",
+                    H: "Spindle PWM max value",
+                    S: "100",
+                },
+                {
+                    F: "Tool change/Tool change",
+                    P: "341",
+                    T: "B",
+                    V: "0",
+                    H: "Tool change mode",
+                    O: [
+                        {
+                            Normal: "0",
+                        },
+                        {
+                            "Manual touch off": "1",
+                        },
+                        {
+                            "Manual touch off @ G59.3": "2",
+                        },
+                        {
+                            "Automatic touch off @ G59.3": "3",
+                        },
+                        {
+                            "Ignore M6": "4",
+                        },
+                    ],
+                },
+                {
+                    F: "Tool change/Tool change",
+                    P: "342",
+                    T: "F",
+                    V: "30.0",
+                    H: "Tool change probing distance",
+                },
+                {
+                    F: "Tool change/Tool change",
+                    P: "343",
+                    T: "F",
+                    V: "25.0",
+                    H: "Tool change locate feed rate",
+                },
+                {
+                    F: "Tool change/Tool change",
+                    P: "344",
+                    T: "F",
+                    V: "200.0",
+                    H: "Tool change search seek rate",
+                },
+                {
+                    F: "Tool change/Tool change",
+                    P: "345",
+                    T: "F",
+                    V: "100.0",
+                    H: "Tool change probe pull-off rate",
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "22",
+                    T: "X",
+                    V: "0",
+                    H: "Homing cycle",
+                    O: [
+                        {
+                            Enable: "0",
+                        },
+                        {
+                            "Enable single axis commands": "1",
+                        },
+                        {
+                            "Homing on startup required": "2",
+                        },
+                        {
+                            "Set machine origin to 0": "3",
+                        },
+                        {
+                            "Two switches shares one input pin": "4",
+                        },
+                        {
+                            "Allow manual": "5",
+                        },
+                        {
+                            "Override locks": "6",
+                        },
+                        {
+                            "Keep homed status on reset": "7",
+                        },
+                    ],
+                },
+                {
+                    F: "Homing direction invert/Homing",
+                    P: "23#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Homing direction invert/Homing",
+                    P: "23#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Homing direction invert/Homing",
+                    P: "23#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "24",
+                    T: "F",
+                    V: "25.0",
+                    H: "Homing locate feed rate",
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "25",
+                    T: "F",
+                    V: "500.0",
+                    H: "Homing search seek rate",
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "26",
+                    T: "I",
+                    V: "250",
+                    H: "Homing switch debounce delay",
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "27",
+                    T: "F",
+                    V: "1.000",
+                    H: "Homing switch pull-off distance",
+                },
+                {
+                    F: "Homing/Homing",
+                    P: "43",
+                    T: "I",
+                    V: "1",
+                    H: "Homing passes",
+                    M: "1",
+                    S: "128",
+                },
+                {
+                    F: "Axes homing, first pass/Homing",
+                    P: "44#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, first pass/Homing",
+                    P: "44#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, first pass/Homing",
+                    P: "44#2",
+                    T: "B",
+                    V: "1",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, second pass/Homing",
+                    P: "45#0",
+                    T: "B",
+                    V: "1",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, second pass/Homing",
+                    P: "45#1",
+                    T: "B",
+                    V: "1",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, second pass/Homing",
+                    P: "45#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, third pass/Homing",
+                    P: "46#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, third pass/Homing",
+                    P: "46#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Axes homing, third pass/Homing",
+                    P: "46#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Probing/Probing",
+                    P: "6#0",
+                    T: "B",
+                    V: "0",
+                    H: "Invert probe pin",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Probing/Probing",
+                    P: "19#0",
+                    T: "B",
+                    V: "0",
+                    H: "Pullup disable probe pin",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Probing/Probing",
+                    P: "65#0",
+                    T: "B",
+                    V: "0",
+                    H: "Probing feed override",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Jogging/Jogging",
+                    P: "40#0",
+                    T: "B",
+                    V: "0",
+                    H: "Limit jog commands",
+                    O: [
+                        {
+                            Enabled: "1",
+                        },
+                        {
+                            Disabled: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "70",
+                    T: "M",
+                    V: "7",
+                    H: "Network Services",
+                    O: [
+                        {
+                            Telnet: "0",
+                        },
+                        {
+                            Websocket: "1",
+                        },
+                        {
+                            HTTP: "2",
+                        },
+                    ],
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "300",
+                    T: "S",
+                    V: "Grbl",
+                    H: "Hostname",
+                    S: "64",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "302",
+                    T: "A",
+                    V: "192.168.5.1",
+                    H: "IP Address",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "303",
+                    T: "A",
+                    V: "192.168.5.1",
+                    H: "Gateway",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "304",
+                    T: "A",
+                    V: "255.255.255.0",
+                    H: "Netmask",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "305",
+                    T: "I",
+                    V: "23",
+                    H: "Telnet port",
+                    M: "1",
+                    S: "65535",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "306",
+                    T: "I",
+                    V: "80",
+                    H: "HTTP port",
+                    M: "1",
+                    S: "65535",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "307",
+                    T: "I",
+                    V: "81",
+                    H: "Websocket port",
+                    M: "1",
+                    S: "65535",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "310",
+                    T: "S",
+                    V: "GrblAP",
+                    H: "Hostname (AP)",
+                    S: "64",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "312",
+                    T: "A",
+                    V: "192.168.5.1",
+                    H: "IP Address (AP)",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "313",
+                    T: "A",
+                    V: "192.168.5.1",
+                    H: "Gateway (AP)",
+                },
+                {
+                    F: "Networking/Networking",
+                    P: "314",
+                    T: "A",
+                    V: "255.255.255.0",
+                    H: "Netmask (AP)",
+                },
+                {
+                    F: "WiFi/WiFi",
+                    P: "73",
+                    T: "B",
+                    V: "1",
+                    H: "WiFi Mode",
+                    O: [
+                        {
+                            Off: "0",
+                        },
+                        {
+                            Station: "1",
+                        },
+                        {
+                            "Access Point": "2",
+                        },
+                        {
+                            "Access Point/Station": "3",
+                        },
+                    ],
+                },
+                {
+                    F: "WiFi/WiFi",
+                    P: "74",
+                    T: "S",
+                    V: "luc-ext1",
+                    H: "WiFi Station (STA) SSID",
+                    S: "64",
+                },
+                {
+                    F: "WiFi/WiFi",
+                    P: "75",
+                    T: "S",
+                    V: "********",
+                    H: "WiFi Station (STA) Password",
+                    S: "32",
+                },
+                {
+                    F: "WiFi/WiFi",
+                    P: "76",
+                    T: "S",
+                    V: "GRBL",
+                    H: "WiFi Access Point (AP) SSID",
+                    S: "64",
+                },
+                {
+                    F: "WiFi/WiFi",
+                    P: "77",
+                    T: "S",
+                    V: "********",
+                    H: "WiFi Access Point (AP) Password",
+                    S: "32",
+                },
+                {
+                    F: "Stepper/Stepper",
+                    P: "0",
+                    T: "F",
+                    V: "10.0",
+                    H: "Step pulse time",
+                    M: "2.0",
+                },
+                {
+                    F: "Stepper/Stepper",
+                    P: "1",
+                    T: "I",
+                    V: "25",
+                    H: "Step idle delay",
+                    S: "65535",
+                },
+                {
+                    F: "Step pulse invert/Stepper",
+                    P: "2#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Step pulse invert/Stepper",
+                    P: "2#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Step pulse invert/Stepper",
+                    P: "2#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Step direction invert/Stepper",
+                    P: "3#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Step direction invert/Stepper",
+                    P: "3#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Step direction invert/Stepper",
+                    P: "3#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert stepper enable pin(s)/Stepper",
+                    P: "4#0",
+                    T: "B",
+                    V: "1",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert stepper enable pin(s)/Stepper",
+                    P: "4#1",
+                    T: "B",
+                    V: "1",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Invert stepper enable pin(s)/Stepper",
+                    P: "4#2",
+                    T: "B",
+                    V: "1",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Stepper/Stepper",
+                    P: "29",
+                    T: "F",
+                    V: "0.0",
+                    H: "Pulse delay",
+                    S: "10",
+                },
+                {
+                    F: "Steppers deenergize/Stepper",
+                    P: "37#0",
+                    T: "B",
+                    V: "0",
+                    H: "X",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Steppers deenergize/Stepper",
+                    P: "37#1",
+                    T: "B",
+                    V: "0",
+                    H: "Y",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "Steppers deenergize/Stepper",
+                    P: "37#2",
+                    T: "B",
+                    V: "0",
+                    H: "Z",
+                    O: [
+                        {
+                            On: "1",
+                        },
+                        {
+                            Off: "0",
+                        },
+                    ],
+                },
+                {
+                    F: "X-axis/X-axis",
+                    P: "100",
+                    T: "F",
+                    V: "250.000",
+                    H: "axis travel resolution",
+                },
+                {
+                    F: "Y-axis/Y-axis",
+                    P: "100",
+                    T: "F",
+                    V: "250.000",
+                    H: "axis travel resolution",
+                },
+                {
+                    F: "Z-axis/Z-axis",
+                    P: "100",
+                    T: "F",
+                    V: "250.000",
+                    H: "axis travel resolution",
+                },
+                {
+                    F: "X-axis/X-axis",
+                    P: "110",
+                    T: "F",
+                    V: "500.000",
+                    H: "axis maximum rate",
+                },
+                {
+                    F: "Y-axis/Y-axis",
+                    P: "110",
+                    T: "F",
+                    V: "500.000",
+                    H: "axis maximum rate",
+                },
+                {
+                    F: "Z-axis/Z-axis",
+                    P: "110",
+                    T: "F",
+                    V: "500.000",
+                    H: "axis maximum rate",
+                },
+                {
+                    F: "X-axis/X-axis",
+                    P: "120",
+                    T: "F",
+                    V: "10.000",
+                    H: "axis acceleration",
+                },
+                {
+                    F: "Y-axis/Y-axis",
+                    P: "120",
+                    T: "F",
+                    V: "10.000",
+                    H: "axis acceleration",
+                },
+                {
+                    F: "Z-axis/Z-axis",
+                    P: "120",
+                    T: "F",
+                    V: "10.000",
+                    H: "axis acceleration",
+                },
+                {
+                    F: "X-axis/X-axis",
+                    P: "130",
+                    T: "F",
+                    V: "200.000",
+                    H: "axis maximum travel",
+                },
+                {
+                    F: "Y-axis/Y-axis",
+                    P: "130",
+                    T: "F",
+                    V: "200.000",
+                    H: "axis maximum travel",
+                },
+                {
+                    F: "Z-axis/Z-axis",
+                    P: "130",
+                    T: "F",
+                    V: "200.000",
+                    H: "axis maximum travel",
+                },
+            ],
+        })
+        return
+    }
+
+    /* grblHAL with emulation*/
+    if (url.indexOf("ESP400") != -1 && emulationESP400) {
         res.json({
             cmd: "400",
             status: "ok",

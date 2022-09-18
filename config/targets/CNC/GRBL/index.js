@@ -112,6 +112,21 @@ const commandsQuery = (req, res, SendWS) => {
         res.send("192.168.1.111")
         return
     }
+
+    if (url.indexOf("ESP401") != -1) {
+        const reg_search1 = /P=(?<pos>[^\s]*)/i
+        let posres = null
+        if ((posres = reg_search1.exec(url)) == null) {
+            console.log("Cannot find P= in url")
+        }
+        res.json({
+            cmd: "401",
+            status: "ok",
+            data: posres.groups.pos ? posres.groups.pos : "Unknown position",
+        })
+        return
+    }
+
     if (url.indexOf("ESP420") != -1) {
         res.json({
             cmd: "420",

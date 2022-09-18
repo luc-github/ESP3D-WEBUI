@@ -23,8 +23,10 @@ const getFieldTypeName = ({ value, type, options }) => {
     if (options !== undefined) return "select" //boolean
     if (type === "B") return "number" //byte is input number
     if (type === "I") return "number" //integer is input number
-    //if (type === "S" && value === "********") return "password"; //input password
+    if (type === "F") return "number" //float is input number
     if (type === "S") return "text" //input text
+    if (type === "M") return "mask" //bit mask
+    if (type === "X") return "xmask" //exclusive bit mask = first bit enable/disable others bits edition
     return "text" //default
 }
 
