@@ -74,11 +74,15 @@ const StatusControls = () => {
                                 {streamStatus.name
                                     ? ` (${streamStatus.type}) ${
                                           streamStatus.name
-                                      } ${(
-                                          (streamStatus.processed /
-                                              streamStatus.total) *
-                                          100
-                                      ).toFixed(0)}%`
+                                      } ${
+                                          streamStatus.total
+                                              ? (
+                                                    (streamStatus.processed /
+                                                        streamStatus.total) *
+                                                    100
+                                                ).toFixed(0)
+                                              : streamStatus.processed
+                                      }%`
                                     : ""}
                             </div>
                         )}

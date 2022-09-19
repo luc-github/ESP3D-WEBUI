@@ -46,6 +46,7 @@ const getStatus = (str) => {
         f: {},
         rpm: {},
         bf: {},
+        sd: {},
     }
     const mpos_pattern = /\|MPos:(?<mpos>[^\|>]+)/i
     const wpos_pattern = /\|WPos:(?<wpos>[^\|>]+)/i
@@ -58,7 +59,17 @@ const getStatus = (str) => {
     const bf_patern = /\|Bf:(?<bf>[^\|>]+)/i
     const f_patern = /\|F:(?<f>[^\|>]+)/i
     const ln_patern = /\|Ln:(?<ln>[^\|>]+)/i
+    const sd_stream = /SD:(?<sd>[^\|>]+)/i
     let result = null
+
+    //line number
+    if ((result = sd_stream.exec(str)) !== null) {
+        const status = result.groups.sd.split(",")
+        res.sd.status = "processing"
+        res.sd.processed = status[0]
+        res.sd.type = "SD"
+        res.sd.name = status[1]
+    }
     //buffer state
     if ((result = bf_patern.exec(str)) !== null) {
         const r = result.groups.bf.split(",")

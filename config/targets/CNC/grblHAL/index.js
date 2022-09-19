@@ -65,13 +65,18 @@ const commandsQuery = (req, res, SendWS) => {
             )
         if (countStatus == 2)
             SendWS(
-                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
+                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.1,pcb_zebra.gcode||FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
             )
-        if (countStatus > 2)
+        if (countStatus > 2 && countStatus < 8)
             SendWS(
-                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:P>\n"
+                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.2,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n"
+            )
+        if (countStatus >= 8)
+            SendWS(
+                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:100.0,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n"
             )
         if (countStatus == 10) countStatus = 0
+
         res.send("")
         return
     }

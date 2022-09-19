@@ -58,12 +58,12 @@
     "name": "extracontents"
    }
   ],
-  "enablepolling": false,
+  "enablepolling": true,
   "pollingcmds": [
    {
     "id": "samplepolling",
     "name": "3s",
-    "cmds": "?;[ESP701]json",
+    "cmds": "?",
     "refreshtime": "3000"
    }
   ],

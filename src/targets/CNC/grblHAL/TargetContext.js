@@ -184,6 +184,9 @@ const TargetContextProvider = ({ children }) => {
                         }
                     setStates(lastStates.current)
                 }
+                if (response.sd) {
+                    setStreamStatus(response.sd)
+                }
                 //more to set+
                 //....
             }
