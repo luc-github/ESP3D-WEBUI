@@ -77,6 +77,7 @@ const Input = ({
     help,
     button,
     disabled,
+    prec,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -87,6 +88,8 @@ const Input = ({
     const canshow = connectionDepend(depend, connectionSettings.current)
     const { step } = rest
     const inputref = useRef()
+    const appendtooltip = prec ? "tooltip tooltip-left" : ""
+    const appendtooltipdata = prec ? T("S208").replace("$", prec) : ""
     const onInput = (e) => {
         if (setValue) {
             setValue(e.target.value)
@@ -157,7 +160,14 @@ const Input = ({
                     {...rest}
                     onInput={onInput}
                 />
-                {append && <span class="input-group-addon">{T(append)}</span>}
+                {append && (
+                    <span
+                        class={`input-group-addon ${appendtooltip}`}
+                        data-tooltip={appendtooltipdata}
+                    >
+                        {T(append)}
+                    </span>
+                )}
                 {options.length > 0 && (
                     <ButtonImg
                         class="input-group-btn"
@@ -274,7 +284,10 @@ const Input = ({
                 onInput={onInput}
             />
             {append && (
-                <span class={`input-group-addon  ${classAddition}`}>
+                <span
+                    class={`input-group-addon  ${appendtooltip} ${classAddition}`}
+                    data-tooltip={appendtooltipdata}
+                >
                     {T(append)}
                 </span>
             )}

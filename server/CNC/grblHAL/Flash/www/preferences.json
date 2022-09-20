@@ -8,7 +8,7 @@
   "hapticfeedback": false,
   "audiofeedback": false,
   "showinformationpage": true,
-  "showmachinesettings": true,
+  "showmachinesettings": false,
   "emergencystop": "#SAFETYDOOR#",
   "fixedpanels": true,
   "panelsorder": [

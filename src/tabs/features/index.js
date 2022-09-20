@@ -356,6 +356,16 @@ const FeaturesTab = () => {
                 }
             }
         } else if (fieldData.type == "number") {
+            if (fieldData.prec) {
+                if (
+                    parseFloat(fieldData.value) !=
+                    parseFloat(fieldData.value).toFixed(
+                        parseInt(fieldData.prec)
+                    )
+                )
+                    validation.valid = false
+            }
+            if (fieldData.value.trim().length == 0) validation.valid = false
             if (fieldData.max) {
                 if (fieldData.value > fieldData.max) {
                     validation.valid = false
@@ -381,7 +391,12 @@ const FeaturesTab = () => {
         if (fieldData.value == fieldData.initial) {
             fieldData.hasmodified = false
         } else {
-            fieldData.hasmodified = true
+            if (
+                fieldData.type == "number" &&
+                parseFloat(fieldData.value) == parseFloat(fieldData.initial)
+            )
+                fieldData.hasmodified = false
+            else fieldData.hasmodified = true
         }
         setShowSave(checkSaveStatus())
         if (!fieldData.hasmodified && !fieldData.haserror) return null
@@ -463,6 +478,7 @@ const FeaturesTab = () => {
                                                                             label,
                                                                             options,
                                                                             initial,
+                                                                            prec,
                                                                             ...rest
                                                                         } = fieldData
                                                                         const Options =
@@ -505,6 +521,9 @@ const FeaturesTab = () => {
                                                                                 }
                                                                                 initial={
                                                                                     initial
+                                                                                }
+                                                                                prec={
+                                                                                    prec
                                                                                 }
                                                                                 {...rest}
                                                                                 setValue={(
