@@ -60,6 +60,17 @@ const Mask = ({
         interfaceSettings.current.settings
     )
     const canshow = connectionDepend(depend, connectionSettings.current)
+    function getSize(optionsArray) {
+        let size = 0
+        if (optionsArray.length > 0) {
+            optionsArray.forEach((option) => {
+                if (parseInt(option.value) > size) size = parseInt(option.value)
+            })
+            size++
+        }
+        return size
+    }
+    let maskSize = getSize(options)
 
     useEffect(() => {
         let visible =
@@ -78,11 +89,8 @@ const Mask = ({
         //to update state
         if (setValue) setValue(null, true)
     }, [value])
-    const mask = Object.assign({}, BitsArray.fromInt(value, options.length))
-    const maskinitial = Object.assign(
-        {},
-        BitsArray.fromInt(initial, options.length)
-    )
+    const mask = Object.assign({}, BitsArray.fromInt(value, maskSize))
+    const maskinitial = Object.assign({}, BitsArray.fromInt(initial, maskSize))
 
     const [controlEnabled, setControlEnabled] = useState(
         type == "xmask" ? mask.getBit(0) : true
@@ -98,7 +106,10 @@ const Mask = ({
                         valid: true,
                         modified: true,
                     }
-                    if (maskinitial.getBit(index) != mask.getBit(index)) {
+                    if (
+                        maskinitial.getBit(parseInt(option.value)) !=
+                        mask.getBit(parseInt(option.value))
+                    ) {
                         validation.modified = true
                         fieldData.hasmodified = true
                     } else {
@@ -110,9 +121,9 @@ const Mask = ({
                 }
                 const FieldData = {
                     id: id + "M" + index,
-                    value: mask.getBit(option.value),
-                    initial: mask.getBit(option.value),
-                    label: label,
+                    value: mask.getBit(parseInt(option.value)),
+                    initial: mask.getBit(parseInt(option.value)),
+                    label: option.label,
                     type: "boolean",
                     haserror: false,
                     hasmodified: false,
@@ -128,11 +139,11 @@ const Mask = ({
                         <FormGroup {...FieldData}>
                             <Boolean
                                 id={id + "M" + index}
-                                label={option.label}
-                                value={mask.getBit(option.value)}
+                                label={FieldData.label}
+                                value={FieldData.value}
                                 setValue={(val, update) => {
                                     if (!update) {
-                                        mask.setBit(index, val)
+                                        mask.setBit(parseInt(option.value), val)
                                         if (
                                             type == "xmask" &&
                                             parseInt(option.value) == 0

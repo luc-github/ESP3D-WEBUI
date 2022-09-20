@@ -1041,6 +1041,12 @@ const commandsQuery = (req, res, SendWS) => {
                         {
                             HTTP: "2",
                         },
+                        {
+                            FTP: "3",
+                        },
+                        {
+                            WebDAV: "7",
+                        },
                     ],
                 },
                 {
