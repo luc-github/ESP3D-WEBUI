@@ -111,3 +111,9 @@ can be in JSON or plain text
         if ESP has camera it contain the camera ID
         * `CameraName`
         if  ESP has camera it contain the camera name
+        * `Axisletters`
+        Currently only used for grbHAL
+        can be :
+          - XYZABC
+          - XYZUVZ (supported soon)
+          - XYZABCUVZ (supported soon)
