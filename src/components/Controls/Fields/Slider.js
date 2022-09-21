@@ -68,7 +68,10 @@ const Slider = ({
         let visible =
             canshow &&
             settingsDepend(depend, interfaceSettings.current.settings)
-        document.getElementById(id).style.display = visible ? "block" : "none"
+        if (document.getElementById(id))
+            document.getElementById(id).style.display = visible
+                ? "block"
+                : "none"
         if (document.getElementById("group-" + id))
             document.getElementById("group-" + id).style.display = visible
                 ? "block"

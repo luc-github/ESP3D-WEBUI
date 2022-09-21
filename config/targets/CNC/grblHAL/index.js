@@ -65,7 +65,7 @@ const commandsQuery = (req, res, SendWS) => {
             )
         if (countStatus == 2)
             SendWS(
-                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.1,pcb_zebra.gcode||FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
+                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.1,pcb_zebra.gcode||FS:0,0|Ov:100,100,100|Pn:XYZV>\n"
             )
         if (countStatus > 2 && countStatus < 8)
             SendWS(
@@ -109,8 +109,7 @@ const commandsQuery = (req, res, SendWS) => {
                 FlashFileSystem: "LittleFS",
                 HostPath: "/www",
                 Time: "none",
-                CameraID: "4",
-                CameraName: "ESP32 Cam",
+                Axisletters: "XYZUV",
             },
         })
         return

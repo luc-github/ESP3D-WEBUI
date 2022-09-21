@@ -149,17 +149,106 @@ const ProbePanel = () => {
                                 {
                                     label: "X",
                                     value: "X",
-                                    depend: [{ id: "showx", value: true }],
+                                    depend: [
+                                        { id: "showx", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "X",
+                                        },
+                                    ],
                                 },
                                 {
                                     label: "Y",
                                     value: "Y",
-                                    depend: [{ id: "showy", value: true }],
+                                    depend: [
+                                        { id: "showy", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "Y",
+                                        },
+                                    ],
                                 },
                                 {
                                     label: "Z",
                                     value: "Z",
-                                    depend: [{ id: "showz", value: true }],
+                                    depend: [
+                                        { id: "showz", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "Z",
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: "A",
+                                    value: "A",
+                                    depend: [
+                                        { id: "showa", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "A",
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: "B",
+                                    value: "B",
+                                    depend: [
+                                        { id: "showb", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "B",
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: "C",
+                                    value: "C",
+                                    depend: [
+                                        { id: "showc", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "C",
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: "U",
+                                    value: "U",
+                                    depend: [
+                                        { id: "showu", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "U",
+                                        },
+                                    ],
+                                },
+                                {
+                                    label: "V",
+                                    value: "V",
+                                    depend: [
+                                        { id: "showv", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "V",
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: "W",
+                                    value: "W",
+                                    depend: [
+                                        { id: "showw", value: true },
+                                        {
+                                            connection_id: "Axisletters",
+                                            contains: "W",
+                                        },
+                                    ],
                                 },
                             ],
                             value: probeaxis,

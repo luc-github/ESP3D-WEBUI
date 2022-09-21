@@ -23,7 +23,7 @@ import {
     dispatchToExtensions,
     beautifyJSONString,
 } from "../../../components/Helpers"
-import { useDatasContext } from "../../../contexts"
+import { useDatasContext, useSettingsContextFn } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import { eventsList, variablesList } from "."
@@ -69,6 +69,8 @@ useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
 const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",
+        y: "?",
+        z: "?",
     })
     const [status, setStatus] = useState({ state: "?" })
     const [overrides, setOverrides] = useState({})
@@ -96,6 +98,21 @@ const TargetContextProvider = ({ children }) => {
         processor.handle(type, data)
         //sensors
         //status
+        if (type == "core" && data == "ESP800") {
+            if (useSettingsContextFn.getValue("Axisletters")) {
+                if (positions.x == "?") {
+                    setPositions(
+                        useSettingsContextFn
+                            .getValue("Axisletters")
+                            .split("")
+                            .reduce((acc, letter) => {
+                                acc[letter.toLowerCase()] = "?"
+                                return acc
+                            }, {})
+                    )
+                }
+            }
+        }
         if (type === "stream") {
             //status
             if (isStatus(data)) {
@@ -125,12 +142,18 @@ const TargetContextProvider = ({ children }) => {
                         "a",
                         "b",
                         "c",
+                        "u",
+                        "v",
+                        "w",
                         "wx",
                         "wy",
                         "wz",
                         "wa",
                         "wb",
                         "wc",
+                        "wu",
+                        "wv",
+                        "ww",
                     ]
                     names.forEach((element) => {
                         let name = "#pos_" + element + "#"
@@ -231,12 +254,17 @@ const TargetContextProvider = ({ children }) => {
                     }
                     if (gcodeParametersRef.current.PRB) {
                         //the PRB is x y z even
+                        //TODO:
+                        //should use the xyzabc or xyzabcuv or xyzuvw instead
+                        const defaultletters = "xyzabc"
+                        const definedletters =
+                            useSettingsContextFn.getValue("Axisletters")
+                        const letterslist = definedletters
+                            ? definedletters.toLowerCase().split("")
+                            : defaultletters.split("")
                         gcodeParametersRef.current.PRB.data.map(
                             (value, index) => {
-                                let name =
-                                    "#prb_" +
-                                    String.fromCharCode(120 + index) +
-                                    "#"
+                                let name = "#prb_" + letterslist[index] + "#"
                                 variablesList.addCommand({
                                     name: name,
                                     value: parseFloat(value),
