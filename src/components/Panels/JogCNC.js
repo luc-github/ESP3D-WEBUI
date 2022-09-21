@@ -447,8 +447,6 @@ const JogPanel = () => {
                     }
                 })
             })
-
-            console.log("currentAxis is", currentAxis)
             setCurrentSelectedAxis(currentAxis)
         }
     })
