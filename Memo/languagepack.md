@@ -24,8 +24,11 @@ Currently:
 -   Modify the language pack file according to the language and test it against the WebUI
 
 -   Compress the final pack
-    use the following command to compress the final pack targeting the file `npm run package target=languages/<target pack>/lang-<target language>.json`
-    so for French language pack for example: `npm run package target=languages/printerpack/lang-fr.json`
+    use the following command to compress the final pack targeting the file :  
+    `npm run package target=languages/<target pack>/lang-<target language>.json`
+
+    so for French language pack for example: 
+    `npm run package target=languages/printerpack/lang-fr.json`
 
 ## Compare template pack with language pack file
 
