@@ -27,7 +27,9 @@
         "buildcnc": "npm run cnc-grbl && npm run cnc-grblhal",
         "buildsand": "npm run sand-grbl",
         "buildall": "npm run buildsand && npm run buildprinter  && npm run buildcnc",
-        "package": "node ./config/pack.js"
+        "package": "node ./config/pack.js",
+        "template": "node ./config/buildtemplate.js",
+        "check": "node ./config/checkpack.js"
     },
     "author": "",
     "license": "ISC",
