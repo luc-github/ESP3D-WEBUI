@@ -31,7 +31,6 @@ if (process.argv.length < 3 || !arg.startsWith("target=")) {
         )
     )
     exit(0)
-    ml
 }
 //Sanity check for file creation
 const sourcepath = path.normalize(

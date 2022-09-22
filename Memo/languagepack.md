@@ -27,7 +27,7 @@ Currently:
     use the following command to compress the final pack targeting the file :  
     `npm run package target=languages/<target pack>/lang-<target language>.json`
 
-    so for French language pack for example: 
+    so for French language pack for example:
     `npm run package target=languages/printerpack/lang-fr.json`
 
 ## Compare template pack with language pack file
@@ -36,7 +36,25 @@ This script is used to compare current language pack content against the templat
 
 `npm run check reference=<template path file> target=<not compressed language pack>`
 
-`<TODO>`
+```
+npm run check target=languages/printerpack/lang-fr.json reference=languages/printerpack/en.json
+
+> ESP3D-WEBUI@3.0.0 check
+> node ./config/checkpack.js "target=languages/printerpack/lang-fr.json" "reference=languages/printerpack/en.json"
+
+Comparing files
+
+Checking extra entries...
+S724 : Fermer l'application
+...done, found  1 extra entries
+
+Checking missing entries...
+S14 : Settings
+S24 : Close
+...done, found  2 missing entries
+
+Comparaison done
+```
 
 ## Propose / update language pack files
 

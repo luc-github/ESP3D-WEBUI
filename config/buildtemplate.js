@@ -99,7 +99,7 @@ processList.map((element) => {
         const file = fs.readFileSync(sourcepath, "UTF-8")
         const currentFile = JSON.parse(file.toString())
         Object.keys(currentFile).map((key) => {
-            if (!resultfile[key]) {
+            if (!resultfile[key] && typeof currentFile[key] != "undefined") {
                 resultfile[key] = currentFile[key]
             } else {
                 if (resultfile[key] != currentFile[key]) {
