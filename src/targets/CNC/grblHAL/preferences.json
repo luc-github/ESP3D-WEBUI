@@ -91,6 +91,282 @@
                 "label": "S190",
                 "value": true
             }
+        ],
+        "jog": [
+            {
+                "id": "axis",
+                "type": "group",
+                "label": "CN8",
+                "value": [
+                    {
+                        "id": "showx",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "X"
+                            }
+                        ],
+                        "label": "X",
+                        "value": true
+                    },
+                    {
+                        "id": "showy",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "Y"
+                            }
+                        ],
+                        "label": "Y",
+                        "value": true
+                    },
+                    {
+                        "id": "showz",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "Z"
+                            }
+                        ],
+                        "label": "Z",
+                        "value": true
+                    },
+                    {
+                        "id": "showa",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "A"
+                            }
+                        ],
+                        "label": "A",
+                        "value": true
+                    },
+                    {
+                        "id": "showb",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "B"
+                            }
+                        ],
+                        "label": "B",
+                        "value": true
+                    },
+                    {
+                        "id": "showc",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "C"
+                            }
+                        ],
+                        "label": "C",
+                        "value": true
+                    },
+                    {
+                        "id": "showu",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "U"
+                            }
+                        ],
+                        "label": "U",
+                        "value": true
+                    },
+                    {
+                        "id": "showv",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "V"
+                            }
+                        ],
+                        "label": "V",
+                        "value": true
+                    },
+                    {
+                        "id": "showw",
+                        "type": "boolean",
+                        "depend": [
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "W"
+                            }
+                        ],
+                        "label": "W",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "feedrate",
+                "type": "group",
+                "label": "CN9",
+                "value": [
+                    {
+                        "id": "xyfeedrate",
+                        "depend": [
+                            {
+                                "ids": [
+                                    {
+                                        "id": "showx",
+                                        "value": true
+                                    },
+                                    {
+                                        "id": "showy",
+                                        "value": true
+                                    }
+                                ]
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "Y"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "XY",
+                        "min": "1",
+                        "append": "CN1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "zfeedrate",
+                        "depend": [
+                            {
+                                "id": "showz",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "Z"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "Z",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "afeedrate",
+                        "depend": [
+                            {
+                                "id": "showa",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "A"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "A",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "bfeedrate",
+                        "depend": [
+                            {
+                                "id": "showb",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "B"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "B",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "cfeedrate",
+                        "depend": [
+                            {
+                                "id": "showc",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "C"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "C",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "ufeedrate",
+                        "depend": [
+                            {
+                                "id": "showu",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "U"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "U",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "vfeedrate",
+                        "depend": [
+                            {
+                                "id": "showv",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "V"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "V",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "wfeedrate",
+                        "depend": [
+                            {
+                                "id": "showw",
+                                "value": true
+                            },
+                            {
+                                "connection_id": "Axisletters",
+                                "contains": "W"
+                            }
+                        ],
+                        "type": "number",
+                        "label": "W",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    }
+                ]
+            }
         ]
     }
 }

@@ -177,20 +177,16 @@ const getStatus = (str) => {
         }
     }
     //export positions
-    res.positions = {
-        x: mpos.length > 1 ? mpos[0] : undefined,
-        y: mpos.length > 1 ? mpos[1] : undefined,
-        z: mpos.length > 2 ? mpos[2] : undefined,
-        a: mpos.length > 3 ? mpos[3] : undefined,
-        b: mpos.length > 4 ? mpos[4] : undefined,
-        c: mpos.length > 5 ? mpos[5] : undefined,
-        wx: wpos.length > 0 ? wpos[0] : undefined,
-        wy: wpos.length > 1 ? wpos[1] : undefined,
-        wz: wpos.length > 2 ? wpos[2] : undefined,
-        wa: wpos.length > 3 ? wpos[3] : undefined,
-        wb: wpos.length > 4 ? wpos[4] : undefined,
-        wc: wpos.length > 5 ? wpos[5] : undefined,
-    }
+    const defaultletters = "xyzabc"
+    const definedletters = useSettingsContextFn.getValue("Axisletters")
+    const letterslist = definedletters
+        ? definedletters.toLowerCase().split("")
+        : defaultletters.split("")
+    letterslist.forEach((letter, index) => {
+        res.positions[letter] = index < mpos.length ? mpos[index] : undefined
+        res.positions["w" + letter] =
+            index < wpos.length ? wpos[index] : undefined
+    })
     return res
 }
 

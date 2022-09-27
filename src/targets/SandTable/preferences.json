@@ -1,171 +1,152 @@
 {
-  "settings": {
-    "jog": [
-      {
-        "id": "axis",
-        "type": "group",
-        "label": "CN8",
-        "value": [
-      {
-        "id": "showx",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">0"}
-        ],
-        "label": "X",
-        "value": true
-      },
-      {
-        "id": "showy",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">1"}
-        ],
-        "label": "Y",
-        "value": true
-      },
-      {
-        "id": "showz",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">2"}
-        ],
-        "label": "Z",
-        "value": true
-      },
-      {
-        "id": "showa",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">3"}
-        ],
-        "label": "A",
-        "value": true
-      },
-      {
-        "id": "showb",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">4"}
-        ],
-        "label": "B",
-        "value": true
-      },
-      {
-        "id": "showc",
-        "type": "boolean",
-        "depend":[
-          {"connection_id":"axis", "value":">5"}
-        ],
-        "label": "C",
-        "value": true
-      }]}
-      ,
-      {
-        "id": "feedrate",
-        "type": "group",
-        "label": "CN9",
-        "value": [
-      {
-        "id": "xyfeedrate",
-        "depend":[
-            {"id":"showx",
-            "value": true},
-            {"id":"showy",
-              "value": true},
-            {"connection_id":"axis", "value":">1"}
-          ],
-        "type": "number",
-        "label": "XY",
-        "min": "1",
-        "append": "CN1",
-        "value": "1000"
-      },
-      {
-        "id": "zfeedrate",
-        "depend":[
-          {"id":"showz",
-            "value": true},
-            {"connection_id":"axis", "value":">2"}
-          ],
-        "type": "number",
-        "label": "Z",
-        "append": "CN1",
-        "min": "1",
-        "value": "1000"
-      },
-      {
-        "id": "afeedrate",
-        "depend":[
-          {"id":"showa",
-            "value": true},
-            {"connection_id":"axis", "value":">3"}
-          ],
-        "type": "number",
-        "label": "A",
-        "append": "CN1",
-        "min": "1",
-        "value": "1000"
-      },
-      {
-        "id": "bfeedrate",
-        "depend":[
-          {"id":"showb",
-            "value": true},
-            {"connection_id":"axis", "value":">4"}
-          ],
-        "type": "number",
-        "label": "B",
-        "append": "CN1",
-        "min": "1",
-        "value": "1000"
-      },
-      {
-        "id": "cfeedrate",
-        "depend":[
-          {"id":"showc",
-            "value": true},
-            
-            {"connection_id":"axis", "value":">5"}
-          ],
-        "type": "number",
-        "label": "C",
-        "append": "CN1",
-        "min": "1",
-        "value": "1000"
-      }]},
-      {
-        "id": "home",
-        "type": "group",
-        "label": "CN17",
-        "value": [ {
-          "id": "homesingleaxis",
-          "type": "boolean",
-          "label": "CN16",
-          "value": false
-        },
-        {
-          "id": "homecmd",
-          "type": "text",
-          "label": "CN10",
-          "value": "$H#",
-          "help": "CN11"
-        }]
-       },
-       {
-        "id": "zerocmd",
-        "type": "text",
-        "label": "CN19",
-        "value": "G10 L20 P0 #",
-        "help": "CN11"
-      },
-      {
-        "id": "jogstopcmd",
-        "type": "text",
-        "label": "CN23",
-        "value": "#SAFETYDOOR#",
-        "help": "S97"
-      }
-    ]
-  }
+    "settings": {
+        "jog": [
+            {
+                "id": "axis",
+                "type": "group",
+                "label": "CN8",
+                "value": [
+                    {
+                        "id": "showx",
+                        "type": "boolean",
+                        "label": "X",
+                        "value": true
+                    },
+                    {
+                        "id": "showy",
+                        "type": "boolean",
+                        "label": "Y",
+                        "value": true
+                    },
+                    {
+                        "id": "showz",
+                        "type": "boolean",
+                        "label": "Z",
+                        "value": true
+                    },
+                    {
+                        "id": "showa",
+                        "type": "boolean",
+                        "label": "A",
+                        "value": true
+                    },
+                    {
+                        "id": "showb",
+                        "type": "boolean",
+                        "label": "B",
+                        "value": true
+                    },
+                    {
+                        "id": "showc",
+                        "type": "boolean",
+                        "label": "C",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "feedrate",
+                "type": "group",
+                "label": "CN9",
+                "value": [
+                    {
+                        "id": "xyfeedrate",
+                        "depend": [
+                            { "id": "showx", "value": true },
+                            { "id": "showy", "value": true },
+                            { "connection_id": "axis", "value": ">1" }
+                        ],
+                        "type": "number",
+                        "label": "XY",
+                        "min": "1",
+                        "append": "CN1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "zfeedrate",
+                        "depend": [
+                            { "id": "showz", "value": true },
+                            { "connection_id": "axis", "value": ">2" }
+                        ],
+                        "type": "number",
+                        "label": "Z",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "afeedrate",
+                        "depend": [
+                            { "id": "showa", "value": true },
+                            { "connection_id": "axis", "value": ">3" }
+                        ],
+                        "type": "number",
+                        "label": "A",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "bfeedrate",
+                        "depend": [
+                            { "id": "showb", "value": true },
+                            { "connection_id": "axis", "value": ">4" }
+                        ],
+                        "type": "number",
+                        "label": "B",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "cfeedrate",
+                        "depend": [
+                            { "id": "showc", "value": true },
+
+                            { "connection_id": "axis", "value": ">5" }
+                        ],
+                        "type": "number",
+                        "label": "C",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    }
+                ]
+            },
+            {
+                "id": "home",
+                "type": "group",
+                "label": "CN17",
+                "value": [
+                    {
+                        "id": "homesingleaxis",
+                        "type": "boolean",
+                        "label": "CN16",
+                        "value": false
+                    },
+                    {
+                        "id": "homecmd",
+                        "type": "text",
+                        "label": "CN10",
+                        "value": "$H#",
+                        "help": "CN11"
+                    }
+                ]
+            },
+            {
+                "id": "zerocmd",
+                "type": "text",
+                "label": "CN19",
+                "value": "G10 L20 P0 #",
+                "help": "CN11"
+            },
+            {
+                "id": "jogstopcmd",
+                "type": "text",
+                "label": "CN23",
+                "value": "#SAFETYDOOR#",
+                "help": "S97"
+            }
+        ]
+    }
 }

@@ -96,11 +96,27 @@ const connectionDepend = (depend, settings) => {
     if (Array.isArray(depend)) {
         return depend.reduce((acc, d) => {
             if (d.connection_id && settings[d.connection_id]) {
-                const quote = d.value.trim().endsWith("'") ? "'" : ""
-                return (
-                    acc &&
-                    eval(quote + settings[d.connection_id] + quote + d.value)
-                )
+                const quote = d.value && d.value.trim().endsWith("'") ? "'" : ""
+                if (d.value)
+                    return (
+                        acc &&
+                        eval(
+                            quote + settings[d.connection_id] + quote + d.value
+                        )
+                    )
+                else if (d.contains) {
+                    return (
+                        acc &&
+                        eval(
+                            "'" +
+                                settings[d.connection_id] +
+                                "'" +
+                                ".indexOf('" +
+                                d.contains +
+                                "')!=-1"
+                        )
+                    )
+                }
             }
             return acc
         }, true)

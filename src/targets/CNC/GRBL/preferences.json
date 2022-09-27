@@ -91,6 +91,136 @@
                 "label": "S190",
                 "value": true
             }
+        ],
+        "jog": [
+            {
+                "id": "axis",
+                "type": "group",
+                "label": "CN8",
+                "value": [
+                    {
+                        "id": "showx",
+                        "type": "boolean",
+                        "label": "X",
+                        "value": true
+                    },
+                    {
+                        "id": "showy",
+                        "type": "boolean",
+                        "label": "Y",
+                        "value": true
+                    },
+                    {
+                        "id": "showz",
+                        "type": "boolean",
+                        "label": "Z",
+                        "value": true
+                    },
+                    {
+                        "id": "showa",
+                        "type": "boolean",
+                        "label": "A",
+                        "value": true
+                    },
+                    {
+                        "id": "showb",
+                        "type": "boolean",
+                        "label": "B",
+                        "value": true
+                    },
+                    {
+                        "id": "showc",
+                        "type": "boolean",
+                        "label": "C",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "feedrate",
+                "type": "group",
+                "label": "CN9",
+                "value": [
+                    {
+                        "id": "xyfeedrate",
+                        "depend": [
+                            {
+                                "ids": [
+                                    {
+                                        "id": "showx",
+                                        "value": true
+                                    },
+                                    {
+                                        "id": "showy",
+                                        "value": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "type": "number",
+                        "label": "XY",
+                        "min": "1",
+                        "append": "CN1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "zfeedrate",
+                        "depend": [
+                            {
+                                "id": "showz",
+                                "value": true
+                            }
+                        ],
+                        "type": "number",
+                        "label": "Z",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "afeedrate",
+                        "depend": [
+                            {
+                                "id": "showa",
+                                "value": true
+                            }
+                        ],
+                        "type": "number",
+                        "label": "A",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "bfeedrate",
+                        "depend": [
+                            {
+                                "id": "showb",
+                                "value": true
+                            }
+                        ],
+                        "type": "number",
+                        "label": "B",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    },
+                    {
+                        "id": "cfeedrate",
+                        "depend": [
+                            {
+                                "id": "showc",
+                                "value": true
+                            }
+                        ],
+                        "type": "number",
+                        "label": "C",
+                        "append": "CN1",
+                        "min": "1",
+                        "value": "1000"
+                    }
+                ]
+            }
         ]
     }
 }

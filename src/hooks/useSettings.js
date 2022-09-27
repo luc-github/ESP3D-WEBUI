@@ -98,6 +98,7 @@ const useSettings = () => {
                         !jsonResult.data
                     ) {
                         toasts.addToast({ content: T("S194"), type: "error" })
+
                         connection.setConnectionState({
                             connected: false,
                             authenticate: false,
@@ -106,8 +107,8 @@ const useSettings = () => {
                         })
                         return
                     }
-
                     connectionSettings.current = jsonResult.data
+                    processData("core", "ESP800", true)
 
                     document.title = connectionSettings.current.Hostname
                     if (
