@@ -384,6 +384,7 @@ const TemperaturesPanelElement = {
     icon: "Thermometer",
     show: "showtemperaturespanel",
     onstart: "opentemperaturesonstart",
+    settingid: "temperatures",
 }
 
 export { TemperaturesPanel, TemperaturesPanelElement, TemperaturesControls }
