@@ -434,7 +434,9 @@ const InterfaceTab = () => {
                                                                     )}
                                                                 </FieldGroup>
                                                             )
-                                                        } else {
+                                                        } else if (
+                                                            !fieldData.hide
+                                                        ) {
                                                             const [
                                                                 validation,
                                                                 setvalidation,

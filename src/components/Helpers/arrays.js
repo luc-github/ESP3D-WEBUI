@@ -73,7 +73,11 @@ function mergeJSON(o1, o2) {
                                 tempNewObj[i].value[j] = o2[index].value[v]
                             }
                         }
-                    } else tempNewObj[i].value = o2[index].value
+                    } else {
+                        tempNewObj[i].value = o2[index].value
+                        if (typeof o2[index].hide != "undefined")
+                            tempNewObj[i].hide = o2[index].hide
+                    }
                 }
             }
         }

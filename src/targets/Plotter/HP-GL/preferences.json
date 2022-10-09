@@ -5,8 +5,15 @@
                 "id": "emergencystop",
                 "type": "text",
                 "label": "P15",
-                "value": "#SAFETYDOOR#",
+                "value": "#ESC#.K",
                 "help": "S97"
+            },
+            {
+                "id": "showmachinesettings",
+                "type": "boolean",
+                "label": "S197",
+                "value": false,
+                "hide": true
             }
         ],
         "panels": [
@@ -32,11 +39,7 @@
                     { "id": "Files", "name": "files" },
                     { "id": "Terminal", "name": "terminal" },
                     { "id": "Jog", "name": "jog", "value": "jog" },
-                    { "id": "Laser", "name": "laser" },
-                    { "id": "Spindle", "name": "spindle" },
-                    { "id": "Probe", "name": "probe" },
                     { "id": "Status", "name": "status" },
-                    { "id": "Overrrides", "name": "overrides" },
                     { "id": "Notifications", "name": "notification" },
                     { "id": "Macros", "name": "macros" },
                     { "id": "Extracontents", "name": "extracontents" }
@@ -59,7 +62,7 @@
                     {
                         "id": "samplepolling",
                         "name": "3s",
-                        "cmds": "?;[ESP701]json",
+                        "cmds": "OA;[ESP701]json",
                         "refreshtime": "3000"
                     }
                 ]
