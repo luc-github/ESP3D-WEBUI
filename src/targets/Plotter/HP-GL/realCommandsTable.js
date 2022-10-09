@@ -17,29 +17,6 @@
 */
 import { h } from "preact"
 
-const realCommandsTable = [
-    { name: "#SOFTRESET#", value: "\x18", notprintable: true },
-    { name: "#STATUSREPORT#", value: "?", notprintable: false },
-    { name: "#CYCLESTART#", value: "~", notprintable: false },
-    { name: "#FEEDHOLD#", value: "!", notprintable: false },
-    { name: "#SAFETYDOOR#", value: "\x84", notprintable: true },
-    { name: "#JOGCANCEL#", value: "\x85", notprintable: true },
-    { name: "#FO100#", value: "\x90", notprintable: true },
-    { name: "#FO+10#", value: "\x91", notprintable: true },
-    { name: "#FO-10#", value: "\x92", notprintable: true },
-    { name: "#FO+1#", value: "\x93", notprintable: true },
-    { name: "#FO-1#", value: "\x94", notprintable: true },
-    { name: "#RO100#", value: "\x95", notprintable: true },
-    { name: "#RO50#", value: "\x96", notprintable: true },
-    { name: "#RO25#", value: "\x97", notprintable: true },
-    { name: "#SSO100#", value: "\x99", notprintable: true },
-    { name: "#SSO+10#", value: "\x9A", notprintable: true },
-    { name: "#SSO-10#", value: "\x9B", notprintable: true },
-    { name: "#SSO+1#", value: "\x9C", notprintable: true },
-    { name: "#SSO-1#", value: "\x9D", notprintable: true },
-    { name: "#T-SPINDLESTOP#", value: "\x9E", notprintable: true },
-    { name: "#T-FLOODCOOLANT#", value: "\xA0", notprintable: true },
-    { name: "#T-MISTCOOLANT#", value: "\xA1", notprintable: true },
-]
+const realCommandsTable = [{ name: "#ESC#", value: "\x27", notprintable: true }]
 
 export default realCommandsTable

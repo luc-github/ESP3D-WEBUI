@@ -21,7 +21,7 @@ import { h } from "preact"
 import { FilesPanelElement } from "../../../components/Panels/Files"
 import { MacrosPanelElement } from "../../../components/Panels/Macros"
 import { TerminalPanelElement } from "../../../components/Panels/Terminal"
-import { JogPanelElement } from "../../../components/Panels/JogCNC"
+import { JogPanelElement } from "../../../components/Panels/JogPlotter"
 import { NotificationsPanelElement } from "../../../components/Panels/Notifications"
 
 const defaultPanelsList = [
