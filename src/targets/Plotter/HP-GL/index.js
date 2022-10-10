@@ -21,7 +21,6 @@ import { h } from "preact"
 import { iconsTarget } from "./icons"
 import { files } from "./files"
 import { processor } from "./processor"
-import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings } from "./MachineSettings"
 import {
@@ -52,7 +51,6 @@ const variablesList = {
         addObjectItem(variablesList.commands, "name", variable),
     removeCommand: (name) =>
         removeObjectItem(variablesList.commands, "name", name),
-    modes: [...gcode_parser_modes],
 }
 const eventsList = {
     evts: [],

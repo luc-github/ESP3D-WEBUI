@@ -250,7 +250,6 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (url.startsWith("echo ")) {
-        console.log("yes")
         const response = url.replace("echo ", "echo: ")
         console.log("Resp:", response)
         SendWS(response + "\n")

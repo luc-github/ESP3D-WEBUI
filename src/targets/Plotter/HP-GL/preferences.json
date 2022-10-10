@@ -4,7 +4,7 @@
             {
                 "id": "emergencystop",
                 "type": "text",
-                "label": "P15",
+                "label": "HP16",
                 "value": "#ESC#.K",
                 "help": "S97"
             },

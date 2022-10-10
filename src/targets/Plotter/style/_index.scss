@@ -62,11 +62,26 @@
   flex-direction: column;
 }
 
+.jog-buttons-line-container,
 .jog-buttons-main-container {
   display: flex;
   justify-content: space-between;
 }
 
+.jog-extra-buttons-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap:0.8rem;
+}
+
+.jog-buttons-line-top-container,
+.jog-buttons-line-bottom-container
+{
+  display: flex;
+  justify-content: center;
+}
 .jog-distance-selector-container {
   display: flex;
   flex-direction: column;

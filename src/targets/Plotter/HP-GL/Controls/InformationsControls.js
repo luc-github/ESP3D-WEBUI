@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { PositionsControls } from "../../../../components/Panels/JogCNC"
+import { PositionsControls } from "../../../../components/Panels/JogPlotter"
 import { useUiContextFn } from "../../../../contexts"
 
 const InformationsControls = () => {

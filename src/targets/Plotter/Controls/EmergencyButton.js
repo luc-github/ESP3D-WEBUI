@@ -52,10 +52,10 @@ const EmergencyButton = () => {
         <ButtonImg
             m1
             rtooltip
-            label={T("P15")}
+            label={T("HP16")}
             className="emergency-btn"
             icon={<AlertCircle />}
-            data-tooltip={T("P15")}
+            data-tooltip={T("HP16")}
             id="btnEStop"
             onclick={(e) => {
                 useUiContextFn.haptic()

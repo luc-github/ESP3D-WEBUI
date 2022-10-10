@@ -183,13 +183,13 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-    if (url.indexOf("OA;") != -1) {
+    if (url.indexOf("OA") != -1) {
         SendWS(`${posx},${posy},${pendown}\n`)
         res.send("")
         return
     }
 
-    if (url.indexOf("PR") != -1 && url.endsWith(";")) {
+    if (url.indexOf("PR") != -1) {
         const pos_pattern = /PR(?<xrel>[+|-]?\d+),(?<yrel>[+|-]?\d+)/i
         let posres = pos_pattern.exec(url)
         posx = posx + parseInt(posres.groups.xrel)
@@ -199,20 +199,20 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-    if (url.indexOf("PD;") != -1) {
+    if (url.indexOf("PD") != -1) {
         pendown = 1
         //SendWS(`${posx},${posy},${pendown}\n`)
         res.send("")
         return
     }
-    if (url.indexOf("PU;") != -1) {
+    if (url.indexOf("PU") != -1) {
         pendown = 0
         //SendWS(`${posx},${posy},${pendown}\n`)
         res.send("")
         return
     }
 
-    if (url.indexOf("\x1B.") != -1) {
+    if (url.indexOf(String.fromCharCode(27) + ".") != -1) {
         //it is esc command ESC.
         SendWS("EScape command\n")
         res.send("")
@@ -482,7 +482,7 @@ const commandsQuery = (req, res, SendWS) => {
                     V: "90",
                     H: "targetfw",
                     O: [
-                        { hp_gl: "50" },
+                        { hp_gl: "90" },
                         { repetier: "50" },
                         { marlin: "20" },
                         { smoothieware: "40" },

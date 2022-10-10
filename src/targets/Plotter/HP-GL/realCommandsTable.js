@@ -17,6 +17,6 @@
 */
 import { h } from "preact"
 
-const realCommandsTable = [{ name: "#ESC#", value: "\x27", notprintable: true }]
+const realCommandsTable = [{ name: "#ESC#", value: "\x1B", notprintable: true }]
 
 export default realCommandsTable

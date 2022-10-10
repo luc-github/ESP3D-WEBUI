@@ -26,32 +26,13 @@ import {
 import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
-import { eventsList, variablesList } from "."
+import { variablesList } from "."
 import {
-    isStatus,
-    getStatus,
-    isStates,
-    getStates,
-    isMessage,
-    getMessage,
-    isAlarm,
-    getAlarm,
-    isError,
-    getError,
-    isGcodeParameter,
-    getGcodeParameter,
-    isVersion,
-    getVersion,
-    isOptions,
-    getOptions,
-    isReset,
+    isPositions,
+    getPositions,
     isStreamingStatus,
     getStreamingStatus,
 } from "./filters"
-
-const lastStatus = {}
-const lastStates = {}
-const lastPins = {}
 
 /*
  * Local const
@@ -68,19 +49,10 @@ useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
 const TargetContextProvider = ({ children }) => {
     const [positions, setPositions] = useState({
         x: "?",
+        y: "?",
+        pen: "?",
     })
-    const [status, setStatus] = useState({ state: "?" })
-    const [overrides, setOverrides] = useState({})
-    const [pinsStates, setPinStates] = useState(lastPins)
-    const [states, setStates] = useState({})
     const [streamStatus, setStreamStatus] = useState({})
-    const [message, setMessage] = useState()
-    const [alarmCode, setAlarmCode] = useState(0)
-    const [errorCode, setErrorCode] = useState(0)
-    const [gcodeParameters, setGcodeParameters] = useState({})
-    const [grblVersion, setGrblVersion] = useState({})
-    const [grblSettings, setGrblSettings] = useState({})
-    const gcodeParametersRef = useRef({})
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
         stream: "",
@@ -96,162 +68,10 @@ const TargetContextProvider = ({ children }) => {
         //sensors
         //status
         if (type === "stream") {
-            //status
-            if (isStatus(data)) {
-                const response = getStatus(data)
-                //For Pn we need to keep the last value to keep trace the pin is detected or not,
-                //so we can display the pin icon when disabled even no data is received
-                if (
-                    Object.keys(lastPins).length > 0 ||
-                    Object.keys(response.pn).length > 0
-                ) {
-                    Object.keys(response.pn).forEach((key) => {
-                        lastPins[key] = response.pn[key]
-                    })
-                    Object.keys(lastPins).forEach((key) => {
-                        if (!response.pn[key]) {
-                            lastPins[key] = false
-                        }
-                    })
-                }
-                setPinStates(lastPins)
-                if (response.positions) {
-                    setPositions(response.positions)
-                    const names = [
-                        "x",
-                        "y",
-                        "z",
-                        "a",
-                        "b",
-                        "c",
-                        "wx",
-                        "wy",
-                        "wz",
-                        "wa",
-                        "wb",
-                        "wc",
-                    ]
-                    names.forEach((element) => {
-                        let name = "#pos_" + element + "#"
-                        variablesList.addCommand({
-                            name: name,
-                            value: parseFloat(
-                                response.positions[element]
-                                    ? response.positions[element]
-                                    : 0
-                            ),
-                        })
-                    })
-                }
-                if (response.status) {
-                    setStatus(response.status)
-                    if (lastStatus.current !== response.status) {
-                        lastStatus.current = response.status
-                        if (
-                            !(
-                                response.status.state == "Alarm" ||
-                                response.status.state == "Idle" ||
-                                response.status.state == "Sleep"
-                            )
-                        )
-                            setMessage("")
-                        if (
-                            !(
-                                response.status.state == "Alarm" ||
-                                response.status.state == "Error"
-                            )
-                        ) {
-                            setAlarmCode(0)
-                            setErrorCode(0)
-                        }
-                    }
-                }
-                if (response.ov) {
-                    setOverrides(response.ov)
-                }
-                if (response.f) {
-                    //Update state accordingly
-                    if (!lastStates.current) lastStates.current = {}
-                    if (typeof response.f.value != "undefined")
-                        lastStates.current.feed_rate = {
-                            value: response.f.value,
-                        }
-                    if (typeof response.rpm.value != "undefined")
-                        lastStates.current.spindle_speed = {
-                            value: response.rpm.value,
-                        }
-                    setStates(lastStates.current)
-                }
-                //more to set+
-                //....
-            }
-            //ALARM
-            if (isAlarm(data)) {
-                const response = getAlarm(data)
-                setAlarmCode(response)
-                setErrorCode(0)
-                setMessage("")
-                setStatus({ state: "Alarm" })
-                eventsList.emit("alarm", data)
-            }
-
-            //error
-            if (isError(data)) {
-                const response = getError(data)
-                setErrorCode(response)
-                setAlarmCode(0)
-                setMessage("")
-                setStatus({ state: "Error" })
-                eventsList.emit("error", data)
-            }
-            //prefiltering
-            if (data[0] === "[") {
-                if (isStates(data)) {
-                    lastStates.current = getStates(data)
-                    setStates(lastStates.current)
-                }
-
-                if (isMessage(data)) {
-                    const response = getMessage(data)
-                    setMessage(response)
-                }
-                if (isGcodeParameter(data)) {
-                    const response = getGcodeParameter(data)
-                    gcodeParametersRef.current[response.code] = {
-                        data: [...response.data],
-                    }
-                    if (typeof response.success !== "undefined") {
-                        gcodeParametersRef.current[response.code].success =
-                            response.success
-                    }
-                    if (gcodeParametersRef.current.PRB) {
-                        //the PRB is x y z even
-                        gcodeParametersRef.current.PRB.data.map(
-                            (value, index) => {
-                                let name =
-                                    "#prb_" +
-                                    String.fromCharCode(120 + index) +
-                                    "#"
-                                variablesList.addCommand({
-                                    name: name,
-                                    value: parseFloat(value),
-                                })
-                            }
-                        )
-                    }
-                    setGcodeParameters(gcodeParametersRef.current)
-                }
-                if (isVersion(data)) {
-                    const response = getVersion(data)
-                    setGrblVersion(response)
-                }
-                if (isOptions(data)) {
-                    const response = getOptions(data)
-                    setGrblSettings(response)
-                }
-            }
-            if (isReset(data)) {
-                eventsList.emit("reset", data)
+            //Posistions
+            if (isPositions(data)) {
+                const response = getPositions(data)
+                setPositions(response)
             }
         }
         if (type === "response") {
@@ -359,16 +179,6 @@ const TargetContextProvider = ({ children }) => {
     const store = {
         positions,
         streamStatus,
-        status,
-        states,
-        pinsStates,
-        message,
-        alarmCode,
-        errorCode,
-        overrides,
-        gcodeParameters,
-        grblVersion,
-        grblSettings,
         processData,
     }
 
