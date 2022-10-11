@@ -50,6 +50,7 @@ let currentSteps = 0
 //A separate control to avoid the full panel to be updated when the positions are updated
 const PositionsControls = () => {
     const { positions } = useTargetContext()
+    const steps = useUiContextFn.getValue("steps")
     return (
         <Fragment>
             <div class="jog-positions-ctrls m-1">
@@ -59,7 +60,9 @@ const PositionsControls = () => {
                             <Fragment>
                                 <div class="jog-position-sub-header">X</div>
                                 <div class="m-1 jog-position-value">
-                                    {positions.x}
+                                    {positions.x == "?"
+                                        ? "?"
+                                        : positions.x / steps}
                                 </div>
                             </Fragment>
                         )}
@@ -71,7 +74,9 @@ const PositionsControls = () => {
                             <Fragment>
                                 <div class="jog-position-sub-header">Y</div>
                                 <div class="m-1 jog-position-value">
-                                    {positions.y}
+                                    {positions.y == "?"
+                                        ? "?"
+                                        : positions.y / steps}
                                 </div>
                             </Fragment>
                         )}
@@ -144,7 +149,9 @@ const JogPanel = () => {
         const command = useUiContextFn.getValue("jogparkcmd")
         const cmds = command.split(";")
         cmds.forEach((cmd) => {
-            if (cmd.trim().length > 0) SendCommand(cmd.trim())
+            if (cmd.trim().length > 0) {
+                SendCommand(variablesList.formatCommand(cmd))
+            }
         })
     }
     const buttonsInfos = {}
@@ -788,7 +795,11 @@ const JogPanel = () => {
                                 .getValue("jogstopcmd")
                                 .split(";")
                             cmds.forEach((cmd) => {
-                                SendCommand(cmd)
+                                if (cmd.trim().length > 0) {
+                                    SendCommand(
+                                        variablesList.formatCommand(cmd)
+                                    )
+                                }
                             })
                         }}
                     />

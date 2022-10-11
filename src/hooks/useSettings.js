@@ -36,7 +36,11 @@ import {
     setCurrentLanguage,
     T,
 } from "../components/Translations"
-import { defaultPreferences, useTargetContextFn } from "../targets"
+import {
+    defaultPreferences,
+    useTargetContextFn,
+    variablesList,
+} from "../targets"
 import {
     importPreferences,
     formatPreferences,
@@ -328,10 +332,24 @@ const useSettings = () => {
                                 //Send commands at start
                                 if (cmds.length > 0) {
                                     cmds.forEach((cmd, index) => {
-                                        sendCommand(
-                                            cmd,
-                                            cmdEntry.id + "-" + index
-                                        )
+                                        if (cmd.trim().length > 0) {
+                                            if (
+                                                typeof variablesList.formatCommand !==
+                                                "undefined"
+                                            ) {
+                                                sendCommand(
+                                                    variablesList.formatCommand(
+                                                        cmd
+                                                    ),
+                                                    cmdEntry.id + "-" + index
+                                                )
+                                            } else {
+                                                sendCommand(
+                                                    cmd,
+                                                    cmdEntry.id + "-" + index
+                                                )
+                                            }
+                                        }
                                     })
                                 }
                                 if (refreshtime != 0) {
@@ -341,12 +359,28 @@ const useSettings = () => {
                                             refreshtime,
                                             () => {
                                                 cmds.forEach((cmd, index) => {
-                                                    sendCommand(
-                                                        cmd,
-                                                        cmdEntry.id +
-                                                            "-" +
-                                                            index
-                                                    )
+                                                    if (cmd.trim().length > 0) {
+                                                        if (
+                                                            typeof variablesList.formatCommand !==
+                                                            "undefined"
+                                                        ) {
+                                                            sendCommand(
+                                                                variablesList.formatCommand(
+                                                                    cmd
+                                                                ),
+                                                                cmdEntry.id +
+                                                                    "-" +
+                                                                    index
+                                                            )
+                                                        } else {
+                                                            sendCommand(
+                                                                cmd,
+                                                                cmdEntry.id +
+                                                                    "-" +
+                                                                    index
+                                                            )
+                                                        }
+                                                    }
                                                 })
                                             }
                                         )

@@ -214,7 +214,7 @@ const commandsQuery = (req, res, SendWS) => {
 
     if (url.indexOf(String.fromCharCode(27) + ".") != -1) {
         //it is esc command ESC.
-        SendWS("EScape command\n")
+        //SendWS("EScape command\n")
         res.send("")
         return
     }

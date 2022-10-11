@@ -51,6 +51,16 @@ const variablesList = {
         addObjectItem(variablesList.commands, "name", variable),
     removeCommand: (name) =>
         removeObjectItem(variablesList.commands, "name", name),
+    formatCommand: (command) => {
+        if (command.trim().startsWith("[")) {
+            return command.trim()
+        } else {
+            if (command.trim().endsWith(";")) {
+                return command.trim()
+            }
+            return command.trim() + ";"
+        }
+    },
 }
 const eventsList = {
     evts: [],
