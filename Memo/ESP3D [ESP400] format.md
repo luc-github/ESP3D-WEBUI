@@ -3,7 +3,7 @@
 Only sent in JSON format
 
 ```
-{"Settings":[
+{"cmd":"400","status":"ok","data":[
 {"F":"network/network","P":"130","T":"S","V":"esp3d","H":"hostname","S":"32","M":"1"},
 {"F":"network/network","P":"0","T":"B","V":"1","H":"radio mode","O":[{"none":"0"},
 {"sta":"1"},
