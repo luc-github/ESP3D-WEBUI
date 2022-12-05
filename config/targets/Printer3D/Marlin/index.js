@@ -415,6 +415,7 @@ const commandsQuery = (req, res, SendWS) => {
                 FWTarget: "marlin",
                 FWTargetID: "40",
                 Setup: "Enabled",
+                Screen: "Any screen",
                 SDConnection: "direct",
                 SerialProtocol: SERIAL_PROTOCOL,
                 Authentication: "Disabled",

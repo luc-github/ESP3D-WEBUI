@@ -179,13 +179,16 @@ const About = () => {
     }
     const onFWGit = (e) => {
         useUiContextFn.haptic()
-        window.open(
+        const i = useSettingsContextFn.getValue("Screen")
+        const url =
             interfaceSettings.current.custom &&
-                interfaceSettings.current.custom.fwurl
+            interfaceSettings.current.custom.fwurl
                 ? interfaceSettings.current.custom.fwurl
-                : fwUrl,
-            "_blank"
-        )
+                : i
+                ? fwUrl[1]
+                : fwUrl[0]
+
+        window.open(url, "_blank")
         e.target.blur()
     }
     const onWebUiUpdate = (e) => {

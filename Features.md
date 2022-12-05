@@ -32,6 +32,7 @@
         -   Smoothieware (1.x / 2.x)
         -   Repetier (1.x / 2.x)
         -   GRBL (1.1h)
+    -   ESP3D-TFT (ESP3D)
     -   ESP3DLib
         -   Marlin (2.x) - currently need custom version of Marlin : https://github.com/luc-github/Marlin/tree/ESP3DLibV3.0
     -   grblHAL (ongoing)

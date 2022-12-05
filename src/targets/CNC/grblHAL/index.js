@@ -43,7 +43,10 @@ import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 const Target = "grblHAL"
 const webUIbuild = "GH2"
 const Name = "grblHAL"
-const fwUrl = "https://github.com/grblHAL"
+const fwUrl = [
+    "https://github.com/grblHAL",
+    "https://github.com/luc-github/ESP3D-TFT",
+]
 
 const restartdelay = 30
 const variablesList = {

@@ -42,7 +42,10 @@ import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 const Target = "HP-GL"
 const webUIbuild = "H-1"
 const Name = "ESP3D"
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
+const fwUrl = [
+    "https://github.com/luc-github/ESP3D/tree/3.0",
+    "https://github.com/luc-github/ESP3D-TFT",
+]
 
 const restartdelay = 30
 const variablesList = {
