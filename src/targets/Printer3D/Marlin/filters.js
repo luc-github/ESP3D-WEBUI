@@ -97,10 +97,14 @@ const isPrintStatus = (str) => {
     let result = null
     const reg_search1 = /(Not\sSD\sprinting|Done\sprinting\sfile)/
     const reg_search2 = /SD\sprinting\sbyte\s([0-9]*)\/([0-9]*)/
+    const reg_search3 =/echo:\sM73\sProgress:\s([0-9]*)%;\sTime\sleft:\s([0-9]*)m;\sChange:\s([0-9]*)m;/
     if ((result = reg_search1.exec(str)) !== null) {
         return true
     }
     if ((result = reg_search2.exec(str)) !== null) {
+        return true
+    }
+    if ((result = reg_search3.exec(str)) !== null) {
         return true
     }
     if (str.startsWith("echo:Print time:")) {
@@ -113,6 +117,7 @@ const getPrintStatus = (str) => {
     let result = null
     const reg_search1 = /(Not\sSD\sprinting|Done\sprinting\sfile)/
     const reg_search2 = /SD\sprinting\sbyte\s([0-9]*)\/([0-9]*)/
+    const reg_search3 =/echo:\sM73\sProgress:\s([0-9]*)%;\sTime\sleft:\s([0-9]*)m;\sChange:\s([0-9]*)m;/
     if ((result = reg_search1.exec(str)) !== null) {
         return {
             status: result[1],
@@ -128,6 +133,14 @@ const getPrintStatus = (str) => {
                 (100 * parseFloat(result[1])) /
                 parseInt(result[2])
             ).toFixed(2),
+        }
+    }
+    if ((result = reg_search3.exec(str)) !== null) {
+        let progress = parseInt(result[1])
+        return {
+            status: (progress === 100 || progress === 0) ? "Not printing" : `Printing: ${result[2]}m remaining`,
+            printing: (!(progress === 100 || progress === 0)),
+            progress: progress.toFixed(2),
         }
     }
     if (str.startsWith("echo:Print time:")) {

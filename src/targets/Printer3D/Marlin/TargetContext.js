@@ -251,6 +251,8 @@ const TargetContextProvider = ({ children }) => {
                                 dataBuffer.current[type]
                             )
                             dispatchInternally(type, dataBuffer.current[type])
+                            const reg_search_action = /\/\/action:([a-z]*)\s(.*)/
+                            let result = null
                             //format the output if needed
                             if (dataBuffer.current[type].startsWith("{")) {
                                 const newbuffer = beautifyJSONString(
@@ -269,6 +271,14 @@ const TargetContextProvider = ({ children }) => {
                                         isverboseOnly,
                                     })
                                 }
+                            } else if ((result = reg_search_action.exec(dataBuffer.current[type])) !== null) {
+                                terminal.add({
+                                    type,
+                                    content: result[2],
+                                    isverboseOnly,
+                                    isAction: true,
+                                    actionType: result[1],
+                                })
                             } else {
                                 //if not json
                                 terminal.add({

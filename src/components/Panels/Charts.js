@@ -35,7 +35,7 @@ import { Menu as PanelMenu } from "./"
 temperatures set
 {
     T: [{value:XXX, target:xxx},{value:XXX, target:xxx},...], //0->8 T0->T8 Extruders
-    R: [{value:XXX, target:xxx}], //0->1 R Redondant
+    R: [{value:XXX, target:xxx}], //0->1 R Redundant
     B: [{value:XXX, target:xxx}], //0->1 B Bed
     C: [{value:XXX, target:xxx}], //0->1  Chamber
     P: [{value:XXX, target:xxx}], //0->1 Probe
@@ -79,8 +79,6 @@ const charts = [
                 C: [],
                 //probe
                 P: [],
-                //chamber
-                C: [],
                 //motherboard
                 M: [],
             },
