@@ -105,6 +105,7 @@
     "P110":"mins",
     "P111":"secs",
     "P112":"Left",
+    "P113": "Key remapping",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls panel",

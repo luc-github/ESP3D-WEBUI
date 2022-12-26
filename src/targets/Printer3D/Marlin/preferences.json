@@ -78,6 +78,12 @@
                 "type": "text",
                 "label": "P13",
                 "value": "M84"
+            },
+            {
+                "id": "keymap",
+                "type" : "text",
+                "label": "P113",
+                "value": ""
             }
         ],
         "files": [

@@ -131,6 +131,33 @@ const JogPanel = () => {
     //keyboard listener handler
     const keyboardEventHandler = (e) => {
         if (!enable_keyboard_jog) RemoveKeyboardListener()
+        let keyMapStr = useUiContextFn.getValue("keymap").trim();
+        
+        // Lookup and apply key map override(s).  Key map overrides are specified as list of 
+        // comma delimited <name>=<value> pairs.  Where <value> matches Id for page elements.  
+        // Use "NOP" as value to suppress a key from performing the default command action.
+        // Example syntax: 
+        //   keyMapStr = "ArrowLeft=btn-X,ArrowRight=btn+X,x=NOP";
+        if (keyMapStr && keyMapStr.length) {
+            let cmdMatch = keyMapStr.split(",").reduce((acc, keyValPair) => {
+                if (keyValPair.split('=')[0].trim() == e.key) {
+                    return keyValPair.split('=')[1].trim();
+                }
+                return acc;
+            }, null);
+
+            if (cmdMatch) {
+                console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch);
+                
+                if (cmdMatch.toUpperCase() != "NOP") {
+                    clickBtn(cmdMatch);
+                }
+                
+                // Bail if command already matched and dispatched
+                return;
+            }
+        }
+
         if (e.key == "ArrowUp") {
             clickBtn("btn+X")
         } else if (e.key == "ArrowDown") {
