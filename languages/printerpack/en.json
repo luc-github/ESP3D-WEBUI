@@ -448,6 +448,7 @@
     "P110": "mins",
     "P111": "secs",
     "P112": "Left",
+    "P113": "Key remapping",
     "heating": "Heating",
     "controls": "Extra Controls panel",
     "status": "Status panel",
