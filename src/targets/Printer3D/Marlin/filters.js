@@ -236,6 +236,27 @@ const getFlowRate = (str) => {
 
 ////////////////////////////////////////////////////////
 //
+//Fan speed
+const isFanSpeed = (str) => {
+    let result = null
+    //M106 P0 S255
+    const reg_search1 = /M106\sP([0-9]+)\sS([0-9]+)/
+    if ((result = reg_search1.exec(str)) !== null) {
+        return true
+    }
+    return false
+}
+
+const getFanSpeed = (str) => {
+    let result = null
+    const reg_search1 = /M106\sP([0-9]+)\sS([0-9]+)/
+    if ((result = reg_search1.exec(str)) !== null) {
+        return { index: parseInt(result[1]), value: (result[2]/255.0 * 100.0) }
+    }
+    return null
+}
+////////////////////////////////////////////////////////
+//
 //Feed rate
 const isFeedRate = (str) => {
     let result = null
@@ -328,6 +349,8 @@ export {
     getStatus,
     isFlowRate,
     getFlowRate,
+    isFanSpeed,
+    getFanSpeed,
     isFeedRate,
     getFeedRate,
     isSensor,

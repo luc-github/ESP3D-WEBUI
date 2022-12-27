@@ -40,6 +40,8 @@ import {
     getStatus,
     isFlowRate,
     getFlowRate,
+    isFanSpeed,
+    getFanSpeed,
     isFeedRate,
     getFeedRate,
     isSensor,
@@ -211,6 +213,10 @@ const TargetContextProvider = ({ children }) => {
                 const p = getFlowRate(data)
                 flowsRate.current[p.index] = p.value
                 setFlowRate(flowsRate.current)
+            } else if (isFanSpeed(data)) {
+                const p = getFanSpeed(data)
+                fansSpeed.current[p.index] = p.value
+                setFanSpeed(fansSpeed.current)
             } else if (isFeedRate(data)) {
                 const p = getFeedRate(data)
                 feedsRate.current[p.index] = p.value
