@@ -131,13 +131,22 @@ const JogPanel = () => {
     //keyboard listener handler
     const keyboardEventHandler = (e) => {
         if (!enable_keyboard_jog) RemoveKeyboardListener()
-        let keyMapStr = useUiContextFn.getValue("keymap").trim();
-        
+
+        // Bail if User is actively typing text.  We don't want to disrupt them entering gcode.
+        if (document.activeElement
+            && document.activeElement.tagName == "INPUT" 
+            && document.activeElement.type == "text") {
+            console.log("Skipping key mapping, User is probably typing text");
+
+            return;
+        }
+
         // Lookup and apply key map override(s).  Key map overrides are specified as list of 
         // comma delimited <name>=<value> pairs.  Where <value> matches Id for page elements.  
         // Use "NOP" as value to suppress a key from performing the default command action.
         // Example syntax: 
         //   keyMapStr = "ArrowLeft=btn-X,ArrowRight=btn+X,x=NOP";
+        let keyMapStr = useUiContextFn.getValue("keymap").trim();
         if (keyMapStr && keyMapStr.length) {
             let cmdMatch = keyMapStr.split(",").reduce((acc, keyValPair) => {
                 if (keyValPair.split('=')[0].trim() == e.key) {
@@ -147,17 +156,24 @@ const JogPanel = () => {
             }, null);
 
             if (cmdMatch) {
-                console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch);
+
+                console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch + ", alt= " + e.altKey);
                 
+                // Invoke commands not suppressed
                 if (cmdMatch.toUpperCase() != "NOP") {
                     clickBtn(cmdMatch);
                 }
+                
+                // Suppress default key behavior.  For example, this prevents web page unexpectedly
+                // scrolling around when User jogs while keyboard shortcut mode is active
+                e.preventDefault();
                 
                 // Bail if command already matched and dispatched
                 return;
             }
         }
 
+        let hasKeyMatch = true;
         if (e.key == "ArrowUp") {
             clickBtn("btn+X")
         } else if (e.key == "ArrowDown") {
@@ -194,7 +210,15 @@ const JogPanel = () => {
             clickBtn("move_1")
         } else if (e.key == "4") {
             clickBtn("move_0_1")
-        } else console.log(e.key)
+        } else {
+            hasKeyMatch = false;
+            console.log(e.key);
+        }
+
+        // Suppress default behavior if key press matched shortcut
+        if (hasKeyMatch) {
+            e.preventDefault();
+        }
     }
 
     //Add keyboard listener
