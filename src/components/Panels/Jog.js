@@ -131,13 +131,13 @@ const JogPanel = () => {
     //keyboard listener handler
     const keyboardEventHandler = (e) => {
         if (!enable_keyboard_jog) RemoveKeyboardListener()
-        if (e.key == "ArrowUp") {
+        if (e.key == "ArrowRight") {
             clickBtn("btn+X")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btn-X")
         } else if (e.key == "ArrowLeft") {
+            clickBtn("btn-X")
+        } else if (e.key == "ArrowDown") {
             clickBtn("btn-Y")
-        } else if (e.key == "ArrowRight") {
+        } else if (e.key == "ArrowUp") {
             clickBtn("btn+Y")
         } else if (e.key == "PageUp") {
             clickBtn("btn+Z")

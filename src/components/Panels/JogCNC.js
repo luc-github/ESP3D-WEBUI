@@ -201,13 +201,13 @@ const JogPanel = () => {
             clickBtn("btnHZ")
         } else if (e.key == "4") {
             clickBtn("btnHAxis")
-        } else if (e.key == "ArrowUp") {
-            clickBtn("btn+X")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btn-X")
-        } else if (e.key == "ArrowLeft") {
-            clickBtn("btn-Y")
         } else if (e.key == "ArrowRight") {
+            clickBtn("btn+X")
+        } else if (e.key == "ArrowLeft") {
+            clickBtn("btn-X")
+        } else if (e.key == "ArrowDown") {
+            clickBtn("btn-Y")
+        } else if (e.key == "ArrowUp") {
             clickBtn("btn+Y")
         } else if (e.key == "PageUp") {
             clickBtn("btn+Z")
