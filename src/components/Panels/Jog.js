@@ -141,17 +141,18 @@ const JogPanel = () => {
             return;
         }
 
-        // Lookup and apply key map override(s).  Key map overrides are specified as list of 
-        // comma delimited <name>=<value> pairs.  Where <value> matches Id for page elements.  
-        // Use "NOP" as value to suppress a key from performing the default command action.
-        // Example syntax: 
-        //   keyMapStr = "ArrowLeft=btn-X,ArrowRight=btn+X,x=NOP";
-        let keyMapStr = useUiContextFn.getValue("keymap").trim();
-        if (keyMapStr && keyMapStr.length) {
-            let cmdMatch = keyMapStr.split(",").reduce((acc, keyValPair) => {
-                if (keyValPair.split('=')[0].trim() == e.key) {
-                    return keyValPair.split('=')[1].trim();
+        // Lookup and apply key map override(s).  Key map overrides are specified as a fragment.
+        // Use "NOP" as command Id to suppress a key from performing the default command action.
+        let keyMapObj = useUiContextFn.getValue("keymap");
+        if (keyMapObj && keyMapObj.length) {
+            let cmdMatch = keyMapObj.reduce( (acc, kv) => {
+                let iterKey = kv.value[0].value;
+                let iterId = kv.id;
+
+                if (iterKey == e.key) {
+                    return iterId;
                 }
+
                 return acc;
             }, null);
 

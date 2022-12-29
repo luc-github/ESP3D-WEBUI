@@ -28,7 +28,7 @@
   "zpos": "100",
   "homecmd": "G28 $",
   "motoroff": "M84",
-  "keymap": "",
+  "keymap": [],
   "emergencystop": "M112",
   "showmacrospanel": true,
   "openmacrosonstart": false,

@@ -80,7 +80,7 @@
   "zpos": "100",
   "homecmd": "G28 $",
   "motoroff": "M84",
-  "keymap": "",
+  "keymap": [],
   "shownotificationspanel": true,
   "opennotificationsonstart": false,
   "notifautoscroll": true,

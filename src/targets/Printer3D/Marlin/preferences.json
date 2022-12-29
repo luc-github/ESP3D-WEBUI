@@ -81,9 +81,9 @@
             },
             {
                 "id": "keymap",
-                "type" : "text",
+                "type": "list",
                 "label": "P113",
-                "value": ""
+                "value": []
             }
         ],
         "files": [
