@@ -370,7 +370,7 @@ const ItemsList = ({
                 )}
                 {fixed && <label class="m-2">{T(label)}</label>}
             </legend>
-
+            <div class="m-1" />
             <div class="items-group-content">
                 {value &&
                     value.map((element, index, completeList) => {

@@ -43,6 +43,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     if (origineId == "keymap") {
                         newItem.type = "label"
                         newItem.label = itemData[key]
+                        newItem.forctrl = itemData[key] + "-key"
                     } else {
                         newItem.type = "text"
                         newItem.label = "S129"
