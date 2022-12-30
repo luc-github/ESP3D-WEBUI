@@ -56,6 +56,8 @@ const ItemControl = ({
     setValue,
     validationfn,
     fixed,
+    nodelete,
+    editable,
     sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
@@ -65,7 +67,10 @@ const ItemControl = ({
     const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
     const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
-
+    if (idList == "keymap") {
+        console.log(itemData)
+        console.log(completeList)
+    }
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
@@ -139,13 +144,13 @@ const ItemControl = ({
                         )}
 
                     <div class="item-list-name">
-                        {!fixed && (
+                        {(!fixed || editable) && (
                             <ButtonImg
                                 m2
                                 tooltip
                                 data-tooltip={T("S94")}
                                 style={colorStyle}
-                                label={name}
+                                label={`${T(name)}: ${value[1].value}`}
                                 icon={controlIcon}
                                 width="100px"
                                 onClick={(e) => {
@@ -155,10 +160,12 @@ const ItemControl = ({
                                 }}
                             />
                         )}
-                        {fixed && <label class="m-1">{T(name)}</label>}
+                        {fixed && !editable && (
+                            <label class="m-1">{T(name)}</label>
+                        )}
                     </div>
 
-                    {!fixed && (
+                    {!(fixed || nodelete) && (
                         <ButtonImg
                             m2
                             tooltip
@@ -206,13 +213,15 @@ const ItemControl = ({
                                     />
                                 )}
 
-                            <ButtonImg
-                                m2
-                                tooltip
-                                data-tooltip={T("S37")}
-                                icon={<Trash2 />}
-                                onClick={removeItem}
-                            />
+                            {!nodelete && (
+                                <ButtonImg
+                                    m2
+                                    tooltip
+                                    data-tooltip={T("S37")}
+                                    icon={<Trash2 />}
+                                    onClick={removeItem}
+                                />
+                            )}
                         </div>
                     </div>
                     <div class="m-1">
@@ -280,6 +289,8 @@ const ItemsList = ({
     fixed,
     sorted,
     depend,
+    nodelete,
+    editable,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -288,7 +299,7 @@ const ItemsList = ({
         interfaceSettings.current.settings
     )
     const canshow = connectionDepend(depend, connectionSettings.current)
-
+    console.log(id)
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
@@ -357,7 +368,7 @@ const ItemsList = ({
                         onClick={addItem}
                     />
                 )}
-                {fixed && <label class="m-1">{T(label)}</label>}
+                {fixed && <label class="m-2">{T(label)}</label>}
             </legend>
 
             <div class="items-group-content">
@@ -373,6 +384,8 @@ const ItemsList = ({
                                 setValue={setValue}
                                 fixed={fixed}
                                 sorted={sorted}
+                                nodelete={nodelete}
+                                editable={editable}
                             />
                         )
                     })}

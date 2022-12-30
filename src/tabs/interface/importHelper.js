@@ -40,8 +40,13 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.help = "S97"
                     break
                 case "name":
-                    newItem.type = "text"
-                    newItem.label = "S129"
+                    if (origineId == "keymap") {
+                        newItem.type = "label"
+                        newItem.label = itemData[key]
+                    } else {
+                        newItem.type = "text"
+                        newItem.label = "S129"
+                    }
                     break
                 case "icon":
                     newItem.type = "icon"

@@ -136,6 +136,27 @@
                 "type": "boolean",
                 "label": "S93",
                 "value": true
+            },
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btn+X",
+                        "name": "btn+X",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btn-X",
+                        "name": "btn-X",
+                        "key": "ArrowDown"
+                    }
+                ]
             }
         ],
         "notification": [
