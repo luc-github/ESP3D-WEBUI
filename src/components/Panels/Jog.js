@@ -307,15 +307,19 @@ const JogPanel = () => {
     //Show keyboard mapped keys
     const showKeyboarHelp = () => {
         useUiContextFn.haptic()
-        const helpKeyboardJog = (
-            <CenterLeft>
-                {T("P80")
-                    .split(",")
-                    .map((e) => {
-                        return <div>{e}</div>
-                    })}
-            </CenterLeft>
-        )
+        let keyMapObj = useUiContextFn.getValue("keymap")
+        const helpKeyboardJog = keyMapObj.map((element) => {
+            const key = element.value.find((sub) => {
+                if (sub.name == "key") return true
+            })
+            if (key)
+                return (
+                    <div>
+                        {T(element.id)} [{T(key.value)}]
+                    </div>
+                )
+        })
+
         showModal({
             modals,
             title: T("P81"),
