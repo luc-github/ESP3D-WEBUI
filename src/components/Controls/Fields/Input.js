@@ -78,6 +78,7 @@ const Input = ({
     button,
     disabled,
     prec,
+    shortkey,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -90,7 +91,32 @@ const Input = ({
     const inputref = useRef()
     const appendtooltip = prec ? "tooltip tooltip-left" : ""
     const appendtooltipdata = prec ? T("S208").replace("$", prec) : ""
+
+    const onKeyPress = (e) => {
+        if (!shortkey) return
+        e.preventDefault()
+        let v = ""
+        let k = ""
+        if (
+            !(
+                e.key == "Control" ||
+                e.key == "Alt" ||
+                e.key == "Shift" ||
+                e.key == "Meta"
+            )
+        )
+            k = e.key
+        if (e.ctrlKey) v += "Control+"
+        if (e.altKey) v += "Alt+"
+        if (e.shiftKey) v += "Shift+"
+        if (e.metaKey) v += "Meta+"
+        e.target.value = v + k
+        if (setValue) {
+            setValue(e.target.value)
+        }
+    }
     const onInput = (e) => {
+        if (shortkey) return
         if (setValue) {
             setValue(e.target.value)
         }
@@ -126,6 +152,7 @@ const Input = ({
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [value])
+
     if (type === "password")
         return (
             <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
@@ -282,6 +309,7 @@ const Input = ({
                 {...props}
                 {...rest}
                 onInput={onInput}
+                onKeyDown={onKeyPress}
             />
             {append && (
                 <span

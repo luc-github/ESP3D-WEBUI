@@ -67,10 +67,7 @@ const ItemControl = ({
     const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
     const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
-    if (idList == "keymap") {
-        console.log(itemData)
-        console.log(completeList)
-    }
+
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
