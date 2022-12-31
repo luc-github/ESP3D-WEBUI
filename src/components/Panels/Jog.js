@@ -133,92 +133,52 @@ const JogPanel = () => {
         if (!enable_keyboard_jog) RemoveKeyboardListener()
 
         // Bail if User is actively typing text.  We don't want to disrupt them entering gcode.
-        if (document.activeElement
-            && document.activeElement.tagName == "INPUT" 
-            && document.activeElement.type == "text") {
-            console.log("Skipping key mapping, User is probably typing text");
-
-            return;
+        if (
+            document.activeElement &&
+            document.activeElement.tagName == "INPUT" &&
+            document.activeElement.type == "text"
+        ) {
+            return
         }
 
         // Lookup and apply key map override(s).  Key map overrides are specified as a fragment.
         // Use "NOP" as command Id to suppress a key from performing the default command action.
-        let keyMapObj = useUiContextFn.getValue("keymap");
+        let keyMapObj = useUiContextFn.getValue("keymap")
         if (keyMapObj && keyMapObj.length) {
-            let cmdMatch = keyMapObj.reduce( (acc, kv) => {
-                let iterKey = kv.value.filter(el => el.name == "key" )[0].value;
-                let iterId = kv.id;
-
-                if (iterKey == e.key) {
-                    return iterId;
+            let cmdMatch = keyMapObj.reduce((acc, kv) => {
+                let iterKey = kv.value.filter((el) => el.name == "key")[0].value
+                let iterId = kv.id
+                let keyval = ""
+                if (e.ctrlKey) keyval += "Control+"
+                if (e.altKey) keyval += "Alt+"
+                if (e.shiftKey) keyval += "Shift+"
+                if (e.metaKey) keyval += "Meta+"
+                if (
+                    !(
+                        e.key == "Control" ||
+                        e.key == "Alt" ||
+                        e.key == "Shift" ||
+                        e.key == "Meta"
+                    )
+                )
+                    keyval += e.key
+                if (iterKey == keyval) {
+                    return iterId
                 }
 
-                return acc;
-            }, null);
+                return acc
+            }, null)
 
             if (cmdMatch) {
-
-                console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch + ", alt= " + e.altKey);
-
                 // Invoke commands not suppressed
                 if (cmdMatch.toUpperCase() != "NOP") {
-                    clickBtn(cmdMatch);
+                    clickBtn(cmdMatch)
                 }
 
                 // Suppress default key behavior.  For example, this prevents web page unexpectedly
                 // scrolling around when User jogs while keyboard shortcut mode is active
-                e.preventDefault();
-
-                // Bail if command already matched and dispatched
-                return;
+                e.preventDefault()
             }
-        }
-
-        let hasKeyMatch = true;
-        if (e.key == "ArrowRight") {
-            clickBtn("btn+X")
-        } else if (e.key == "ArrowLeft") {
-            clickBtn("btn-X")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btn-Y")
-        } else if (e.key == "ArrowUp") {
-            clickBtn("btn+Y")
-        } else if (e.key == "PageUp") {
-            clickBtn("btn+Z")
-        } else if (e.key == "PageDown") {
-            clickBtn("btn-Z")
-        } else if (e.key == "x" || e.key == "X") {
-            clickBtn("btnHX")
-        } else if (e.key == "y" || e.key == "Y") {
-            clickBtn("btnHY")
-        } else if (e.key == "z" || e.key == "Z") {
-            clickBtn("btnHZ")
-        } else if (e.key == "End") {
-            clickBtn("btnMoveZ")
-        } else if (e.key == "m" || e.key == "M") {
-            clickBtn("btnMotorOff")
-        } else if (e.key == "P" || e.key == "p") {
-            clickBtn("btnMoveXY")
-        } else if (e.key == "Home") {
-            clickBtn("btnHXYZ")
-        } else if (e.key == "Delete") {
-            clickBtn("btnEStop")
-        } else if (e.key == "1") {
-            clickBtn("move_100")
-        } else if (e.key == "2") {
-            clickBtn("move_10")
-        } else if (e.key == "3") {
-            clickBtn("move_1")
-        } else if (e.key == "4") {
-            clickBtn("move_0_1")
-        } else {
-            hasKeyMatch = false;
-            console.log(e.key);
-        }
-
-        // Suppress default behavior if key press matched shortcut
-        if (hasKeyMatch) {
-            e.preventDefault();
         }
     }
 
