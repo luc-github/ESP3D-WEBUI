@@ -308,17 +308,22 @@ const JogPanel = () => {
     const showKeyboarHelp = () => {
         useUiContextFn.haptic()
         let keyMapObj = useUiContextFn.getValue("keymap")
-        const helpKeyboardJog = keyMapObj.map((element) => {
-            const key = element.value.find((sub) => {
-                if (sub.name == "key") return true
-            })
-            if (key)
-                return (
-                    <div>
-                        {T(element.id)} [{T(key.value)}]
-                    </div>
-                )
-        })
+        const helpKeyboardJog = (
+            <table>
+                {keyMapObj.map((element) => {
+                    const key = element.value.find((sub) => {
+                        if (sub.name == "key") return true
+                    })
+                    if (key)
+                        return (
+                            <tr>
+                                <td> {T(element.id)}</td>
+                                <td> [{T(key.value)}]</td>
+                            </tr>
+                        )
+                })}
+            </table>
+        )
 
         showModal({
             modals,
