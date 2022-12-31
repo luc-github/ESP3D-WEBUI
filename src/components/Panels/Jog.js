@@ -164,7 +164,7 @@ const JogPanel = () => {
             let cmdMatch = keyMapObj.reduce((acc, kv) => {
                 let iterKey = kv.value.filter((el) => el.name == "key")[0].value
                 let iterId = kv.id
-                let keyval = getKeyVal(e);
+                let keyval = getKeyVal(e)
 
                 if (iterKey == keyval) {
                     return iterId
