@@ -141,6 +141,22 @@ const JogPanel = () => {
             return
         }
 
+        let getKeyVal = (e) => {
+            let keyVal = ""
+            if (e.ctrlKey) keyVal += "Control+"
+            if (e.altKey) keyVal += "Alt+"
+            if (e.shiftKey) keyVal += "Shift+"
+            if (e.metaKey) keyVal += "Meta+"
+            
+            if (e.key != "Control" &&
+                e.key != "Alt" &&
+                e.key != "Shift" &&
+                e.key != "Meta" ) {
+                keyVal += e.key
+            }
+            return keyVal
+        };
+
         // Lookup and apply key map override(s).  Key map overrides are specified as a fragment.
         // Use "NOP" as command Id to suppress a key from performing the default command action.
         let keyMapObj = useUiContextFn.getValue("keymap")
@@ -148,20 +164,8 @@ const JogPanel = () => {
             let cmdMatch = keyMapObj.reduce((acc, kv) => {
                 let iterKey = kv.value.filter((el) => el.name == "key")[0].value
                 let iterId = kv.id
-                let keyval = ""
-                if (e.ctrlKey) keyval += "Control+"
-                if (e.altKey) keyval += "Alt+"
-                if (e.shiftKey) keyval += "Shift+"
-                if (e.metaKey) keyval += "Meta+"
-                if (
-                    !(
-                        e.key == "Control" ||
-                        e.key == "Alt" ||
-                        e.key == "Shift" ||
-                        e.key == "Meta"
-                    )
-                )
-                    keyval += e.key
+                let keyval = getKeyVal(e);
+
                 if (iterKey == keyval) {
                     return iterId
                 }
@@ -169,11 +173,12 @@ const JogPanel = () => {
                 return acc
             }, null)
 
+            // Log for Dev, and enable User to self-help troubleshooting unexpected behavior
+            console.log("Key pressed, key = " + getKeyVal(e) + ", command = " + (cmdMatch ?? ""));
+
+            // Invoke matching command
             if (cmdMatch) {
-                // Invoke commands not suppressed
-                if (cmdMatch.toUpperCase() != "NOP") {
-                    clickBtn(cmdMatch)
-                }
+                clickBtn(cmdMatch)
 
                 // Suppress default key behavior.  For example, this prevents web page unexpectedly
                 // scrolling around when User jogs while keyboard shortcut mode is active
