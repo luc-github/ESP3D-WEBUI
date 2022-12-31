@@ -67,10 +67,7 @@ const ItemControl = ({
     const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
     const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
-    if (idList == "keymap") {
-        console.log(itemData)
-        console.log(completeList)
-    }
+
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
@@ -113,6 +110,13 @@ const ItemControl = ({
     if (JSON.stringify(value).includes('"haserror":true'))
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
+
+    const val = value.findIndex((e) => {
+        return e.name == "key"
+    })
+
+    const labelBtn = val != -1 ? T(name) + " [" + value[val].value + "]" : ""
+
     return (
         <Fragment>
             {!editionMode && (
@@ -150,7 +154,7 @@ const ItemControl = ({
                                 tooltip
                                 data-tooltip={T("S94")}
                                 style={colorStyle}
-                                label={`${T(name)}: ${value[1].value}`}
+                                label={labelBtn}
                                 icon={controlIcon}
                                 width="100px"
                                 onClick={(e) => {
