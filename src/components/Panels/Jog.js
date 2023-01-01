@@ -173,9 +173,6 @@ const JogPanel = () => {
                 return acc
             }, null)
 
-            // Log for Dev, and enable User to self-help troubleshooting unexpected behavior
-            console.log("Key pressed, key = " + getKeyVal(e) + ", command = " + (cmdMatch ?? ""));
-
             // Invoke matching command
             if (cmdMatch) {
                 clickBtn(cmdMatch)
