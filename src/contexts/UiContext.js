@@ -319,6 +319,13 @@ const UiContextProvider = ({ children }) => {
             { f: 100, d: 300 },
         ])
     }
+    //beep warn
+    useUiContextFn.beepWarn = () => {
+        play([
+            { f: 100, d: 100 },
+            { f: 50, d: 150 },
+        ])
+    }
     //sequence
     useUiContextFn.beepSeq = (seq) => {
         if (!seq) return

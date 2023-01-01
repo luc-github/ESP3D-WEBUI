@@ -46,11 +46,14 @@ const TerminalPanel = () => {
         terminal.isVerbose.current = uisettings.getValue("verbose")
     if (terminal.isAutoScroll.current == undefined)
         terminal.isAutoScroll.current = uisettings.getValue("autoscroll")
+    if (terminal.isAutoCorrect.current == undefined)
+        terminal.isAutoCorrect.current = uisettings.getValue("autocorrect")
     const [isVerbose, setIsVerbose] = useState(terminal.isVerbose.current)
     const [isAutoScroll, setIsAutoScroll] = useState(
         terminal.isAutoScroll.current
     )
     const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(false)
+    const [isAutoCorrect, setIsAutoCorrect] = useState(terminal.isAutoCorrect.current)
     let lastPos = 0
     const inputRef = useRef()
     const messagesEndRef = useRef(null)
@@ -100,6 +103,23 @@ const TerminalPanel = () => {
             //ignore
         }
     }
+
+    // Better than nothing autocorrect.
+    // - Note Marlin intentionally sensitive.  For reasons see https://github.com/MarlinFirmware/Marlin/issues/2393
+    // - TODO: Handle/ignore commands with filenames M30 M20, etc...  See https://github.com/MarlinFirmware/Marlin/pull/2396
+    // - TODO: Handle/ignore exponent 'e'.  Q: Any GCODE commands use exponent char?  See https://github.com/Ultimaker/Cura/issues/4178#issuecomment-425385517
+    const autoCorrectCommand = (cmd) => { 
+        if (!cmd || cmd.length == 0) return cmd
+        let newCmd = cmd.toLocaleUpperCase()
+        
+        // Give User a carrot, but love tap with stick
+        if (cmd != newCmd) {
+            useUiContextFn.haptic()
+            useUiContextFn.beepWarn()
+        }
+        return newCmd
+    } 
+
     const onSend = (e) => {
         useUiContextFn.haptic()
         inputRef.current.focus()
@@ -107,7 +127,12 @@ const TerminalPanel = () => {
             terminal.input.current &&
             terminal.input.current.trim().length > 0
         ) {
-            const cmd = terminal.input.current.trim()
+            let cmd = terminal.input.current.trim()
+
+            if (terminal.isAutoCorrect.current) {
+                cmd = autoCorrectCommand(cmd)
+            }
+
             if (
                 terminal.inputHistory[terminal.inputHistory.length - 1] != cmd
             ) {
@@ -163,6 +188,12 @@ const TerminalPanel = () => {
         scrollToBottom()
     }
 
+    const toggleAutoCorrect = () => {
+        useUiContextFn.haptic()
+        terminal.isAutoCorrect .current = !isAutoCorrect
+        setIsAutoCorrect(!isAutoCorrect)
+    }
+
     const menu = [
         {
             label: T("S76"),
@@ -194,6 +225,19 @@ const TerminalPanel = () => {
             ),
             onClick: toggleAutoScroll,
         },
+        {
+            label: T("S212"),
+            displayToggle: () => (
+                <span class="feather-icon-container">
+                    {isAutoCorrect ? (
+                        <CheckCircle size="0.8rem" />
+                    ) : (
+                        <Circle size="0.8rem" />
+                    )}
+                </span>
+            ),
+            onClick: toggleAutoCorrect,
+        },        
         { divider: true },
         {
             label: T("S79"),

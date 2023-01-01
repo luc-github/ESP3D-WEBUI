@@ -108,6 +108,12 @@
                 "type": "boolean",
                 "label": "S77",
                 "value": true
+            },
+            {
+                "id": "autocorrect",
+                "type": "boolean",
+                "label": "S212",
+                "value": false
             }
         ],
         "files": [
