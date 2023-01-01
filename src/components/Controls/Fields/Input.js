@@ -19,7 +19,14 @@
 
 import { h } from "preact"
 import { useRef, useState, useEffect } from "preact/hooks"
-import { Eye, EyeOff, Search, ChevronDown, HelpCircle } from "preact-feather"
+import {
+    Eye,
+    EyeOff,
+    Search,
+    ChevronDown,
+    HelpCircle,
+    XCircle,
+} from "preact-feather"
 import { ButtonImg } from "../../Controls"
 import { ScanApList } from "../ScanAp"
 import { T } from "./../../Translations"
@@ -58,6 +65,19 @@ const Reveal = ({ applyTo }) => {
             ) : (
                 <Eye size="1rem" class="has-error" style="margin-top:0.15rem" />
             )}
+        </div>
+    )
+}
+
+const ClearText = ({ setValue }) => {
+    const clickClear = () => {
+        useUiContextFn.haptic()
+        if (setValue) setValue("")
+    }
+    useEffect(() => {}, [])
+    return (
+        <div class="form-icon clearShortkey" onCLick={clickClear}>
+            <XCircle size="1rem" style="margin-top:0.15rem" />
         </div>
     )
 }
@@ -152,7 +172,25 @@ const Input = ({
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [value])
-
+    if (shortkey) {
+        return (
+            <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
+                <input
+                    spellcheck="false"
+                    autocorrect="off"
+                    autocomplete="off"
+                    ref={inputref}
+                    class="form-input"
+                    {...props}
+                    placeholder=""
+                    {...rest}
+                    onInput={onInput}
+                    onKeyDown={onKeyPress}
+                />
+                <ClearText setValue={setValue} />
+            </div>
+        )
+    }
     if (type === "password")
         return (
             <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
@@ -309,7 +347,6 @@ const Input = ({
                 {...props}
                 {...rest}
                 onInput={onInput}
-                onKeyDown={onKeyPress}
             />
             {append && (
                 <span
