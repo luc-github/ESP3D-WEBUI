@@ -84,28 +84,39 @@ const InterfaceTab = () => {
                     validation.valid = false
                 }
                 //look if used
-                const keyMapObj = interfaceSettings.current.settings.jog
-                const keysmap = keyMapObj.find((element) => {
-                    if (element.id == "keymap") return true
-                })
-                if (keysmap) {
-                    let counter = 0
-                    keysmap.value.forEach((element) => {
-                        element.value.forEach((sub) => {
-                            if (
-                                sub.name == "key" &&
-                                sub.value == fieldData.value &&
-                                sub.id != fieldData.id
-                            ) {
-                                counter++
-                            }
-                        })
+                const keysRefs = [
+                    {
+                        ref: interfaceSettings.current.settings.jog,
+                        entry: "keymap",
+                    },
+                    {
+                        ref: interfaceSettings.current.settings.macros,
+                        entry: "macros",
+                    },
+                ]
+                keysRefs.forEach((list) => {
+                    let keysmap = list.ref.find((element) => {
+                        if (element.id == list.entry) return true
                     })
-                    if (counter != 0) {
-                        validation.message = T("S213")
-                        validation.valid = false
+                    if (keysmap) {
+                        let counter = 0
+                        keysmap.value.forEach((element) => {
+                            element.value.forEach((sub) => {
+                                if (
+                                    sub.name == "key" &&
+                                    sub.value == fieldData.value &&
+                                    sub.id != fieldData.id
+                                ) {
+                                    counter++
+                                }
+                            })
+                        })
+                        if (counter != 0) {
+                            validation.message = T("S213")
+                            validation.valid = false
+                        }
                     }
-                }
+                })
             }
         } else {
             if (fieldData.step) {

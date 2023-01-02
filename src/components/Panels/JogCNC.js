@@ -21,9 +21,6 @@ import {
     Move,
     Home,
     ChevronDown,
-    CheckCircle,
-    Circle,
-    HelpCircle,
     Edit3,
     StopCircle,
     MoreHorizontal,
@@ -39,7 +36,6 @@ import { useTargetContext, variablesList } from "../../targets"
 
 let currentFeedRate = []
 let currentJogDistance = 100
-let enable_keyboard_jog = false
 let currentAxis = "-1"
 
 const feedList = ["XY", "Z", "A", "B", "C", "U", "V", "W"]
@@ -117,10 +113,7 @@ const PositionsControls = () => {
 
 const JogPanel = () => {
     const { modals, toasts, panels } = useUiContext()
-
     const { createNewRequest } = useHttpFn
-    const [isKeyboardEnabled, setIsKeyboardEnabled] =
-        useState(enable_keyboard_jog)
     const [currentSelectedAxis, setCurrentSelectedAxis] = useState(currentAxis)
     const { positions } = useTargetContext()
     const id = "jogPanel"
@@ -182,109 +175,11 @@ const JogPanel = () => {
                     acc += selected_axis += " " + letter.toUpperCase() + "0"
                 return acc
             }, "")
-            console.log("selected_axis = " + selected_axis)
         }
         const cmd = useUiContextFn
             .getValue("zerocmd")
             .replace("#", selected_axis.trim())
         SendCommand(cmd)
-    }
-
-    //keyboard listener handler
-    const keyboardEventHandler = (e) => {
-        if (!enable_keyboard_jog) RemoveKeyboardListener()
-        if (e.key == "1") {
-            clickBtn("btnHX")
-        } else if (e.key == "2") {
-            clickBtn("btnHY")
-        } else if (e.key == "3") {
-            clickBtn("btnHZ")
-        } else if (e.key == "4") {
-            clickBtn("btnHAxis")
-        } else if (e.key == "ArrowRight") {
-            clickBtn("btn+X")
-        } else if (e.key == "ArrowLeft") {
-            clickBtn("btn-X")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btn-Y")
-        } else if (e.key == "ArrowUp") {
-            clickBtn("btn+Y")
-        } else if (e.key == "PageUp") {
-            clickBtn("btn+Z")
-        } else if (e.key == "PageDown") {
-            clickBtn("btn-Z")
-        } else if (e.key == "x" || e.key == "X") {
-            clickBtn("btnZX")
-        } else if (e.key == "y" || e.key == "Y") {
-            clickBtn("btnZY")
-        } else if (e.key == "z" || e.key == "Z") {
-            clickBtn("btnZZ")
-        } else if (e.key == "a" || e.key == "A") {
-            clickBtn("btnZaxis")
-        } else if (e.key == "o" || e.key == "O") {
-            clickBtn("btnZAll")
-        } else if (e.key == "End") {
-            clickBtn("btnDisable")
-        } else if (e.key == "Home") {
-            clickBtn("btnHAll")
-        } else if (e.key == "Delete") {
-            clickBtn("btnStop")
-        } else if (e.key == "(" || e.key == ")") {
-            const axisList = selectableAxisLettersList.reduce((acc, letter) => {
-                if (
-                    (positions[letter.toLowerCase()] ||
-                        positions["w" + letter.toLowerCase()]) &&
-                    useUiContextFn.getValue("show" + [letter.toLowerCase()])
-                ) {
-                    acc.push(letter)
-                }
-
-                return acc
-            }, [])
-
-            if (axisList.length > 1) {
-                let index = axisList.indexOf(currentAxis)
-                if (e.key == ")") {
-                    index++
-                    if (index >= axisList.length) index = 0
-                } else {
-                    index--
-                    if (index < 0) index = axisList.length - 1
-                }
-
-                if (document.getElementById("selectAxisList")) {
-                    document.getElementById("selectAxisList").value =
-                        axisList[index]
-                    onChangeAxis(axisList[index])
-                }
-            }
-        } else if (e.key == "+") {
-            if (currentJogDistance == 100) clickBtn("move_0_1")
-            else if (currentJogDistance == 0.1) clickBtn("move_1")
-            else if (currentJogDistance == 1) clickBtn("move_10")
-            else if (currentJogDistance == 10) clickBtn("move_50")
-            else if (currentJogDistance == 50) clickBtn("move_100")
-        } else if (e.key == "-") {
-            if (currentJogDistance == 100) clickBtn("move_50")
-            else if (currentJogDistance == 0.1) clickBtn("move_100")
-            else if (currentJogDistance == 1) clickBtn("move_0_1")
-            else if (currentJogDistance == 10) clickBtn("move_1")
-            else if (currentJogDistance == 50) clickBtn("move_10")
-        } else if (e.key == "/") {
-            clickBtn("btn+axis")
-        } else if (e.key == "*") {
-            clickBtn("btn-axis")
-        } else console.log(e.key)
-    }
-
-    //Add keyboard listener
-    const AddKeyboardListener = () => {
-        window.addEventListener("keydown", keyboardEventHandler, true)
-    }
-
-    //Remove keyboard listener
-    const RemoveKeyboardListener = () => {
-        window.removeEventListener("keydown", keyboardEventHandler, true)
     }
 
     //Send jog command
@@ -361,68 +256,6 @@ const JogPanel = () => {
             ),
         })
     }
-
-    //Show keyboard mapped keys
-    const showKeyboarHelp = () => {
-        useUiContextFn.haptic()
-        let help = ""
-        if ((positions.x || positions.wx) && useUiContextFn.getValue("showx")) {
-            help += T("CN24")
-            if (useUiContextFn.getValue("homesingleaxis")) help += T("CN27")
-        }
-
-        if ((positions.y || positions.wy) && useUiContextFn.getValue("showy")) {
-            help += T("CN25")
-            if (useUiContextFn.getValue("homesingleaxis")) help += T("CN28")
-        }
-        if ((positions.z || positions.wz) && useUiContextFn.getValue("showz")) {
-            help += T("CN26")
-            if (useUiContextFn.getValue("homesingleaxis")) help += T("CN29")
-        }
-
-        if (
-            selectableAxisLettersList.reduce((acc, letter) => {
-                if (
-                    (positions[letter.toLowerCase()] ||
-                        positions["w" + letter.toLowerCase()]) &&
-                    useUiContextFn.getValue("show" + letter.toLowerCase())
-                )
-                    acc = true
-                return acc
-            }, false)
-        ) {
-            help += T("CN30")
-            if (useUiContextFn.getValue("homesingleaxis")) help += T("CN31")
-            help += T("CN32")
-        }
-
-        help += T("CN33")
-        const helpKeyboardJog = (
-            <CenterLeft>
-                {help.split(",").map((e) => {
-                    return <div>{e}</div>
-                })}
-            </CenterLeft>
-        )
-        showModal({
-            modals,
-            title: T("CN14"),
-            button1: {
-                text: T("S24"),
-            },
-            icon: <HelpCircle />,
-            content: helpKeyboardJog,
-        })
-    }
-
-    useEffect(() => {
-        if (enable_keyboard_jog) AddKeyboardListener()
-        return () => {
-            if (enable_keyboard_jog) {
-                RemoveKeyboardListener()
-            }
-        }
-    }, [keyboardEventHandler, enable_keyboard_jog])
 
     useEffect(() => {
         if (currentAxis == "-1") {
@@ -509,51 +342,6 @@ const JogPanel = () => {
                                             </li>
                                         )
                                 })}
-
-                                <li class="divider" />
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            enable_keyboard_jog =
-                                                !enable_keyboard_jog
-                                            setIsKeyboardEnabled(
-                                                enable_keyboard_jog
-                                            )
-                                            if (enable_keyboard_jog) {
-                                                AddKeyboardListener()
-                                            } else {
-                                                RemoveKeyboardListener()
-                                            }
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("CN7")}
-                                            </span>
-                                            <span class="feather-icon-container">
-                                                {isKeyboardEnabled ? (
-                                                    <CheckCircle size="0.8rem" />
-                                                ) : (
-                                                    <Circle size="0.8rem" />
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={showKeyboarHelp}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("CN14")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
                             </ul>
                         </div>
                         <span

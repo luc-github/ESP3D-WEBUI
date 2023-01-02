@@ -115,7 +115,13 @@ const ItemControl = ({
         return e.name == "key"
     })
 
-    const labelBtn = val != -1 ? T(name) + " [" + value[val].value + "]" : ""
+    const labelBtn =
+        val != -1
+            ? T(name) +
+              (value[val].value.length != 0
+                  ? " [" + value[val].value + "]"
+                  : "")
+            : ""
 
     return (
         <Fragment>
