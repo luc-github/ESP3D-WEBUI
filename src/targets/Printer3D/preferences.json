@@ -327,6 +327,8 @@
                 "fixed": true,
                 "nodelete": true,
                 "editable": true,
+                "inline" : true,
+                "compact" : true,
                 "label": "S212",
                 "type": "list",
                 "value": [

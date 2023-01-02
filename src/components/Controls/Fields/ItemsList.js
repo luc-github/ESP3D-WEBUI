@@ -59,6 +59,8 @@ const ItemControl = ({
     nodelete,
     editable,
     sorted,
+    inline,
+    compact,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
@@ -186,8 +188,9 @@ const ItemControl = ({
                     )}
                 </div>
             )}
-            {editionMode && (
-                <div class="itemEditor">
+            {
+            editionMode && (
+                <div class="itemEditor" style={((compact) ? "display:table-cell;" : "")}>
                     <div>
                         <ButtonImg
                             sm
@@ -266,9 +269,9 @@ const ItemControl = ({
                                         type={type}
                                         options={Options}
                                         inline={
-                                            type == "boolean" || type == "icon"
+                                            type == "boolean" || type == "icon" || inline
                                                 ? true
-                                                : false
+                                                : false 
                                         }
                                         {...rest}
                                         setValue={(val, update) => {
@@ -301,6 +304,7 @@ const ItemsList = ({
     depend,
     nodelete,
     editable,
+    compact,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -396,6 +400,8 @@ const ItemsList = ({
                                 sorted={sorted}
                                 nodelete={nodelete}
                                 editable={editable}
+                                inline={inline}
+                                compact={compact}
                             />
                         )
                     })}
