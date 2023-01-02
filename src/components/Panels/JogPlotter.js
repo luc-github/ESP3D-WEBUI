@@ -22,9 +22,6 @@ import {
     Home,
     Move,
     ChevronDown,
-    CheckCircle,
-    Circle,
-    HelpCircle,
     Edit3,
     StopCircle,
 } from "preact-feather"
@@ -40,7 +37,6 @@ import { Field } from "../Controls"
 
 let currentVelocity = 0
 let currentJogDistance = 100
-let enable_keyboard_jog = false
 let currentSteps = 0
 
 /*
@@ -111,8 +107,6 @@ const JogPanel = () => {
     const { modals, toasts, panels } = useUiContext()
 
     const { createNewRequest } = useHttpFn
-    const [isKeyboardEnabled, setIsKeyboardEnabled] =
-        useState(enable_keyboard_jog)
     const { positions } = useTargetContext()
     const id = "jogPanel"
     console.log(id)
@@ -209,47 +203,6 @@ const JogPanel = () => {
         }
     }
     initButtons()
-    //keyboard listener handler
-    const keyboardEventHandler = (e) => {
-        if (!enable_keyboard_jog) RemoveKeyboardListener()
-        if (e.key == "ArrowUp") {
-            clickBtn("btnjogup")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btnjogdown")
-        } else if (e.key == "ArrowLeft") {
-            clickBtn("btnjogleft")
-        } else if (e.key == "ArrowRight") {
-            clickBtn("btnjogright")
-        } else if (e.key == "p" || e.key == "P") {
-            clickBtn("btnPen")
-        } else if (e.key == "Home") {
-            clickBtn("btnpark")
-        } else if (e.key == "Delete") {
-            clickBtn("btnStop")
-        } else if (e.key == "+") {
-            if (currentJogDistance == 100) clickBtn("move_0_1")
-            else if (currentJogDistance == 0.1) clickBtn("move_1")
-            else if (currentJogDistance == 1) clickBtn("move_10")
-            else if (currentJogDistance == 10) clickBtn("move_50")
-            else if (currentJogDistance == 50) clickBtn("move_100")
-        } else if (e.key == "-") {
-            if (currentJogDistance == 100) clickBtn("move_50")
-            else if (currentJogDistance == 0.1) clickBtn("move_100")
-            else if (currentJogDistance == 1) clickBtn("move_0_1")
-            else if (currentJogDistance == 10) clickBtn("move_1")
-            else if (currentJogDistance == 50) clickBtn("move_10")
-        } else console.log(e.key)
-    }
-
-    //Add keyboard listener
-    const AddKeyboardListener = () => {
-        window.addEventListener("keydown", keyboardEventHandler, true)
-    }
-
-    //Remove keyboard listener
-    const RemoveKeyboardListener = () => {
-        window.removeEventListener("keydown", keyboardEventHandler, true)
-    }
 
     //Send jog command
     const sendJogCommand = (axis) => {
@@ -384,50 +337,6 @@ const JogPanel = () => {
         })
     }
 
-    //Show keyboard mapped keys
-    const showKeyboarHelp = () => {
-        useUiContextFn.haptic()
-        let help = ""
-        if (useUiContextFn.getValue("showx")) {
-            help += T("HP12")
-        }
-
-        if (useUiContextFn.getValue("showy")) {
-            help += T("HP13")
-        }
-
-        if (useUiContextFn.getValue("showpen")) {
-            help += T("HP14")
-        }
-
-        help += T("HP15")
-        const helpKeyboardJog = (
-            <CenterLeft>
-                {help.split(",").map((e) => {
-                    return <div>{e}</div>
-                })}
-            </CenterLeft>
-        )
-        showModal({
-            modals,
-            title: T("HP8"),
-            button1: {
-                text: T("S24"),
-            },
-            icon: <HelpCircle />,
-            content: helpKeyboardJog,
-        })
-    }
-
-    useEffect(() => {
-        if (enable_keyboard_jog) AddKeyboardListener()
-        return () => {
-            if (enable_keyboard_jog) {
-                RemoveKeyboardListener()
-            }
-        }
-    }, [keyboardEventHandler, enable_keyboard_jog])
-
     useEffect(() => {
         currentVelocity = useUiContextFn.getValue("velocity")
         currentSteps = useUiContextFn.getValue("steps")
@@ -476,50 +385,6 @@ const JogPanel = () => {
                                         <div class="menu-panel-item">
                                             <span class="text-menu-item">
                                                 {T("HP2")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="divider" />
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            enable_keyboard_jog =
-                                                !enable_keyboard_jog
-                                            setIsKeyboardEnabled(
-                                                enable_keyboard_jog
-                                            )
-                                            if (enable_keyboard_jog) {
-                                                AddKeyboardListener()
-                                            } else {
-                                                RemoveKeyboardListener()
-                                            }
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP4")}
-                                            </span>
-                                            <span class="feather-icon-container">
-                                                {isKeyboardEnabled ? (
-                                                    <CheckCircle size="0.8rem" />
-                                                ) : (
-                                                    <Circle size="0.8rem" />
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={showKeyboarHelp}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP8")}
                                             </span>
                                         </div>
                                     </div>

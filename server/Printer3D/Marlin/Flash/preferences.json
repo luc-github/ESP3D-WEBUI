@@ -1,0 +1,272 @@
+{
+ "settings": {
+  "language": "default",
+  "theme": "default",
+  "autoload": true,
+  "mobileview": false,
+  "audio": false,
+  "hapticfeedback": false,
+  "audiofeedback": false,
+  "showinformationpage": true,
+  "showmachinesettings": true,
+  "enableautorepeat": false,
+  "autorepeatdelay": "500",
+  "emergencystop": "M112",
+  "fixedpanels": false,
+  "panelsorder": [
+   {
+    "id": "Files",
+    "name": "files"
+   },
+   {
+    "id": "Terminal",
+    "name": "terminal"
+   },
+   {
+    "id": "Jog",
+    "name": "jog",
+    "value": "jog"
+   },
+   {
+    "id": "Extruders",
+    "name": "extruders"
+   },
+   {
+    "id": "Temperatures",
+    "name": "temperatures"
+   },
+   {
+    "id": "Charts",
+    "name": "charts"
+   },
+   {
+    "id": "Status",
+    "name": "status"
+   },
+   {
+    "id": "Controls",
+    "name": "controls"
+   },
+   {
+    "id": "Notifications",
+    "name": "notification"
+   },
+   {
+    "id": "Macros",
+    "name": "macros"
+   },
+   {
+    "id": "Extracontents",
+    "name": "extracontents"
+   }
+  ],
+  "enablepolling": false,
+  "pollingcmds": [
+   {
+    "id": "samplepolling",
+    "name": "3s",
+    "cmds": "M105",
+    "refreshtime": "3000"
+   }
+  ],
+  "showterminalpanel": true,
+  "openterminalonstart": true,
+  "verbose": true,
+  "autoscroll": true,
+  "showfilespanel": true,
+  "openfilesonstart": true,
+  "filesfilter": "g;G;gco;GCO;gcode;GCODE",
+  "flashfs": true,
+  "tftsd": false,
+  "tftusb": false,
+  "sd": false,
+  "sdlistcmd": "M21;M20",
+  "sdext": false,
+  "sdextlistcmd": "M21;M20",
+  "showjogpanel": true,
+  "openjogonstart": true,
+  "xyfeedrate": "1000",
+  "zfeedrate": "1000",
+  "xpos": "100",
+  "ypos": "100",
+  "zpos": "100",
+  "homecmd": "G28 $",
+  "motoroff": "M84",
+  "keymap": [
+   {
+    "id": "btn+X",
+    "name": "btn+X",
+    "key": "ArrowRight"
+   },
+   {
+    "id": "btn-X",
+    "name": "btn-X",
+    "key": "ArrowLeft"
+   },
+   {
+    "id": "btnHX",
+    "name": "btnHX",
+    "key": "X"
+   },
+   {
+    "id": "btn+Y",
+    "name": "btn+Y",
+    "key": "ArrowUp"
+   },
+   {
+    "id": "btn-Y",
+    "name": "btn-Y",
+    "key": "ArrowDown"
+   },
+   {
+    "id": "btnHY",
+    "name": "btnHY",
+    "key": "Y"
+   },
+   {
+    "id": "btn+Z",
+    "name": "btn+Z",
+    "key": "PageUp"
+   },
+   {
+    "id": "btn-Z",
+    "name": "btn-Z",
+    "key": "PageDown"
+   },
+   {
+    "id": "btnHZ",
+    "name": "btnHZ",
+    "key": "Z"
+   },
+   {
+    "id": "btnHXYZ",
+    "name": "btnHXYZ",
+    "key": "Home"
+   },
+   {
+    "id": "btnMoveXY",
+    "name": "btnMoveXY",
+    "key": "P"
+   },
+   {
+    "id": "btnMoveZ",
+    "name": "btnMoveZ",
+    "key": "End"
+   },
+   {
+    "id": "btnMotorOff",
+    "name": "btnMotorOff",
+    "key": "M"
+   },
+   {
+    "id": "move_100",
+    "name": "move_100",
+    "key": "1"
+   },
+   {
+    "id": "move_10",
+    "name": "move_10",
+    "key": "2"
+   },
+   {
+    "id": "move_1",
+    "name": "move_1",
+    "key": "3"
+   },
+   {
+    "id": "move_0_1",
+    "name": "move_0_1",
+    "key": "4"
+   },
+   {
+    "id": "btnEStop",
+    "name": "btnEStop",
+    "key": "Delete"
+   }
+  ],
+  "shownotificationspanel": true,
+  "opennotificationsonstart": false,
+  "notifautoscroll": true,
+  "showmacrospanel": true,
+  "openmacrosonstart": true,
+  "macros": [
+   {
+    "id": "tqrzz9p3a",
+    "name": "Macro tqrzz9p3a",
+    "icon": "Meh",
+    "action": "M20",
+    "type": "CMD",
+    "key": "Shift+X"
+   }
+  ],
+  "showextracontents": false,
+  "openextrapanelsonstart": false,
+  "extracontents": [
+   {
+    "id": "i830ue69z",
+    "name": "Panel i830ue69z",
+    "icon": "Meh",
+    "target": "page",
+    "source": "/here",
+    "type": "image",
+    "refreshtime": "0"
+   }
+  ],
+  "showstatuspanel": true,
+  "openstatusonstart": true,
+  "sdpausecmd": "M25",
+  "sdresumecmd": "M24",
+  "sdstopcmd": "M524",
+  "tftsdpausecmd": "M25",
+  "tftsdresumecmd": "M24",
+  "tftsdstopcmd": "M524",
+  "tftusbpausecmd": "M25",
+  "tftusbresumecmd": "M24",
+  "tftusbstopcmd": "M524",
+  "showtemperaturespanel": true,
+  "opentemperaturesonstart": true,
+  "showextruderctrls": true,
+  "extrudermax": "280",
+  "extruderpreheat": "190;220;230",
+  "heatextruder": "M104 S$ T#",
+  "showbedctrls": true,
+  "bedmax": "140",
+  "bedpreheat": "50;90;110",
+  "heatbed": "M140 S$",
+  "showchamberctrls": true,
+  "chambermax": "140",
+  "chamberpreheat": "50;90;110",
+  "heatchamber": "M141 S$",
+  "showprobectrls": true,
+  "showredondantctrls": true,
+  "showboardctrls": true,
+  "showchartspanel": true,
+  "openchartsonstart": true,
+  "showextruderchart": true,
+  "showredondantchart": true,
+  "showbedchart": true,
+  "showchamberchart": true,
+  "showprobechart": true,
+  "showboardchart": true,
+  "showsensorchart": true,
+  "showextruderspanel": true,
+  "openextrudersonstart": true,
+  "efeedrate": "400",
+  "extruderdistance": "5;10;100",
+  "ismixedextruder": false,
+  "enumber": "1",
+  "ecolors": "blue;red;green;#FF00FF;cyan;black",
+  "showextracontrolspanel": true,
+  "openextracontrolsonstart": true,
+  "showfanctrls": true,
+  "fanpresets": "0;20;50;75;100",
+  "fancmd": "M106 S$ P#",
+  "showspeedctrls": true,
+  "speedpresets": "20;50;75;100;125;150;175;200;250;300",
+  "speedcmd": "M220 S$",
+  "showflowratectrls": true,
+  "flowratepresets": "20;50;75;100;125;150;175;200;250;300",
+  "flowratecmd": "M221 S$ T#",
+  "showsensorctrls": true
+ }
+}

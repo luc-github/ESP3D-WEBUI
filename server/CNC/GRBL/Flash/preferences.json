@@ -9,6 +9,8 @@
   "audiofeedback": false,
   "showinformationpage": true,
   "showmachinesettings": true,
+  "enableautorepeat": false,
+  "autorepeatdelay": "500",
   "emergencystop": "#SAFETYDOOR#",
   "fixedpanels": true,
   "panelsorder": [
@@ -78,7 +80,7 @@
   "directsd": true,
   "showjogpanel": true,
   "openjogonstart": true,
-  "homesingleaxis": false,
+  "homesingleaxis": true,
   "homecmd": "$H#",
   "zerocmd": "G10 L20 P0 #",
   "jogstopcmd": "#JOGCANCEL#",
@@ -87,7 +89,7 @@
   "showz": true,
   "showa": true,
   "showb": true,
-  "showc": false,
+  "showc": true,
   "xyfeedrate": "1000",
   "zfeedrate": "1000",
   "afeedrate": "1000",
@@ -96,9 +98,18 @@
   "shownotificationspanel": false,
   "opennotificationsonstart": false,
   "notifautoscroll": true,
-  "showmacrospanel": false,
-  "openmacrosonstart": false,
-  "macros": [],
+  "showmacrospanel": true,
+  "openmacrosonstart": true,
+  "macros": [
+   {
+    "id": "erp4eo9v4",
+    "name": "Macro erp4eo9v4",
+    "icon": "Meh",
+    "action": "G1 X2 F3",
+    "type": "CMD",
+    "key": "k"
+   }
+  ],
   "showextracontents": false,
   "openextrapanelsonstart": false,
   "extracontents": [],

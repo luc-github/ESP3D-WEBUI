@@ -17,17 +17,7 @@ Jog.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
-import {
-    AlertCircle,
-    Move,
-    Crosshair,
-    Home,
-    ZapOff,
-    CheckCircle,
-    Circle,
-    HelpCircle,
-    Edit3,
-} from "preact-feather"
+import { Move, Crosshair, Home, ZapOff, Edit3 } from "preact-feather"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
@@ -44,7 +34,6 @@ let movetoX
 let movetoY
 let movetoZ
 let currentButtonPressed
-let enable_keyboard_jog = false
 
 /*
  * Local const
@@ -72,11 +61,13 @@ const PositionsControls = () => {
 }
 
 const JogPanel = () => {
-    const { modals, toasts, panels } = useUiContext()
+    const { modals, toasts, panels, shortcuts } = useUiContext()
 
     const { createNewRequest } = useHttpFn
-    const [isKeyboardEnabled, setIsKeyboardEnabled] =
-        useState(enable_keyboard_jog)
+    const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
+        shortcuts.enabled
+    )
+
     const [moveToTitleXY, setMoveToTitleXY] = useState(
         T("P20") + movetoX + "," + movetoY
     )
@@ -99,13 +90,6 @@ const JogPanel = () => {
         )
     }
 
-    //Click button defined by id
-    const clickBtn = (id) => {
-        if (document.getElementById(id)) {
-            document.getElementById(id).click()
-        }
-    }
-
     //Send Home command
     const sendHomeCommand = (axis, id) => {
         const cmd = useUiContextFn.getValue("homecmd").replace("$", axis)
@@ -126,70 +110,6 @@ const JogPanel = () => {
                 list_item.classList.remove(id == "posz" ? "movez" : "std")
             }
         }
-    }
-
-    //keyboard listener handler
-    const keyboardEventHandler = (e) => {
-        if (!enable_keyboard_jog) RemoveKeyboardListener()
-
-        // Bail if User is actively typing text.  We don't want to disrupt them entering gcode.
-        if (
-            document.activeElement &&
-            document.activeElement.tagName == "INPUT" &&
-            document.activeElement.type == "text"
-        ) {
-            return
-        }
-
-        // Lookup and apply key map override(s).  Key map overrides are specified as a fragment.
-        // Use "NOP" as command Id to suppress a key from performing the default command action.
-        let keyMapObj = useUiContextFn.getValue("keymap")
-        if (keyMapObj && keyMapObj.length) {
-            let cmdMatch = keyMapObj.reduce((acc, kv) => {
-                let iterKey = kv.value.filter((el) => el.name == "key")[0].value
-                let iterId = kv.id
-                let keyval = ""
-                if (e.ctrlKey) keyval += "Control+"
-                if (e.altKey) keyval += "Alt+"
-                if (e.shiftKey) keyval += "Shift+"
-                if (e.metaKey) keyval += "Meta+"
-                if (
-                    !(
-                        e.key == "Control" ||
-                        e.key == "Alt" ||
-                        e.key == "Shift" ||
-                        e.key == "Meta"
-                    )
-                )
-                    keyval += e.key
-                if (iterKey == keyval) {
-                    return iterId
-                }
-
-                return acc
-            }, null)
-
-            if (cmdMatch) {
-                // Invoke commands not suppressed
-                if (cmdMatch.toUpperCase() != "NOP") {
-                    clickBtn(cmdMatch)
-                }
-
-                // Suppress default key behavior.  For example, this prevents web page unexpectedly
-                // scrolling around when User jogs while keyboard shortcut mode is active
-                e.preventDefault()
-            }
-        }
-    }
-
-    //Add keyboard listener
-    const AddKeyboardListener = () => {
-        window.addEventListener("keydown", keyboardEventHandler, true)
-    }
-
-    //Remove keyboard listener
-    const RemoveKeyboardListener = () => {
-        window.removeEventListener("keydown", keyboardEventHandler, true)
     }
 
     //Send jog command
@@ -316,47 +236,6 @@ const JogPanel = () => {
         setFeedrate("Z")
     }
 
-    //Show keyboard mapped keys
-    const showKeyboarHelp = () => {
-        useUiContextFn.haptic()
-        let keyMapObj = useUiContextFn.getValue("keymap")
-        const helpKeyboardJog = (
-            <table>
-                {keyMapObj.map((element) => {
-                    const key = element.value.find((sub) => {
-                        if (sub.name == "key") return true
-                    })
-                    if (key)
-                        return (
-                            <tr>
-                                <td> {T(element.id)}</td>
-                                <td> [{T(key.value)}]</td>
-                            </tr>
-                        )
-                })}
-            </table>
-        )
-
-        showModal({
-            modals,
-            title: T("P81"),
-            button1: {
-                text: T("S24"),
-            },
-            icon: <HelpCircle />,
-            content: helpKeyboardJog,
-        })
-    }
-
-    useEffect(() => {
-        if (enable_keyboard_jog) AddKeyboardListener()
-        return () => {
-            if (enable_keyboard_jog) {
-                RemoveKeyboardListener()
-            }
-        }
-    }, [keyboardEventHandler, enable_keyboard_jog])
-
     useEffect(() => {
         if (!currentFeedRate["xyfeedrate"])
             currentFeedRate["xyfeedrate"] =
@@ -373,13 +252,6 @@ const JogPanel = () => {
         setMoveToTitleZ(T("P75") + movetoZ)
     }, [])
 
-    const toggleUseKeyboard = (e) => {
-        useUiContextFn.haptic()
-        enable_keyboard_jog = !enable_keyboard_jog
-        setIsKeyboardEnabled(enable_keyboard_jog)
-        enable_keyboard_jog ? AddKeyboardListener() : RemoveKeyboardListener()
-    }
-
     const menu = [
         {
             label: T("P10"),
@@ -388,24 +260,6 @@ const JogPanel = () => {
         {
             label: T("P11"),
             onClick: setFeedrateZ,
-        },
-        { divider: true },
-        {
-            label: T("P79"),
-            onClick: toggleUseKeyboard,
-            displayToggle: () => (
-                <span class="feather-icon-container">
-                    {isKeyboardEnabled ? (
-                        <CheckCircle size="0.8rem" />
-                    ) : (
-                        <Circle size="0.8rem" />
-                    )}
-                </span>
-            ),
-        },
-        {
-            label: T("P81"),
-            onClick: showKeyboarHelp,
         },
     ]
     return (
@@ -432,7 +286,7 @@ const JogPanel = () => {
             <div class="m-1 jog-container">
                 <PositionsControls />
                 <div class="m-1" />
-                <div class={isKeyboardEnabled ? "m-1" : "show-low m-1"}>
+                <div class={shortcuts.enabled ? "m-1" : "show-low m-1"}>
                     <div class="jog-buttons-main-container">
                         <div class="m-1 jog-buttons-container">
                             <Button
@@ -642,7 +496,7 @@ const JogPanel = () => {
                     </div>
                 </div>
 
-                {!isKeyboardEnabled && (
+                {!shortcuts.enabled && (
                     <div class="hide-low jog-svg-container">
                         <svg
                             width="250px"
@@ -1597,7 +1451,7 @@ const JogPanel = () => {
                 )}
                 <div
                     class={
-                        isKeyboardEnabled ? "m-1 W-100" : "m-1 show-low W-100"
+                        shortcuts.enabled ? "m-1 W-100" : "m-1 show-low W-100"
                     }
                 >
                     <div class="jog-extra-buttons-container">
