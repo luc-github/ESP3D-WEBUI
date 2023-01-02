@@ -131,10 +131,21 @@ const JogPanel = () => {
         )
     }
 
-    //Click button defined by id
-    const clickBtn = (id) => {
-        if (document.getElementById(id)) {
-            document.getElementById(id).click()
+    //we could use an array of object {distance, prev, next}
+    //but for the 5 entries this works too
+    const selectorBtn = (type) => {
+        if (type == "+") {
+            if (currentJogDistance == 100) clickBtn("move_0_1")
+            else if (currentJogDistance == 0.1) clickBtn("move_1")
+            else if (currentJogDistance == 1) clickBtn("move_10")
+            else if (currentJogDistance == 10) clickBtn("move_50")
+            else if (currentJogDistance == 50) clickBtn("move_100")
+        } else if (type == "-") {
+            if (currentJogDistance == 100) clickBtn("move_50")
+            else if (currentJogDistance == 0.1) clickBtn("move_100")
+            else if (currentJogDistance == 1) clickBtn("move_0_1")
+            else if (currentJogDistance == 10) clickBtn("move_1")
+            else if (currentJogDistance == 50) clickBtn("move_10")
         }
     }
 
@@ -523,7 +534,20 @@ const JogPanel = () => {
                                 <center class="jog-distance-selector-header">
                                     mm
                                 </center>
-
+                                <div
+                                    class="d-none"
+                                    id="btndistSel+"
+                                    onClick={() => {
+                                        selectorBtn("+")
+                                    }}
+                                />
+                                <div
+                                    class="d-none"
+                                    id="btndistSel-"
+                                    onClick={() => {
+                                        selectorBtn("-")
+                                    }}
+                                />
                                 <div
                                     class="flatbtn tooltip tooltip-left"
                                     data-tooltip={T("HP10")}

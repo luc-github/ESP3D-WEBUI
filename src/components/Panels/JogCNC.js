@@ -256,6 +256,59 @@ const JogPanel = () => {
             ),
         })
     }
+    //we could use an array of object {distance, prev, next}
+    //but for the 5 entries this works too
+    const selectorBtn = (type) => {
+        if (type == "+") {
+            if (currentJogDistance == 100) clickBtn("move_0_1")
+            else if (currentJogDistance == 0.1) clickBtn("move_1")
+            else if (currentJogDistance == 1) clickBtn("move_10")
+            else if (currentJogDistance == 10) clickBtn("move_50")
+            else if (currentJogDistance == 50) clickBtn("move_100")
+        } else if (type == "-") {
+            if (currentJogDistance == 100) clickBtn("move_50")
+            else if (currentJogDistance == 0.1) clickBtn("move_100")
+            else if (currentJogDistance == 1) clickBtn("move_0_1")
+            else if (currentJogDistance == 10) clickBtn("move_1")
+            else if (currentJogDistance == 50) clickBtn("move_10")
+        } else if (type == "prev" || type == "next") {
+            {
+                const axisList = selectableAxisLettersList.reduce(
+                    (acc, letter) => {
+                        if (
+                            (positions[letter.toLowerCase()] ||
+                                positions["w" + letter.toLowerCase()]) &&
+                            useUiContextFn.getValue(
+                                "show" + [letter.toLowerCase()]
+                            )
+                        ) {
+                            acc.push(letter)
+                        }
+
+                        return acc
+                    },
+                    []
+                )
+
+                if (axisList.length > 1) {
+                    let index = axisList.indexOf(currentAxis)
+                    if (type == "next") {
+                        index++
+                        if (index >= axisList.length) index = 0
+                    } else {
+                        index--
+                        if (index < 0) index = axisList.length - 1
+                    }
+
+                    if (document.getElementById("selectAxisList")) {
+                        document.getElementById("selectAxisList").value =
+                            axisList[index]
+                        onChangeAxis(axisList[index])
+                    }
+                }
+            }
+        }
+    }
 
     useEffect(() => {
         if (currentAxis == "-1") {
@@ -441,7 +494,20 @@ const JogPanel = () => {
                                 <center class="jog-distance-selector-header">
                                     mm
                                 </center>
-
+                                <div
+                                    class="d-none"
+                                    id="btndistSel+"
+                                    onClick={() => {
+                                        selectorBtn("+")
+                                    }}
+                                />
+                                <div
+                                    class="d-none"
+                                    id="btndistSel-"
+                                    onClick={() => {
+                                        selectorBtn("-")
+                                    }}
+                                />
                                 <div
                                     class="flatbtn tooltip tooltip-left"
                                     data-tooltip={T("CN18")}
@@ -546,6 +612,20 @@ const JogPanel = () => {
                     return acc
                 }, false) && (
                     <div class="m-1 jog-buttons-container-horizontal">
+                        <div
+                            class="d-none"
+                            id="btnaxisSel+"
+                            onClick={() => {
+                                selectorBtn("next")
+                            }}
+                        />
+                        <div
+                            class="d-none"
+                            id="btnaxisSel-"
+                            onClick={() => {
+                                selectorBtn("prev")
+                            }}
+                        />
                         <div class="form-group m-2 text-primary">
                             <select
                                 id="selectAxisList"
