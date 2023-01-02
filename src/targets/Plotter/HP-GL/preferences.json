@@ -94,6 +94,71 @@
                 "label": "S190",
                 "value": true
             }
+        ],
+        "jog": [
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btnjogright",
+                        "name": "btnjogright",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btnjogleft",
+                        "name": "btnjogleft",
+                        "key": "ArrowLeft"
+                    },
+
+                    {
+                        "id": "btnjogup",
+                        "name": "btnjogup",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btnjogdown",
+                        "name": "btnjogdown",
+                        "key": "ArrowDown"
+                    },
+
+                    {
+                        "id": "btnpark",
+                        "name": "btnpark",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnPen",
+                        "name": "btnPen",
+                        "key": "p"
+                    },
+                    {
+                        "id": "btndistSel+",
+                        "name": "btndistSel+",
+                        "key": "+"
+                    },
+                    {
+                        "id": "btndistSel-",
+                        "name": "btndistSel-",
+                        "key": "-"
+                    },
+                    {
+                        "id": "btnStop",
+                        "name": "btnStop",
+                        "key": "Control+s"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
+            }
         ]
     }
 }
