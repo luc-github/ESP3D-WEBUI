@@ -259,10 +259,17 @@ const ItemControl = ({
                                           return acc
                                       }, [])
                                     : null
+                                if (idList == "keymap" && item.name == "name") {
+                                    return
+                                }
                                 return (
                                     <Field
                                         id={item.id}
-                                        label={T(label)}
+                                        label={
+                                            idList == "keymap"
+                                                ? T(itemData.id)
+                                                : T(label)
+                                        }
                                         type={type}
                                         options={Options}
                                         inline={
