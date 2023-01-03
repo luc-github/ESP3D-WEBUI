@@ -262,10 +262,19 @@ const ItemControl = ({
                                           return acc
                                       }, [])
                                     : null
+
+                                // Hide label for key shortcut's text input field 
+                                let labelTxt
+                                if (idList == "keymap" && type == "text") {
+                                    labelTxt = ""
+                                } else {
+                                    labelTxt = label
+                                }
+
                                 return (
                                     <Field
                                         id={item.id}
-                                        label={T(label)}
+                                        label={T(labelTxt)}
                                         type={type}
                                         options={Options}
                                         inline={
