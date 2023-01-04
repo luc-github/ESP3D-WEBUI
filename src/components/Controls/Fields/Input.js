@@ -125,7 +125,8 @@ const Input = ({
                 e.key == "Meta"
             )
         )
-            k = e.key
+            k = e.key.toUpperCase()
+
         if (e.ctrlKey) v += "Control+"
         if (e.altKey) v += "Alt+"
         if (e.shiftKey) v += "Shift+"

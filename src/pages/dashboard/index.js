@@ -63,7 +63,7 @@ const keyboardEventHandlerDown = (e) => {
             e.key == "Meta"
         )
     )
-        keyval += e.key
+        keyval += e.key.toUpperCase()
     let cmdMatch = null
     const keysRefs = ["keymap", "macros"]
     keysRefs.forEach((list) => {
