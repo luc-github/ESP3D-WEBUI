@@ -67,6 +67,12 @@
                 "label": "S216",
                 "value": [
                     {
+                        "id": "iskeyboardenabled",
+                        "type": "boolean",
+                        "label": "S215",
+                        "value": false
+                    },
+                    {
                         "id": "enableautorepeat",
                         "type": "boolean",
                         "label": "S217",

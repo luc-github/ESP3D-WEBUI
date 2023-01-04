@@ -54,6 +54,10 @@ const UiContextProvider = ({ children }) => {
         page: "connecting",
     })
 
+    useEffect(() => {
+        setIsKeyboardEnabled(getValue("iskeyboardenabled"))
+    }, [uiSettings])
+
     const toastsRef = useRef(toasts)
     toastsRef.current = toasts
     const notificationsRef = useRef(notifications)
