@@ -270,6 +270,16 @@ const About = () => {
         )
     }
 
+    const valueTranslated = (value) => {
+        if (value.startsWith("ON (")) {
+            return T(value).replace("ON (", T("ON") + " (")
+        } else if (value.startsWith("shared (")) {
+            return T(value).replace("shared (", T("shared") + " (")
+        }
+
+        return T(value)
+    }
+
     const filesSelected = (e) => {
         if (inputFilesRef.current.files.length > 0) {
             const titleConfirmation = isFwUpdate ? T("S30") : T("S31")
@@ -410,7 +420,7 @@ const About = () => {
                                                 {T(id)}:
                                             </span>
                                             <span class="text-dark">
-                                                {T(value)}
+                                                {valueTranslated(value)}
                                             </span>
                                         </li>
                                     )
