@@ -21,19 +21,172 @@ import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "../../components/Translations"
-import { List } from "preact-feather"
+import { List, CheckCircle, Circle, HelpCircle } from "preact-feather"
 import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
+import { showModal } from "../../components/Modal"
 
 const fixedPanels = []
+const keyTracker = {
+    keybListenerCounter: 0,
+    keyState: 0,
+    lastcall: new Date(),
+    lastkey: "",
+}
+
+//Need to put outside of Dashboard object to be sure add/remove alsways use same address
+const keyboardEventHandlerUp = (e) => {
+    keyTracker.keyState = 0
+}
+
+const keyboardEventHandlerDown = (e) => {
+    // Bail if User is actively typing text.  We don't want to disrupt them entering gcode.
+    if (
+        document.activeElement &&
+        document.activeElement.tagName == "INPUT" &&
+        document.activeElement.type == "text"
+    ) {
+        return
+    }
+
+    let keyval = ""
+    if (e.ctrlKey) keyval += "Control+"
+    if (e.altKey) keyval += "Alt+"
+    if (e.shiftKey) keyval += "Shift+"
+    if (e.metaKey) keyval += "Meta+"
+    if (
+        !(
+            e.key == "Control" ||
+            e.key == "Alt" ||
+            e.key == "Shift" ||
+            e.key == "Meta"
+        )
+    )
+        keyval += e.key.toUpperCase()
+    let cmdMatch = null
+    const keysRefs = ["keymap", "macros"]
+    keysRefs.forEach((list) => {
+        const keyMapObj = useUiContextFn.getValue(list)
+        if (keyMapObj) {
+            keyMapObj.forEach((element) => {
+                element.value.forEach((sub) => {
+                    if (
+                        sub.name == "key" &&
+                        sub.value == keyval &&
+                        document.getElementById(element.id)
+                    ) {
+                        cmdMatch = element.id
+                    }
+                })
+            })
+        }
+    })
+    if (cmdMatch) {
+        e.preventDefault()
+        const autorepeat = useUiContextFn.getValue("enableautorepeat")
+        if (keyTracker.keyState == 1 && !autorepeat) {
+            return
+        }
+        keyTracker.keyState = 1
+        const delay = useUiContextFn.getValue("autorepeatdelay")
+        if (delay && autorepeat && keyTracker.lastkey == keyval) {
+            let t = new Date()
+            if (t.getTime() - keyTracker.lastcall.getTime() < delay) {
+                return
+            }
+            keyTracker.lastcall = new Date()
+        }
+        keyTracker.lastkey = keyval
+
+        document.getElementById(cmdMatch).click()
+    }
+}
 
 const Dashboard = () => {
     console.log("Dashboard")
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    const { panels, uisettings } = useUiContext()
+    const { modals, panels, uisettings, shortcuts } = useUiContext()
     const menuPanelsList = useRef()
     const isfixed = uisettings.getValue("fixedpanels")
+    const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
+        shortcuts.enabled
+    )
+
+    //Show keyboard mapped keys
+    const showKeyboarHelp = () => {
+        useUiContextFn.haptic()
+        const keysRefs = ["keymap", "macros"]
+        const helpKeyboardJog = []
+        keysRefs.forEach((list) => {
+            const keyMapObj = useUiContextFn.getValue(list)
+
+            if (keyMapObj) {
+                keyMapObj.forEach((element) => {
+                    const help = {}
+                    element.value.forEach((sub) => {
+                        if (sub.name == "key") {
+                            help.key = sub.value
+                        }
+                        if (sub.name == "name") {
+                            help.name = sub.value
+                        }
+                    })
+
+                    if (document.getElementById(element.id))
+                        helpKeyboardJog.push(
+                            <tr>
+                                <td> {T(help.name)}</td>
+                                <td> [{T(help.key)}]</td>
+                            </tr>
+                        )
+                })
+            }
+        })
+
+        showModal({
+            modals,
+            title: T("S216"),
+            button1: {
+                text: T("S24"),
+            },
+            icon: <HelpCircle />,
+            content: <table class="table">{helpKeyboardJog}</table>,
+        })
+    }
+
+    //Add keyboard listener
+    const AddKeyboardListener = () => {
+        if (keyTracker.keybListenerCounter == 0) {
+            window.addEventListener("keydown", keyboardEventHandlerDown, true)
+            window.addEventListener("keyup", keyboardEventHandlerUp, true)
+            keyTracker.keybListenerCounter++
+        }
+    }
+
+    //Remove keyboard listener
+    const RemoveKeyboardListener = () => {
+        if (keyTracker.keybListenerCounter != 0) {
+            window.removeEventListener(
+                "keydown",
+                keyboardEventHandlerDown,
+                true
+            )
+            window.removeEventListener("keyup", keyboardEventHandlerUp, true)
+            keyTracker.keybListenerCounter--
+        }
+    }
+
+    useEffect(() => {
+        if (shortcuts.enabled) {
+            AddKeyboardListener()
+        }
+        return () => {
+            if (shortcuts.enabled) {
+                RemoveKeyboardListener()
+            }
+        }
+    }, [shortcuts.enabled])
 
     useEffect(() => {
         if (!panels.initDone && panels.list.length != 0) {
@@ -130,6 +283,51 @@ const Dashboard = () => {
                             <List />
                         </span>
                         <ul class="menu" ref={menuPanelsList}>
+                            <li class="menu-item">
+                                <div
+                                    class="menu-entry"
+                                    onclick={(e) => {
+                                        useUiContextFn.haptic()
+                                        let state = !shortcuts.enabled
+                                        shortcuts.enable(state)
+                                        setIsKeyboardEnabled(state)
+                                        if (state) {
+                                            AddKeyboardListener()
+                                        } else {
+                                            RemoveKeyboardListener()
+                                        }
+                                    }}
+                                >
+                                    <div class="menu-panel-item">
+                                        <span class="text-menu-item">
+                                            {T("S215")}
+                                        </span>
+                                        <span class="feather-icon-container">
+                                            {isKeyboardEnabled ? (
+                                                <CheckCircle size="0.8rem" />
+                                            ) : (
+                                                <Circle size="0.8rem" />
+                                            )}
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="menu-item">
+                                <div
+                                    class="menu-entry"
+                                    onclick={showKeyboarHelp}
+                                >
+                                    <div class="menu-panel-item">
+                                        <span class="text-menu-item">
+                                            {T("S216")}
+                                        </span>
+                                        <span class="feather-icon-container">
+                                            <HelpCircle size="0.8rem" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="divider"></li>
                             <li class="menu-item">
                                 <div
                                     class="menu-entry"

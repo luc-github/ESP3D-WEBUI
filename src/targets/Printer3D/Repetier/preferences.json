@@ -65,21 +65,7 @@
                 ]
             }
         ],
-        "jog": [
-            {
-                "id": "homecmd",
-                "type": "text",
-                "label": "P73",
-                "value": "G28 $",
-                "help": "P74"
-            },
-            {
-                "id": "motoroff",
-                "type": "text",
-                "label": "P13",
-                "value": "M84"
-            }
-        ],
+
         "files": [
             {
                 "id": "sd",

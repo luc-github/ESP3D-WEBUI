@@ -349,6 +349,7 @@ span.input-group-addon{
   border-radius: 5px;
 }
 
+.clearShortkey,
 .passwordReveal {
   color: #c0c0c0;
   cursor: pointer;
@@ -356,6 +357,7 @@ span.input-group-addon{
   margin-right: 0.9rem !important;
 }
 
+.clearShortkey:hover,
 .passwordReveal:hover {
   color: blue;
 }

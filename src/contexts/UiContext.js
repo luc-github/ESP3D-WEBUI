@@ -44,6 +44,7 @@ const UiContextProvider = ({ children }) => {
     const [toasts, setToasts] = useState([])
     const isNotificationsAutoScroll = useRef(true)
     const isNotificationsAutoScrollPaused = useRef(false)
+    const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(false)
     const [notifications, setNotifications] = useState([])
     const [needLogin, setNeedLogin] = useState(false)
     const [showKeepConnected, setShowKeepConnected] = useState(false)
@@ -344,6 +345,10 @@ const UiContextProvider = ({ children }) => {
             initDone: initPanelsVisibles,
             setInitDone: setInitPanelsVisibles,
             setPanelsOrder: setPanelsOrder,
+        },
+        shortcuts: {
+            enabled: isKeyboardEnabled,
+            enable: setIsKeyboardEnabled,
         },
         uisettings: {
             current: uiSettings,

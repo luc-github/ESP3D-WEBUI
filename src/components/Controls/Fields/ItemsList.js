@@ -56,6 +56,8 @@ const ItemControl = ({
     setValue,
     validationfn,
     fixed,
+    nodelete,
+    editable,
     sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
@@ -108,6 +110,19 @@ const ItemControl = ({
     if (JSON.stringify(value).includes('"haserror":true'))
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
+
+    const val = value.findIndex((e) => {
+        return e.name == "key"
+    })
+
+    const labelBtn =
+        val != -1
+            ? T(name) +
+              (value[val].value.length != 0
+                  ? " [" + value[val].value + "]"
+                  : "")
+            : ""
+
     return (
         <Fragment>
             {!editionMode && (
@@ -139,13 +154,13 @@ const ItemControl = ({
                         )}
 
                     <div class="item-list-name">
-                        {!fixed && (
+                        {(!fixed || editable) && (
                             <ButtonImg
                                 m2
                                 tooltip
                                 data-tooltip={T("S94")}
                                 style={colorStyle}
-                                label={name}
+                                label={labelBtn}
                                 icon={controlIcon}
                                 width="100px"
                                 onClick={(e) => {
@@ -155,10 +170,12 @@ const ItemControl = ({
                                 }}
                             />
                         )}
-                        {fixed && <label class="m-1">{T(name)}</label>}
+                        {fixed && !editable && (
+                            <label class="m-1">{T(name)}</label>
+                        )}
                     </div>
 
-                    {!fixed && (
+                    {!(fixed || nodelete) && (
                         <ButtonImg
                             m2
                             tooltip
@@ -206,13 +223,15 @@ const ItemControl = ({
                                     />
                                 )}
 
-                            <ButtonImg
-                                m2
-                                tooltip
-                                data-tooltip={T("S37")}
-                                icon={<Trash2 />}
-                                onClick={removeItem}
-                            />
+                            {!nodelete && (
+                                <ButtonImg
+                                    m2
+                                    tooltip
+                                    data-tooltip={T("S37")}
+                                    icon={<Trash2 />}
+                                    onClick={removeItem}
+                                />
+                            )}
                         </div>
                     </div>
                     <div class="m-1">
@@ -240,10 +259,17 @@ const ItemControl = ({
                                           return acc
                                       }, [])
                                     : null
+                                if (idList == "keymap" && item.name == "name") {
+                                    return
+                                }
                                 return (
                                     <Field
                                         id={item.id}
-                                        label={T(label)}
+                                        label={
+                                            idList == "keymap"
+                                                ? T(itemData.id)
+                                                : T(label)
+                                        }
                                         type={type}
                                         options={Options}
                                         inline={
@@ -280,6 +306,8 @@ const ItemsList = ({
     fixed,
     sorted,
     depend,
+    nodelete,
+    editable,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -288,7 +316,7 @@ const ItemsList = ({
         interfaceSettings.current.settings
     )
     const canshow = connectionDepend(depend, connectionSettings.current)
-
+    console.log(id)
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
@@ -357,9 +385,9 @@ const ItemsList = ({
                         onClick={addItem}
                     />
                 )}
-                {fixed && <label class="m-1">{T(label)}</label>}
+                {fixed && <label class="m-2">{T(label)}</label>}
             </legend>
-
+            <div class="m-1" />
             <div class="items-group-content">
                 {value &&
                     value.map((element, index, completeList) => {
@@ -373,6 +401,8 @@ const ItemsList = ({
                                 setValue={setValue}
                                 fixed={fixed}
                                 sorted={sorted}
+                                nodelete={nodelete}
+                                editable={editable}
                             />
                         )
                     })}
