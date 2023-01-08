@@ -189,7 +189,7 @@ const ItemControl = ({
             )}
             {
             editionMode && (
-                <div class="itemEditor" style="display:table-cell;">
+                <div class="itemEditor">
                     <div>
                         <ButtonImg
                             sm
@@ -310,7 +310,6 @@ const ItemsList = ({
     depend,
     nodelete,
     editable,
-    compact,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()

@@ -81,7 +81,7 @@ input[type=range]::-ms-thumb{/*Internet Explorer*/
 
 
 .itemEditor {
-  display: flex;
+  display: table-cell;
   flex-direction: column;
   border: 0.05rem solid #dadee4;
   border-radius: $border-radius;
