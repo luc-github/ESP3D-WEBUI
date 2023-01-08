@@ -60,7 +60,6 @@ const ItemControl = ({
     editable,
     sorted,
     inline,
-    compact,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
@@ -190,7 +189,7 @@ const ItemControl = ({
             )}
             {
             editionMode && (
-                <div class="itemEditor" style={((compact) ? "display:table-cell;" : "")}>
+                <div class="itemEditor" style="display:table-cell;">
                     <div>
                         <ButtonImg
                             sm
@@ -408,7 +407,6 @@ const ItemsList = ({
                                 nodelete={nodelete}
                                 editable={editable}
                                 inline={inline}
-                                compact={compact}
                             />
                         )
                     })}
