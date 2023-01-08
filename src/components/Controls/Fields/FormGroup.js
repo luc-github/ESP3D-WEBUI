@@ -26,6 +26,7 @@ const FormGroup = ({
     children,
     label,
     id,
+    forctrl,
     type,
 }) => {
     const getValidationClass = (validation) => {
@@ -51,11 +52,11 @@ const FormGroup = ({
                             class={
                                 inline && type == "boolean"
                                     ? "d-none"
-                                    : `form-label text-dark ${
-                                          inline ? "column col-auto" : ""
-                                      }`
+                                    : `form-label ${
+                                          forctrl ? "text-primary" : "text-dark"
+                                      } ${inline ? "column col-auto" : ""}`
                             }
-                            htmlFor={id}
+                            htmlFor={forctrl ? forctrl : id}
                         >
                             {label}
                         </label>

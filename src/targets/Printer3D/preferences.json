@@ -307,6 +307,120 @@
                 "type": "number",
                 "label": "P75",
                 "value": "100"
+            },
+            {
+                "id": "homecmd",
+                "type": "text",
+                "label": "P73",
+                "value": "G28 $",
+                "help": "P74"
+            },
+            {
+                "id": "motoroff",
+                "type": "text",
+                "label": "P13",
+                "value": "M84"
+            },
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btn+X",
+                        "name": "btn+X",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btn-X",
+                        "name": "btn-X",
+                        "key": "ArrowLeft"
+                    },
+                    {
+                        "id": "btnHX",
+                        "name": "btnHX",
+                        "key": "X"
+                    },
+                    {
+                        "id": "btn+Y",
+                        "name": "btn+Y",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btn-Y",
+                        "name": "btn-Y",
+                        "key": "ArrowDown"
+                    },
+                    {
+                        "id": "btnHY",
+                        "name": "btnHY",
+                        "key": "Y"
+                    },
+                    {
+                        "id": "btn+Z",
+                        "name": "btn+Z",
+                        "key": "PageUp"
+                    },
+                    {
+                        "id": "btn-Z",
+                        "name": "btn-Z",
+                        "key": "PageDown"
+                    },
+                    {
+                        "id": "btnHZ",
+                        "name": "btnHZ",
+                        "key": "Z"
+                    },
+                    {
+                        "id": "btnHXYZ",
+                        "name": "btnHXYZ",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnMoveXY",
+                        "name": "btnMoveXY",
+                        "key": "P"
+                    },
+                    {
+                        "id": "btnMoveZ",
+                        "name": "btnMoveZ",
+                        "key": "End"
+                    },
+                    {
+                        "id": "btnMotorOff",
+                        "name": "btnMotorOff",
+                        "key": "M"
+                    },
+                    {
+                        "id": "move_100",
+                        "name": "move_100",
+                        "key": "1"
+                    },
+                    {
+                        "id": "move_10",
+                        "name": "move_10",
+                        "key": "2"
+                    },
+                    {
+                        "id": "move_1",
+                        "name": "move_1",
+                        "key": "3"
+                    },
+                    {
+                        "id": "move_0_1",
+                        "name": "move_0_1",
+                        "key": "4"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
             }
         ],
         "controls": [

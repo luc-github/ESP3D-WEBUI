@@ -60,6 +60,33 @@
                 "type": "boolean",
                 "label": "S197",
                 "value": true
+            },
+            {
+                "id": "shortcuts",
+                "type": "group",
+                "label": "S216",
+                "value": [
+                    {
+                        "id": "enableautorepeat",
+                        "type": "boolean",
+                        "label": "S217",
+                        "value": false
+                    },
+                    {
+                        "id": "autorepeatdelay",
+                        "type": "number",
+                        "label": "S218",
+                        "min": "1",
+                        "append": "S114",
+                        "value": "500",
+                        "depend": [
+                            {
+                                "id": "enableautorepeat",
+                                "value": true
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "panels": [],

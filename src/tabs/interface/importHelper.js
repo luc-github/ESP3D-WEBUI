@@ -39,6 +39,11 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S115"
                     newItem.help = "S97"
                     break
+                case "key":
+                    newItem.type = "text"
+                    newItem.label = "key"
+                    newItem.shortkey = true
+                    break
                 case "name":
                     newItem.type = "text"
                     newItem.label = "S129"
@@ -137,7 +142,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                 case "action":
                     newItem.type = "text"
                     newItem.label = "S159"
-                    newItem.min = "2"
+                    newItem.min = "1"
                     break
                 default:
                     newItem.type = "text"
