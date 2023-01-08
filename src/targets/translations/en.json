@@ -216,7 +216,7 @@
     "S209": "Invert X",
     "S210": "Invert Y",
     "S211": "Swap X and Y",
-    "S212": "AutoCorrect",
+    "S219": "AutoCorrect",
     "panels": "Panels",
     "processing": "Processing",
     "no stream": "No stream",

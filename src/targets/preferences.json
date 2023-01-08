@@ -112,7 +112,7 @@
             {
                 "id": "autocorrect",
                 "type": "boolean",
-                "label": "S212",
+                "label": "S219",
                 "value": false
             }
         ],

@@ -226,7 +226,7 @@ const TerminalPanel = () => {
             onClick: toggleAutoScroll,
         },
         {
-            label: T("S212"),
+            label: T("S219"),
             displayToggle: () => (
                 <span class="feather-icon-container">
                     {isAutoCorrect ? (
