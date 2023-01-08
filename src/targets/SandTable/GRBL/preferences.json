@@ -91,6 +91,139 @@
                 "label": "S190",
                 "value": true
             }
+        ],
+        "jog": [
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btn+X",
+                        "name": "btn+X",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btn-X",
+                        "name": "btn-X",
+                        "key": "ArrowLeft"
+                    },
+                    {
+                        "id": "btnHX",
+                        "name": "btnHX",
+                        "key": "X"
+                    },
+                    {
+                        "id": "btnZX",
+                        "name": "btnZX",
+                        "key": "1"
+                    },
+                    {
+                        "id": "btn+Y",
+                        "name": "btn+Y",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btn-Y",
+                        "name": "btn-Y",
+                        "key": "ArrowDown"
+                    },
+                    {
+                        "id": "btnHY",
+                        "name": "btnHY",
+                        "key": "Y"
+                    },
+                    {
+                        "id": "btnZY",
+                        "name": "btnZY",
+                        "key": "2"
+                    },
+                    {
+                        "id": "btn+Z",
+                        "name": "btn+Z",
+                        "key": "PageUp"
+                    },
+                    {
+                        "id": "btn-Z",
+                        "name": "btn-Z",
+                        "key": "PageDown"
+                    },
+                    {
+                        "id": "btnHZ",
+                        "name": "btnHZ",
+                        "key": "Z"
+                    },
+                    {
+                        "id": "btnZZ",
+                        "name": "btnZZ",
+                        "key": "3"
+                    },
+                    {
+                        "id": "btn+axis",
+                        "name": "btn+axis",
+                        "key": "/"
+                    },
+                    {
+                        "id": "btn-axis",
+                        "name": "btn-axis",
+                        "key": "*"
+                    },
+                    {
+                        "id": "btnHaxis",
+                        "name": "btnHaxis",
+                        "key": "A"
+                    },
+                    {
+                        "id": "btnZaxis",
+                        "name": "btnZaxis",
+                        "key": "4"
+                    },
+                    {
+                        "id": "btnHAll",
+                        "name": "btnHAll",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnZAll",
+                        "name": "btnZAll",
+                        "key": "0"
+                    },
+                    {
+                        "id": "btnaxisSel+",
+                        "name": "btnaxisSel+",
+                        "key": "Control+0"
+                    },
+                    {
+                        "id": "btnaxisSel-",
+                        "name": "btnaxisSel-",
+                        "key": "Control+0"
+                    },
+                    {
+                        "id": "btndistSel+",
+                        "name": "btndistSel+",
+                        "key": "+"
+                    },
+                    {
+                        "id": "btndistSel-",
+                        "name": "btndistSel-",
+                        "key": "-"
+                    },
+                    {
+                        "id": "btnStop",
+                        "name": "btnStop",
+                        "key": "Control+s"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
+            }
         ]
     }
 }

@@ -19,7 +19,14 @@
 
 import { h } from "preact"
 import { useRef, useState, useEffect } from "preact/hooks"
-import { Eye, EyeOff, Search, ChevronDown, HelpCircle } from "preact-feather"
+import {
+    Eye,
+    EyeOff,
+    Search,
+    ChevronDown,
+    HelpCircle,
+    XCircle,
+} from "preact-feather"
 import { ButtonImg } from "../../Controls"
 import { ScanApList } from "../ScanAp"
 import { T } from "./../../Translations"
@@ -62,6 +69,19 @@ const Reveal = ({ applyTo }) => {
     )
 }
 
+const ClearText = ({ setValue }) => {
+    const clickClear = () => {
+        useUiContextFn.haptic()
+        if (setValue) setValue("")
+    }
+    useEffect(() => {}, [])
+    return (
+        <div class="form-icon clearShortkey" onCLick={clickClear}>
+            <XCircle size="1rem" style="margin-top:0.15rem" />
+        </div>
+    )
+}
+
 const Input = ({
     label = "",
     type = "text",
@@ -78,6 +98,7 @@ const Input = ({
     button,
     disabled,
     prec,
+    shortkey,
     ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -90,7 +111,33 @@ const Input = ({
     const inputref = useRef()
     const appendtooltip = prec ? "tooltip tooltip-left" : ""
     const appendtooltipdata = prec ? T("S208").replace("$", prec) : ""
+
+    const onKeyPress = (e) => {
+        if (!shortkey) return
+        e.preventDefault()
+        let v = ""
+        let k = ""
+        if (
+            !(
+                e.key == "Control" ||
+                e.key == "Alt" ||
+                e.key == "Shift" ||
+                e.key == "Meta"
+            )
+        )
+            k = e.key.toUpperCase()
+
+        if (e.ctrlKey) v += "Control+"
+        if (e.altKey) v += "Alt+"
+        if (e.shiftKey) v += "Shift+"
+        if (e.metaKey) v += "Meta+"
+        e.target.value = v + k
+        if (setValue) {
+            setValue(e.target.value)
+        }
+    }
     const onInput = (e) => {
+        if (shortkey) return
         if (setValue) {
             setValue(e.target.value)
         }
@@ -126,6 +173,25 @@ const Input = ({
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [value])
+    if (shortkey) {
+        return (
+            <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
+                <input
+                    spellcheck="false"
+                    autocorrect="off"
+                    autocomplete="off"
+                    ref={inputref}
+                    class="form-input"
+                    {...props}
+                    placeholder=""
+                    {...rest}
+                    onInput={onInput}
+                    onKeyDown={onKeyPress}
+                />
+                <ClearText setValue={setValue} />
+            </div>
+        )
+    }
     if (type === "password")
         return (
             <div class={`has-icon-right ${inline ? "column" : ""}`} {...rest}>
