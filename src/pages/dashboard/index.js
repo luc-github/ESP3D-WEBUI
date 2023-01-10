@@ -45,7 +45,7 @@ const keyboardEventHandlerDown = (e) => {
     if (
         document.activeElement &&
         document.activeElement.tagName == "INPUT" &&
-        document.activeElement.type == "text"
+        (document.activeElement.type == "text" || document.activeElement.type == "number")
     ) {
         return
     }
@@ -73,7 +73,9 @@ const keyboardEventHandlerDown = (e) => {
                 element.value.forEach((sub) => {
                     if (
                         sub.name == "key" &&
-                        sub.value == keyval &&
+                        sub.value &&
+                        sub.value.length > 0 &&
+                        sub.value?.toUpperCase() == keyval?.toUpperCase() &&
                         document.getElementById(element.id)
                     ) {
                         cmdMatch = element.id
@@ -82,6 +84,9 @@ const keyboardEventHandlerDown = (e) => {
             })
         }
     })
+
+    //console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch)
+
     if (cmdMatch) {
         e.preventDefault()
         const autorepeat = useUiContextFn.getValue("enableautorepeat")
