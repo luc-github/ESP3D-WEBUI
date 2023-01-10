@@ -29,7 +29,9 @@ import { useTargetContext } from "../../targets"
 import { Menu as PanelMenu } from "./"
 
 let currentFeedRate = []
+let maxJogDistance = []
 let jogDistance = 100
+let defaultMaxJogDistance = 100
 let movetoX
 let movetoY
 let movetoZ
@@ -119,8 +121,15 @@ const JogPanel = () => {
         let feedrate = axis.startsWith("Z")
             ? currentFeedRate["zfeedrate"]
             : currentFeedRate["xyfeedrate"]
+        let cmdMaxJogDistance = axis.startsWith("Z")
+            ? maxJogDistance["z"]
+            : maxJogDistance["xy"]
+        if (!cmdMaxJogDistance) cmdMaxJogDistance = defaultMaxJogDistance
+        let cmdJogDistance = (jogDistance > cmdMaxJogDistance)
+            ? cmdMaxJogDistance
+            : jogDistance
         if (distance) movement = axis + distance
-        else movement = axis + jogDistance
+        else movement = axis + cmdJogDistance
         let cmd = "G91\nG1 " + movement + " F" + feedrate + "\nG90"
         if (id && currentButtonPressed != id) return
         SendCommand(cmd)
@@ -204,19 +213,8 @@ const JogPanel = () => {
                         value={value}
                         onInput={(e) => {
                             value = e.target.value.trim()
-                            if (value < 0.1) {
-                                if (document.getElementById("applyFrBtn")) {
-                                    document.getElementById(
-                                        "applyFrBtn"
-                                    ).disabled = true
-                                }
-                            } else {
-                                if (document.getElementById("applyFrBtn")) {
-                                    document.getElementById(
-                                        "applyFrBtn"
-                                    ).disabled = false
-                                }
-                            }
+                            let applyBtn = document.getElementById("applyFrBtn")
+                            if (applyBtn) applyBtn.disabled = (value < 0.1)  
                         }}
                     />
                 </Fragment>
@@ -236,12 +234,65 @@ const JogPanel = () => {
         setFeedrate("Z")
     }
 
+    //Set the current max jog distance for axis
+    const setMaxJogDistance = (axis) => {
+        let targetArr = maxJogDistance 
+        let value = targetArr[axis]
+        let titleText = axis == "xy" ? T("P113") : T("P114")
+        let minVal = 10;
+        let step = 1;
+        showModal({
+            modals,
+            title: titleText,
+            button2: { text: T("S28") },
+            button1: {
+                cb: () => {
+                    if (value.length > 0.1)
+                    targetArr[axis] = value
+                },
+                text: T("S43"),
+                id: "applyFrBtn",
+            },
+            icon: <Edit3 />,
+            id: "inputField",
+            content: (
+                <Fragment>
+                    <div>{titleText}</div>
+                    <input
+                        class="form-input"
+                        type="number"
+                        step={step}
+                        value={value}
+                        onInput={(e) => {
+                            value = e.target.value.trim()
+                            let applyBtn = document.getElementById("applyFrBtn")
+                            if (applyBtn) applyBtn.disabled = (value < minVal)
+                        }}
+                    />
+                </Fragment>
+            ),
+        })
+    }
+
+    const setMaxJogDistanceXY = (e) => {
+        useUiContextFn.haptic()
+        setMaxJogDistance("xy")
+    }
+
+    const setMaxJogDistanceZ = (e) => {
+        useUiContextFn.haptic()
+        setMaxJogDistance("z")
+    }
+
     useEffect(() => {
         if (!currentFeedRate["xyfeedrate"])
-            currentFeedRate["xyfeedrate"] =
-                useUiContextFn.getValue("xyfeedrate")
+            currentFeedRate["xyfeedrate"] = useUiContextFn.getValue("xyfeedrate")
         if (!currentFeedRate["zfeedrate"])
             currentFeedRate["zfeedrate"] = useUiContextFn.getValue("zfeedrate")
+        if (!maxJogDistance["xy"])
+            maxJogDistance["xy"] = useUiContextFn.getValue("xymaxjog")
+        if (!maxJogDistance["z"])
+            maxJogDistance["z"] = useUiContextFn.getValue("zmaxjog")
         if (typeof movetoX == "undefined")
             movetoX = useUiContextFn.getValue("xpos")
         if (typeof movetoY == "undefined")
@@ -261,6 +312,14 @@ const JogPanel = () => {
             label: T("P11"),
             onClick: setFeedrateZ,
         },
+        {
+            label: T("P113"),
+            onClick: setMaxJogDistanceXY,
+        },        
+        {
+            label: T("P114"),
+            onClick: setMaxJogDistanceZ,
+        }
     ]
     return (
         <div id={id} class="panel panel-dashboard">

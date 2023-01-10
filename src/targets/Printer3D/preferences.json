@@ -291,6 +291,22 @@
                 "value": "1000"
             },
             {
+                "id": "xymaxjog",
+                "type": "number",
+                "label": "P113",
+                "append": "P16",
+                "min": "10",
+                "value": "100"
+            },
+            {
+                "id": "zmaxjog",
+                "type": "number",
+                "label": "P114",
+                "append": "P16",
+                "min": "10",
+                "value": "100"
+            },
+            {
                 "id": "xpos",
                 "type": "number",
                 "label": "P65",

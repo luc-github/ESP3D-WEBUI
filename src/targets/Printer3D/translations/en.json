@@ -105,6 +105,8 @@
     "P110": "mins",
     "P111": "secs",
     "P112": "Left",
+    "P113": "XY max jog",
+    "P114": "Z max jog",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls panel",
