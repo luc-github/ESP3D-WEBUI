@@ -248,7 +248,7 @@ const JogPanel = () => {
             button1: {
                 cb: () => {
                     if (value.length > 0.1)
-                    targetArr[axis] = value
+                        targetArr[axis] = value
                 },
                 text: T("S43"),
                 id: "applyFrBtn",
@@ -495,7 +495,15 @@ const JogPanel = () => {
                                             onCheck(e, 100)
                                         }}
                                     />
-                                    <label for="move_100">100</label>
+                                    <label for="move_100"><span style="padding-left:2px;padding-right:2px;"
+                                        dangerouslySetInnerHTML={{
+                                            __html: 
+                                                ( maxJogDistance["xy"] == maxJogDistance["z"])
+                                                ? (maxJogDistance["xy"] ?? 100)
+                                                : ( maxJogDistance["xy"] + "<sub>xy</sub>&nbsp;" + 
+                                                    maxJogDistance["z"] + "<sub>z</sub>")
+                                        }}
+                                    ></span></label>
                                 </div>
                                 <div
                                     class="flatbtn tooltip tooltip-left"

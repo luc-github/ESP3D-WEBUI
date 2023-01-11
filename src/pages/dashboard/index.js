@@ -45,7 +45,7 @@ const keyboardEventHandlerDown = (e) => {
     if (
         document.activeElement &&
         document.activeElement.tagName == "INPUT" &&
-        document.activeElement.type == "text"
+        (document.activeElement.type == "text" || document.activeElement.type == "number")
     ) {
         return
     }
