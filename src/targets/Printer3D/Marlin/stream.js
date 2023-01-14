@@ -22,19 +22,16 @@ import { isTemperatures, isPositions } from "./filters"
 
 const isVerboseOnly = (type, data) => {
     const line = data.trim()
-    if (
-        isTemperatures(line) ||
+    return isTemperatures(line) ||
         isPositions(line) ||
-        line.trim().length == 0 ||
+        line.trim().length === 0 ||
         line.startsWith("echo:") ||
         line.startsWith("ok") ||
         line.startsWith("M105") ||
+        line.startsWith("M106") ||
         line.startsWith("M114") ||
         line.startsWith("FR:") ||
-        (line.startsWith("{") && line.endsWith("}"))
-    )
-        return true
-    else return false
+        (line.startsWith("{") && line.endsWith("}"));
 }
 
 export { isVerboseOnly }
