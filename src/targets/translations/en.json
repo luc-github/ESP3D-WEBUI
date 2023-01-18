@@ -376,5 +376,6 @@
     "serial port": "Serial port",
     "ssdp": "SSDP service",
     "usb-serial baud": "USB serial Baud rate",
-    "output": "Output connection"
+    "output": "Output connection",
+    "Total psram mem": "PSRAM memory"
 }
