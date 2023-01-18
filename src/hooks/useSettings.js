@@ -457,10 +457,11 @@ const useSettings = () => {
                     if (setLoading) {
                         setLoading(false)
                     }
-                    toasts.addToast({
-                        content: error + " preferences.json",
-                        type: "error",
-                    })
+                    if (error != "404 - Not Found")
+                        toasts.addToast({
+                            content: error + " preferences.json",
+                            type: "error",
+                        })
                     console.log("No valid preferences.json")
                     loadTheme()
                 },
