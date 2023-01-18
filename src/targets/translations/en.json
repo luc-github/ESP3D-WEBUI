@@ -371,5 +371,10 @@
     "SD updater": "SD updater",
     "setup": "Setup mode",
     "serial_bridge": "Serial Bridge",
-    "timeout": "Timeout, did not get response in time"
+    "timeout": "Timeout, did not get response in time",
+    "usb port": "USB port",
+    "serial port": "Serial port",
+    "ssdp": "SSDP service",
+    "usb-serial baud": "USB serial Baud rate",
+    "output": "Output connection"
 }
