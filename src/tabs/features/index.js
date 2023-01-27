@@ -167,11 +167,16 @@ const FeaturesTab = () => {
                                     content: T("S194"),
                                     type: "error",
                                 })
-                            else if (jsonResult.status == "error")
+                            else if (jsonResult.status == "error") {
+                                let content = T("S195")
+                                if (typeof jsonResult.data === "string") {
+                                    content += ": " + T(jsonResult.data)
+                                }
                                 toasts.addToast({
-                                    content: T("S195"),
+                                    content: content,
                                     type: "error",
                                 })
+                            }
                             return
                         }
                         entry.initial = entry.value
@@ -480,7 +485,8 @@ const FeaturesTab = () => {
                                                                             initial,
                                                                             prec,
                                                                             ...rest
-                                                                        } = fieldData
+                                                                        } =
+                                                                            fieldData
                                                                         const Options =
                                                                             options
                                                                                 ? options.reduce(
