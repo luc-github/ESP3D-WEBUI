@@ -10,7 +10,9 @@ there are 2
 
 ## Terminal websocket
 
-use subprotocol `webui-v3`
+subprotocol: `webui-v3`
+
+port: webport number + 1
 
 ### <u>text mode</u>
 
@@ -54,7 +56,8 @@ Reserved
 
 ## Data websocket
 
-use sub protocol `arduino`
+protocol: `arduino`
+port: configurable in settings
 
 ### <u>text mode</u>
 

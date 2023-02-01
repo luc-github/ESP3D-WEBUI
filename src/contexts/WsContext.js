@@ -210,9 +210,12 @@ const WsContextProvider = ({ children }) => {
             connectionSettings.current.WebCommunication === "Synchronous"
                 ? ""
                 : "/ws"
-
         wsConnection.current = new WebSocket(
-            `ws://${document.location.hostname}:${connectionSettings.current.WebSocketPort}${path}`,
+            `ws://${document.location.hostname}:${
+                document.location.port != ""
+                    ? parseInt(document.location.port) + 1
+                    : connectionSettings.current.WebSocketPort
+            }${path}`,
             `webui-v3`
         )
         wsConnection.current.binaryType = "arraybuffer"
