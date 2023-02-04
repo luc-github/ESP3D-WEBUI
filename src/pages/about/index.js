@@ -271,10 +271,16 @@ const About = () => {
     }
 
     const valueTranslated = (value) => {
-        if (value.startsWith("ON (")) {
-            return T(value).replace("ON (", T("ON") + " (")
-        } else if (value.startsWith("shared (")) {
-            return T(value).replace("shared (", T("shared") + " (")
+        if (
+            value.startsWith("ON (") ||
+            value.startsWith("OFF (") ||
+            value.startsWith("shared (")
+        ) {
+            const reg_search = /(?<label>[^\(]*)\s\((?<content>[^\)]*)/
+            let res = reg_search.exec(value)
+            if (res) {
+                return T(res.groups.label) + " (" + T(res.groups.content) + ")"
+            }
         }
 
         return T(value)
