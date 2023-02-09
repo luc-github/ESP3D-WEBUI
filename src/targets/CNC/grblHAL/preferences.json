@@ -70,7 +70,7 @@
                 "id": "filesfilter",
                 "type": "text",
                 "label": "S96",
-                "value": "g;G;gco;GCO;gcode;GCODE;nc;txt",
+                "value": "g;G;gco;GCO;gcode;GCODE;nc;txt;cnc;ngc",
                 "help": "S97"
             },
             {
