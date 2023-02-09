@@ -194,12 +194,12 @@ const useSettings = () => {
                     if (next) next()
                 },
                 onFail: (error) => {
-                    connection.setConnectionState({
-                        connected: false,
-                        authenticate: false,
-                        page: "error",
-                    })
                     if (!error.startsWith("401")) {
+                        connection.setConnectionState({
+                            connected: false,
+                            authenticate: false,
+                            page: "error",
+                        })
                         toasts.addToast({ content: error, type: "error" })
                         console.log("Error")
                     }
