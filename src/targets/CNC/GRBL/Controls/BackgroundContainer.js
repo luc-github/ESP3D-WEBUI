@@ -1,5 +1,5 @@
 /*
- Informations.js - ESP3D WebUI Target file
+ BackgroundContainer.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -19,14 +19,16 @@
 */
 import { Fragment, h } from "preact"
 import { useEffect } from "preact/hooks"
-import { useTargetContext } from "../.."
-import { useUiContext } from "../../../contexts"
-import { T } from "../../../components/Translations"
+import { useTargetContext } from "../../.."
+import { useUiContext } from "../../../../contexts"
+import { T } from "../../../../components/Translations"
 
 const BackgroundContainer = () => {
-    const { alarmCode, errorCode } = useTargetContext()
+    const { alarmCode, errorCode, status } = useTargetContext()
     const { toasts } = useUiContext()
     useEffect(() => {
+        console.log(status)
+
         if (alarmCode != 0 || errorCode != 0) {
             toasts.addToast({
                 type: "error",
@@ -35,7 +37,7 @@ const BackgroundContainer = () => {
                 ),
             })
         }
-    }, [alarmCode, errorCode])
+    }, [alarmCode, errorCode, status])
 
     return null
 }

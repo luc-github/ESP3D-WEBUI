@@ -1,5 +1,5 @@
 /*
- Informations.js - ESP3D WebUI Target file
+ BackgroundContainer.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
