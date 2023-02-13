@@ -166,7 +166,7 @@ const StatusPanel = () => {
                     cmd: "#CYCLESTART#",
                     icon: <Play />,
                     desc: T("CN61"),
-                    depend: ["Hold"],
+                    depend: ["Hold", "Tool"],
                 },
             ],
         },
