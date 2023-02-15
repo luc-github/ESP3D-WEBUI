@@ -419,6 +419,11 @@
                         "id": "btnEStop",
                         "name": "btnEStop",
                         "key": "Delete"
+                    },
+                    {
+                        "id" : "terminalClear",
+                        "name" : "terminalClear",
+                        "key" : "Control+DELETE"
                     }
                 ]
             }
