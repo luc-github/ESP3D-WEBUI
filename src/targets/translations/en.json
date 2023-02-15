@@ -237,6 +237,7 @@
     "btnMoveZ": "Move Z",
     "btnMotorOff": "Motors Off",
     "btnEStop": "Emergency Stop",
+    "terminalClear": "Clear Terminal",
     "move_100": "Jog distance 100mm",
     "move_10": "Jog distance 10mm",
     "move_1": "Jog distance 1mm",

@@ -85,7 +85,7 @@ const keyboardEventHandlerDown = (e) => {
         }
     })
 
-    //console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch)
+    console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch)
 
     if (cmdMatch) {
         e.preventDefault()

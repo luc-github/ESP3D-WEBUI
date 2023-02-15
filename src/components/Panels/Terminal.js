@@ -196,7 +196,7 @@ const TerminalPanel = () => {
         },
         { divider: true },
         {
-            label: T("S79"),
+            label: T("S79") ,
             onClick: (e) => {
                 useUiContextFn.haptic()
                 terminal.clear()
@@ -244,6 +244,9 @@ const TerminalPanel = () => {
                     icon={<Send />}
                     onClick={onSend}
                 />
+
+
+
             </div>
             <div
                 ref={terminalOutput}
@@ -291,6 +294,14 @@ const TerminalPanel = () => {
                     })}
                 <div ref={messagesEndRef} />
             </div>
+
+            <button style="display:none" 
+                id="terminalClear" 
+                name="terminalClear"
+                onClick={(e) => {
+                    terminal.clear();
+                }}
+                >Clear</button>
         </div>
     )
 }
