@@ -79,6 +79,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "royfocker19",
+      "name": "royfocker19",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39307144?v=4",
+      "profile": "https://github.com/royfocker19",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
