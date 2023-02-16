@@ -151,6 +151,17 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "aganov",
+      "name": "Alex Ganov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/176610?v=4",
+      "profile": "http://aganov.github.io",
+      "contributions": [
+        "ideas",
+        "code",
+        "mentoring"
+      ]
     }
   ],
   "contributorsPerLine": 7,
