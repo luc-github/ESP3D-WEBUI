@@ -106,6 +106,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "drzejkopf",
+      "name": "drzejkopf",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41212609?v=4",
+      "profile": "https://github.com/drzejkopf",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
