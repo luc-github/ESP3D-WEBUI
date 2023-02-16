@@ -32,6 +32,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Pavulon87",
+      "name": "Pavulon87",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23641103?v=4",
+      "profile": "https://github.com/Pavulon87",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
