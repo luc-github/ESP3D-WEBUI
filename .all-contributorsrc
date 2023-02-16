@@ -70,6 +70,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "duramson",
+      "name": "Cedrik Theesen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24916321?v=4",
+      "profile": "http://cedrik-theesen.de",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
