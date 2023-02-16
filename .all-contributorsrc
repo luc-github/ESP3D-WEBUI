@@ -162,6 +162,17 @@
         "code",
         "mentoring"
       ]
+    },
+    {
+      "login": "bdring",
+      "name": "bdring",
+      "avatar_url": "https://avatars.githubusercontent.com/u/189677?v=4",
+      "profile": "https://github.com/bdring",
+      "contributions": [
+        "financial",
+        "bug",
+        "platform"
+      ]
     }
   ],
   "contributorsPerLine": 7,
