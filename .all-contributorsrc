@@ -52,6 +52,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "cotepat",
+      "name": "Patrice Côté",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29361809?v=4",
+      "profile": "https://www.facebook.com/Patricecotemusique/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
