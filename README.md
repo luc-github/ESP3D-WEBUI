@@ -1,6 +1,6 @@
 # ESP3D-WEBUI [<img src="https://img.shields.io/liberapay/patrons/ESP3D.svg?logo=liberapay">](https://liberapay.com/ESP3D)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-27-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [Latest stable release ![Release Version](https://img.shields.io/github/v/release/luc-github/ESP3D-WEBUI?color=green&include_prereleases&style=plastic) ![Release Date](https://img.shields.io/github/release-date/luc-github/ESP3D-WEBUI.svg?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/releases/latest/) [![Travis (.org) branch](https://img.shields.io/travis/luc-github/ESP3D-WEBUI/2.1?style=plastic)](https://travis-ci.org/github/luc-github/ESP3D-WEBUI)   
@@ -147,6 +147,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Wesie"><img src="https://avatars.githubusercontent.com/u/9315139?v=4?s=100" width="100px;" alt="Wesie"/><br /><sub><b>Wesie</b></sub></a><br /><a href="#translation-Wesie" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DusDus"><img src="https://avatars.githubusercontent.com/u/69902032?v=4?s=100" width="100px;" alt="DusDus"/><br /><sub><b>DusDus</b></sub></a><br /><a href="#translation-DusDus" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nyarurato"><img src="https://avatars.githubusercontent.com/u/8384007?v=4?s=100" width="100px;" alt="nyarurato"/><br /><sub><b>nyarurato</b></sub></a><br /><a href="#translation-nyarurato" title="Translation">🌍</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/terjeio"><img src="https://avatars.githubusercontent.com/u/20260062?v=4?s=100" width="100px;" alt="Terje Io"/><br /><sub><b>Terje Io</b></sub></a><br /><a href="#ideas-terjeio" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/luc-github/ESP3D-WEBUI/commits?author=terjeio" title="Code">💻</a> <a href="#translation-terjeio" title="Translation">🌍</a></td>
     </tr>
   </tbody>
 </table>
