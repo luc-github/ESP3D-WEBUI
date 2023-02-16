@@ -256,6 +256,15 @@
         "code",
         "translation"
       ]
+    },
+    {
+      "login": "V1EngineeringInc",
+      "name": "Ryan V1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55478432?v=4",
+      "profile": "https://www.v1engineering.com/",
+      "contributions": [
+        "financial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
