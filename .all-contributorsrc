@@ -245,6 +245,17 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "terjeio",
+      "name": "Terje Io",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20260062?v=4",
+      "profile": "https://github.com/terjeio",
+      "contributions": [
+        "ideas",
+        "code",
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
