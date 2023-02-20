@@ -121,7 +121,7 @@ const ItemControl = ({
               (value[val].value.length != 0
                   ? " [" + value[val].value + "]"
                   : "")
-            : ""
+            : T(name)
 
     return (
         <Fragment>
