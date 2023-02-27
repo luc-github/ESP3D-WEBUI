@@ -33,16 +33,22 @@ const formatEepromLine = (acc, line) => {
     //it is comment
     if (line.startsWith("echo:")) {
         //it is setting
-        const data = line
+        let data = line
             .substring(
                 5,
                 line.indexOf(";") != -1 ? line.indexOf(";") : line.length
             )
             .trim()
-        const extra =
+        let extra =
             line.indexOf(";") != -1
                 ? line.substring(line.indexOf(";") + 1).trim()
                 : ""
+        const reg_test = /^[A-Z][0-9]/
+        if (data.length > 0 && !reg_test.test(data)) {
+            extra = data
+            data = ""
+        }
+
         if (extra.length > 0) acc.push({ type: "comment", value: extra })
         if (data.length > 0)
             acc.push({ type: "text", value: data, initial: data })
@@ -88,7 +94,7 @@ const responseSteps = {
         },
     },
     eeprom: {
-        start: (data) => data.startsWith("echo:;"),
+        start: (data) => data.startsWith("echo:;") || data.startsWith("echo: "),
         end: (data) => data.startsWith("ok"),
         error: (data) => {
             return (

@@ -373,29 +373,69 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
     if (url.indexOf("M503") != -1) {
-        SendWS(
-            "echo:; Linear Units:\n" +
-                "echo:  G21 ; (mm)\n" +
-                "echo:; Temperature Units:\n" +
-                "echo:  M149 C ; Units in Celsius\n" +
-                "echo:; Filament settings (Disabled):\n" +
-                "echo:  M200 S0 D1.75\n" +
-                "echo:; Steps per unit:\n" +
-                "echo:  M92 X80.00 Y80.00 Z400.00 E500.00\n" +
-                "echo:; Max feedrates (units/s):\n" +
-                "echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n" +
-                "echo:; Max Acceleration (units/s2):\n" +
-                "echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n" +
-                "echo:; Acceleration (units/s2) (P<print-accel> R<retract-accel> T<travel-accel>):\n" +
-                "echo:  M204 P3000.00 R3000.00 T3000.00\n" +
-                "echo:; Advanced (B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> J<junc_dev>):\n" +
-                "echo:  M205 B20000.00 S0.00 T0.00 J0.01\n" +
-                "echo:; Home offset:\n" +
-                "echo:  M206 X0.00 Y0.00 Z0.00\n" +
-                "echo:; Hotend PID:\n" +
-                "echo:  M301 P22.20 I1.08 D114.00\n" +
-                "ok\n"
-        )
+        let Marlin = 1
+        if (Marlin == 1)
+            SendWS(
+                "echo: G21 ; Units in mm (mm)\n" +
+                    "echo:Filament settings: Disabled\n" +
+                    "echo: M200 D1.75\n" +
+                    "echo: M200 D0\n" +
+                    "echo:Steps per unit:\n" +
+                    "echo: M92 X80.00 Y80.00 Z400.00 E93.00\n" +
+                    "echo:Maximum feedrates (units/s):\n" +
+                    "echo: M203 X500.00 Y500.00 Z5.00 E25.00\n" +
+                    "echo:Maximum Acceleration (units/s2):\n" +
+                    "echo: M201 X500.00 Y500.00 Z100.00 E1000.00\n" +
+                    "echo:Acceleration (units/s2): P<print_accel> R<retract_accel> T<travel_accel>\n" +
+                    "echo: M204 P500.00 R1000.00 T1000.00\n" +
+                    "echo:Advanced: B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> X<max_x_jerk> Y<max_y_jerk> Z<max_z_jerk> E<max_e_jerk>\n" +
+                    "echo: M205 B20000.00 S0.00 T0.00 X10.00 Y10.00 Z0.30 E5.00\n" +
+                    "echo:Home offset:\n" +
+                    "echo: M206 X0.00 Y0.00 Z0.00\n" +
+                    "echo:Auto Bed Leveling:\n" +
+                    "echo: M420 S0 Z0.00\n" +
+                    "echo: G29 W I0 J0 Z0.35250\n" +
+                    "echo: G29 W I1 J0 Z0.15350\n" +
+                    "echo: G29 W I2 J0 Z0.10850\n" +
+                    "echo: G29 W I0 J1 Z0.08750\n" +
+                    "echo: G29 W I1 J1 Z-0.00100\n" +
+                    "echo: G29 W I2 J1 Z0.02350\n" +
+                    "echo: G29 W I0 J2 Z-0.09000\n" +
+                    "echo: G29 W I1 J2 Z-0.19850\n" +
+                    "echo: G29 W I2 J2 Z-0.16250\n" +
+                    "echo:PID settings:\n" +
+                    "echo: M301 P28.72 I2.62 D78.81\n" +
+                    "echo: M304 P462.10 I85.47 D624.59\n" +
+                    "echo:Power-Loss Recovery:\n" +
+                    "echo: M413 S1\n" +
+                    "echo:Z-Probe Offset (mm):\n" +
+                    "echo: M851 X-45.00 Y-20.00 Z-2.98\n" +
+                    "ok\n"
+            )
+        if (Marlin == 2)
+            SendWS(
+                "echo:; Linear Units:\n" +
+                    "echo:  G21 ; (mm)\n" +
+                    "echo:; Temperature Units:\n" +
+                    "echo:  M149 C ; Units in Celsius\n" +
+                    "echo:; Filament settings (Disabled):\n" +
+                    "echo:  M200 S0 D1.75\n" +
+                    "echo:; Steps per unit:\n" +
+                    "echo:  M92 X80.00 Y80.00 Z400.00 E500.00\n" +
+                    "echo:; Max feedrates (units/s):\n" +
+                    "echo:  M203 X300.00 Y300.00 Z5.00 E25.00\n" +
+                    "echo:; Max Acceleration (units/s2):\n" +
+                    "echo:  M201 X3000.00 Y3000.00 Z100.00 E10000.00\n" +
+                    "echo:; Acceleration (units/s2) (P<print-accel> R<retract-accel> T<travel-accel>):\n" +
+                    "echo:  M204 P3000.00 R3000.00 T3000.00\n" +
+                    "echo:; Advanced (B<min_segment_time_us> S<min_feedrate> T<min_travel_feedrate> J<junc_dev>):\n" +
+                    "echo:  M205 B20000.00 S0.00 T0.00 J0.01\n" +
+                    "echo:; Home offset:\n" +
+                    "echo:  M206 X0.00 Y0.00 Z0.00\n" +
+                    "echo:; Hotend PID:\n" +
+                    "echo:  M301 P22.20 I1.08 D114.00\n" +
+                    "ok\n"
+            )
         res.send("")
         return
     }
