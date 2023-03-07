@@ -499,7 +499,6 @@ const JogPanel = () => {
                 {!shortcuts.enabled && (
                     <div class="hide-low jog-svg-container">
                         <svg
-                            width="250px"
                             viewBox="0 -5 325 255"
                             xmlns="http://www.w3.org/2000/svg"
                             version="1.1"
