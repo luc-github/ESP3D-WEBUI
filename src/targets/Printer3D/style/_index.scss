@@ -266,6 +266,11 @@ path.std:hover {
   align-items: center;
   min-width: 330px;
 }
+.jog-svg-container svg{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 .temperature-extra-buttons-container,
 .jog-extra-buttons-container {
