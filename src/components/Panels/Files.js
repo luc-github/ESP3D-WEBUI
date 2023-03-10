@@ -398,7 +398,8 @@ const FilesPanel = () => {
             currentFS,
             element.size == -1 ? "deletedir" : "delete",
             currentPath[currentFS],
-            element.name
+            element.name,
+            element.hasOwnProperty('dosname') ? element.dosname : element.name
         )
         if (cmd.type == "url") {
             sendURLCmd(cmd)
@@ -410,7 +411,8 @@ const FilesPanel = () => {
                     currentFS,
                     "delete",
                     processFeedback,
-                    element.name
+                    element.name,
+                    element.hasOwnProperty('dosname') ? element.dosname : element.name
                 )
             ) {
                 setIsLoading(true)
@@ -828,7 +830,8 @@ const FilesPanel = () => {
                                                                         currentPath[
                                                                             currentFS
                                                                         ],
-                                                                        line.name
+                                                                        line.name,
+                                                                        line.hasOwnProperty('dosname') ? line.dosname : line.name
                                                                     )
                                                                 sendSerialCmd(
                                                                     cmd.cmd

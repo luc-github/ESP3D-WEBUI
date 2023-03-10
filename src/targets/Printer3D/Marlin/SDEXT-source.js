@@ -44,6 +44,7 @@ const formatFileSerialLine = (lines) => {
                 ...acc,
                 {
                     name: pathAlt || path,
+                    dosname: path,
                     size: formatFileSizeToString(sizeAlt || size),
                 },
             ]
@@ -124,16 +125,16 @@ const commands = {
         res.status = formatStatus(data.status)
         return res
     },
-    play: (path, filename) => {
+    play: (path, filename, dosname) => {
         return {
             type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            cmd: "M23 " + path + (path == "/" ? "" : "/") + dosname + "\nM24",
         }
     },
-    delete: (path, filename) => {
+    delete: (path, filename, dosname) => {
         return {
             type: "cmd",
-            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
+            cmd: "M30 " + path + (path == "/" ? "" : "/") + dosname,
         }
     },
 }

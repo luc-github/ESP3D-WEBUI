@@ -167,7 +167,7 @@ const commands = {
         res.status = formatStatus(data.status)
         return res
     },
-    play: (path, filename) => {
+    play: (path, filename, dosname) => {
         if (useSettingsContextFn.getValue("SerialProtocol") != "MKS") {
             return {
                 type: "cmd",
