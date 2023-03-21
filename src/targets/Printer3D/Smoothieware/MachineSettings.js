@@ -215,24 +215,26 @@ const MachineSettings = () => {
 
     const processFeedback = (feedback) => {
         if (feedback.status) {
-            if (feedback.command == "config") {
-                machineSettings.cache = CMD.command(
-                    "formatConfig",
-                    feedback.content
-                )
-            }
-            if (feedback.command == "override") {
-                machineSettings.override = CMD.command(
-                    "formatOverride",
-                    feedback.content
-                )
-            }
             if (feedback.status == "error") {
                 console.log("got error")
                 toasts.addToast({
-                    content: T("S4"),
+                    content: feedback.content
+                        ? `${T("S22")}:${T(feedback.content)}`
+                        : T("S4"),
                     type: "error",
                 })
+            } else {
+                if (feedback.command == "config") {
+                    machineSettings.cache = CMD.command(
+                        "formatConfig",
+                        feedback.content
+                    )
+                } else if (feedback.command == "override") {
+                    machineSettings.override = CMD.command(
+                        "formatOverride",
+                        feedback.content
+                    )
+                }
             }
         }
         setIsLoading(false)
@@ -302,7 +304,7 @@ const MachineSettings = () => {
                 processCallBack
             )
         ) {
-            setCollected("O B")
+            setCollected("0 B")
             setIsLoading(true)
             sendSerialCmd(refreshContext.command.cmd)
         }
@@ -347,8 +349,12 @@ const MachineSettings = () => {
     }
     useEffect(() => {
         if (uisettings.getValue("autoload") && machineSettings.cache == "") {
-            //load settings
-            onRefresh()
+            setIsLoading(true)
+            //do not call onRefresh directly as  WebSocket may still be connecting or just connected
+            // and we may have a race issue, the command go but does not have answer catched
+            setTimeout(() => {
+                onRefresh()
+            }, 1000)
         }
     }, [])
 
@@ -400,7 +406,7 @@ const MachineSettings = () => {
                                         setShowSave(checkSaveStatus())
                                     }}
                                 />
-                                <i class="form-icon"></i>{" "}
+                                <i class="form-icon"></i>
                                 {uisettings.getValue("configfilename")}
                             </label>
                             <label class="form-radio form-inline">

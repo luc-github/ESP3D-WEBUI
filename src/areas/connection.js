@@ -81,7 +81,7 @@ const ConnectionContainer = () => {
                         ? connectionSettings.current.Hostname
                         : "ESP3D") +
                     "(" +
-                    T("S22") +
+                    T("S145") +
                     ")"
                 contentAction = (
                     <button class="btn" onClick={onclick}>

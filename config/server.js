@@ -43,7 +43,7 @@ const {
 ))
 
 const WebSocketServer = require("ws").Server,
-    wss = new WebSocketServer({ port: 81 })
+    wss = new WebSocketServer({ port: 8089 })
 app.use("/", express.static(serverpath + "Flash"))
 app.use("/sd", express.static(serverpath + "sd"))
 app.use("/", expressStaticGzip(serverpath + "Flash"))

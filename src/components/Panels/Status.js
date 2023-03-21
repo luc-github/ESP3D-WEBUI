@@ -27,22 +27,26 @@ import { espHttpURL } from "../Helpers"
 
 const TimeControl = ({ label, time }) => {
     if (!time) return null
+    time.day = time.day ? time.day.toString() : "0"
+    time.hour = time.hour ? time.hour.toString() : "0"
+    time.min = time.min ? time.min.toString() : "0"
+    time.sec = time.sec ? time.sec.toString() : "0"
     return (
         <div class="extra-control-value flex-row-between">
             <div class="m-1">{T(label)}:</div>
-            {time.day && time.day > 0 && (
+            {time.day != "0" && (
                 <div class="m-1">
                     {time.day}
                     {T("P108")}
                 </div>
             )}
-            {((time.day && time.day > 0) || time.hour > 0) && (
+            {(time.day != "0" || time.hour != "0") && (
                 <div class="m-1">
                     {time.hour}
                     {T("P109")}
                 </div>
             )}
-            {((time.day && time.day > 0) || time.hour > 0 || time.min > 0) && (
+            {(time.day != "0" || time.hour != "0" || time.min != "0") && (
                 <div class="m-1">
                     {time.min}
                     {T("P110")}
@@ -276,6 +280,7 @@ const StatusPanelElement = {
     icon: "Layers",
     show: "showstatuspanel",
     onstart: "openstatusonstart",
+    settingid: "status",
 }
 
 export { StatusPanel, StatusPanelElement, StatusControls }

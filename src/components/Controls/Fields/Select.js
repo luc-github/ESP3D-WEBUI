@@ -26,8 +26,16 @@ import {
     settingsDepend,
 } from "../../Helpers"
 
-const Option = ({ label, ...props }) => {
-    const { connectionSettings } = useSettingsContext()
+const Option = ({ label, depend, ...props }) => {
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    if (depend) {
+        const canshow = connectionDepend(depend, connectionSettings.current)
+        const canshow2 = settingsDepend(
+            depend,
+            interfaceSettings.current.settings
+        )
+        if (!canshow || !canshow2) return null
+    }
     //Condition for camera - no need to display if none setup
     if (props.value == "camera") {
         if (connectionSettings.current.CameraName) {
@@ -52,7 +60,6 @@ const Select = ({
     button,
     ...rest
 }) => {
-    const optionList = options.map((option) => <Option {...option} />)
     const props = {
         id,
         name: id,
@@ -66,18 +73,32 @@ const Select = ({
         depend,
         interfaceSettings.current.settings
     )
-
+    const optionList = options.map((option) => {
+        return <Option {...option} />
+    })
     const canshow = connectionDepend(depend, connectionSettings.current)
-
+    options.map((option) => {
+        if (option.depend) {
+            const deps = generateDependIds(
+                option.depend,
+                interfaceSettings.current.settings
+            )
+            dependIds.push(...deps)
+        }
+    })
     useEffect(() => {
         let visible =
             canshow &&
             settingsDepend(depend, interfaceSettings.current.settings)
-        document.getElementById(id).style.display = visible ? "block" : "none"
+        if (document.getElementById(id))
+            document.getElementById(id).style.display = visible
+                ? "block"
+                : "none"
         if (document.getElementById("group-" + id))
             document.getElementById("group-" + id).style.display = visible
                 ? "block"
                 : "none"
+        if (setValue) setValue(null, true)
     }, [...dependIds])
 
     useEffect(() => {

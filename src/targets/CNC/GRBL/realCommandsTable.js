@@ -19,6 +19,9 @@ import { h } from "preact"
 
 const realCommandsTable = [
     { name: "#SOFTRESET#", value: "\x18", notprintable: true },
+    { name: "#STATUSREPORT#", value: "?", notprintable: false },
+    { name: "#CYCLESTART#", value: "~", notprintable: false },
+    { name: "#FEEDHOLD#", value: "!", notprintable: false },
     { name: "#SAFETYDOOR#", value: "\x84", notprintable: true },
     { name: "#JOGCANCEL#", value: "\x85", notprintable: true },
     { name: "#FO100#", value: "\x90", notprintable: true },

@@ -26,13 +26,21 @@ import {
     isLimitedEnvironment,
 } from "../components/Helpers"
 import { useHttpQueue } from "../hooks/"
-import { useUiContext, useRouterContext } from "../contexts"
+import {
+    useUiContext,
+    useRouterContext,
+    useSettingsContextFn,
+} from "../contexts"
 import {
     baseLangRessource,
     setCurrentLanguage,
     T,
 } from "../components/Translations"
-import { defaultPreferences, useTargetContextFn } from "../targets"
+import {
+    defaultPreferences,
+    useTargetContextFn,
+    variablesList,
+} from "../targets"
 import {
     importPreferences,
     formatPreferences,
@@ -51,6 +59,34 @@ const useSettings = () => {
     const { interfaceSettings, connectionSettings, activity } =
         useSettingsContext()
     const { defaultRoute, setActiveRoute } = useRouterContext()
+    const sendCommand = (cmd, id) => {
+        createNewRequest(
+            espHttpURL("command", {
+                cmd,
+            }).toString(),
+            {
+                method: "GET",
+                id: id,
+                max: 1,
+            },
+            {
+                onSuccess: (result) => {
+                    if (
+                        cmd.startsWith("[ESP") &&
+                        !result.startsWith("ESP3D says:")
+                    ) {
+                        processData("response", result, result.startsWith("{"))
+                    }
+                },
+                onFail: (error) => {
+                    toasts.addToast({
+                        content: error,
+                        type: "error",
+                    })
+                },
+            }
+        )
+    }
     const getConnectionSettings = (next) => {
         createNewRequest(
             espHttpURL("command", {
@@ -66,6 +102,7 @@ const useSettings = () => {
                         !jsonResult.data
                     ) {
                         toasts.addToast({ content: T("S194"), type: "error" })
+
                         connection.setConnectionState({
                             connected: false,
                             authenticate: false,
@@ -74,9 +111,50 @@ const useSettings = () => {
                         })
                         return
                     }
-
                     connectionSettings.current = jsonResult.data
+                    processData("core", "ESP800", true)
+
                     document.title = connectionSettings.current.Hostname
+                    if (
+                        !connectionSettings.current.HostPath ||
+                        !connectionSettings.current.HostPath.length
+                    ) {
+                        connectionSettings.current.HostPath = "/"
+                    }
+
+                    if (!connectionSettings.current.HostPath.endsWith("/")) {
+                        connectionSettings.current.HostPath =
+                            connectionSettings.current.HostPath.concat("/")
+                    }
+                    if (connectionSettings.current.FlashFileSystem == "none") {
+                        // no flash filesystem so host path is on SD card
+                        connectionSettings.current.HostTarget = "sdfiles"
+                        connectionSettings.current.HostUploadPath =
+                            connectionSettings.current.HostPath
+                        connectionSettings.current.HostDownloadPath =
+                            connectionSettings.current.HostPath
+                    } else {
+                        //Flashs is supported but stil can use sd card to host files
+                        if (
+                            connectionSettings.current.HostPath.startsWith(
+                                "/sd/"
+                            ) &&
+                            connectionSettings.current.SDConnection != "none"
+                        ) {
+                            connectionSettings.current.HostTarget = "sdfiles"
+                            connectionSettings.current.HostUploadPath =
+                                connectionSettings.current.HostPath.substring(3)
+                            connectionSettings.current.HostDownloadPath =
+                                connectionSettings.current.HostPath
+                        } else {
+                            //Flash filesystem is supported and host files are on flash filesystem
+                            connectionSettings.current.HostTarget = "files"
+                            connectionSettings.current.HostUploadPath =
+                                connectionSettings.current.HostPath
+                            connectionSettings.current.HostDownloadPath =
+                                connectionSettings.current.HostPath
+                        }
+                    }
 
                     if (
                         isLimitedEnvironment(
@@ -106,12 +184,6 @@ const useSettings = () => {
                         return
                     }
 
-                    //SetupWs
-                    connection.setConnectionState({
-                        connected: true,
-                        authenticate: true,
-                        page: "connecting",
-                    })
                     if (jsonResult.FWTarget == 0) {
                         setActiveRoute("/settings")
                         defaultRoute.current = "/settings"
@@ -119,14 +191,15 @@ const useSettings = () => {
                         setActiveRoute("/dashboard")
                         defaultRoute.current = "/dashboard"
                     }
+                    if (next) next()
                 },
                 onFail: (error) => {
-                    connection.setConnectionState({
-                        connected: false,
-                        authenticate: false,
-                        page: "error",
-                    })
                     if (!error.startsWith("401")) {
+                        connection.setConnectionState({
+                            connected: false,
+                            authenticate: false,
+                            page: "error",
+                        })
                         toasts.addToast({ content: error, type: "error" })
                         console.log("Error")
                     }
@@ -137,12 +210,34 @@ const useSettings = () => {
 
     const getInterfaceSettings = (setLoading, next) => {
         interfaceSettings.current = { ...defaultPreferences }
+        const finalizeDisplay = () => {
+            //SetupWs
+            connection.setConnectionState({
+                connected: true,
+                authenticate: true,
+                page: "connecting",
+            })
+            document.title = connectionSettings.current.Hostname
+        }
         function loadTheme(themepack) {
+            if (!themepack) {
+                if (next) next()
+                if (setLoading) {
+                    setLoading(false)
+                }
+                finalizeDisplay()
+                return
+            }
             const elem = document.getElementById("themestyle")
             if (elem) elem.parentNode.removeChild(elem)
+
             if (themepack != "default") {
+                console.log("Loading theme: " + themepack)
                 createNewRequest(
-                    espHttpURL(themepack),
+                    espHttpURL(
+                        useSettingsContextFn.getValue("HostDownloadPath") +
+                            themepack
+                    ),
                     { method: "GET" },
                     {
                         onSuccess: (result) => {
@@ -155,12 +250,14 @@ const useSettings = () => {
                             if (setLoading) {
                                 setLoading(false)
                             }
+                            finalizeDisplay()
                         },
                         onFail: (error) => {
                             if (next) next()
                             if (setLoading) {
                                 setLoading(false)
                             }
+                            finalizeDisplay()
                             console.log("error")
                             toasts.addToast({
                                 content: error + " " + themepack,
@@ -176,10 +273,14 @@ const useSettings = () => {
                 if (setLoading) {
                     setLoading(false)
                 }
+                finalizeDisplay()
             }
         }
         createNewRequest(
-            espHttpURL("preferences.json"),
+            espHttpURL(
+                useSettingsContextFn.getValue("HostDownloadPath") +
+                    "preferences.json"
+            ),
             { method: "GET" },
             {
                 onSuccess: (result) => {
@@ -205,63 +306,89 @@ const useSettings = () => {
                         console.log("error")
                     }
                     interfaceSettings.current = preferences
-                    //to force refresh of full UI
-                    /*connection.setConnectionState({
-            connected: connection.connectionState.connected,
-            authenticate: connection.connectionState.authenticate,
-            page: connection.connectionState.page,
-            updating: true,
-          });*/
-                    //polling commands
 
-                    activity.startPolling(() => {
-                        const cmdsString = uisettings
-                            .getValue("pollingcommands", preferences.settings)
-                            .trim()
-                        if (cmdsString.length > 0) {
-                            let cmdsList = cmdsString.split(";")
-                            let index = 0
-                            for (let cmd of cmdsList) {
-                                const idpolling = "polling" + index
-                                cmd = cmd.trim()
-                                if (cmd.length > 0) {
-                                    createNewRequest(
-                                        espHttpURL("command", {
-                                            cmd,
-                                        }).toString(),
-                                        {
-                                            method: "GET",
-                                            id: idpolling,
-                                            max: 1,
-                                        },
-                                        {
-                                            onSuccess: (result) => {
-                                                if (
-                                                    cmd.startsWith("[ESP") &&
-                                                    !result.startsWith(
-                                                        "ESP3D says:"
-                                                    )
-                                                ) {
-                                                    processData(
-                                                        "response",
-                                                        result,
-                                                        result.startsWith("{")
-                                                    )
-                                                }
-                                            },
-                                            onFail: (error) => {
-                                                toasts.addToast({
-                                                    content: error,
-                                                    type: "error",
-                                                })
-                                            },
+                    //polling commands
+                    if (
+                        uisettings.getValue(
+                            "enablepolling",
+                            preferences.settings
+                        )
+                    ) {
+                        const pollingList = uisettings.getValue(
+                            "pollingcmds",
+                            preferences.settings
+                        )
+                        if (Array.isArray(pollingList)) {
+                            pollingList.forEach((cmdEntry) => {
+                                const cmds = cmdEntry.value
+                                    .find((item) => item.name == "cmds")
+                                    .value.trim()
+                                    .split(";")
+                                const refreshtime = parseInt(
+                                    cmdEntry.value.find(
+                                        (item) => item.name == "refreshtime"
+                                    ).value
+                                )
+                                //Send commands at start
+                                if (cmds.length > 0) {
+                                    cmds.forEach((cmd, index) => {
+                                        if (cmd.trim().length > 0) {
+                                            if (
+                                                typeof variablesList.formatCommand !==
+                                                "undefined"
+                                            ) {
+                                                sendCommand(
+                                                    variablesList.formatCommand(
+                                                        cmd
+                                                    ),
+                                                    cmdEntry.id + "-" + index
+                                                )
+                                            } else {
+                                                sendCommand(
+                                                    cmd,
+                                                    cmdEntry.id + "-" + index
+                                                )
+                                            }
                                         }
-                                    )
+                                    })
                                 }
-                                index++
-                            }
+                                if (refreshtime != 0) {
+                                    if (cmds.length > 0) {
+                                        activity.startPolling(
+                                            cmdEntry.id,
+                                            refreshtime,
+                                            () => {
+                                                cmds.forEach((cmd, index) => {
+                                                    if (cmd.trim().length > 0) {
+                                                        if (
+                                                            typeof variablesList.formatCommand !==
+                                                            "undefined"
+                                                        ) {
+                                                            sendCommand(
+                                                                variablesList.formatCommand(
+                                                                    cmd
+                                                                ),
+                                                                cmdEntry.id +
+                                                                    "-" +
+                                                                    index
+                                                            )
+                                                        } else {
+                                                            sendCommand(
+                                                                cmd,
+                                                                cmdEntry.id +
+                                                                    "-" +
+                                                                    index
+                                                            )
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        )
+                                    }
+                                }
+                            })
                         }
-                    }, preferences.settings)
+                    }
 
                     //Mobile view
                     if (uisettings.getValue("mobileview", preferences.settings))
@@ -293,7 +420,11 @@ const useSettings = () => {
                             setLoading(false)
                         }
                         createNewRequest(
-                            espHttpURL(languagepack),
+                            espHttpURL(
+                                useSettingsContextFn.getValue(
+                                    "HostDownloadPath"
+                                ) + languagepack
+                            ),
                             { method: "GET" },
                             {
                                 onSuccess: (result) => {
@@ -326,10 +457,11 @@ const useSettings = () => {
                     if (setLoading) {
                         setLoading(false)
                     }
-                    toasts.addToast({
-                        content: error + " preferences.json",
-                        type: "error",
-                    })
+                    if (error != "404 - Not Found")
+                        toasts.addToast({
+                            content: error + " preferences.json",
+                            type: "error",
+                        })
                     console.log("No valid preferences.json")
                     loadTheme()
                 },

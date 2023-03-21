@@ -69,6 +69,7 @@ const MacrosPanel = () => {
             accumulator[current.name] = current.initial
             return accumulator
         }, {})
+        item.id = curr.id
         acc.push(item)
         return acc
     }, [])
@@ -157,6 +158,7 @@ const MacrosPanel = () => {
                             : ""
                         return (
                             <ButtonImg
+                                id={element.id}
                                 m1
                                 label={element.name}
                                 icon={displayIcon}
@@ -181,6 +183,7 @@ const MacrosPanelElement = {
     icon: "Cast",
     show: "showmacrospanel",
     onstart: "openmacrosonstart",
+    settingid: "macros",
 }
 
 export { MacrosPanel, MacrosPanelElement }

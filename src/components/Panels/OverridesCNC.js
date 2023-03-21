@@ -248,6 +248,7 @@ const OverridesPanelElement = {
     icon: "Repeat",
     show: "showoverridespanel",
     onstart: "openoverridesonstart",
+    settingid: "overrides",
 }
 
 export { OverridesPanel, OverridesPanelElement, OverridesControls }

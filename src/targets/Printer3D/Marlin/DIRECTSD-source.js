@@ -86,11 +86,20 @@ const commands = {
             args: { path, action: "delete", filename },
         }
     },
+    needFormatFileName: (path, filename) => {
+        return {
+            name: filename.replaceAll(" ", "_"),
+        }
+    },
     createdir: (path, filename) => {
         return {
             type: "url",
             url: "sdfiles",
-            args: { path, action: "createdir", filename },
+            args: {
+                path,
+                action: "createdir",
+                filename: filename.replaceAll(" ", "_"),
+            },
         }
     },
     download: (path, filename) => {

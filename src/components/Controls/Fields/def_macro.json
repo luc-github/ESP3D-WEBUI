@@ -1,7 +1,8 @@
 {
-  "id": "id",
-  "name": "Macro",
-  "icon": "Meh",
-  "action": "",
-  "type": "FS"
- }
+    "id": "id",
+    "name": "Macro",
+    "icon": "Meh",
+    "action": "",
+    "type": "FS",
+    "key": ""
+}

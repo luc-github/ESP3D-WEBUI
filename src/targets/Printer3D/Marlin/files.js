@@ -24,7 +24,7 @@ import { SD } from "./SD-source"
 import { SDEXT } from "./SDEXT-source"
 import { TFTSD } from "./TFT-SD-source"
 import { TFTUSB } from "./TFT-USB-source"
-import { useSettingsContext, useUiContextFn } from "../../../contexts"
+import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -32,17 +32,19 @@ const supportedFileSystems = [
         value: "FLASH",
         name: "S137",
         depend: () => {
-            return useUiContextFn.getValue("showfilespanel")
+            return (
+                useUiContextFn.getValue("flashfs") &&
+                useSettingsContextFn.getValue("FlashFileSystem") != "none"
+            )
         },
     },
     {
         value: "SD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
                 useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection == "none"
+                useSettingsContextFn.getValue("SDConnection") == "none"
             )
         },
     },
@@ -50,10 +52,9 @@ const supportedFileSystems = [
         value: "DIRECTSD",
         name: "S190",
         depend: () => {
-            const { connectionSettings } = useSettingsContext()
             return (
                 useUiContextFn.getValue("sd") &&
-                connectionSettings.current.SDConnection != "none"
+                useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
     },
@@ -103,9 +104,10 @@ const commands = {
 
 function capability() {
     const [filesystem, cap, ...rest] = arguments
+    if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknow capability ", cmd, " for ", filesystem)
+    //console.log("Unknow capability ", cap, " for ", filesystem)
     return false
 }
 
@@ -113,7 +115,7 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknow command ", cmd, " for ", filesystem)
+    //console.log("Unknow command ", cmd, " for ", filesystem)
     return { type: "error" }
 }
 

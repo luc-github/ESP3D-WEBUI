@@ -34,6 +34,16 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
             newItem.initial = itemData[key]
             if (index == -1) newItem.newItem = true
             switch (key) {
+                case "cmds":
+                    newItem.type = "text"
+                    newItem.label = "S115"
+                    newItem.help = "S97"
+                    break
+                case "key":
+                    newItem.type = "text"
+                    newItem.label = "key"
+                    newItem.shortkey = true
+                    break
                 case "name":
                     newItem.type = "text"
                     newItem.label = "S129"
@@ -55,8 +65,55 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S135"
                     if (origineId == "macros") {
                         newItem.options = [
-                            { label: "S137", value: "FS" },
-                            { label: "S138", value: "SD" },
+                            {
+                                label: "S137",
+                                value: "FS",
+                                depend: [
+                                    {
+                                        id: "flashfs",
+                                        value: true,
+                                    },
+
+                                    {
+                                        connection_id: "FlashFileSystem",
+                                        value: "!='none'",
+                                    },
+                                ],
+                            },
+                            {
+                                label: "S138",
+                                value: "SD",
+                                depend: [
+                                    {
+                                        ids: [
+                                            {
+                                                id: "sd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "directsd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "ext",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "directsd",
+                                                value: true,
+                                            },
+                                            {
+                                                id: "tftsd",
+                                                value: true,
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        connection_id: "SDConnection",
+                                        value: "!='none'",
+                                    },
+                                ],
+                            },
                             { label: "S139", value: "URI" },
                             { label: "S140", value: "CMD" },
                         ]
@@ -68,7 +125,6 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                             { label: "S162", value: "camera" },
                         ]
                     }
-
                     break
                 case "target":
                     newItem.type = "select"
@@ -86,7 +142,7 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                 case "action":
                     newItem.type = "text"
                     newItem.label = "S159"
-                    newItem.min = "2"
+                    newItem.min = "1"
                     break
                 default:
                     newItem.type = "text"

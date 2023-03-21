@@ -21,7 +21,7 @@ TabNar.js - ESP3D WebUI Tabs bar file
 import { h } from "preact"
 import { Link } from "../Router"
 import { T } from "../Translations"
-import { AppLogo, WebUILogo, Target } from "../../targets"
+import { AppLogo, WebUILogo, variablesList, Target } from "../../targets"
 import {
     useSettingsContext,
     useUiContext,
@@ -57,6 +57,11 @@ const TabBar = () => {
                     if (
                         href == "/settings/machine" &&
                         !uisettings.getValue("showmachinesettings")
+                    )
+                        return
+                    if (
+                        variablesList.hideFeatures &&
+                        href == "/settings/features"
                     )
                         return
                     return (

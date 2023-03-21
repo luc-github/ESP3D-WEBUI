@@ -38,7 +38,9 @@ const ButtonImg = ({
     if (!icon) showlow = true
     return (
         <Button
-            class={`feather-icon-container ${className ? className : ""}`}
+            class={` ${icon ? "feather-icon-container" : ""} ${
+                className ? className : ""
+            }`}
             {...rest}
             disabled={disabled}
             style={

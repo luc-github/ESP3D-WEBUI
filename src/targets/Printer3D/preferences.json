@@ -1,436 +1,541 @@
-  {
+{
     "settings": {
-      "status": [
-        {
-          "id": "showstatuspanel",
-          "type": "boolean",
-          "label": "S63",
-          "value": true
-        },
-        {
-          "id": "openstatusonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        }
-      ],
-      "temperatures": [
-        {
-          "id": "showtemperaturespanel",
-          "type": "boolean",
-          "label": "S63",
-          "value": true
-        },
-        {
-          "id": "opentemperaturesonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "showextruderctrls",
-          "type": "boolean",
-          "label": "P82",
-          "value": true
-        },
-        {
-          "id": "extrudercontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showextruderctrls",
-              "value": true}
-          ],
-          "value":[
-              {
-                "id": "extrudermax",
+        "status": [
+            {
+                "id": "showstatuspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openstatusonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            }
+        ],
+        "temperatures": [
+            {
+                "id": "showtemperaturespanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "opentemperaturesonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            },
+            {
+                "id": "showextruderctrls",
+                "type": "boolean",
+                "label": "P82",
+                "value": true
+            },
+            {
+                "id": "extrudercontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showextruderctrls", "value": true }],
+                "value": [
+                    {
+                        "id": "extrudermax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "280",
+                        "append": "P72"
+                    },
+                    {
+                        "id": "extruderpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "190;220;230",
+                        "append": "P72",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatextruder",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M104 S$ T#",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showbedctrls",
+                "type": "boolean",
+                "label": "P83",
+                "value": true
+            },
+            {
+                "id": "bedcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showbedctrls", "value": true }],
+                "value": [
+                    {
+                        "id": "bedmax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "140",
+                        "append": "P72",
+                        "min": "1"
+                    },
+                    {
+                        "id": "bedpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "50;90;110",
+                        "append": "P72",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatbed",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M140 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showchamberctrls",
+                "type": "boolean",
+                "label": "P84",
+                "value": true
+            },
+            {
+                "id": "chambercontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showchamberctrls", "value": true }],
+                "value": [
+                    {
+                        "id": "chambermax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "140",
+                        "append": "P72"
+                    },
+                    {
+                        "id": "chamberpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "append": "P72",
+                        "value": "50;90;110",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatchamber",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M141 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showprobectrls",
+                "type": "boolean",
+                "label": "P85",
+                "value": true
+            },
+            {
+                "id": "showredondantctrls",
+                "type": "boolean",
+                "label": "P86",
+                "value": true
+            },
+            {
+                "id": "showboardctrls",
+                "type": "boolean",
+                "label": "P87",
+                "value": true
+            }
+        ],
+        "charts": [
+            {
+                "id": "showchartspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openchartsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            },
+            {
+                "id": "showextruderchart",
+                "type": "boolean",
+                "label": "P82",
+                "value": true
+            },
+            {
+                "id": "showredondantchart",
+                "type": "boolean",
+                "label": "P86",
+                "value": true
+            },
+            {
+                "id": "showbedchart",
+                "type": "boolean",
+                "label": "P83",
+                "value": true
+            },
+            {
+                "id": "showchamberchart",
+                "type": "boolean",
+                "label": "P84",
+                "value": true
+            },
+            {
+                "id": "showprobechart",
+                "type": "boolean",
+                "label": "P85",
+                "value": true
+            },
+            {
+                "id": "showboardchart",
+                "type": "boolean",
+                "label": "P87",
+                "value": true
+            },
+            {
+                "id": "showsensorchart",
+                "type": "boolean",
+                "label": "P88",
+                "value": true,
+                "depend": [{ "id": "showsensorctrls", "value": true }]
+            }
+        ],
+        "extruders": [
+            {
+                "id": "showextruderspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openextrudersonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            },
+            {
+                "id": "efeedrate",
                 "type": "number",
-                "label": "P48",
-                "value": "280",
-                "append": "P72"
-              },
-              {
-                "id": "extruderpreheat",
+                "label": "P50",
+                "append": "P14",
+                "value": "400",
+                "min": "1"
+            },
+            {
+                "id": "extruderdistance",
                 "type": "text",
-                "label": "P104",
-                "value": "190;220;230",
-                "append": "P72",
+                "label": "P55",
+                "value": "5;10;100",
+                "append": "P16",
                 "help": "S97"
-              },
-              {
-                "id": "heatextruder",
-                "type": "text",
-                "label": "P106",
-                "value": "M104 S$ T#",
-                "help": "P94"
-              }
-            ]
-        },
-        {
-          "id": "showbedctrls",
-          "type": "boolean",
-          "label": "P83",
-          "value": true
-        },
-        {
-          "id": "bedcontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showbedctrls",
-              "value": true}
-          ],
-          "value":[
-            {
-              "id": "bedmax",
-              "type": "number",
-              "label": "P48",
-              "value": "140",
-              "append": "P72",
-              "min": "1"
-            },
-            {
-              "id": "bedpreheat",
-              "type": "text",
-              "label": "P104",
-              "value": "50;90;110",
-              "append": "P72",
-              "help": "S97"
-            },
-            {
-              "id": "heatbed",
-              "type": "text",
-              "label": "P106",
-              "value": "M140 S$",
-              "help": "P94"
             }
-          ]
-        },
-        {
-          "id": "showchamberctrls",
-          "type": "boolean",
-          "label": "P84",
-          "value": true
-        },
-        {
-          "id": "chambercontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showchamberctrls",
-              "value": true}
-          ],
-          "value":[
-          {
-            "id": "chambermax",
-            "type": "number",
-            "label": "P48",
-            "value": "140",
-            "append": "P72"
-          },
-          {
-            "id": "chamberpreheat",
-            "type": "text",
-            "label": "P104",
-            "append": "P72",
-            "value": "50;90;110",
-            "help": "S97"
-          },
-          {
-            "id": "heatchamber",
-            "type": "text",
-            "label": "P106",
-            "value": "M141 S$",
-            "help": "P94"
-          }
-         ]
-        },
-        {
-          "id": "showprobectrls",
-          "type": "boolean",
-          "label": "P85",
-          "value": true
-        },
-        {
-          "id": "showredondantctrls",
-          "type": "boolean",
-          "label": "P86",
-          "value": true
-        },
-        {
-          "id": "showboardctrls",
-          "type": "boolean",
-          "label": "P87",
-          "value": true
-        }
-      ],
-      "charts":[
-        {
-          "id": "showchartspanel",
-          "type": "boolean",
-          "label": "S63",
-          "value": true
-        },
-        {
-          "id": "openchartsonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "showextruderchart",
-          "type": "boolean",
-          "label": "P82",
-          "value": true
-        },{
-          "id": "showredondantchart",
-          "type": "boolean",
-          "label": "P86",
-          "value": true
-        },
-        {
-          "id": "showbedchart",
-          "type": "boolean",
-          "label": "P83",
-          "value": true
-        },
-        {
-          "id": "showchamberchart",
-          "type": "boolean",
-          "label": "P84",
-          "value": true
-        },
-        {
-          "id": "showprobechart",
-          "type": "boolean",
-          "label": "P85",
-          "value": true
-        },
-        {
-          "id": "showboardchart",
-          "type": "boolean",
-          "label": "P87",
-          "value": true
-        },
-        {
-          "id": "showsensorchart",
-          "type": "boolean",
-          "label": "P88",
-          "value": true,
-          "depend":[{"id":"showsensorctrls", "value":true}]
-        }
+        ],
 
-      ],
-      "extruders": [
-        {
-          "id": "showextruderspanel",
-          "type": "boolean",
-          "label": "S63",
-          "value": true
-        },
-        {
-          "id": "openextrudersonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "efeedrate",
-          "type": "number",
-          "label": "P50",
-          "append": "P14",
-          "value": "400",
-          "min": "1"
-        },
-        {
-          "id": "extruderdistance",
-          "type": "text",
-          "label": "P55",
-          "value": "5;10;100",
-          "append": "P16",
-          "help": "S97"
-        }
-      ],
-     
-      "files": [
-        {
-          "id": "filesfilter",
-          "type": "text",
-          "label": "S96",
-          "value": "g;G;gco;GCO;gcode;GCODE",
-          "help": "S97"
-        },
-        {
-          "id": "tftsd",
-          "type": "boolean",
-          "label": "S188",
-          "value": false
-        },
-        {
-          "id": "tftusb",
-          "type": "boolean",
-          "label": "S189",
-          "value": false
-        }
-      ],
-      "jog": [
-        {
-          "id": "xyfeedrate",
-          "type": "number",
-          "label": "P10",
-          "min": "1",
-          "append": "P14",
-          "value": "1000"
-        },
-        {
-          "id": "zfeedrate",
-          "type": "number",
-          "label": "P11",
-          "append": "P14",
-          "min": "1",
-          "value": "1000"
-        },
-        {
-          "id": "xpos",
-          "type": "number",
-          "label": "P65",
-          "value": "100"
-        },
-        {
-          "id": "ypos",
-          "type": "number",
-          "label": "P66",
-          "value": "100"
-        },
-        {
-          "id": "zpos",
-          "type": "number",
-          "label": "P75",
-          "value": "100"
-        }
-      ],
-      "controls": [
-        {
-          "id": "showextracontrolspanel",
-          "type": "boolean",
-          "label": "S63",
-          "value": true
-        },
-        {
-          "id": "openextracontrolsonstart",
-          "type": "boolean",
-          "label": "S93",
-          "value": true
-        },
-        {
-          "id": "showfanctrls",
-          "type": "boolean",
-          "label": "P45",
-          "value": true
-        },
-        {
-          "id": "fancontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showfanctrls",
-              "value": true}
-          ],
-          "value":[
+        "files": [
             {
-            "id": "fanpresets",
-            "type": "text",
-            "label": "P104",
-            "value": "0;20;50;75;100",
-            "min": "0",
-            "max": "100",
-            "append": "%",
-            "help": "S97"
-           },
-           {
-            "id": "fancmd",
-            "type": "text",
-            "label": "P106",
-            "value": "M106 S$ P#",
-            "help": "P94"
-           }
-          ]
-        },
-        
-        {
-          "id": "showspeedctrls",
-          "type": "boolean",
-          "label": "P46",
-          "value": true
-        },
-        {
-          "id": "speedcontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showspeedctrls",
-              "value": true}
-          ],
-          "value":[
-            {
-              "id": "speedpresets",
-              "type": "text",
-              "label": "P104",
-              "value": "20;50;75;100;125;150;175;200;250;300",
-              "min": "1",
-              "max": "300",
-              "append": "%",
-              "help": "S97"
+                "id": "filesfilter",
+                "type": "text",
+                "label": "S96",
+                "value": "g;G;gco;GCO;gcode;GCODE",
+                "help": "S97"
             },
             {
-              "id": "speedcmd",
-              "type": "text",
-              "label": "P106",
-              "value": "M220 S$",
-              "help": "P94"
-            }
-            ]
-        },
-        {
-          "id": "showflowratectrls",
-          "type": "boolean",
-          "label": "P47",
-          "value": true
-        },
-        {
-          "id": "flowcontrolsgroup",
-          "type": "group",
-          "label": "",
-          "depend":[
-            {"id":"showflowratectrls",
-              "value": true}
-          ],
-          "value":[
-            {
-              "id": "flowratepresets",
-              "type": "text",
-              "label": "P104",
-              "value": "20;50;75;100;125;150;175;200;250;300",
-              "min": "1",
-              "max": "300",
-              "append": "%",
-              "help": "S97"
+                "id": "flashfs",
+                "type": "boolean",
+                "depend": [
+                    { "connection_id": "FlashFileSystem", "value": "!='none'" }
+                ],
+                "label": "S137",
+                "value": true
             },
             {
-              "id": "flowratecmd",
-              "type": "text",
-              "label": "P106",
-              "value": "M221 S$ T#",
-              "help": "P94"
+                "id": "tftsd",
+                "type": "boolean",
+                "label": "S188",
+                "value": false
+            },
+            {
+                "id": "tftusb",
+                "type": "boolean",
+                "label": "S189",
+                "value": false
             }
-          ]
-        },
-        {
-          "id": "showsensorctrls",
-          "type": "boolean",
-          "label": "P88",
-          "value": true
-        }
-      ]
+        ],
+        "jog": [
+            {
+                "id": "xyfeedrate",
+                "type": "number",
+                "label": "P10",
+                "min": "1",
+                "append": "P14",
+                "value": "1000"
+            },
+            {
+                "id": "zfeedrate",
+                "type": "number",
+                "label": "P11",
+                "append": "P14",
+                "min": "1",
+                "value": "1000"
+            },
+            {
+                "id": "xpos",
+                "type": "number",
+                "label": "P65",
+                "value": "100"
+            },
+            {
+                "id": "ypos",
+                "type": "number",
+                "label": "P66",
+                "value": "100"
+            },
+            {
+                "id": "zpos",
+                "type": "number",
+                "label": "P75",
+                "value": "100"
+            },
+            {
+                "id": "homecmd",
+                "type": "text",
+                "label": "P73",
+                "value": "G28 $",
+                "help": "P74"
+            },
+            {
+                "id": "motoroff",
+                "type": "text",
+                "label": "P13",
+                "value": "M84"
+            },
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btn+X",
+                        "name": "btn+X",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btn-X",
+                        "name": "btn-X",
+                        "key": "ArrowLeft"
+                    },
+                    {
+                        "id": "btnHX",
+                        "name": "btnHX",
+                        "key": "X"
+                    },
+                    {
+                        "id": "btn+Y",
+                        "name": "btn+Y",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btn-Y",
+                        "name": "btn-Y",
+                        "key": "ArrowDown"
+                    },
+                    {
+                        "id": "btnHY",
+                        "name": "btnHY",
+                        "key": "Y"
+                    },
+                    {
+                        "id": "btn+Z",
+                        "name": "btn+Z",
+                        "key": "PageUp"
+                    },
+                    {
+                        "id": "btn-Z",
+                        "name": "btn-Z",
+                        "key": "PageDown"
+                    },
+                    {
+                        "id": "btnHZ",
+                        "name": "btnHZ",
+                        "key": "Z"
+                    },
+                    {
+                        "id": "btnHXYZ",
+                        "name": "btnHXYZ",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnMoveXY",
+                        "name": "btnMoveXY",
+                        "key": "P"
+                    },
+                    {
+                        "id": "btnMoveZ",
+                        "name": "btnMoveZ",
+                        "key": "End"
+                    },
+                    {
+                        "id": "btnMotorOff",
+                        "name": "btnMotorOff",
+                        "key": "M"
+                    },
+                    {
+                        "id": "move_100",
+                        "name": "move_100",
+                        "key": "1"
+                    },
+                    {
+                        "id": "move_10",
+                        "name": "move_10",
+                        "key": "2"
+                    },
+                    {
+                        "id": "move_1",
+                        "name": "move_1",
+                        "key": "3"
+                    },
+                    {
+                        "id": "move_0_1",
+                        "name": "move_0_1",
+                        "key": "4"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
+            }
+        ],
+        "controls": [
+            {
+                "id": "showextracontrolspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openextracontrolsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            },
+            {
+                "id": "showfanctrls",
+                "type": "boolean",
+                "label": "P45",
+                "value": true
+            },
+            {
+                "id": "fancontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showfanctrls", "value": true }],
+                "value": [
+                    {
+                        "id": "fanpresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "0;20;50;75;100",
+                        "min": "0",
+                        "max": "100",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "fancmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M106 S$ P#",
+                        "help": "P94"
+                    }
+                ]
+            },
+
+            {
+                "id": "showspeedctrls",
+                "type": "boolean",
+                "label": "P46",
+                "value": true
+            },
+            {
+                "id": "speedcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showspeedctrls", "value": true }],
+                "value": [
+                    {
+                        "id": "speedpresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "20;50;75;100;125;150;175;200;250;300",
+                        "min": "1",
+                        "max": "300",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "speedcmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M220 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showflowratectrls",
+                "type": "boolean",
+                "label": "P47",
+                "value": true
+            },
+            {
+                "id": "flowcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showflowratectrls", "value": true }],
+                "value": [
+                    {
+                        "id": "flowratepresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "20;50;75;100;125;150;175;200;250;300",
+                        "min": "1",
+                        "max": "300",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "flowratecmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M221 S$ T#",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showsensorctrls",
+                "type": "boolean",
+                "label": "P88",
+                "value": true
+            }
+        ]
     }
-  }
+}

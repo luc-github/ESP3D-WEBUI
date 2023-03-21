@@ -21,7 +21,7 @@ import { useState, useEffect, useCallback } from "preact/hooks"
 import { Loading } from "../Controls"
 import { useRouterContext } from "../../contexts"
 
-const Router = ({ children, routesList, localDefault }) => {
+const Router = ({ children, routesList, parentRoutes, localDefault }) => {
     const [isLoading, setIsLoading] = useState(true)
     const {
         setActiveRoute,
@@ -65,6 +65,8 @@ const Router = ({ children, routesList, localDefault }) => {
         let found = false
         setIsLoading(true)
         const location = parseLocation().split("/")
+        const path = parseLocation()
+        /* A for loop. */
         for (let i = 0; i < location.length; i++) {
             const subLocation = location.slice(0, i + 1).join("/")
             for (const key in routesList) {
@@ -72,7 +74,7 @@ const Router = ({ children, routesList, localDefault }) => {
                     const element = routesList[key]
                     if (
                         element.path === subLocation ||
-                        subLocation.startsWith(element.path)
+                        subLocation == element.path
                     ) {
                         setActiveRoute(element.path)
                         setActiveComponent(element.component)
@@ -84,9 +86,66 @@ const Router = ({ children, routesList, localDefault }) => {
             }
         }
         if (!found) {
-            window.location.href = "/#" + localDefaultRoute
+            //console.log("not found ", location, " in ", routesList)
+            if (parentRoutes) {
+                //console.log("checking parentRoutes", parentRoutes)
+                for (let i = 0; i < location.length; i++) {
+                    const subLocation = location.slice(0, i + 1).join("/")
+                    for (const key in parentRoutes.current) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                parentRoutes.current,
+                                key
+                            )
+                        ) {
+                            const element = parentRoutes.current[key]
+                            if (
+                                element.path === subLocation ||
+                                subLocation == element.path
+                            ) {
+                                setActiveRoute(element.path)
+                                setActiveComponent(element.component)
+                                found = true
+                                setIsLoading(false)
+                                break
+                            }
+                        }
+                    }
+                }
+            } else {
+                //console.log("no parentRoutes")
+                //.log("checking defaultRoute", defaultRoute)
+                window.location.href = "/#" + defaultRoute.current
+            }
+        } else {
+            // console.log("found ", path, " in ", routesList)
+        }
+
+        if (!found) {
+            /*if (parentRoutes) {
+                console.log(
+                    "not found ",
+                    path,
+                    " in main menu and settings ",
+                    routesList,
+                    parentRoutes.current
+                )
+            } else {
+                console.log("not found ", path, " in main menu ", routesList)
+            }*/
+            if (path.startsWith("/settings/")) {
+                window.location.href = "/#" + activeTab.current
+            } else {
+                if (path.startsWith("/extrapage/")) {
+                    //console.log("not valid extra page")
+                } else {
+                    // console.log("root page")
+                    window.location.href = "/#" + defaultRoute.current
+                }
+            }
         }
     }
+
     useEffect(() => {
         setRoutes({ ...routes, ...routesList })
         setActiveRouteAndComp()

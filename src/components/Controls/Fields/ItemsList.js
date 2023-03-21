@@ -22,10 +22,15 @@ import { ButtonImg } from "../../Controls"
 import { T } from "../../Translations"
 import { iconsFeather } from "../../Images"
 import { iconsTarget } from "../../../targets"
-import { generateUID } from "../../Helpers"
+import {
+    generateUID,
+    generateDependIds,
+    connectionDepend,
+    settingsDepend,
+} from "../../Helpers"
 import { Field } from "../../Controls"
 import { formatItem } from "../../../tabs/interface/importHelper"
-import { useUiContextFn } from "../../../contexts"
+import { useUiContextFn, useSettingsContext } from "../../../contexts"
 import {
     Plus,
     ArrowUp,
@@ -36,6 +41,7 @@ import {
 } from "preact-feather"
 import defaultPanel from "./def_panel.json"
 import defaultMacro from "./def_macro.json"
+import defaultPolling from "./def_polling.json"
 
 /*
  * Local const
@@ -46,16 +52,22 @@ const ItemControl = ({
     index,
     completeList,
     idList,
+    depend,
     setValue,
     validationfn,
+    fixed,
+    nodelete,
+    editable,
+    sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
-    const icon =
-        value[value.findIndex((element) => element.id == id + "-icon")].value
-    const name =
-        value[value.findIndex((element) => element.id == id + "-name")].value
+    const indexIcon = value.findIndex((element) => element.id == id + "-icon")
+    const indexName = value.findIndex((element) => element.id == id + "-name")
+    const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
+    const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
+
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
@@ -86,6 +98,7 @@ const ItemControl = ({
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [completeList])
+
     let colorStyle
     if (
         JSON.stringify(value).includes('"hasmodified":true') ||
@@ -97,59 +110,80 @@ const ItemControl = ({
     if (JSON.stringify(value).includes('"haserror":true'))
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
+
+    const val = value.findIndex((e) => {
+        return e.name == "key"
+    })
+
+    const labelBtn =
+        val != -1
+            ? T(name) +
+              (value[val].value.length != 0
+                  ? " [" + value[val].value + "]"
+                  : "")
+            : T(name)
+
     return (
         <Fragment>
             {!editionMode && (
                 <div class="fields-line">
                     {((index > 0 && completeList.length > 1) ||
-                        (index == 0 && completeList.length > 1)) && (
-                        <div class="item-list-move">
-                            {index > 0 && completeList.length > 1 && (
-                                <ButtonImg
-                                    m1
-                                    tooltip
-                                    data-tooltip={T("S38")}
-                                    icon={<ArrowUp />}
-                                    onClick={upItem}
-                                />
-                            )}
-                            {completeList.length != 1 &&
-                                index < completeList.length - 1 && (
+                        (index == 0 && completeList.length > 1)) &&
+                        sorted && (
+                            <div class="item-list-move">
+                                {index > 0 && completeList.length > 1 && (
                                     <ButtonImg
                                         m1
                                         tooltip
-                                        data-tooltip={T("S39")}
-                                        icon={<ArrowDown />}
-                                        onClick={downItem}
+                                        data-tooltip={T("S38")}
+                                        icon={<ArrowUp />}
+                                        onClick={upItem}
                                     />
                                 )}
-                        </div>
-                    )}
+                                {completeList.length != 1 &&
+                                    index < completeList.length - 1 && (
+                                        <ButtonImg
+                                            m1
+                                            tooltip
+                                            data-tooltip={T("S39")}
+                                            icon={<ArrowDown />}
+                                            onClick={downItem}
+                                        />
+                                    )}
+                            </div>
+                        )}
 
                     <div class="item-list-name">
+                        {(!fixed || editable) && (
+                            <ButtonImg
+                                m2
+                                tooltip
+                                data-tooltip={T("S94")}
+                                style={colorStyle}
+                                label={labelBtn}
+                                icon={controlIcon}
+                                width="100px"
+                                onClick={(e) => {
+                                    useUiContextFn.haptic()
+                                    e.target.blur()
+                                    onEdit(true)
+                                }}
+                            />
+                        )}
+                        {fixed && !editable && (
+                            <label class="m-1">{T(name)}</label>
+                        )}
+                    </div>
+
+                    {!(fixed || nodelete) && (
                         <ButtonImg
                             m2
                             tooltip
-                            data-tooltip={T("S94")}
-                            style={colorStyle}
-                            label={name}
-                            icon={controlIcon}
-                            width="100px"
-                            onClick={(e) => {
-                                useUiContextFn.haptic()
-                                e.target.blur()
-                                onEdit(true)
-                            }}
+                            data-tooltip={T("S37")}
+                            icon={<Trash2 />}
+                            onClick={removeItem}
                         />
-                    </div>
-
-                    <ButtonImg
-                        m2
-                        tooltip
-                        data-tooltip={T("S37")}
-                        icon={<Trash2 />}
-                        onClick={removeItem}
-                    />
+                    )}
                 </div>
             )}
             {editionMode && (
@@ -168,7 +202,7 @@ const ItemControl = ({
                             class="float-right"
                         />
                         <div>
-                            {index > 0 && completeList.length > 1 && (
+                            {index > 0 && completeList.length > 1 && sorted && (
                                 <ButtonImg
                                     m1
                                     tooltip
@@ -178,6 +212,7 @@ const ItemControl = ({
                                 />
                             )}
                             {completeList.length != 1 &&
+                                sorted &&
                                 index < completeList.length - 1 && (
                                     <ButtonImg
                                         m1
@@ -188,13 +223,15 @@ const ItemControl = ({
                                     />
                                 )}
 
-                            <ButtonImg
-                                m2
-                                tooltip
-                                data-tooltip={T("S37")}
-                                icon={<Trash2 />}
-                                onClick={removeItem}
-                            />
+                            {!nodelete && (
+                                <ButtonImg
+                                    m2
+                                    tooltip
+                                    data-tooltip={T("S37")}
+                                    icon={<Trash2 />}
+                                    onClick={removeItem}
+                                />
+                            )}
                         </div>
                     </div>
                     <div class="m-1">
@@ -217,14 +254,22 @@ const ItemControl = ({
                                           acc.push({
                                               label: T(curr.label),
                                               value: curr.value,
+                                              depend: curr.depend,
                                           })
                                           return acc
                                       }, [])
                                     : null
+                                if (idList == "keymap" && item.name == "name") {
+                                    return
+                                }
                                 return (
                                     <Field
                                         id={item.id}
-                                        label={T(label)}
+                                        label={
+                                            idList == "keymap"
+                                                ? T(itemData.id)
+                                                : T(label)
+                                        }
                                         type={type}
                                         options={Options}
                                         inline={
@@ -258,13 +303,31 @@ const ItemsList = ({
     type,
     setValue,
     inline,
+    fixed,
+    sorted,
+    depend,
+    nodelete,
+    editable,
     ...rest
 }) => {
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
+    const dependIds = generateDependIds(
+        depend,
+        interfaceSettings.current.settings
+    )
+    const canshow = connectionDepend(depend, connectionSettings.current)
+    console.log(id)
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
         const newItem = JSON.parse(
-            JSON.stringify(id == "macros" ? defaultMacro : defaultPanel)
+            JSON.stringify(
+                id == "macros"
+                    ? defaultMacro
+                    : id == "pollingcmds"
+                    ? defaultPolling
+                    : defaultPanel
+            )
         )
         newItem.id = generateUID()
         newItem.name += " " + newItem.id
@@ -274,33 +337,57 @@ const ItemsList = ({
         value.unshift(formatedNewItem)
         setValue(value)
     }
+
     useEffect(() => {
         //to update state when import- but why ?
         if (setValue) setValue(null, true)
     }, [value])
-    const content = (
-        <ButtonImg
-            m2
-            label={id == "macros" ? T("S128") : T("S156")}
-            tooltip
-            data-tooltip={id == "macros" ? T("S128") : T("S156")}
-            icon={<Plus />}
-            onClick={addItem}
-        />
-    )
-    return (
-        <fieldset class="fieldset-top-separator fieldset-bottom-separator">
-            <legend>
-                <ButtonImg
-                    m2
-                    label={id == "macros" ? T("S128") : T("S156")}
-                    tooltip
-                    data-tooltip={id == "macros" ? T("S128") : T("S156")}
-                    icon={<Plus />}
-                    onClick={addItem}
-                />
-            </legend>
 
+    useEffect(() => {
+        let visible =
+            canshow &&
+            settingsDepend(depend, interfaceSettings.current.settings)
+        if (document.getElementById(id))
+            document.getElementById(id).style.display = visible
+                ? "block"
+                : "none"
+        if (document.getElementById("group-" + id))
+            document.getElementById("group-" + id).style.display = visible
+                ? "block"
+                : "none"
+    }, [...dependIds])
+
+    return (
+        <fieldset
+            id={id}
+            class="fieldset-top-separator fieldset-bottom-separator field-group"
+        >
+            <legend>
+                {!fixed && (
+                    <ButtonImg
+                        m2
+                        label={
+                            id == "macros"
+                                ? T("S128")
+                                : id == "pollingcmds"
+                                ? T("S207")
+                                : T("S156")
+                        }
+                        tooltip
+                        data-tooltip={
+                            id == "macros"
+                                ? T("S128")
+                                : id == "pollingcmds"
+                                ? T("S207")
+                                : T("S156")
+                        }
+                        icon={<Plus />}
+                        onClick={addItem}
+                    />
+                )}
+                {fixed && <label class="m-2">{T(label)}</label>}
+            </legend>
+            <div class="m-1" />
             <div class="items-group-content">
                 {value &&
                     value.map((element, index, completeList) => {
@@ -312,6 +399,10 @@ const ItemsList = ({
                                 idList={id}
                                 validationfn={validationfn}
                                 setValue={setValue}
+                                fixed={fixed}
+                                sorted={sorted}
+                                nodelete={nodelete}
+                                editable={editable}
                             />
                         )
                     })}

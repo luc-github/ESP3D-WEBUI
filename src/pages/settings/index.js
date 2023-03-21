@@ -25,6 +25,7 @@ import { InterfaceTab } from "../../tabs/interface"
 import { MachineTab } from "../../tabs/machine"
 import { TabBar } from "../../components/TabBar"
 import { T } from "../../components/Translations"
+import { mainRoutes } from "../../areas/main"
 
 const routes = {
     FEATURES: {
@@ -45,7 +46,11 @@ const Settings = () => {
     return (
         <div id="settings" class="container">
             <TabBar />
-            <Router routesList={routes} localDefault={"/settings/features"} />
+            <Router
+                routesList={routes}
+                parentRoutes={mainRoutes}
+                localDefault={"/settings/features"}
+            />
         </div>
     )
 }

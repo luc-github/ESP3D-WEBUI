@@ -1,0 +1,164 @@
+{
+    "settings": {
+        "general": [
+            {
+                "id": "emergencystop",
+                "type": "text",
+                "label": "HP16",
+                "value": "#ESC#.K",
+                "help": "S97"
+            },
+            {
+                "id": "showmachinesettings",
+                "type": "boolean",
+                "label": "S197",
+                "value": false,
+                "hide": true
+            }
+        ],
+        "panels": [
+            {
+                "id": "fixedpanels",
+                "type": "boolean",
+                "label": "S203",
+                "value": false
+            },
+            {
+                "id": "panelsorder",
+                "fixed": true,
+                "sorted": true,
+                "depend": [
+                    {
+                        "id": "fixedpanels",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "label": "S202",
+                "value": [
+                    { "id": "Files", "name": "files" },
+                    { "id": "Terminal", "name": "terminal" },
+                    { "id": "Jog", "name": "jog", "value": "jog" },
+                    { "id": "Status", "name": "status" },
+                    { "id": "Notifications", "name": "notification" },
+                    { "id": "Macros", "name": "macros" },
+                    { "id": "Extracontents", "name": "extracontents" }
+                ]
+            }
+        ],
+        "polling": [
+            {
+                "id": "pollingcmds",
+                "depend": [
+                    {
+                        "id": "enablepolling",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "sorted": false,
+                "label": "S115",
+                "value": [
+                    {
+                        "id": "samplepolling",
+                        "name": "3s",
+                        "cmds": "OA;[ESP701]json",
+                        "refreshtime": "3000"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "id": "filesfilter",
+                "type": "text",
+                "label": "S96",
+                "value": "g;G;gco;GCO;gcode;GCODE;nc;txt",
+                "help": "S97"
+            },
+            {
+                "id": "flashfs",
+                "type": "boolean",
+                "depend": [
+                    { "connection_id": "FlashFileSystem", "value": "!='none'" }
+                ],
+                "label": "S137",
+                "value": true
+            },
+            {
+                "id": "directsd",
+                "type": "boolean",
+                "depend": [
+                    { "connection_id": "SDConnection", "value": "!='none'" }
+                ],
+                "label": "S190",
+                "value": true
+            }
+        ],
+        "jog": [
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "value": [
+                    {
+                        "id": "btnjogright",
+                        "name": "btnjogright",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btnjogleft",
+                        "name": "btnjogleft",
+                        "key": "ArrowLeft"
+                    },
+
+                    {
+                        "id": "btnjogup",
+                        "name": "btnjogup",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btnjogdown",
+                        "name": "btnjogdown",
+                        "key": "ArrowDown"
+                    },
+
+                    {
+                        "id": "btnpark",
+                        "name": "btnpark",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnPen",
+                        "name": "btnPen",
+                        "key": "p"
+                    },
+                    {
+                        "id": "btndistSel+",
+                        "name": "btndistSel+",
+                        "key": "+"
+                    },
+                    {
+                        "id": "btndistSel-",
+                        "name": "btndistSel-",
+                        "key": "-"
+                    },
+                    {
+                        "id": "btnStop",
+                        "name": "btnStop",
+                        "key": "Control+s"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
+            }
+        ]
+    }
+}

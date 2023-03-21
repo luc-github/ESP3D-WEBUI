@@ -34,6 +34,7 @@ import {
     useUiContextFn,
     useWsContext,
     useSettingsContext,
+    useSettingsContextFn,
 } from "../../contexts"
 import { Esp3dVersion } from "../../components/App/version"
 import { Github, RefreshCcw, UploadCloud, LifeBuoy, Info } from "preact-feather"
@@ -103,12 +104,17 @@ const About = () => {
     const { toasts, modals, uisettings } = useUiContext()
     const { Disconnect } = useWsContext()
     const { createNewRequest, abortRequest } = useHttpQueue()
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     const [isLoading, setIsLoading] = useState(true)
     const progressBar = {}
     const [props, setProps] = useState([...about])
     const [isFwUpdate, setIsFwUpdate] = useState(false)
     const inputFilesRef = useRef(0)
+    const isFlashFS =
+        connectionSettings.current.FlashFileSystem == "none" ? false : true
+    const isSDFS =
+        connectionSettings.current.SDConnection == "none" ? false : true
+
     const getProps = () => {
         setIsLoading(true)
         createNewRequest(
@@ -173,13 +179,16 @@ const About = () => {
     }
     const onFWGit = (e) => {
         useUiContextFn.haptic()
-        window.open(
+        const i = useSettingsContextFn.getValue("Screen")
+        const url =
             interfaceSettings.current.custom &&
-                interfaceSettings.current.custom.fwurl
+            interfaceSettings.current.custom.fwurl
                 ? interfaceSettings.current.custom.fwurl
-                : fwUrl,
-            "_blank"
-        )
+                : i
+                ? fwUrl[1]
+                : fwUrl[0]
+
+        window.open(url, "_blank")
         e.target.blur()
     }
     const onWebUiUpdate = (e) => {
@@ -200,14 +209,22 @@ const About = () => {
     const uploadFiles = (e) => {
         const list = inputFilesRef.current.files
         const formData = new FormData()
-        formData.append("path", "/")
+        formData.append("path", useSettingsContextFn.getValue("HostUploadPath"))
+        formData.append("createPath", "true")
         if (list.length > 0) {
             for (let i = 0; i < list.length; i++) {
                 const file = list[i]
-                const arg = "/" + file.name + "S"
+                const arg =
+                    useSettingsContextFn.getValue("HostUploadPath") +
+                    file.name +
+                    "S"
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
-                formData.append("myfiles", file, "/" + file.name)
+                formData.append(
+                    "myfiles",
+                    file,
+                    useSettingsContextFn.getValue("HostUploadPath") + file.name
+                )
             }
         }
         showProgressModal({
@@ -216,8 +233,12 @@ const About = () => {
             button1: { cb: abortRequest, text: T("S28") },
             content: <Progress progressBar={progressBar} max="100" />,
         })
+        const base = isFwUpdate
+            ? "updatefw"
+            : useSettingsContextFn.getValue("HostTarget")
+        console.log(base)
         createNewRequest(
-            isFwUpdate ? espHttpURL("updatefw") : espHttpURL("files"),
+            espHttpURL(base),
             { method: "POST", id: "upload", body: formData },
             {
                 onSuccess: (result) => {
@@ -247,6 +268,22 @@ const About = () => {
                 },
             }
         )
+    }
+
+    const valueTranslated = (value) => {
+        if (
+            value.startsWith("ON (") ||
+            value.startsWith("OFF (") ||
+            value.startsWith("shared (")
+        ) {
+            const reg_search = /(?<label>[^\(]*)\s\((?<content>[^\)]*)/
+            let res = reg_search.exec(value)
+            if (res) {
+                return T(res.groups.label) + " (" + T(res.groups.content) + ")"
+            }
+        }
+
+        return T(value)
     }
 
     const filesSelected = (e) => {
@@ -283,14 +320,9 @@ const About = () => {
     }
 
     useEffect(() => {
-        if (about.length != 0) {
-            setProps([...about])
-            setIsLoading(false)
-        } else {
-            if (uisettings.getValue("autoload")) getProps()
-            else setIsLoading(false)
-        }
-    }, [])
+        if (uisettings.getValue("autoload") && props.length == 0) getProps()
+        else setIsLoading(false)
+    })
 
     return (
         <div id="about" class="container">
@@ -318,7 +350,9 @@ const About = () => {
                     <CenterLeft>
                         <ul>
                             <li>
-                                <span class="text-primary">{T("S150")}: </span>
+                                <span class="text-primary text-label">
+                                    {T("S150")}:{" "}
+                                </span>
                                 <span class="text-dark">
                                     <Esp3dVersion />
                                 </span>
@@ -330,19 +364,21 @@ const About = () => {
                                     icon={<Github />}
                                     onClick={onWebUiGit}
                                 />
-                                <ButtonImg
-                                    sm
-                                    mx2
-                                    tooltip
-                                    data-tooltip={T("S171")}
-                                    icon={<UploadCloud />}
-                                    label={T("S25")}
-                                    onClick={onWebUiUpdate}
-                                />
+                                {(isFlashFS || isSDFS) && (
+                                    <ButtonImg
+                                        sm
+                                        mx2
+                                        tooltip
+                                        data-tooltip={T("S171")}
+                                        icon={<UploadCloud />}
+                                        label={T("S25")}
+                                        onClick={onWebUiUpdate}
+                                    />
+                                )}
                             </li>
                             <li>
-                                <span class="text-primary">
-                                    {T("FW ver")}:{" "}
+                                <span class="text-primary text-label">
+                                    {T("FW ver")}:
                                 </span>
                                 <span class="text-dark">
                                     {props.find(
@@ -360,19 +396,24 @@ const About = () => {
                                     icon={<Github />}
                                     onClick={onFWGit}
                                 />
-                                <ButtonImg
-                                    sm
-                                    mx2
-                                    tooltip
-                                    data-tooltip={T("S172")}
-                                    icon={<UploadCloud />}
-                                    label={T("S25")}
-                                    onClick={onFWUpdate}
-                                />
+                                {connectionSettings.current.WebUpdate ==
+                                    "Enabled" && (
+                                    <ButtonImg
+                                        sm
+                                        mx2
+                                        tooltip
+                                        data-tooltip={T("S172")}
+                                        icon={<UploadCloud />}
+                                        label={T("S25")}
+                                        onClick={onFWUpdate}
+                                    />
+                                )}
                             </li>
                             <CustomEntry />
                             <li>
-                                <span class="text-primary">{T("S18")}: </span>
+                                <span class="text-primary text-label">
+                                    {T("S18")}:
+                                </span>
                                 <span class="text-dark">
                                     {getBrowserInformation()}
                                 </span>
@@ -381,11 +422,11 @@ const About = () => {
                                 if (id != "FW ver")
                                     return (
                                         <li>
-                                            <span class="text-primary">
-                                                {T(id)}:{" "}
+                                            <span class="text-primary text-label">
+                                                {T(id)}:
                                             </span>
                                             <span class="text-dark">
-                                                {T(value)}
+                                                {valueTranslated(value)}
                                             </span>
                                         </li>
                                     )

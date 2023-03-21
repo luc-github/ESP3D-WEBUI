@@ -42,11 +42,14 @@ import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 const Target = "Marlin"
 const webUIbuild = "Me2"
 const Name = "Marlin"
-const fwUrl = "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin"
+const fwUrl = [
+    "https://github.com/MarlinFirmware/Marlin/tree/2.0.x/Marlin",
+    "https://github.com/luc-github/ESP3D-TFT",
+]
 
 const restartdelay = 30
 const variablesList = {
-    commands: [ ...variablesTable],
+    commands: [...variablesTable],
     addCommand: (variable) =>
         addObjectItem(variablesList.commands, "name", variable),
     removeCommand: (name) =>

@@ -28,11 +28,20 @@ import {
     IconSelect,
     LabelCtrl,
     Slider,
+    Mask,
 } from "./Fields"
 
 const Field = (props) => {
     const { type, id } = props
     switch (type) {
+        case "mask":
+        case "xmask":
+            return (
+                <div>
+                    <Mask {...props} />
+                    <FormGroup {...props}></FormGroup>
+                </div>
+            )
         case "label":
             return (
                 <FormGroup {...props}>

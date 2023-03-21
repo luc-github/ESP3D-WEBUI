@@ -190,10 +190,26 @@ const FilesPanel = () => {
             formData.append("path", currentPath[currentFS])
             for (let i = 0; i < list.length; i++) {
                 const file = list[i]
+
+                let fileName = ""
+                const needFormatFileName = files.command(
+                    currentFS,
+                    "needFormatFileName",
+                    currentPath[currentFS],
+                    fileref.current.files[0].name
+                )
+                if (
+                    needFormatFileName.type != "error" &&
+                    needFormatFileName.name
+                ) {
+                    fileName = needFormatFileName.name
+                } else {
+                    fileName = file.name
+                }
                 const arg =
                     currentPath[currentFS] +
                     (currentPath[currentFS] == "/" ? "" : "/") +
-                    file.name +
+                    fileName +
                     "S"
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
@@ -202,7 +218,7 @@ const FilesPanel = () => {
                     file,
                     currentPath[currentFS] +
                         (currentPath[currentFS] == "/" ? "" : "/") +
-                        file.name
+                        fileName
                 )
             }
             //now do request
@@ -415,14 +431,14 @@ const FilesPanel = () => {
             fileref.current.accept = "*"
         }
     }
-    const onSelectFS = (e) => {
+    const onSelectFS = (e, norefresh = false) => {
         if (e) currentFS = e.target.value
         setupFileInput()
         setFileSystem(currentFS)
         if (!currentPath[currentFS]) {
             currentPath[currentFS] = "/"
         }
-        onRefresh(e, true)
+        if (!norefresh) onRefresh(e, true)
     }
 
     const ElementClicked = (e, line) => {
@@ -506,9 +522,15 @@ const FilesPanel = () => {
     }
 
     useEffect(() => {
-        if (useUiContextFn.getValue("autoload") && currentFS == "") {
-            currentFS = "FLASH"
-            onSelectFS()
+        if (currentFS == "") {
+            const fs = files.supported.find((element) => {
+                if (element.depend) if (element.depend()) return true
+                return false
+            })
+            if (fs) {
+                currentFS = fs.value
+                onSelectFS(null, !useUiContextFn.getValue("autoload"))
+            }
         }
         setupFileInput()
     }, [])
@@ -750,7 +772,7 @@ const FilesPanel = () => {
                                         class="form-control  file-line-name file-line-action"
                                         style="height:2rem!important"
                                     >
-                                        <CornerRightUp />{" "}
+                                        <CornerRightUp />
                                         <label class="p-2">...</label>
                                     </div>
                                 </div>
@@ -934,6 +956,7 @@ const FilesPanelElement = {
     icon: "HardDrive",
     show: "showfilespanel",
     onstart: "openfilesonstart",
+    settingid: "files",
 }
 
 export { FilesPanel, FilesPanelElement }

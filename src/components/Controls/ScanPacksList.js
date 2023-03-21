@@ -21,7 +21,11 @@ import { useState, useEffect } from "preact/hooks"
 import { ButtonImg, Loading } from "./../Controls"
 import { useHttpQueue } from "../../hooks"
 import { espHttpURL } from "../../components/Helpers"
-import { useUiContext, useUiContextFn } from "../../contexts"
+import {
+    useUiContext,
+    useUiContextFn,
+    useSettingsContextFn,
+} from "../../contexts"
 import { T, getLanguageName } from "./../Translations"
 import { CheckCircle } from "preact-feather"
 
@@ -33,8 +37,15 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
     const { createNewRequest } = useHttpQueue()
     const ScanPacks = () => {
         setIsLoading(true)
+
         createNewRequest(
-            espHttpURL("files", { path: "/" }),
+            espHttpURL(
+                useSettingsContextFn.getValue("HostTarget"),
+
+                {
+                    path: useSettingsContextFn.getValue("HostUploadPath"), //yes it is upload not download as relative to target
+                }
+            ),
             { method: "GET" },
             {
                 onSuccess: (result) => {

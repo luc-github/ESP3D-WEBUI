@@ -33,16 +33,22 @@ const formatEepromLine = (acc, line) => {
     //it is comment
     if (line.startsWith("echo:")) {
         //it is setting
-        const data = line
+        let data = line
             .substring(
                 5,
                 line.indexOf(";") != -1 ? line.indexOf(";") : line.length
             )
             .trim()
-        const extra =
+        let extra =
             line.indexOf(";") != -1
                 ? line.substring(line.indexOf(";") + 1).trim()
                 : ""
+        const reg_test = /^[A-Z][0-9]/
+        if (data.length > 0 && !reg_test.test(data)) {
+            extra = data
+            data = ""
+        }
+
         if (extra.length > 0) acc.push({ type: "comment", value: extra })
         if (data.length > 0)
             acc.push({ type: "text", value: data, initial: data })
@@ -60,6 +66,7 @@ const commands = {
         return { type: "cmd", cmd: "M115" }
     },
     formatCapabilities: (result) => {
+        if (!result || result.length == 0) return []
         const capabilityList = result.reduce((acc, line) => {
             return formatCapabilityLine(acc, line)
         }, [])
@@ -69,6 +76,7 @@ const commands = {
         return { type: "cmd", cmd: "M503" }
     },
     formatEeprom: (result) => {
+        if (!result || result.length == 0) return []
         const res = result.reduce((acc, line) => {
             return formatEepromLine(acc, line)
         }, [])
@@ -86,7 +94,7 @@ const responseSteps = {
         },
     },
     eeprom: {
-        start: (data) => data.startsWith("echo:;"),
+        start: (data) => data.startsWith("echo:;") || data.startsWith("echo: "),
         end: (data) => data.startsWith("ok"),
         error: (data) => {
             return (
@@ -100,14 +108,14 @@ const responseSteps = {
 function capability() {
     const [cap, ...rest] = arguments
     if (capabilities[cap]) return capabilities[cap](...rest)
-    console.log("Unknow capability ", cap)
+    //console.log("Unknow capability ", cap)
     return false
 }
 
 function command() {
     const [cmd, ...rest] = arguments
     if (commands[cmd]) return commands[cmd](...rest)
-    console.log("Unknow command ", cmd)
+    //console.log("Unknow command ", cmd)
     return { type: "error" }
 }
 

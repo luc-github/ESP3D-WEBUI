@@ -45,7 +45,7 @@ import { Field } from "../../components/Controls"
 import { formatStructure } from "./formatHelper"
 import { exportFeatures } from "./exportHelper"
 import { importFeatures } from "./importHelper"
-import { restartdelay } from "../../targets"
+import { restartdelay, useTargetContextFn } from "../../targets"
 
 const FeaturesTab = () => {
     const { toasts, modals, uisettings } = useUiContext()
@@ -142,7 +142,7 @@ const FeaturesTab = () => {
             " T=" +
             entry.cast +
             " V=" +
-            entry.value +
+            entry.value.toString().replaceAll(" ", "\\ ") +
             " json=yes"
         createNewRequest(
             espHttpURL("command", { cmd }),
@@ -167,11 +167,16 @@ const FeaturesTab = () => {
                                     content: T("S194"),
                                     type: "error",
                                 })
-                            else if (jsonResult.status == "error")
+                            else if (jsonResult.status == "error") {
+                                let content = T("S195")
+                                if (typeof jsonResult.data === "string") {
+                                    content += ": " + T(jsonResult.data)
+                                }
                                 toasts.addToast({
-                                    content: T("S195"),
+                                    content: content,
                                     type: "error",
                                 })
+                            }
                             return
                         }
                         entry.initial = entry.value
@@ -215,8 +220,12 @@ const FeaturesTab = () => {
                 const subsection = section[subsectionId]
                 Object.keys(subsection).map((entryId) => {
                     const entry = subsection[entryId]
-                    if (entry.initial != entry.value) total++
-                    if (entry.needRestart == "1") needrestart = true
+                    if (entry.initial != entry.value) {
+                        total++
+                        if (entry.needRestart == "1") {
+                            needrestart = true
+                        }
+                    }
                 })
             })
         })
@@ -352,6 +361,16 @@ const FeaturesTab = () => {
                 }
             }
         } else if (fieldData.type == "number") {
+            if (fieldData.prec) {
+                if (
+                    parseFloat(fieldData.value) !=
+                    parseFloat(fieldData.value).toFixed(
+                        parseInt(fieldData.prec)
+                    )
+                )
+                    validation.valid = false
+            }
+            if (fieldData.value.trim().length == 0) validation.valid = false
             if (fieldData.max) {
                 if (fieldData.value > fieldData.max) {
                     validation.valid = false
@@ -377,7 +396,12 @@ const FeaturesTab = () => {
         if (fieldData.value == fieldData.initial) {
             fieldData.hasmodified = false
         } else {
-            fieldData.hasmodified = true
+            if (
+                fieldData.type == "number" &&
+                parseFloat(fieldData.value) == parseFloat(fieldData.initial)
+            )
+                fieldData.hasmodified = false
+            else fieldData.hasmodified = true
         }
         setShowSave(checkSaveStatus())
         if (!fieldData.hasmodified && !fieldData.haserror) return null
@@ -459,8 +483,10 @@ const FeaturesTab = () => {
                                                                             label,
                                                                             options,
                                                                             initial,
+                                                                            prec,
                                                                             ...rest
-                                                                        } = fieldData
+                                                                        } =
+                                                                            fieldData
                                                                         const Options =
                                                                             options
                                                                                 ? options.reduce(
@@ -481,6 +507,7 @@ const FeaturesTab = () => {
                                                                                       []
                                                                                   )
                                                                                 : null
+
                                                                         return (
                                                                             <Field
                                                                                 label={T(
@@ -490,12 +517,19 @@ const FeaturesTab = () => {
                                                                                     Options
                                                                                 }
                                                                                 extra={
-                                                                                    subsectionId ==
-                                                                                        "sta" &&
-                                                                                    label ==
-                                                                                        "SSID"
+                                                                                    useTargetContextFn.isStaId(
+                                                                                        subsectionId,
+                                                                                        label,
+                                                                                        fieldData
+                                                                                    )
                                                                                         ? "scan"
                                                                                         : null
+                                                                                }
+                                                                                initial={
+                                                                                    initial
+                                                                                }
+                                                                                prec={
+                                                                                    prec
                                                                                 }
                                                                                 {...rest}
                                                                                 setValue={(

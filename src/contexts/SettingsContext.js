@@ -19,6 +19,7 @@
 import { h, createContext } from "preact"
 import { useRef, useContext } from "preact/hooks"
 import { useUiContext } from "./UiContext"
+import { espHttpURL } from "../components/Helpers"
 
 /*
  * Local const
@@ -33,30 +34,37 @@ const SettingsContextProvider = ({ children }) => {
     const interfaceValues = useRef({})
     const connectionValues = useRef({})
     const featuresValues = useRef({})
-    const pollingInterval = useRef({})
-
+    const pollingInterval = useRef([])
     useSettingsContextFn.getValue = (val) => connectionValues.current[val]
 
-    function startPolling(pollingFunction, parameters) {
-        const settings = parameters != undefined ? parameters : uisettings
-        stopPolling()
-        if (uisettings.getValue("enablepolling", settings)) {
-            if (pollingFunction)
-                pollingInterval.current = setInterval(
-                    pollingFunction,
-                    uisettings.getValue("pollingrefresh", settings)
-                )
+    function startPolling(id, interval, fn) {
+        stopPolling(id)
+        if (interval > 0 && fn) {
+            const newInterval = setInterval(() => {
+                fn()
+            }, interval)
+            pollingInterval.current.push({ id: id, interval: newInterval })
         }
     }
 
     /*
      * Stop polling query
      */
-    function stopPolling() {
-        if (pollingInterval.current != null) {
-            clearInterval(pollingInterval.current)
+    function stopPolling(id) {
+        if (typeof id == "undefined") {
+            pollingInterval.current.forEach((item) => {
+                clearInterval(item.interval)
+            })
+            pollingInterval.current = []
+        } else {
+            const index = pollingInterval.current.findIndex(
+                (item) => item.id == id
+            )
+            if (index != -1) {
+                clearInterval(pollingInterval.current[index].interval)
+                pollingInterval.current.splice(index, 1)
+            }
         }
-        pollingInterval.current = null
     }
 
     const store = {

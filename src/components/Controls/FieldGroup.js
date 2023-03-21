@@ -23,7 +23,7 @@ const FieldGroup = ({ className, children, label, id }) => {
     return (
         <fieldset
             class={
-                `${className ? className : ""}` +
+                `${className ? className + " " : ""}` +
                 `${
                     label
                         ? "fieldset-top-separator"

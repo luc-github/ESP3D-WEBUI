@@ -9,30 +9,63 @@
                 "help": "S97"
             }
         ],
-        "polling": [
+        "panels": [
             {
-                "id": "pollingcommands",
-                "type": "text",
-                "label": "S115",
-                "help": "S97",
-                "value": "M105"
-            }
-        ],
-        "jog": [
-            {
-                "id": "homecmd",
-                "type": "text",
-                "label": "P73",
-                "value": "G28 $",
-                "help": "P74"
+                "id": "fixedpanels",
+                "type": "boolean",
+                "label": "S203",
+                "value": false
             },
             {
-                "id": "motoroff",
-                "type": "text",
-                "label": "P13",
-                "value": "M84"
+                "id": "panelsorder",
+                "fixed": true,
+                "sorted": true,
+                "depend": [
+                    {
+                        "id": "fixedpanels",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "label": "S202",
+                "value": [
+                    { "id": "Files", "name": "files" },
+                    { "id": "Terminal", "name": "terminal" },
+                    { "id": "Jog", "name": "jog", "value": "jog" },
+                    { "id": "Extruders", "name": "extruders" },
+                    { "id": "Temperatures", "name": "temperatures" },
+                    { "id": "Charts", "name": "charts" },
+                    { "id": "Status", "name": "status" },
+                    { "id": "Controls", "name": "controls" },
+                    { "id": "Notifications", "name": "notification" },
+                    { "id": "Macros", "name": "macros" },
+                    { "id": "Extracontents", "name": "extracontents" }
+                ]
             }
         ],
+        "polling": [
+            {
+                "id": "pollingcmds",
+                "depend": [
+                    {
+                        "id": "enablepolling",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "sorted": false,
+                "label": "S115",
+                "value": [
+                    {
+                        "id": "samplepolling",
+                        "name": "3s",
+                        "cmds": "M105",
+                        "refreshtime": "3000"
+                    }
+                ]
+            }
+        ],
+
         "files": [
             {
                 "id": "sd",

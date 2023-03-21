@@ -26,6 +26,7 @@ const FormGroup = ({
     children,
     label,
     id,
+    forctrl,
     type,
 }) => {
     const getValidationClass = (validation) => {
@@ -45,32 +46,33 @@ const FormGroup = ({
             id={id ? "group-" + id : ""}
         >
             <div class={inline ? "columns mt-2" : "flex-cols"}>
-                {label && (
-                    <label
-                        class={
-                            inline && type == "boolean"
-                                ? "d-none"
-                                : `form-label text-dark ${
-                                      inline ? "column col-auto" : ""
-                                  }`
-                        }
-                        htmlFor={id}
-                    >
-                        {label}
-                    </label>
-                )}
+                {!(type == "list" || type == "mask" || type == "xmask") &&
+                    label && (
+                        <label
+                            class={
+                                inline && type == "boolean"
+                                    ? "d-none"
+                                    : `form-label ${
+                                          forctrl ? "text-primary" : "text-dark"
+                                      } ${inline ? "column col-auto" : ""}`
+                            }
+                            htmlFor={forctrl ? forctrl : id}
+                        >
+                            {label}
+                        </label>
+                    )}
 
                 {children}
+                {validation && validation.message && (
+                    <div
+                        className={`form-input-hint ${
+                            inline ? "text-left" : "text-center"
+                        }`}
+                    >
+                        {validation.message}
+                    </div>
+                )}
             </div>
-            {validation && validation.message && (
-                <div
-                    className={`form-input-hint ${
-                        inline ? "text-left" : "text-center"
-                    }`}
-                >
-                    {validation.message}
-                </div>
-            )}
         </div>
     )
 }

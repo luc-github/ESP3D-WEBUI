@@ -55,6 +55,11 @@ import {
 const TargetContext = createContext("TargetContext")
 const useTargetContext = () => useContext(TargetContext)
 const useTargetContextFn = {}
+useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
+    if (subsectionId == "sta" && label == "SSID") return true
+    return false
+}
+
 const printerCapabilities = []
 
 const TargetContextProvider = ({ children }) => {
@@ -130,17 +135,17 @@ const TargetContextProvider = ({ children }) => {
 
     const estimatedTime = (progress, time) => {
         const total =
-            (time.day ? parseInt(time.day) * 24 * 60 * 60 : 0) +
-            (time.hour ? parseInt(time.hour) * 60 * 60 : 0) +
-            (time.min ? parseInt(time.min) * 60 : 0) +
-            (time.sec ? parseInt(time.sec) : 0)
+            (time.day ? parseInt(time.day ? time.day : 0) * 24 * 60 * 60 : 0) +
+            (time.hour ? parseInt(time.hour ? time.hour : 0) * 60 * 60 : 0) +
+            (time.min ? parseInt(time.min ? time.min : 0) * 60 : 0) +
+            (time.sec ? parseInt(time.sec ? time.sec : 0) : 0)
         const totalSecondsLeft = (total * (100 - progress)) / progress
         return {
             year: null,
             day: Math.floor((totalSecondsLeft % (86400 * 30)) / 86400),
             hour: Math.floor((totalSecondsLeft % 86400) / 3600),
             min: Math.floor((totalSecondsLeft % 3600) / 60),
-            sec: totalSecondsLeft % 60,
+            sec: Math.floor(totalSecondsLeft % 60),
         }
     }
 

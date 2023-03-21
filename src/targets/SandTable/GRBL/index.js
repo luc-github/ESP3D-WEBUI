@@ -21,6 +21,7 @@ import { h } from "preact"
 import { iconsTarget } from "./icons"
 import { files } from "./files"
 import { processor } from "./processor"
+import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings } from "./MachineSettings"
 import {
@@ -28,27 +29,33 @@ import {
     QuickButtonsBar,
     BackgroundContainer,
 } from "./Controls"
-import { AppLogo } from "../../../components/Images/logo"
-import { Eye as WebUILogo } from "preact-feather"
 import {
     TargetContextProvider,
     useTargetContext,
     useTargetContextFn,
 } from "./TargetContext"
 import realCommandsTable from "./realCommandsTable"
+import variablesTable from "./variablesTable"
+import { AppLogo } from "../../../components/Images/logo"
+import { Eye as WebUILogo } from "preact-feather"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "GRBL"
 const webUIbuild = "GS2"
 const Name = "ESP3D"
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
+const fwUrl = [
+    "https://github.com/luc-github/ESP3D/tree/3.0",
+    "https://github.com/luc-github/ESP3D-TFT",
+]
 
 const restartdelay = 30
 const variablesList = {
-    commands: [...realCommandsTable],
-    addCommand: (variable) => addObjectItem(commands, "name", variable),
-    removeCommand: (name) => removeObjectItem(commands, "name", name),
-    modes: [],
+    commands: [...realCommandsTable, ...variablesTable],
+    addCommand: (variable) =>
+        addObjectItem(variablesList.commands, "name", variable),
+    removeCommand: (name) =>
+        removeObjectItem(variablesList.commands, "name", name),
+    modes: [...gcode_parser_modes],
 }
 const eventsList = {
     evts: [],

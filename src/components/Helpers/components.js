@@ -82,7 +82,7 @@ const generateDependIds = (depend, settings) => {
         depend.forEach((d) => {
             if (d.id) {
                 const element = useUiContextFn.getElement(d.id, settings)
-                dependIds.push(element.value)
+                if (element) dependIds.push(element.value)
             }
             if (d.ids) {
                 dependIds.push(...generateDependIds(d.ids, settings))
@@ -96,11 +96,27 @@ const connectionDepend = (depend, settings) => {
     if (Array.isArray(depend)) {
         return depend.reduce((acc, d) => {
             if (d.connection_id && settings[d.connection_id]) {
-                const quote = d.value.trim().endsWith("'") ? "'" : ""
-                return (
-                    acc &&
-                    eval(quote + settings[d.connection_id] + quote + d.value)
-                )
+                const quote = d.value && d.value.trim().endsWith("'") ? "'" : ""
+                if (d.value)
+                    return (
+                        acc &&
+                        eval(
+                            quote + settings[d.connection_id] + quote + d.value
+                        )
+                    )
+                else if (d.contains) {
+                    return (
+                        acc &&
+                        eval(
+                            "'" +
+                                settings[d.connection_id] +
+                                "'" +
+                                ".indexOf('" +
+                                d.contains +
+                                "')!=-1"
+                        )
+                    )
+                }
             }
             return acc
         }, true)
@@ -116,8 +132,12 @@ const settingsDepend = (depend, settings, isOr) => {
                 if (d.id) {
                     const element = useUiContextFn.getElement(d.id, settings)
                     if (isOr) {
-                        return acc || element.value === d.value
-                    } else return acc && element.value === d.value
+                        if (element) return acc || element.value === d.value
+                        return acc || false === d.value
+                    } else {
+                        if (element) return acc && element.value === d.value
+                        else return acc && false === d.value
+                    }
                 }
                 if (d.ids) {
                     return acc && settingsDepend(d.ids, settings, true)

@@ -20,11 +20,14 @@ formatHelper.js - ESP3D WebUI helper file
 */
 
 const getFieldTypeName = ({ value, type, options }) => {
-    if (options !== undefined) return "select" //boolean
+    if (options !== undefined && !(type === "M" || type === "X"))
+        return "select" //boolean
     if (type === "B") return "number" //byte is input number
     if (type === "I") return "number" //integer is input number
-    //if (type === "S" && value === "********") return "password"; //input password
+    if (type === "F") return "number" //float is input number
     if (type === "S") return "text" //input text
+    if (type === "M") return "mask" //bit mask
+    if (type === "X") return "xmask" //exclusive bit mask = first bit enable/disable others bits edition
     return "text" //default
 }
 
@@ -36,7 +39,7 @@ const generateFormattedSelectOptionList = (rawOpt) => {
 }
 
 const formatSettingItem = (settingItem) => {
-    const { F, P, T, V, H, O: options, M, S, MS, R } = settingItem
+    const { P, T, V, H, O: options, M, S, MS, R, U, E } = settingItem
     let settingFieldProps = {
         id: P,
         initial: V,
@@ -44,6 +47,8 @@ const formatSettingItem = (settingItem) => {
         type: T,
         value: V,
         cast: T,
+        append: U,
+        prec: E,
     }
     if (Array.isArray(options) && options !== undefined)
         settingFieldProps.options = generateFormattedSelectOptionList(options)

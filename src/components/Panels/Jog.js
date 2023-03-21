@@ -17,17 +17,7 @@ Jog.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
-import {
-    AlertCircle,
-    Move,
-    Crosshair,
-    Home,
-    ZapOff,
-    CheckCircle,
-    Circle,
-    HelpCircle,
-    Edit3,
-} from "preact-feather"
+import { Move, Crosshair, Home, ZapOff, Edit3 } from "preact-feather"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
@@ -44,7 +34,6 @@ let movetoX
 let movetoY
 let movetoZ
 let currentButtonPressed
-let enable_keyboard_jog = false
 
 /*
  * Local const
@@ -72,11 +61,13 @@ const PositionsControls = () => {
 }
 
 const JogPanel = () => {
-    const { modals, toasts, panels } = useUiContext()
+    const { modals, toasts, panels, shortcuts } = useUiContext()
 
     const { createNewRequest } = useHttpFn
-    const [isKeyboardEnabled, setIsKeyboardEnabled] =
-        useState(enable_keyboard_jog)
+    const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
+        shortcuts.enabled
+    )
+
     const [moveToTitleXY, setMoveToTitleXY] = useState(
         T("P20") + movetoX + "," + movetoY
     )
@@ -99,13 +90,6 @@ const JogPanel = () => {
         )
     }
 
-    //Click button defined by id
-    const clickBtn = (id) => {
-        if (document.getElementById(id)) {
-            document.getElementById(id).click()
-        }
-    }
-
     //Send Home command
     const sendHomeCommand = (axis, id) => {
         const cmd = useUiContextFn.getValue("homecmd").replace("$", axis)
@@ -126,58 +110,6 @@ const JogPanel = () => {
                 list_item.classList.remove(id == "posz" ? "movez" : "std")
             }
         }
-    }
-
-    //keyboard listener handler
-    const keyboardEventHandler = (e) => {
-        if (!enable_keyboard_jog) RemoveKeyboardListener()
-        if (e.key == "ArrowUp") {
-            clickBtn("btn+X")
-        } else if (e.key == "ArrowDown") {
-            clickBtn("btn-X")
-        } else if (e.key == "ArrowLeft") {
-            clickBtn("btn-Y")
-        } else if (e.key == "ArrowRight") {
-            clickBtn("btn+Y")
-        } else if (e.key == "PageUp") {
-            clickBtn("btn+Z")
-        } else if (e.key == "PageDown") {
-            clickBtn("btn-Z")
-        } else if (e.key == "x" || e.key == "X") {
-            clickBtn("btnHX")
-        } else if (e.key == "y" || e.key == "Y") {
-            clickBtn("btnHY")
-        } else if (e.key == "z" || e.key == "Z") {
-            clickBtn("btnHZ")
-        } else if (e.key == "End") {
-            clickBtn("btnMoveZ")
-        } else if (e.key == "m" || e.key == "M") {
-            clickBtn("btnMotorOff")
-        } else if (e.key == "P" || e.key == "p") {
-            clickBtn("btnMoveXY")
-        } else if (e.key == "Home") {
-            clickBtn("btnHXYZ")
-        } else if (e.key == "Delete") {
-            clickBtn("btnEStop")
-        } else if (e.key == "1") {
-            clickBtn("move_100")
-        } else if (e.key == "2") {
-            clickBtn("move_10")
-        } else if (e.key == "3") {
-            clickBtn("move_1")
-        } else if (e.key == "4") {
-            clickBtn("move_0_1")
-        } else console.log(e.key)
-    }
-
-    //Add keyboard listener
-    const AddKeyboardListener = () => {
-        window.addEventListener("keydown", keyboardEventHandler, true)
-    }
-
-    //Remove keyboard listener
-    const RemoveKeyboardListener = () => {
-        window.removeEventListener("keydown", keyboardEventHandler, true)
     }
 
     //Send jog command
@@ -304,38 +236,6 @@ const JogPanel = () => {
         setFeedrate("Z")
     }
 
-    //Show keyboard mapped keys
-    const showKeyboarHelp = () => {
-        useUiContextFn.haptic()
-        const helpKeyboardJog = (
-            <CenterLeft>
-                {T("P80")
-                    .split(",")
-                    .map((e) => {
-                        return <div>{e}</div>
-                    })}
-            </CenterLeft>
-        )
-        showModal({
-            modals,
-            title: T("P81"),
-            button1: {
-                text: T("S24"),
-            },
-            icon: <HelpCircle />,
-            content: helpKeyboardJog,
-        })
-    }
-
-    useEffect(() => {
-        if (enable_keyboard_jog) AddKeyboardListener()
-        return () => {
-            if (enable_keyboard_jog) {
-                RemoveKeyboardListener()
-            }
-        }
-    }, [keyboardEventHandler, enable_keyboard_jog])
-
     useEffect(() => {
         if (!currentFeedRate["xyfeedrate"])
             currentFeedRate["xyfeedrate"] =
@@ -352,13 +252,6 @@ const JogPanel = () => {
         setMoveToTitleZ(T("P75") + movetoZ)
     }, [])
 
-    const toggleUseKeyboard = (e) => {
-        useUiContextFn.haptic()
-        enable_keyboard_jog = !enable_keyboard_jog
-        setIsKeyboardEnabled(enable_keyboard_jog)
-        enable_keyboard_jog ? AddKeyboardListener() : RemoveKeyboardListener()
-    }
-
     const menu = [
         {
             label: T("P10"),
@@ -367,24 +260,6 @@ const JogPanel = () => {
         {
             label: T("P11"),
             onClick: setFeedrateZ,
-        },
-        { divider: true },
-        {
-            label: T("P79"),
-            onClick: toggleUseKeyboard,
-            displayToggle: () => (
-                <span class="feather-icon-container">
-                    {isKeyboardEnabled ? (
-                        <CheckCircle size="0.8rem" />
-                    ) : (
-                        <Circle size="0.8rem" />
-                    )}
-                </span>
-            ),
-        },
-        {
-            label: T("P81"),
-            onClick: showKeyboarHelp,
         },
     ]
     return (
@@ -411,7 +286,7 @@ const JogPanel = () => {
             <div class="m-1 jog-container">
                 <PositionsControls />
                 <div class="m-1" />
-                <div class={isKeyboardEnabled ? "m-1" : "show-low m-1"}>
+                <div class={shortcuts.enabled ? "m-1" : "show-low m-1"}>
                     <div class="jog-buttons-main-container">
                         <div class="m-1 jog-buttons-container">
                             <Button
@@ -621,10 +496,9 @@ const JogPanel = () => {
                     </div>
                 </div>
 
-                {!isKeyboardEnabled && (
+                {!shortcuts.enabled && (
                     <div class="hide-low jog-svg-container">
                         <svg
-                            width="250px"
                             viewBox="0 -5 325 255"
                             xmlns="http://www.w3.org/2000/svg"
                             version="1.1"
@@ -1576,7 +1450,7 @@ const JogPanel = () => {
                 )}
                 <div
                     class={
-                        isKeyboardEnabled ? "m-1 W-100" : "m-1 show-low W-100"
+                        shortcuts.enabled ? "m-1 W-100" : "m-1 show-low W-100"
                     }
                 >
                     <div class="jog-extra-buttons-container">
@@ -1620,7 +1494,7 @@ const JogPanel = () => {
                             }}
                         >
                             <Crosshair />
-                            <span class="text-tiny">z</span>{" "}
+                            <span class="text-tiny">z</span>
                         </Button>
                     </div>
                 </div>
@@ -1659,6 +1533,7 @@ const JogPanelElement = {
     icon: "Move",
     show: "showjogpanel",
     onstart: "openjogonstart",
+    settingid: "jog",
 }
 
 export { JogPanel, JogPanelElement, PositionsControls }

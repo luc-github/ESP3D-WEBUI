@@ -432,6 +432,7 @@ const LaserPanelElement = {
     icon: "Loader",
     show: "showlaserpanel",
     onstart: "openlaseronstart",
+    settingid: "laser",
 }
 
 export { LaserPanel, LaserPanelElement, LaserControls }

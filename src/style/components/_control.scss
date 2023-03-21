@@ -22,6 +22,16 @@ input[type=range]::-ms-thumb{/*Internet Explorer*/
   cursor:pointer;
 }
 
+.control-fieldset{
+  color: black!important;
+  font-size: 0.8rem!important;
+}
+
+.text-label{
+  margin-right:0.4rem;
+  
+}
+
 .badge-container {
   border: 0.05rem solid #5755d9 ;
   text-align: center;
@@ -339,6 +349,7 @@ span.input-group-addon{
   border-radius: 5px;
 }
 
+.clearShortkey,
 .passwordReveal {
   color: #c0c0c0;
   cursor: pointer;
@@ -346,6 +357,7 @@ span.input-group-addon{
   margin-right: 0.9rem !important;
 }
 
+.clearShortkey:hover,
 .passwordReveal:hover {
   color: blue;
 }
@@ -361,6 +373,10 @@ a label {
 
 .flex-wrap .form-label {
   margin-right: 10px;
+}
+
+.form-select{
+  color:#000;
 }
 
 .notification-line {

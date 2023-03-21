@@ -73,7 +73,11 @@ function mergeJSON(o1, o2) {
                                 tempNewObj[i].value[j] = o2[index].value[v]
                             }
                         }
-                    } else tempNewObj[i].value = o2[index].value
+                    } else {
+                        tempNewObj[i].value = o2[index].value
+                        if (typeof o2[index].hide != "undefined")
+                            tempNewObj[i].hide = o2[index].hide
+                    }
                 }
             }
         }
@@ -109,6 +113,61 @@ const removeObjectItem = (src, entry, entryValue) => {
     return src
 }
 
+const BitsArray = {
+    bits: [],
+    size: 0,
+    fromInt: function (intVal, arraySize) {
+        this.bits = (intVal >>> 0).toString(2).split("").reverse()
+        this.size = arraySize
+        //Sanity check to have proper size
+        while (this.size > this.bits.length) {
+            this.bits.push("0")
+        }
+        let t = ""
+        for (let i = 0; i < this.bits.length; i++) {
+            if (i > 0) t += ","
+            t += this.bits[i]
+        }
+        return this
+    },
+    fromArray: function (arrayVal) {
+        this.bits = []
+        this.size = arrayVal.length
+        //sanity check to have proper content
+        // so can handle false/true, 0/1, "0"/"1", empty
+        for (let index = 0; index < this.size; index++) {
+            if (arrayVal[index]) {
+                if (arrayVal[index] == "0") {
+                    this.bits[index] = "0"
+                } else {
+                    this.bits[index] = "1"
+                }
+            } else {
+                this.bits[index] = "0"
+            }
+        }
+
+        return this
+    },
+    getBit: function (index) {
+        return parseInt(this.bits[index])
+    },
+    setBit: function (index, value) {
+        this.bits[index] = value == 0 ? "0" : "1"
+    },
+    toInt: function () {
+        const bitstmp = []
+        for (let index = 0; index < this.size; index++) {
+            if (typeof this.bits[index] == "undefined") {
+                bitstmp[index] = "0"
+            } else {
+                bitstmp[index] = this.bits[index]
+            }
+        }
+        return parseInt(bitstmp.reverse().join(""), 2)
+    },
+}
+
 export {
     limitArr,
     mergeJSON,
@@ -116,4 +175,5 @@ export {
     splitArrayByLines,
     addObjectItem,
     removeObjectItem,
+    BitsArray,
 }

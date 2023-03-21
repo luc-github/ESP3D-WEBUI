@@ -26,6 +26,7 @@ import {
 } from "../contexts"
 import { useHttpFn } from "../hooks"
 import { getCookie, splitArrayByLines } from "../components/Helpers"
+import { T } from "../components/Translations"
 
 /*
  * Local const
@@ -170,8 +171,12 @@ const WsContextProvider = ({ children }) => {
         //seems sometimes it disconnect so wait 3s and reconnect
         //if it is not a log off
         if (!isLogOff.current) {
-            if (!isPingPaused) reconnectCounter.current++
+            if (!isPingPaused) {
+                reconnectCounter.current++
+                console.log("reconnecting ", reconnectCounter.current)
+            }
             if (reconnectCounter.current >= maxReconnections) {
+                console.log("Reconnection over ", maxReconnections)
                 Disconnect("connectionlost")
             } else {
                 console.log("Ws connection lost")
@@ -182,7 +187,7 @@ const WsContextProvider = ({ children }) => {
 
     const onErrorCB = (e) => {
         reconnectCounter.current++
-        toasts.addToast({ content: "S6", type: "error" })
+        toasts.addToast({ content: T("S6"), type: "error" })
         console.log("Error")
     }
     const setupWS = () => {
@@ -205,10 +210,13 @@ const WsContextProvider = ({ children }) => {
             connectionSettings.current.WebCommunication === "Synchronous"
                 ? ""
                 : "/ws"
-
         wsConnection.current = new WebSocket(
-            `ws://${document.location.hostname}:${connectionSettings.current.WebSocketPort}${path}`,
-            ["arduino"]
+            `ws://${document.location.hostname}:${
+                document.location.port != ""
+                    ? parseInt(document.location.port) + 1
+                    : connectionSettings.current.WebSocketPort
+            }${path}`,
+            `webui-v3`
         )
         wsConnection.current.binaryType = "arraybuffer"
 

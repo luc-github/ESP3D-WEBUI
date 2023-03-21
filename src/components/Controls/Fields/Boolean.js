@@ -68,7 +68,10 @@ const Boolean = ({
         let visible =
             canshow &&
             settingsDepend(depend, interfaceSettings.current.settings)
-        document.getElementById(id).style.display = visible ? "block" : "none"
+        if (document.getElementById(id))
+            document.getElementById(id).style.display = visible
+                ? "block"
+                : "none"
         if (document.getElementById("group-" + id))
             document.getElementById("group-" + id).style.display = visible
                 ? "block"
@@ -86,7 +89,7 @@ const Boolean = ({
                 {...inputCheckboxProps}
                 onChange={onChange}
             />
-            <i class="form-icon" />{" "}
+            <i class="form-icon" />
             <span class={inline ? "text-dark" : "d-none"}>{label}</span>
         </label>
     )

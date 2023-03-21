@@ -33,7 +33,10 @@ const supportedFileSystems = [
         value: "FLASH",
         name: "S137",
         depend: () => {
-            return useUiContextFn.getValue("showfilespanel")
+            return (
+                useUiContextFn.getValue("flashfs") &&
+                useSettingsContextFn.getValue("FlashFileSystem") != "none"
+            )
         },
     },
     {
@@ -114,9 +117,10 @@ const commands = {
 
 function capability() {
     const [filesystem, cap, ...rest] = arguments
+    if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknow capability ", cmd, " for ", filesystem)
+    //console.log("Unknow capability ", cap, " for ", filesystem)
     return false
 }
 
@@ -124,7 +128,7 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknow command ", cmd, " for ", filesystem)
+    //console.log("Unknow command ", cmd, " for ", filesystem)
     return { type: "error" }
 }
 

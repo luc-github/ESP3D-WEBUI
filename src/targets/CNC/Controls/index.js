@@ -19,6 +19,5 @@
 */
 import { h } from "preact"
 import { EmergencyButton } from "./EmergencyButton"
-import { BackgroundContainer } from "./BackgroundContainer"
 
-export { EmergencyButton, BackgroundContainer }
+export { EmergencyButton }

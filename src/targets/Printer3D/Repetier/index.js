@@ -42,11 +42,14 @@ import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 const Target = "Repetier"
 const webUIbuild = "R2"
 const Name = "ESP3D"
-const fwUrl = "https://github.com/luc-github/ESP3D/tree/3.0"
+const fwUrl = [
+    "https://github.com/luc-github/ESP3D/tree/3.0",
+    "https://github.com/luc-github/ESP3D-TFT",
+]
 
 const restartdelay = 30
 const variablesList = {
-    commands: [ ...variablesTable],
+    commands: [...variablesTable],
     addCommand: (variable) =>
         addObjectItem(variablesList.commands, "name", variable),
     removeCommand: (name) =>

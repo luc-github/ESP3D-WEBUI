@@ -19,7 +19,8 @@
 */
 import { h } from "preact"
 import { FLASH } from "../../FLASH-source"
-import { useUiContextFn } from "../../../contexts"
+import { DIRECTSD } from "./DIRECTSD-source"
+import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -27,7 +28,20 @@ const supportedFileSystems = [
         value: "FLASH",
         name: "S137",
         depend: () => {
-            return useUiContextFn.getValue("showfilespanel")
+            return (
+                useUiContextFn.getValue("flashfs") &&
+                useSettingsContextFn.getValue("FlashFileSystem") != "none"
+            )
+        },
+    },
+    {
+        value: "DIRECTSD",
+        name: "S190",
+        depend: () => {
+            return (
+                useUiContextFn.getValue("directsd") &&
+                useSettingsContextFn.getValue("SDConnection") != "none"
+            )
         },
     },
     {
@@ -48,21 +62,24 @@ const supportedFileSystems = [
 
 const capabilities = {
     FLASH: FLASH.capabilities,
+    DIRECTSD: DIRECTSD.capabilities,
     TFTUSB: {},
     TFTSD: {},
 }
 
 const commands = {
     FLASH: FLASH.commands,
+    DIRECTSD: DIRECTSD.commands,
     TFTUSB: {},
     TFTSD: {},
 }
 
 function capability() {
     const [filesystem, cap, ...rest] = arguments
+    if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknow capability ", cmd, " for ", filesystem)
+    //console.log("Unknow capability ", cap, " for ", filesystem)
     return false
 }
 
@@ -70,7 +87,7 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknow command ", cmd, " for ", filesystem)
+    //console.log("Unknow command ", cmd, " for ", filesystem)
     return { type: "error" }
 }
 

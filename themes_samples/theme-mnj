@@ -1,0 +1,171 @@
+span.form-input,
+button,
+.modal-container,
+body,
+.empty,
+html{
+background-color:#222;
+color:#d3e4ff!important;
+}
+
+a svg.esp3dlogo{
+color:#0077ff!important;
+}
+
+a.active svg,
+a.active label.hide-low{
+color:rgb(0, 85, 197)!important;
+}
+
+.menu-container .navbar{
+    background-color: #3b679360;
+    border-bottom:.5px solid #8888;
+}
+
+.panel .navbar {
+    background-color: #3b6793c2;
+    border-bottom:.5px solid #8888;
+}
+
+.panel .navbar-section {
+    background-color: #fff0;
+    border-bottom:.5px solid #8888;
+}
+
+span.navbar-section{
+    color:#f7f8f9!important;
+}
+
+.btn {
+    border: 0.05rem solid #fff8;
+    background: #8884;
+    color: #9aceff;
+}
+
+.btn.btn-link {
+    color: #368ad8;
+}
+
+.btn:focus, .btn:hover {
+    background: #f1f1fc;
+    border-color: #286baa;
+    text-decoration: none;
+}
+
+.form-checkbox input:checked+.form-icon, .form-radio input:checked+.form-icon, .form-switch input:checked+.form-icon {
+    background: #1c4870;
+    border-color: #1c4870;
+}
+
+.files-list-footer {
+    color: #c7d8f3;
+}
+
+.form-input, .form-select, input {
+    background: #4446;
+    color: #5b92e9;
+}
+
+.form-input[readonly] {
+    background-color: #5448;
+}
+
+.input-group .input-group-addon {
+    background: #4446;
+    border: 0.05rem solid #bcc3ce;
+    color: #fffA;
+}
+
+.text-primary {
+    color: #66a9e7!important;
+}
+
+.label.label-primary {
+    background: #0d4183;
+    color: #fff;
+    margin: 0.1rem;
+}
+
+.text-dark {
+    color: #ffffff!important;
+}
+
+.tab-item {
+    color: #c1c1c1!important;
+}
+
+.tab .tab-item a:focus, .tab .tab-item a:hover, .jog-position-header {
+    color: #0061a7;
+}
+
+a.active svg {
+    color: rgb(0 171 255)!important;
+}
+
+a.active label.hide-low {
+    color: rgb(218, 235, 255)!important;
+}
+
+a.active label.hide-low:hover, a.active label.hide-low:active {
+    color: rgb(26, 26, 26)!important;
+}
+
+a.active label.hide-low {
+    color: rgb(0 171 255)!important;
+}
+
+.tab .tab-item a.active, .tab .tab-item.active a {
+    border-bottom-color: #e7e7e7;
+}
+
+.form-select:not([multiple]):not([size]) {
+    background: #4446 url(data:image/svg+xml;charset=utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%204%205%27%3E%3Cpath%20fill=%27%23667189%27%20d=%27M2%200L0%202h4zm0%205L0%203h4z%27/%3E%3C/svg%3E) no-repeat right 0.35rem center/0.4rem 0.5rem;
+    padding-right: 1.2rem;
+}
+
+.form-input:focus {
+    box-shadow: 0 0 0 0.1rem rgb(85 144 217 / 20%);
+    border-color: #5590d9;
+}
+
+.chart {
+    filter: invert(1);
+}
+
+.extruder-ctrl-name, .temperature-ctrl-name, .jog-position-value, .extra-control-value, .status-control-value, .temperatures-value {
+    color: #c9e1ff;
+}
+
+button svg {
+    stroke:rgb(134, 183, 255)
+}
+
+.terminal .echo {
+    color: #348dff;
+}
+
+.terminal .action {
+    color: #34ff8d;
+}
+
+.bar .bar-item {
+    background: #1ea1ff;
+}
+
+.menu-item {
+    color: #438fff;
+}
+
+.file-line:hover {
+    color: #0055d7;
+    background-color: #e8f0ff;
+}
+
+.menu .menu-item>.menu-entry:focus, .menu .menu-item>.menu-entry:hover {
+    color: #0055d7;
+    background: #e8f0ff;
+}
+
+.btn.btn-link.active, .btn.btn-link:active, .btn.btn-link:focus, .btn.btn-link:hover {
+    color: #012a4c;
+}

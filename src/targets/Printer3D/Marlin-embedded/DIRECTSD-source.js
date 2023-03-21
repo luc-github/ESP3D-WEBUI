@@ -90,7 +90,16 @@ const commands = {
         return {
             type: "url",
             url: "sdfiles",
-            args: { path, action: "createdir", filename },
+            args: {
+                path,
+                action: "createdir",
+                filename: filename.replaceAll(" ", "_"),
+            },
+        }
+    },
+    needFormatFileName: (path, filename) => {
+        return {
+            name: filename.replaceAll(" ", "_"),
         }
     },
     download: (path, filename) => {
