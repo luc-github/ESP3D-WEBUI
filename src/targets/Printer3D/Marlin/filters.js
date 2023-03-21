@@ -20,6 +20,15 @@
 import { h } from "preact"
 import { useSettingsContextFn } from "../../../contexts"
 
+///////////////////////////////////////////////////////
+//
+//Acknowledgement
+
+const isOk = (str) => {
+    const search = "ok"
+    return search === str
+}
+
 ////////////////////////////////////////////////////////
 //
 //Temperatures
@@ -303,6 +312,7 @@ const getSensor = (str) => {
 }
 
 export {
+    isOk,
     isTemperatures,
     getTemperatures,
     isPositions,
