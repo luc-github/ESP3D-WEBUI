@@ -25,7 +25,7 @@ import { useSettingsContextFn } from "../../../contexts"
 //Acknowledgement
 
 const isOk = (str) => {
-    const search = /ok/
+    const search = "ok"
     return (search === str)
 }
 
