@@ -16,14 +16,14 @@ Files.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact"
-import { useEffect, useState, useRef } from "preact/hooks"
-import { T } from "../Translations"
-import { useHttpFn } from "../../hooks"
-import { espHttpURL } from "../Helpers"
-import { Loading, ButtonImg, CenterLeft, Progress } from "../Controls"
-import { useUiContext, useUiContextFn } from "../../contexts"
-import { showModal, showConfirmationModal, showProgressModal } from "../Modal"
+import { Fragment, h } from 'preact'
+import { useEffect, useState, useRef } from 'preact/hooks'
+import { T } from '../Translations'
+import { useHttpFn } from '../../hooks'
+import { espHttpURL } from '../Helpers'
+import { Loading, ButtonImg, CenterLeft, Progress } from '../Controls'
+import { useUiContext, useUiContextFn } from '../../contexts'
+import { showModal, showConfirmationModal, showProgressModal } from '../Modal'
 import {
     HardDrive,
     Upload,
@@ -32,12 +32,12 @@ import {
     CornerRightUp,
     Edit3,
     XCircle,
-} from "preact-feather"
-import { files, processor, useTargetContextFn } from "../../targets"
-import { Folder, File, Trash2, Play } from "preact-feather"
-import { Menu as PanelMenu } from "./"
+} from 'preact-feather'
+import { files, processor, useTargetContextFn } from '../../targets'
+import { Folder, File, Trash2, Play } from 'preact-feather'
+import { Menu as PanelMenu } from './'
 
-let currentFS = ""
+let currentFS = ''
 const currentPath = {}
 const filesListCache = {}
 
@@ -47,7 +47,7 @@ const filesListCache = {}
  */
 const FilesPanel = () => {
     const { panels, uisettings } = useUiContext()
-    const id = "filesPanel"
+    const id = 'filesPanel'
     const [filePath, setFilePath] = useState(currentPath[currentFS])
     const [isLoading, setIsLoading] = useState(false)
     const [fileSystem, setFileSystem] = useState(currentFS)
@@ -64,17 +64,17 @@ const FilesPanel = () => {
         useUiContextFn.haptic()
         processor.stopCatchResponse()
         setIsLoading(false)
-        toasts.addToast({ content: T("S175"), type: "error" })
-        filesListCache[currentFS] = { files: [], status: "S22" }
+        toasts.addToast({ content: T('S175'), type: 'error' })
+        filesListCache[currentFS] = { files: [], status: 'S22' }
         setFilesList(filesListCache[currentFS])
     }
 
     const sendSerialCmd = (command) => {
-        const cmds = command.split(";")
+        const cmds = command.split(';')
         cmds.forEach((cmd) => {
             createNewRequest(
-                espHttpURL("command", { cmd: cmd }),
-                { method: "GET", echo: cmd },
+                espHttpURL('command', { cmd: cmd }),
+                { method: 'GET', echo: cmd },
                 {
                     onSuccess: (result) => {
                         //Result is handled on ws so just do nothing
@@ -83,7 +83,7 @@ const FilesPanel = () => {
                         console.log(error)
                         processor.stopCatchResponse()
                         setIsLoading(false)
-                        toasts.addToast({ content: error, type: "error" })
+                        toasts.addToast({ content: error, type: 'error' })
                     },
                 }
             )
@@ -93,12 +93,12 @@ const FilesPanel = () => {
     const sendURLCmd = (cmd) => {
         createNewRequest(
             espHttpURL(cmd.url, cmd.args),
-            { method: "GET" },
+            { method: 'GET' },
             {
                 onSuccess: (result) => {
                     filesListCache[currentFS] = files.command(
                         currentFS,
-                        "formatResult",
+                        'formatResult',
                         result
                     )
                     setFilesList(filesListCache[currentFS])
@@ -107,7 +107,7 @@ const FilesPanel = () => {
                 onFail: (error) => {
                     console.log(error)
                     setIsLoading(false)
-                    toasts.addToast({ content: error, type: "error" })
+                    toasts.addToast({ content: error, type: 'error' })
                 },
             }
         )
@@ -115,27 +115,27 @@ const FilesPanel = () => {
 
     const processFeedback = (feedback) => {
         if (feedback.status) {
-            if (feedback.command == "list") {
-                if (feedback.status == "error") {
-                    console.log("got error")
+            if (feedback.command == 'list') {
+                if (feedback.status == 'error') {
+                    console.log('got error')
                     toasts.addToast({
-                        content: T("S4"),
-                        type: "error",
+                        content: T('S4'),
+                        type: 'error',
                     })
-                    filesListCache[currentFS] = { files: [], status: "S22" }
+                    filesListCache[currentFS] = { files: [], status: 'S22' }
                     setFilesList(filesListCache[currentFS])
                 } else {
                     filesListCache[currentFS] = files.command(
                         currentFS,
-                        "formatResult",
+                        'formatResult',
                         feedback
                     )
                     //check if flatFS and filter if necessary
-                    if (files.capability(currentFS, "IsFlatFS")) {
+                    if (files.capability(currentFS, 'IsFlatFS')) {
                         setFilesList(
                             files.command(
                                 currentFS,
-                                "filterResult",
+                                'filterResult',
                                 filesListCache[currentFS],
                                 currentPath[currentFS]
                             )
@@ -147,17 +147,17 @@ const FilesPanel = () => {
             } else {
                 //this is affected only by serial commands
                 if (
-                    feedback.command == "delete" ||
-                    feedback.command == "createdir"
+                    feedback.command == 'delete' ||
+                    feedback.command == 'createdir'
                 ) {
-                    if (feedback.status == "error") {
-                        console.log("got error")
+                    if (feedback.status == 'error') {
+                        console.log('got error')
                         toasts.addToast({
                             content:
-                                feedback.command == "delete"
-                                    ? T("S85").replace("%s", feedback.arg)
-                                    : T("S84").replace("%s", feedback.arg),
-                            type: "error",
+                                feedback.command == 'delete'
+                                    ? T('S85').replace('%s', feedback.arg)
+                                    : T('S84').replace('%s', feedback.arg),
+                            type: 'error',
                         })
                     } else {
                         //Success now refresh content"
@@ -173,33 +173,33 @@ const FilesPanel = () => {
 
     const uploadFiles = () => {
         setIsLoading(true)
-        const cmd = files.command(currentFS, "upload", currentPath[currentFS])
+        const cmd = files.command(currentFS, 'upload', currentPath[currentFS])
         const list = fileref.current.files
         if (list.length > 0) {
             showProgressModal({
                 modals,
-                title: T("S32"),
+                title: T('S32'),
                 button1: {
                     cb: abortRequest,
-                    text: T("S28"),
+                    text: T('S28'),
                 },
                 content: <Progress progressBar={progressBar} max="100" />,
             })
             //prepare POST data
             const formData = new FormData()
-            formData.append("path", currentPath[currentFS])
+            formData.append('path', currentPath[currentFS])
             for (let i = 0; i < list.length; i++) {
                 const file = list[i]
 
-                let fileName = ""
+                let fileName = ''
                 const needFormatFileName = files.command(
                     currentFS,
-                    "needFormatFileName",
+                    'needFormatFileName',
                     currentPath[currentFS],
-                    fileref.current.files[0].name
+                    fileref.current.files[i].name
                 )
                 if (
-                    needFormatFileName.type != "error" &&
+                    needFormatFileName.type != 'error' &&
                     needFormatFileName.name
                 ) {
                     fileName = needFormatFileName.name
@@ -208,42 +208,42 @@ const FilesPanel = () => {
                 }
                 const arg =
                     currentPath[currentFS] +
-                    (currentPath[currentFS] == "/" ? "" : "/") +
+                    (currentPath[currentFS] == '/' ? '' : '/') +
                     fileName +
-                    "S"
+                    'S'
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
                 formData.append(
-                    "myfiles",
+                    'myfiles',
                     file,
                     currentPath[currentFS] +
-                        (currentPath[currentFS] == "/" ? "" : "/") +
+                        (currentPath[currentFS] == '/' ? '' : '/') +
                         fileName
                 )
             }
             //now do request
             createNewRequest(
                 espHttpURL(cmd.url),
-                { method: "POST", id: "upload", body: formData },
+                { method: 'POST', id: 'upload', body: formData },
                 {
                     onSuccess: (result) => {
-                        modals.removeModal(modals.getModalIndex("upload"))
+                        modals.removeModal(modals.getModalIndex('upload'))
                         const cmdpost = files.command(
                             currentFS,
-                            "postUpload",
+                            'postUpload',
                             currentPath[currentFS],
                             fileref.current.files[0].name
                         )
-                        if (cmdpost.type == "error" || cmdpost.type == "none") {
+                        if (cmdpost.type == 'error' || cmdpost.type == 'none') {
                             filesListCache[currentFS] = files.command(
                                 currentFS,
-                                "formatResult",
+                                'formatResult',
                                 result
                             )
                             setFilesList(filesListCache[currentFS])
                             setIsLoading(false)
                         } else {
-                            if (cmdpost.type == "refresh") {
+                            if (cmdpost.type == 'refresh') {
                                 //this is needed because the board is still busy
                                 setTimeout(() => {
                                     onRefresh(null, cmdpost.arg)
@@ -252,14 +252,14 @@ const FilesPanel = () => {
                         }
                     },
                     onFail: (error) => {
-                        modals.removeModal(modals.getModalIndex("upload"))
-                        toasts.addToast({ content: error, type: "error" })
+                        modals.removeModal(modals.getModalIndex('upload'))
+                        toasts.addToast({ content: error, type: 'error' })
                         setIsLoading(false)
                     },
                     onProgress: (e) => {
                         if (
                             progressBar.update &&
-                            typeof progressBar.update === "function"
+                            typeof progressBar.update === 'function'
                         )
                             progressBar.update(e)
                     },
@@ -276,73 +276,73 @@ const FilesPanel = () => {
             if (
                 !files.capability(
                     currentFS,
-                    "Upload",
+                    'Upload',
                     currentPath[currentFS],
                     fileref.current.files[index].name
                 )
             ) {
                 const eMsg = files.capability(
                     currentFS,
-                    "Upload",
+                    'Upload',
                     currentPath[currentFS],
                     fileref.current.files[index].name,
                     true
                 )
-                toasts.add({ content: T(eMsg), type: "error" })
+                toasts.add({ content: T(eMsg), type: 'error' })
             }
         }
 
         showConfirmationModal({
             modals,
-            title: T("S31"),
+            title: T('S31'),
             content: <CenterLeft>{content}</CenterLeft>,
             button1: {
                 cb: uploadFiles,
-                text: T("S27"),
+                text: T('S27'),
             },
-            button2: { text: T("S28") },
+            button2: { text: T('S28') },
         })
     }
 
     const downloadFile = (element) => {
         const cmd = files.command(
             currentFS,
-            "download",
+            'download',
             currentPath[currentFS],
             element.name
         )
         showProgressModal({
             modals,
-            title: T("S108"),
+            title: T('S108'),
             button1: {
                 cb: abortRequest,
-                text: T("S28"),
+                text: T('S28'),
             },
             content: <Progress progressBar={progressBar} max="100" />,
         })
         createNewRequest(
             espHttpURL(cmd.url, cmd.args),
-            { method: "GET", id: "download" },
+            { method: 'GET', id: 'download' },
             {
                 onSuccess: (result) => {
                     if (
                         progressBar.update &&
-                        typeof progressBar.update === "function"
+                        typeof progressBar.update === 'function'
                     )
                         progressBar.update(100)
                     setTimeout(() => {
-                        modals.removeModal(modals.getModalIndex("progression"))
+                        modals.removeModal(modals.getModalIndex('progression'))
                     }, 2000)
 
                     const file = new Blob([result], {
-                        type: "application/octet-stream",
+                        type: 'application/octet-stream',
                     })
                     if (window.navigator.msSaveOrOpenBlob)
                         // IE10+
                         window.navigator.msSaveOrOpenBlob(file, element.name)
                     else {
                         // Others
-                        let a = document.createElement("a"),
+                        let a = document.createElement('a'),
                             url = URL.createObjectURL(file)
                         a.href = url
                         a.download = element.name
@@ -355,13 +355,13 @@ const FilesPanel = () => {
                     }
                 },
                 onFail: (error) => {
-                    modals.removeModal(modals.getModalIndex("progression"))
-                    toasts.addToast({ content: error, type: "error" })
+                    modals.removeModal(modals.getModalIndex('progression'))
+                    toasts.addToast({ content: error, type: 'error' })
                 },
                 onProgress: (e) => {
                     if (
                         progressBar.update &&
-                        typeof progressBar.update === "function"
+                        typeof progressBar.update === 'function'
                     )
                         progressBar.update(e)
                 },
@@ -372,17 +372,17 @@ const FilesPanel = () => {
     const createDirectory = (name) => {
         const cmd = files.command(
             currentFS,
-            "createdir",
+            'createdir',
             currentPath[currentFS],
             name
         )
-        if (cmd.type == "url") {
+        if (cmd.type == 'url') {
             sendURLCmd(cmd)
-        } else if (cmd.type == "cmd") {
+        } else if (cmd.type == 'cmd') {
             if (
                 processor.startCatchResponse(
                     currentFS,
-                    "createdir",
+                    'createdir',
                     processFeedback,
                     name
                 )
@@ -396,19 +396,19 @@ const FilesPanel = () => {
     const deleteCommand = (element) => {
         const cmd = files.command(
             currentFS,
-            element.size == -1 ? "deletedir" : "delete",
+            element.size == -1 ? 'deletedir' : 'delete',
             currentPath[currentFS],
             element.name
         )
-        if (cmd.type == "url") {
+        if (cmd.type == 'url') {
             sendURLCmd(cmd)
-        } else if (cmd.type == "cmd") {
+        } else if (cmd.type == 'cmd') {
             //do the catching
 
             if (
                 processor.startCatchResponse(
                     currentFS,
-                    "delete",
+                    'delete',
                     processFeedback,
                     element.name
                 )
@@ -419,16 +419,16 @@ const FilesPanel = () => {
         }
     }
     const setupFileInput = () => {
-        if (currentFS == "") return
-        fileref.current.multiple = files.capability(currentFS, "UploadMultiple")
-        if (files.capability(currentFS, "UseFilters")) {
-            let f = useUiContextFn.getValue("filesfilter").trim()
-            if (f.length > 0 && f != "*") {
-                f = "." + f.replace(/;/g, ",.")
-            } else f = "*"
+        if (currentFS == '') return
+        fileref.current.multiple = files.capability(currentFS, 'UploadMultiple')
+        if (files.capability(currentFS, 'UseFilters')) {
+            let f = useUiContextFn.getValue('filesfilter').trim()
+            if (f.length > 0 && f != '*') {
+                f = '.' + f.replace(/;/g, ',.')
+            } else f = '*'
             fileref.current.accept = f
         } else {
-            fileref.current.accept = "*"
+            fileref.current.accept = '*'
         }
     }
     const onSelectFS = (e, norefresh = false) => {
@@ -436,7 +436,7 @@ const FilesPanel = () => {
         setupFileInput()
         setFileSystem(currentFS)
         if (!currentPath[currentFS]) {
-            currentPath[currentFS] = "/"
+            currentPath[currentFS] = '/'
         }
         if (!norefresh) onRefresh(e, true)
     }
@@ -445,23 +445,23 @@ const FilesPanel = () => {
         if (line.size == -1) {
             currentPath[currentFS] =
                 currentPath[currentFS] +
-                (currentPath[currentFS] == "/" ? "" : "/") +
+                (currentPath[currentFS] == '/' ? '' : '/') +
                 line.name
-            onRefresh(e, files.capability(currentFS, "IsFlatFS"))
+            onRefresh(e, files.capability(currentFS, 'IsFlatFS'))
         } else {
-            if (files.capability(currentFS, "Download")) {
+            if (files.capability(currentFS, 'Download')) {
                 const content = <li>{line.name}</li>
                 showConfirmationModal({
                     modals,
-                    title: T("S87"),
+                    title: T('S87'),
                     content,
                     button1: {
                         cb: () => {
                             downloadFile(line)
                         },
-                        text: T("S27"),
+                        text: T('S27'),
                     },
-                    button2: { text: T("S28") },
+                    button2: { text: T('S28') },
                 })
             }
         }
@@ -472,11 +472,11 @@ const FilesPanel = () => {
         setIsLoading(true)
         setFilePath(currentPath[currentFS])
         if (usecache && filesListCache[currentFS]) {
-            if (files.capability(currentFS, "IsFlatFS")) {
+            if (files.capability(currentFS, 'IsFlatFS')) {
                 setFilesList(
                     files.command(
                         currentFS,
-                        "filterResult",
+                        'filterResult',
                         filesListCache[currentFS],
                         currentPath[currentFS]
                     )
@@ -486,16 +486,16 @@ const FilesPanel = () => {
             }
             setIsLoading(false)
         } else {
-            const cmd = files.command(currentFS, "list", currentPath[currentFS])
-            if (cmd.type == "url") {
+            const cmd = files.command(currentFS, 'list', currentPath[currentFS])
+            if (cmd.type == 'url') {
                 createNewRequest(
                     espHttpURL(cmd.url, cmd.args),
-                    { method: "GET" },
+                    { method: 'GET' },
                     {
                         onSuccess: (result) => {
                             filesListCache[currentFS] = files.command(
                                 currentFS,
-                                "formatResult",
+                                'formatResult',
                                 result
                             )
                             setFilesList(filesListCache[currentFS])
@@ -504,15 +504,15 @@ const FilesPanel = () => {
                         onFail: (error) => {
                             console.log(error)
                             setIsLoading(false)
-                            toasts.addToast({ content: error, type: "error" })
+                            toasts.addToast({ content: error, type: 'error' })
                         },
                     }
                 )
-            } else if (cmd.type == "cmd") {
+            } else if (cmd.type == 'cmd') {
                 if (
                     processor.startCatchResponse(
                         currentFS,
-                        "list",
+                        'list',
                         processFeedback
                     )
                 )
@@ -522,21 +522,21 @@ const FilesPanel = () => {
     }
 
     useEffect(() => {
-        if (currentFS == "") {
+        if (currentFS == '') {
             const fs = files.supported.find((element) => {
                 if (element.depend) if (element.depend()) return true
                 return false
             })
             if (fs) {
                 currentFS = fs.value
-                onSelectFS(null, !useUiContextFn.getValue("autoload"))
+                onSelectFS(null, !useUiContextFn.getValue('autoload'))
             }
         }
         setupFileInput()
     }, [])
     const openFileUploadBrowser = () => {
         useUiContextFn.haptic()
-        fileref.current.value = ""
+        fileref.current.value = ''
         fileref.current.click()
     }
     const showCreateDirModal = () => {
@@ -544,19 +544,19 @@ const FilesPanel = () => {
         let name
         showModal({
             modals,
-            title: T("S104"),
-            button2: { text: T("S28") },
+            title: T('S104'),
+            button2: { text: T('S28') },
             button1: {
                 cb: () => {
                     if (name.length > 0) createDirectory(name)
                 },
-                text: T("S106"),
+                text: T('S106'),
             },
             icon: <Edit3 />,
-            id: "inputName",
+            id: 'inputName',
             content: (
                 <Fragment>
-                    <div>{T("S105")}</div>
+                    <div>{T('S105')}</div>
                     <input
                         class="form-input"
                         onInput={(e) => {
@@ -572,8 +572,8 @@ const FilesPanel = () => {
         const newMenu = () => {
             const rawMenuItems = [
                 {
-                    capability: "CreateDir",
-                    label: T("S90"),
+                    capability: 'CreateDir',
+                    label: T('S90'),
                     icon: (
                         <span class="feather-icon-container">
                             <FolderPlus size="0.8rem" />
@@ -582,8 +582,8 @@ const FilesPanel = () => {
                     onClick: showCreateDirModal,
                 },
                 {
-                    capability: "Upload",
-                    label: T("S89"),
+                    capability: 'Upload',
+                    label: T('S89'),
                     displayToggle: () => (
                         <span class="feather-icon-container">
                             <Upload size="0.8rem" />
@@ -593,7 +593,7 @@ const FilesPanel = () => {
                 },
                 { divider: true },
                 {
-                    label: T("S50"),
+                    label: T('S50'),
                     onClick: onRefresh,
                     icon: (
                         <span class="feather-icon-container">
@@ -602,7 +602,7 @@ const FilesPanel = () => {
                     ),
                 },
             ]
-            const capabilities = ["CreateDir", "Upload"].filter((cap) =>
+            const capabilities = ['CreateDir', 'Upload'].filter((cap) =>
                 files.capability(currentFS, cap)
             )
 
@@ -628,12 +628,12 @@ const FilesPanel = () => {
             <div class="navbar">
                 <span class="navbar-section  feather-icon-container">
                     <HardDrive />
-                    <strong class="text-ellipsis">{T("S65")}</strong>
+                    <strong class="text-ellipsis">{T('S65')}</strong>
                 </span>
 
                 <span class="navbar-section">
                     <span style="height: 100%;">
-                        {fileSystem != "" && !isLoading && (
+                        {fileSystem != '' && !isLoading && (
                             <PanelMenu items={menu} />
                         )}
                         <span
@@ -665,34 +665,34 @@ const FilesPanel = () => {
                         })}
                     </select>
                 </div>
-                <div class="form-control m-1">{filePath ? filePath : ""}</div>
+                <div class="form-control m-1">{filePath ? filePath : ''}</div>
             </div>
 
             <div
                 ref={dropRef}
                 class="panel drop-zone panel-body-dashboard"
                 onDragOver={(e) => {
-                    dropRef.current.classList.add("drop-zone--over")
+                    dropRef.current.classList.add('drop-zone--over')
                     e.preventDefault()
                 }}
                 onDragLeave={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
+                    dropRef.current.classList.remove('drop-zone--over')
                     e.preventDefault()
                 }}
                 onDragEnd={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
+                    dropRef.current.classList.remove('drop-zone--over')
                     e.preventDefault()
                 }}
                 onDrop={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
+                    dropRef.current.classList.remove('drop-zone--over')
                     if (e.dataTransfer.files.length) {
                         const length = e.dataTransfer.items.length
                         if (!fileref.current.multiple && length > 1) {
                             toasts.addToast({
-                                content: T("S193"),
-                                type: "error",
+                                content: T('S193'),
+                                type: 'error',
                             })
-                            console.log("Multiple detected abort")
+                            console.log('Multiple detected abort')
                             e.preventDefault()
                             return
                         }
@@ -706,10 +706,10 @@ const FilesPanel = () => {
                                     e.dataTransfer.items[i].webkitGetAsEntry()
                                 if (entry.isDirectory) {
                                     toasts.addToast({
-                                        content: T("S192"),
-                                        type: "error",
+                                        content: T('S192'),
+                                        type: 'error',
                                     })
-                                    console.log("Directory detected abort")
+                                    console.log('Directory detected abort')
                                     e.preventDefault()
                                     return
                                 }
@@ -724,7 +724,7 @@ const FilesPanel = () => {
                 }}
             >
                 <div class="panel-body panel-body-dashboard files-list m-1">
-                    {isLoading && fileSystem != "" && (
+                    {isLoading && fileSystem != '' && (
                         <Fragment>
                             <center>
                                 <Loading class="m-2" />
@@ -732,18 +732,18 @@ const FilesPanel = () => {
                                 <ButtonImg
                                     donotdisable
                                     icon={<XCircle />}
-                                    label={T("S28")}
+                                    label={T('S28')}
                                     btooltip
-                                    data-tooltip={T("S28")}
+                                    data-tooltip={T('S28')}
                                     onClick={onCancel}
                                 />
                             </center>
                         </Fragment>
                     )}
 
-                    {!isLoading && fileSystem != "" && filesList && (
+                    {!isLoading && fileSystem != '' && filesList && (
                         <Fragment>
-                            {currentPath[currentFS] != "/" && (
+                            {currentPath[currentFS] != '/' && (
                                 <div
                                     class="file-line file-line-name"
                                     onclick={(e) => {
@@ -753,17 +753,17 @@ const FilesPanel = () => {
                                         ].substring(
                                             0,
                                             currentPath[currentFS].lastIndexOf(
-                                                "/"
+                                                '/'
                                             )
                                         )
 
                                         currentPath[currentFS] =
-                                            newpath.length == 0 ? "/" : newpath
+                                            newpath.length == 0 ? '/' : newpath
                                         onRefresh(
                                             e,
                                             files.capability(
                                                 currentFS,
-                                                "IsFlatFS"
+                                                'IsFlatFS'
                                             )
                                         )
                                     }}
@@ -784,10 +784,10 @@ const FilesPanel = () => {
                                             class={`feather-icon-container file-line-name ${
                                                 files.capability(
                                                     fileSystem,
-                                                    "Download"
+                                                    'Download'
                                                 ) || line.size == -1
-                                                    ? "file-line-action"
-                                                    : ""
+                                                    ? 'file-line-action'
+                                                    : ''
                                             }`}
                                             onclick={(e) => {
                                                 useUiContextFn.haptic()
@@ -807,7 +807,7 @@ const FilesPanel = () => {
                                                     <div>{line.size}</div>
                                                     {files.capability(
                                                         currentFS,
-                                                        "Process",
+                                                        'Process',
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
@@ -815,7 +815,7 @@ const FilesPanel = () => {
                                                             m1
                                                             ltooltip
                                                             data-tooltip={T(
-                                                                "S74"
+                                                                'S74'
                                                             )}
                                                             icon={<Play />}
                                                             onClick={(e) => {
@@ -824,7 +824,7 @@ const FilesPanel = () => {
                                                                 const cmd =
                                                                     files.command(
                                                                         currentFS,
-                                                                        "play",
+                                                                        'play',
                                                                         currentPath[
                                                                             currentFS
                                                                         ],
@@ -838,7 +838,7 @@ const FilesPanel = () => {
                                                     )}
                                                     {!files.capability(
                                                         currentFS,
-                                                        "Process",
+                                                        'Process',
                                                         currentPath[currentFS],
                                                         line.name
                                                     ) && (
@@ -849,8 +849,8 @@ const FilesPanel = () => {
                                             {files.capability(
                                                 currentFS,
                                                 line.size == -1
-                                                    ? "DeleteDir"
-                                                    : "DeleteFile",
+                                                    ? 'DeleteDir'
+                                                    : 'DeleteFile',
                                                 currentPath[currentFS],
                                                 line.name
                                             ) && (
@@ -859,8 +859,8 @@ const FilesPanel = () => {
                                                     ltooltip
                                                     data-tooltip={
                                                         line.size == -1
-                                                            ? T("S101")
-                                                            : T("S100")
+                                                            ? T('S101')
+                                                            : T('S100')
                                                     }
                                                     icon={<Trash2 />}
                                                     onClick={(e) => {
@@ -872,10 +872,10 @@ const FilesPanel = () => {
                                                                     {line.size ==
                                                                     -1
                                                                         ? T(
-                                                                              "S101"
+                                                                              'S101'
                                                                           )
                                                                         : T(
-                                                                              "S100"
+                                                                              'S100'
                                                                           )}
                                                                     :
                                                                 </div>
@@ -890,7 +890,7 @@ const FilesPanel = () => {
                                                         )
                                                         showConfirmationModal({
                                                             modals,
-                                                            title: T("S26"),
+                                                            title: T('S26'),
                                                             content,
                                                             button1: {
                                                                 cb: () => {
@@ -898,10 +898,10 @@ const FilesPanel = () => {
                                                                         line
                                                                     )
                                                                 },
-                                                                text: T("S27"),
+                                                                text: T('S27'),
                                                             },
                                                             button2: {
-                                                                text: T("S28"),
+                                                                text: T('S28'),
                                                             },
                                                         })
                                                     }}
@@ -919,11 +919,11 @@ const FilesPanel = () => {
                 {!isLoading && filesList && filesList.occupation && (
                     <div style=" display: flex; align-items:center; flex-wrap: wrap; justify-content: space-between;">
                         <div class="flex-pack">
-                            {T("S98")}:{filesList.total}
+                            {T('S98')}:{filesList.total}
                         </div>
                         <div class="m-1">-</div>
                         <div class="flex-pack m-2">
-                            {T("S99")}:{filesList.used}
+                            {T('S99')}:{filesList.used}
                         </div>
                         <div class="flex-pack hide-low m-1">
                             <div class="bar bar-sm" style="width:4rem">
@@ -950,13 +950,13 @@ const FilesPanel = () => {
 }
 
 const FilesPanelElement = {
-    id: "filesPanel",
+    id: 'filesPanel',
     content: <FilesPanel />,
-    name: "S65",
-    icon: "HardDrive",
-    show: "showfilespanel",
-    onstart: "openfilesonstart",
-    settingid: "files",
+    name: 'S65',
+    icon: 'HardDrive',
+    show: 'showfilespanel',
+    onstart: 'openfilesonstart',
+    settingid: 'files',
 }
 
 export { FilesPanel, FilesPanelElement }

@@ -17,31 +17,31 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact"
-import { useEffect, useState } from "preact/hooks"
-import { T } from "../../../components/Translations"
-import { processor } from "./processor"
-import { useHttpFn } from "../../../hooks"
-import { useUiContext, useUiContextFn } from "../../../contexts"
-import { Target } from "./index"
+import { Fragment, h } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
+import { T } from '../../../components/Translations'
+import { processor } from './processor'
+import { useHttpFn } from '../../../hooks'
+import { useUiContext, useUiContextFn } from '../../../contexts'
+import { Target } from './index'
 import {
     espHttpURL,
     disableUI,
     formatFileSizeToString,
-} from "../../../components/Helpers"
+} from '../../../components/Helpers'
 import {
     Field,
     Loading,
     ButtonImg,
     CenterLeft,
     Progress,
-} from "../../../components/Controls"
-import { RefreshCcw, XCircle, Save, Flag } from "preact-feather"
-import { CMD } from "./CMD-source"
+} from '../../../components/Controls'
+import { RefreshCcw, XCircle, Save, Flag } from 'preact-feather'
+import { CMD } from './CMD-source'
 import {
     showConfirmationModal,
     showProgressModal,
-} from "../../../components/Modal"
+} from '../../../components/Modal'
 
 const machineSetting = {}
 machineSetting.cache = []
@@ -50,25 +50,25 @@ machineSetting.totalToSave = 0
 
 const MachineSettings = () => {
     const [isLoading, setIsLoading] = useState(false)
-    const [collected, setCollected] = useState("0 B")
+    const [collected, setCollected] = useState('0 B')
     const { createNewRequest, abortRequest } = useHttpFn
     const { modals, toasts, uisettings } = useUiContext()
     const [showSave, setShowSave] = useState(false)
     const progressBar = {}
-    const id = "Machine Tab"
+    const id = 'Machine Tab'
     const sendSerialCmd = (cmd, updateUI) => {
         createNewRequest(
-            espHttpURL("command", { cmd }),
-            { method: "GET", echo: cmd },
+            espHttpURL('command', { cmd }),
+            { method: 'GET', echo: cmd },
             {
                 onSuccess: (result) => {
                     //Result is handled on ws so just do nothing
                     if (updateUI) updateUI(result)
                 },
                 onFail: (error) => {
-                    console.log("Error:", error)
+                    console.log('Error:', error)
                     setIsLoading(false)
-                    toasts.addToast({ content: error, type: "error" })
+                    toasts.addToast({ content: error, type: 'error' })
                     processor.stopCatchResponse()
                 },
             }
@@ -78,20 +78,20 @@ const MachineSettings = () => {
     const saveEntry = (entry, index, total) => {
         const cmd = entry.value.trim()
         createNewRequest(
-            espHttpURL("command", { cmd }),
-            { method: "GET", id: "saveMachineSetting" },
+            espHttpURL('command', { cmd }),
+            { method: 'GET', id: 'saveMachineSetting' },
             {
                 onSuccess: (result) => {
                     if (
                         progressBar.update &&
-                        typeof progressBar.update === "function"
+                        typeof progressBar.update === 'function'
                     )
                         progressBar.update(index + 1)
                     try {
                         entry.initial = entry.value.trim()
                     } catch (e) {
                         console.log(e)
-                        toasts.addToast({ content: e, type: "error" })
+                        toasts.addToast({ content: e, type: 'error' })
                     } finally {
                         entry.generateValidation()
                         processSaving()
@@ -100,11 +100,11 @@ const MachineSettings = () => {
                 onFail: (error) => {
                     if (
                         progressBar.update &&
-                        typeof progressBar.update === "function"
+                        typeof progressBar.update === 'function'
                     )
                         progressBar.update(index + 1)
                     console.log(error)
-                    toasts.addToast({ content: error, type: "error" })
+                    toasts.addToast({ content: error, type: 'error' })
                     processSaving()
                 },
             }
@@ -112,13 +112,13 @@ const MachineSettings = () => {
     }
 
     function abortSave() {
-        abortRequest("saveMachineSetting")
-        toasts.addToast({ content: T("S175"), type: "error" })
+        abortRequest('saveMachineSetting')
+        toasts.addToast({ content: T('S175'), type: 'error' })
         endProgression()
     }
 
     function endProgression() {
-        modals.removeModal(modals.getModalIndex("progression"))
+        modals.removeModal(modals.getModalIndex('progression'))
     }
 
     const processSaving = () => {
@@ -138,7 +138,7 @@ const MachineSettings = () => {
         machineSetting.totalToSave = 0
         machineSetting.toSave = []
         machineSetting.cache.map((entry, index) => {
-            if (entry.type != "comment") {
+            if (entry.type != 'comment') {
                 if (entry.initial.trim() != entry.value.trim()) {
                     machineSetting.totalToSave++
                     machineSetting.toSave.push(index)
@@ -148,8 +148,8 @@ const MachineSettings = () => {
 
         showProgressModal({
             modals,
-            title: T("S91"),
-            button1: { cb: abortSave, text: T("S28") },
+            title: T('S91'),
+            button1: { cb: abortSave, text: T('S28') },
             content: (
                 <Progress
                     progressBar={progressBar}
@@ -176,17 +176,17 @@ const MachineSettings = () => {
 
     const processFeedback = (feedback) => {
         if (feedback.status) {
-            if (feedback.status == "error") {
-                console.log("got error")
+            if (feedback.status == 'error') {
+                console.log('got error')
                 toasts.addToast({
                     content: feedback.content
-                        ? `${T("S22")}:${T(feedback.content)}`
-                        : T("S4"),
-                    type: "error",
+                        ? `${T('S22')}:${T(feedback.content)}`
+                        : T('S4'),
+                    type: 'error',
                 })
-            } else if (feedback.command == "eeprom") {
+            } else if (feedback.command == 'eeprom') {
                 machineSetting.cache = CMD.command(
-                    "formatEeprom",
+                    'formatEeprom',
                     feedback.content
                 )
             }
@@ -197,8 +197,8 @@ const MachineSettings = () => {
     const onCancel = (e) => {
         useUiContextFn.haptic()
         toasts.addToast({
-            content: T("S175"),
-            type: "error",
+            content: T('S175'),
+            type: 'error',
         })
         processor.stopCatchResponse()
         machineSetting.cache = []
@@ -208,18 +208,18 @@ const MachineSettings = () => {
     const onRefresh = (e) => {
         if (e) useUiContextFn.haptic()
         //get command
-        const response = CMD.command("eeprom")
+        const response = CMD.command('eeprom')
         //send query
         if (
             processor.startCatchResponse(
-                "CMD",
-                "eeprom",
+                'CMD',
+                'eeprom',
                 processFeedback,
                 null,
                 processCallBack
             )
         ) {
-            setCollected("0 B")
+            setCollected('0 B')
             setIsLoading(true)
             sendSerialCmd(response.cmd)
         }
@@ -231,7 +231,7 @@ const MachineSettings = () => {
             valid: true,
             modified: true,
         }
-        if (fieldData.type == "text") {
+        if (fieldData.type == 'text') {
             if (fieldData.value.trim() == fieldData.initial.trim()) {
                 fieldData.hasmodified = false
             } else {
@@ -241,14 +241,16 @@ const MachineSettings = () => {
             if (
                 fieldData.value.trim().length < 3 ||
                 !(
-                    fieldData.value.trim().startsWith("G") ||
-                    fieldData.value.trim().startsWith("M")
+                    fieldData.value.trim().startsWith('G') ||
+                    fieldData.value.trim().startsWith('M') ||
+                    fieldData.value.trim().startsWith('C') ||
+                    fieldData.value.trim().startsWith('D')
                 )
             )
                 validation.valid = false
         }
         if (!validation.valid) {
-            validation.message = T("S42")
+            validation.message = T('S42')
         }
         fieldData.haserror = !validation.valid
         setShowSave(checkSaveStatus())
@@ -260,7 +262,7 @@ const MachineSettings = () => {
         return validation
     }
     useEffect(() => {
-        if (uisettings.getValue("autoload") && machineSetting.cache == "") {
+        if (uisettings.getValue('autoload') && machineSetting.cache == '') {
             setIsLoading(true)
             //do not call onRefresh directly as  WebSocket may still be connecting or just connected
             // and we may have a race issue, the command go but does not have answer catched
@@ -283,9 +285,9 @@ const MachineSettings = () => {
                             donotdisable
                             showlow
                             icon={<XCircle />}
-                            label={T("S28")}
+                            label={T('S28')}
                             tooltip
-                            data-tooltip={T("S28")}
+                            data-tooltip={T('S28')}
                             onClick={onCancel}
                         />
                     </Fragment>
@@ -296,7 +298,7 @@ const MachineSettings = () => {
                             <div>
                                 <CenterLeft bordered>
                                     {machineSetting.cache.map((element) => {
-                                        if (element.type == "comment")
+                                        if (element.type == 'comment')
                                             return (
                                                 <div class="comment m-1  ">
                                                     {element.value}
@@ -339,17 +341,17 @@ const MachineSettings = () => {
                         <ButtonImg
                             m2
                             icon={<RefreshCcw />}
-                            label={T("S50")}
+                            label={T('S50')}
                             tooltip
-                            data-tooltip={T("S23")}
+                            data-tooltip={T('S23')}
                             onClick={onRefresh}
                         />
                         {showSave && (
                             <ButtonImg
                                 m2
                                 tooltip
-                                data-tooltip={T("S62")}
-                                label={T("S61")}
+                                data-tooltip={T('S62')}
+                                label={T('S61')}
                                 icon={<Save />}
                                 onClick={(e) => {
                                     useUiContextFn.haptic()
