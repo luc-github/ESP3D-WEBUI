@@ -15,19 +15,19 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
+import { h } from 'preact'
 
 function getBrowserTime() {
     //ISO 8601 format string
     function padNumber(num, size) {
-        const s = num.toString().padStart(size, "0")
+        const s = num.toString().padStart(size, '0')
         return s
     }
     const d = new Date()
     return `${d.getFullYear()}-${padNumber(d.getMonth() + 1, 2)}-${padNumber(
         d.getDate(),
         2
-    )}H${padNumber(d.getHours(), 2)}:${padNumber(
+    )}T${padNumber(d.getHours(), 2)}:${padNumber(
         d.getMinutes(),
         2
     )}:${padNumber(d.getSeconds(), 2)}`
