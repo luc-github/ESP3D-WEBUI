@@ -103,7 +103,8 @@ const commands = {
     play: (path, filename) => {
         return {
             type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            //cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            cmd: "[ESP700]" + "/SD" + path + (path == "/" ? "" : "/") + filename,
         }
     },
 }
