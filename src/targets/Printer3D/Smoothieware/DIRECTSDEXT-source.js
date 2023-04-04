@@ -20,6 +20,7 @@
 import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
 import { canProcessFile } from "../../helpers"
+import { useSettingsContextFn } from "../../../contexts"
 
 const capabilities = {
     Process: (path, filename) => {
@@ -101,10 +102,16 @@ const commands = {
         }
     },
     play: (path, filename) => {
-        return {
-            type: "cmd",
-            //cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
-            cmd: "[ESP700]" + "/SD" + path + (path == "/" ? "" : "/") + filename,
+        if ((useSettingsContextFn.getValue("SDConnection") == "shared" )) {
+            return {
+                type: "cmd",
+                cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            }
+        } else {
+            return {
+                type: "cmd",
+                cmd: "[ESP700]" + "/SD" + path + (path == "/" ? "" : "/") + filename,
+            }
         }
     },
 }
