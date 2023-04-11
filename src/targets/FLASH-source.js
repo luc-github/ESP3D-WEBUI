@@ -17,9 +17,9 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { sortedFilesList, formatStatus } from "../components/Helpers"
-
+import { h } from 'preact'
+import { sortedFilesList, formatStatus } from '../components/Helpers'
+import { useSettingsContextFn } from '../contexts'
 const capabilities = {
     Process: () => false,
     UseFilters: () => false,
@@ -50,16 +50,19 @@ const capabilities = {
 const commands = {
     list: (path, filename) => {
         return {
-            type: "url",
-            url: "files",
-            args: { path, action: "list" },
+            type: 'url',
+            url: 'files',
+            args: { path, action: 'list' },
         }
     },
     upload: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue('HostUploadPath') + path
+        ).replaceAll('//', '/')
         return {
-            type: "url",
-            url: "files",
-            args: { path },
+            type: 'url',
+            url: 'files',
+            args: { path: upath },
         }
     },
     formatResult: (resultTxT) => {
@@ -71,29 +74,36 @@ const commands = {
 
     deletedir: (path, filename) => {
         return {
-            type: "url",
-            url: "files",
-            args: { path, action: "deletedir", filename },
+            type: 'url',
+            url: 'files',
+            args: { path, action: 'deletedir', filename },
         }
     },
     delete: (path, filename) => {
         return {
-            type: "url",
-            url: "files",
-            args: { path, action: "delete", filename },
+            type: 'url',
+            url: 'files',
+            args: { path, action: 'delete', filename },
         }
     },
     createdir: (path, filename) => {
         return {
-            type: "url",
-            url: "files",
-            args: { path, action: "createdir", filename },
+            type: 'url',
+            url: 'files',
+            args: { path, action: 'createdir', filename },
         }
     },
     download: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue('HostUploadPath') +
+            path +
+            (path == '/' ? '' : '/') +
+            filename
+        ).replaceAll('//', '/')
+        console.log('Upath:', upath)
         return {
-            type: "url",
-            url: path + (path.endsWith("/") ? "" : "/") + filename,
+            type: 'url',
+            url: upath,
             args: {},
         }
     },

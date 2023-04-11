@@ -195,7 +195,7 @@ const FilesPanel = () => {
                 const needFormatFileName = files.command(
                     currentFS,
                     'needFormatFileName',
-                    currentPath[currentFS],
+                    cmd.args.path,
                     fileref.current.files[i].name
                 )
                 if (
@@ -207,8 +207,8 @@ const FilesPanel = () => {
                     fileName = file.name
                 }
                 const arg =
-                    currentPath[currentFS] +
-                    (currentPath[currentFS] == '/' ? '' : '/') +
+                    cmd.args.path +
+                    (cmd.args.path.endsWith('/') ? '' : '/') +
                     fileName +
                     'S'
                 //append file size first to check updload is complete
@@ -216,8 +216,8 @@ const FilesPanel = () => {
                 formData.append(
                     'myfiles',
                     file,
-                    currentPath[currentFS] +
-                        (currentPath[currentFS] == '/' ? '' : '/') +
+                    cmd.args.path +
+                        (cmd.args.path.endsWith('/') ? '' : '/') +
                         fileName
                 )
             }
