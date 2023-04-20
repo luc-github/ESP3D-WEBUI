@@ -41,8 +41,13 @@ function build_axis_selection(){
 
 function control_changeaxis(){
     var letter = document.getElementById('control_select_axis').value;
-    document.getElementById('axisup').innerHTML = '+'+letter;
-    document.getElementById('axisdown').innerHTML = '-'+letter;
+    if (letter== "Z" && preferenceslist[0].invert_z === 'true') {
+        document.getElementById('axisup').innerHTML = '-'+letter;
+        document.getElementById('axisdown').innerHTML = '+'+letter;
+    } else {
+        document.getElementById('axisup').innerHTML = '+'+letter;
+        document.getElementById('axisdown').innerHTML = '-'+letter;
+    }
     document.getElementById('homeZlabel').innerHTML = ' '+letter+' ';
     switch(last_axis_letter) {
         case "Z":

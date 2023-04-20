@@ -22,6 +22,10 @@ var defaultpreferenceslist = "[{\
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
                                             \"interval_status\":\"3\",\
+                                            \"swap_x_y\":\"false\",\
+                                            \"invert_x\":\"false\",\
+                                            \"invert_y\":\"false\",\
+                                            \"invert_z\":\"false\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"a_feedrate\":\"100\",\
@@ -75,6 +79,10 @@ function initpreferences() {
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
                                             \"interval_status\":\"3\",\
+                                            \"swap_x_y\":\"false\",\
+                                            \"invert_x\":\"false\",\
+                                            \"invert_y\":\"false\",\
+                                            \"invert_z\":\"false\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"a_feedrate\":\"100\",\
@@ -132,6 +140,10 @@ function initpreferences() {
                                             \"interval_positions\":\"3\",\
                                             \"interval_temperatures\":\"3\",\
                                             \"interval_status\":\"3\",\
+                                            \"swap_x_y\":\"false\",\
+                                            \"invert_x\":\"false\",\
+                                            \"invert_y\":\"false\",\
+                                            \"invert_z\":\"false\",\
                                             \"xy_feedrate\":\"1000\",\
                                             \"z_feedrate\":\"100\",\
                                             \"a_feedrate\":\"100\",\
@@ -424,6 +436,7 @@ function applypreferenceslist() {
         document.getElementById('controlPanel').style.display = 'none';
         on_autocheck_position(false);
     }
+
     if (preferenceslist[0].enable_verbose_mode === 'true') {
         document.getElementById('monitor_enable_verbose_mode').checked = true;
         Monitor_check_verbose_mode();
@@ -468,8 +481,82 @@ function applypreferenceslist() {
             document.getElementById('files_refresh_btn').style.display = 'none';
             document.getElementById('print_upload_btn').style.display = 'none';
             document.getElementById('files_createdir_btn').style.display = "none";
+    }
+    if (document.getElementById('plusX')) {
+        if (preferenceslist[0].swap_x_y == 'true') {
+            if (preferenceslist[0].invert_y == 'true') {
+                document.getElementById('plusX').innerHTML = " -Y ";
+            } else {
+                document.getElementById('plusX').innerHTML = " +Y ";
+            }
+        } else {
+            if (preferenceslist[0].invert_x === 'true') {
+                document.getElementById('plusX').innerHTML = " -X ";
+            } else {
+                document.getElementById('plusX').innerHTML = " +X ";
+            }
         }
+    }
+    if (document.getElementById('plusY')) {
+        if (preferenceslist[0].swap_x_y == 'true') {
+            if (preferenceslist[0].invert_x == 'true') {
+                document.getElementById('plusY').innerHTML = " -X ";
+            } else {
+                document.getElementById('plusY').innerHTML = " +X ";
+            }
+        } else {
+             if (preferenceslist[0].invert_y == 'true') {
+                document.getElementById('plusY').innerHTML = " -Y ";
+            } else {
+                document.getElementById('plusY').innerHTML = " +Y ";
+            }
+        }
+    }
+    if(document.getElementById('axisup')){
+    if (preferenceslist[0].invert_z == 'true') {
+        document.getElementById('axisup').innerHTML = "&nbsp;-Z";
+        } else {
+            document.getElementById('axisup').innerHTML=" +Z ";
+        }
+    }
+    if (document.getElementById('minusX')) {
+        if (preferenceslist[0].swap_x_y == 'true') {
+            if (preferenceslist[0].invert_y === 'true') {
+                document.getElementById('minusX').innerHTML = " +Y ";
+            } else {
+                document.getElementById('minusX').innerHTML = " -Y ";
+            }
+        } else { if (preferenceslist[0].invert_x == 'true') {
+                document.getElementById('minusX').innerHTML = " +X ";
+            } else {
+                document.getElementById('minusX').innerHTML = " -X ";
+            }}
 
+    }
+    if (document.getElementById('minusY')) {
+        if (preferenceslist[0].swap_x_y == 'true') {
+            console.log("Minus Y need to swap to X")
+            if (preferenceslist[0].invert_x == 'true') {
+                console.log("Minus Y need to invert X")
+                document.getElementById('minusY').innerHTML = " +X ";
+            } else {
+                document.getElementById('minusY').innerHTML = " -X ";
+            }
+        } else {
+             if (preferenceslist[0].invert_y == 'true') {
+                document.getElementById('minusY').innerHTML = " +Y ";
+            } else {
+                document.getElementById('minusY').innerHTML = " -Y ";
+            }
+        }
+    }
+    if(document.getElementById('axisdown')){
+    if (preferenceslist[0].invert_z == 'true') {
+            document.getElementById('axisdown').innerHTML="+Z";
+        } else {
+            document.getElementById('axisdown').innerHTML=" -Z ";
+        }
+    }
     if (preferenceslist[0].enable_commands_panel === 'true') {
         document.getElementById('commandsPanel').style.display = 'flex';
         if (preferenceslist[0].enable_autoscroll === 'true') {
@@ -644,6 +731,22 @@ function build_dlg_preferences_list() {
     if (typeof(preferenceslist[0].interval_status) !== 'undefined') {
         document.getElementById('preferences_status_Interval_check').value = parseInt(preferenceslist[0].interval_status);
     } else document.getElementById('preferences_status_Interval_check').value = parseInt(default_preferenceslist[0].interval_status);
+    //Swap X Y
+    if (typeof (preferenceslist[0].swap_x_y) !== 'undefined') {
+        document.getElementById('preferences_swap_x_y').checked = (preferenceslist[0].swap_x_y === 'true');
+    } else document.getElementById('preferences_swap_x_y').checked = false;
+    //Invert X
+    if (typeof (preferenceslist[0].invert_x) !== 'undefined') {
+        document.getElementById('preferences_invert_x').checked = (preferenceslist[0].invert_x === 'true');
+    } else document.getElementById('preferences_invert_x').checked = false;
+    //Invert Y
+    if (typeof (preferenceslist[0].invert_y) !== 'undefined') {
+        document.getElementById('preferences_invert_y').checked = (preferenceslist[0].invert_y === 'true');
+    } else document.getElementById('preferences_invert_y').checked = false;
+    //Invert Z
+    if (typeof (preferenceslist[0].invert_z) !== 'undefined') {
+        document.getElementById('preferences_invert_z').checked = (preferenceslist[0].invert_z === 'true');
+    } else document.getElementById('preferences_invert_z').checked = false;
     //xy feedrate
     if (typeof(preferenceslist[0].xy_feedrate) !== 'undefined') {
         document.getElementById('preferences_control_xy_velocity').value = parseInt(preferenceslist[0].xy_feedrate);
@@ -784,7 +887,11 @@ function closePreferencesDialog() {
             (typeof(preferenceslist[0].enable_probe) === 'undefined') ||
             (typeof(preferenceslist[0].enable_bed) === 'undefined') ||
             (typeof(preferenceslist[0].enable_chamber) === 'undefined') ||
-            (typeof(preferenceslist[0].enable_fan) === 'undefined') ||
+            (typeof (preferenceslist[0].enable_fan) === 'undefined') ||
+            (typeof(preferenceslist[0].swap_x_y) === 'undefined') ||
+            (typeof(preferenceslist[0].invert_x) === 'undefined') ||
+            (typeof(preferenceslist[0].invert_y) === 'undefined') ||
+            (typeof(preferenceslist[0].invert_z) === 'undefined') ||
             (typeof(preferenceslist[0].xy_feedrate) === 'undefined') ||
             (typeof(preferenceslist[0].z_feedrate) === 'undefined') ||
             (typeof(preferenceslist[0].e_feedrate) === 'undefined') ||
@@ -888,6 +995,14 @@ function closePreferencesDialog() {
             }
             //interval temperatures
             if (document.getElementById('preferences_tempInterval_check').value != parseInt(preferenceslist[0].interval_temperatures)) modified = true;
+            //swap x y
+            if (document.getElementById('preferences_swap_x_y').checked != (preferenceslist[0].swap_x_y === 'true')) modified = true;
+            //invert x
+            if (document.getElementById('preferences_invert_x').checked != (preferenceslist[0].invert_x === 'true')) modified = true;
+            //invert y
+            if (document.getElementById('preferences_invert_y').checked != (preferenceslist[0].invert_y === 'true')) modified = true;
+            //invert z
+            if (document.getElementById('preferences_invert_z').checked != (preferenceslist[0].invert_z === 'true')) modified = true;
             //e feedrate
             if (document.getElementById('preferences_e_velocity').value != parseInt(preferenceslist[0].e_feedrate)) modified = true;
             //e distance
@@ -987,6 +1102,10 @@ function SavePreferences(current_preferences) {
         saveprefs += "\",\"enable_bed\":\"" + document.getElementById('enable_bed_controls').checked;
         saveprefs += "\",\"enable_chamber\":\"" + document.getElementById('enable_chamber_controls').checked;
         saveprefs += "\",\"enable_fan\":\"" + document.getElementById('enable_fan_controls').checked;
+        saveprefs += "\",\"swap_x_y\":\"" + document.getElementById('preferences_swap_x_y').checked;
+        saveprefs += "\",\"invert_x\":\"" + document.getElementById('preferences_invert_x').checked;
+        saveprefs += "\",\"invert_y\":\"" + document.getElementById('preferences_invert_y').checked;
+        saveprefs += "\",\"invert_z\":\"" + document.getElementById('preferences_invert_z').checked;
         saveprefs += "\",\"enable_control_panel\":\"" + document.getElementById('show_control_panel').checked;
         saveprefs += "\",\"enable_grbl_probe_panel\":\"" + document.getElementById('show_grbl_probe_tab').checked;
         saveprefs += "\",\"enable_grbl_surface_panel\":\"" + document.getElementById('show_grbl_surface_tab').checked;

@@ -189,6 +189,31 @@ function SendZerocommand(cmd) {
 
 function SendJogcommand(cmd, feedrate) {
     if (document.getElementById('lock_UI').checked) return;
+    if (preferenceslist[0].swap_x_y=="true") {
+        if (cmd.indexOf("X") > -1) { 
+            cmd = cmd.replace("X", "Y");
+        } else  if (cmd.indexOf("Y") > -1) { 
+            cmd = cmd.replace("Y", "X");
+        } 
+    }
+    if (preferenceslist[0].invert_x=="true") {
+        if (cmd.indexOf("X") > -1) {
+            if (cmd.indexOf("X-") > -1) cmd = cmd.replace("X-", "X");
+            else cmd = cmd.replace("X", "X-");
+        }
+    }
+    if (preferenceslist[0].invert_y=="true") {
+        if (cmd.indexOf("Y") > -1) {
+            if (cmd.indexOf("Y-") > -1) cmd = cmd.replace("Y-", "Y");
+            else cmd = cmd.replace("Y", "Y-");
+        }
+    }
+    if (preferenceslist[0].invert_z=="true") {
+        if (cmd.indexOf("Z") > -1 ) {
+            if (cmd.indexOf("Z-") > -1) cmd = cmd.replace("Z-", "Z");
+            else cmd = cmd.replace("Z", "Z-");
+        }
+    }
     var feedratevalue = "";
     var command = "";
     if (feedrate == "XYfeedrate") {
@@ -216,6 +241,7 @@ function SendJogcommand(cmd, feedrate) {
         command = "$J=G91 G21 F" + feedratevalue + " " + cmd;
         console.log(command);
     } else command = "G91\nG1 " + cmd + " F" + feedratevalue + "\nG90";
+    console.log(command);
     SendPrinterCommand(command, true, get_Position);
 }
 

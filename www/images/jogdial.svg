@@ -105,7 +105,7 @@ fill:orange;
         <text class="scl" x="182" y="50" font-size="15"> 100 </text>
     </g>
 </g>
-<g id="Decoration" pointer-events="none" font-weight="900" font-size="11" fill-opacity=".6"><path class="std" d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="SteelBlue"></path><path class="std" d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z" fill="SteelBlue"></path><path class="std" d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z" fill="Khaki"></path><path class="std" d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z" fill="Khaki"></path><text x="113" y="37" > +Y </text><text x="113" y="212"> -Y </text><text x="27" y="124"> -X </text><text x="196" y="124"> +X </text></g></g>
+<g id="Decoration" pointer-events="none" font-weight="900" font-size="11" fill-opacity=".6"><path class="std" d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="SteelBlue"></path><path class="std" d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z" fill="SteelBlue"></path><path class="std" d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z" fill="Khaki"></path><path class="std" d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z" fill="Khaki"></path><text x="113" y="37" id="plusY"> +Y </text><text x="113" y="212" id="minusY"> -Y </text><text x="27" y="124" id="minusX"> -X </text><text x="196" y="124" id="plusX"> +X </text></g></g>
 
 <g id="JogBar" transform="translate(250,0)"><desc>JogBar - Z jogging bar</desc>
 <g id="+Z" fill="#b0b0b0" style="pointer-events:none;"><path class="std" d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"></path><path class="std" d="M20,2 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="DarkSeaGreen"></path><text stroke="black" x="11" y="18" font-size="12" id="axisup"> +Z </text></g>
