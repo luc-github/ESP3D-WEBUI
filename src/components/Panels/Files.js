@@ -670,7 +670,7 @@ const FilesPanel = () => {
 
             <div
                 ref={dropRef}
-                class="panel drop-zone panel-body-dashboard"
+                class="drop-zone files-list m-1"
                 onDragOver={(e) => {
                     dropRef.current.classList.add('drop-zone--over')
                     e.preventDefault()
@@ -723,197 +723,179 @@ const FilesPanel = () => {
                     e.preventDefault()
                 }}
             >
-                <div class="panel-body panel-body-dashboard files-list m-1">
-                    {isLoading && fileSystem != '' && (
-                        <Fragment>
-                            <center>
-                                <Loading class="m-2" />
+                {isLoading && fileSystem != '' && (
+                    <Fragment>
+                        <center>
+                            <Loading class="m-2" />
 
-                                <ButtonImg
-                                    donotdisable
-                                    icon={<XCircle />}
-                                    label={T('S28')}
-                                    btooltip
-                                    data-tooltip={T('S28')}
-                                    onClick={onCancel}
-                                />
-                            </center>
-                        </Fragment>
-                    )}
+                            <ButtonImg
+                                donotdisable
+                                icon={<XCircle />}
+                                label={T('S28')}
+                                btooltip
+                                data-tooltip={T('S28')}
+                                onClick={onCancel}
+                            />
+                        </center>
+                    </Fragment>
+                )}
 
-                    {!isLoading && fileSystem != '' && filesList && (
-                        <Fragment>
-                            {currentPath[currentFS] != '/' && (
+                {!isLoading && fileSystem != '' && filesList && (
+                    <Fragment>
+                        {currentPath[currentFS] != '/' && (
+                            <div
+                                class="file-line file-line-name"
+                                onclick={(e) => {
+                                    useUiContextFn.haptic()
+                                    const newpath = currentPath[
+                                        currentFS
+                                    ].substring(
+                                        0,
+                                        currentPath[currentFS].lastIndexOf('/')
+                                    )
+
+                                    currentPath[currentFS] =
+                                        newpath.length == 0 ? '/' : newpath
+                                    onRefresh(
+                                        e,
+                                        files.capability(currentFS, 'IsFlatFS')
+                                    )
+                                }}
+                            >
                                 <div
-                                    class="file-line file-line-name"
-                                    onclick={(e) => {
-                                        useUiContextFn.haptic()
-                                        const newpath = currentPath[
-                                            currentFS
-                                        ].substring(
-                                            0,
-                                            currentPath[currentFS].lastIndexOf(
-                                                '/'
-                                            )
-                                        )
-
-                                        currentPath[currentFS] =
-                                            newpath.length == 0 ? '/' : newpath
-                                        onRefresh(
-                                            e,
-                                            files.capability(
-                                                currentFS,
-                                                'IsFlatFS'
-                                            )
-                                        )
-                                    }}
+                                    class="form-control  file-line-name file-line-action"
+                                    style="height:2rem!important"
                                 >
+                                    <CornerRightUp />
+                                    <label class="p-2">...</label>
+                                </div>
+                            </div>
+                        )}
+                        {filesList.files.map((line) => {
+                            return (
+                                <div class="file-line form-control">
                                     <div
-                                        class="form-control  file-line-name file-line-action"
-                                        style="height:2rem!important"
+                                        class={`feather-icon-container file-line-name ${
+                                            files.capability(
+                                                fileSystem,
+                                                'Download'
+                                            ) || line.size == -1
+                                                ? 'file-line-action'
+                                                : ''
+                                        }`}
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            ElementClicked(e, line)
+                                        }}
                                     >
-                                        <CornerRightUp />
-                                        <label class="p-2">...</label>
+                                        {line.size == -1 ? (
+                                            <Folder />
+                                        ) : (
+                                            <File />
+                                        )}
+                                        <label>{line.name}</label>
+                                    </div>
+                                    <div class="file-line-controls">
+                                        {line.size != -1 && (
+                                            <Fragment>
+                                                <div>{line.size}</div>
+                                                {files.capability(
+                                                    currentFS,
+                                                    'Process',
+                                                    currentPath[currentFS],
+                                                    line.name
+                                                ) && (
+                                                    <ButtonImg
+                                                        m1
+                                                        ltooltip
+                                                        data-tooltip={T('S74')}
+                                                        icon={<Play />}
+                                                        onClick={(e) => {
+                                                            e.target.blur()
+                                                            useUiContextFn.haptic()
+                                                            const cmd =
+                                                                files.command(
+                                                                    currentFS,
+                                                                    'play',
+                                                                    currentPath[
+                                                                        currentFS
+                                                                    ],
+                                                                    line.name
+                                                                )
+                                                            sendSerialCmd(
+                                                                cmd.cmd
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                                {!files.capability(
+                                                    currentFS,
+                                                    'Process',
+                                                    currentPath[currentFS],
+                                                    line.name
+                                                ) && <div style="width:2rem" />}
+                                            </Fragment>
+                                        )}
+                                        {files.capability(
+                                            currentFS,
+                                            line.size == -1
+                                                ? 'DeleteDir'
+                                                : 'DeleteFile',
+                                            currentPath[currentFS],
+                                            line.name
+                                        ) && (
+                                            <ButtonImg
+                                                m1
+                                                ltooltip
+                                                data-tooltip={
+                                                    line.size == -1
+                                                        ? T('S101')
+                                                        : T('S100')
+                                                }
+                                                icon={<Trash2 />}
+                                                onClick={(e) => {
+                                                    useUiContextFn.haptic()
+                                                    e.target.blur()
+                                                    const content = (
+                                                        <Fragment>
+                                                            <div>
+                                                                {line.size == -1
+                                                                    ? T('S101')
+                                                                    : T('S100')}
+                                                                :
+                                                            </div>
+                                                            <center>
+                                                                <li>
+                                                                    {line.name}
+                                                                </li>
+                                                            </center>
+                                                        </Fragment>
+                                                    )
+                                                    showConfirmationModal({
+                                                        modals,
+                                                        title: T('S26'),
+                                                        content,
+                                                        button1: {
+                                                            cb: () => {
+                                                                deleteCommand(
+                                                                    line
+                                                                )
+                                                            },
+                                                            text: T('S27'),
+                                                        },
+                                                        button2: {
+                                                            text: T('S28'),
+                                                        },
+                                                    })
+                                                }}
+                                            />
+                                        )}
                                     </div>
                                 </div>
-                            )}
-                            {filesList.files.map((line) => {
-                                return (
-                                    <div class="file-line form-control">
-                                        <div
-                                            class={`feather-icon-container file-line-name ${
-                                                files.capability(
-                                                    fileSystem,
-                                                    'Download'
-                                                ) || line.size == -1
-                                                    ? 'file-line-action'
-                                                    : ''
-                                            }`}
-                                            onclick={(e) => {
-                                                useUiContextFn.haptic()
-                                                ElementClicked(e, line)
-                                            }}
-                                        >
-                                            {line.size == -1 ? (
-                                                <Folder />
-                                            ) : (
-                                                <File />
-                                            )}
-                                            <label>{line.name}</label>
-                                        </div>
-                                        <div class="file-line-controls">
-                                            {line.size != -1 && (
-                                                <Fragment>
-                                                    <div>{line.size}</div>
-                                                    {files.capability(
-                                                        currentFS,
-                                                        'Process',
-                                                        currentPath[currentFS],
-                                                        line.name
-                                                    ) && (
-                                                        <ButtonImg
-                                                            m1
-                                                            ltooltip
-                                                            data-tooltip={T(
-                                                                'S74'
-                                                            )}
-                                                            icon={<Play />}
-                                                            onClick={(e) => {
-                                                                e.target.blur()
-                                                                useUiContextFn.haptic()
-                                                                const cmd =
-                                                                    files.command(
-                                                                        currentFS,
-                                                                        'play',
-                                                                        currentPath[
-                                                                            currentFS
-                                                                        ],
-                                                                        line.name
-                                                                    )
-                                                                sendSerialCmd(
-                                                                    cmd.cmd
-                                                                )
-                                                            }}
-                                                        />
-                                                    )}
-                                                    {!files.capability(
-                                                        currentFS,
-                                                        'Process',
-                                                        currentPath[currentFS],
-                                                        line.name
-                                                    ) && (
-                                                        <div style="width:2rem" />
-                                                    )}
-                                                </Fragment>
-                                            )}
-                                            {files.capability(
-                                                currentFS,
-                                                line.size == -1
-                                                    ? 'DeleteDir'
-                                                    : 'DeleteFile',
-                                                currentPath[currentFS],
-                                                line.name
-                                            ) && (
-                                                <ButtonImg
-                                                    m1
-                                                    ltooltip
-                                                    data-tooltip={
-                                                        line.size == -1
-                                                            ? T('S101')
-                                                            : T('S100')
-                                                    }
-                                                    icon={<Trash2 />}
-                                                    onClick={(e) => {
-                                                        useUiContextFn.haptic()
-                                                        e.target.blur()
-                                                        const content = (
-                                                            <Fragment>
-                                                                <div>
-                                                                    {line.size ==
-                                                                    -1
-                                                                        ? T(
-                                                                              'S101'
-                                                                          )
-                                                                        : T(
-                                                                              'S100'
-                                                                          )}
-                                                                    :
-                                                                </div>
-                                                                <center>
-                                                                    <li>
-                                                                        {
-                                                                            line.name
-                                                                        }
-                                                                    </li>
-                                                                </center>
-                                                            </Fragment>
-                                                        )
-                                                        showConfirmationModal({
-                                                            modals,
-                                                            title: T('S26'),
-                                                            content,
-                                                            button1: {
-                                                                cb: () => {
-                                                                    deleteCommand(
-                                                                        line
-                                                                    )
-                                                                },
-                                                                text: T('S27'),
-                                                            },
-                                                            button2: {
-                                                                text: T('S28'),
-                                                            },
-                                                        })
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </Fragment>
-                    )}
-                </div>
+                            )
+                        })}
+                    </Fragment>
+                )}
             </div>
             <div class="files-list-footer">
                 {!isLoading && filesList && filesList.occupation && (
