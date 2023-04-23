@@ -275,6 +275,30 @@
         ],
         "jog": [
             {
+                "id": "swap_x_y",
+                "type": "boolean",
+                "label": "P116",
+                "value": false
+            },
+            {
+                "id": "invert_x",
+                "type": "boolean",
+                "label": "P113",
+                "value": false
+            },
+            {
+                "id": "invert_y",
+                "type": "boolean",
+                "label": "P114",
+                "value": false
+            },
+            {
+                "id": "invert_z",
+                "type": "boolean",
+                "label": "P115",
+                "value": false
+            },
+            {
                 "id": "xyfeedrate",
                 "type": "number",
                 "label": "P10",

@@ -16,15 +16,15 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact"
-import { useRef, useContext, useState } from "preact/hooks"
-import { limitArr } from "../components/Helpers"
+import { h, createContext } from 'preact'
+import { useRef, useContext, useState } from 'preact/hooks'
+import { limitArr } from '../components/Helpers'
 
 /*
  * Local const
  *
  */
-const DatasContext = createContext("DatasContext")
+const DatasContext = createContext('DatasContext')
 const useDatasContext = () => useContext(DatasContext)
 
 const DatasContextProvider = ({ children }) => {
@@ -32,22 +32,46 @@ const DatasContextProvider = ({ children }) => {
     const isAutoScrollPaused = useRef(undefined)
     const isVerbose = useRef(undefined)
     const terminalBuffer = useRef([])
+    const terminalBufferQuiet = useRef([])
     const [terminalContent, setTerminalContent] = useState([])
     const [terminalInputHistory, setTerminalInputHistory] = useState([])
     const terminalInput = useRef()
 
     const clearTerminal = () => {
         terminalBuffer.current = []
+        terminalBufferQuiet.current = []
         setTerminalContent([])
     }
 
     const addTerminalContent = (element) => {
-        const newData = limitArr(
+        console.log(element)
+        console.log(
+            'isVerbose',
+            terminalBuffer.current.length,
+            'Quiet',
+            terminalBufferQuiet.current.length
+        )
+        const newData = {}
+        newData.verbose = limitArr(
             [...terminalBuffer.current, element],
             isAutoScrollPaused.current ? 600 : isAutoScroll.current ? 300 : 400
         )
-        terminalBuffer.current = newData
-        setTerminalContent(newData)
+        terminalBuffer.current = newData.verbose
+        newData.quiet = terminalBufferQuiet.current
+        if (!element.isverboseOnly) {
+            console.log('quiet command', element)
+            newData.quiet = limitArr(
+                [...terminalBufferQuiet.current, element],
+                isAutoScrollPaused.current
+                    ? 600
+                    : isAutoScroll.current
+                    ? 300
+                    : 400
+            )
+            terminalBufferQuiet.current = newData.quiet
+        }
+        if (isVerbose.current) setTerminalContent(terminalBuffer.current)
+        else setTerminalContent(terminalBufferQuiet.current)
     }
 
     const addTerminalInputHistory = (element) => {

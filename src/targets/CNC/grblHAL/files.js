@@ -17,45 +17,45 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { FLASH } from "../../FLASH-source"
-import { DIRECTSD } from "./DIRECTSD-source"
-import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
+import { h } from 'preact'
+import { FLASH } from '../../FLASH-source'
+import { DIRECTSD } from './DIRECTSD-source'
+import { useSettingsContextFn, useUiContextFn } from '../../../contexts'
 
 //List of supported files systems
 const supportedFileSystems = [
     {
-        value: "FLASH",
-        name: "S137",
+        value: 'FLASH',
+        name: 'S137',
         depend: () => {
             return (
-                useUiContextFn.getValue("flashfs") &&
-                useSettingsContextFn.getValue("FlashFileSystem") != "none"
+                useUiContextFn.getValue('flashfs') &&
+                useSettingsContextFn.getValue('FlashFileSystem') != 'none'
             )
         },
     },
     {
-        value: "DIRECTSD",
-        name: "S190",
+        value: 'DIRECTSD',
+        name: 'S190',
         depend: () => {
             return (
-                useUiContextFn.getValue("directsd") &&
-                useSettingsContextFn.getValue("SDConnection") != "none"
+                useUiContextFn.getValue('directsd') &&
+                useSettingsContextFn.getValue('SDConnection') != 'none'
             )
         },
     },
     {
-        value: "TFTSD",
-        name: "S188",
+        value: 'TFTSD',
+        name: 'S188',
         depend: () => {
-            return useUiContextFn.getValue("tftsd")
+            return useUiContextFn.getValue('tftsd')
         },
     },
     {
-        value: "TFTUSB",
-        name: "S189",
+        value: 'TFTUSB',
+        name: 'S189',
         depend: () => {
-            return useUiContextFn.getValue("tftusb")
+            return useUiContextFn.getValue('tftusb')
         },
     },
 ]
@@ -79,7 +79,7 @@ function capability() {
     if (!filesystem) return false
     if (capabilities[filesystem] && capabilities[filesystem][cap])
         return capabilities[filesystem][cap](...rest)
-    console.log("Unknown capability ", cap, " for ", filesystem)
+    console.log('Unknown capability ', cap, ' for ', filesystem)
     return false
 }
 
@@ -87,8 +87,8 @@ function command() {
     const [filesystem, cmd, ...rest] = arguments
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
-    console.log("Unknown command ", cmd, " for ", filesystem)
-    return { type: "error" }
+    console.log('Unknown command ', cmd, ' for ', filesystem)
+    return { type: 'error' }
 }
 
 //everything in one object

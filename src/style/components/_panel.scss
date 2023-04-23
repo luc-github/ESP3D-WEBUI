@@ -1,56 +1,59 @@
 .panel-dashboard,
 .panel-interface,
 .panel-features {
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .macro-buttons-panel {
-  display: -ms-flexbox;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-content: stretch;
+    display: -ms-flexbox;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-content: stretch;
 }
 
 .panel {
-  min-height: 300px;
-  max-height: 650px;
+    display: -ms-flexbox;
+    display: flex;
+    flex-flow: column;
+    height: 550px;
 }
 
 .panel-body-dashboard,
 .panel-body-interface,
 .panel-body-features {
-  display: flex;
-  flex-flow: column;
+    display: -ms-flexbox;
+    display: flex;
+    flex-flow: column;
 }
 .panel .navbar,
 .panel .navbar-section {
-  background: #f1f1fc;
-  color: #5755d9;
+    background: #f1f1fc;
+    color: #5755d9;
 }
 
 .panel-item {
-  flex: 0 1 auto;
+    flex: 0 1 auto;
 }
 
 .files-list-footer {
-  padding: 0.2rem 0.8rem !important;
+    padding: 0.2rem 0.8rem !important;
 }
 
 .column {
-  .panel {
-    height: 100%;
-    box-shadow: 0px 0px 14px -5px rgba(0, 0, 0, 0.05);
-  }
+    .panel {
+        height: 100%;
+        box-shadow: 0px 0px 14px -5px rgba(0, 0, 0, 0.05);
+    }
 }
 
 .loading-panel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }
