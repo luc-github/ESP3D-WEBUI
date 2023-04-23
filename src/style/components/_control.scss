@@ -131,6 +131,7 @@ input[type='range']::-ms-thumb {
     background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
     background-size: 15px 4px, 15px 4px, 4px 15px, 4px 15px;
     animation: border-dance 4s infinite linear;
+    overflow: hidden !important;
 }
 
 .fieldset-no-top-separator {
@@ -247,9 +248,6 @@ span.input-group-addon {
 
 .has-modification .submitBtn {
     display: block;
-}
-
-.drop-zone-over {
 }
 
 .files-list-footer {
