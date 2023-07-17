@@ -119,7 +119,7 @@ const commands = {
         } else {
             return {
                 type: "cmd",
-                cmd: "[ESP700]" + "/SD" + path + (path == "/" ? "" : "/") + filename,
+                cmd: "[ESP700]" + "/sd" + path + (path == "/" ? "" : "/") + filename,
             }
         }
     },
