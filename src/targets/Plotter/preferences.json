@@ -1,0 +1,101 @@
+{
+    "settings": {
+        "jog": [
+            {
+                "id": "axis",
+                "type": "group",
+                "label": "HP5",
+                "value": [
+                    {
+                        "id": "showx",
+                        "type": "boolean",
+                        "label": "X",
+                        "value": true
+                    },
+                    {
+                        "id": "showy",
+                        "type": "boolean",
+                        "label": "Y",
+                        "value": true
+                    },
+                    {
+                        "id": "showpen",
+                        "type": "boolean",
+                        "label": "HP17",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "invertx",
+                "type": "boolean",
+                "label": "S209",
+                "value": false,
+                "depend": [
+                    {
+                        "id": "showx",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "inverty",
+                "type": "boolean",
+                "label": "S210",
+                "value": false,
+                "depend": [
+                    {
+                        "id": "showy",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "swapxy",
+                "type": "boolean",
+                "label": "S211",
+                "value": false,
+                "depend": [
+                    {
+                        "id": "showx",
+                        "value": true
+                    },
+                    {
+                        "id": "showy",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "velocity",
+                "type": "number",
+                "label": "HP1",
+                "value": 0,
+                "min": 0,
+                "help": "HP18"
+            },
+            {
+                "id": "steps",
+                "type": "number",
+                "label": "HP2",
+                "value": "40",
+                "min": 1,
+                "append": "HP3"
+            },
+            {
+                "id": "jogparkcmd",
+                "type": "text",
+                "label": "HP9",
+                "value": "PA;PU0,0;",
+                "help": "S97"
+            },
+            {
+                "id": "jogstopcmd",
+                "type": "text",
+                "label": "HP16",
+                "value": "#ESC#.K",
+                "help": "S97"
+            }
+        ]
+    }
+}

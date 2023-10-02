@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+
+  function processMessage(eventMsg){
+        if (eventMsg.data.type  && (!eventMsg.data.id||eventMsg.data.id=="translatepanel")){
+            if (eventMsg.data.type=="translate"){
+                const line =  eventMsg.data.content
+                const resultPanel = document.getElementById("output");
+                if (line.initiator.all){
+                    resultPanel.innerHTML = resultPanel.innerHTML + "<br>All translations:<br>" + JSON.stringify(line.response," ", "<br>")+"<br><hr />";
+                } else {
+                    resultPanel.innerHTML = resultPanel.innerHTML + "<br>" + line.initiator.content + " is translated <span class='text-primary'>"+ line.response+"</span><br><hr />";
+                }
+                           
+            }
+        }
+    }
+
+
+  window.onload = (event) => {
+    window.addEventListener("message", processMessage, false);
+  }
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'translate', target:'webui', id:'translatepanel', content:'S153'});">Translate `S153`</button>
+    <button class="btn m-1" onclick="sendMessage({type:'translate', target:'webui', id:'translatepanel', all:'true'});">Dump all translation array</button>
+    <div class="container m-2" id="output">
+    </div>
+</div>
+

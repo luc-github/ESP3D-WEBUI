@@ -1,0 +1,16 @@
+﻿* Fix dev websocket server cannot work under Linux
+> sudo apt-get install libcap2-bin 
+> sudo setcap cap_net_bind_service=+ep `readlink -f \`which node\`` 
+
+* Fix ‘ and “ need space to be displayed under Linux
+> setxkbmap -layout us
+
+* Fix for sass div warning
+>npm install -g sass-migrator
+>sass-migrator division **/*.scss
+Note:
+on windows need change script policy first: 
+> Get-ExecutionPolicy -List
+>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+then when done, put back default (the one got by initial Get-ExecutionPolicy -List)
+>Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope CurrentUser

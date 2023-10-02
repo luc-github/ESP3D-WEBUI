@@ -1,0 +1,229 @@
+{
+    "settings": {
+        "general": [
+            {
+                "id": "language",
+                "type": "pickup",
+                "label": "S68",
+                "value": "default"
+            },
+            {
+                "id": "theme",
+                "type": "pickup",
+                "label": "S181",
+                "value": "default"
+            },
+            {
+                "id": "autoload",
+                "type": "boolean",
+                "label": "S64",
+                "value": true
+            },
+            {
+                "id": "mobileview",
+                "type": "boolean",
+                "label": "S122",
+                "value": false
+            },
+            {
+                "id": "audio",
+                "type": "boolean",
+                "label": "S170",
+                "value": false
+            },
+            {
+                "id": "hapticfeedback",
+                "type": "boolean",
+                "label": "S176",
+                "value": false
+            },
+            {
+                "id": "audiofeedback",
+                "type": "boolean",
+                "label": "S200",
+                "value": false,
+                "depend": [
+                    {
+                        "id": "audio",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "showinformationpage",
+                "type": "boolean",
+                "label": "S196",
+                "value": true
+            },
+            {
+                "id": "showmachinesettings",
+                "type": "boolean",
+                "label": "S197",
+                "value": true
+            },
+            {
+                "id": "shortcuts",
+                "type": "group",
+                "label": "S216",
+                "value": [
+                    {
+                        "id": "enableautorepeat",
+                        "type": "boolean",
+                        "label": "S217",
+                        "value": false
+                    },
+                    {
+                        "id": "autorepeatdelay",
+                        "type": "number",
+                        "label": "S218",
+                        "min": "1",
+                        "append": "S114",
+                        "value": "500",
+                        "depend": [
+                            {
+                                "id": "enableautorepeat",
+                                "value": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "panels": [],
+        "polling": [
+            {
+                "id": "enablepolling",
+                "type": "boolean",
+                "label": "S112",
+                "value": false
+            },
+            {
+                "id": "pollingcmds",
+                "depend": [
+                    {
+                        "id": "enablepolling",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "sorted": false,
+                "label": "S115",
+                "value": []
+            }
+        ],
+        "terminal": [
+            {
+                "id": "showterminalpanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openterminalonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            },
+            {
+                "id": "verbose",
+                "type": "boolean",
+                "label": "S76",
+                "value": true
+            },
+            {
+                "id": "autoscroll",
+                "type": "boolean",
+                "label": "S77",
+                "value": true
+            }
+        ],
+        "files": [
+            {
+                "id": "showfilespanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openfilesonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            }
+        ],
+        "jog": [
+            {
+                "id": "showjogpanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openjogonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true
+            }
+        ],
+        "notification": [
+            {
+                "id": "shownotificationspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "opennotificationsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": false
+            },
+            {
+                "id": "notifautoscroll",
+                "type": "boolean",
+                "label": "S77",
+                "value": true
+            }
+        ],
+        "macros": [
+            {
+                "id": "showmacrospanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openmacrosonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": false
+            },
+            {
+                "id": "macros",
+                "type": "list",
+                "sorted": true,
+                "value": []
+            }
+        ],
+        "extracontents": [
+            {
+                "id": "showextracontents",
+                "type": "boolean",
+                "label": "S63",
+                "value": false
+            },
+            {
+                "id": "openextrapanelsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": false
+            },
+            {
+                "id": "extracontents",
+                "type": "list",
+                "sorted": true,
+                "value": []
+            }
+        ]
+    }
+}
