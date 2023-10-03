@@ -1,0 +1,21 @@
+name: build-ci
+
+on: [pull_request, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install libraries
+        run: npm install
+      - name: Build all files
+        run: npm run buildall
+        continue-on-error: true
+      - name: Check Failures
+        if: ${{ failure() }}
+        run: echo "Build failed"
