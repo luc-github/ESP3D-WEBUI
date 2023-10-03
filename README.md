@@ -1,7 +1,7 @@
 # ESP3D-WEBUI 3.0
 
 using Preact per @aganov suggestion  
-Rewrite per @alxblog suggestion to use proper Preactjs API and lighter code: use spectre.css instead of bootstrap 4.x
+Rewrite per @alxblog suggestion to use proper Preactjs API and lighter css code: use spectre.css instead of bootstrap 4.x
 
 ## In development / alpha stage / Ready to test
 
