@@ -491,6 +491,7 @@ const commandsQuery = (req, res, SendWS) => {
                     FWTargetID: '40',
                     Setup: 'Enabled',
                     Screen: 'HMI V3',
+                    Streaming: 'Enabled',
                     SDConnection: 'direct',
                     SerialProtocol: 'Raw',
                     Authentication: 'Disabled',

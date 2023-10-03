@@ -23,7 +23,7 @@ import { canProcessFile } from '../../helpers'
 import { useUiContextFn, useSettingsContextFn } from '../../../contexts'
 const capabilities = {
     Process: (path, filename) => {
-        if (useSettingsContextFn.getValue('Screen')) {
+        if (useSettingsContextFn.getValue('Streaming') == 'Enabled') {
             return canProcessFile(filename)
         }
         return false
@@ -115,7 +115,7 @@ const commands = {
     },
     play: (path, filename) => {
         if (
-            useSettingsContextFn.getValue('Screen') &&
+            useSettingsContextFn.getValue('Streaming') == 'Enabled' &&
             useSettingsContextFn.getValue('SDConnection') == 'direct'
         ) {
             let fullpath =

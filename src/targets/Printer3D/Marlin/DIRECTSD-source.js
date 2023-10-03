@@ -25,7 +25,7 @@ import { useSettingsContextFn } from '../../../contexts'
 const capabilities = {
     Process: (path, filename) => {
         if (
-            (useSettingsContextFn.getValue('Screen') &&
+            (useSettingsContextFn.getValue('Streaming') == 'Enabled' &&
                 useSettingsContextFn.getValue('SDConnection') == 'direct') ||
             useSettingsContextFn.getValue('SDConnection') == 'shared'
         )
@@ -118,7 +118,7 @@ const commands = {
     },
     play: (path, filename) => {
         if (
-            useSettingsContextFn.getValue('Screen') &&
+            useSettingsContextFn.getValue('Streaming') == 'Enabled' &&
             useSettingsContextFn.getValue('SDConnection') == 'direct'
         ) {
             let fullpath =
