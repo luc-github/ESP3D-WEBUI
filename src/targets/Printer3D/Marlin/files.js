@@ -17,69 +17,69 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { FLASH } from "../../FLASH-source"
-import { DIRECTSD } from "./DIRECTSD-source"
-import { SD } from "./SD-source"
-import { SDEXT } from "./SDEXT-source"
-import { TFTSD } from "./TFT-SD-source"
-import { TFTUSB } from "./TFT-USB-source"
-import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
+import { h } from 'preact'
+import { FLASH } from './FLASH-source'
+import { DIRECTSD } from './DIRECTSD-source'
+import { SD } from './SD-source'
+import { SDEXT } from './SDEXT-source'
+import { TFTSD } from './TFT-SD-source'
+import { TFTUSB } from './TFT-USB-source'
+import { useSettingsContextFn, useUiContextFn } from '../../../contexts'
 
 //List of supported files systems
 const supportedFileSystems = [
     {
-        value: "FLASH",
-        name: "S137",
+        value: 'FLASH',
+        name: 'S137',
         depend: () => {
             return (
-                useUiContextFn.getValue("flashfs") &&
-                useSettingsContextFn.getValue("FlashFileSystem") != "none"
+                useUiContextFn.getValue('flashfs') &&
+                useSettingsContextFn.getValue('FlashFileSystem') != 'none'
             )
         },
     },
     {
-        value: "SD",
-        name: "S190",
+        value: 'SD',
+        name: 'S190',
         depend: () => {
             return (
-                useUiContextFn.getValue("sd") &&
-                useSettingsContextFn.getValue("SDConnection") == "none"
+                useUiContextFn.getValue('sd') &&
+                useSettingsContextFn.getValue('SDConnection') == 'none'
             )
         },
     },
     {
-        value: "DIRECTSD",
-        name: "S190",
+        value: 'DIRECTSD',
+        name: 'S190',
         depend: () => {
             return (
-                useUiContextFn.getValue("sd") &&
-                useSettingsContextFn.getValue("SDConnection") != "none"
+                useUiContextFn.getValue('sd') &&
+                useSettingsContextFn.getValue('SDConnection') != 'none'
             )
         },
     },
     {
-        value: "SDEXT",
-        name: "S191",
+        value: 'SDEXT',
+        name: 'S191',
         depend: () => {
             return (
-                useUiContextFn.getValue("sdext") &&
-                !useUiContextFn.getValue("is_extra_sd_direct")
+                useUiContextFn.getValue('sdext') &&
+                !useUiContextFn.getValue('is_extra_sd_direct')
             )
         },
     },
     {
-        value: "TFTSD",
-        name: "S188",
+        value: 'TFTSD',
+        name: 'S188',
         depend: () => {
-            return useUiContextFn.getValue("tftsd")
+            return useUiContextFn.getValue('tftsd')
         },
     },
     {
-        value: "TFTUSB",
-        name: "S189",
+        value: 'TFTUSB',
+        name: 'S189',
         depend: () => {
-            return useUiContextFn.getValue("tftusb")
+            return useUiContextFn.getValue('tftusb')
         },
     },
 ]
@@ -116,7 +116,7 @@ function command() {
     if (commands[filesystem] && commands[filesystem][cmd])
         return commands[filesystem][cmd](...rest)
     //console.log("Unknow command ", cmd, " for ", filesystem)
-    return { type: "error" }
+    return { type: 'error' }
 }
 
 //everything in one object

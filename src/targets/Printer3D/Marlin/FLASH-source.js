@@ -1,5 +1,5 @@
 /*
- DIRECTSD-source.js - ESP3D WebUI Target file
+ FLASH-source.js - ESP3D WebUI Target file
 
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
@@ -18,21 +18,17 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from 'preact'
-import { canProcessFile } from '../../helpers'
 import { sortedFilesList, formatStatus } from '../../../components/Helpers'
-import { useSettingsContextFn } from '../../../contexts'
-
+import { canProcessFile } from '../../helpers'
+import { useUiContextFn, useSettingsContextFn } from '../../../contexts'
 const capabilities = {
     Process: (path, filename) => {
-        if (
-            (useSettingsContextFn.getValue('Screen') &&
-                useSettingsContextFn.getValue('SDConnection') == 'direct') ||
-            useSettingsContextFn.getValue('SDConnection') == 'shared'
-        )
+        if (useSettingsContextFn.getValue('Screen')) {
             return canProcessFile(filename)
+        }
         return false
     },
-    UseFilters: () => true,
+    UseFilters: () => false,
     IsFlatFS: () => false,
     Upload: () => {
         return true
@@ -61,15 +57,18 @@ const commands = {
     list: (path, filename) => {
         return {
             type: 'url',
-            url: 'sdfiles',
+            url: 'files',
             args: { path, action: 'list' },
         }
     },
     upload: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue('HostUploadPath') + path
+        ).replaceAll('//', '/')
         return {
             type: 'url',
-            url: 'sdfiles',
-            args: { path },
+            url: 'files',
+            args: { path: upath },
         }
     },
     formatResult: (resultTxT) => {
@@ -82,37 +81,35 @@ const commands = {
     deletedir: (path, filename) => {
         return {
             type: 'url',
-            url: 'sdfiles',
+            url: 'files',
             args: { path, action: 'deletedir', filename },
         }
     },
     delete: (path, filename) => {
         return {
             type: 'url',
-            url: 'sdfiles',
+            url: 'files',
             args: { path, action: 'delete', filename },
-        }
-    },
-    needFormatFileName: (path, filename) => {
-        return {
-            name: filename.replaceAll(' ', '_'),
         }
     },
     createdir: (path, filename) => {
         return {
             type: 'url',
-            url: 'sdfiles',
-            args: {
-                path,
-                action: 'createdir',
-                filename: filename.replaceAll(' ', '_'),
-            },
+            url: 'files',
+            args: { path, action: 'createdir', filename },
         }
     },
     download: (path, filename) => {
+        const upath = (
+            useSettingsContextFn.getValue('HostUploadPath') +
+            path +
+            (path == '/' ? '' : '/') +
+            filename
+        ).replaceAll('//', '/')
+        console.log('Upath:', upath)
         return {
             type: 'url',
-            url: '/sd' + path + (path.endsWith('/') ? '' : '/') + filename,
+            url: upath,
             args: {},
         }
     },
@@ -122,7 +119,7 @@ const commands = {
             useSettingsContextFn.getValue('SDConnection') == 'direct'
         ) {
             let fullpath =
-                '/sd' + path + (path.endsWith('/') ? '' : '/') + filename
+                '/fs' + path + (path.endsWith('/') ? '' : '/') + filename
             return {
                 type: 'cmd',
                 cmd: '[ESP700]stream=' + fullpath.replaceAll(' ', ' '),
@@ -141,6 +138,6 @@ const commands = {
     },
 }
 
-const DIRECTSD = { capabilities, commands }
+const FLASH = { capabilities, commands }
 
-export { DIRECTSD }
+export { FLASH }

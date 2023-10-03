@@ -27,6 +27,7 @@ const SERIAL_PROTOCOL = 'RAW'
 let lastconnection = Date.now()
 let logindone = false
 const sessiontTime = 60000
+const isTFT = true
 const roomTemperature = 20
 const temperatures = {
     T: [
@@ -480,31 +481,56 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (url.indexOf('ESP800') != -1) {
-        res.json({
-            cmd: '800',
-            status: 'ok',
-            data: {
-                FWVersion: '3.0.0.a111',
-                FWTarget: 'marlin',
-                FWTargetID: '40',
-                Setup: 'Enabled',
-                Screen: 'Any screen',
-                SDConnection: 'direct',
-                SerialProtocol: SERIAL_PROTOCOL,
-                Authentication: 'Disabled',
-                WebCommunication: 'Synchronous',
-                WebSocketIP: 'localhost',
-                WebSocketPort: '81',
-                Hostname: 'esp3d',
-                WiFiMode: 'STA',
-                WebUpdate: 'Enabled',
-                FlashFileSystem: 'LittleFS',
-                HostPath: '/',
-                Time: 'none',
-                CameraID: '4',
-                CameraName: 'ESP32 Cam',
-            },
-        })
+        if (isTFT) {
+            res.json({
+                cmd: '800',
+                status: 'ok',
+                data: {
+                    FWVersion: '3.0.0.a111',
+                    FWTarget: 'marlin',
+                    FWTargetID: '40',
+                    Setup: 'Enabled',
+                    Screen: 'HMI V3',
+                    SDConnection: 'direct',
+                    SerialProtocol: 'Raw',
+                    Authentication: 'Disabled',
+                    WebCommunication: 'Asynchronous',
+                    WebSocketIP: 'localhost',
+                    WebSocketPort: '81',
+                    Hostname: 'esp3d',
+                    WiFiMode: 'STA',
+                    WebUpdate: 'Enabled',
+                    FlashFileSystem: 'LittleFS',
+                    HostPath: '/',
+                    Time: 'none',
+                },
+            })
+        } else {
+            res.json({
+                cmd: '800',
+                status: 'ok',
+                data: {
+                    FWVersion: '3.0.0.a111',
+                    FWTarget: 'marlin',
+                    FWTargetID: '40',
+                    Setup: 'Enabled',
+                    SDConnection: 'direct',
+                    SerialProtocol: SERIAL_PROTOCOL,
+                    Authentication: 'Disabled',
+                    WebCommunication: 'Synchronous',
+                    WebSocketIP: 'localhost',
+                    WebSocketPort: '81',
+                    Hostname: 'esp3d',
+                    WiFiMode: 'STA',
+                    WebUpdate: 'Enabled',
+                    FlashFileSystem: 'LittleFS',
+                    HostPath: '/',
+                    Time: 'none',
+                    CameraID: '4',
+                    CameraName: 'ESP32 Cam',
+                },
+            })
+        }
         return
     }
 
