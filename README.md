@@ -68,3 +68,7 @@ npm run <system>-<firmware>
 # Chat
 
 ESP3D is now on discord https://discord.gg/Z4ujTwE
+
+# Need more information ESP3D-WEBUI and ESP3D related projects ?
+
+Go to https://esp3d.io
