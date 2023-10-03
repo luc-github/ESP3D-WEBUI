@@ -20,6 +20,18 @@
 import { h } from "preact"
 import { useSettingsContextFn } from "../../../contexts"
 
+
+////////////////////////////////////////////////////////
+//
+// ok acknowledge
+const isOk = (str) => {
+    if (str.startsWith("ok") && !str.startsWith("ok T:")) {
+        return true
+    }
+    return false
+}
+
+
 ////////////////////////////////////////////////////////
 //
 //Temperatures
@@ -337,6 +349,7 @@ const getSensor = (str) => {
 }
 
 export {
+    isOk,
     isTemperatures,
     getTemperatures,
     isPositions,

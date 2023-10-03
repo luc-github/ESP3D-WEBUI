@@ -28,6 +28,7 @@ import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import { eventsList, variablesList } from "."
 import {
+    isOk,
     isStatus,
     getStatus,
     isStates,
@@ -97,8 +98,9 @@ const TargetContextProvider = ({ children }) => {
         //sensors
         //status
         if (type === "stream") {
-            //status
-            if (isStatus(data)) {
+            if (isOk(data)) {
+                //just ignore this one so we can continue
+            } else if (isStatus(data)) {//status
                 const response = getStatus(data)
                 //For Pn we need to keep the last value to keep trace the pin is detected or not,
                 //so we can display the pin icon when disabled even no data is received

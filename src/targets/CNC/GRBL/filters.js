@@ -28,6 +28,15 @@ let mpos = []
 
 ////////////////////////////////////////////////////////
 //
+// ok acknowledge
+const isOk = (str) => {
+    if (str=="ok") {
+        return true
+    }
+    return false
+}
+////////////////////////////////////////////////////////
+//
 // Status format is : <...>
 
 const isStatus = (str) => {
@@ -380,6 +389,7 @@ const getStreamingStatus = (str) => {
     return { status: res.data }
 }
 export {
+    isOk,
     isStatus,
     getStatus,
     isStates,

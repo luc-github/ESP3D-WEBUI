@@ -22,6 +22,16 @@ import { useSettingsContextFn } from "../../../contexts"
 
 ////////////////////////////////////////////////////////
 //
+// ok acknowledge
+const isOk = (str) => {
+    if (str.startsWith("ok")) {
+        return true
+    }
+    return false
+}
+
+////////////////////////////////////////////////////////
+//
 //Temperatures
 
 //Smoothieware Temperatures
@@ -268,6 +278,7 @@ const getSensor = (str) => {
 }
 
 export {
+    isOk,
     isTemperatures,
     getTemperatures,
     isPositions,

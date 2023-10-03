@@ -28,6 +28,7 @@ import { useDatasContext } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import {
+    isOk,
     isTemperatures,
     getTemperatures,
     isPositions,
@@ -152,7 +153,9 @@ const TargetContextProvider = ({ children }) => {
     const dispatchInternally = (type, data) => {
         processor.handle(type, data)
         if (type === "stream") {
-            if (isTemperatures(data)) {
+            if (isOk(data)) {
+                //just ignore this one so we can continue
+            } else if (isTemperatures(data)) {
                 const t = getTemperatures(data)
                 setTemperatures(t)
                 add2TemperaturesList({ temperatures: t, time: new Date() })
