@@ -11,14 +11,14 @@ Only compatible with [ESP3DLib 3.0](https://github.com/luc-github/ESP3DLib/tree/
 
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v16.14.2)
+1 - Install current nodejs LTS (currently using v20.8.0)
 
 ```
 node -v
-v16.14.2
+v20.8.0
 
 npm -v
-8.5.0
+10.1.0
 ```
 
 2 - Download all necessary packages in ESP3D-WEBUI directory (repository root)
