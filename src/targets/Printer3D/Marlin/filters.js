@@ -291,7 +291,7 @@ const getFeedRate = (str) => {
 
 ////////////////////////////////////////////////////////
 //
-// Printer capabbility
+// Printer capability
 //Format is:
 //FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff
 //Cap:SERIAL_XON_XOFF:0
@@ -348,6 +348,24 @@ const getSensor = (str) => {
     return result
 }
 
+////////////////////////////////////////////////////////
+//
+// Streaming status
+const isStreamingStatus = (str) => {
+    try {
+        const res = JSON.parse(str)
+        if (res.cmd == "701" && typeof res.data != "undefined") return true
+    } catch (e) {
+        return false
+    }
+}
+
+const getStreamingStatus = (str) => {
+    const res = JSON.parse(str)
+    if (res.data.status) return res.data
+    return { status: res.data }
+}
+
 export {
     isOk,
     isTemperatures,
@@ -370,4 +388,6 @@ export {
     getSensor,
     isPrinterCapability,
     getPrinterCapability,
+    isStreamingStatus,
+    getStreamingStatus,
 }

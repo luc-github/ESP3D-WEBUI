@@ -49,6 +49,8 @@ import {
     getSensor,
     isPrinterCapability,
     getPrinterCapability,
+    isStreamingStatus,
+    getStreamingStatus,
 } from "./filters"
 
 /*
@@ -72,6 +74,7 @@ const TargetContextProvider = ({ children }) => {
         y: "?",
         z: "?",
     })
+    const [streamStatus, setStreamStatus] = useState({})
     const MAX_TEMPERATURES_LIST_SIZE = 400
 
     const globalStatus = useRef({
@@ -243,6 +246,15 @@ const TargetContextProvider = ({ children }) => {
                 })
             }
         }
+        if (type === "response") {
+            //check if the response is a command answer
+            if (data[0] === "{") {
+                if (isStreamingStatus(data)) {
+                    const status = getStreamingStatus(data)
+                    setStreamStatus(status)
+                }
+            }
+        }
         //etc...
     }
 
@@ -382,6 +394,7 @@ const TargetContextProvider = ({ children }) => {
             clear: clearSensorDataList,
         },
         status: status,
+        streamStatus,
         processData,
     }
 

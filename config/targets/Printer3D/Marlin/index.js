@@ -466,17 +466,33 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (url.indexOf('ESP701') != -1) {
-        res.json({
-            cmd: '701',
-            status: 'ok',
-            data: {
-                status: 'processing',
-                total: '159694',
-                processed: '6719',
-                type: '2',
-                name: '/ESP3DPrintFile.gcode',
-            },
-        })
+        if (isTFT) {
+            res.json(
+                {
+                    "cmd": "701",
+                    "status": "ok",
+                    "data": {
+                        "status": "processing",
+                        "total": "2089832",
+                        "processed": "1481895",
+                        "elapsed": "5739645",
+                        "type": "5",
+                        "name": "/sd/CUBE01.GCO"
+                    }
+                })
+         } else {
+            res.json({
+                cmd: '701',
+                status: 'ok',
+                data: {
+                    status: 'processing',
+                    total: '159694',
+                    processed: '6719',
+                    type: '2',
+                    name: '/ESP3DPrintFile.gcode',
+                },
+            })
+        }
         return
     }
 
