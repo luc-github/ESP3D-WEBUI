@@ -205,11 +205,13 @@ const TargetContextProvider = ({ children }) => {
                         globalStatus.current.printTime
                     )
                 }
+                setStreamStatus(null)
                 setStatus(globalStatus.current)
             } else if (isPrintFileName(data)) {
                 const p = getPrintFileName(data)
                 //Todo: do some sanity check, update
                 globalStatus.current.filename = p
+                setStreamStatus(null)
                 setStatus(globalStatus.current)
             } else if (isStatus(data)) {
                 const p = getStatus(data)
@@ -250,6 +252,7 @@ const TargetContextProvider = ({ children }) => {
             //check if the response is a command answer
             if (data[0] === '{') {
                 if (isStreamingStatus(data)) {
+                    setStatus({ printState: null })
                     const preStatus = getStreamingStatus(data)
                     const name = preStatus.name
                     const status = preStatus.status
