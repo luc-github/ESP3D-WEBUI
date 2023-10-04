@@ -16,17 +16,17 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h, createContext } from "preact"
-import { useRef, useContext, useState } from "preact/hooks"
+import { h, createContext } from 'preact'
+import { useRef, useContext, useState } from 'preact/hooks'
 import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
     addObjectItem,
-} from "../../../components/Helpers"
-import { useDatasContext } from "../../../contexts"
-import { processor } from "./processor"
-import { isVerboseOnly } from "./stream"
+} from '../../../components/Helpers'
+import { useDatasContext } from '../../../contexts'
+import { processor } from './processor'
+import { isVerboseOnly } from './stream'
 import {
     isOk,
     isTemperatures,
@@ -51,17 +51,17 @@ import {
     getPrinterCapability,
     isStreamingStatus,
     getStreamingStatus,
-} from "./filters"
+} from './filters'
 
 /*
  * Local const
  *
  */
-const TargetContext = createContext("TargetContext")
+const TargetContext = createContext('TargetContext')
 const useTargetContext = () => useContext(TargetContext)
 const useTargetContextFn = {}
 useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
-    if (subsectionId == "sta" && label == "SSID") return true
+    if (subsectionId == 'sta' && label == 'SSID') return true
     return false
 }
 
@@ -70,17 +70,17 @@ const printerCapabilities = []
 const TargetContextProvider = ({ children }) => {
     //format is x:value, y:value, z:value
     const [positions, setPositions] = useState({
-        x: "?",
-        y: "?",
-        z: "?",
+        x: '?',
+        y: '?',
+        z: '?',
     })
     const [streamStatus, setStreamStatus] = useState({})
     const MAX_TEMPERATURES_LIST_SIZE = 400
 
     const globalStatus = useRef({
-        printState: { status: "Unknown", printing: false, progress: 0 },
-        filename: "",
-        state: "",
+        printState: { status: 'Unknown', printing: false, progress: 0 },
+        filename: '',
+        state: '',
     })
     const fansSpeed = useRef([])
     const flowsRate = useRef([])
@@ -162,11 +162,11 @@ const TargetContextProvider = ({ children }) => {
 
     const { terminal } = useDatasContext()
     const dataBuffer = useRef({
-        stream: "",
-        core: "",
-        response: "",
-        error: "",
-        echo: "",
+        stream: '',
+        core: '',
+        response: '',
+        error: '',
+        echo: '',
     })
 
     const dispatchInternally = (type, data) => {
@@ -174,7 +174,7 @@ const TargetContextProvider = ({ children }) => {
         processor.handle(type, data)
         //sensors
 
-        if (type === "stream") {
+        if (type === 'stream') {
             if (isOk(data)) {
                 //just ignore this one so we can continue
             } else if (isTemperatures(data)) {
@@ -230,13 +230,13 @@ const TargetContextProvider = ({ children }) => {
             } else if (isPrinterCapability(data)) {
                 const res = getPrinterCapability(data)
                 res.forEach((cap) => {
-                    addObjectItem(printerCapabilities, "name", {
+                    addObjectItem(printerCapabilities, 'name', {
                         name: cap.name,
                         value: cap.value,
                     })
                 })
             }
-        } else if (type === "core") {
+        } else if (type === 'core') {
             if (isSensor(data)) {
                 const result = getSensor(data)
                 setSensorData({ S: result })
@@ -246,12 +246,50 @@ const TargetContextProvider = ({ children }) => {
                 })
             }
         }
-        if (type === "response") {
+        if (type === 'response') {
             //check if the response is a command answer
-            if (data[0] === "{") {
+            if (data[0] === '{') {
                 if (isStreamingStatus(data)) {
-                    const status = getStreamingStatus(data)
-                    setStreamStatus(status)
+                    const preStatus = getStreamingStatus(data)
+                    const name = preStatus.name
+                    const status = preStatus.status
+                    const progress =
+                        preStatus.processed && preStatus.total
+                            ? Math.round(
+                                  (preStatus.processed / preStatus.total) * 100
+                              ).toFixed(2)
+                            : null
+                    const printTime = {}
+
+                    let time_elapsed = preStatus.elapsed
+                    printTime.sec = Math.floor(time_elapsed / 1000)
+                    printTime.min = Math.floor(printTime.sec / 60)
+                    printTime.sec = printTime.sec % 60
+                    printTime.hour = Math.floor(printTime.min / 60)
+                    printTime.min = printTime.min % 60
+                    printTime.day = Math.floor(printTime.hour / 24)
+                    printTime.hour = printTime.hour % 24
+                    const printLeftTime = {}
+                    if (preStatus.elapsed && progress && progress < 100) {
+                        const timeLeft =
+                            ((100 - progress) / progress) * preStatus.elapsed
+
+                        printLeftTime.sec = Math.floor(timeLeft / 1000)
+                        printLeftTime.min = Math.floor(printLeftTime.sec / 60)
+                        printLeftTime.sec = printLeftTime.sec % 60
+                        printLeftTime.hour = Math.floor(printLeftTime.min / 60)
+                        printLeftTime.min = printLeftTime.min % 60
+                        printLeftTime.day = Math.floor(printLeftTime.hour / 24)
+                        printLeftTime.hour = printLeftTime.hour % 24
+                    }
+                    const fullstatus = {
+                        status,
+                        progress,
+                        name,
+                        printTime,
+                        printLeftTime,
+                    }
+                    setStreamStatus(fullstatus)
                 }
             }
         }
@@ -260,26 +298,27 @@ const TargetContextProvider = ({ children }) => {
 
     const processData = (type, data, noecho = false) => {
         if (data.length > 0) {
-            if (type == "stream") {
+            if (type == 'stream') {
                 //TODO
                 //need to handle \r \n and even not having some
                 //this will split by char
-                data.split("").forEach((element, index) => {
-                    if (element == "\n" || element == "\r") {
+                data.split('').forEach((element, index) => {
+                    if (element == '\n' || element == '\r') {
                         if (dataBuffer.current[type].length > 0) {
                             const isverboseOnly = isVerboseOnly(
                                 type,
                                 dataBuffer.current[type]
                             )
                             dispatchInternally(type, dataBuffer.current[type])
-                            const reg_search_action = /\/\/action:([a-z]*)\s(.*)/
+                            const reg_search_action =
+                                /\/\/action:([a-z]*)\s(.*)/
                             let result = null
                             //format the output if needed
-                            if (dataBuffer.current[type].startsWith("{")) {
+                            if (dataBuffer.current[type].startsWith('{')) {
                                 const newbuffer = beautifyJSONString(
                                     dataBuffer.current[type]
                                 )
-                                if (newbuffer == "error")
+                                if (newbuffer == 'error')
                                     terminal.add({
                                         type,
                                         content: dataBuffer.current[type],
@@ -292,7 +331,11 @@ const TargetContextProvider = ({ children }) => {
                                         isverboseOnly,
                                     })
                                 }
-                            } else if ((result = reg_search_action.exec(dataBuffer.current[type])) !== null) {
+                            } else if (
+                                (result = reg_search_action.exec(
+                                    dataBuffer.current[type]
+                                )) !== null
+                            ) {
                                 terminal.add({
                                     type,
                                     content: result[2],
@@ -309,22 +352,22 @@ const TargetContextProvider = ({ children }) => {
                                 })
                             }
 
-                            dataBuffer.current[type] = ""
+                            dataBuffer.current[type] = ''
                         }
                     } else {
                         dataBuffer.current[type] += element
                     }
                 })
-            } else if (type == "response") {
+            } else if (type == 'response') {
                 //ignore such answer unless need to check response
                 //this response is to workaround some response lost when no response
-                if (data.startsWith("ESP3D says:")) return
+                if (data.startsWith('ESP3D says:')) return
                 const isverboseOnly = isVerboseOnly(type, data)
                 dispatchInternally(type, data)
                 //format the output if needed
-                if (data.startsWith("{")) {
+                if (data.startsWith('{')) {
                     const newbuffer = beautifyJSONString(data)
-                    if (newbuffer == "error")
+                    if (newbuffer == 'error')
                         terminal.add({
                             type,
                             content: data,
@@ -347,7 +390,7 @@ const TargetContextProvider = ({ children }) => {
                         })
                 }
             } else {
-                if (type != "core") {
+                if (type != 'core') {
                     const isverboseOnly = isVerboseOnly(type, data)
                     terminal.add({ type, content: data, isverboseOnly })
                 }
@@ -369,7 +412,7 @@ const TargetContextProvider = ({ children }) => {
         fanSpeed: {
             current: fanSpeed,
             set: (index, value) => {
-                console.log("set fan speed", index, "=", value)
+                console.log('set fan speed', index, '=', value)
                 fansSpeed[index] = value
                 setFanSpeed(fanSpeed)
             },

@@ -109,6 +109,7 @@
     "P114": "Invert Y",
     "P115": "Invert Z",
     "P116": "Swap X/Y",
+    "pause": "pause",
     "processing": "Processing",
     "heating": "Heating",
     "controls": "Extra Controls panel",
