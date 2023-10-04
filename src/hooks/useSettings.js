@@ -16,37 +16,37 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { useState } from "preact/hooks"
-import { webUIversion } from "../components/App/version"
-import { useSettingsContext } from "../contexts/"
+import { h } from 'preact'
+import { useState } from 'preact/hooks'
+import { webUIversion } from '../components/App/version'
+import { useSettingsContext } from '../contexts/'
 import {
     espHttpURL,
     getBrowserTime,
     isLimitedEnvironment,
-} from "../components/Helpers"
-import { useHttpQueue } from "../hooks/"
+} from '../components/Helpers'
+import { useHttpQueue } from '../hooks/'
 import {
     useUiContext,
     useRouterContext,
     useSettingsContextFn,
-} from "../contexts"
+} from '../contexts'
 import {
     baseLangRessource,
     setCurrentLanguage,
     T,
-} from "../components/Translations"
+} from '../components/Translations'
 import {
     defaultPreferences,
     useTargetContextFn,
     variablesList,
-} from "../targets"
+} from '../targets'
 import {
     importPreferences,
     formatPreferences,
-} from "../tabs/interface/importHelper"
-import { Frown, Info } from "preact-feather"
-import { showModal } from "../components/Modal"
+} from '../tabs/interface/importHelper'
+import { Frown, Info } from 'preact-feather'
+import { showModal } from '../components/Modal'
 
 /*
  * Local const
@@ -61,27 +61,27 @@ const useSettings = () => {
     const { defaultRoute, setActiveRoute } = useRouterContext()
     const sendCommand = (cmd, id) => {
         createNewRequest(
-            espHttpURL("command", {
+            espHttpURL('command', {
                 cmd,
             }).toString(),
             {
-                method: "GET",
+                method: 'GET',
                 id: id,
                 max: 1,
             },
             {
                 onSuccess: (result) => {
                     if (
-                        cmd.startsWith("[ESP") &&
-                        !result.startsWith("ESP3D says:")
+                        cmd.startsWith('[ESP') &&
+                        !result.startsWith('ESP3D says:')
                     ) {
-                        processData("response", result, result.startsWith("{"))
+                        processData('response', result, result.startsWith('{'))
                     }
                 },
                 onFail: (error) => {
                     toasts.addToast({
                         content: error,
-                        type: "error",
+                        type: 'error',
                     })
                 },
             }
@@ -89,46 +89,46 @@ const useSettings = () => {
     }
     const getConnectionSettings = (next) => {
         createNewRequest(
-            espHttpURL("command", {
+            espHttpURL('command', {
                 cmd: `[ESP800]json=yes time=${getBrowserTime()} version=${webUIversion}`,
             }),
-            { method: "GET", id: "connection" },
+            { method: 'GET', id: 'connection' },
             {
                 onSuccess: (result) => {
                     const jsonResult = JSON.parse(result)
                     if (
                         jsonResult.cmd != 800 ||
-                        jsonResult.status == "error" ||
+                        jsonResult.status == 'error' ||
                         !jsonResult.data
                     ) {
-                        toasts.addToast({ content: T("S194"), type: "error" })
+                        toasts.addToast({ content: T('S194'), type: 'error' })
 
                         connection.setConnectionState({
                             connected: false,
                             authenticate: false,
-                            page: "error",
-                            extraMsg: T("S194"),
+                            page: 'error',
+                            extraMsg: T('S194'),
                         })
                         return
                     }
                     connectionSettings.current = jsonResult.data
-                    processData("core", "ESP800", true)
+                    processData('core', 'ESP800', true)
 
                     document.title = connectionSettings.current.Hostname
                     if (
                         !connectionSettings.current.HostPath ||
                         !connectionSettings.current.HostPath.length
                     ) {
-                        connectionSettings.current.HostPath = "/"
+                        connectionSettings.current.HostPath = '/'
                     }
 
-                    if (!connectionSettings.current.HostPath.endsWith("/")) {
+                    if (!connectionSettings.current.HostPath.endsWith('/')) {
                         connectionSettings.current.HostPath =
-                            connectionSettings.current.HostPath.concat("/")
+                            connectionSettings.current.HostPath.concat('/')
                     }
-                    if (connectionSettings.current.FlashFileSystem == "none") {
+                    if (connectionSettings.current.FlashFileSystem == 'none') {
                         // no flash filesystem so host path is on SD card
-                        connectionSettings.current.HostTarget = "sdfiles"
+                        connectionSettings.current.HostTarget = 'sdfiles'
                         connectionSettings.current.HostUploadPath =
                             connectionSettings.current.HostPath
                         connectionSettings.current.HostDownloadPath =
@@ -137,18 +137,18 @@ const useSettings = () => {
                         //Flashs is supported but stil can use sd card to host files
                         if (
                             connectionSettings.current.HostPath.startsWith(
-                                "/sd/"
+                                '/sd/'
                             ) &&
-                            connectionSettings.current.SDConnection != "none"
+                            connectionSettings.current.SDConnection != 'none'
                         ) {
-                            connectionSettings.current.HostTarget = "sdfiles"
+                            connectionSettings.current.HostTarget = 'sdfiles'
                             connectionSettings.current.HostUploadPath =
                                 connectionSettings.current.HostPath.substring(3)
                             connectionSettings.current.HostDownloadPath =
                                 connectionSettings.current.HostPath
                         } else {
                             //Flash filesystem is supported and host files are on flash filesystem
-                            connectionSettings.current.HostTarget = "files"
+                            connectionSettings.current.HostTarget = 'files'
                             connectionSettings.current.HostUploadPath =
                                 connectionSettings.current.HostPath
                             connectionSettings.current.HostDownloadPath =
@@ -157,27 +157,32 @@ const useSettings = () => {
                     }
 
                     if (
-                        isLimitedEnvironment(
-                            connectionSettings.current.WiFiMode
-                        )
+                        (connectionSettings.current.WiFiMode &&
+                            isLimitedEnvironment(
+                                connectionSettings.current.WiFiMode
+                            )) ||
+                        (connectionSettings.current.RadioMode &&
+                            isLimitedEnvironment(
+                                connectionSettings.current.RadioMode
+                            ))
                     ) {
                         showModal({
                             modals,
-                            title: T("S123"),
+                            title: T('S123'),
                             icon: <Info />,
-                            id: "notification",
-                            content: T("S124").replace(
-                                "%s",
+                            id: 'notification',
+                            content: T('S124').replace(
+                                '%s',
                                 connectionSettings.current.WebSocketIP +
                                     (connectionSettings.current.WebSocketPort !=
-                                    "81"
-                                        ? ":" +
+                                    '81'
+                                        ? ':' +
                                           (parseInt(
                                               connectionSettings.current
                                                   .WebSocketPort
                                           ) -
                                               1)
-                                        : "")
+                                        : '')
                             ),
                             hideclose: true,
                         })
@@ -185,23 +190,23 @@ const useSettings = () => {
                     }
 
                     if (jsonResult.FWTarget == 0) {
-                        setActiveRoute("/settings")
-                        defaultRoute.current = "/settings"
+                        setActiveRoute('/settings')
+                        defaultRoute.current = '/settings'
                     } else {
-                        setActiveRoute("/dashboard")
-                        defaultRoute.current = "/dashboard"
+                        setActiveRoute('/dashboard')
+                        defaultRoute.current = '/dashboard'
                     }
                     if (next) next()
                 },
                 onFail: (error) => {
-                    if (!error.startsWith("401")) {
+                    if (!error.startsWith('401')) {
                         connection.setConnectionState({
                             connected: false,
                             authenticate: false,
-                            page: "error",
+                            page: 'error',
                         })
-                        toasts.addToast({ content: error, type: "error" })
-                        console.log("Error")
+                        toasts.addToast({ content: error, type: 'error' })
+                        console.log('Error')
                     }
                 },
             }
@@ -215,7 +220,7 @@ const useSettings = () => {
             connection.setConnectionState({
                 connected: true,
                 authenticate: true,
-                page: "connecting",
+                page: 'connecting',
             })
             document.title = connectionSettings.current.Hostname
         }
@@ -228,22 +233,22 @@ const useSettings = () => {
                 finalizeDisplay()
                 return
             }
-            const elem = document.getElementById("themestyle")
+            const elem = document.getElementById('themestyle')
             if (elem) elem.parentNode.removeChild(elem)
 
-            if (themepack != "default") {
-                console.log("Loading theme: " + themepack)
+            if (themepack != 'default') {
+                console.log('Loading theme: ' + themepack)
                 createNewRequest(
                     espHttpURL(
-                        useSettingsContextFn.getValue("HostDownloadPath") +
+                        useSettingsContextFn.getValue('HostDownloadPath') +
                             themepack
                     ),
-                    { method: "GET" },
+                    { method: 'GET' },
                     {
                         onSuccess: (result) => {
-                            var styleItem = document.createElement("style")
-                            styleItem.type = "text/css"
-                            styleItem.id = "themestyle"
+                            var styleItem = document.createElement('style')
+                            styleItem.type = 'text/css'
+                            styleItem.id = 'themestyle'
                             styleItem.innerHTML = result
                             document.head.appendChild(styleItem)
                             if (next) next()
@@ -258,16 +263,16 @@ const useSettings = () => {
                                 setLoading(false)
                             }
                             finalizeDisplay()
-                            console.log("error")
+                            console.log('error')
                             toasts.addToast({
-                                content: error + " " + themepack,
-                                type: "error",
+                                content: error + ' ' + themepack,
+                                type: 'error',
                             })
                         },
                     }
                 )
             } else {
-                const elem = document.getElementById("themestyle")
+                const elem = document.getElementById('themestyle')
                 if (elem) elem.parentNode.removeChild(elem)
                 if (next) next()
                 if (setLoading) {
@@ -278,10 +283,10 @@ const useSettings = () => {
         }
         createNewRequest(
             espHttpURL(
-                useSettingsContextFn.getValue("HostDownloadPath") +
-                    "preferences.json"
+                useSettingsContextFn.getValue('HostDownloadPath') +
+                    'preferences.json'
             ),
-            { method: "GET" },
+            { method: 'GET' },
             {
                 onSuccess: (result) => {
                     const jsonResult = JSON.parse(result)
@@ -301,32 +306,32 @@ const useSettings = () => {
                                     <span class="m-1">preferences.json</span>
                                 </span>
                             ),
-                            type: "error",
+                            type: 'error',
                         })
-                        console.log("error")
+                        console.log('error')
                     }
                     interfaceSettings.current = preferences
 
                     //polling commands
                     if (
                         uisettings.getValue(
-                            "enablepolling",
+                            'enablepolling',
                             preferences.settings
                         )
                     ) {
                         const pollingList = uisettings.getValue(
-                            "pollingcmds",
+                            'pollingcmds',
                             preferences.settings
                         )
                         if (Array.isArray(pollingList)) {
                             pollingList.forEach((cmdEntry) => {
                                 const cmds = cmdEntry.value
-                                    .find((item) => item.name == "cmds")
+                                    .find((item) => item.name == 'cmds')
                                     .value.trim()
-                                    .split(";")
+                                    .split(';')
                                 const refreshtime = parseInt(
                                     cmdEntry.value.find(
-                                        (item) => item.name == "refreshtime"
+                                        (item) => item.name == 'refreshtime'
                                     ).value
                                 )
                                 //Send commands at start
@@ -335,18 +340,18 @@ const useSettings = () => {
                                         if (cmd.trim().length > 0) {
                                             if (
                                                 typeof variablesList.formatCommand !==
-                                                "undefined"
+                                                'undefined'
                                             ) {
                                                 sendCommand(
                                                     variablesList.formatCommand(
                                                         cmd
                                                     ),
-                                                    cmdEntry.id + "-" + index
+                                                    cmdEntry.id + '-' + index
                                                 )
                                             } else {
                                                 sendCommand(
                                                     cmd,
-                                                    cmdEntry.id + "-" + index
+                                                    cmdEntry.id + '-' + index
                                                 )
                                             }
                                         }
@@ -362,21 +367,21 @@ const useSettings = () => {
                                                     if (cmd.trim().length > 0) {
                                                         if (
                                                             typeof variablesList.formatCommand !==
-                                                            "undefined"
+                                                            'undefined'
                                                         ) {
                                                             sendCommand(
                                                                 variablesList.formatCommand(
                                                                     cmd
                                                                 ),
                                                                 cmdEntry.id +
-                                                                    "-" +
+                                                                    '-' +
                                                                     index
                                                             )
                                                         } else {
                                                             sendCommand(
                                                                 cmd,
                                                                 cmdEntry.id +
-                                                                    "-" +
+                                                                    '-' +
                                                                     index
                                                             )
                                                         }
@@ -391,28 +396,28 @@ const useSettings = () => {
                     }
 
                     //Mobile view
-                    if (uisettings.getValue("mobileview", preferences.settings))
+                    if (uisettings.getValue('mobileview', preferences.settings))
                         document
-                            .getElementById("app")
-                            .classList.add("mobile-view")
+                            .getElementById('app')
+                            .classList.add('mobile-view')
                     else
                         document
-                            .getElementById("app")
-                            .classList.remove("mobile-view")
+                            .getElementById('app')
+                            .classList.remove('mobile-view')
                     //language
                     const languagepack = uisettings.getValue(
-                        "language",
+                        'language',
                         preferences.settings
                     )
                     const themepack = uisettings.getValue(
-                        "theme",
+                        'theme',
                         preferences.settings
                     )
                     //set default first
                     setCurrentLanguage(baseLangRessource)
                     if (
                         !(
-                            languagepack == "default" ||
+                            languagepack == 'default' ||
                             languagepack == undefined
                         )
                     ) {
@@ -422,10 +427,10 @@ const useSettings = () => {
                         createNewRequest(
                             espHttpURL(
                                 useSettingsContextFn.getValue(
-                                    "HostDownloadPath"
+                                    'HostDownloadPath'
                                 ) + languagepack
                             ),
-                            { method: "GET" },
+                            { method: 'GET' },
                             {
                                 onSuccess: (result) => {
                                     const langjson = JSON.parse(result)
@@ -434,10 +439,10 @@ const useSettings = () => {
                                 },
                                 onFail: (error) => {
                                     loadTheme(themepack)
-                                    console.log("Error")
+                                    console.log('Error')
                                     toasts.addToast({
-                                        content: error + " " + languagepack,
-                                        type: "error",
+                                        content: error + ' ' + languagepack,
+                                        type: 'error',
                                     })
                                 },
                             }
@@ -457,12 +462,12 @@ const useSettings = () => {
                     if (setLoading) {
                         setLoading(false)
                     }
-                    if (error != "404 - Not Found")
+                    if (error != '404 - Not Found')
                         toasts.addToast({
-                            content: error + " preferences.json",
-                            type: "error",
+                            content: error + ' preferences.json',
+                            type: 'error',
                         })
-                    console.log("No valid preferences.json")
+                    console.log('No valid preferences.json')
                     loadTheme()
                 },
             }
