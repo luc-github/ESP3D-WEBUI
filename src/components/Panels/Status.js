@@ -171,7 +171,7 @@ const StatusControls = () => {
 
 const StatusPanel = () => {
     const { toasts, panels } = useUiContext()
-    const { status } = useTargetContext()
+    const { status, streamStatus } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = 'statusPanel'
     const hidePanel = () => {
@@ -184,17 +184,32 @@ const StatusPanel = () => {
             depend: ['sd'],
             buttons: [
                 {
-                    cmd: 'sdresumecmd',
+                    cmd: () => {
+                        if (status.printState && status.printState.printing) {
+                            return 'sdresumecmd'
+                        }
+                        return '[ESP701]RESUME'
+                    },
                     icon: <PlayCircle />,
                     desc: T('P99'),
                 },
                 {
-                    cmd: 'sdpausecmd',
+                    cmd: () => {
+                        if (status.printState && status.printState.printing) {
+                            return 'sdpausecmd'
+                        }
+                        return '[ESP701]PAUSE'
+                    },
                     icon: <PauseCircle />,
                     desc: T('P98'),
                 },
                 {
-                    cmd: 'sdstopcmd',
+                    cmd: () => {
+                        if (status.printState && status.printState.printing) {
+                            return 'sdstopcmd'
+                        }
+                        return '[ESP701]ABORT'
+                    },
                     icon: <StopCircle />,
                     desc: T('P100'),
                 },
@@ -205,17 +220,23 @@ const StatusPanel = () => {
             depend: ['tftsd'],
             buttons: [
                 {
-                    cmd: 'tftsdresumecmd',
+                    cmd: () => {
+                        return 'tftsdresumecmd'
+                    },
                     icon: <PlayCircle />,
                     desc: T('P99'),
                 },
                 {
-                    cmd: 'tftsdpausecmd',
+                    cmd: () => {
+                        'tftsdpausecmd'
+                    },
                     icon: <PauseCircle />,
                     desc: T('P98'),
                 },
                 {
-                    cmd: 'tftsdstopcmd',
+                    cmd: () => {
+                        'tftsdstopcmd'
+                    },
                     icon: <StopCircle />,
                     desc: T('P100'),
                 },
@@ -226,17 +247,23 @@ const StatusPanel = () => {
             depend: ['tftusb'],
             buttons: [
                 {
-                    cmd: 'tftusbresumecmd',
+                    cmd: () => {
+                        'tftusbresumecmd'
+                    },
                     icon: <PlayCircle />,
                     desc: T('P99'),
                 },
                 {
-                    cmd: 'tftusbpausecmd',
+                    cmd: () => {
+                        'tftusbpausecmd'
+                    },
                     icon: <PauseCircle />,
                     desc: T('P98'),
                 },
                 {
-                    cmd: 'tftusbstopcmd',
+                    cmd: () => {
+                        'tftusbstopcmd'
+                    },
                     icon: <StopCircle />,
                     desc: T('P100'),
                 },
@@ -277,8 +304,10 @@ const StatusPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
-                {status.printState &&
-                    status.printState.printing &&
+                {((status.printState && status.printState.printing) ||
+                    (streamStatus &&
+                        streamStatus.status &&
+                        streamStatus.status != 'no stream')) &&
                     deviceList.map((device) => {
                         if (
                             !device.depend.every((d) =>
@@ -301,10 +330,15 @@ const StatusPanel = () => {
                                                 onClick={(e) => {
                                                     useUiContextFn.haptic()
                                                     e.target.blur()
+                                                    console.log(button.cmd())
                                                     const cmd =
-                                                        useUiContextFn.getValue(
-                                                            button.cmd
-                                                        )
+                                                        status.printState &&
+                                                        status.printState
+                                                            .printing
+                                                            ? useUiContextFn.getValue(
+                                                                  button.cmd()
+                                                              )
+                                                            : button.cmd()
                                                     const cmds = cmd.split('\n')
                                                     cmds.forEach((cmd) => {
                                                         sendCommand(cmd)
