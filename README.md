@@ -18,7 +18,7 @@ node -v
 v20.8.0
 
 npm -v
-10.1.0
+10.2.0
 ```
 
 2 - Download all necessary packages in ESP3D-WEBUI directory (repository root)
