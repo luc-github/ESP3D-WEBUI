@@ -190,6 +190,7 @@ const StatusPanel = () => {
                         }
                         return '[ESP701]RESUME'
                     },
+                    depend: { streamStatus: ['pause'], status: [] },
                     icon: <PlayCircle />,
                     desc: T('P99'),
                 },
@@ -200,6 +201,7 @@ const StatusPanel = () => {
                         }
                         return '[ESP701]PAUSE'
                     },
+                    depend: { streamStatus: ['processing'], status: [] },
                     icon: <PauseCircle />,
                     desc: T('P98'),
                 },
@@ -285,6 +287,20 @@ const StatusPanel = () => {
             }
         )
     }
+    const isVisible = (button) => {
+        if (button.depend) {
+            if (
+                streamStatus &&
+                streamStatus.status &&
+                button.depend.streamStatus
+            ) {
+                if (!button.depend.streamStatus.includes(streamStatus.status)) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
     return (
         <div class="panel panel-dashboard">
             <div class="navbar">
@@ -322,30 +338,38 @@ const StatusPanel = () => {
                                 </legend>
                                 <div class="field-group-content maxwidth">
                                     <div class="print-buttons-container">
-                                        {device.buttons.map((button) => (
-                                            <ButtonImg
-                                                icon={button.icon}
-                                                tooltip
-                                                data-tooltip={T(button.desc)}
-                                                onClick={(e) => {
-                                                    useUiContextFn.haptic()
-                                                    e.target.blur()
-                                                    console.log(button.cmd())
-                                                    const cmd =
-                                                        status.printState &&
-                                                        status.printState
-                                                            .printing
-                                                            ? useUiContextFn.getValue(
-                                                                  button.cmd()
-                                                              )
-                                                            : button.cmd()
-                                                    const cmds = cmd.split('\n')
-                                                    cmds.forEach((cmd) => {
-                                                        sendCommand(cmd)
-                                                    })
-                                                }}
-                                            />
-                                        ))}
+                                        {device.buttons.map((button) => {
+                                            if (!isVisible(button)) return null
+                                            return (
+                                                <ButtonImg
+                                                    icon={button.icon}
+                                                    tooltip
+                                                    data-tooltip={T(
+                                                        button.desc
+                                                    )}
+                                                    onClick={(e) => {
+                                                        useUiContextFn.haptic()
+                                                        e.target.blur()
+                                                        console.log(
+                                                            button.cmd()
+                                                        )
+                                                        const cmd =
+                                                            status.printState &&
+                                                            status.printState
+                                                                .printing
+                                                                ? useUiContextFn.getValue(
+                                                                      button.cmd()
+                                                                  )
+                                                                : button.cmd()
+                                                        const cmds =
+                                                            cmd.split('\n')
+                                                        cmds.forEach((cmd) => {
+                                                            sendCommand(cmd)
+                                                        })
+                                                    }}
+                                                />
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             </fieldset>
