@@ -25,6 +25,8 @@ import {
     CheckCircle,
     Circle,
     PauseCircle,
+    ChevronLeft,
+    ChevronRight,
 } from 'preact-feather'
 import { useUiContext, useDatasContext, useUiContextFn } from '../../contexts'
 import { useTargetContext, variablesList } from '../../targets'
@@ -66,35 +68,37 @@ const TerminalPanel = () => {
                 terminalOutput.current.scrollHeight
         }
     }
+    const historyPrev = () => {
+        if (terminal.inputHistory.length > 0 && inputHistoryIndex >= 0) {
+            inputRef.current.value = terminal.inputHistory[inputHistoryIndex]
+            terminal.input.current = inputRef.current.value
+            inputHistoryIndex--
+        }
+    }
+
+    const historyNext = () => {
+        if (
+            terminal.inputHistory.length > 0 &&
+            inputHistoryIndex < terminal.inputHistory.length - 1
+        ) {
+            inputHistoryIndex++
+            inputRef.current.value = terminal.inputHistory[inputHistoryIndex]
+            terminal.input.current = inputRef.current.value
+        } else {
+            inputRef.current.value = ''
+            terminal.input.current = inputRef.current.value
+        }
+    }
     const onKeyUp = (e) => {
         switch (e.keyCode) {
             case 13:
                 onSend(e)
                 break
             case 38: //prev
-                if (
-                    terminal.inputHistory.length > 0 &&
-                    inputHistoryIndex >= 0
-                ) {
-                    inputRef.current.value =
-                        terminal.inputHistory[inputHistoryIndex]
-                    terminal.input.current = inputRef.current.value
-                    inputHistoryIndex--
-                }
+                historyPrev()
                 break
             case 40: //next
-                if (
-                    terminal.inputHistory.length > 0 &&
-                    inputHistoryIndex < terminal.inputHistory.length - 1
-                ) {
-                    inputHistoryIndex++
-                    inputRef.current.value =
-                        terminal.inputHistory[inputHistoryIndex]
-                    terminal.input.current = inputRef.current.value
-                } else {
-                    inputRef.current.value = ''
-                    terminal.input.current = inputRef.current.value
-                }
+                historyNext()
                 break
             default:
             //ignore
@@ -247,6 +251,18 @@ const TerminalPanel = () => {
                     label={T('S81')}
                     icon={<Send />}
                     onClick={onSend}
+                />
+            </div>
+            <div class="show-low">
+                <ButtonImg
+                    class=" m-2"
+                    icon={<ChevronLeft />}
+                    onClick={historyPrev}
+                />
+                <ButtonImg
+                    class=" m-2"
+                    icon={<ChevronRight />}
+                    onClick={historyNext}
                 />
             </div>
             <div
