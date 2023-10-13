@@ -17,6 +17,17 @@
 */
 import { h } from 'preact'
 
+function getBrowserTimeZone() {
+    const d = new Date()
+    const offset = d.getTimezoneOffset()
+    const sign = offset < 0 ? '+' : '-'
+    const hours = Math.floor(Math.abs(offset) / 60)
+    const minutes = Math.abs(offset) % 60
+    return `${sign}${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}`
+}
+
 function getBrowserTime() {
     //ISO 8601 format string
     function padNumber(num, size) {
@@ -33,4 +44,4 @@ function getBrowserTime() {
     )}:${padNumber(d.getSeconds(), 2)}`
 }
 
-export { getBrowserTime }
+export { getBrowserTime, getBrowserTimeZone }

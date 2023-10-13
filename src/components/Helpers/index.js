@@ -16,9 +16,9 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { espHttpURL, getCookie, isLimitedEnvironment } from "./http"
-import { getBrowserTime } from "./time"
+import { h } from 'preact'
+import { espHttpURL, getCookie, isLimitedEnvironment } from './http'
+import { getBrowserTime, getBrowserTimeZone } from './time'
 import {
     createComponent,
     disableNode,
@@ -28,7 +28,7 @@ import {
     generateDependIds,
     connectionDepend,
     settingsDepend,
-} from "./components"
+} from './components'
 import {
     beautifyJSONString,
     capitalize,
@@ -38,7 +38,7 @@ import {
     compareStrings,
     replaceVariables,
     isFloat,
-} from "./strings"
+} from './strings'
 import {
     limitArr,
     mergeJSON,
@@ -47,9 +47,9 @@ import {
     addObjectItem,
     removeObjectItem,
     BitsArray,
-} from "./arrays"
-import { dispatchToExtensions } from "./html"
-import { sortedFilesList, filterResultFiles } from "./filters"
+} from './arrays'
+import { dispatchToExtensions } from './html'
+import { sortedFilesList, filterResultFiles } from './filters'
 
 export {
     beautifyJSONString,
@@ -65,6 +65,7 @@ export {
     formatStatus,
     generateUID,
     getBrowserTime,
+    getBrowserTimeZone,
     getColClasses,
     generateDependIds,
     connectionDepend,

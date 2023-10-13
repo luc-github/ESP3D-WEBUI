@@ -9,7 +9,9 @@ can be in JSON or plain text
     * json=yes
     the output format
     * time=
-    to set ESP3D time using ISO 8601 format : `YYYY`-`MM`-`DD`T`HH`-`minutes`-`seconds`
+    to set ESP3D time using ISO 8601 format : `YYYY`-`MM`-`DD`T`HH`:`minutes`:`seconds`
+    * tz= 
+    to set ESP3D time zone using ISO 8601 format : `+`/`-` `HH`:`MM`
     * version
     version of webUI
     * setup flag

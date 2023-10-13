@@ -23,6 +23,7 @@ import { useSettingsContext } from '../contexts/'
 import {
     espHttpURL,
     getBrowserTime,
+    getBrowserTimeZone,
     isLimitedEnvironment,
 } from '../components/Helpers'
 import { useHttpQueue } from '../hooks/'
@@ -90,7 +91,7 @@ const useSettings = () => {
     const getConnectionSettings = (next) => {
         createNewRequest(
             espHttpURL('command', {
-                cmd: `[ESP800]json=yes time=${getBrowserTime()} version=${webUIversion}`,
+                cmd: `[ESP800]json=yes time=${getBrowserTime()} tz=${getBrowserTimeZone()} version=${webUIversion}`,
             }),
             { method: 'GET', id: 'connection' },
             {
