@@ -28,13 +28,13 @@ function getBrowserTimeZone() {
         .padStart(2, '0')}`
 }
 
-function getBrowserTime() {
+function getBrowserTime(time) {
     //ISO 8601 format string
     function padNumber(num, size) {
         const s = num.toString().padStart(size, '0')
         return s
     }
-    const d = new Date()
+    const d = typeof time != 'undefined' ? new Date(time) : new Date()
     return `${d.getFullYear()}-${padNumber(d.getMonth() + 1, 2)}-${padNumber(
         d.getDate(),
         2

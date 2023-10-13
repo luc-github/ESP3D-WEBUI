@@ -20,7 +20,7 @@ import { Fragment, h } from 'preact'
 import { useEffect, useState, useRef } from 'preact/hooks'
 import { T } from '../Translations'
 import { useHttpFn } from '../../hooks'
-import { espHttpURL } from '../Helpers'
+import { espHttpURL, getBrowserTime } from '../Helpers'
 import { Loading, ButtonImg, CenterLeft, Progress } from '../Controls'
 import { useUiContext, useUiContextFn } from '../../contexts'
 import { showModal, showConfirmationModal, showProgressModal } from '../Modal'
@@ -213,6 +213,12 @@ const FilesPanel = () => {
                     'S'
                 //append file size first to check updload is complete
                 formData.append(arg, file.size)
+                //append last modified time
+                //no need timezone because will be saved as it is on FileSystem
+                const time_string = getBrowserTime(file.lastModified)
+                const argt = arg.substring(0, arg.length - 1) + 'T'
+                formData.append(argt, time_string)
+                //append file
                 formData.append(
                     'myfiles',
                     file,
