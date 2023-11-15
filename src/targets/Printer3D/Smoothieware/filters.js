@@ -17,14 +17,14 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { useSettingsContextFn } from "../../../contexts"
+import { h } from 'preact'
+import { useSettingsContextFn } from '../../../contexts'
 
 ////////////////////////////////////////////////////////
 //
 // ok acknowledge
 const isOk = (str) => {
-    if (str.startsWith("ok")) {
+    if (str == 'ok') {
         return true
     }
     return false
@@ -70,7 +70,7 @@ const getTemperatures = (str) => {
     //result[4] = target
     //Note :on multiple extruders T is the active one, it will be erased by the next T0
     while ((result = regex_search.exec(str)) !== null) {
-        response[result[1]][result[2] == "" ? 0 : result[2]] = {
+        response[result[1]][result[2] == '' ? 0 : result[2]] = {
             value: result[3],
             target: result[4],
         }
@@ -130,12 +130,12 @@ const getPrintStatus = (str) => {
     }
     if ((result = reg_search2.exec(str)) !== null) {
         return {
-            status: "Printing",
+            status: 'Printing',
             printing: true,
             progress: result[1],
         }
     }
-    return { status: "Unknown", printing: false, progress: 0 }
+    return { status: 'Unknown', printing: false, progress: 0 }
 }
 
 ////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ const getPrintFileName = (str) => {
     if ((result = reg_search1.exec(str)) !== null) {
         return result[1]
     }
-    return "Unknown"
+    return 'Unknown'
 }
 
 ////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ const getStatus = (str) => {
     if ((result = reg_search2.exec(str)) !== null) {
         return result[1]
     }
-    return "Unknown"
+    return 'Unknown'
 }
 
 ////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ const getFeedRate = (str) => {
 //...
 const isPrinterCapability = (str) => {
     const reg_search1 = /^Cap:([^:]+):[0-1]$/
-    if (str.startsWith("FIRMWARE_NAME:") || reg_search1.test(str)) {
+    if (str.startsWith('FIRMWARE_NAME:') || reg_search1.test(str)) {
         return true
     }
     return false
@@ -250,9 +250,9 @@ const isPrinterCapability = (str) => {
 
 const getPrinterCapability = (str) => {
     let result = null
-    const res = str.split(",").reduce((acc, cur) => {
-        const sp = cur.split(":")
-        acc.push({ name: sp[0], value: sp.slice(1).join(":") })
+    const res = str.split(',').reduce((acc, cur) => {
+        const sp = cur.split(':')
+        acc.push({ name: sp[0], value: sp.slice(1).join(':') })
         return acc
     }, [])
 
@@ -263,12 +263,12 @@ const getPrinterCapability = (str) => {
 //
 //Sensor
 const isSensor = (str) => {
-    return str.startsWith("SENSOR:")
+    return str.startsWith('SENSOR:')
 }
 
 const getSensor = (str) => {
     const result = []
-    const data = " " + str.substring(7)
+    const data = ' ' + str.substring(7)
     let res = null
     const reg_search = /\s(?<value>[^\[]+)\[(?<unit>[^\]]+)\]/g
     while ((res = reg_search.exec(data))) {

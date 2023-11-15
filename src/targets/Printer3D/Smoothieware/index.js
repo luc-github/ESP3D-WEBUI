@@ -17,59 +17,59 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { iconsTarget } from "./icons"
-import { files } from "./files"
-import { processor } from "./processor"
-import { defaultPanelsList } from "./panels"
-import { MachineSettings } from "./MachineSettings"
+import { h } from 'preact'
+import { iconsTarget } from './icons'
+import { files } from './files'
+import { processor } from './processor'
+import { defaultPanelsList } from './panels'
+import { MachineSettings } from './MachineSettings'
 import {
     InformationsControls,
     QuickButtonsBar,
     MixedExtrudersControl,
     BackgroundContainer,
-} from "./Controls"
+} from './Controls'
 import {
     TargetContextProvider,
     useTargetContext,
     useTargetContextFn,
-} from "./TargetContext"
-import variablesTable from "./variablesTable"
-import { AppLogo } from "../../../components/Images/logo"
-import { Eye as WebUILogo } from "preact-feather"
-import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
+} from './TargetContext'
+import variablesTable from './variablesTable'
+import { AppLogo } from '../../../components/Images/logo'
+import { Eye as WebUILogo } from 'preact-feather'
+import { addObjectItem, removeObjectItem } from '../../../components/Helpers'
 
-const Target = "Smoothieware"
-const webUIbuild = "S2"
-const Name = "ESP3D"
+const Target = 'Smoothieware'
+const webUIbuild = 'S3'
+const Name = 'ESP3D'
 const fwUrl = [
-    "https://github.com/luc-github/ESP3D/tree/3.0",
-    "https://github.com/luc-github/ESP3D-TFT",
+    'https://github.com/luc-github/ESP3D/tree/3.0',
+    'https://github.com/luc-github/ESP3D-TFT',
 ]
 
 const restartdelay = 30
 const variablesList = {
     commands: [...variablesTable],
     addCommand: (variable) =>
-        addObjectItem(variablesList.commands, "name", variable),
+        addObjectItem(variablesList.commands, 'name', variable),
     removeCommand: (name) =>
-        removeObjectItem(variablesList.commands, "name", name),
+        removeObjectItem(variablesList.commands, 'name', name),
 }
 const eventsList = {
     evts: [],
     on: (event, fn) => {
-        if (typeof eventsList.evts[event] === "undefined") {
+        if (typeof eventsList.evts[event] === 'undefined') {
             eventsList.evts[event] = []
         }
-        addObjectItem(eventsList.evts[event], "fn", { fn: fn })
+        addObjectItem(eventsList.evts[event], 'fn', { fn: fn })
     },
     off: (event, fn) => {
-        removeObjectItem(variablesList.evts[event], "fn", fn)
+        removeObjectItem(variablesList.evts[event], 'fn', fn)
     },
     emit: (event, data) => {
         if (eventsList.evts[event])
             eventsList.evts[event].forEach((element) => {
-                if (typeof element.fn === "function") element.fn(data)
+                if (typeof element.fn === 'function') element.fn(data)
             })
     },
 }
