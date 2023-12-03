@@ -697,7 +697,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/ftp",
-                    P: "1021",
+                    P: "1208",
                     T: "B",
                     V: "1",
                     H: "enable",
@@ -705,7 +705,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/ftp",
-                    P: "1009",
+                    P: "1196",
                     T: "I",
                     V: "21",
                     H: "control port",
@@ -714,7 +714,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/ftp",
-                    P: "1013",
+                    P: "1200",
                     T: "I",
                     V: "20",
                     H: "active port",
@@ -723,7 +723,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/ftp",
-                    P: "1017",
+                    P: "1204",
                     T: "I",
                     V: "55600",
                     H: "passive port",
@@ -732,7 +732,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/notification",
-                    P: "1004",
+                    P: "1191",
                     T: "B",
                     V: "1",
                     H: "auto notif",
@@ -756,13 +756,13 @@ const commandsQuery = (req, res, SendWS) => {
                     P: "332",
                     T: "S",
                     V: "********",
-                    S: "63",
+                    S: "250",
                     H: "t1",
                     M: "0",
                 },
                 {
                     F: "service/notification",
-                    P: "396",
+                    P: "583",
                     T: "S",
                     V: "********",
                     S: "63",
@@ -771,7 +771,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "service/notification",
-                    P: "855",
+                    P: "1042",
                     T: "S",
                     V: " ",
                     S: "127",
@@ -780,7 +780,7 @@ const commandsQuery = (req, res, SendWS) => {
                 },
                 {
                     F: "system/system",
-                    P: "461",
+                    P: "648",
                     T: "B",
                     V: "50",
                     H: "targetfw",

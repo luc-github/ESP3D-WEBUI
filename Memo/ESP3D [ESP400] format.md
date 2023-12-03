@@ -38,21 +38,21 @@ Only sent in JSON format
 {"F":"service/telnetp","P":"329","T":"B","V":"1","H":"enable","O":[{"no":"0"},
 {"yes":"1"}]},
 {"F":"service/telnetp","P":"125","T":"I","V":"23","H":"port","S":"65001","M":"1"},
-{"F":"service/ftp","P":"1021","T":"B","V":"1","H":"enable","O":[{"no":"0"},
+{"F":"service/ftp","P":"1208","T":"B","V":"1","H":"enable","O":[{"no":"0"},
 {"yes":"1"}]},
-{"F":"service/ftp","P":"1009","T":"I","V":"21","H":"control port","S":"65001","M":"1"},
-{"F":"service/ftp","P":"1013","T":"I","V":"20","H":"active port","S":"65001","M":"1"},
-{"F":"service/ftp","P":"1017","T":"I","V":"55600","H":"passive port","S":"65001","M":"1"},
-{"F":"service/notification","P":"1004","T":"B","V":"1","H":"auto notif","O":[{"no":"0"},
+{"F":"service/ftp","P":"1196","T":"I","V":"21","H":"control port","S":"65001","M":"1"},
+{"F":"service/ftp","P":"1200","T":"I","V":"20","H":"active port","S":"65001","M":"1"},
+{"F":"service/ftp","P":"1204","T":"I","V":"55600","H":"passive port","S":"65001","M":"1"},
+{"F":"service/notification","P":"1191","T":"B","V":"1","H":"auto notif","O":[{"no":"0"},
 {"yes":"1"}]},
 {"F":"service/notification","P":"116","T":"B","V":"0","H":"notification","O":[{"none":"0"},
 {"pushover":"1"},
 {"email":"2"},
 {"line":"3"}]},
-{"F":"service/notification","P":"332","T":"S","V":"********","S":"63","H":"t1","M":"0"},
-{"F":"service/notification","P":"396","T":"S","V":"********","S":"63","H":"t2","M":"0"},
-{"F":"service/notification","P":"855","T":"S","V":" ","S":"127","H":"ts","M":"0"},
-{"F":"system/system","P":"461","T":"B","V":"40","H":"targetfw","O":[{"repetier":"50"},
+{"F":"service/notification","P":"332","T":"S","V":"********","S":"250","H":"t1","M":"0"},
+{"F":"service/notification","P":"583","T":"S","V":"********","S":"63","H":"t2","M":"0"},
+{"F":"service/notification","P":"1042","T":"S","V":" ","S":"127","H":"ts","M":"0"},
+{"F":"system/system","P":"648","T":"B","V":"40","H":"targetfw","O":[{"repetier":"50"},
 {"marlin":"20"},
 {"smoothieware":"40"},
 {"grbl":"10"},
@@ -75,7 +75,7 @@ Only sent in JSON format
 2 - value: array of data formated like this  
 {"F":"network/network","P":"130","T":"S","V":"esp3d","H":"hostname","S":"32","M":"1"}  
 or  
-{"F":"service/notification","P":"1004","T":"B","V":"1","H":"auto notif","O":[{"no":"0"},{"yes":"1"}]}
+{"F":"service/notification","P":"1191","T":"B","V":"1","H":"auto notif","O":[{"no":"0"},{"yes":"1"}]}
 
     -   F: is filter formated as section/sub-section, if section is same as sub-section, it means no sub-section
     -   P: is id (also position reference so it is unique)
