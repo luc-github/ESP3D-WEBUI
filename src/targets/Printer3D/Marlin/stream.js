@@ -18,12 +18,13 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { isTemperatures, isPositions } from "./filters"
+import { isTemperatures, isPositions, isPrintStatus } from "./filters"
 
 const isVerboseOnly = (type, data) => {
     const line = data.trim()
     return isTemperatures(line) ||
         isPositions(line) ||
+        isPrintStatus(line) ||
         line.trim().length === 0 ||
         line.startsWith("echo:") ||
         line.startsWith("ok") ||
