@@ -20,6 +20,8 @@
     display: flex;
     flex-flow: column;
     height: 550px;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
 }
 
 .panel-body-dashboard,

@@ -16,19 +16,19 @@ ProbeCNC.js - ESP3D WebUI component file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact"
-import { useState } from "preact/hooks"
-import { T } from "../Translations"
-import { Underline, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
+import { Fragment, h } from 'preact'
+import { useState } from 'preact/hooks'
+import { T } from '../Translations'
+import { Underline, PlayCircle, PauseCircle, StopCircle } from 'preact-feather'
 import {
     useUiContext,
     useUiContextFn,
     useSettingsContext,
-} from "../../contexts"
-import { useTargetContext, variablesList, eventsList } from "../../targets"
-import { ButtonImg, Field } from "../Controls"
-import { useHttpFn } from "../../hooks"
-import { espHttpURL, replaceVariables, settingsDepend } from "../Helpers"
+} from '../../contexts'
+import { useTargetContext, variablesList, eventsList } from '../../targets'
+import { ButtonImg, Field } from '../Controls'
+import { useHttpFn } from '../../hooks'
+import { espHttpURL, replaceVariables, settingsDepend } from '../Helpers'
 
 /*
  * Local const
@@ -43,32 +43,32 @@ const probeaxis = {}
 
 const ProbeControls = () => {
     const { gcodeParameters, pinsStates } = useTargetContext()
-    if (!useUiContextFn.getValue("showprobepanel")) return null
+    if (!useUiContextFn.getValue('showprobepanel')) return null
     return (
         <Fragment>
             <div class="status-ctrls">
                 <div
                     class="extra-control mt-1 tooltip tooltip-bottom"
-                    data-tooltip={T("CN103")}
+                    data-tooltip={T('CN103')}
                 >
-                    <div class="extra-control-header">{T("CN104")}</div>
+                    <div class="extra-control-header">{T('CN104')}</div>
                     <div class="extra-control-value">
                         {gcodeParameters.PRB
-                            ? T(gcodeParameters.PRB.success ? "CN101" : "CN102")
-                            : "?"}
+                            ? T(gcodeParameters.PRB.success ? 'CN101' : 'CN102')
+                            : '?'}
                     </div>
                     {pinsStates && (
                         <div class="extra-control-value">
                             <div
                                 class={`badge-container m-1 s-circle ${
-                                    pinsStates.P ? "bg-primary" : "bg-secondary"
+                                    pinsStates.P ? 'bg-primary' : 'bg-secondary'
                                 }`}
                             >
                                 <div
                                     class={`badge-label m-1 s-circle ${
                                         pinsStates.P
-                                            ? "bg-primary text-white"
-                                            : "bg-secondary text-primary"
+                                            ? 'bg-primary text-white'
+                                            : 'bg-secondary text-primary'
                                     }`}
                                 >
                                     P
@@ -87,27 +87,27 @@ const ProbePanel = () => {
     const { interfaceSettings } = useSettingsContext()
     //const { status } = useTargetContext()
     const { createNewRequest } = useHttpFn
-    const id = "ProbePanel"
+    const id = 'ProbePanel'
     const hidePanel = () => {
         useUiContextFn.haptic()
         panels.hide(id)
     }
 
-    console.log("Probe panel")
-    if (typeof maxprobe.current === "undefined") {
-        maxprobe.current = useUiContextFn.getValue("maxprobe")
+    console.log('Probe panel')
+    if (typeof maxprobe.current === 'undefined') {
+        maxprobe.current = useUiContextFn.getValue('maxprobe')
     }
-    if (typeof probefeedrate.current === "undefined") {
-        probefeedrate.current = useUiContextFn.getValue("probefeedrate")
+    if (typeof probefeedrate.current === 'undefined') {
+        probefeedrate.current = useUiContextFn.getValue('probefeedrate')
     }
-    if (typeof probethickness.current === "undefined") {
-        probethickness.current = useUiContextFn.getValue("probethickness")
+    if (typeof probethickness.current === 'undefined') {
+        probethickness.current = useUiContextFn.getValue('probethickness')
     }
-    if (typeof probetype.current === "undefined") {
-        probetype.current = "G38.2"
+    if (typeof probetype.current === 'undefined') {
+        probetype.current = 'G38.2'
     }
-    if (typeof probeaxis.current === "undefined") {
-        probeaxis.current = "Z"
+    if (typeof probeaxis.current === 'undefined') {
+        probeaxis.current = 'Z'
     }
 
     const hasError = () => {
@@ -116,17 +116,17 @@ const ProbePanel = () => {
 
     const sendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", {
+            espHttpURL('command', {
                 cmd: replaceVariables(variablesList.commands, command),
             }),
             {
-                method: "GET",
+                method: 'GET',
                 echo: replaceVariables(variablesList.commands, command, true),
             },
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {
-                    toasts.addToast({ content: error, type: "error" })
+                    toasts.addToast({ content: error, type: 'error' })
                     console.log(error)
                 },
             }
@@ -134,223 +134,223 @@ const ProbePanel = () => {
     }
     const probe_controls = [
         {
-            label: "",
-            id: "probe_group",
+            label: '',
+            id: 'probe_group',
             controls: [
                 {
-                    id: "probe_type",
+                    id: 'probe_type',
                     elements: [
                         {
-                            id: "probe_axis",
-                            type: "select",
-                            label: "CN99",
-                            tooltip: "CN98",
+                            id: 'probe_axis',
+                            type: 'select',
+                            label: 'CN99',
+                            tooltip: 'CN98',
                             options: [
                                 {
-                                    label: "X",
-                                    value: "X",
+                                    label: 'X',
+                                    value: 'X',
                                     depend: [
-                                        { id: "showx", value: true },
+                                        { id: 'showx', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "X",
+                                            connection_id: 'Axisletters',
+                                            contains: 'X',
                                         },
                                     ],
                                 },
                                 {
-                                    label: "Y",
-                                    value: "Y",
+                                    label: 'Y',
+                                    value: 'Y',
                                     depend: [
-                                        { id: "showy", value: true },
+                                        { id: 'showy', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "Y",
+                                            connection_id: 'Axisletters',
+                                            contains: 'Y',
                                         },
                                     ],
                                 },
                                 {
-                                    label: "Z",
-                                    value: "Z",
+                                    label: 'Z',
+                                    value: 'Z',
                                     depend: [
-                                        { id: "showz", value: true },
+                                        { id: 'showz', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "Z",
-                                        },
-                                    ],
-                                },
-                                ,
-                                {
-                                    label: "A",
-                                    value: "A",
-                                    depend: [
-                                        { id: "showa", value: true },
-                                        {
-                                            connection_id: "Axisletters",
-                                            contains: "A",
+                                            connection_id: 'Axisletters',
+                                            contains: 'Z',
                                         },
                                     ],
                                 },
                                 ,
                                 {
-                                    label: "B",
-                                    value: "B",
+                                    label: 'A',
+                                    value: 'A',
                                     depend: [
-                                        { id: "showb", value: true },
+                                        { id: 'showa', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "B",
+                                            connection_id: 'Axisletters',
+                                            contains: 'A',
                                         },
                                     ],
                                 },
                                 ,
                                 {
-                                    label: "C",
-                                    value: "C",
+                                    label: 'B',
+                                    value: 'B',
                                     depend: [
-                                        { id: "showc", value: true },
+                                        { id: 'showb', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "C",
+                                            connection_id: 'Axisletters',
+                                            contains: 'B',
                                         },
                                     ],
                                 },
                                 ,
                                 {
-                                    label: "U",
-                                    value: "U",
+                                    label: 'C',
+                                    value: 'C',
                                     depend: [
-                                        { id: "showu", value: true },
+                                        { id: 'showc', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "U",
-                                        },
-                                    ],
-                                },
-                                {
-                                    label: "V",
-                                    value: "V",
-                                    depend: [
-                                        { id: "showv", value: true },
-                                        {
-                                            connection_id: "Axisletters",
-                                            contains: "V",
+                                            connection_id: 'Axisletters',
+                                            contains: 'C',
                                         },
                                     ],
                                 },
                                 ,
                                 {
-                                    label: "W",
-                                    value: "W",
+                                    label: 'U',
+                                    value: 'U',
                                     depend: [
-                                        { id: "showw", value: true },
+                                        { id: 'showu', value: true },
                                         {
-                                            connection_id: "Axisletters",
-                                            contains: "W",
+                                            connection_id: 'Axisletters',
+                                            contains: 'U',
+                                        },
+                                    ],
+                                },
+                                {
+                                    label: 'V',
+                                    value: 'V',
+                                    depend: [
+                                        { id: 'showv', value: true },
+                                        {
+                                            connection_id: 'Axisletters',
+                                            contains: 'V',
+                                        },
+                                    ],
+                                },
+                                ,
+                                {
+                                    label: 'W',
+                                    value: 'W',
+                                    depend: [
+                                        { id: 'showw', value: true },
+                                        {
+                                            connection_id: 'Axisletters',
+                                            contains: 'W',
                                         },
                                     ],
                                 },
                             ],
                             value: probeaxis,
-                            variableName: "#selected_axis#",
+                            variableName: '#selected_axis#',
                         },
                         {
-                            id: "probe_type",
-                            type: "select",
-                            label: "CN98",
-                            tooltip: "CN98",
+                            id: 'probe_type',
+                            type: 'select',
+                            label: 'CN98',
+                            tooltip: 'CN98',
                             options: [
-                                { label: "G38.2", value: "G38.2" },
-                                { label: "G38.3", value: "G38.3" },
-                                { label: "G38.4", value: "G38.4" },
-                                { label: "G38.5", value: "G38.5" },
+                                { label: 'G38.2', value: 'G38.2' },
+                                { label: 'G38.3', value: 'G38.3' },
+                                { label: 'G38.4', value: 'G38.4' },
+                                { label: 'G38.5', value: 'G38.5' },
                             ],
                             value: probetype,
                         },
                     ],
                 },
                 {
-                    id: "probe_max",
+                    id: 'probe_max',
                     elements: [
                         {
-                            id: "probe_max_distance",
-                            type: "number",
-                            label: "CN93",
-                            tooltip: "CN93",
+                            id: 'probe_max_distance',
+                            type: 'number',
+                            label: 'CN93',
+                            tooltip: 'CN93',
                             min: 1,
                             value: maxprobe,
-                            append: "CN96",
+                            append: 'CN96',
                         },
                     ],
                 },
 
                 {
-                    id: "probe_feedrate",
+                    id: 'probe_feedrate',
                     elements: [
                         {
-                            id: "probe_feedrate",
-                            type: "number",
-                            label: "CN9",
-                            tooltip: "CN9",
-                            append: "CN1",
+                            id: 'probe_feedrate',
+                            type: 'number',
+                            label: 'CN9',
+                            tooltip: 'CN9',
+                            append: 'CN1',
                             min: 1,
                             value: probefeedrate,
                         },
                     ],
                 },
                 {
-                    id: "probe_thickness",
+                    id: 'probe_thickness',
                     elements: [
                         {
-                            id: "probe_thickness",
-                            type: "number",
-                            label: "CN94",
-                            tooltip: "CN94",
+                            id: 'probe_thickness',
+                            type: 'number',
+                            label: 'CN94',
+                            tooltip: 'CN94',
                             min: 1,
                             value: probethickness,
-                            append: "CN96",
-                            variableName: "#probe_thickness#",
+                            append: 'CN96',
+                            variableName: '#probe_thickness#',
                         },
                     ],
                 },
 
                 {
-                    id: "probe_buttons",
+                    id: 'probe_buttons',
                     elements: [
                         {
-                            id: "probe_button",
+                            id: 'probe_button',
                             icon: <Underline />,
-                            type: "button",
-                            label: "CN37",
-                            tooltip: "CN100",
+                            type: 'button',
+                            label: 'CN37',
+                            tooltip: 'CN100',
                             onclick: () => {
                                 const commands = [
-                                    "G91",
+                                    'G91',
                                     () => {
                                         const signe =
-                                            probetype.current == "G38.2" ||
-                                            probetype.current == "G38.3"
-                                                ? "-"
-                                                : ""
+                                            probetype.current == 'G38.2' ||
+                                            probetype.current == 'G38.3'
+                                                ? '-'
+                                                : ''
                                         return (
                                             probetype.current +
-                                            " " +
+                                            ' ' +
                                             probeaxis.current +
                                             signe +
                                             maxprobe.current +
-                                            " F" +
+                                            ' F' +
                                             probefeedrate.current
                                         )
                                     },
-                                    "G90",
+                                    'G90',
 
                                     ...useUiContextFn
-                                        .getValue("probepostcommand")
-                                        .split(";"),
+                                        .getValue('probepostcommand')
+                                        .split(';'),
                                 ]
 
                                 commands.forEach((command) => {
-                                    if (typeof command === "function") {
+                                    if (typeof command === 'function') {
                                         sendCommand(command())
                                     } else {
                                         sendCommand(command)
@@ -369,7 +369,7 @@ const ProbePanel = () => {
             <div class="navbar">
                 <span class="navbar-section feather-icon-container">
                     <Underline />
-                    <strong class="text-ellipsis">{T("CN37")}</strong>
+                    <strong class="text-ellipsis">{T('CN37')}</strong>
                 </span>
                 <span class="navbar-section">
                     <span style="height: 100%;">
@@ -388,8 +388,8 @@ const ProbePanel = () => {
                         <fieldset
                             class={`field-group${
                                 block.label.length > 0
-                                    ? " fieldset-top-separator fieldset-bottom-separator"
-                                    : ""
+                                    ? ' fieldset-top-separator fieldset-bottom-separator'
+                                    : ''
                             }`}
                         >
                             <legend>
@@ -405,8 +405,8 @@ const ProbePanel = () => {
                                     return (
                                         <div class="states-buttons-container">
                                             {control.elements.map((element) => {
-                                                if (element.type === "button") {
-                                                    let classname = "tooltip"
+                                                if (element.type === 'button') {
+                                                    let classname = 'tooltip'
                                                     return (
                                                         <ButtonImg
                                                             label={T(
@@ -456,7 +456,7 @@ const ProbePanel = () => {
                                                         }
                                                         if (
                                                             element.type ===
-                                                                "select" &&
+                                                                'select' &&
                                                             -1 ==
                                                                 filterOptions(
                                                                     element.options
@@ -475,7 +475,7 @@ const ProbePanel = () => {
                                                         }
                                                         if (
                                                             element.type ===
-                                                                "number" &&
+                                                                'number' &&
                                                             (element.value
                                                                 .current <
                                                                 element.min ||
@@ -511,6 +511,7 @@ const ProbePanel = () => {
                                                     }
                                                     return (
                                                         <Field
+                                                            m-2
                                                             inline
                                                             id={element.id}
                                                             type={element.type}
@@ -578,13 +579,13 @@ const ProbePanel = () => {
 }
 
 const ProbePanelElement = {
-    id: "ProbePanel",
+    id: 'ProbePanel',
     content: <ProbePanel />,
-    name: "CN37",
-    icon: "Underline",
-    show: "showprobepanel",
-    onstart: "openprobeonstart",
-    settingid: "probe",
+    name: 'CN37',
+    icon: 'Underline',
+    show: 'showprobepanel',
+    onstart: 'openprobeonstart',
+    settingid: 'probe',
 }
 
 export { ProbePanel, ProbePanelElement, ProbeControls }
