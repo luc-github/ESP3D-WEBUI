@@ -18,7 +18,7 @@
 */
 import { h, createContext } from 'preact'
 import { useRef, useContext, useState } from 'preact/hooks'
-import { limitArr } from '../components/Helpers'
+import { limitArr, useStoredState } from '../components/Helpers'
 
 /*
  * Local const
@@ -34,7 +34,7 @@ const DatasContextProvider = ({ children }) => {
     const terminalBuffer = useRef([])
     const terminalBufferQuiet = useRef([])
     const [terminalContent, setTerminalContent] = useState([])
-    const [terminalInputHistory, setTerminalInputHistory] = useState([])
+    const [terminalInputHistory, setTerminalInputHistory] = useStoredState("terminalInputHistory", [])
     const terminalInput = useRef()
 
     const clearTerminal = () => {
