@@ -275,6 +275,16 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "dbuezas",
+      "name": "David Buezas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/777196?v=4",
+      "profile": "https://github.com/dbuezas",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
