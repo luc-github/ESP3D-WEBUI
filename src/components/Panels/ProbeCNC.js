@@ -251,6 +251,7 @@ const ProbePanel = () => {
                                     ],
                                 },
                             ],
+
                             value: probeaxis,
                             variableName: '#selected_axis#',
                         },
@@ -511,7 +512,6 @@ const ProbePanel = () => {
                                                     }
                                                     return (
                                                         <Field
-                                                            m-2
                                                             inline
                                                             id={element.id}
                                                             type={element.type}
