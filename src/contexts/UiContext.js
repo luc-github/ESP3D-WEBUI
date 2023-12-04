@@ -111,8 +111,9 @@ const UiContextProvider = ({ children }) => {
     }
 
     const removeToast = (uids) => {
-        const removedIds = removeEntriesByIDs(toastsRef.current, uids)
-        setToasts([...removedIds])
+        const remainingIds = removeEntriesByIDs(toastsRef.current, uids)
+        toastsRef.current = remainingIds
+        setToasts([...remainingIds])
     }
 
     const addModal = (newModal) =>
