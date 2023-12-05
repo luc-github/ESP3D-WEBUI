@@ -50,6 +50,7 @@ import {
 } from './arrays'
 import { dispatchToExtensions } from './html'
 import { sortedFilesList, filterResultFiles } from './filters'
+import { useStoredState } from './storedState'
 
 export {
     beautifyJSONString,
@@ -83,4 +84,5 @@ export {
     removeObjectItem,
     isFloat,
     BitsArray,
+    useStoredState,
 }
