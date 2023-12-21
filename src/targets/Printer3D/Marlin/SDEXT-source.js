@@ -125,9 +125,10 @@ const commands = {
         return res
     },
     play: (path, filename) => {
+        let cmdstr = 'M23 ' + path + (path == '/' ? '' : '/') + filename + '\nM24'
         return {
             type: 'cmd',
-            cmd: 'M23 ' + path + (path == '/' ? '' : '/') + filename + '\nM24',
+            cmd: cmdstr.replace("//", "/"),
         }
     },
     delete: (path, filename) => {

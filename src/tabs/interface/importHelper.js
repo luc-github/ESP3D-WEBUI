@@ -78,6 +78,10 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                                         connection_id: "FlashFileSystem",
                                         value: "!='none'",
                                     },
+                                    {
+                                        connection_id: "FWTargetID",
+                                        value: "!='30'",
+                                    },
                                 ],
                             },
                             {
