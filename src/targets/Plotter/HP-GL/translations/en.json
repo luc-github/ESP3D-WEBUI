@@ -15,7 +15,7 @@
     "btnjogup": "Button jog top",
     "btnjogdown": "Button jog bottom",
     "btnpark": "Park Pen",
-    "btnPen": "Toogle Pen",
+    "btnPen": "Toggle Pen",
     "btndistSel+": "Next jog distance",
     "btndistSel-": "Previous jog distance",
     "btnStop": "Stop",

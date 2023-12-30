@@ -41,13 +41,14 @@
                 "label": "CN93",
                 "value": 15,
                 "append": "CN96",
-                "min": 1
+                "min": 0
             },
             {
                 "id": "probethickness",
                 "type": "number",
                 "label": "CN94",
                 "value": "1",
+                "step": "0.1",
                 "append": "CN96",
                 "min": 0
             },

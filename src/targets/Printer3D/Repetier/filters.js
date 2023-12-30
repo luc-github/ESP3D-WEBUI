@@ -252,7 +252,7 @@ const getFlowRate = (str) => {
 
 ////////////////////////////////////////////////////////
 //
-// Printer capabbility
+// Printer capabilities
 //Format is:
 //FIRMWARE_NAME:Repetier_1.0.4 COMPILED:Apr 30 2022 FIRMWARE_URL:https://github.com/repetier/Repetier-Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 REPETIER_PROTOCOL:3
 //Cap:PROGRESS:1

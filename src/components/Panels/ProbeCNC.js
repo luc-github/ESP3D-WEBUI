@@ -307,24 +307,34 @@ const ProbePanel = () => {
                             type: 'number',
                             label: 'CN94',
                             tooltip: 'CN94',
-                            min: 1,
+                            min: 0,
+                            step: "0.1",
                             value: probethickness,
                             append: 'CN96',
                             variableName: '#probe_thickness#',
                         },
                     ],
                 },
-
+                {
+                    id: 'spacer',
+                    elements: [
+                        {
+                            id: 'spacer',
+                            type: 'm2',
+                        },
+                    ],
+                },
                 {
                     id: 'probe_buttons',
                     elements: [
                         {
                             id: 'probe_button',
+                            m2: true,
                             icon: <Underline />,
                             type: 'button',
                             label: 'CN37',
                             tooltip: 'CN100',
-                            onclick: () => {
+                            onclick: (e) => {
                                 const commands = [
                                     'G91',
                                     () => {
@@ -349,7 +359,8 @@ const ProbePanel = () => {
                                         .getValue('probepostcommand')
                                         .split(';'),
                                 ]
-
+                                e.target.blur()  
+                                useUiContextFn.haptic()      
                                 commands.forEach((command) => {
                                     if (typeof command === 'function') {
                                         sendCommand(command())
@@ -406,6 +417,11 @@ const ProbePanel = () => {
                                     return (
                                         <div class="states-buttons-container">
                                             {control.elements.map((element) => {
+                                                if (element.type === 'm2') {
+                                                    return (
+                                                        <div class="m-2" />
+                                                    )
+                                                } else
                                                 if (element.type === 'button') {
                                                     let classname = 'tooltip'
                                                     return (
@@ -474,6 +490,15 @@ const ProbePanel = () => {
                                                                     element.options
                                                                 )[0].value
                                                         }
+                                                        if (typeof element.step!=="undefined") {  
+                                                                //hack to avoid float precision issue
+                                                                const mult=1/element.step
+                                                                console.log(element.value.current,element.step,mult, (element.value.current * mult ) % (element.step* mult))
+                                                                if ((element.value.current * mult ) % (element.step* mult) != 0) {
+                                                                    console.log("not valid", )
+                                                                    validation.valid = false
+                                                                }
+                                                            }
                                                         if (
                                                             element.type ===
                                                                 'number' &&
@@ -490,6 +515,7 @@ const ProbePanel = () => {
                                                             // validation.message = T("S42");
                                                             validation.valid = false
                                                         }
+                
                                                         element.value.valid =
                                                             validation.valid
                                                         return validation
@@ -526,6 +552,7 @@ const ProbePanel = () => {
                                                             )}
                                                             min={element.min}
                                                             max={element.max}
+                                                            step={element.step}
                                                             value={
                                                                 element.value
                                                                     .current

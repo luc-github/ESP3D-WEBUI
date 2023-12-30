@@ -191,7 +191,7 @@ const LaserPanel = () => {
                             command: "M3 S#",
                             desc: "M3",
                             mode: "spindle_mode",
-                            onclick: () => {
+                            onclick: (e) => {
                                 const commands = [
                                     "G1 F1",
                                     () => {
@@ -220,6 +220,8 @@ const LaserPanel = () => {
                                     },
                                     "M5 S0",
                                 ]
+                                e.target.blur()
+                                useUiContextFn.haptic()
                                 commands.forEach((command) => {
                                     if (typeof command === "function") {
                                         sendCommand(command())

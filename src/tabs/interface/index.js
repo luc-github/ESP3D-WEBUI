@@ -119,12 +119,14 @@ const InterfaceTab = () => {
                 })
             }
         } else {
-            if (fieldData.step) {
-                if (fieldData.value % fieldData.step !== 0) {
+            if (typeof fieldData.step!=="undefined") {  
+                //hack to avoid float precision issue
+                const mult=1/fieldData.step
+                if ((fieldData.value * mult ) % (fieldData.step* mult) != 0) {
                     validation.message = <Flag size="1rem" color="red" />
                     validation.valid = false
                 }
-            }
+            } 
             if (fieldData.type == "list") {
                 const stringified = JSON.stringify(fieldData.value)
                 //check new item or modified item

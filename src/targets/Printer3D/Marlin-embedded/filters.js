@@ -252,7 +252,7 @@ const getFeedRate = (str) => {
 
 ////////////////////////////////////////////////////////
 //
-// Printer capabbility
+// Printer capabilities
 //Format is:
 //FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff
 //Cap:SERIAL_XON_XOFF:0
