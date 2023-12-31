@@ -429,11 +429,7 @@ const ProbePanel = () => {
                                                             label={T(
                                                                 element.label
                                                             )}
-                                                            disabled={
-                                                                element.useinput
-                                                                    ? hasError()
-                                                                    : false
-                                                            }
+                                                            disabled={hasError()}
                                                             icon={element.icon}
                                                             tooltip
                                                             iconRight={
