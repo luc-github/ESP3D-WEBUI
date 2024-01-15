@@ -91,7 +91,12 @@ const useSettings = () => {
 
     const initPolling = () => {
         //polling commands
-        if (uisettings.getValue('enablepolling',  interfaceSettings.current.settings)) {
+        if (
+            uisettings.getValue(
+                'enablepolling',
+                interfaceSettings.current.settings
+            )
+        ) {
             const pollingList = uisettings.getValue(
                 'pollingcmds',
                 interfaceSettings.current.settings
@@ -120,10 +125,7 @@ const useSettings = () => {
                                         cmdEntry.id + '-' + index
                                     )
                                 } else {
-                                    sendCommand(
-                                        cmd,
-                                        cmdEntry.id + '-' + index
-                                    )
+                                    sendCommand(cmd, cmdEntry.id + '-' + index)
                                 }
                             }
                         })
@@ -304,7 +306,7 @@ const useSettings = () => {
                 page: 'connecting',
             })
             document.title = connectionSettings.current.Hostname
-           setTimeout( initPolling, 2000) 
+            setTimeout(initPolling, 2000)
         }
         function loadTheme(themepack) {
             if (!themepack) {
