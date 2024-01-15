@@ -88,6 +88,86 @@ const useSettings = () => {
             }
         )
     }
+
+    const initPolling = () => {
+        //polling commands
+        if (uisettings.getValue('enablepolling',  interfaceSettings.current.settings)) {
+            const pollingList = uisettings.getValue(
+                'pollingcmds',
+                interfaceSettings.current.settings
+            )
+            if (Array.isArray(pollingList)) {
+                pollingList.forEach((cmdEntry) => {
+                    const cmds = cmdEntry.value
+                        .find((item) => item.name == 'cmds')
+                        .value.trim()
+                        .split(';')
+                    const refreshtime = parseInt(
+                        cmdEntry.value.find(
+                            (item) => item.name == 'refreshtime'
+                        ).value
+                    )
+                    //Send commands at start
+                    if (cmds.length > 0) {
+                        cmds.forEach((cmd, index) => {
+                            if (cmd.trim().length > 0) {
+                                if (
+                                    typeof variablesList.formatCommand !==
+                                    'undefined'
+                                ) {
+                                    sendCommand(
+                                        variablesList.formatCommand(cmd),
+                                        cmdEntry.id + '-' + index
+                                    )
+                                } else {
+                                    sendCommand(
+                                        cmd,
+                                        cmdEntry.id + '-' + index
+                                    )
+                                }
+                            }
+                        })
+
+                        if (refreshtime != 0) {
+                            if (cmds.length > 0) {
+                                activity.startPolling(
+                                    cmdEntry.id,
+                                    refreshtime,
+                                    () => {
+                                        cmds.forEach((cmd, index) => {
+                                            if (cmd.trim().length > 0) {
+                                                if (
+                                                    typeof variablesList.formatCommand !==
+                                                    'undefined'
+                                                ) {
+                                                    sendCommand(
+                                                        variablesList.formatCommand(
+                                                            cmd
+                                                        ),
+                                                        cmdEntry.id +
+                                                            '-' +
+                                                            index
+                                                    )
+                                                } else {
+                                                    sendCommand(
+                                                        cmd,
+                                                        cmdEntry.id +
+                                                            '-' +
+                                                            index
+                                                    )
+                                                }
+                                            }
+                                        })
+                                    }
+                                )
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     const getConnectionSettings = (next) => {
         createNewRequest(
             espHttpURL('command', {
@@ -224,6 +304,7 @@ const useSettings = () => {
                 page: 'connecting',
             })
             document.title = connectionSettings.current.Hostname
+           setTimeout( initPolling, 2000) 
         }
         function loadTheme(themepack) {
             if (!themepack) {
@@ -312,89 +393,6 @@ const useSettings = () => {
                         console.log('error')
                     }
                     interfaceSettings.current = preferences
-
-                    //polling commands
-                    if (
-                        uisettings.getValue(
-                            'enablepolling',
-                            preferences.settings
-                        )
-                    ) {
-                        const pollingList = uisettings.getValue(
-                            'pollingcmds',
-                            preferences.settings
-                        )
-                        if (Array.isArray(pollingList)) {
-                            pollingList.forEach((cmdEntry) => {
-                                const cmds = cmdEntry.value
-                                    .find((item) => item.name == 'cmds')
-                                    .value.trim()
-                                    .split(';')
-                                const refreshtime = parseInt(
-                                    cmdEntry.value.find(
-                                        (item) => item.name == 'refreshtime'
-                                    ).value
-                                )
-                                //Send commands at start
-                                if (cmds.length > 0) {
-                                    cmds.forEach((cmd, index) => {
-                                        if (cmd.trim().length > 0) {
-                                            if (
-                                                typeof variablesList.formatCommand !==
-                                                'undefined'
-                                            ) {
-                                                sendCommand(
-                                                    variablesList.formatCommand(
-                                                        cmd
-                                                    ),
-                                                    cmdEntry.id + '-' + index
-                                                )
-                                            } else {
-                                                sendCommand(
-                                                    cmd,
-                                                    cmdEntry.id + '-' + index
-                                                )
-                                            }
-                                        }
-                                    })
-                                }
-                                if (refreshtime != 0) {
-                                    if (cmds.length > 0) {
-                                        activity.startPolling(
-                                            cmdEntry.id,
-                                            refreshtime,
-                                            () => {
-                                                cmds.forEach((cmd, index) => {
-                                                    if (cmd.trim().length > 0) {
-                                                        if (
-                                                            typeof variablesList.formatCommand !==
-                                                            'undefined'
-                                                        ) {
-                                                            sendCommand(
-                                                                variablesList.formatCommand(
-                                                                    cmd
-                                                                ),
-                                                                cmdEntry.id +
-                                                                    '-' +
-                                                                    index
-                                                            )
-                                                        } else {
-                                                            sendCommand(
-                                                                cmd,
-                                                                cmdEntry.id +
-                                                                    '-' +
-                                                                    index
-                                                            )
-                                                        }
-                                                    }
-                                                })
-                                            }
-                                        )
-                                    }
-                                }
-                            })
-                        }
-                    }
 
                     //Mobile view
                     if (uisettings.getValue('mobileview', preferences.settings))
