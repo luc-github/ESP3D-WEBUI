@@ -308,7 +308,7 @@ const ProbePanel = () => {
                             label: 'CN94',
                             tooltip: 'CN94',
                             min: 0,
-                            step: "0.1",
+                            step: useUiContextFn.getElement('probethickness').step,
                             value: probethickness,
                             append: 'CN96',
                             variableName: '#probe_thickness#',
@@ -488,9 +488,11 @@ const ProbePanel = () => {
                                                         }
                                                         if (typeof element.step!=="undefined") {  
                                                                 //hack to avoid float precision issue
-                                                                const mult=1/element.step
-                                                                console.log(element.value.current,element.step,mult, (element.value.current * mult ) % (element.step* mult))
-                                                                if ((element.value.current * mult ) % (element.step* mult) != 0) {
+                                                                const mult=(1/element.step).toFixed(0)
+                                                                const valueMult = Math.round(element.value.current * mult )
+                                                                const stepMult = Math.round(element.step* mult)
+                                                                console.log("Element:",element.value.current, "Step:",element.step,"Mult",mult, "Modal:", "Value mult", valueMult, "Step mult", stepMult, "Modulo", valueMult % stepMult)
+                                                                if (valueMult % stepMult != 0) {
                                                                     console.log("not valid", )
                                                                     validation.valid = false
                                                                 }

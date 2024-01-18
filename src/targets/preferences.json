@@ -73,6 +73,12 @@
                         "value": false
                     },
                     {
+                        "id": "enableshortcuts",
+                        "type": "boolean",
+                        "label": "S215",
+                        "value": false
+                    },
+                    {
                         "id": "autorepeatdelay",
                         "type": "number",
                         "label": "S218",

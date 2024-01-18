@@ -121,8 +121,11 @@ const InterfaceTab = () => {
         } else {
             if (typeof fieldData.step!=="undefined") {  
                 //hack to avoid float precision issue
-                const mult=1/fieldData.step
-                if ((fieldData.value * mult ) % (fieldData.step* mult) != 0) {
+                const mult=(1/fieldData.step).toFixed(0)
+                const valueMult = Math.round(fieldData * mult )
+                const stepMult = Math.round(fieldData.step* mult)
+                
+                if ((valueMult  % stepMult ) != 0) {
                     validation.message = <Flag size="1rem" color="red" />
                     validation.valid = false
                 }

@@ -107,6 +107,7 @@ const keyboardEventHandlerDown = (e) => {
         document.getElementById(cmdMatch).click()
     }
 }
+let intialisationDone = false
 
 const Dashboard = () => {
     console.log("Dashboard")
@@ -182,6 +183,19 @@ const Dashboard = () => {
         }
     }
 
+    
+    useEffect(() => {
+        if (!intialisationDone) {
+            console.log("Init")
+            intialisationDone = true
+            console.log(uisettings.getValue("enableshortcuts"))
+            setIsKeyboardEnabled(uisettings.getValue("enableshortcuts"))
+            shortcuts.enable(uisettings.getValue("enableshortcuts"))
+        } else {
+            console.log("Init Done")
+        }
+        }, [])
+   
     useEffect(() => {
         if (shortcuts.enabled) {
             AddKeyboardListener()

@@ -10,6 +10,7 @@
   "showinformationpage": true,
   "showmachinesettings": true,
   "enableautorepeat": false,
+  "enableshortcuts": true,
   "autorepeatdelay": "500",
   "emergencystop": "#SAFETYDOOR#",
   "fixedpanels": false,
