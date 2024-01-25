@@ -488,7 +488,7 @@ const ProbePanel = () => {
                                                         }
                                                         if (typeof element.step!=="undefined") {  
                                                                 //hack to avoid float precision issue
-                                                                const mult=(1/element.step).toFixed(0)
+                                                                const mult=(1/element.step).toFixed(0)>0?(1/element.step).toFixed(0):1
                                                                 const valueMult = Math.round(element.value.current * mult )
                                                                 const stepMult = Math.round(element.step* mult)
                                                                 console.log("Element:",element.value.current, "Step:",element.step,"Mult",mult, "Modal:", "Value mult", valueMult, "Step mult", stepMult, "Modulo", valueMult % stepMult)
