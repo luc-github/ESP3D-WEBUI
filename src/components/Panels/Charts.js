@@ -62,7 +62,7 @@ const charts = [
             //extruders
             T: [],
 
-            //redondant
+            //redundant
             R: [],
         },
     },
@@ -102,7 +102,7 @@ const isVisible = (tool) => {
         B: "showbedchart",
         C: "showchamberchart",
         P: "showprobechart",
-        R: "showredondantchart",
+        R: "showredundantchart",
         M: "showboardchart",
         S: "showsensorchart",
     }

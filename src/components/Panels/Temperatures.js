@@ -49,7 +49,7 @@ const isVisible = (tool) => {
         B: "showbedctrls",
         C: "showchamberctrls",
         P: "showprobectrls",
-        R: "showredondantctrls",
+        R: "showredundantctrls",
         M: "showboardctrls",
     }
     return setting[tool] != undefined

@@ -68,7 +68,7 @@ const temperatures = {
         },
     ],
     P: [{ value: roomTemperature, sameas: "T", lastTime: -1, variation: 0.5 }], //let say probe is 50% of extruder temperature
-    R: [{ value: roomTemperature, sameas: "T", lastTime: -1, variation: 1 }], //the redondant is same as extruder 0
+    R: [{ value: roomTemperature, sameas: "T", lastTime: -1, variation: 1 }], //the redundant is same as extruder 0
     M: [{ value: roomTemperature, lastTime: -1, variation: 1 }], //the motherboard is same as room temperature +5/10 degres
 }
 
