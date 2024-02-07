@@ -166,18 +166,18 @@ const isChartVisible = (index) => {
 
 const chartColors = [
     "255,128,128", //pink
-    "0,0,255", //dark blue
+    "0,0,255", //blue
     "0,128,0", //dark green
     "198,165,0", //gold
     "255,0,0", //red
-    "0,0,128", //blue
+    "0,0,128", //dark blue
     "128,255,128", //light green
     "255,128,0", //orange
     "178,0,255", //purple
     "0,128,128", //green blue
-    "128,128,0", //kaki
+    "128,128,0", //olive
     "128,128,128", //grey
-    "0,0,0", //purple
+    "0,0,0", //black
 ]
 
 const smoothieOptions = {
