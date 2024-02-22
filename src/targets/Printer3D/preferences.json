@@ -260,17 +260,102 @@
                 "label": "S137",
                 "value": true
             },
+           
+            {
+                "id": "tftfs",
+                "type": "select",
+                "label": "S219",
+                "value": "none",
+                "options": [
+                    { "value": "none", "label": "none" },
+                    { "value": "btt", "label": "S221" },
+                    { "value": "mks", "label": "S220" }
+                ],
+                "depend": [
+                    { "connection_id": "Screen", "value": "!='none'" }
+                ]
+            },
             {
                 "id": "tftsd",
                 "type": "boolean",
                 "label": "S188",
-                "value": false
+                "value": false,
+                "depend": [{ "id": "tftfs", "notvalue": "none"}]
+            },
+            {
+                "id": "tftbttsdlistcmd",
+                "type": "text",
+                "label": "P117",
+                "value": "M21;M20",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftmkssdlistcmd",
+                "type": "text",
+                "label": "P117",
+                "value": "M21;M20",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "mks"
+                    }
+                ]
             },
             {
                 "id": "tftusb",
                 "type": "boolean",
                 "label": "S189",
-                "value": false
+                "value": false,
+                "depend": [{ "id": "tftfs", "notvalue": "none"}]
+            },
+            {
+                "id": "tftbttusblistcmd",
+                "type": "text",
+                "label": "P118",
+                "value": "M21;M20",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftmksusblistcmd",
+                "type": "text",
+                "label": "P117",
+                "value": "M21;M20",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftusb",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "mks"
+                    }
+                ]
             }
         ],
         "jog": [

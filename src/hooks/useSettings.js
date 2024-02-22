@@ -194,9 +194,12 @@ const useSettings = () => {
                         })
                         return
                     }
-                    connectionSettings.current = jsonResult.data
+                    connectionSettings.current = jsonResult.data 
+                    if (typeof connectionSettings.current.Screen == "undefined" ){
+                        connectionSettings.current.Screen = "none"
+                    }
                     processData('core', 'ESP800', true)
-
+                    console.log(connectionSettings.current)
                     document.title = connectionSettings.current.Hostname
                     if (
                         !connectionSettings.current.HostPath ||
