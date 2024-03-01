@@ -125,10 +125,10 @@ const connectionDepend = (depend, settings) => {
 }
 
 //this is dynamic as it is depending on the preferences settings
-const settingsDepend = (depend, settings, isOr) => {
+const settingsDepend = (depend, settings, isOr=false) => {
     if (typeof depend!="undefined"){
         //console.log("settingsDepend", depend, settings, isOr)
-        console.log("settingsDepend", depend[0])    
+        //console.log("settingsDepend", depend[0])    
     }
     if (Array.isArray(depend)) {
         return depend.reduce(

@@ -40,19 +40,7 @@ import { importPreferences, formatPreferences } from "./importHelper"
 
 const isDependenciesMet = (depend) => {
     const { interfaceSettings } = useSettingsContext()
-    let met = false
-    depend.forEach((d) => {
-        if (d.id) {
-            const element = useUiContextFn.getElement(
-                d.id,
-                interfaceSettings.current.settings
-            )
-            if (element.value == d.value) {
-                met = true
-            }
-        }
-    })
-    return met
+    return  settingsDepend(depend, interfaceSettings.current.settings)
 }
 
 const InterfaceTab = () => {
@@ -388,8 +376,6 @@ const InterfaceTab = () => {
                                                             section[
                                                                 subsectionId
                                                             ]
-                                                        // console.log(fieldData);
-
                                                         if (
                                                             fieldData.type ==
                                                             "group"

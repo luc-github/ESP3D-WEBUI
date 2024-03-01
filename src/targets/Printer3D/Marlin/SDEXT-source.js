@@ -125,13 +125,15 @@ const commands = {
         return res
     },
     play: (path, filename) => {
-        let cmdstr = 'M23 ' + path + (path == '/' ? '' : '/') + filename + '\nM24'
+        const spath = (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+        const cmd = useUiContextFn.getValue('sdextplaycmd').replace('#', spath)
         return {
             type: 'cmd',
-            cmd: cmdstr.replace("//", "/"),
+            cmd,
         }
     },
     delete: (path, filename) => {
+        //TODO:: extract from settings
         return {
             type: 'cmd',
             cmd: 'M30 ' + path + (path == '/' ? '' : '/') + filename,

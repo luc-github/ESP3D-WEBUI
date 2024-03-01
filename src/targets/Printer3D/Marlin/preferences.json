@@ -90,6 +90,32 @@
                 ]
             },
             {
+                "id": "sdplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "M21;M23 #;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "sddeletecmd",
+                "type": "text",
+                "label": "P122",
+                "value": "M21;M30 #",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    }
+                ]
+            },
+            {
                 "id": "sdext",
                 "type": "boolean",
                 "label": "S191",
@@ -106,6 +132,40 @@
                 "type": "text",
                 "label": "P95",
                 "value": "M21;M20",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sdext",
+                        "value": true
+                    },
+                    {
+                        "connection_id": "SDConnection",
+                        "value": "!='none'"
+                    }
+                ]
+            },
+            {
+                "id": "sdextplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "M21;M23 #;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sdext",
+                        "value": true
+                    },
+                    {
+                        "connection_id": "SDConnection",
+                        "value": "!='none'"
+                    }
+                ]
+            },
+            {
+                "id": "sdextdeletecmd",
+                "type": "text",
+                "label": "P122",
+                "value": "M21;M3 #",
                 "help": "S97",
                 "depend": [
                     {
@@ -199,7 +259,16 @@
                 "id": "tftsdcommands",
                 "type": "group",
                 "label": "P102",
-                "depend": [{ "id": "tftsd", "value": true }],
+                "depend": [
+                    {
+                        "id": "tftfs",
+                        "notvalue": "none"
+                    },
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    }
+                ],
                 "value": [
                     {
                         "id": "tftsdpausecmd",
@@ -228,7 +297,7 @@
                 "id": "tftusbcommands",
                 "type": "group",
                 "label": "P103",
-                "depend": [{ "id": "tftusb", "value": true }],
+                "depend": [{ "id": "tftfs", "notvalue": "none"},{ "id": "tftusb", "value": true }],
                 "value": [
                     {
                         "id": "tftusbpausecmd",

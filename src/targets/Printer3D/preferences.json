@@ -286,7 +286,41 @@
                 "id": "tftbttsdlistcmd",
                 "type": "text",
                 "label": "P117",
-                "value": "M21;M20",
+                "value": "M21;M20 SD:#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftbttsdplaycmd",
+                "type": "text",
+                "label": "P120",
+                "value": "M21;M23 SD:#;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftbttsddeletecmd",
+                "type": "text",
+                "label": "P123",
+                "value": "M21;M30 SD:#",
                 "help": "S97",
                 "depend": [
                     {
@@ -303,7 +337,24 @@
                 "id": "tftmkssdlistcmd",
                 "type": "text",
                 "label": "P117",
-                "value": "M21;M20",
+                "value": "M998 1;M20 1:#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "mks"
+                    }
+                ]
+            },
+            {
+                "id": "tftmkssdplaycmd",
+                "type": "text",
+                "label": "P120",
+                "value": "M998 1;M23 1:#;M24",
                 "help": "S97",
                 "depend": [
                     {
@@ -327,11 +378,11 @@
                 "id": "tftbttusblistcmd",
                 "type": "text",
                 "label": "P118",
-                "value": "M21;M20",
+                "value": "M21;M20 U:#",
                 "help": "S97",
                 "depend": [
                     {
-                        "id": "tftsd",
+                        "id": "tftusb",
                         "value": true
                     },
                     {
@@ -344,7 +395,58 @@
                 "id": "tftmksusblistcmd",
                 "type": "text",
                 "label": "P117",
-                "value": "M21;M20",
+                "value": "M998 0;M23 0:#;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftusb",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "mks"
+                    }
+                ]
+            },
+            {
+                "id": "tftbttusbplaycmd",
+                "type": "text",
+                "label": "P121",
+                "value": "M21;M23 U:#;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftusb",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftbttusbdeletecmd",
+                "type": "text",
+                "label": "P124",
+                "value": "M21;M30 U:#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "tftusb",
+                        "value": true
+                    },
+                    {
+                        "id": "tftfs",
+                        "value": "btt"
+                    }
+                ]
+            },
+            {
+                "id": "tftmskusbplaycmd",
+                "type": "text",
+                "label": "P121",
+                "value": "M998 0;M23 0:#;M24",
                 "help": "S97",
                 "depend": [
                     {

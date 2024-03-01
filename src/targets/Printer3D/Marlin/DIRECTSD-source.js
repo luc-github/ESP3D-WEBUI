@@ -20,7 +20,7 @@
 import { h } from 'preact'
 import { canProcessFile } from '../../helpers'
 import { sortedFilesList, formatStatus } from '../../../components/Helpers'
-import { useSettingsContextFn } from '../../../contexts'
+import { useUiContextFn, useSettingsContextFn } from '../../../contexts'
 
 const capabilities = {
     Process: (path, filename) => {
@@ -125,17 +125,15 @@ const commands = {
                 '/sd' + path + (path.endsWith('/') ? '' : '/') + filename
             return {
                 type: 'cmd',
-                cmd: '[ESP700]stream=' + fullpath.replaceAll(' ', ' '),
+                cmd: '[ESP700]stream=' + fullpath.replaceAll('//', '/'),
             }
         } else {
+            const spath =
+                (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+            const cmd = useUiContextFn.getValue('sdplaycmd').replace("#", spath)
             return {
                 type: 'cmd',
-                cmd:
-                    'M23 ' +
-                    path +
-                    (path == '/' ? '' : '/') +
-                    filename +
-                    '\nM24',
+                cmd
             }
         }
     },
