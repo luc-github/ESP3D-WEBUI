@@ -134,10 +134,11 @@ const commands = {
         }
     },
     delete: (path, filename) => {
-        //TODO: extract command from settings
+        const spath = (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+        const cmd =  useUiContextFn.getValue('sddeletecmd').replace("#",spath)
         return {
             type: 'cmd',
-            cmd: 'M30 ' + path + (path == '/' ? '' : '/') + filename,
+            cmd,
         }
     },
 }

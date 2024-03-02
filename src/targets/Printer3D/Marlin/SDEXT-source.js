@@ -133,10 +133,11 @@ const commands = {
         }
     },
     delete: (path, filename) => {
-        //TODO:: extract from settings
+        const spath = (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+        const cmd =  useUiContextFn.getValue('sdextdeletecmd').replace("#",spath)
         return {
             type: 'cmd',
-            cmd: 'M30 ' + path + (path == '/' ? '' : '/') + filename,
+            cmd,
         }
     },
 }

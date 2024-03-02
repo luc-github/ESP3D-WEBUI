@@ -112,7 +112,7 @@ const commands = {
     download: (path, filename) => {
         return {
             type: 'url',
-            url: '/sd' + path + (path.endsWith('/') ? '' : '/') + filename,
+            url: ('/sd' + path + (path.endsWith('/') ? '' : '/') + filename).replaceAll('//', '/'),
             args: {},
         }
     },
@@ -121,11 +121,12 @@ const commands = {
             useSettingsContextFn.getValue('Streaming') == 'Enabled' &&
             useSettingsContextFn.getValue('SDConnection') == 'direct'
         ) {
-            let fullpath =
-                '/sd' + path + (path.endsWith('/') ? '' : '/') + filename
+            const fullpath =
+                ('/sd' + path + (path.endsWith('/') ? '' : '/') + filename).replaceAll('//', '/')
+            const cmd = '[ESP700]stream=' + fullpath
             return {
                 type: 'cmd',
-                cmd: '[ESP700]stream=' + fullpath.replaceAll('//', '/'),
+                cmd ,
             }
         } else {
             const spath =

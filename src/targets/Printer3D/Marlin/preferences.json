@@ -165,7 +165,7 @@
                 "id": "sdextdeletecmd",
                 "type": "text",
                 "label": "P122",
-                "value": "M21;M3 #",
+                "value": "M21;M30 #",
                 "help": "S97",
                 "depend": [
                     {

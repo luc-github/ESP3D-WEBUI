@@ -118,14 +118,16 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
+        const spath =  (path +
+            (path == '/' ? '' : '/')).replaceAll('//', '/')
         if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks'){
-            const cmd =  useUiContextFn.getValue('tftmksusblistcmd').replace("#",path)
+            const cmd =  useUiContextFn.getValue('tftmksusblistcmd').replace("#",spath)
             return {
                 type: 'cmd',
                 cmd,
             }
         } else {
-            const cmd =  useUiContextFn.getValue('tftbttusblistcmd').replace("#",path)
+            const cmd =  useUiContextFn.getValue('tftbttusblistcmd').replace("#",spath)
             return {
                 type: 'cmd',
                 cmd,
@@ -190,11 +192,23 @@ const commands = {
         }
     },
     delete: (path, filename) => {
-        //TODO: extract command from settings
-        return {
-            type: 'cmd',
-            cmd: 'M30 U:' + path + (path == '/' ? '' : '/') + filename,
-        }
+        const spath =  (path +
+            (path == '/' ? '' : '/') +
+            filename).replaceAll('//', '/')
+            if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks') 
+            {
+               const cmd =  useUiContextFn.getValue('tftmksusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           } else {
+               const cmd =  useUiContextFn.getValue('tftbttusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           }
     },
 }
 
