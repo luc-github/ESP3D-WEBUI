@@ -21,8 +21,6 @@ import { h } from "preact"
 import { FLASH } from "../../FLASH-source"
 import { DIRECTSD } from "./DIRECTSD-source"
 import { SD } from "./SD-source"
-import { TFTSD } from "./TFT-SD-source"
-import { TFTUSB } from "./TFT-USB-source"
 import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
@@ -56,37 +54,19 @@ const supportedFileSystems = [
                 useSettingsContextFn.getValue("SDConnection") != "none"
             )
         },
-    },
-    {
-        value: "TFTSD",
-        name: "S188",
-        depend: () => {
-            return useUiContextFn.getValue("tftsd")
-        },
-    },
-    {
-        value: "TFTUSB",
-        name: "S189",
-        depend: () => {
-            return useUiContextFn.getValue("tftusb")
-        },
-    },
+    }
 ]
 
 const capabilities = {
     FLASH: FLASH.capabilities,
     DIRECTSD: DIRECTSD.capabilities,
     SD: SD.capabilities,
-    TFTUSB: TFTUSB.capabilities,
-    TFTSD: TFTSD.capabilities,
 }
 
 const commands = {
     FLASH: FLASH.commands,
     DIRECTSD: DIRECTSD.commands,
     SD: SD.commands,
-    TFTUSB: TFTUSB.commands,
-    TFTSD: TFTSD.commands,
 }
 
 function capability() {
