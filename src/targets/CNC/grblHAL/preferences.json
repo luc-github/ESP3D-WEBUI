@@ -90,6 +90,19 @@
                 ],
                 "label": "S190",
                 "value": true
+            },
+            {
+                "id": "sdplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "$F=#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "directsd",
+                        "value": true
+                    }
+                ]
             }
         ],
         "jog": [
