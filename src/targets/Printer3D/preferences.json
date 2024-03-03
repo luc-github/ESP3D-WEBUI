@@ -272,7 +272,8 @@
                     { "value": "mks", "label": "S220" }
                 ],
                 "depend": [
-                    { "connection_id": "Screen", "value": "!='none'" }
+                    { "connection_id": "Screen", "value": "=='none'" },
+                    { "connection_id": "FWTargetID", "value": "!='30'" }
                 ]
             },
             {
