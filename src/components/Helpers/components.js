@@ -125,11 +125,16 @@ const connectionDepend = (depend, settings) => {
 }
 
 //this is dynamic as it is depending on the preferences settings
-const settingsDepend = (depend, settings, isOr) => {
+const settingsDepend = (depend, settings, isOr=false) => {
+    if (typeof depend!="undefined"){
+        //console.log("settingsDepend", depend, settings, isOr)
+        //console.log("settingsDepend", depend[0])    
+    }
     if (Array.isArray(depend)) {
         return depend.reduce(
             (acc, d) => {
                 if (d.id) {
+                    if (typeof d.value != "undefined"){
                     const element = useUiContextFn.getElement(d.id, settings)
                     if (isOr) {
                         if (element) return acc || element.value === d.value
@@ -138,6 +143,16 @@ const settingsDepend = (depend, settings, isOr) => {
                         if (element) return acc && element.value === d.value
                         else return acc && false === d.value
                     }
+                } else if (typeof d.notvalue != "undefined"){
+                    const element = useUiContextFn.getElement(d.id, settings)
+                    if (isOr) {
+                        if (element) return acc || element.value != d.notvalue
+                        return acc || false != d.notvalue
+                    } else {
+                        if (element) return acc && element.value != d.notvalue
+                        else return acc && false != d.notvalue
+                    }
+                }
                 }
                 if (d.ids) {
                     return acc && settingsDepend(d.ids, settings, true)

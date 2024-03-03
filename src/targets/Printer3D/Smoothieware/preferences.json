@@ -77,10 +77,58 @@
                 "type": "boolean",
                 "depend": [
                     { "connection_id": "SDConnection", "value": "!='none'" },
-                    { "id": "sd", "value": true }
+                    { "id": "sd", "value": true },
+                    { "id": "is_extra_sd_direct", "value": false }
                 ],
                 "label": "SM5",
                 "value": false
+            },
+            {
+                "id": "sdlistcmd",
+                "type": "text",
+                "label": "P95",
+                "value": "ls -s /sd/#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    },
+                    {
+                        "id": "is_sd_direct",
+                        "value": false
+                    }
+                ]
+            },
+            {
+                "id": "sdplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "play /sd/#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    }
+                ]
+            },
+            {
+                "id": "sddeletecmd",
+                "type": "text",
+                "label": "P122",
+                "value": "rm /sd/#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    },
+                    {
+                        "id": "is_sd_direct",
+                        "value": false
+                    }
+                ]
             },
             {
                 "id": "sdext",
@@ -93,10 +141,41 @@
                 "type": "boolean",
                 "depend": [
                     { "connection_id": "SDConnection", "value": "!='none'" },
-                    { "id": "sdext", "value": true }
+                    { "id": "sdext", "value": true },
+                    { "id": "is_sd_direct", "value": false }
                 ],
                 "label": "SM4",
                 "value": false
+            },
+            {
+                "id": "sdextlistcmd",
+                "type": "text",
+                "label": "P95",
+                "value": "ls -s /ext/#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sdext",
+                        "value": true
+                    },
+                    {
+                        "id": "is_extra_sd_direct",
+                        "value": false
+                    }
+                ]
+            },
+            {
+                "id": "sdextplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "play /ext/#",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sdext",
+                        "value": true
+                    }
+                ]
             }
         ],
         "Smoothieware": [
@@ -175,7 +254,16 @@
                 "id": "tftsdcommands",
                 "type": "group",
                 "label": "P102",
-                "depend": [{ "id": "tftsd", "value": true }],
+                "depend": [
+                    {
+                        "id": "tftfs",
+                        "notvalue": "none"
+                    },
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    }
+                ],
                 "value": [
                     {
                         "id": "tftsdpausecmd",
@@ -204,7 +292,7 @@
                 "id": "tftusbcommands",
                 "type": "group",
                 "label": "P103",
-                "depend": [{ "id": "tftusb", "value": true }],
+                "depend": [{ "id": "tftfs", "notvalue": "none"},{ "id": "tftusb", "value": true }],
                 "value": [
                     {
                         "id": "tftusbpausecmd",

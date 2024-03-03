@@ -17,15 +17,15 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
-import { canProcessFile } from "../../helpers"
+import { h } from 'preact'
+import { canProcessFile } from '../../helpers'
 import {
     formatFileSizeToString,
     sortedFilesList,
     formatStatus,
     filterResultFiles,
-} from "../../../components/Helpers"
-import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
+} from '../../../components/Helpers'
+import { useUiContextFn, useSettingsContextFn } from '../../../contexts'
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (acc, line) => {
@@ -33,40 +33,40 @@ const formatFileSerialLine = (acc, line) => {
     const regList = [
         {
             regex:
-                useSettingsContextFn.getValue("SerialProtocol") == "MKS"
-                    ? "^(.*).DIR$"
-                    : "^\\/(.*)\\/$",
+                useSettingsContextFn.getValue('SerialProtocol') == 'MKS'
+                    ? '^(.*).DIR$'
+                    : '^\\/(.*)\\/$',
             extract: (res) => {
                 return { name: res[1], size: -1 }
             },
         },
         {
-            regex: "^(.*\\.GCODE)$",
+            regex: '^(.*\\.GCODE)$',
             extract: (res) => {
-                return { name: res[1], size: "" }
+                return { name: res[1], size: '' }
             },
         },
     ]
     //get extension list
-    const extList = useUiContextFn.getValue("filesfilter")
+    const extList = useUiContextFn.getValue('filesfilter')
     const filter =
-        "(" +
-        extList.split(";").reduce((acc, item) => {
+        '(' +
+        extList.split(';').reduce((acc, item) => {
             if (acc.length == 0) {
                 acc = item.trim()
             } else {
-                acc += "|" + item.trim()
+                acc += '|' + item.trim()
             }
             return acc
-        }, "") +
-        ")"
+        }, '') +
+        ')'
 
     for (let i = 0; i < regList.length; i++) {
         let regFn
         try {
-            regFn = regList[i].regex.replaceAll("GCODE", filter)
+            regFn = regList[i].regex.replaceAll('GCODE', filter)
             //console.log("regex is :", regFn)
-            const reg_ex = new RegExp(regFn, "ig")
+            const reg_ex = new RegExp(regFn, 'ig')
             const result = reg_ex.exec(line)
             if (result) {
                 //console.log(result)
@@ -79,7 +79,7 @@ const formatFileSerialLine = (acc, line) => {
                 return acc
             }
         } catch (e) {
-            console.log("error in regex", regFn, e)
+            console.log('error in regex', regFn, e)
             return acc
         }
     }
@@ -94,10 +94,10 @@ const capabilities = {
     UseFilters: () => true,
     IsFlatFS: () => false,
     Upload: (path, filename, eMsg = false) => {
-        if (eMsg) return "E1"
+        if (eMsg) return 'E1'
         //TODO
         //check 8.1 if become true
-        return useSettingsContextFn.getValue("SerialProtocol") == "MKS"
+        return useSettingsContextFn.getValue('SerialProtocol') == 'MKS'
     },
     UploadMultiple: () => {
         return false
@@ -106,7 +106,7 @@ const capabilities = {
         return false
     },
     DeleteFile: () => {
-        return useSettingsContextFn.getValue("SerialProtocol") != "MKS"
+        return useSettingsContextFn.getValue('SerialProtocol') != 'MKS'
     },
     DeleteDir: () => {
         return false
@@ -118,39 +118,44 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS") {
+        const spath =  (path +
+            (path == '/' ? '' : '/')).replaceAll('//', '/')
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks'){
+            const cmd =  useUiContextFn.getValue('tftmksusblistcmd').replace("#",spath)
             return {
-                type: "cmd",
-                cmd: "M998 0\r\nM20 0:" + path,
+                type: 'cmd',
+                cmd,
             }
-        } else
+        } else {
+            const cmd =  useUiContextFn.getValue('tftbttusblistcmd').replace("#",spath)
             return {
-                type: "cmd",
-                cmd: "M20 U:" + path,
+                type: 'cmd',
+                cmd,
             }
+        }
     },
     upload: (path, filename) => {
-        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS")
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS')
             return {
-                type: "url",
-                url: "upload",
+                type: 'url',
+                url: 'upload',
                 args: { path },
             }
         //other is not supported so return list command for safety
         return {
-            type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd"),
+            type: 'cmd',
+            cmd: useUiContextFn.getValue('sdlistcmd'),
         }
     },
     postUpload: (path, filename) => {
-        if (useSettingsContextFn.getValue("SerialProtocol") == "MKS") {
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS') {
             return {
-                type: "refresh",
+                type: 'refresh',
                 arg: false,
                 timeOut: 3000,
             }
         }
-        return { type: "none" }
+        return { type: 'none' }
     },
     formatResult: (result) => {
         const res = {}
@@ -167,54 +172,63 @@ const commands = {
         res.status = formatStatus(data.status)
         return res
     },
-    play: (path, filename) => {
-        if (useSettingsContextFn.getValue("SerialProtocol") != "MKS") {
+    play: (path, filename) => { 
+        const spath =  (path +
+                    (path == '/' ? '' : '/') +
+                    filename).replaceAll('//', '/')
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks') 
+         {
+            const cmd =  useUiContextFn.getValue('tftmksusbplaycmd').replace("#",spath)
             return {
-                type: "cmd",
-                cmd:
-                    "M23 U:" +
-                    path +
-                    (path == "/" ? "" : "/") +
-                    filename +
-                    "\nM24",
+                type: 'cmd',
+                cmd,
             }
         } else {
+            const cmd =  useUiContextFn.getValue('tftbttusbplaycmd').replace("#",spath)
             return {
-                type: "cmd",
-                cmd:
-                    "M23 M998 0\r\n1:" +
-                    path +
-                    (path == "/" ? "" : "/") +
-                    filename +
-                    "\nM24",
+                type: 'cmd',
+                cmd,
             }
         }
     },
     delete: (path, filename) => {
-        return {
-            type: "cmd",
-            cmd: "M30 U:" + path + (path == "/" ? "" : "/") + filename,
-        }
+        const spath =  (path +
+            (path == '/' ? '' : '/') +
+            filename).replaceAll('//', '/')
+            if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks') 
+            {
+               const cmd =  useUiContextFn.getValue('tftmksusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           } else {
+               const cmd =  useUiContextFn.getValue('tftbttusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           }
     },
 }
 
 const responseSteps = {
     list: {
-        start: (data) => data.startsWith("Begin file list"),
-        end: (data) => data.startsWith("End file list"),
+        start: (data) => data.startsWith('Begin file list'),
+        end: (data) => data.startsWith('End file list'),
         error: (data) => {
             return (
-                data.indexOf("error") != -1 ||
-                data.indexOf("echo:No SD card") != -1 ||
+                data.indexOf('error') != -1 ||
+                data.indexOf('echo:No SD card') != -1 ||
                 data.indexOf('echo:Unknown command: "M20"') != -1
             )
         },
     },
     delete: {
-        start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok"),
+        start: (data) => data.startsWith('File deleted'),
+        end: (data) => data.startsWith('ok') && !data.startsWith('ok T:'),
         error: (data) => {
-            return data.startsWith("Deletion failed")
+            return data.startsWith('Deletion failed')
         },
     },
 }

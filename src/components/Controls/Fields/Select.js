@@ -20,6 +20,7 @@
 import { Fragment, h } from "preact"
 import { useEffect } from "preact/hooks"
 import { useSettingsContext, useUiContextFn } from "../../../contexts"
+import { T } from "../../Translations"
 import {
     generateDependIds,
     connectionDepend,
@@ -46,7 +47,7 @@ const Option = ({ label, depend, ...props }) => {
             )
         } else return null
     }
-    return <option {...props}>{label}</option>
+    return <option {...props}>{T(label)}</option>
 }
 
 const Select = ({

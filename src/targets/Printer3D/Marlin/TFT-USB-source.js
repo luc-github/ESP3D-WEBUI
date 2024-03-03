@@ -118,16 +118,21 @@ const capabilities = {
 
 const commands = {
     list: (path, filename) => {
-        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS') {
+        const spath =  (path +
+            (path == '/' ? '' : '/')).replaceAll('//', '/')
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks'){
+            const cmd =  useUiContextFn.getValue('tftmksusblistcmd').replace("#",spath)
             return {
                 type: 'cmd',
-                cmd: 'M998 0\r\nM20 0:' + path,
+                cmd,
             }
-        } else
+        } else {
+            const cmd =  useUiContextFn.getValue('tftbttusblistcmd').replace("#",spath)
             return {
                 type: 'cmd',
-                cmd: 'M20 U:' + path,
+                cmd,
             }
+        }
     },
     upload: (path, filename) => {
         if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS')
@@ -167,34 +172,43 @@ const commands = {
         res.status = formatStatus(data.status)
         return res
     },
-    play: (path, filename) => {
-        if (useSettingsContextFn.getValue('SerialProtocol') != 'MKS') {
+    play: (path, filename) => { 
+        const spath =  (path +
+                    (path == '/' ? '' : '/') +
+                    filename).replaceAll('//', '/')
+        if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks') 
+         {
+            const cmd =  useUiContextFn.getValue('tftmksusbplaycmd').replace("#",spath)
             return {
                 type: 'cmd',
-                cmd:
-                    'M23 U:' +
-                    path +
-                    (path == '/' ? '' : '/') +
-                    filename +
-                    '\nM24',
+                cmd,
             }
         } else {
+            const cmd =  useUiContextFn.getValue('tftbttusbplaycmd').replace("#",spath)
             return {
                 type: 'cmd',
-                cmd:
-                    'M23 M998 0\r\n1:' +
-                    path +
-                    (path == '/' ? '' : '/') +
-                    filename +
-                    '\nM24',
+                cmd,
             }
         }
     },
     delete: (path, filename) => {
-        return {
-            type: 'cmd',
-            cmd: 'M30 U:' + path + (path == '/' ? '' : '/') + filename,
-        }
+        const spath =  (path +
+            (path == '/' ? '' : '/') +
+            filename).replaceAll('//', '/')
+            if (useSettingsContextFn.getValue('SerialProtocol') == 'MKS' || useUiContextFn.getValue('tftfs') == 'mks') 
+            {
+               const cmd =  useUiContextFn.getValue('tftmksusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           } else {
+               const cmd =  useUiContextFn.getValue('tftbttusbdeletecmd').replace("#",spath)
+               return {
+                   type: 'cmd',
+                   cmd,
+               }
+           }
     },
 }
 

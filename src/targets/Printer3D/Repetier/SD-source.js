@@ -100,21 +100,19 @@ const commands = {
         return res
     },
     play: (path, filename) => {
+        const spath = (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+        const cmd  = useUiContextFn.getValue('sdplaycmd').replace('#', spath)
         return {
-            type: "cmd",
-            cmd: "M23 " + path + (path == "/" ? "" : "/") + filename + "\nM24",
+            type: 'cmd',
+            cmd,
         }
     },
     delete: (path, filename) => {
+        const spath = (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+        const cmd =  useUiContextFn.getValue('sddeletecmd').replace("#",spath)
         return {
-            type: "cmd",
-            cmd: "M30 " + path + (path == "/" ? "" : "/") + filename,
-        }
-    },
-    createdir: (path, filename) => {
-        return {
-            type: "cmd",
-            cmd: "M32 " + path + (path == "/" ? "" : "/") + filename,
+            type: 'cmd',
+            cmd,
         }
     },
 }

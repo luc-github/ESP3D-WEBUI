@@ -75,6 +75,19 @@
                 "depend": [
                     { "connection_id": "SDConnection", "value": "=='shared'" }
                 ]
+            },
+            {
+                "id": "sdplaycmd",
+                "type": "text",
+                "label": "P119",
+                "value": "M21;M23 #;M24",
+                "help": "S97",
+                "depend": [
+                    {
+                        "id": "sd",
+                        "value": true
+                    }
+                ]
             }
         ],
         "extruders": [

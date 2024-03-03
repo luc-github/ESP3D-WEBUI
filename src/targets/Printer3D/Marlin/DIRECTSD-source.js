@@ -20,7 +20,7 @@
 import { h } from 'preact'
 import { canProcessFile } from '../../helpers'
 import { sortedFilesList, formatStatus } from '../../../components/Helpers'
-import { useSettingsContextFn } from '../../../contexts'
+import { useUiContextFn, useSettingsContextFn } from '../../../contexts'
 
 const capabilities = {
     Process: (path, filename) => {
@@ -112,7 +112,7 @@ const commands = {
     download: (path, filename) => {
         return {
             type: 'url',
-            url: '/sd' + path + (path.endsWith('/') ? '' : '/') + filename,
+            url: ('/sd' + path + (path.endsWith('/') ? '' : '/') + filename).replaceAll('//', '/'),
             args: {},
         }
     },
@@ -121,21 +121,20 @@ const commands = {
             useSettingsContextFn.getValue('Streaming') == 'Enabled' &&
             useSettingsContextFn.getValue('SDConnection') == 'direct'
         ) {
-            let fullpath =
-                '/sd' + path + (path.endsWith('/') ? '' : '/') + filename
+            const fullpath =
+                ('/sd' + path + (path.endsWith('/') ? '' : '/') + filename).replaceAll('//', '/')
+            const cmd = '[ESP700]stream=' + fullpath
             return {
                 type: 'cmd',
-                cmd: '[ESP700]stream=' + fullpath.replaceAll(' ', ' '),
+                cmd ,
             }
         } else {
+            const spath =
+                (path + (path == '/' ? '' : '/') + filename).replaceAll('//', '/')
+            const cmd = useUiContextFn.getValue('sdplaycmd').replace("#", spath)
             return {
                 type: 'cmd',
-                cmd:
-                    'M23 ' +
-                    path +
-                    (path == '/' ? '' : '/') +
-                    filename +
-                    '\nM24',
+                cmd
             }
         }
     },
