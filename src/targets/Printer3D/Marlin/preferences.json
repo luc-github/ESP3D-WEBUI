@@ -70,7 +70,8 @@
                 "id": "sd",
                 "type": "boolean",
                 "label": "S190",
-                "value": false
+                "value": false,
+                "depend":[{"id":"showfilespanel", "value":true}]
             },
             {
                 "id": "sdlistcmd",
@@ -86,6 +87,10 @@
                     {
                         "connection_id": "SDConnection",
                         "value": "=='none'"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -98,6 +103,10 @@
                 "depend": [
                     {
                         "id": "sd",
+                        "value": true
+                    },
+                    {
+                        "id": "showfilespanel",
                         "value": true
                     }
                 ]
@@ -112,6 +121,10 @@
                     {
                         "id": "sd",
                         "value": true
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -124,6 +137,10 @@
                     {
                         "connection_id": "SDConnection",
                         "value": "!='none'"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -141,6 +158,10 @@
                     {
                         "connection_id": "SDConnection",
                         "value": "!='none'"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -158,6 +179,10 @@
                     {
                         "connection_id": "SDConnection",
                         "value": "!='none'"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -175,6 +200,9 @@
                     {
                         "connection_id": "SDConnection",
                         "value": "!='none'"
+                    }, {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             }

@@ -244,18 +244,21 @@
         ],
 
         "files": [
+
             {
                 "id": "filesfilter",
                 "type": "text",
                 "label": "S96",
                 "value": "g;G;gco;GCO;gcode;GCODE",
-                "help": "S97"
+                "help": "S97",
+                "depend":[{"id":"showfilespanel", "value":true}]
             },
             {
                 "id": "flashfs",
                 "type": "boolean",
                 "depend": [
-                    { "connection_id": "FlashFileSystem", "value": "!='none'" }
+                    { "connection_id": "FlashFileSystem", "value": "!='none'" },
+                    {"id":"showfilespanel", "value":true}
                 ],
                 "label": "S137",
                 "value": true
@@ -273,7 +276,8 @@
                 ],
                 "depend": [
                     { "connection_id": "Screen", "value": "=='none'" },
-                    { "connection_id": "FWTargetID", "value": "!='30'" }
+                    { "connection_id": "FWTargetID", "value": "!='30'" },
+                    { "id":"showfilespanel", "value":true}
                 ]
             },
             {
@@ -281,7 +285,10 @@
                 "type": "boolean",
                 "label": "S188",
                 "value": false,
-                "depend": [{ "id": "tftfs", "notvalue": "none"}]
+                "depend": [{ "id": "tftfs", "notvalue": "none"},  {
+                    "id": "showfilespanel",
+                    "value": true
+                }]
             },
             {
                 "id": "tftbttsdlistcmd",
@@ -297,6 +304,9 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    }, {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -314,6 +324,10 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -331,6 +345,10 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -348,6 +366,10 @@
                     {
                         "id": "tftfs",
                         "value": "mks"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -365,6 +387,10 @@
                     {
                         "id": "tftfs",
                         "value": "mks"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -373,7 +399,10 @@
                 "type": "boolean",
                 "label": "S189",
                 "value": false,
-                "depend": [{ "id": "tftfs", "notvalue": "none"}]
+                "depend": [{ "id": "tftfs", "notvalue": "none"},  {
+                    "id": "showfilespanel",
+                    "value": true
+                }]
             },
             {
                 "id": "tftbttusblistcmd",
@@ -389,6 +418,10 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -406,6 +439,10 @@
                     {
                         "id": "tftfs",
                         "value": "mks"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -423,6 +460,10 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -440,6 +481,10 @@
                     {
                         "id": "tftfs",
                         "value": "btt"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             },
@@ -457,6 +502,10 @@
                     {
                         "id": "tftfs",
                         "value": "mks"
+                    },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
                     }
                 ]
             }
