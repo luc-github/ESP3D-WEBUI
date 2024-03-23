@@ -82,7 +82,7 @@
     "btn+axis": "Current rotary axis +",
     "btn-axis": "Current rotary axis -",
     "btnHaxis": "Home current rotary axis",
-    "P15": "Emergency Stop",
+    "P15": "Quick Stop",
     "P65": "Move X to",
     "P66": "Move Y to",
     "P75": "Move Z to"

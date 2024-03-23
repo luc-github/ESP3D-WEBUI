@@ -18,12 +18,12 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { EmergencyButton } from "../../Controls"
+import { QuickStopButton } from "../../Controls"
 
 const QuickButtonsBar = () => {
     return (
         <div class="quick-buttons-bar">
-            <EmergencyButton />
+            <QuickStopButton />
         </div>
     )
 }

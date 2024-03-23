@@ -45,7 +45,7 @@
     "$133": "A Max travel, mm",
     "$134": "B Max travel, mm",
     "$135": "C Max travel, mm",
-    "P15": "Emergency Stop",
+    "P15": "Quick Stop",
     "P65": "Move X to",
     "P66": "Move Y to",
     "P75": "Move Z to"

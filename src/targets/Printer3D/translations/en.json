@@ -13,7 +13,7 @@
     "P12": "Speed",
     "P13": "Motors Off",
     "P14": "mm/min",
-    "P15": "Emergency Stop",
+    "P15": "Quick Stop",
     "P16": "mm",
     "P17": "Cannot get valid data",
     "P18": "Move to position",

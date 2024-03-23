@@ -9,6 +9,11 @@ Only compatible with [ESP3DLib 3.0](https://github.com/luc-github/ESP3DLib/tree/
 
 [Latest development version ![Development Version](https://img.shields.io/badge/Devt-v3.0-yellow?style=plastic)](https://github.com/luc-github/ESP3D-WEBUI/tree/3.0) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic) [![github-ci](https://github.com/luc-github/ESP3D-WeBUI/workflows/build-ci/badge.svg)](https://github.com/luc-github/ESP3D-WEBUI/actions/workflows/build-ci.yml)  [![Project Page ESP3D 3.0](https://img.shields.io/badge/Project%20page-ESP3D%203.0-blue?style=plastic)](https://github.com/users/luc-github/projects/1/views/1) 
 
+> [!WARNING]
+>### Disclaimer
+> The software is provided 'as is,' without any warranty of any kind, expressed or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
+>It is essential that you carefully read and understand this disclaimer before using this software and its components. If you do not agree with any part of this disclaimer, please refrain from using the software.
+
 ### Setup development tools
 
 1 - Install current nodejs LTS (currently using v20.8.0)

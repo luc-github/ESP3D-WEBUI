@@ -1,5 +1,5 @@
 /*
-EmergencyButton.js - ESP3D WebUI component file
+QuickStopButton.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
@@ -25,7 +25,7 @@ import { T } from "../../../components/Translations"
 import { ButtonImg } from "../../../components/Controls"
 import { variablesList } from "../../../targets"
 
-const EmergencyButton = () => {
+const QuickStopButton = () => {
     const { toasts } = useUiContext()
 
     const { createNewRequest } = useHttpFn
@@ -69,4 +69,4 @@ const EmergencyButton = () => {
     )
 }
 
-export { EmergencyButton }
+export { QuickStopButton }

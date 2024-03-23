@@ -1,5 +1,5 @@
 /*
-EmergencyButton.js - ESP3D WebUI component file
+QuickStopButton.js - ESP3D WebUI component file
 
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
@@ -19,19 +19,25 @@ EmergencyButton.js - ESP3D WebUI component file
 import { h } from "preact"
 import { AlertCircle } from "preact-feather"
 import { useHttpFn } from "../../../hooks"
-import { espHttpURL } from "../../../components/Helpers"
+import { espHttpURL, replaceVariables } from "../../../components/Helpers"
 import { useUiContext, useUiContextFn } from "../../../contexts"
 import { T } from "../../../components/Translations"
 import { ButtonImg } from "../../../components/Controls"
+import { variablesList } from "../../../targets"
 
-const EmergencyButton = () => {
+const QuickStopButton = () => {
     const { toasts } = useUiContext()
 
     const { createNewRequest } = useHttpFn
     const SendCommand = (command) => {
         createNewRequest(
-            espHttpURL("command", { cmd: command }),
-            { method: "GET", echo: command },
+            espHttpURL("command", {
+                cmd: replaceVariables(variablesList.commands, command),
+            }),
+            {
+                method: "GET",
+                echo: replaceVariables(variablesList.commands, command, true),
+            }, //need to see real command as it is not printable
             {
                 onSuccess: (result) => {},
                 onFail: (error) => {
@@ -57,10 +63,11 @@ const EmergencyButton = () => {
                 const cmds = useUiContextFn.getValue("emergencystop").split(";")
                 cmds.forEach((cmd) => {
                     SendCommand(cmd)
+                    console.log(cmd)
                 })
             }}
         />
     )
 }
 
-export { EmergencyButton }
+export { QuickStopButton }
