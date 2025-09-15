@@ -51,7 +51,7 @@ The result is a monolitic file with a minimal size allowing almost full control 
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/diamond-9.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/diamond-9.svg" style="max-width:400px; width:auto; height:auto"></a>
    </div>
    <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
-       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-0.svg?v=1" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-1.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-1.svg" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-2.svg" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/platinum-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/platinum-3.svg" style="max-width:400px; width:auto; height:auto"></a>
