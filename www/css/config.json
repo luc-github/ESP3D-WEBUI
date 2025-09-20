@@ -410,6 +410,5 @@
     "popovers.less",
     "modals.less"
   ],
-  "js": [],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=4c7131e1a6b32f2835aea278b14c209d"
+  "js": []
 }
