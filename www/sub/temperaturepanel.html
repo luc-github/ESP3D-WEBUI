@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="pull-left">
-                    <b><span translate>Temperatures</span></b>
+                    <span translate id="panel-title">Temperatures</span>
                 </div>
                 <div class="pull-right">
                     <div class="panel-flex-row">
@@ -13,7 +13,7 @@
                                 <td>
                                     <label>
                                         <input type="checkbox" id="autocheck_temperature" onclick="on_autocheck_temperature()" />
-                                        <span translate>auto-check every:</span>
+                                        <span translate>auto-check every:&nbsp</span>
                                     </label>
                                 </td>
                             </tr>
@@ -37,7 +37,7 @@
                 <tr>
                     <th translate>Name</th>
                     <th translate>Options</th>
-                    <th translate nowrap>Value | Target</th>
+                    <th translate class="text-nowrap">Value | Target</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,8 +45,8 @@
                     <td><span translate>Heater T0</span></td>
                     <td>
                         <div class="panel-flex-row">
-                            <button onclick="temperature_heatOff('T0')" class="btn btn-primary">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
+                            <button onclick="temperature_heatOff('T0')" class="btn btn-danger" style="padding: 5px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
                                     <g transform="translate(50,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M550 1200h100q21 0 35.5 -14.5t14.5 -35.5v-400q0 -21 -14.5 -35.5t-35.5 -14.5h-100q-21 0 -35.5 14.5t-14.5 35.5v400q0 21 14.5 35.5t35.5 14.5zM800 975v166q167 -62 272 -209.5t105 -331.5q0 -117 -45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5 t-184.5 123t-123 184.5t-45.5 224q0 184 105 331.5t272 209.5v-166q-103 -55 -165 -155t-62 -220q0 -116 57 -214.5t155.5 -155.5t214.5 -57t214.5 57t155.5 155.5t57 214.5q0 120 -62 220t-165 155z"></path>
                                     </g>
@@ -70,17 +70,17 @@
                                 </tr>
                             </table>
                             <span class="noshowonlowres">&nbsp;&nbsp;</span>
-                            <button onclick="temperature_heatSet('T0')" class="btn btn-danger">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
-                                    <g transform="translate(50,1200) scale(1, -1)">
+                            <button onclick="temperature_heatSet('T0')" class="btn btn-success" style="padding: 4px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
+                                    <g transform="translate(30,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M465 477l571 571q8 8 18 8t17 -8l177 -177q8 -7 8 -17t-8 -18l-783 -784q-7 -8 -17.5 -8t-17.5 8l-384 384q-8 8 -8 18t8 17l177 177q7 8 17 8t18 -8l171 -171q7 -7 18 -7t18 7z"></path>
                                     </g>
                                 </svg>
                             </button>
                         </div>
                     </td>
-                    <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterT0DisplayTemp"></span><span id="heaterT0TargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                    <td class="text-nowrap">
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterT0DisplayTemp"></span><span id="heaterT0TargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
                 <tr id="temperature_redundant" class="hide_it">
@@ -91,15 +91,15 @@
                         </div>
                     </td>
                     <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterRDisplayTemp"></span><span id="heaterRTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterRDisplayTemp"></span><span id="heaterRTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
                 <tr id="temperature_secondExtruder" class="hide_it">
                     <td><span translate>Heater T1</span></td>
                     <td>
                         <div class="panel-flex-row">
-                            <button onclick="temperature_heatOff('T1')" class="btn btn-primary">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
+                            <button onclick="temperature_heatOff('T1')" class="btn btn-danger" style="padding: 5px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
                                     <g transform="translate(50,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M550 1200h100q21 0 35.5 -14.5t14.5 -35.5v-400q0 -21 -14.5 -35.5t-35.5 -14.5h-100q-21 0 -35.5 14.5t-14.5 35.5v400q0 21 14.5 35.5t35.5 14.5zM800 975v166q167 -62 272 -209.5t105 -331.5q0 -117 -45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5 t-184.5 123t-123 184.5t-45.5 224q0 184 105 331.5t272 209.5v-166q-103 -55 -165 -155t-62 -220q0 -116 57 -214.5t155.5 -155.5t214.5 -57t214.5 57t155.5 155.5t57 214.5q0 120 -62 220t-165 155z"></path>
                                     </g>
@@ -123,9 +123,9 @@
                                 </tr>
                             </table>
                             <span class="noshowonlowres">&nbsp;&nbsp;</span>
-                            <button onclick="temperature_heatSet('T1')" class="btn btn-danger">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
-                                    <g transform="translate(50,1200) scale(1, -1)">
+                            <button onclick="temperature_heatSet('T1')" class="btn btn-success" style="padding: 4px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
+                                    <g transform="translate(30,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M465 477l571 571q8 8 18 8t17 -8l177 -177q8 -7 8 -17t-8 -18l-783 -784q-7 -8 -17.5 -8t-17.5 8l-384 384q-8 8 -8 18t8 17l177 177q7 8 17 8t18 -8l171 -171q7 -7 18 -7t18 7z"></path>
                                     </g>
                                 </svg>
@@ -133,7 +133,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterT1DisplayTemp"></span><span id="heaterT1TargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="heaterT1DisplayTemp"></span><span id="heaterT1TargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
                 <tr id="temperature_probe" class="hide_it">
@@ -144,15 +144,15 @@
                         </div>
                     </td>
                     <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="probeDisplayTemp"></span><span id="probeTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="probeDisplayTemp"></span><span id="probeTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
                 <tr id="temperature_bed" class="hide_it">
                     <td><span translate>Bed</span></td>
                     <td>
                         <div class="panel-flex-row">
-                            <button onclick="temperature_heatOff('bed')" class="btn btn-primary">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
+                            <button onclick="temperature_heatOff('bed')" class="btn btn-danger" style="padding: 5px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
                                     <g transform="translate(50,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M550 1200h100q21 0 35.5 -14.5t14.5 -35.5v-400q0 -21 -14.5 -35.5t-35.5 -14.5h-100q-21 0 -35.5 14.5t-14.5 35.5v400q0 21 14.5 35.5t35.5 14.5zM800 975v166q167 -62 272 -209.5t105 -331.5q0 -117 -45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5 t-184.5 123t-123 184.5t-45.5 224q0 184 105 331.5t272 209.5v-166q-103 -55 -165 -155t-62 -220q0 -116 57 -214.5t155.5 -155.5t214.5 -57t214.5 57t155.5 155.5t57 214.5q0 120 -62 220t-165 155z"></path>
                                     </g>
@@ -176,9 +176,9 @@
                                 </tr>
                             </table>
                             <span class="noshowonlowres">&nbsp;&nbsp;</span>
-                            <button onclick="temperature_heatSet('bed')" class="btn btn-danger">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
-                                    <g transform="translate(50,1200) scale(1, -1)">
+                            <button onclick="temperature_heatSet('bed')" class="btn btn-success" style="padding: 4px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
+                                    <g transform="translate(30,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M465 477l571 571q8 8 18 8t17 -8l177 -177q8 -7 8 -17t-8 -18l-783 -784q-7 -8 -17.5 -8t-17.5 8l-384 384q-8 8 -8 18t8 17l177 177q7 8 17 8t18 -8l171 -171q7 -7 18 -7t18 7z"></path>
                                     </g>
                                 </svg>
@@ -186,15 +186,15 @@
                         </div>
                     </td>
                     <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="bedDisplayTemp"></span><span id="bedTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="bedDisplayTemp"></span><span id="bedTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
                 <tr id="temperature_chamber" class="hide_it">
                     <td><span translate>Chamber</span></td>
                     <td>
                         <div class="panel-flex-row">
-                            <button onclick="temperature_heatOff('chamber')"  class="btn btn-primary">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
+                            <button onclick="temperature_heatOff('chamber')" class="btn btn-danger" style="padding: 5px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
                                     <g transform="translate(50,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M550 1200h100q21 0 35.5 -14.5t14.5 -35.5v-400q0 -21 -14.5 -35.5t-35.5 -14.5h-100q-21 0 -35.5 14.5t-14.5 35.5v400q0 21 14.5 35.5t35.5 14.5zM800 975v166q167 -62 272 -209.5t105 -331.5q0 -117 -45.5 -224t-123 -184.5t-184.5 -123t-224 -45.5t-224 45.5 t-184.5 123t-123 184.5t-45.5 224q0 184 105 331.5t272 209.5v-166q-103 -55 -165 -155t-62 -220q0 -116 57 -214.5t155.5 -155.5t214.5 -57t214.5 57t155.5 155.5t57 214.5q0 120 -62 220t-165 155z"></path>
                                     </g>
@@ -218,9 +218,9 @@
                                 </tr>
                             </table>
                             <span class="noshowonlowres">&nbsp;&nbsp;</span>
-                            <button onclick="temperature_heatSet('chamber')" class="btn btn-danger">
-                                <svg width="1.3em" height="1.2em" viewBox="0 0 1300 1200">
-                                    <g transform="translate(50,1200) scale(1, -1)">
+                            <button onclick="temperature_heatSet('chamber')" class="btn btn-success" style="padding: 4px 11px 0px;">
+                                <svg width="1.3em" height="1.13em" viewBox="0 0 1300 1200">
+                                    <g transform="translate(30,1200) scale(1, -1)">
                                         <path fill="currentColor" d="M465 477l571 571q8 8 18 8t17 -8l177 -177q8 -7 8 -17t-8 -18l-783 -784q-7 -8 -17.5 -8t-17.5 8l-384 384q-8 8 -8 18t8 17l177 177q7 8 17 8t18 -8l171 -171q7 -7 18 -7t18 7z"></path>
                                     </g>
                                 </svg>
@@ -228,7 +228,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="chamberDisplayTemp"></span><span id="chamberTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red"></span></div>
+                        <div class="panel-flex-col panel-flex-center"><span class="tempDisplay" id="chamberDisplayTemp"></span><span id="chamberTargetTemp_anime" class="not_visible loader-pulse pull-right" style="color:red;"></span></div>
                     </td>
                 </tr>
             </tbody>
@@ -237,11 +237,11 @@
             <li class="list-group-item hide_it" id="temperatures_output">
                 <div class="panel-flex-row">
                     <div id="extruderstemperaturesgraphic">
-                        <canvas id="extruderTempgraph" height="130" width="200"></canvas>
-                        &nbsp;&nbsp;
+                        <canvas id="extruderTempgraph" height="155" width="270"></canvas>
                     </div>
+                    <div style="width:3%"></div>
                     <div id="bedtemperaturesgraphic">
-                        <canvas id="bedTempgraph" height="130" width="200"></canvas>
+                        <canvas id="bedTempgraph" height="155" width="270"></canvas>
                     </div>
                 </div>
             </li>

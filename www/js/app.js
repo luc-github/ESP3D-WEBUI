@@ -250,7 +250,7 @@ function ontoggleLock(forcevalue) {
   if (typeof forcevalue != "undefined")
     document.getElementById("lock_UI").checked = forcevalue;
   if (document.getElementById("lock_UI").checked) {
-    document.getElementById("lock_UI_btn_txt").innerHTML =
+    document.getElementById("lock_UI_text").innerHTML =
       translate_text_item("Unlock interface");
     disable_items(document.getElementById("maintab"), true);
     disable_items(document.getElementById("configtab"), true);
@@ -263,7 +263,7 @@ function ontoggleLock(forcevalue) {
     disable_items(document.getElementById("JogUI"), false);
     document.getElementById("JogUI").style.pointerEvents = "none";
   } else {
-    document.getElementById("lock_UI_btn_txt").innerHTML =
+    document.getElementById("lock_UI_text").innerHTML =
       translate_text_item("Lock interface");
     disable_items(document.getElementById("maintab"), false);
     disable_items(document.getElementById("configtab"), false);
@@ -281,8 +281,8 @@ function Handle_DHT(data) {
   }
   var temp = convertDHT2Fahrenheit ? parseFloat(tdata[0]) * 1.8 + 32 : parseFloat(tdata[0]);
   document.getElementById("DHT_humidity").innerHTML =
-    parseFloat(tdata[1]).toFixed(2).toString() + "%";
-  var temps = temp.toFixed(2).toString() + "&deg;";
+    parseFloat(tdata[1]).toFixed(2).toString() + " %";
+  var temps = temp.toFixed(2).toString() + " &deg;";
   if (convertDHT2Fahrenheit) temps += "F";
   else temps += "C";
   document.getElementById("DHT_temperature").innerHTML = temps;

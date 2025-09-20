@@ -1,14 +1,10 @@
 .dropbtn {
-    padding: 16px;
-    font-size: 14px;
+    padding: 14px 16px;
+    font-size: 16px;
     border: none;
     cursor: pointer;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-    border-color: #000000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 .dropdownselect {
@@ -58,7 +54,7 @@
 
 .menu-divider {
     height: 1px;
-    margin: 2px 0;
+    margin: 4px 0;
     overflow: hidden;
     background-color: #e5e5e5;
 }

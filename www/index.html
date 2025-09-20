@@ -9,10 +9,10 @@
       var target_firmware = "";
     </script>
     <script>
-      var web_ui_version = "2.1.3b0";
+      var web_ui_version = "2.1.3c0";
     </script>
     <script>
-      var direct_sd = false;
+      var direct_sd = true;
     </script>
     <script>
       var fw_version = "";
@@ -23,14 +23,13 @@
     <script>
       var secondary_sd = "/sd/";
     </script>
-    <!--removeIf(cleanheader)-->
+    <!-- removeIf(cleanheader) -->
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link href="css/menu.css" rel="stylesheet" />
     <link href="css/tabs.css" rel="stylesheet" />
     <link href="css/modaldlg.css" rel="stylesheet" />
     <link href="css/wizard.css" rel="stylesheet" />
-    <!--endRemoveIf(cleanheader)-->
-
+    <!-- endRemoveIf(cleanheader) -->
     <!-- smoosh -->
     <link href="css/style.css" rel="stylesheet" />
     <!-- endsmoosh -->
@@ -39,15 +38,15 @@
   <body>
     <div id="loadingmsg">
       <center>
-        <h3>Loading....</h3>
+        <h3>Loading...</h3>
       </center>
     </div>
-    <div id="main_ui" class="container-fluid hide_it">
+    <div id="main_ui" class="hide_it">
       <!-- topnavbar -->
       <file-include w3-include-html="'sub/navbar.html'"></file-include>
       <!-- /topnavbar -->
       <!-- tabbar -->
-      <file-include w3-include-html="'sub/tab_bar.html'"></file-include>
+      <file-include w3-include-html="'sub/tabbar.html'"></file-include>
       <!-- / tabbar -->
       <!-- content -->
       <div id="mainuitabscontent">
@@ -76,7 +75,7 @@
     <file-include w3-include-html="'sub/restartdlg.html'"></file-include>
     <file-include w3-include-html="'sub/UIdisableddlg.html'"></file-include>
     <!-- / template -->
-    <!--removeIf(cleanheader)-->
+    <!-- removeIf(cleanheader) -->
     <script src="js/wizard.js"></script>
     <script src="js/http.js"></script>
     <script src="js/icons.js"></script>
@@ -112,7 +111,7 @@
     <script src="js/localstorage.js"></script>
     <script src="js/UIdisableddlg.js"></script>
     <script src="js/custom.js"></script>
-    <!--endRemoveIf(cleanheader)-->
+    <!-- endRemoveIf(cleanheader) -->
     <!-- smoosh -->
     <script src="js/app.js"></script>
     <!-- endsmoosh -->

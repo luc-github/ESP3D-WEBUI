@@ -291,7 +291,7 @@ w25 {
 
 .grid-container {
     display: inline-grid;
-    grid-gap: 10px;
+    grid-gap: 0px;
     padding: 10px;
     grid-template-columns: auto auto auto auto auto;
 }
@@ -319,7 +319,6 @@ w25 {
 .panel-flex-col {
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .panel-flex-center {
@@ -425,3 +424,36 @@ w25 {
 }
 
 .button_txt {}
+
+.topnavbar {
+    display: flow-root;
+    padding-top: 5px;
+    border-bottom: 1px solid #e7e7e7;
+}
+.lock_UI_label {
+    margin-bottom: 0px;
+    position: relative;
+    top: -1px;
+    min-width: 145px;
+}
+#controlPanel,
+#grblPanel,
+#temperaturesPanel,
+#extruderPanel,
+#filesPanel,
+#commandsPanel {
+    margin: 8px;
+}
+#panel-title {
+    color: #555555;
+    font-size: 1.25em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+#commands,
+#fileSource {
+    color: #555555;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 0.25px;
+}
