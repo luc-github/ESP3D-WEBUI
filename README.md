@@ -183,7 +183,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://discord.gg/yNwksQvZmQ"><img src="https://avatars.githubusercontent.com/u/12979070?v=4?s=100" width="100px;" alt="makerbase"/><br /><sub><b>makerbase</b></sub></a><br /><a href="#financial-makerbase-mks" title="Financial">💵</a> <a href="#platform-makerbase-mks" title="Packaging/porting to new platform">📦</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/abcpibot"><img src="https://avatars.githubusercontent.com/u/5948988?v=4?s=100" width="100px;" alt="abcpibot"/><br /><sub><b>abcpibot</b></sub></a><br /><a href="#financial-abcpibot" title="Financial">💵</a> <a href="#platform-abcpibot" title="Packaging/porting to new platform">📦</a></td>
 
-    </tr>
+</tr>
   </tbody>
 </table>
 
