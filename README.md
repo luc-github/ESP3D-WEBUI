@@ -105,7 +105,7 @@ Go to https://esp3d.io
    </div>
    <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-bottom:20px">
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-0.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-0.svg" style="max-width:400px; width:auto; height:auto"></a>
-       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-1.html?1" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-1.svg" style="max-width:400px; width:auto; height:auto"></a>
+       <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-11.html?1" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-11.svg" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-2.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-2.svg" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-3.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-3.svg" style="max-width:400px; width:auto; height:auto"></a>
        <a href="https://luc-github.github.io/sponsors/esp3d-webui/gold-4.html" target="_blank" rel="noopener noreferrer"><img src="https://luc-github.github.io/sponsors/esp3d-webui/gold-4.svg" style="max-width:400px; width:auto; height:auto"></a>
