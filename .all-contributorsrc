@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "1001Rem",
+      "name": "1001Rem",
+      "avatar_url": "https://avatars.githubusercontent.com/u/146172724?v=4",
+      "profile": "https://github.com/1001Rem",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "ESP3D-WEBUI",
+  "projectOwner": "luc-github"
+}
