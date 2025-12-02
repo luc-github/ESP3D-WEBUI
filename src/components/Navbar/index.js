@@ -102,6 +102,15 @@ const Navbar = () => {
                 .click()
         }
     }
+
+    /*
+    auto-scroll textarea into view if mobile keyboard is blocking textarea to prevent
+    page resize and navbar from snapping out of viewport due to using fixed heights
+    */
+    window.visualViewport?.addEventListener("resize", () => {
+        window.scrollTo(0, 0);
+    });
+
     const disconnectNow = () => {
         const formData = new FormData()
         formData.append("DISCONNECT", "YES")
