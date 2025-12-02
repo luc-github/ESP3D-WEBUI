@@ -1,4 +1,7 @@
 # ESP3D-WEBUI 3.0 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=ESP3D-WEBUI&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.0/info.json)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 using Preact per @aganov suggestion  
 Rewrite per @alxblog suggestion to use proper Preactjs API and lighter css code: use spectre.css instead of bootstrap 4.x
@@ -133,6 +136,21 @@ Go to https://esp3d.io
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/1001Rem"><img src="https://avatars.githubusercontent.com/u/146172724?v=4?s=100" width="100px;" alt="1001Rem"/><br /><sub><b>1001Rem</b></sub></a><br /><a href="https://github.com/luc-github/ESP3D-WEBUI/commits?author=1001Rem" title="Code">💻</a> <a href="https://github.com/luc-github/ESP3D-WEBUI/issues?q=author%3A1001Rem" title="Bug reports">🐛</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
