@@ -24,7 +24,11 @@ import {
     beautifyJSONString,
     addObjectItem,
 } from "../../../components/Helpers"
-import { useDatasContext } from "../../../contexts"
+import {
+    useDatasContext,
+    useUiContextFn,
+    useSettingsContextFn,
+} from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import {
@@ -149,6 +153,12 @@ const TargetContextProvider = ({ children }) => {
         error: "",
         echo: "",
     })
+    const getVerboseFilters = () =>
+        typeof useSettingsContextFn.getInterfaceValue === "function"
+            ? useSettingsContextFn.getInterfaceValue("verbosefilters")
+            : typeof useUiContextFn.getValue === "function"
+              ? useUiContextFn.getValue("verbosefilters")
+            : []
 
     const dispatchInternally = (type, data) => {
         processor.handle(type, data)
@@ -227,7 +237,8 @@ const TargetContextProvider = ({ children }) => {
                         if (dataBuffer.current[type].length > 0) {
                             const isverboseOnly = isVerboseOnly(
                                 type,
-                                dataBuffer.current[type]
+                                dataBuffer.current[type],
+                                getVerboseFilters()
                             )
                             dispatchInternally(type, dataBuffer.current[type])
                             //format the output if needed
@@ -267,7 +278,11 @@ const TargetContextProvider = ({ children }) => {
                 //ignore such answer unless need to check response
                 //this response is to workaround some response lost when no response
                 if (data.startsWith("ESP3D says:")) return
-                const isverboseOnly = isVerboseOnly(type, data)
+                const isverboseOnly = isVerboseOnly(
+                    type,
+                    data,
+                    getVerboseFilters()
+                )
                 dispatchInternally(type, data)
                 //format the output if needed
                 if (data.startsWith("{")) {
@@ -296,7 +311,11 @@ const TargetContextProvider = ({ children }) => {
                 }
             } else {
                 if (type != "core") {
-                    const isverboseOnly = isVerboseOnly(type, data)
+                    const isverboseOnly = isVerboseOnly(
+                        type,
+                        data,
+                        getVerboseFilters()
+                    )
                     terminal.add({ type, content: data, isverboseOnly })
                 }
                 dispatchInternally(type, data)

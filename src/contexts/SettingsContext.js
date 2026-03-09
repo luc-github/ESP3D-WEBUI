@@ -36,6 +36,9 @@ const SettingsContextProvider = ({ children }) => {
     const featuresValues = useRef({})
     const pollingInterval = useRef([])
     useSettingsContextFn.getValue = (val) => connectionValues.current[val]
+    useSettingsContextFn.getInterfaceSettings = () => interfaceValues.current.settings
+    useSettingsContextFn.getInterfaceValue = (val) =>
+        uisettings.getValue(val, interfaceValues.current.settings)
 
     function startPolling(id, interval, fn) {
         stopPolling(id)

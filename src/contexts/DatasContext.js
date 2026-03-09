@@ -46,6 +46,14 @@ const DatasContextProvider = ({ children }) => {
         setTerminalContent([])
     }
 
+    const refreshTerminalContent = () => {
+        if (isVerbose.current) {
+            setTerminalContent([...terminalBuffer.current])
+        } else {
+            setTerminalContent([...terminalBufferQuiet.current])
+        }
+    }
+
     const addTerminalContent = (element) => {
         //console.log(element)
         //console.log(
@@ -73,8 +81,7 @@ const DatasContextProvider = ({ children }) => {
             )
             terminalBufferQuiet.current = newData.quiet
         }
-        if (isVerbose.current) setTerminalContent(terminalBuffer.current)
-        else setTerminalContent(terminalBufferQuiet.current)
+        refreshTerminalContent()
     }
 
     const addTerminalInputHistory = (element) => {
@@ -89,6 +96,7 @@ const DatasContextProvider = ({ children }) => {
             content: terminalContent,
             add: addTerminalContent,
             clear: clearTerminal,
+            refresh: refreshTerminalContent,
             inputHistory: terminalInputHistory,
             addInputHistory: addTerminalInputHistory,
             isAutoScroll,

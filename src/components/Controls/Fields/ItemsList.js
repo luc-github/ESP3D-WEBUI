@@ -41,6 +41,7 @@ import {
 import defaultPanel from "./def_panel.json"
 import defaultMacro from "./def_macro.json"
 import defaultPolling from "./def_polling.json"
+import defaultVerboseFilter from "./def_verbose_filter.json"
 
 /*
  * Local const
@@ -63,8 +64,12 @@ const ItemControl = ({
     const { id, value, editionMode, ...rest } = itemData
     const indexIcon = value.findIndex((element) => element.id == id + "-icon")
     const indexName = value.findIndex((element) => element.id == id + "-name")
+    const indexMatch = value.findIndex((element) => element.id == id + "-match")
+    const indexText = value.findIndex((element) => element.id == id + "-text")
     const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
     const name = value ? value[indexName != -1 ? indexName : 0].value : null
+    const match = value ? value[indexMatch != -1 ? indexMatch : 0].value : null
+    const text = value ? value[indexText != -1 ? indexText : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
 
     const onEdit = (state) => {
@@ -115,12 +120,15 @@ const ItemControl = ({
     })
 
     const labelBtn =
-        val != -1
-            ? T(name) +
-              (value[val].value.length != 0
-                  ? " [" + value[val].value + "]"
-                  : "")
-            : T(name)
+        idList == "verbosefilters"
+            ? (match ? match : T("S156")) +
+              (text && text.length != 0 ? " [" + text + "]" : "")
+            : val != -1
+              ? T(name) +
+                (value[val].value.length != 0
+                    ? " [" + value[val].value + "]"
+                    : "")
+              : T(name)
 
     return (
         <Fragment>
@@ -324,11 +332,15 @@ const ItemsList = ({
                     ? defaultMacro
                     : id == "pollingcmds"
                       ? defaultPolling
+                      : id == "verbosefilters"
+                        ? defaultVerboseFilter
                       : defaultPanel
             )
         )
         newItem.id = generateUID()
-        newItem.name += " " + newItem.id
+        if (typeof newItem.name !== "undefined") {
+            newItem.name += " " + newItem.id
+        }
         const formatedNewItem = formatItem(newItem, -1, id)
         formatedNewItem.editionMode = true
         formatedNewItem.newItem = true
@@ -359,6 +371,7 @@ const ItemsList = ({
             class="fieldset-top-separator fieldset-bottom-separator field-group"
         >
             <legend>
+                {id == "verbosefilters" && <label class="m-2">{T(label)}</label>}
                 {!fixed && (
                     <ButtonImg
                         m2
@@ -367,6 +380,8 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
+                                  : id == "verbosefilters"
+                                    ? "Add Verbose Filter"
                                   : T("S156")
                         }
                         tooltip
@@ -375,6 +390,8 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
+                                  : id == "verbosefilters"
+                                    ? "Add Verbose Filter"
                                   : T("S156")
                         }
                         icon={<Plus />}

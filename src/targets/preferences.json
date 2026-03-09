@@ -149,6 +149,14 @@
                         "value": true
                     }
                 ]
+            },
+            {
+                "id": "verbosefilters",
+                "type": "list",
+                "sorted": false,
+                "label": "Verbose filters",
+                "value": [],
+                "depend": [{ "id": "showterminalpanel", "value": true }]
             }
         ],
         "files": [

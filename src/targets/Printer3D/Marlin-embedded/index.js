@@ -73,6 +73,15 @@ const eventsList = {
             })
     },
 }
+const verboseMatchers = [
+    { id: "startswith", display: "startsWith" },
+    { id: "endswith", display: "endsWith" },
+    { id: "contain", display: "contain" },
+    { id: "regex", display: "regex" },
+    { id: "positions", display: "isPositions" },
+    { id: "report", display: "isReport" },
+    { id: "temperatures", display: "isTemperature" },
+]
 
 export {
     MachineSettings,
@@ -92,6 +101,7 @@ export {
     InformationsControls,
     variablesList,
     eventsList,
+    verboseMatchers,
     AppLogo,
     WebUILogo,
     QuickButtonsBar,

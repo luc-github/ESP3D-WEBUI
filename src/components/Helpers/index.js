@@ -51,6 +51,7 @@ import {
 import { dispatchToExtensions, isFullscreenActive, isFullscreenSupported, getFullscreenElement } from "./html"
 import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
+import { matchVerboseFilter, hasMatchingVerboseFilter } from "./verboseFilters"
 
 export {
     beautifyJSONString,
@@ -88,4 +89,6 @@ export {
     isFloat,
     BitsArray,
     useStoredState,
+    matchVerboseFilter,
+    hasMatchingVerboseFilter,
 }

@@ -19,6 +19,8 @@ importHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+import { verboseMatchers } from "../../targets"
+
 /**
  * Formats an item data object.
  *
@@ -150,6 +152,20 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.type = "text"
                     newItem.label = "S139"
                     newItem.min = "2"
+                    break
+                case "match":
+                    newItem.type = "select"
+                    newItem.label = "Match"
+                    newItem.options = verboseMatchers
+                        ? verboseMatchers.map((matcher) => ({
+                              label: matcher.display,
+                              value: matcher.id,
+                          }))
+                        : []
+                    break
+                case "text":
+                    newItem.type = "text"
+                    newItem.label = "Text"
                     break
                 case "action":
                     newItem.type = "text"

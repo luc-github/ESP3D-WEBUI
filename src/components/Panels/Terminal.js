@@ -166,6 +166,7 @@ const TerminalPanel = () => {
         useUiContextFn.haptic()
         terminal.isVerbose.current = !isVerbose
         setIsVerbose(!isVerbose)
+        terminal.refresh()
     }
 
     const toggleAutoScroll = () => {

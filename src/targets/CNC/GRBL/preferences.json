@@ -430,6 +430,19 @@
                     }
                 ]
             }
+        ],
+        "terminal": [
+            {
+                "id": "verbosefilters",
+                "value": [
+                    { "id": "report", "match": "report", "text": "" },
+                    { "id": "blank_line", "match": "regex", "text": "^\\s*$" },
+                    { "id": "bracket_message", "match": "startswith", "text": "[" },
+                    { "id": "ok", "match": "startswith", "text": "ok" },
+                    { "id": "sensor", "match": "startswith", "text": "SENSOR:" },
+                    { "id": "json", "match": "regex", "text": "^\\{.*\\}$" }
+                ]
+            }
         ]
     }
 }
