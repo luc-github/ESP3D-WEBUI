@@ -227,6 +227,8 @@
     "S223": "Default filesystem",
     "S224": "Sort files",
     "S225": "Documentation",
+    "S226": "Verbose filters",
+    "S227": "Add Verbose Filter",
     "btn+X": "X+",
     "btn-X": "X-",
     "btnHX": "Home X",

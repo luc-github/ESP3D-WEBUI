@@ -381,7 +381,7 @@ const ItemsList = ({
                                 : id == "pollingcmds"
                                   ? T("S207")
                                   : id == "verbosefilters"
-                                    ? "Add Verbose Filter"
+                                    ? T("S227")
                                   : T("S156")
                         }
                         tooltip
@@ -391,7 +391,7 @@ const ItemsList = ({
                                 : id == "pollingcmds"
                                   ? T("S207")
                                   : id == "verbosefilters"
-                                    ? "Add Verbose Filter"
+                                    ? T("S227")
                                   : T("S156")
                         }
                         icon={<Plus />}
