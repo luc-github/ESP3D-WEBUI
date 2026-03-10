@@ -24,7 +24,6 @@ import { processor } from "./processor"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings, machineSettings } from "./MachineSettings"
 import {
-    InformationsControls,
     QuickButtonsBar,
     MixedExtrudersControl,
     BackgroundContainer,
@@ -98,7 +97,6 @@ export {
     useTargetContext,
     useTargetContextFn,
     webUIbuild,
-    InformationsControls,
     variablesList,
     eventsList,
     verboseMatchers,

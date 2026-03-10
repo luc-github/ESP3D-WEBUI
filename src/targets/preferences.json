@@ -50,12 +50,6 @@
                 ]
             },
             {
-                "id": "showinformationpage",
-                "type": "boolean",
-                "label": "S196",
-                "value": true
-            },
-            {
                 "id": "showmachinesettings",
                 "type": "boolean",
                 "label": "S197",

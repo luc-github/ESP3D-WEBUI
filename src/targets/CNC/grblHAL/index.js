@@ -25,7 +25,6 @@ import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings, machineSettings } from "./MachineSettings"
 import {
-    InformationsControls,
     QuickButtonsBar,
     BackgroundContainer,
 } from "./Controls"
@@ -100,7 +99,6 @@ export {
     useTargetContext,
     useTargetContextFn,
     webUIbuild,
-    InformationsControls,
     variablesList,
     eventsList,
     verboseMatchers,

@@ -1,4 +1,4 @@
-@media (max-width: 480px) {
+@media (max-width: $size-xs) {
     .hide-low {
         display: none !important;
     }
