@@ -76,11 +76,11 @@ const eventsList = {
     },
 }
 const verboseMatchers = [
-    { id: "startswith", display: "startsWith" },
-    { id: "endswith", display: "endsWith" },
-    { id: "contain", display: "contain" },
-    { id: "regex", display: "regex" },
-    { id: "report", display: "isReport" },
+    { id: "startswith", display: "S230" },
+    { id: "endswith", display: "S231" },
+    { id: "contain", display: "S232" },
+    { id: "regex", display: "S233" },
+    { id: "report", display: "S235" },
 ]
 
 export {

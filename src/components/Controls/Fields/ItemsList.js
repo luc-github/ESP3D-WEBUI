@@ -21,7 +21,7 @@ import { useState, useEffect } from "preact/hooks"
 import { ButtonImg } from "../../Controls"
 import { T } from "../../Translations"
 import { iconsFeather } from "../../Images"
-import { iconsTarget } from "../../../targets"
+import { iconsTarget, verboseMatchers } from "../../../targets"
 import {
     generateUID,
     generateDependIds,
@@ -61,15 +61,17 @@ const ItemControl = ({
     sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    const { id, value, editionMode, ...rest } = itemData
+    const { id, editionMode, ...rest } = itemData
+    const value = Array.isArray(itemData.value) ? itemData.value : []
     const indexIcon = value.findIndex((element) => element.id == id + "-icon")
     const indexName = value.findIndex((element) => element.id == id + "-name")
     const indexMatch = value.findIndex((element) => element.id == id + "-match")
     const indexText = value.findIndex((element) => element.id == id + "-text")
-    const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
-    const name = value ? value[indexName != -1 ? indexName : 0].value : null
-    const match = value ? value[indexMatch != -1 ? indexMatch : 0].value : null
-    const text = value ? value[indexText != -1 ? indexText : 0].value : null
+    const getVal = (fallbackIdx, idx) => { const el = value[idx !== -1 ? idx : fallbackIdx]; return el && el.value !== undefined ? el.value : null }
+    const icon = getVal(0, indexIcon)
+    const name = getVal(0, indexName)
+    const match = getVal(0, indexMatch)
+    const text = getVal(0, indexText)
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
 
     const onEdit = (state) => {
@@ -119,13 +121,15 @@ const ItemControl = ({
         return e.name == "key"
     })
 
+    const matcher = idList == "verbosefilters" && match ? verboseMatchers?.find((m) => m.id === match) : null
+    const matchLabel = matcher?.display ? T(matcher.display) : (idList == "verbosefilters" && match ? match : null)
     const labelBtn =
         idList == "verbosefilters"
-            ? (match ? match : T("S156")) +
+            ? (matchLabel != null ? matchLabel : T("S156")) +
               (text && text.length != 0 ? " [" + text + "]" : "")
-            : val != -1
+            : val != -1 && value[val]
               ? T(name) +
-                (value[val].value.length != 0
+                (value[val].value && value[val].value.length != 0
                     ? " [" + value[val].value + "]"
                     : "")
               : T(name)
@@ -368,10 +372,9 @@ const ItemsList = ({
     return (
         <fieldset
             id={id}
-            class="fieldset-top-separator fieldset-bottom-separator field-group"
+            class={`fieldset-top-separator fieldset-bottom-separator field-group${id === "verbosefilters" ? " fieldset-in-group" : ""}`}
         >
             <legend>
-                {id == "verbosefilters" && <label class="m-2">{T(label)}</label>}
                 {!fixed && (
                     <ButtonImg
                         m2

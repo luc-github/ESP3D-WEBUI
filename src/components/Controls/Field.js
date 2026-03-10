@@ -49,12 +49,7 @@ const Field = (props) => {
                 </FormGroup>
             )
         case "list":
-            return (
-                <Fragment>
-                    <ItemsList {...props} />
-                    <FormGroup {...props} />
-                </Fragment>
-            )
+            return <ItemsList {...props} />
         case "pickup":
             return (
                 <FormGroup {...props}>
@@ -86,7 +81,8 @@ const Field = (props) => {
                 </FormGroup>
             )
         default:
-            //input
+            //input (skip duplicate verbosefilters from target merge - it lives inside the terminal group)
+            if (props.id === "verbosefilters") return null
             return (
                 <FormGroup {...props}>
                     <Input {...props} />

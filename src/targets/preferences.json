@@ -141,23 +141,21 @@
                         "type": "boolean",
                         "label": "S76",
                         "value": true
+                    },
+                    {
+                        "id": "verbosefilters",
+                        "type": "list",
+                        "sorted": false,
+                        "label": "S226",
+                        "value": []
+                    },
+                    {
+                        "id": "autoscroll",
+                        "type": "boolean",
+                        "label": "S77",
+                        "value": true
                     }
                 ]
-            },
-            {
-                "id": "verbosefilters",
-                "type": "list",
-                "sorted": false,
-                "label": "S226",
-                "value": [],
-                "depend": [{ "id": "showterminalpanel", "value": true }]
-            },
-            {
-                "id": "autoscroll",
-                "type": "boolean",
-                "label": "S77",
-                "value": true,
-                "depend": [{ "id": "showterminalpanel", "value": true }]
             }
         ],
         "files": [

@@ -198,6 +198,19 @@ span.input-group-addon {
     max-width: fit-content;
 }
 
+/* When group contains a nested list fieldset (e.g. verbosefilters), use full width so its separator line spans like other sections */
+.field-group-content:has(.fieldset-in-group) {
+    max-width: 100%;
+}
+
+/* Nested fieldset (e.g. verbosefilters inside terminalsettings): cancel group padding so line aligns left, take full width so line spans right */
+.fieldset-in-group {
+    margin-left: -0.5rem;
+    padding-left: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .maxwidth {
     width: 100%;
     max-width: 100%;
