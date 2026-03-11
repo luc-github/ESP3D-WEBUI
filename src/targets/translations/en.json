@@ -204,7 +204,7 @@
     "S200": "Audio feedback",
     "S201": "Invalid user name or password",
     "S202": "Panels order",
-    "S203": "Fixed panels order",
+    "S203": "Defined panels order",
     "S204": "Stream commands",
     "S205": "Abort",
     "S206": "Clear stream error",

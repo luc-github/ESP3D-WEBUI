@@ -788,6 +788,7 @@ const JogPanel = () => {
 const JogPanelElement = {
     id: "jogPanel",
     content: <JogPanel />,
+    hasMenu: true,
     name: "S66",
     icon: "Move",
     show: "showjogpanel",

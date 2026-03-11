@@ -199,6 +199,7 @@ const NotificationsPanelElement = {
     name: "notification",
     icon: "MessageSquare",
     show: "shownotificationspanel",
+    hasMenu: true,
     onstart: "opennotificationsonstart",
     settingid: "notification",
 }

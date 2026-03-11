@@ -299,6 +299,7 @@ const ExtrudersPanelElement = {
     name: "P36",
     icon: "Extruder",
     show: "showextruderspanel",
+    hasMenu: true,
     onstart: "openextrudersonstart",
     settingid: "extruders",
 }

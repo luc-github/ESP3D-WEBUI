@@ -484,6 +484,7 @@ const ChartsPanelElement = {
     id: "chartsPanel",
     content: <ChartsPanel />,
     name: "P56",
+    hasMenu: true,
     icon: "Image",
     show: "showchartspanel",
     onstart: "openchartsonstart",

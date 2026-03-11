@@ -972,6 +972,7 @@ const FilesPanelElement = {
     show: "showfilespanel",
     onstart: "openfilesonstart",
     settingid: "files",
+    hasMenu: true,
 }
 
 export { FilesPanel, FilesPanelElement }
