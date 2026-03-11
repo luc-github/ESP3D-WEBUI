@@ -1,0 +1,235 @@
+{
+    "settings": {
+        "status": [
+            {
+                "id": "showstatuspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openstatusonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showstatuspanel", "value": true }]
+            }
+        ],
+        "probe": [
+            {
+                "id": "showprobepanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openprobeonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            },
+            {
+                "id": "probefeedrate",
+                "type": "number",
+                "label": "CN9",
+                "append": "CN1",
+                "value": 20,
+                "min": 1,
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            },
+            {
+                "id": "maxprobe",
+                "type": "number",
+                "label": "CN93",
+                "value": 15,
+                "append": "CN96",
+                "min": 0,
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            },
+            {
+                "id": "probethickness",
+                "type": "number",
+                "label": "CN94",
+                "value": "1",
+                "step": "0.001",
+                "append": "CN96",
+                "min": 0,
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            },
+            {
+                "id": "probepostcommand",
+                "type": "text",
+                "label": "CN95",
+                "value": "G10 L20 P0 #selected_axis##probe_thickness#",
+                "help": "S97",
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            }
+        ],
+        "laser": [
+            {
+                "id": "showlaserpanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openlaseronstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showlaserpanel", "value": true }]
+            },
+            {
+                "id": "laser",
+                "type": "group",
+                "label": "CN90",
+                "depend": [{ "id": "showlaserpanel", "value": true }],
+                "value": [
+                    {
+                        "id": "lasertest",
+                        "type": "number",
+                        "label": "CN85",
+                        "value": 10,
+                        "append": "S114",
+                        "min": 1
+                    },
+                    {
+                        "id": "lasertestprecent",
+                        "type": "number",
+                        "label": "CN89",
+                        "value": 20,
+                        "append": "%",
+                        "min": 0,
+                        "max": 100
+                    }
+                ]
+            },
+            {
+                "id": "lasermax",
+                "type": "number",
+                "label": "CN84",
+                "value": 1000,
+                "min": 1,
+                "depend": [{ "id": "showlaserpanel", "value": true }]
+            }
+        ],
+        "spindle": [
+            {
+                "id": "showspindlepanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openspindleonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showspindlepanel", "value": true }]
+            },
+            {
+                "id": "spindlespeed",
+                "type": "number",
+                "label": "CN59",
+                "value": 1000,
+                "min": 0,
+                "depend": [{ "id": "showspindlepanel", "value": true }]
+            },
+            {
+                "id": "showM4ctrls",
+                "type": "boolean",
+                "label": "CN70",
+                "value": true,
+                "depend": [{ "id": "showspindlepanel", "value": true }]
+            },
+            {
+                "id": "showCoolantctrls",
+                "type": "boolean",
+                "label": "CN72",
+                "value": true,
+                "depend": [{ "id": "showspindlepanel", "value": true }]
+            },
+            {
+                "id": "showMistctrls",
+                "type": "boolean",
+                "label": "CN73",
+                "value": true,
+                "depend": [
+                    {
+                        "id": "showCoolantctrls",
+                        "value": true
+                    },
+                    { "id": "showspindlepanel", "value": true }
+                ]
+            },
+            {
+                "id": "showM7ctrls",
+                "type": "boolean",
+                "label": "CN71",
+                "value": false,
+                "depend": [
+                    {
+                        "id": "showMistctrls",
+                        "value": true
+                    },
+                    { "id": "showspindlepanel", "value": true }
+                ]
+            }
+        ],
+        "overrides": [
+            {
+                "id": "showoverridespanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openoverridesonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showoverridespanel", "value": true }]
+            }
+        ],
+        "jog": [
+            {
+                "id": "home",
+                "type": "group",
+                "label": "CN17",
+                "depend": [{ "id": "showjogpanel", "value": true }],
+                "value": [
+                    {
+                        "id": "homesingleaxis",
+                        "type": "boolean",
+                        "label": "CN16",
+                        "value": false
+                    },
+                    {
+                        "id": "homecmd",
+                        "type": "text",
+                        "label": "CN10",
+                        "value": "$H#",
+                        "help": "CN11"
+                    }
+                ]
+            },
+            {
+                "id": "zerocmd",
+                "type": "text",
+                "label": "CN19",
+                "value": "G10 L20 P0 #",
+                "help": "CN11",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "jogstopcmd",
+                "type": "text",
+                "label": "CN23",
+                "value": "#JOGCANCEL#",
+                "help": "S97",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            }
+        ]
+    }
+}

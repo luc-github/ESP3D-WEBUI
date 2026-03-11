@@ -50,6 +50,12 @@
                 ]
             },
             {
+                "id": "showinformationpage",
+                "type": "boolean",
+                "label": "S196",
+                "value": true
+            },
+            {
                 "id": "showmachinesettings",
                 "type": "boolean",
                 "label": "S197",
@@ -135,13 +141,6 @@
                         "type": "boolean",
                         "label": "S76",
                         "value": true
-                    },
-                    {
-                        "id": "verbosefilters",
-                        "type": "list",
-                        "sorted": false,
-                        "label": "S226",
-                        "value": []
                     },
                     {
                         "id": "autoscroll",

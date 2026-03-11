@@ -156,10 +156,13 @@ const TemperatureInputControl = ({ tool, index, size }) => {
                 onSuccess: (result) => {},
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
+                    console.log(error)
                 },
             }
         )
     }
+    //we won't handle modified state just handle error
+    //too many user cases where changing value to show button is not suitable
     const [validation, setvalidation] = useState({
         message: null,
         valid: true,
@@ -270,7 +273,6 @@ const TemperatureInputControl = ({ tool, index, size }) => {
 
 const TemperaturesPanel = () => {
     const { temperatures } = useTargetContext()
-    const { toasts } = useUiContext()
     const { createNewRequest } = useHttpFn
     const sendCommand = (command) => {
         const cmds = command.split(";")
@@ -282,12 +284,14 @@ const TemperaturesPanel = () => {
                     onSuccess: (result) => {},
                     onFail: (error) => {
                         toasts.addToast({ content: error, type: "error" })
+                        console.log(error)
                     },
                 }
             )
         })
     }
     const id = "temperaturesPanel"
+    console.log(id)
     let hasTemp = false
     Object.keys(temperatures).forEach((tool) => {
         if (temperatures[tool].length != 0) hasTemp = true
@@ -326,8 +330,8 @@ const TemperaturesPanel = () => {
                             return (
                                 <Fragment>
                                     {temperatures[tool].map((temp, index) => {
-return (
-                                        <TemperatureInputControl
+                                        return (
+                                            <TemperatureInputControl
                                                 tool={tool}
                                                 index={index}
                                                 size={temperatures[tool].length}

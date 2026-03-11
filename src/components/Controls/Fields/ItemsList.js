@@ -21,7 +21,7 @@ import { useState, useEffect } from "preact/hooks"
 import { ButtonImg } from "../../Controls"
 import { T } from "../../Translations"
 import { iconsFeather } from "../../Images"
-import { iconsTarget, verboseMatchers } from "../../../targets"
+import { iconsTarget } from "../../../targets"
 import {
     generateUID,
     generateDependIds,
@@ -41,7 +41,6 @@ import {
 import defaultPanel from "./def_panel.json"
 import defaultMacro from "./def_macro.json"
 import defaultPolling from "./def_polling.json"
-import defaultVerboseFilter from "./def_verbose_filter.json"
 
 /*
  * Local const
@@ -61,17 +60,11 @@ const ItemControl = ({
     sorted,
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    const { id, editionMode, ...rest } = itemData
-    const value = Array.isArray(itemData.value) ? itemData.value : []
+    const { id, value, editionMode, ...rest } = itemData
     const indexIcon = value.findIndex((element) => element.id == id + "-icon")
     const indexName = value.findIndex((element) => element.id == id + "-name")
-    const indexMatch = value.findIndex((element) => element.id == id + "-match")
-    const indexText = value.findIndex((element) => element.id == id + "-text")
-    const getVal = (fallbackIdx, idx) => { const el = value[idx !== -1 ? idx : fallbackIdx]; return el && el.value !== undefined ? el.value : null }
-    const icon = getVal(0, indexIcon)
-    const name = getVal(0, indexName)
-    const match = getVal(0, indexMatch)
-    const text = getVal(0, indexText)
+    const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
+    const name = value ? value[indexName != -1 ? indexName : 0].value : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
 
     const onEdit = (state) => {
@@ -121,18 +114,13 @@ const ItemControl = ({
         return e.name == "key"
     })
 
-    const matcher = idList == "verbosefilters" && match ? verboseMatchers?.find((m) => m.id === match) : null
-    const matchLabel = matcher?.display ? T(matcher.display) : (idList == "verbosefilters" && match ? match : null)
     const labelBtn =
-        idList == "verbosefilters"
-            ? (matchLabel != null ? matchLabel : T("S156")) +
-              (text && text.length != 0 ? " [" + text + "]" : "")
-            : val != -1 && value[val]
-              ? T(name) +
-                (value[val].value && value[val].value.length != 0
-                    ? " [" + value[val].value + "]"
-                    : "")
-              : T(name)
+        val != -1
+            ? T(name) +
+              (value[val].value.length != 0
+                  ? " [" + value[val].value + "]"
+                  : "")
+            : T(name)
 
     return (
         <Fragment>
@@ -336,15 +324,11 @@ const ItemsList = ({
                     ? defaultMacro
                     : id == "pollingcmds"
                       ? defaultPolling
-                      : id == "verbosefilters"
-                        ? defaultVerboseFilter
                       : defaultPanel
             )
         )
         newItem.id = generateUID()
-        if (typeof newItem.name !== "undefined") {
-            newItem.name += " " + newItem.id
-        }
+        newItem.name += " " + newItem.id
         const formatedNewItem = formatItem(newItem, -1, id)
         formatedNewItem.editionMode = true
         formatedNewItem.newItem = true
@@ -372,7 +356,7 @@ const ItemsList = ({
     return (
         <fieldset
             id={id}
-            class={`fieldset-top-separator fieldset-bottom-separator field-group${id === "verbosefilters" ? " fieldset-in-group" : ""}`}
+            class="fieldset-top-separator fieldset-bottom-separator field-group"
         >
             <legend>
                 {!fixed && (
@@ -383,8 +367,6 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
-                                  : id == "verbosefilters"
-                                    ? T("S227")
                                   : T("S156")
                         }
                         tooltip
@@ -393,8 +375,6 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
-                                  : id == "verbosefilters"
-                                    ? T("S227")
                                   : T("S156")
                         }
                         icon={<Plus />}

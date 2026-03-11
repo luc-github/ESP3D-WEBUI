@@ -25,6 +25,7 @@ import { gcode_parser_modes } from "./gcode_parser_modes"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings, machineSettings } from "./MachineSettings"
 import {
+    InformationsControls,
     QuickButtonsBar,
     BackgroundContainer,
 } from "./Controls"
@@ -76,13 +77,6 @@ const eventsList = {
             })
     },
 }
-const verboseMatchers = [
-    { id: "startswith", display: "S230" },
-    { id: "endswith", display: "S231" },
-    { id: "contain", display: "S232" },
-    { id: "regex", display: "S233" },
-    { id: "report", display: "S235" },
-]
 
 export {
     MachineSettings,
@@ -99,9 +93,9 @@ export {
     useTargetContext,
     useTargetContextFn,
     webUIbuild,
+    InformationsControls,
     variablesList,
     eventsList,
-    verboseMatchers,
     AppLogo,
     WebUILogo,
     QuickButtonsBar,

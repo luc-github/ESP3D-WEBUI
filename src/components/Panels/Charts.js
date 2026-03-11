@@ -23,10 +23,8 @@ import { useRef, useEffect } from "preact/hooks"
 import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
+import { SmoothieChart, TimeSeries } from "smoothie"
 import { Menu as PanelMenu } from "./"
-
-// Lazy-loaded when Charts panel mounts to keep it out of the initial bundle
-let smoothieModule = null
 
 /*
  * Local const
@@ -220,8 +218,6 @@ const colorIndex = (chart, tool, index) => {
 }
 
 const createTimeSeries = (chart, tool, index) => {
-    if (!smoothieModule) return
-    const { TimeSeries } = smoothieModule
     chart.series[tool][index] = new TimeSeries()
     chart.chart.addTimeSeries(chart.series[tool][index], {
         lineWidth: 1,
@@ -231,8 +227,6 @@ const createTimeSeries = (chart, tool, index) => {
 
 const /* Creating the charts. */
     buildCharts = (index, temperaturesList, delay) => {
-        if (!smoothieModule) return
-        const { SmoothieChart } = smoothieModule
         //we parse each chart
         const chart = charts[index]
         //check is visible
@@ -275,7 +269,6 @@ const /* Creating the charts. */
     }
 
 const updateCharts = (index, temperatures) => {
-    if (!smoothieModule) return
     const chart = charts[index]
     //check is visible
     if (isChartVisible(index)) {
@@ -360,7 +353,7 @@ const ChartsPanel = () => {
         useTargetContext()
     charts[0].ref = useRef(null)
     charts[1].ref = useRef(null)
-    charts[2].ref = useRef(null)
+    charts[1].ref = useRef(null)
     const id = "chartsPanel"
     const clearCharts = () => {
         useUiContextFn.haptic()
@@ -385,14 +378,13 @@ const ChartsPanel = () => {
             onClick: clearCharts,
         },
     ]
+    console.log(id)
+
     useEffect(() => {
         const delay = useUiContextFn.getValue("pollingrefresh")
-        import("smoothie").then((m) => {
-            smoothieModule = m
-            buildCharts(0, temperaturesList.current, delay)
-            buildCharts(1, temperaturesList.current, delay)
-            buildCharts(2, sensorList.current, delay)
-        })
+        buildCharts(0, temperaturesList.current, delay)
+        buildCharts(1, temperaturesList.current, delay)
+        buildCharts(2, sensorList.current, delay)
     }, [])
     useEffect(() => {
         updateCharts(0, temperatures)
@@ -484,7 +476,6 @@ const ChartsPanelElement = {
     id: "chartsPanel",
     content: <ChartsPanel />,
     name: "P56",
-    hasMenu: true,
     icon: "Image",
     show: "showchartspanel",
     onstart: "openchartsonstart",

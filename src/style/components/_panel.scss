@@ -22,6 +22,9 @@
     height: 550px;
     overflow-y: auto !important;
     overflow-x: hidden !important;
+}
+
+.panel {
     background-color: #fff;
     color: #000;
 }
@@ -60,52 +63,4 @@
     align-items: center;
     height: 100%;
     width: 100%;
-}
-
-body.panel-dragging {
-    cursor: none !important;
-}
-
-.panel-drag-wrapper {
-    position: relative;
-    .panel-drag-handle {
-        position: absolute;
-        top: 0.15rem;
-        right: 3rem; /* menu slot when panel has no drop menu, gap from fullscreen */
-        left: auto;
-        z-index: 10;
-        height: 1.25rem;
-        min-height: 1.25rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: move;
-        padding: 0 0.15rem;
-        border-radius: $border-radius;
-        color: #5755d9;
-        opacity: 0.85;
-        box-sizing: border-box;
-        background: transparent;
-        &:hover {
-            opacity: 1;
-            color: white !important;
-            background-color: blue !important;
-        }
-        &:active {
-            cursor: move;
-            color: white !important;
-            background-color: blue !important;
-        }
-    }
-    &.panel-has-menu .panel-drag-handle {
-        right: 4.5rem; /* left of drop menu button */
-    }
-    &.panel-drop-indicator-before {
-        border-left: 4px solid #5755d9;
-        margin-left: -4px;
-    }
-    &.panel-drop-indicator-after {
-        border-right: 4px solid #5755d9;
-        margin-right: -4px;
-    }
 }

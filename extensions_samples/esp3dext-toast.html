@@ -1,0 +1,28 @@
+<script type="application/json" id="esp3dext-manifest">
+{
+  "owner": "ESP3D",
+  "version": "1.0.0",
+  "github": "https://github.com/luc-github/ESP3D-WEBUI",
+  "description": "Shows toast notifications (error, success, and default).",
+  "name": "Toast",
+  "icon": "Bell",
+  "target": "panel",
+  "refreshtime": "0",
+  "supportedVersion": "3.*",
+  "targetSystem": "*"
+}
+</script>
+<script type="text/javascript">
+  function sendMessage(msg){ 
+      window.parent.postMessage(msg, '*');
+  }
+    
+</script>
+
+<div class="container">
+    <button class="btn m-1" onclick="sendMessage({type:'toast', target:'webui', content:{text:'This is an error', type:'error'}});">Error Toast</button>
+    <button class="btn m-1" onclick="sendMessage({type:'toast', target:'webui', content:{text:'This is a success', type:'success'}});">Success Toast</button>
+    <button class="btn m-1" onclick="sendMessage({type:'toast', target:'webui', content:{text:'This is a toast', type:'default'}});">Classic Toast</button>
+    
+</div>
+

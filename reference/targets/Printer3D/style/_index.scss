@@ -1,0 +1,320 @@
+text.jog {
+    font-weight: 900;
+    font-size: 11px;
+    fill: black;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+text.home {
+    font-weight: 600;
+    font-size: 16px;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+text.scl {
+    stroke: white;
+    fill: white;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.charts-subcontainer,
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.chart-legend {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.legend-name {
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+.charts-subcontainer {
+    justify-content: center;
+}
+
+.chart {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+text.posscl {
+    font-weight: 200;
+    font-size: 8px;
+    stroke: black;
+    fill: black;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+circle.cross {
+    stroke: black;
+    fill-opacity: 0;
+    stroke-width: 2;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+rect.movez {
+    fill: #f06565;
+    fill-opacity: 1;
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+
+rect.movez:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
+circle.std {
+    fill: #f06565;
+    fill-opacity: 1;
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+
+circle.std:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
+circle.scl {
+    fill: black;
+    fill-opacity: 0.5;
+    stroke: red;
+    stroke-width: 3;
+    filter: url(#f1);
+    pointer-events: none;
+}
+
+path.home {
+    stroke: black;
+}
+
+path.std {
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+
+.pressedbutton {
+    fill: #ff7c26;
+    stroke: black;
+    stroke-width: 1;
+    cursor: pointer;
+}
+
+rect.std {
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+rect.std:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
+path.std:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
+.H-100 {
+    height: 100%;
+}
+
+.W-100 {
+    width: 100%;
+}
+
+.extruders-container,
+.temperatures-container,
+.jog-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.status-ctrls,
+.extra-ctrls,
+.temperatures-ctrls,
+.jog-positions-ctrls {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.extra-ctrls,
+.temperatures-ctrls {
+    flex-wrap: wrap;
+}
+
+.status-control,
+.extra-control,
+.temperatures-ctrl,
+.jog-position-ctrl {
+    display: flex;
+    flex-direction: column;
+    min-width: 3rem;
+    border: 0.05rem solid #dadee4;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.status-control-header,
+.extra-control-header,
+.temperatures-header,
+.jog-position-header {
+    border-radius: 5px 5px 0px 0px;
+    border-bottom: 0.05rem solid #dadee4;
+    color: #5755d9;
+    background-color: #f1f1fc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 70%;
+    width: 100%;
+}
+
+.status-control-value,
+.extra-control-value,
+.temperatures-value,
+.jog-position-value {
+    text-align: center;
+    color: #5755d9;
+    font-size: 80%;
+    width: 100%;
+    height: 100%;
+}
+.status-control-value {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.temperatures-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.temperatures-target {
+    text-align: center;
+    color: #ffffff;
+    background-color: #ff5160;
+    border-radius: 0px 0px 5px 5px;
+    font-size: 80%;
+    width: 100%;
+}
+
+.jog-buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 0.05rem solid #dadee4;
+    border-radius: 5px;
+}
+
+.jog-buttons-main-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.jog-distance-selector-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.jog-distance-selector-header {
+    border: 0.05rem solid #5755d9 !important;
+    border-radius: 5px 5px 0px 0px;
+    color: #5755d9;
+    background-color: #f1f1fc;
+}
+
+.jog-svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 330px;
+}
+.jog-svg-container svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.temperature-extra-buttons-container,
+.jog-extra-buttons-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    margin-right:8px;
+}
+
+.print-buttons-container,
+.extra-ctrls-container,
+.extruder-ctrls-container,
+.temperature-ctrls-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.print-buttons-container,
+.extra-ctrls-container {
+    justify-content: space-around;
+}
+
+.extra-ctrls-container2,
+.temperature-ctrls-container2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.extruder-ctrl-name,
+.temperature-ctrl-name {
+    color: #5755d9;
+    flex-grow: 1;
+}
+
+quick-buttons-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+legend label {
+    font-size: 0.8rem;
+}

@@ -19,8 +19,6 @@ importHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { verboseMatchers } from "../../targets"
-
 /**
  * Formats an item data object.
  *
@@ -153,20 +151,6 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S139"
                     newItem.min = "2"
                     break
-                case "match":
-                    newItem.type = "select"
-                    newItem.label = "S228"
-                    newItem.options = verboseMatchers
-                        ? verboseMatchers.map((matcher) => ({
-                              label: matcher.display,
-                              value: matcher.id,
-                          }))
-                        : []
-                    break
-                case "text":
-                    newItem.type = "text"
-                    newItem.label = "S229"
-                    break
                 case "action":
                     newItem.type = "text"
                     newItem.label = "S159"
@@ -209,16 +193,8 @@ function formatPreferences(section) {
         if (Array.isArray(section[key])) {
             for (let index = 0; index < section[key].length; index++) {
                 if (section[key][index].type == "group") {
-                    section[key][index].value.forEach((element) => {
-                        if (element.type == "list") {
-                            element.nb = (element.value && element.value.length) || 0
-                            element.value = formatItemsList(
-                                [...(element.value || [])],
-                                element.id
-                            )
-                        } else {
-                            element.initial = element.value
-                        }
+                    section[key][index].value.forEach((element, index) => {
+                        element.initial = element.value
                     })
                 } else if (section[key][index].type == "list") {
                     section[key][index].nb = section[key][index].value.length

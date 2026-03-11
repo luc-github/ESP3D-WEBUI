@@ -24,6 +24,7 @@ import { processor } from "./processor"
 import { defaultPanelsList } from "./panels"
 import { MachineSettings, machineSettings } from "./MachineSettings"
 import {
+    InformationsControls,
     QuickButtonsBar,
     MixedExtrudersControl,
     BackgroundContainer,
@@ -72,15 +73,6 @@ const eventsList = {
             })
     },
 }
-const verboseMatchers = [
-    { id: "startswith", display: "S230" },
-    { id: "endswith", display: "S231" },
-    { id: "contain", display: "S232" },
-    { id: "regex", display: "S233" },
-    { id: "positions", display: "S234" },
-    { id: "report", display: "S235" },
-    { id: "temperatures", display: "S236" },
-]
 
 export {
     MachineSettings,
@@ -97,9 +89,9 @@ export {
     useTargetContext,
     useTargetContextFn,
     webUIbuild,
+    InformationsControls,
     variablesList,
     eventsList,
-    verboseMatchers,
     AppLogo,
     WebUILogo,
     QuickButtonsBar,

@@ -1800,7 +1800,6 @@ const JogPanelElement = {
     name: "S66",
     icon: "Move",
     show: "showjogpanel",
-    hasMenu: true,
     onstart: "openjogonstart",
     settingid: "jog",
 }

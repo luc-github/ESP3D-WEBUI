@@ -59,23 +59,8 @@ function mergeJSON(o1, o2) {
                 let i = tempNewObj.findIndex(
                     (element) => element.id == o2[index].id
                 )
-                if (i == -1) {
-                    // verbosefilters may live inside a group (e.g. terminalsettings); merge there instead of adding top-level duplicate
-                    if (o2[index].id === "verbosefilters") {
-                        const groupIdx = tempNewObj.findIndex(
-                            (el) => el.type === "group" && Array.isArray(el.value) && el.value.some((inner) => inner.id === "verbosefilters")
-                        )
-                        if (groupIdx !== -1) {
-                            const innerIdx = tempNewObj[groupIdx].value.findIndex((inner) => inner.id === "verbosefilters")
-                            if (innerIdx !== -1 && Array.isArray(o2[index].value)) {
-                                tempNewObj[groupIdx].value[innerIdx].value = mergeJSON(
-                                    tempNewObj[groupIdx].value[innerIdx].value || [],
-                                    o2[index].value
-                                )
-                            }
-                        } else tempNewObj.push(o2[index])
-                    } else tempNewObj.push(o2[index])
-                } else {
+                if (i == -1) tempNewObj.push(o2[index])
+                else {
                     if (Array.isArray(tempNewObj[i].value)) {
                         //need to check if id is already in array
                         for (let v in o2[index].value) {

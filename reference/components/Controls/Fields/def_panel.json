@@ -1,0 +1,9 @@
+{
+    "id": "id",
+    "name": "Panel",
+    "icon": "Meh",
+    "target": "page",
+    "source": "",
+    "type": "image",
+    "refreshtime": "0"
+}

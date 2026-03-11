@@ -1,0 +1,62 @@
+.menu-entry {
+}
+
+.menu-panel-item {
+    display: flex;
+    justify-content: space-between;
+}
+.text-menu-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 5px;
+}
+
+.menu-panel-item .feather-icon-container {
+    vertical-align: middle;
+    margin-top: 0.2rem;
+}
+
+.menu-item {
+    color: #5755d9;
+}
+
+.menu .menu-item > .menu-entry {
+    border-radius: 0.2rem;
+    color: inherit;
+    display: block;
+    margin: 0 -0.4rem;
+    padding: 0.2rem 0.4rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.menu .menu-item > .menu-entry:focus,
+.menu .menu-item > .menu-entry:hover {
+    background: #f1f1fc;
+    color: #5755d9;
+}
+
+.menu-container,
+.information-container {
+    flex: 0 1 auto;
+    z-index: 10000;
+    border: 0px !important;
+}
+
+.menu-item-panel{
+    pointer-events: none!important;
+}
+
+.menu .menu-item > .menu-entry:active,
+.menu .menu-item > .menu-entry.active {
+    background: inherit;
+    color: inherit;
+}
+
+.panel .menu-item:active,
+.panel .menu-item.active {
+    background: #5755d9;
+    color: #f1f1fc;
+    border-radius: 0.2rem;
+}

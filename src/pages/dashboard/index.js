@@ -21,7 +21,7 @@ import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "../../components/Translations"
-import { List, CheckCircle, Circle, HelpCircle, Anchor } from "preact-feather"
+import { List, CheckCircle, Circle, HelpCircle } from "preact-feather"
 import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
@@ -111,6 +111,7 @@ const keyboardEventHandlerDown = (e) => {
 let intialisationDone = false
 
 const Dashboard = () => {
+    console.log("Dashboard")
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { modals, panels, uisettings, shortcuts } = useUiContext()
     const menuPanelsList = useRef()
@@ -118,10 +119,6 @@ const Dashboard = () => {
     const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
         shortcuts.enabled
     )
-    const [dropIndicator, setDropIndicator] = useState({
-        index: null,
-        side: null,
-    }) // side: 'before' | 'after'
 
     //Show keyboard mapped keys
     const showKeyboarHelp = () => {
@@ -429,122 +426,9 @@ const Dashboard = () => {
                 )}
                 <QuickButtonsBar />
             </div>
-            <div
-                class="panels-container m-2"
-                onDragLeave={(e) => {
-                    if (
-                        !e.relatedTarget ||
-                        !e.currentTarget.contains(e.relatedTarget)
-                    )
-                        setDropIndicator({ index: null, side: null })
-                }}
-            >
-                {panels.visibles.map((panel, index) => {
-                    if (!isfixed) {
-                        return <Fragment key={panel.id}>{panel.content}</Fragment>
-                    }
-                    const handleDragStart = (e) => {
-                        e.dataTransfer.setData("text/plain", String(index))
-                        e.dataTransfer.effectAllowed = "move"
-                        useUiContextFn.haptic()
-                        document.body.classList.add("panel-dragging")
-                        const img = new Image()
-                        img.src =
-                            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                        e.dataTransfer.setDragImage(img, 0, 0)
-                    }
-                    const handleDragOver = (e) => {
-                        e.preventDefault()
-                        e.dataTransfer.dropEffect = "move"
-                        const rect = e.currentTarget.getBoundingClientRect()
-                        const side =
-                            e.clientX < rect.left + rect.width / 2
-                                ? "before"
-                                : "after"
-                        setDropIndicator({ index, side })
-                    }
-                    const handleDragEnd = () => {
-                        document.body.classList.remove("panel-dragging")
-                        setDropIndicator({ index: null, side: null })
-                    }
-                    const handleDrop = (e) => {
-                        e.preventDefault()
-                        const dragIndex = parseInt(
-                            e.dataTransfer.getData("text/plain"),
-                            10
-                        )
-                        const { index: dropIndex, side: dropSide } = dropIndicator
-                        setDropIndicator({ index: null, side: null })
-                        if (dropIndex == null || dropSide == null) return
-                        let insertIndex =
-                            dropSide === "before" ? dropIndex : dropIndex + 1
-                        if (dragIndex < insertIndex) insertIndex -= 1
-                        if (dragIndex === insertIndex) return
-                        const visibles = [...panels.visibles]
-                        const [moved] = visibles.splice(dragIndex, 1)
-                        visibles.splice(insertIndex, 0, moved)
-                        const newFixedPanels = visibles.map((p, i) => ({
-                            index: i,
-                            id: p.settingid,
-                        }))
-                        panels.setPanelsOrder(newFixedPanels)
-                        panels.setVisibles(visibles)
-                        fixedPanels.length = 0
-                        newFixedPanels.forEach((p) => fixedPanels.push(p))
-                        const next = JSON.parse(
-                            JSON.stringify(uisettings.current)
-                        )
-                        const el = useUiContextFn.getElement(
-                            "panelsorder",
-                            next
-                        )
-                        if (el && Array.isArray(el.value)) {
-                            const reordered = visibles
-                                .map((p) =>
-                                    el.value.find((item) => {
-                                        const nameField =
-                                            item.value &&
-                                            item.value.find(
-                                                (s) => s.name === "name"
-                                            )
-                                        return (
-                                            nameField &&
-                                            nameField.value === p.settingid
-                                        )
-                                    })
-                                )
-                                .filter(Boolean)
-                            reordered.forEach((item, i) => {
-                                item.index = i
-                            })
-                            el.value = reordered
-                            el.nb = reordered.length
-                            uisettings.set(next)
-                        }
-                    }
-                    return (
-                        <div
-                            key={panel.id}
-                            class={`panel-drag-wrapper${panel.hasMenu ? " panel-has-menu" : ""}${dropIndicator.index === index ? ` panel-drop-indicator-${dropIndicator.side}` : ""}`}
-                            draggable={true}
-                            onDragStart={handleDragStart}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                            onDragEnd={handleDragEnd}
-                            data-panel-index={index}
-                        >
-                            <span
-                                class="panel-drag-handle tooltip tooltip-bottom"
-                                data-tooltip={T("S202")}
-                                draggable={true}
-                                onDragStart={handleDragStart}
-                                aria-label={T("S202")}
-                            >
-                                <Anchor size="1rem" />
-                            </span>
-                            {panel.content}
-                        </div>
-                    )
+            <div class="panels-container m-2">
+                {panels.visibles.map((panel) => {
+                    return <Fragment>{panel.content}</Fragment>
                 })}
             </div>
         </div>

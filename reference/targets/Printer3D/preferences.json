@@ -1,0 +1,903 @@
+{
+    "settings": {
+        "status": [
+            {
+                "id": "showstatuspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openstatusonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showstatuspanel", "value": true }]
+            }
+        ],
+        "temperatures": [
+            {
+                "id": "showtemperaturespanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "opentemperaturesonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "showextruderctrls",
+                "type": "boolean",
+                "label": "P82",
+                "value": true,
+                "depend": [{ "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "extrudercontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showextruderctrls", "value": true }, { "id": "showtemperaturespanel", "value": true }],
+                "value": [
+                    {
+                        "id": "extrudermax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "280",
+                        "append": "P72"
+                    },
+                    {
+                        "id": "extruderpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "190;220;230",
+                        "append": "P72",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatextruder",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M104 S$ T#",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showbedctrls",
+                "type": "boolean",
+                "label": "P83",
+                "value": true,
+                "depend": [ { "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "bedcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showbedctrls", "value": true }, { "id": "showtemperaturespanel", "value": true }],
+                "value": [
+                    {
+                        "id": "bedmax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "140",
+                        "append": "P72",
+                        "min": "1"
+                    },
+                    {
+                        "id": "bedpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "50;90;110",
+                        "append": "P72",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatbed",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M140 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showchamberctrls",
+                "type": "boolean",
+                "label": "P84",
+                "value": true,
+                "depend": [{ "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "chambercontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showchamberctrls", "value": true }, { "id": "showtemperaturespanel", "value": true }],
+                "value": [
+                    {
+                        "id": "chambermax",
+                        "type": "number",
+                        "label": "P48",
+                        "value": "140",
+                        "append": "P72"
+                    },
+                    {
+                        "id": "chamberpreheat",
+                        "type": "text",
+                        "label": "P104",
+                        "append": "P72",
+                        "value": "50;90;110",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "heatchamber",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M141 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showprobectrls",
+                "type": "boolean",
+                "label": "P85",
+                "value": true,
+                "depend": [ { "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "showredundantctrls",
+                "type": "boolean",
+                "label": "P86",
+                "value": true,
+                "depend": [ { "id": "showtemperaturespanel", "value": true }]
+            },
+            {
+                "id": "showboardctrls",
+                "type": "boolean",
+                "label": "P87",
+                "value": true,
+                "depend": [ { "id": "showtemperaturespanel", "value": true }]
+            }
+        ],
+        "charts": [
+            {
+                "id": "showchartspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openchartsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showextruderchart",
+                "type": "boolean",
+                "label": "P82",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showredundantchart",
+                "type": "boolean",
+                "label": "P86",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showbedchart",
+                "type": "boolean",
+                "label": "P83",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showchamberchart",
+                "type": "boolean",
+                "label": "P84",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showprobechart",
+                "type": "boolean",
+                "label": "P85",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showboardchart",
+                "type": "boolean",
+                "label": "P87",
+                "value": true,
+                "depend": [{ "id": "showchartspanel", "value": true }]
+            },
+            {
+                "id": "showsensorchart",
+                "type": "boolean",
+                "label": "P88",
+                "value": true,
+                "depend": [{ "id": "showsensorctrls", "value": true } , { "id": "showchartspanel", "value": true }]
+    
+            }
+        ],
+        "extruders": [
+            {
+                "id": "showextruderspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openextrudersonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showextruderspanel", "value": true }]
+            },
+            {
+                "id": "efeedrate",
+                "type": "number",
+                "label": "P50",
+                "append": "P14",
+                "value": "400",
+                "min": "1",
+                "depend": [{ "id": "showextruderspanel", "value": true }]
+            },
+            {
+                "id": "extruderdistance",
+                "type": "text",
+                "label": "P55",
+                "value": "5;10;100",
+                "append": "P16",
+                "help": "S97",
+                "depend": [{ "id": "showextruderspanel", "value": true }]
+            }
+        ],
+
+        "files": [
+            {
+                "id": "filesfilter",
+                "type": "text",
+                "label": "S96",
+                "value": "g;G;gco;GCO;gcode;GCODE",
+                "help": "S97",
+                "depend": [{ "id": "showfilespanel", "value": true }]
+            },
+            {
+                "id": "flashfsgroup",
+                "type": "group",
+                "label": "S137",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "flashfs",
+                        "type": "boolean",
+                        "label": "S63",
+                        "value": true
+                    },
+                    {
+                        "id": "sort_flashfs_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "flashfs", "value": true }]
+                    }
+                ]
+            },
+
+            {
+                "id": "tftfs",
+                "type": "select",
+                "label": "S219",
+                "value": "none",
+                "options": [
+                    { "value": "none", "label": "none" },
+                    { "value": "btt", "label": "S221" },
+                    { "value": "mks", "label": "S220" }
+                ],
+                "depend": [
+                    { "connection_id": "Screen", "value": "=='none'" },
+                    { "connection_id": "FWTargetID", "value": "!='30'" },
+                    { "id": "showfilespanel", "value": true }
+                ]
+            },
+            {
+                "id": "tftsdgroup",
+                "type": "group",
+                "label": "S188",
+                "depend": [
+                    { "id": "tftfs", "notvalue": "none" },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "tftsd",
+                        "type": "boolean",
+                        "label": "S63",
+                        "value": false,
+                        "depend": [
+                            { "id": "tftfs", "notvalue": "none" },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttsdlistcmd",
+                        "type": "text",
+                        "label": "P117",
+                        "value": "M20 SD:#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftsd",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttsdplaycmd",
+                        "type": "text",
+                        "label": "P120",
+                        "value": "M23 SD:#;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftsd",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttsddeletecmd",
+                        "type": "text",
+                        "label": "P123",
+                        "value": "M30 SD:#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftsd",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftmkssdlistcmd",
+                        "type": "text",
+                        "label": "P117",
+                        "value": "M998 1;M20 1:#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftsd",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "mks"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftmkssdplaycmd",
+                        "type": "text",
+                        "label": "P120",
+                        "value": "M998 1;M23 1:#;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftsd",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "mks"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sort_tftsd_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "tftsd", "value": true }]
+                    }
+                ]
+            },
+            {
+                "id": "tftusbgroup",
+                "type": "group",
+                "label": "S189",
+                "depend": [
+                    { "id": "tftfs", "notvalue": "none" },
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "tftusb",
+                        "type": "boolean",
+                        "label": "S63",
+                        "value": false,
+                        "depend": [
+                            { "id": "tftfs", "notvalue": "none" },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttusblistcmd",
+                        "type": "text",
+                        "label": "P118",
+                        "value": "M20 U:#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftusb",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftmksusblistcmd",
+                        "type": "text",
+                        "label": "P117",
+                        "value": "M998 0;M23 0:#;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftusb",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "mks"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttusbplaycmd",
+                        "type": "text",
+                        "label": "P121",
+                        "value": "M23 U:#;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftusb",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftbttusbdeletecmd",
+                        "type": "text",
+                        "label": "P124",
+                        "value": "M30 U:#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftusb",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "btt"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "tftmskusbplaycmd",
+                        "type": "text",
+                        "label": "P121",
+                        "value": "M998 0;M23 0:#;M24",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "tftusb",
+                                "value": true
+                            },
+                            {
+                                "id": "tftfs",
+                                "value": "mks"
+                            },
+                            {
+                                "id": "showfilespanel",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sort_tftusb_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "tftusb", "value": true }]
+                    }
+                ]
+            }
+        ],
+        "jog": [
+            {
+                "id": "swap_x_y",
+                "type": "boolean",
+                "label": "P116",
+                "value": false,
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "invert_x",
+                "type": "boolean",
+                "label": "P113",
+                "value": false,
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "invert_y",
+                "type": "boolean",
+                "label": "P114",
+                "value": false,
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "invert_z",
+                "type": "boolean",
+                "label": "P115",
+                "value": false,
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "xyfeedrate",
+                "type": "number",
+                "label": "P10",
+                "min": "1",
+                "append": "P14",
+                "value": "1000",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "zfeedrate",
+                "type": "number",
+                "label": "P11",
+                "append": "P14",
+                "min": "1",
+                "value": "1000",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "xpos",
+                "type": "number",
+                "label": "P65",
+                "value": "100",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "ypos",
+                "type": "number",
+                "label": "P66",
+                "value": "100",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "zpos",
+                "type": "number",
+                "label": "P75",
+                "value": "100",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "homecmd",
+                "type": "text",
+                "label": "P73",
+                "value": "G28 $",
+                "help": "P74",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "motoroff",
+                "type": "text",
+                "label": "P13",
+                "value": "M84",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            }
+     ,
+            {
+                "id": "keymap",
+                "sorted": false,
+                "fixed": true,
+                "nodelete": true,
+                "editable": true,
+                "label": "S212",
+                "type": "list",
+                "depend": [{ "id": "showjogpanel", "value": true }],
+                "value": [
+                    {
+                        "id": "btn+X",
+                        "name": "btn+X",
+                        "key": "ArrowRight"
+                    },
+                    {
+                        "id": "btn-X",
+                        "name": "btn-X",
+                        "key": "ArrowLeft"
+                    },
+                    {
+                        "id": "btnHX",
+                        "name": "btnHX",
+                        "key": "X"
+                    },
+                    {
+                        "id": "btn+Y",
+                        "name": "btn+Y",
+                        "key": "ArrowUp"
+                    },
+                    {
+                        "id": "btn-Y",
+                        "name": "btn-Y",
+                        "key": "ArrowDown"
+                    },
+                    {
+                        "id": "btnHY",
+                        "name": "btnHY",
+                        "key": "Y"
+                    },
+                    {
+                        "id": "btn+Z",
+                        "name": "btn+Z",
+                        "key": "PageUp"
+                    },
+                    {
+                        "id": "btn-Z",
+                        "name": "btn-Z",
+                        "key": "PageDown"
+                    },
+                    {
+                        "id": "btnHZ",
+                        "name": "btnHZ",
+                        "key": "Z"
+                    },
+                    {
+                        "id": "btnHXYZ",
+                        "name": "btnHXYZ",
+                        "key": "Home"
+                    },
+                    {
+                        "id": "btnMoveXY",
+                        "name": "btnMoveXY",
+                        "key": "P"
+                    },
+                    {
+                        "id": "btnMoveZ",
+                        "name": "btnMoveZ",
+                        "key": "End"
+                    },
+                    {
+                        "id": "btnMotorOff",
+                        "name": "btnMotorOff",
+                        "key": "M"
+                    },
+                    {
+                        "id": "move_100",
+                        "name": "move_100",
+                        "key": "1"
+                    },
+                    {
+                        "id": "move_10",
+                        "name": "move_10",
+                        "key": "2"
+                    },
+                    {
+                        "id": "move_1",
+                        "name": "move_1",
+                        "key": "3"
+                    },
+                    {
+                        "id": "move_0_1",
+                        "name": "move_0_1",
+                        "key": "4"
+                    },
+                    {
+                        "id": "btnEStop",
+                        "name": "btnEStop",
+                        "key": "Delete"
+                    }
+                ]
+            }
+        ],
+        "controls": [
+            {
+                "id": "showextracontrolspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openextracontrolsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showextracontrolspanel", "value": true }]
+            },
+            {
+                "id": "showfanctrls",
+                "type": "boolean",
+                "label": "P45",
+                "value": true,
+                "depend": [{ "id": "showextracontrolspanel", "value": true }]
+            },
+            {
+                "id": "fancontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showfanctrls", "value": true }, { "id": "showextracontrolspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "fanpresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "0;20;50;75;100",
+                        "min": "0",
+                        "max": "100",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "fancmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M106 S$ P#",
+                        "help": "P94"
+                    }
+                ]
+            },
+
+            {
+                "id": "showspeedctrls",
+                "type": "boolean",
+                "label": "P46",
+                "value": true,
+                "depend": [{ "id": "showextracontrolspanel", "value": true }]
+            },
+            {
+                "id": "speedcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showspeedctrls", "value": true }, { "id": "showextracontrolspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "speedpresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "20;50;75;100;125;150;175;200;250;300",
+                        "min": "1",
+                        "max": "300",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "speedcmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M220 S$",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showflowratectrls",
+                "type": "boolean",
+                "label": "P47",
+                "value": true,
+                "depend": [{ "id": "showextracontrolspanel", "value": true }]
+            },
+            {
+                "id": "flowcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showflowratectrls", "value": true }, { "id": "showextracontrolspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "flowratepresets",
+                        "type": "text",
+                        "label": "P104",
+                        "value": "20;50;75;100;125;150;175;200;250;300",
+                        "min": "1",
+                        "max": "300",
+                        "append": "%",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "flowratecmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M221 S$ T#",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "showsensorctrls",
+                "type": "boolean",
+                "label": "P88",
+                "value": true,
+                "depend": [{ "id": "showextracontrolspanel", "value": true }]
+            }
+        ]
+    }
+}

@@ -19,10 +19,12 @@
 */
 import { h } from "preact"
 import { QuickButtonsBar } from "./QuickButtonsBar"
+import { InformationsControls } from "./InformationsControls"
 import { MixedExtrudersControl } from "./MixedExtrudersControl"
 import { BackgroundContainer } from "../../Controls/BackgroundContainer"
 export {
     QuickButtonsBar,
+    InformationsControls,
     MixedExtrudersControl,
     BackgroundContainer,
 }

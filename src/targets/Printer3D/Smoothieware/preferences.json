@@ -421,22 +421,6 @@
                     }
                 ]
             }
-        ],
-        "terminal": [
-            {
-                "id": "verbosefilters",
-                "value": [
-                    { "id": "temperatures", "match": "temperatures", "text": "" },
-                    { "id": "positions", "match": "positions", "text": "" },
-                    { "id": "report", "match": "report", "text": "" },
-                    { "id": "blank_line", "match": "regex", "text": "^\\s*$" },
-                    { "id": "echo", "match": "startswith", "text": "echo:" },
-                    { "id": "ok", "match": "startswith", "text": "ok" },
-                    { "id": "m105", "match": "startswith", "text": "M105" },
-                    { "id": "sensor", "match": "startswith", "text": "SENSOR:" },
-                    { "id": "json", "match": "regex", "text": "^\\{.*\\}$" }
-                ]
-            }
         ]
     }
 }

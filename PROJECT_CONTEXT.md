@@ -122,25 +122,43 @@ High-signal directories:
 - `Memo/`: internal notes on commands, handlers, firmware mapping, preferences, websocket behavior, and language packs
 - `.github/`: CI workflow and project automation
 
-## Extensions And Localization
+## Extensions
 
-The repository includes an extension model rather than a strictly closed UI. The extension API is documented in `extensions_samples/API.md` and supports messaging between an embedded extension frame and the main Web UI for:
+Extensions are optional pieces of code that add functionality to the Web UI (new panels, pages, or features) without changing the core app.
 
-- commands
-- queries
-- uploads/downloads
-- translation requests
-- toast/sound notifications
-- modal dialogs
-- capability lookups
-- extension settings storage
+**Characteristics:**
 
-There are at least two extension subprojects in-tree:
+- **Isolated execution:** Extensions run inside their own iframe (`iframe.extensionContainer`), separate from the main app.
+- **Dynamic loading:** Loaded on demand when the user opens the panel or page that hosts them.
+- **Consistent styling:** They can use the same CSS/theme as the main UI (injected by the host).
+- **Message-based API:** All communication is via `postMessage`; only string/array-serializable data (no non-cloneable objects).
 
-- `extensions/click2go`
-- `extensions/gcodeViewer`
+**Installation (high level):**
 
-Localization is a first-class part of the repo. `languages/` contains shared translations plus target-specific language packs such as printer, CNC, CNC grblHAL, and sand table packs.
+1. **Upload** the extension file (e.g. HTML or packed asset) to the device filesystem or a path served by the Web server. Optionally minify and gzip to reduce size and load time.
+2. **Register in the UI:** In the Interface (or relevant) settings, add an “extra content” entry: choose type “Extension”, set the URL/path to the extension, and choose whether it appears as a **panel** (e.g. on the dashboard) or a **page** (e.g. in the menu).
+3. The extension is then displayed according to that configuration; the host injects it into an iframe and applies the same theme.
+
+**Extension API (overview):**
+
+- **Extension → Web UI:** `window.parent.postMessage(msg, '*')` with `msg.target === 'webui'`. Required fields: `type` (e.g. `cmd`, `query`, `upload`, `download`, `toast`, `sound`, `translate`, `capabilities`, `extensionsData`, `icon`, `dispatch`, `modal`), plus type-specific fields (`content`, `url`, `id`, `noDispatch`, etc.). See full API for each type.
+- **Web UI → Extensions:** The host sends messages to all extension iframes via `dispatchToExtensions(type, data, id)` in `src/components/Helpers/html.js`. Extensions receive `{ type, content, id }` and can filter by `id` if they need to react only to responses they requested.
+- **Notifications to extensions:** The Web UI can send notifications (e.g. visibility or connection state). For example: `{ type: 'notification', content: { isVisible, isConnected }, id }`. When `id` is the node id of the iframe’s container, the message is targeted to that extension; when `id` is `'all'`, it is broadcast.
+
+**Implementation notes:**
+
+- Message handling from extensions: `src/areas/index.js` → `processExtensionMessage()` (switch on `eventMsg.data.type` for `cmd`, `query`, `upload`, `download`, `sound`, `toast`, `translate`, `capabilities`, `extensionsData`, `icon`, `dispatch`, `modal`, etc.).
+- Extension content is rendered by `src/components/ExtraContent/` (e.g. extraContentItem.js) and listed in preferences under extra content / extensions; settings are stored in `preferences.json` (e.g. `interfaceSettings.extensions`).
+
+**Documentation and samples:**
+
+- **Full API and message formats:** `extensions_samples/API.md` and `Memo/extensions/index.md` (message types, request/response shapes, modals, fields).
+- **Installation and concepts:** `Memo/extensions_installation/index.md`.
+- **Sample code:** `extensions_samples/*.html` and in-repo extensions: `extensions/click2go`, `extensions/gcodeViewer`.
+
+## Localization
+
+Localization is a first-class part of the repo. `languages/` contains shared translations plus target-specific language packs (e.g. printer, CNC, CNC grblHAL, sand table). Translation keys are used across the UI and in extension-facing APIs (e.g. modal buttons, toasts).
 
 ## Important Documentation Sources
 
@@ -150,7 +168,7 @@ Useful files for future contributors or agents:
 - `Memo/TargetFW.md`: firmware naming and IDs
 - `Memo/Commands.md`, `Memo/Handlers.md`, `Memo/websocket.md`: protocol and runtime notes
 - `Memo/preferences.md`, `Memo/variablesList.md`, `Memo/languagepack.md`: configuration and translation details
-- `extensions_samples/API.md`: extension integration contract
+- **Extensions:** `extensions_samples/API.md` (full message contract), `Memo/extensions/index.md` (API description and notification format), `Memo/extensions_installation/index.md` (what extensions are and how to install them)
 
 ## Constraints And Gaps
 

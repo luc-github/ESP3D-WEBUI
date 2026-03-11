@@ -19,15 +19,23 @@
 */
 import { h } from "preact"
 import { isTemperatures, isPositions } from "./filters"
-import { hasMatchingVerboseFilter } from "../../../components/Helpers"
 
-const isVerboseOnly = (type, data, rules = []) => {
+const isVerboseOnly = (type, data) => {
     const line = data.trim()
-
-    return hasMatchingVerboseFilter(line, rules, {
-        temperatures: isTemperatures,
-        positions: isPositions,
-    })
+    if (
+        isTemperatures(line) ||
+        isPositions(line) ||
+        line.trim().length == 0 ||
+        line.startsWith("echo:") ||
+        line.startsWith("ok") ||
+        line.startsWith("M105") ||
+        line.startsWith("M114") ||
+        line.startsWith("FR:") ||
+        line.startsWith("SENSOR:") ||
+        (line.startsWith("{") && line.endsWith("}"))
+    )
+        return true
+    else return false
 }
 
 export { isVerboseOnly }

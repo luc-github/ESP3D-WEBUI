@@ -20,6 +20,7 @@
   - [Modal Content](#modal-content)
   - [Fields types and options](#fields-types-and-options)
   - [Handling Messages](#handling-messages)
+- [Extension manifest (auto-configuration)](#extension-manifest-auto-configuration)
 - [Install an extension in Web UI](#install-an-extension-in-web-ui)
 - [Sample codes](#sample-codes)
 
@@ -1204,6 +1205,77 @@ For the Fields Modal, if the response is 'create' (response1 because validation 
 For the Input Modal, if the response is 'create' (response1 because validation is bt1), it displays the entered input value (line.inputData).
 
 
+
+## Extension manifest (auto-configuration)
+
+When you use **Scan for extensions** or **Extensions list** in Settings → Interface → Extra content, the WebUI reads the manifest for each extension file (e.g. `esp3dext-myplugin.html`). The manifest can be **inside the extension HTML** (recommended) or in an **external JSON file** (fallback).
+
+### Embedded manifest (recommended)
+
+Put the manifest **inside** your extension HTML so code and metadata stay in one file. Add a `<script>` block with `id="esp3dext-manifest"` and `type="application/json"` and valid JSON inside:
+
+```html
+<script type="application/json" id="esp3dext-manifest">
+{
+    "owner": "Jane Doe",
+    "version": "1.0.0",
+    "github": "https://github.com/janedoe/esp3dext-myplugin",
+    "description": "Adds a custom panel for my device.",
+    "name": "My Plugin",
+    "icon": "Activity",
+    "target": "panel",
+    "refreshtime": "0",
+    "supportedVersion": "3.*",
+    "targetSystem": "3d printer"
+}
+</script>
+```
+
+The WebUI fetches the extension file and looks for this block first. If found, it uses it and does not request a separate `.json` file.
+
+### External manifest (fallback)
+
+If no embedded manifest is found, the WebUI looks for a JSON file with the same base name as the extension file (e.g. `esp3dext-myplugin.json` for `esp3dext-myplugin.html`).
+
+- **Location:** Same directory as the extension `.html` / `.html.gz` file.
+- **Name:** Same base name, `.json` extension.
+
+### Manifest format
+
+- **Format:** JSON object. **Required** fields (manifest must have all of these, or the extension is not added): `owner`, `version`, `github`, `description`, `name`, `target`, `supportedVersion`. **Optional:** `icon`, `refreshtime`, `targetSystem`, and other fields.
+
+| Field              | Type            | Required | Description |
+|--------------------|-----------------|----------|-------------|
+| `owner`            | string          | **Optional**  | Extension owner / author name. |
+| `version`          | string          | **Optional**  | Extension version (e.g. `"1.0.0"`). |
+| `github`           | string          | **Optional**  | GitHub (or other) link to the extension repository or page. |
+| `description`      | string          | **Optional**  | Short description of the extension. |
+| `name`             | string          | **Yes**  | Display name of the extension in the UI. |
+| `target`           | string          | **Yes**  | `"panel"` or `"page"`. |
+| `supportedVersion` | string          | **Yes**  | WebUI version pattern. `*` = any version; `3.*` or `3.*.*` = any 3.x; `3.0.*` = 3.0.x. **Scan for extensions** only adds the extension when the current WebUI version matches. |
+| `icon`             | string          | No       | Icon ID from the WebUI icon set (e.g. `"Activity"`, `"Settings"`). See [Send icon request](#send-icon-request) for the list. Default: `"Meh"`. |
+| `refreshtime`      | string or number | No      | Refresh interval in ms, or `"0"` for no refresh. Default: `"0"`. |
+| `targetSystem`     | string or array | **Yes**       | Firmware / target system. `*` or omit = any. Specific: `marlin`, `repetier`, `smoothieware`, `marlin-embedded`, `grbl`, `grblhal`. Categories: `3d printer` (all Printer3D targets), `cnc` (CNC GRBL/grblHAL), `sand table`. If set, **Scan for extensions** only adds the extension when the current target matches. |
+
+### Example (embedded in HTML)
+
+At the top of your extension HTML (e.g. `esp3dext-myplugin.html`), after `<script>` blocks that need to run, add:
+
+```html
+<script type="application/json" id="esp3dext-manifest">
+{"owner":"Jane Doe","version":"1.0.0","github":"https://github.com/janedoe/esp3dext-myplugin","description":"Adds a custom panel for my device.","name":"My Plugin","icon":"Activity","target":"panel","refreshtime":"0","supportedVersion":"3.*","targetSystem":"3d printer"}
+</script>
+```
+
+Or use pretty-printed JSON (as in the Embedded manifest section above). The script must have `id="esp3dext-manifest"` and `type="application/json"`.
+
+- **Required:** `owner`, `version`, `github`, `description`, `name`, `target`, `supportedVersion` must all be present and non-empty. If the manifest is missing or any required field is missing/empty, the extension is **not** added (considered not compatible). **Optional:** `icon`, `refreshtime`, `targetSystem`.
+- **supportedVersion:** `*` (all), `3.*` or `3.*.*` (all 3.x), `3.0.*` (3.0.x). Segment-by-segment match; `*` in pattern matches any.
+- **targetSystem:** `*` (any), or one or more of: `marlin`, `repetier`, `smoothieware`, `marlin-embedded`, `grbl`, `grblhal`, `3d printer`, `cnc`, `sand table`. Can be a string or array. Extension is only added when the current WebUI target/category is in the list.
+
+If the manifest is missing, invalid, or lacks any required field, the extension is not added. If `supportedVersion` or `targetSystem` is set and does not match the current WebUI version or target, the extension is not added by the scan.
+
+---
 
 ## Install an extension in Web UI
 

@@ -1,0 +1,442 @@
+{
+    "settings": {
+        "general": [
+            {
+                "id": "emergencystop",
+                "type": "text",
+                "label": "P15",
+                "value": "M112",
+                "help": "S97"
+            }
+        ],
+        "panels": [
+            {
+                "id": "fixedpanels",
+                "type": "boolean",
+                "label": "S203",
+                "value": false
+            },
+            {
+                "id": "panelsorder",
+                "fixed": true,
+                "sorted": true,
+                "depend": [
+                    {
+                        "id": "fixedpanels",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "label": "S202",
+                "value": [
+                    { "id": "Files", "name": "files" },
+                    { "id": "Terminal", "name": "terminal" },
+                    { "id": "Jog", "name": "jog", "value": "jog" },
+                    { "id": "Extruders", "name": "extruders" },
+                    { "id": "Temperatures", "name": "temperatures" },
+                    { "id": "Charts", "name": "charts" },
+                    { "id": "Status", "name": "status" },
+                    { "id": "Controls", "name": "controls" },
+                    { "id": "Notifications", "name": "notification" },
+                    { "id": "Macros", "name": "macros" },
+                    { "id": "Extracontents", "name": "extracontents" }
+                ]
+            }
+        ],
+        "polling": [
+            {
+                "id": "pollingcmds",
+                "depend": [
+                    {
+                        "id": "enablepolling",
+                        "value": true
+                    }
+                ],
+                "type": "list",
+                "sorted": false,
+                "label": "S115",
+                "value": [
+                    {
+                        "id": "samplepolling",
+                        "name": "3s",
+                        "cmds": "M105",
+                        "refreshtime": "3000"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "id": "sdgroup",
+                "type": "group",
+                "label": "S190",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "sd",
+                        "type": "boolean",
+                        "label": "S190",
+                        "value": true
+                    },
+                    {
+                        "id": "is_sd_direct",
+                        "type": "boolean",
+                        "depend": [
+                            { "connection_id": "SDConnection", "value": "!='none'" },
+                            { "id": "sd", "value": true },
+                            { "id": "is_extra_sd_direct", "value": false }
+                        ],
+                        "label": "SM5",
+                        "value": false
+                    },
+                    {
+                        "id": "sdlistcmd",
+                        "type": "text",
+                        "label": "P95",
+                        "value": "ls -s /sd/#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sd",
+                                "value": true
+                            },
+                            {
+                                "id": "is_sd_direct",
+                                "value": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sdplaycmd",
+                        "type": "text",
+                        "label": "P119",
+                        "value": "play /sd/#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sd",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sddeletecmd",
+                        "type": "text",
+                        "label": "P122",
+                        "value": "rm /sd/#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sd",
+                                "value": true
+                            },
+                            {
+                                "id": "is_sd_direct",
+                                "value": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sort_sd_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "sd", "value": true }]
+                    }
+                ]
+            },
+            {
+                "id": "sdextgroup",
+                "type": "group",
+                "label": "S191",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    }
+                ],
+                "value": [
+                    {
+                        "id": "sdext",
+                        "type": "boolean",
+                        "label": "S191",
+                        "value": false
+                    },
+                    {
+                        "id": "is_extra_sd_direct",
+                        "type": "boolean",
+                        "depend": [
+                            { "connection_id": "SDConnection", "value": "!='none'" },
+                            { "id": "sdext", "value": true },
+                            { "id": "is_sd_direct", "value": false }
+                        ],
+                        "label": "SM4",
+                        "value": false
+                    },
+                    {
+                        "id": "sdextlistcmd",
+                        "type": "text",
+                        "label": "P95",
+                        "value": "ls -s /ext/#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sdext",
+                                "value": true
+                            },
+                            {
+                                "id": "is_extra_sd_direct",
+                                "value": false
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sdextplaycmd",
+                        "type": "text",
+                        "label": "P119",
+                        "value": "play /ext/#",
+                        "help": "S97",
+                        "depend": [
+                            {
+                                "id": "sdext",
+                                "value": true
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sort_sdext_files",
+                        "type": "boolean",
+                        "label": "S224",
+                        "value": true,
+                        "depend": [{ "id": "sdext", "value": true }]
+                    }
+                ]
+            },{
+                "id": "default_filesystem",
+                "type": "select",
+                "label": "S223",
+                "value": "FLASH",
+                "depend": [
+                    {
+                        "id": "showfilespanel",
+                        "value": true
+                    },
+                    {
+                        "orGroups": [
+                            [{
+                                "id": "sd",
+                                "value": true
+                            }],
+                            [{
+                                "id": "flashfs",
+                                "value": true
+                            }],
+                            [{ "id": "sdext", "value": true }],
+                            [{"id": "tftfs", "notvalue": "none"},{ "id": "tftsd", "value": true }],
+                            [{"id": "tftfs", "notvalue": "none"},{ "id": "tftusb", "value": true }]
+                        ]
+                    }
+                ],
+                "options": [
+                    { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
+                    {
+                        "value": "SD",
+                        "label": "S190",
+                        "depend": [
+                            { "id": "sd", "value": true },
+                            { "id": "is_sd_direct", "value": false }
+                        ]
+                    },
+                    { "value": "SDEXT", "label": "S191", "depend": [{ "id": "sdext", "value": true }, { "id": "is_extra_sd_direct", "value": false }] },
+                    { "value": "TFTSD", "label": "S188", "depend": [{ "id": "tftsd", "value": true },{"id": "tftfs", "notvalue": "none"}] },
+                    { "value": "TFTUSB", "label": "S189", "depend": [{ "id": "tftusb", "value": true },{"id": "tftfs", "notvalue": "none"}] },  
+                    {
+                        "value": "DIRECTSD",
+                        "label": "S190",
+                        "depend": [
+                            { "id": "sd", "value": true },
+                            { "id": "is_sd_direct", "value": true },
+                            { "connection_id": "SDConnection", "value": "!='none'" }
+                        ]
+                    },
+                    {
+                        "value": "DIRECTSDEXT",
+                        "label": "S191",
+                        "depend": [
+                            { "id": "sdext", "value": true },
+                            { "id": "is_extra_sd_direct", "value": true },
+                            { "connection_id": "SDConnection", "value": "!='none'" }
+                        ]
+                    }
+
+                ]
+            }
+        ],
+        "Smoothieware": [
+            {
+                "id": "configfilename",
+                "type": "text",
+                "min": 6,
+                "label": "SM2",
+                "help": "SM2",
+                "value": "config.txt"
+            }
+        ],
+        "controls": [
+            {
+                "id": "fancontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showfanctrls", "value": true }, { "id": "showextracontrolspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "fancmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "M106",
+                        "help": "P94"
+                    }
+                ]
+            },
+            {
+                "id": "flowcontrolsgroup",
+                "type": "group",
+                "label": "",
+                "depend": [{ "id": "showflowratectrls", "value": true }, { "id": "showextracontrolspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "flowratecmd",
+                        "type": "text",
+                        "label": "P106",
+                        "value": "T#;M221 S$",
+                        "help": "P94"
+                    }
+                ]
+            }
+        ],
+        "status": [
+            {
+                "id": "sdcommands",
+                "type": "group",
+                "label": "P101",
+                "depend": [{ "id": "sd", "value": true }, { "id": "showstatuspanel", "value": true }],
+                "value": [
+                    {
+                        "id": "sdpausecmd",
+                        "type": "text",
+                        "label": "P98",
+                        "value": "M25",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "sdresumecmd",
+                        "type": "text",
+                        "label": "P99",
+                        "value": "M24",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "sdstopcmd",
+                        "type": "text",
+                        "label": "P100",
+                        "value": "M524",
+                        "help": "S97"
+                    }
+                ]
+            },
+            {
+                "id": "tftsdcommands",
+                "type": "group",
+                "label": "P102",
+                "depend": [
+                    {
+                        "id": "tftfs",
+                        "notvalue": "none"
+                    },
+                    {
+                        "id": "tftsd",
+                        "value": true
+                    },
+                    { "id": "showstatuspanel", "value": true }
+                ],
+                "value": [
+                    {
+                        "id": "tftsdpausecmd",
+                        "type": "text",
+                        "label": "P98",
+                        "value": "M25",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "tftsdresumecmd",
+                        "type": "text",
+                        "label": "P99",
+                        "value": "M24",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "tftsdstopcmd",
+                        "type": "text",
+                        "label": "P100",
+                        "value": "M524",
+                        "help": "S97"
+                    }
+                ]
+            },
+            {
+                "id": "tftusbcommands",
+                "type": "group",
+                "label": "P103",
+                "depend": [
+                    { "id": "tftfs", "notvalue": "none" },
+                    { "id": "tftusb", "value": true },
+                    { "id": "showstatuspanel", "value": true }
+                ],
+                "value": [
+                    {
+                        "id": "tftusbpausecmd",
+                        "type": "text",
+                        "label": "P98",
+                        "value": "M25",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "tftusbresumecmd",
+                        "type": "text",
+                        "label": "P99",
+                        "value": "M24",
+                        "help": "S97"
+                    },
+                    {
+                        "id": "tftusbstopcmd",
+                        "type": "text",
+                        "label": "P100",
+                        "value": "M524",
+                        "help": "S97"
+                    }
+                ]
+            }
+        ],
+        "terminal": [
+            {
+                "id": "verbosefilters",
+                "value": [
+                    { "id": "temperatures", "match": "temperatures", "text": "" },
+                    { "id": "positions", "match": "positions", "text": "" },
+                    { "id": "report", "match": "report", "text": "" },
+                    { "id": "blank_line", "match": "regex", "text": "^\\s*$" },
+                    { "id": "echo", "match": "startswith", "text": "echo:" },
+                    { "id": "ok", "match": "startswith", "text": "ok" },
+                    { "id": "m105", "match": "startswith", "text": "M105" },
+                    { "id": "sensor", "match": "startswith", "text": "SENSOR:" },
+                    { "id": "json", "match": "regex", "text": "^\\{.*\\}$" }
+                ]
+            }
+        ]
+    }
+}
