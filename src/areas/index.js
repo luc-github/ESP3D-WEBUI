@@ -213,7 +213,7 @@ const ContentContainer = () => {
                                         {
                                             status: "error",
                                             error,
-                                            finitiator: initiator,
+                                            initiator: initiator,
                                         },
                                         eventMsg.data.id
                                     )
