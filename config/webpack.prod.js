@@ -9,8 +9,11 @@ const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin")
 const HTMLInlineCSSWebpackPlugin =
     require("html-inline-css-webpack-plugin").default
 const Compression = require("compression-webpack-plugin")
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
+
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
+const runAnalyzer = process.env.ANALYZE === "1" || process.env.ANALYZE === "true"
 
 const srcPath = path.join(__dirname, "../src")
 const purgeContent = [
@@ -101,19 +104,37 @@ module.exports = {
             },
         }),
 
-        new HtmlInlineScriptPlugin({
-            scriptMatchPattern: [/.+[.]js$/],
-            htmlMatchPattern: [/index.html$/],
-        }),
-        new HTMLInlineCSSWebpackPlugin(),
-        new Compression({
-            test: /\.(html)$/,
-            filename:
-                "[path]../dist/" + target + "/" + subtarget + "/[base].gz",
-            algorithm: "gzip",
-            exclude: /.map$/,
-            deleteOriginalAssets: "keep-source-map",
-        }),
+        // When ANALYZE=1, skip inlining so the main JS chunk stays in the compilation
+        // and webpack-bundle-analyzer can display it. Otherwise the treemap is empty.
+        ...(runAnalyzer
+            ? []
+            : [
+                  new HtmlInlineScriptPlugin({
+                      scriptMatchPattern: [/.+[.]js$/],
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+                  new HTMLInlineCSSWebpackPlugin(),
+                  new Compression({
+                      test: /\.(html)$/,
+                      filename:
+                          "[path]../dist/" +
+                          target +
+                          "/" +
+                          subtarget +
+                          "/[base].gz",
+                      algorithm: "gzip",
+                      exclude: /.map$/,
+                      deleteOriginalAssets: "keep-source-map",
+                  }),
+              ]),
+        ...(runAnalyzer
+            ? [
+                  new BundleAnalyzerPlugin({
+                      analyzerMode: "server",
+                      openAnalyzer: true,
+                  }),
+              ]
+            : []),
     ],
     optimization: {
         minimize: true,

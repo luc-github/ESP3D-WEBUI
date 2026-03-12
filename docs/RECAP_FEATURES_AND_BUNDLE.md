@@ -6,13 +6,73 @@
 
 ## Tracker de taille (index.html.gz)
 
-| Date / étape | Taille (octets) | Note |
-|--------------|-----------------|------|
-| Après filtres verboses | ~97 KB | Référence |
-| Avant réduction icônes | ~163 KB | — |
-| **Actuel** | **92 595** | Après **réduction du nombre d'icônes** dans `icons.js` (34 icônes retirées). **Optimisation déjà faite : ne pas revenir dessus.** |
+**Package Marlin.** Ajouter une ligne après chaque build ou optimisation pour voir la courbe (quand on descend, quand on remonte).
+
+| # | Étape | Taille (octets) | Variation |
+|---|-------|-----------------|-----------|
+| 1 | Base de départ | 98 117 | — |
+| 2 | PurgeCSS | 92 100 | −6 017 |
+| 3 | Réduction icônes (34 retirées de `icons.js`) | 92 595 | +495 |
+| 4 | Optimisation sauvegarde preferences.json (diffs + minification) | 92 870 | +275 |
+| 5 | *prochaine étape…* | | |
+
+**Légende :** *Variation* = différence vs ligne précédente (négatif = on descend, positif = on remonte).
+
+Référence « avant toute optimisation taille » : ~163 KB (code complet, footprint énorme).
 
 Référence : `docs/FEATHER_ICONS_USED_UNUSED.md`.
+
+**Partie icônes : validée.** Passer aux autres leviers pour réduire la taille du package.
+
+**Preferences.json (fichier sauvegardé sur le device) : optimisé.** On n’écrit que les clés qui diffèrent des valeurs par défaut (`omitDefaultSettings` dans `exportHelper.js`) et on minifie le JSON (plus de pretty-print). Résultat : le fichier passe de plusieurs KB à quelques centaines d’octets. Validé.
+
+---
+
+### Analyse du rapport bundle (12 Mar 2026)
+
+D’après le treemap (build Printer3D/Marlin), chunk **main** ≈ **839 KB** parsé, **141 KB** gzip. Répartition indicative :
+
+| Bloc | Parsed (KB) | Gzip (KB) | Commentaire |
+|------|-------------|-----------|-------------|
+| **targets/index.js + 45 modules** | ~290 | ~47 | Plus gros bloc : Marlin (preferences, panels, MachineSettings, TargetContext, filters, FLASH/SD sources), Panels (Files, Jog, Terminal, etc.) |
+| **index.js + 29 modules** (entry) | ~148 | ~25 | areas, tabs (interface, features), pages (about, dashboard) |
+| **node_modules** | ~121 | ~22 | smoothie ~48 KB, preact-feather icons ~57 KB, preact ~15 KB |
+| **components/Controls** | ~87 | ~13 | Fields (Input, ItemsList, Mask, etc.), Modal, ScanAp |
+| **Translations** (en.json fusionnés) | ~15 | ~6 | Base + Printer3D + Marlin |
+| **components/Images** (icons.js + Feather) | ~34 | ~5 | Picker + icônes utilisées |
+| **preferences.json** (base + target + subtarget) | — | ~3,6 | Inclus dans targets : base ~3 KB, Printer3D ~12 KB, Marlin ~6 KB (parsed) |
+| **style (Spectre + app)** | — | (dans HTML) | CSS extrait puis inliné |
+
+**Propositions prioritaires (sans changer la règle « un seul fichier ») :**
+
+1. **Preferences JSON** : le **fichier sauvegardé** sur le device est déjà optimisé (diffs + minification, validé). Les **défauts dans le bundle** (base + target + subtarget) pèsent encore ~21 KB parsé ; pistes ultérieures : clés plus courtes en build (ex. `"label":"S68"` → garder tel quel pour i18n, ou raccourcir les clés de structure si possible) ou une structure minimale + complétion à l’exécution.
+2. **Smoothie** (~48 KB parsé, ~12,7 KB gzip) : utilisé pour les graphiques (Charts). Vérifier si on peut remplacer par une lib plus légère ou un sous-ensemble (tree-shaking / build custom).
+3. **Traductions** (~15 KB parsé, ~6 KB gzip) : une seule langue (en) dans le bundle ; déjà raisonnable. Option ultérieure : clés numériques + fichier de traduction minimal si d’autres langues sont chargées à part.
+4. **Targets / Panels** : le bloc targets est très gros car il contient tout Marlin (sources FLASH/SD, filters, MachineSettings). Pas de lazy load possible sans plusieurs artefacts ; éventuellement factoriser du code dupliqué entre targets (hors scope court terme).
+5. **Terser / minification** (point 4) : tester des options plus agressives et mesurer le gain sur le .gz.
+
+---
+
+### Prochaines optimisations (réduction taille du package)
+
+Pistes à explorer, par ordre de priorité suggéré :
+
+1. **Analyser le bundle** ✅ en place  
+   Commande : `npm run analyze` (build Printer3D/Marlin → génère `build/bundle-stats.json` → ouvre le treemap via la CLI). Le rapport s’ouvre dans le navigateur avec les données chargées depuis le JSON. Pour une autre cible : `cross-env ANALYZE=1 TARGET_ENV=CNC SUBTARGET_ENV=GRBL webpack --config config/webpack.prod.js` puis `npx webpack-bundle-analyzer build/bundle-stats.json`. Noter les 3–5 plus gros blocs pour les prochaines optimisations.
+
+2. **Fichiers JSON dans le bundle**  
+   Le bundle inclut : `preferences.json` (base + target + subtarget fusionnés), `def_panel.json`, `def_macro.json`, `def_polling.json`, et les traductions `en.json`. Vérifier la taille de ces JSON en sortie (après minification). Si un fichier est très gros, envisager : clés plus courtes en prod, ou structure par défaut minimale avec complétion à l’exécution.
+
+3. **PurgeCSS**  
+   Vérifier que les `paths` et la `safelist` dans `webpack.prod.js` ne laissent pas trop de CSS inutilisé (Spectre a beaucoup de classes ; plus le contenu scruté est large, plus le purge est efficace).
+
+4. **Minification JS plus agressive**  
+   Webpack 5 en mode production utilise Terser par défaut. On peut tester des options plus agressives (`compress.passes`, `mangle`, etc.) et mesurer le gain sur `index.html.gz`.
+
+5. **Dépendances**  
+   `preact` et `preact-feather` sont déjà légers. Vérifier que `smoothie` et `spectre` sont bien tree-shakés / qu’on n’importe que le strict nécessaire.
+
+---
 
 ### Optimisations icônes sans réduire le nombre
 
@@ -29,13 +89,14 @@ Sans retirer d’icônes du picker, on peut encore :
 
 ---
 
-## Taille du bundle : 97 KB (après filtres verboses) → 163 KB (avant réduction icônes)
+## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → 92 870 (actuel)
 
-- **Après** l’ajout des filtres verboses : **97 KB**.
-- **Avant réduction icônes** : **163 KB**.
-- **Bloc ~70 KB** venant surtout de :
+- **Base de départ** : **98 117** octets (package Marlin de référence).
+- **163 KB** : état du code avec toutes les améliorations fonctionnelles mais avant les optimisations de taille (footprint énorme).
+- **92 870** : actuel après réduction icônes + optimisation preferences (fichier sauvegardé).
+- Le bloc ~70 KB (163 KB − 97 KB) venait surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
-  - Éventuellement un peu d’**optimisation de la taille de preferences.json** (comparaison, pas la minification).
+  - **Preferences.json sauvegardé** : optimisé (seulement les diffs aux défauts + minification) → quelques centaines d’octets au lieu de plusieurs KB.
 
 ---
 

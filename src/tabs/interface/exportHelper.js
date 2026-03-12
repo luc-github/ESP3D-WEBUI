@@ -19,44 +19,73 @@ exportHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, initial_value = false){
+import { defaultPreferences } from "../../targets"
+
+function deepEqual(a, b) {
+    if (a === b) return true
+    if (a == null || b == null || typeof a !== "object" || typeof b !== "object") return false
+    return JSON.stringify(a) === JSON.stringify(b)
+}
+
+/** Keys that must always be included when present (required for extra contents / extensions to load). */
+const ALWAYS_INCLUDE_KEYS = ["showextracontents", "openextrapanelsonstart", "extracontents"]
+
+/** Return a copy of settings with only keys that differ from default (reduces file size). */
+function omitDefaultSettings(settings, defaultSettings) {
+    const out = {}
+    for (const k of Object.keys(settings)) {
+        const alwaysInclude = ALWAYS_INCLUDE_KEYS.includes(k)
+        const differs = defaultSettings[k] === undefined || !deepEqual(settings[k], defaultSettings[k])
+        if (alwaysInclude || differs) {
+            out[k] = settings[k]
+        }
+    }
+    return out
+}
+
+function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, initial_value = false) {
     const section = {}
     for (let key in interfaceSettingsDataSection) {
         for (let subkey in interfaceSettingsDataSection[key]) {
             if (interfaceSettingsDataSection[key][subkey].id) {
                 if (interfaceSettingsDataSection[key][subkey].type == "group") {
-                    interfaceSettingsDataSection[key][subkey].value.forEach(
-                        (element) => {
-                            section[element.id] = asFile
-                                ? element.initial
-                                : element.value
-                        }
-                    )
+                    const groupValue = Array.isArray(interfaceSettingsDataSection[key][subkey].value)
+                        ? interfaceSettingsDataSection[key][subkey].value
+                        : []
+                    groupValue.forEach((element) => {
+                        const val = asFile ? (element.initial ?? element.value) : element.value
+                        section[element.id] = val
+                    })
                 } else if (
                     interfaceSettingsDataSection[key][subkey].type == "list"
                 ) {
+                    const listEl = interfaceSettingsDataSection[key][subkey]
+                    const listId = listEl.id
+                    const listValue = Array.isArray(listEl.value) ? listEl.value : []
+                    const extensionMetadataKeys = ["owner", "version", "github", "description", "supportedVersion", "targetSystem"]
                     const itemsList = []
-                    interfaceSettingsDataSection[key][subkey].value.forEach(
-                        (element) => {
-                            const item = {}
-                            item.id = element.id
-                            element.value.forEach((setting) => {
-                                item[setting.name] = asFile
-                                    ? setting.initial
-                                    : setting.value
+                    listValue.forEach((element) => {
+                        const item = { id: element.id }
+                        const itemValue = Array.isArray(element.value) ? element.value : []
+                        if (itemValue.length > 0) {
+                            itemValue.forEach((setting) => {
+                                item[setting.name] = asFile ? (setting.initial ?? setting.value) : setting.value
                             })
-                            itemsList.push(item)
+                        } else {
+                            // Flat form (e.g. default panelsorder: { id: "Files", name: "files" })
+                            Object.keys(element).forEach((k) => {
+                                if (k !== "id" && k !== "value" && k !== "index") item[k] = element[k]
+                            })
                         }
-                    )
-                    section[
-                        interfaceSettingsDataSection[key][subkey].id
-                    ] = itemsList
+                        if (listId === "extracontents") {
+                            extensionMetadataKeys.forEach((k) => delete item[k])
+                        }
+                        itemsList.push(item)
+                    })
+                    section[listId] = itemsList
                 } else {
-                    section[
-                        interfaceSettingsDataSection[key][subkey].id
-                    ] = asFile || initial_value
-                        ? interfaceSettingsDataSection[key][subkey].initial
-                        : interfaceSettingsDataSection[key][subkey].value
+                    const el = interfaceSettingsDataSection[key][subkey]
+                    section[el.id] = asFile || initial_value ? (el.initial ?? el.value) : el.value
                 }
             }
         }
@@ -74,9 +103,11 @@ function exportPreferences(interfaceSettingsData, asFile = true) {
         preferences.custom = interfaceSettingsData.custom
     if (interfaceSettingsData.extensions)
         preferences.extensions = interfaceSettingsData.extensions
-    preferences.settings = exportPreferencesSection(interfaceSettingsData.settings, asFile)
+    const fullSettings = exportPreferencesSection(interfaceSettingsData.settings, asFile)
+    const defaultSettings = exportPreferencesSection(defaultPreferences.settings, true)
+    preferences.settings = omitDefaultSettings(fullSettings, defaultSettings)
     if (asFile) {
-        const file = new Blob([JSON.stringify(preferences, null, " ")], {
+        const file = new Blob([JSON.stringify(preferences)], {
             type: "application/json",
         })
         if (window.navigator.msSaveOrOpenBlob)
@@ -101,4 +132,4 @@ function exportPreferences(interfaceSettingsData, asFile = true) {
     return preferences
 }
 
-export { exportPreferences, exportPreferencesSection }
+export { exportPreferences, exportPreferencesSection, omitDefaultSettings }

@@ -23,6 +23,7 @@
         "cnc-grblhal": "cross-env TARGET_ENV=CNC SUBTARGET_ENV=grblHAL webpack --config config/webpack.prod.js",
         "sand-grbl": "cross-env TARGET_ENV=SandTable SUBTARGET_ENV=GRBL webpack --config config/webpack.prod.js",
         "build": "webpack --config config/webpack.prod.js",
+        "analyze": "cross-env ANALYZE=1 npm run printer-marlin",
         "buildprinter": "npm run printer-marlin && npm run printer-repetier && npm run printer-smoothieware && npm run printer-marlin-embedded",
         "buildcnc": "npm run cnc-grbl && npm run cnc-grblhal",
         "buildsand": "npm run sand-grbl",
@@ -67,6 +68,7 @@
         "sass-loader": "^13.0.2",
         "style-loader": "^3.3.1",
         "webpack": "^5.73.0",
+        "webpack-bundle-analyzer": "^4.10.2",
         "webpack-cli": "^4.10.0",
         "webpack-dev-server": "^4.9.2"
     },

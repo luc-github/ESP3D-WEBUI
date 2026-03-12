@@ -672,9 +672,7 @@ const ContentContainer = () => {
 
                     //now stringify and save
                     const preferencestosave = JSON.stringify(
-                        interfaceSettingsData,
-                        null,
-                        " "
+                        interfaceSettingsData
                     )
                     //Create a blob
                     const blob = new Blob([preferencestosave], {

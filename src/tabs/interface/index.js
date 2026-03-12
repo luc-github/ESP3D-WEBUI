@@ -385,7 +385,7 @@ const InterfaceTab = () => {
             interfaceSettings.current,
             false
         )
-        const preferencestosave = JSON.stringify(settings_to_save, null, " ")
+        const preferencestosave = JSON.stringify(settings_to_save)
         const blob = new Blob([preferencestosave], {
             type: "application/json",
         })
