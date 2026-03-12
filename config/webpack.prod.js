@@ -1,5 +1,7 @@
 const path = require("path")
+const glob = require("glob")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const { PurgeCSSPlugin } = require("purgecss-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin")
@@ -9,6 +11,13 @@ const HTMLInlineCSSWebpackPlugin =
 const Compression = require("compression-webpack-plugin")
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
+
+const srcPath = path.join(__dirname, "../src")
+const purgeContent = [
+    ...glob.sync(`${srcPath}/**/*.js`, { nodir: true }),
+    ...glob.sync(`${srcPath}/**/*.jsx`, { nodir: true }),
+    path.join(srcPath, "index.html"),
+]
 
 module.exports = {
     resolve: {
@@ -73,6 +82,23 @@ module.exports = {
             template: path.join(__dirname, "../src/index.html"),
             inlineSource: ".(js|css)$",
             inject: "body",
+        }),
+
+        new PurgeCSSPlugin({
+            paths: purgeContent,
+            safelist: {
+                standard: [
+                    /^tooltip/,
+                    /^modal/,
+                    /^dropdown/,
+                    /^toast/,
+                    /^open$/,
+                    /^active$/,
+                    /^disabled$/,
+                    /^loading$/,
+                    /^show$/,
+                ],
+            },
         }),
 
         new HtmlInlineScriptPlugin({
