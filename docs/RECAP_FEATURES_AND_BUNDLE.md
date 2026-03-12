@@ -19,7 +19,8 @@
 | 7 | Smoothie remplacé par module minimal (smoothieChartMinimal.js, resetBounds, labels) | 89 871 | −3 042 |
 | 8 | Filtres verboses configurables (verbosefilters, export minimal, UI Terminal, traductions S228–S233) | 90 927 | +1 056 |
 | 9 | Mise à jour browserslist (update-browserslist-db) | 90 760 | −167 |
-| 10 | *prochaine étape…* | | |
+| 10 | Extra contents (ordre panels, noms affichés, 3 panels) | 92 166 | +1 406 |
+| 11 | *prochaine étape…* | | |
 
 **Légende :** *Variation* = différence vs ligne précédente (négatif = on descend, positif = on remonte).
 
@@ -111,7 +112,8 @@ Sans retirer d’icônes du picker, on peut encore :
 - **92 913** : export lisible (id/value, toutes les prefs) + import full/optimisé, sauvegarde sur flash optimisée.
 - **89 871** : Smoothie remplacé par module minimal (resetBounds, labels min/max visibles), sans lazy load.
 - **90 927** : Filtres verboses configurables (verbosefilters, export minimal type/value, UI Terminal alignée Macros/Extra contents, traductions S228–S233, défauts par cible Printer3D/CNC/SandTable).
-- **90 760** : actuel — Mise à jour browserslist (update-browserslist-db).
+- **90 760** : Mise à jour browserslist (update-browserslist-db).
+- **92 166** : actuel — Extra contents (ordre des panels, noms affichés au lieu des ids, prise en charge de plusieurs panels ; preferences.json ~1,17 KB).
 - Le bloc ~70 KB (163 KB − 97 KB) venait surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
   - **Preferences.json sauvegardé** : optimisé (seulement les diffs aux défauts + minification) → quelques centaines d’octets au lieu de plusieurs KB.

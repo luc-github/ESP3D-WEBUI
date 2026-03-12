@@ -53,8 +53,6 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             const { top, left, width, height } = container.getBoundingClientRect()
             //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
             eventBus.emit('updateState', { id: extra_content_id, position: { top, left, width, height }, isVisible: true, from: "extraContent(position)" })
-        } else {
-            console.error("Element " + target_id + " doesn't exist")
         }
     }
 

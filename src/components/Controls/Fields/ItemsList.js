@@ -58,7 +58,9 @@ const ItemControl = ({
     nodelete,
     editable,
     sorted,
+    extraPanelDisplayNames,
 }) => {
+    const { interfaceSettings } = useSettingsContext()
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
     // Ensure value is always an array so rendering never crashes,
@@ -76,6 +78,14 @@ const ItemControl = ({
             : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
 
+    const markListOrderModified = (list) => {
+        if (idList === "panelsorder" && Array.isArray(list)) {
+            list.forEach((it) => {
+                if (it.value && it.value[0]) it.value[0].hasmodified = true
+            })
+        }
+        return list
+    }
     const onEdit = (state) => {
         completeList[index].editionMode = state
         setValue([...completeList])
@@ -86,7 +96,7 @@ const ItemControl = ({
         const item = completeList[index]
         completeList.splice(index, 1)
         completeList.splice(index + 1, 0, item)
-        setValue(completeList)
+        setValue(idList === "panelsorder" ? markListOrderModified(completeList) : completeList)
     }
     const upItem = (e) => {
         e.target.blur()
@@ -94,7 +104,7 @@ const ItemControl = ({
         const item = completeList[index]
         completeList.splice(index, 1)
         completeList.splice(index - 1, 0, item)
-        setValue(completeList)
+        setValue(idList === "panelsorder" ? markListOrderModified(completeList) : completeList)
     }
     const removeItem = (e) => {
         useUiContextFn.haptic()
@@ -123,6 +133,42 @@ const ItemControl = ({
         return e.name == "key"
     })
 
+    let panelDisplayName = name
+    if (idList === "panelsorder" && name && String(name).startsWith("extracontents_")) {
+        if (extraPanelDisplayNames && typeof extraPanelDisplayNames[name] === "string") {
+            panelDisplayName = extraPanelDisplayNames[name]
+        } else {
+            const rootId = String(name).replace("extracontents_", "")
+            const settings = interfaceSettings?.current?.settings
+            let extraList = null
+            if (settings && useUiContextFn.getElement) {
+                const extraEl = useUiContextFn.getElement("extracontents", settings)
+                if (extraEl && Array.isArray(extraEl.value)) extraList = extraEl.value
+            }
+            if (!Array.isArray(extraList)) {
+                extraList = useUiContextFn.getValue("extracontents") ?? null
+            }
+            if (Array.isArray(extraList)) {
+                const entry = extraList.find(
+                    (e) => e && (e.id === rootId || e.id === name)
+                )
+                if (entry) {
+                    const flat = (entry.value || []).reduce((acc, current) => {
+                        if (!current) return acc
+                        const k = current.name ?? (current.id && String(current.id).replace(/^[^-]+-/, ""))
+                        if (k) acc[k] = current.initial != null ? current.initial : current.value
+                        return acc
+                    }, {})
+                    const raw = flat.name ?? entry.name ?? entry.id
+                    if (raw != null && String(raw) !== name && !String(raw).startsWith("extracontents_"))
+                        panelDisplayName = raw
+                    else if (entry.id != null)
+                        panelDisplayName = entry.id
+                }
+            }
+        }
+    }
+
     const VERBOSE_TYPE_KEYS = { startswith: "S229", endswith: "S230", contain: "S231", regex: "S232" }
     let labelBtn
     if (idList === "verbosefilters") {
@@ -142,6 +188,8 @@ const ItemControl = ({
             labelBtn =
                 typeLabel + ": " + (itemData.value != null ? String(itemData.value) : "")
         }
+    } else if (idList === "panelsorder") {
+        labelBtn = panelDisplayName !== name ? panelDisplayName : T(name)
     } else {
         labelBtn =
             val != -1
@@ -200,7 +248,7 @@ const ItemControl = ({
                             />
                         )}
                         {fixed && !editable && (
-                            <label class="m-1">{T(name)}</label>
+                            <label class="m-1">{labelBtn}</label>
                         )}
                     </div>
 
@@ -354,6 +402,47 @@ const ItemsList = ({
         depend,
         interfaceSettings.current.settings
     )
+    let extraPanelDisplayNames = {}
+    if (id === "panelsorder") {
+        const settings = interfaceSettings?.current?.settings
+        let extraList = null
+        if (settings && settings.extracontents && Array.isArray(settings.extracontents)) {
+            const extraEl = settings.extracontents.find(
+                (el) => el && el.id === "extracontents"
+            )
+            if (extraEl && Array.isArray(extraEl.value)) extraList = extraEl.value
+        }
+        if (!Array.isArray(extraList) && settings && useUiContextFn.getElement) {
+            const extraEl = useUiContextFn.getElement("extracontents", settings)
+            if (extraEl && Array.isArray(extraEl.value)) extraList = extraEl.value
+        }
+        if (!Array.isArray(extraList)) {
+            extraList = useUiContextFn.getValue("extracontents") ?? null
+        }
+        if (Array.isArray(extraList)) {
+            extraPanelDisplayNames = {}
+            extraList.forEach((entry) => {
+                if (!entry || !entry.id) return
+                const flat = (entry.value || []).reduce((acc, current) => {
+                    if (!current) return acc
+                    const k = current.name ?? (current.id && String(current.id).replace(/^[^-]+-/, ""))
+                    if (k) acc[k] = current.initial != null ? current.initial : current.value
+                    return acc
+                }, {})
+                const nameSub =
+                    (entry.value || []).find((s) => s && (s.name === "name" || (s.id && String(s.id).endsWith("-name"))))
+                const display =
+                    flat.name ??
+                    (nameSub && (nameSub.initial != null ? nameSub.initial : nameSub.value)) ??
+                    entry.name ??
+                    entry.id
+                extraPanelDisplayNames["extracontents_" + entry.id] =
+                    display != null && !String(display).startsWith("extracontents_")
+                        ? display
+                        : entry.id
+            })
+        }
+    }
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
@@ -450,6 +539,7 @@ const ItemsList = ({
                                 sorted={sorted}
                                 nodelete={nodelete}
                                 editable={editable}
+                                extraPanelDisplayNames={extraPanelDisplayNames}
                             />
                         )
                     })}

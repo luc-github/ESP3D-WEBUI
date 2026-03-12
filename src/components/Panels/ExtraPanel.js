@@ -39,7 +39,6 @@ const ExtraPanel = ({ id, source, refreshtime, label, type, icon }) => {
 }
 
 const ExtraPanelElement = (element, id) => {
-    console.log("Panel ", id)
     return {
         id,
         content: (
@@ -57,7 +56,7 @@ const ExtraPanelElement = (element, id) => {
         icon: element.icon,
         show: "showextracontents",
         onstart: "openextrapanelsonstart",
-        settingid: "extracontents",
+        settingid: "extracontents_" + id,
     }
 }
 

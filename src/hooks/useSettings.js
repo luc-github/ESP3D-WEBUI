@@ -45,6 +45,7 @@ import {
 import {
     importPreferencesSection,
     formatPreferences,
+    prunePanelsOrderOrphans,
 } from "../tabs/interface/importHelper"
 import { Frown, Info } from "preact-feather"
 import { showModal } from "../components/Modal"
@@ -390,9 +391,14 @@ const useSettings = () => {
                     )
                     //console.log("Format preferences.settings")
                     formatPreferences(preferences_settings)
+                    prunePanelsOrderOrphans(preferences_settings)
                     //console.log(preferences_settings)
-                    uisettings.set(
-                        JSON.parse(JSON.stringify(preferences_settings))
+                    const settingsCopy = JSON.parse(
+                        JSON.stringify(preferences_settings)
+                    )
+                    uisettings.set(settingsCopy)
+                    interfaceSettings.current.settings = JSON.parse(
+                        JSON.stringify(preferences_settings)
                     )
                     if (haserrors) {
                         toasts.addToast({
@@ -406,7 +412,6 @@ const useSettings = () => {
                         })
                         console.log("error")
                     }
-                    interfaceSettings.current.settings = preferences_settings
                     if (jsonResult.custom) {
                         interfaceSettings.current.custom = jsonResult.custom
                     }

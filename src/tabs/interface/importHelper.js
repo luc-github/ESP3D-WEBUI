@@ -302,4 +302,103 @@ function importPreferencesSection(currentPreferencesData, importedPreferences) {
     return [currentPreferences, hasErrors];
   }
 
-export { importPreferencesSection, formatPreferences, formatItem }
+/**
+ * Remove from panelsorder any entry whose name value is extracontents_<id>
+ * when <id> is not in the current extracontents list (panel target).
+ * Mutates settings in place.
+ * @param {Object} settings - preferences settings object (keyed by section, values are arrays of elements)
+ */
+function prunePanelsOrderOrphans(settings) {
+    if (!settings || typeof settings !== "object") return
+    let panelsOrderEl = null
+    let extraContentsEl = null
+    for (const key of Object.keys(settings)) {
+        const arr = settings[key]
+        if (!Array.isArray(arr)) continue
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === "panelsorder") panelsOrderEl = arr[i]
+            if (arr[i].id === "extracontents") extraContentsEl = arr[i]
+        }
+        if (panelsOrderEl && extraContentsEl) break
+    }
+    if (!panelsOrderEl || !Array.isArray(panelsOrderEl.value)) return
+    const panelIds =
+        extraContentsEl && Array.isArray(extraContentsEl.value)
+            ? extraContentsEl.value
+                  .filter((item) => {
+                      const targetField =
+                          item.value &&
+                          item.value.find((s) => s && s.name === "target")
+                      return (
+                          targetField &&
+                          (targetField.value === "panel" ||
+                              targetField.initial === "panel")
+                      )
+                  })
+                  .map((item) => item.id)
+            : []
+    let arr = panelsOrderEl.value
+    const filtered = arr.filter((item) => {
+        const nameVal =
+            item.value && item.value.find((s) => s && s.name === "name")?.value
+        if (!nameVal || !String(nameVal).startsWith("extracontents_"))
+            return true
+        const rootId = String(nameVal).replace("extracontents_", "")
+        return panelIds.includes(rootId)
+    })
+    if (filtered.length < arr.length) {
+        panelsOrderEl.value = filtered
+        panelsOrderEl.nb = filtered.length
+        arr = filtered
+        arr.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find(
+                    (s) => s && s.name === "index"
+                )
+                if (idxField) idxField.value = i
+            }
+        })
+    }
+    const existingExtraIds = new Set(
+        arr
+            .map((item) => {
+                const n =
+                    item.value &&
+                    item.value.find((s) => s && s.name === "name")?.value
+                if (!n || !String(n).startsWith("extracontents_")) return null
+                return String(n).replace("extracontents_", "")
+            })
+            .filter(Boolean)
+    )
+    const missingIds = panelIds.filter((id) => !existingExtraIds.has(id))
+    if (missingIds.length > 0) {
+        const newItems = missingIds.map((id, i) => ({
+            id: "extracontents_" + id,
+            value: [
+                { name: "name", value: "extracontents_" + id },
+                { name: "index", value: arr.length + i },
+            ],
+            index: arr.length + i,
+        }))
+        const newArray = [...arr, ...newItems]
+        newArray.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find(
+                    (s) => s && s.name === "index"
+                )
+                if (idxField) idxField.value = i
+            }
+        })
+        panelsOrderEl.value = newArray
+        panelsOrderEl.nb = newArray.length
+    }
+}
+
+export {
+    importPreferencesSection,
+    formatPreferences,
+    formatItem,
+    prunePanelsOrderOrphans,
+}

@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useRef } from "preact/hooks"
+import { useState, useRef, useEffect } from "preact/hooks"
 import {
     useUiContext,
     useSettingsContext,
@@ -313,8 +313,109 @@ const InterfaceTab = () => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     const [isLoading, setIsLoading] = useState(false)
     const [showSave, setShowSave] = useState(true)
+    const [panelsOrderExpanded, setPanelsOrderExpanded] = useState(0)
     const inputFile = useRef(null)
-    console.log("Interface")
+
+    useEffect(() => {
+        const settings = interfaceSettings?.current?.settings
+        if (!settings || !useUiContextFn.getElement) return
+        const el = useUiContextFn.getElement("panelsorder", settings)
+        if (!el || !Array.isArray(el.value)) return
+        const extraEl = useUiContextFn.getElement("extracontents", settings)
+        const panelIds = (extraEl && Array.isArray(extraEl.value))
+            ? extraEl.value
+                  .filter((item) => {
+                      const targetField =
+                          item.value && item.value.find((s) => s.name === "target")
+                      return targetField && targetField.value === "panel"
+                  })
+                  .map((item) => item.id)
+            : []
+
+        let arr = el.value
+        const filtered = arr.filter((item) => {
+            const nameVal =
+                item.value && item.value.find((s) => s.name === "name")?.value
+            if (!nameVal || !String(nameVal).startsWith("extracontents_"))
+                return true
+            const rootId = String(nameVal).replace("extracontents_", "")
+            return panelIds.includes(rootId)
+        })
+        if (filtered.length < arr.length) {
+            arr = filtered
+            el.value = arr
+            el.nb = arr.length
+            arr.forEach((item, i) => {
+                item.index = i
+                if (item.value) {
+                    const idxField = item.value.find((s) => s.name === "index")
+                    if (idxField) idxField.value = i
+                }
+            })
+            setPanelsOrderExpanded((n) => n + 1)
+        }
+
+        const hasAnyExtra = arr.some((item) => {
+            const n =
+                item.value && item.value.find((s) => s.name === "name")?.value
+            return (
+                n === "extracontents" ||
+                (n && String(n).startsWith("extracontents_"))
+            )
+        })
+        if (panelIds.length > 0 && !hasAnyExtra) {
+            const newItems = panelIds.map((id, i) => ({
+                id: "extracontents_" + id,
+                value: [
+                    { name: "name", value: "extracontents_" + id },
+                    { name: "index", value: arr.length + i },
+                ],
+                index: arr.length + i,
+            }))
+            const newArray = [...arr, ...newItems]
+            newArray.forEach((item, i) => {
+                item.index = i
+                if (item.value) {
+                    const idxField = item.value.find((s) => s.name === "index")
+                    if (idxField) idxField.value = i
+                }
+            })
+            el.value = newArray
+            el.nb = newArray.length
+            arr = newArray
+            setPanelsOrderExpanded((n) => n + 1)
+        }
+
+        const idx = arr.findIndex(
+            (item) =>
+                item.value &&
+                item.value.find((s) => s.name === "name")?.value === "extracontents"
+        )
+        if (idx === -1 || panelIds.length === 0) return
+        const newItems = panelIds.map((id, i) => ({
+            id: "extracontents_" + id,
+            value: [
+                { name: "name", value: "extracontents_" + id },
+                { name: "index", value: idx + i },
+            ],
+            index: idx + i,
+        }))
+        const newArray = [
+            ...arr.slice(0, idx),
+            ...newItems,
+            ...arr.slice(idx + 1),
+        ]
+        newArray.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find((s) => s.name === "index")
+                if (idxField) idxField.value = i
+            }
+        })
+        el.value = newArray
+        el.nb = newArray.length
+        setPanelsOrderExpanded((n) => n + 1)
+    }, [interfaceSettings?.current?.settings])
     const isFlashFS =
         useSettingsContextFn.getValue("FlashFileSystem") == "none"
             ? false
