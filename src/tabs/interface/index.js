@@ -34,7 +34,11 @@ import {
 import { T } from "../../components/Translations"
 import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather"
 import { Field, FieldGroup } from "../../components/Controls"
-import { exportPreferences, exportPreferencesSection } from "./exportHelper"
+import {
+    exportPreferences,
+    exportPreferencesSection,
+    isFullStructureSettings,
+} from "./exportHelper"
 import { importPreferencesSection, formatPreferences } from "./importHelper"
 
 const isDependenciesMet = (depend) => {
@@ -347,11 +351,14 @@ const InterfaceTab = () => {
                 const importFile = e.target.result
                 try {
                     const importData = JSON.parse(importFile)
-
+                    let settingsToImport = importData.settings
+                    if (settingsToImport && isFullStructureSettings(settingsToImport)) {
+                        settingsToImport = exportPreferencesSection(settingsToImport, true)
+                    }
                     const [preferences_settings, haserrors] =
                         importPreferencesSection(
                             interfaceSettings.current.settings,
-                            importData.settings
+                            settingsToImport
                         )
                     interfaceSettings.current.settings = preferences_settings
                     if (importData.custom) {
@@ -650,8 +657,7 @@ const InterfaceTab = () => {
                             onClick={(e) => {
                                 useUiContextFn.haptic()
                                 e.target.blur()
-                                //console.log(interfaceSettings.current)
-                                exportPreferences(interfaceSettings.current)
+                                exportPreferences(interfaceSettings.current, true, { readable: true })
                             }}
                         />
                         {showSave && (

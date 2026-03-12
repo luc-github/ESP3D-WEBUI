@@ -23,7 +23,7 @@ import { useRef, useEffect } from "preact/hooks"
 import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
-import { SmoothieChart, TimeSeries } from "smoothie"
+import { SmoothieChart, TimeSeries } from "./smoothieChartMinimal"
 import { Menu as PanelMenu } from "./"
 
 /*

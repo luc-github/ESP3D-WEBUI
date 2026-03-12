@@ -30,6 +30,13 @@ function deepEqual(a, b) {
 /** Keys that must always be included when present (required for extra contents / extensions to load). */
 const ALWAYS_INCLUDE_KEYS = ["showextracontents", "openextrapanelsonstart", "extracontents"]
 
+/** True if settings is full structure (sections as arrays of { id, type, value, ... }) instead of flat { id: value }. */
+function isFullStructureSettings(settings) {
+    if (!settings || typeof settings !== "object" || Array.isArray(settings)) return false
+    const firstVal = Object.values(settings)[0]
+    return Array.isArray(firstVal) && firstVal.length > 0 && typeof firstVal[0] === "object" && "id" in firstVal[0]
+}
+
 /** Return a copy of settings with only keys that differ from default (reduces file size). */
 function omitDefaultSettings(settings, defaultSettings) {
     const out = {}
@@ -93,28 +100,37 @@ function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, i
     return section
 }
 
-function exportPreferences(interfaceSettingsData, asFile = true) {
-    console.log("exportPreferences for")
-    console.log(JSON.parse(JSON.stringify(interfaceSettingsData)))
-    const preferences = {}
+/**
+ * @param {Object} interfaceSettingsData - Current preferences (full structure).
+ * @param {boolean} [asFile=true] - If true, trigger download or return object for upload.
+ * @param {{ readable?: boolean }} [options] - readable: same id/value shape as optimized, but all settings + pretty-print (no depend, type, label, initial, etc.).
+ */
+function exportPreferences(interfaceSettingsData, asFile = true, options = {}) {
     const filename = "preferences.json"
-    preferences.settings = {}
-    if (interfaceSettingsData.custom)
-        preferences.custom = interfaceSettingsData.custom
-    if (interfaceSettingsData.extensions)
-        preferences.extensions = interfaceSettingsData.extensions
-    const fullSettings = exportPreferencesSection(interfaceSettingsData.settings, asFile)
-    const defaultSettings = exportPreferencesSection(defaultPreferences.settings, true)
-    preferences.settings = omitDefaultSettings(fullSettings, defaultSettings)
+    let preferences
+    let stringified
+
+    if (options.readable) {
+        // Id/value only (like optimized), but include all settings and pretty-print.
+        const fullSettings = exportPreferencesSection(interfaceSettingsData.settings, asFile)
+        preferences = { settings: fullSettings }
+        if (interfaceSettingsData.custom) preferences.custom = interfaceSettingsData.custom
+        if (interfaceSettingsData.extensions) preferences.extensions = interfaceSettingsData.extensions
+        stringified = JSON.stringify(preferences, null, 2)
+    } else {
+        const fullSettings = exportPreferencesSection(interfaceSettingsData.settings, asFile)
+        const defaultSettings = exportPreferencesSection(defaultPreferences.settings, true)
+        preferences = { settings: omitDefaultSettings(fullSettings, defaultSettings) }
+        if (interfaceSettingsData.custom) preferences.custom = interfaceSettingsData.custom
+        if (interfaceSettingsData.extensions) preferences.extensions = interfaceSettingsData.extensions
+        stringified = JSON.stringify(preferences)
+    }
+
     if (asFile) {
-        const file = new Blob([JSON.stringify(preferences)], {
-            type: "application/json",
-        })
-        if (window.navigator.msSaveOrOpenBlob)
-            // IE10+
+        const file = new Blob([stringified], { type: "application/json" })
+        if (window.navigator.msSaveOrOpenBlob) {
             window.navigator.msSaveOrOpenBlob(file, filename)
-        else {
-            // Others
+        } else {
             const a = document.createElement("a")
             const url = URL.createObjectURL(file)
             a.href = url
@@ -127,9 +143,12 @@ function exportPreferences(interfaceSettingsData, asFile = true) {
             }, 0)
         }
     }
-    console.log("exportPreferences done")
-    console.log(preferences)
     return preferences
 }
 
-export { exportPreferences, exportPreferencesSection, omitDefaultSettings }
+export {
+    exportPreferences,
+    exportPreferencesSection,
+    omitDefaultSettings,
+    isFullStructureSettings,
+}

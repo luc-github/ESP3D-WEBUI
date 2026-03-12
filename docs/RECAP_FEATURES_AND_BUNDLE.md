@@ -15,7 +15,9 @@
 | 3 | Réduction icônes (34 retirées de `icons.js`) | 92 595 | +495 |
 | 4 | Optimisation sauvegarde preferences.json (diffs + minification) | 92 870 | +275 |
 | 5 | Clés raccourcies preferences statiques (bundle) | 92 816 | −54 |
-| 6 | *prochaine étape…* | | |
+| 6 | Export lisible (id/value) + import full/optimisé, sauvegarde optimisée | 92 913 | +97 |
+| 7 | Smoothie remplacé par module minimal (smoothieChartMinimal.js, resetBounds, labels) | 89 871 | −3 042 |
+| 8 | *prochaine étape…* | | |
 
 **Légende :** *Variation* = différence vs ligne précédente (négatif = on descend, positif = on remonte).
 
@@ -55,7 +57,7 @@ D’après le treemap (build Printer3D/Marlin), chunk **main** ≈ **839 KB** pa
 **Propositions prioritaires (sans changer la règle « un seul fichier ») :**
 
 1. **Preferences JSON (statiques dans le bundle)** : le fichier sauvegardé sur le device est déjà optimisé. Les défauts (base + target + subtarget) pèsent ~21 KB parsé. Voir ci‑dessus « Réduire les preferences statiques (bundle) ».
-2. **Smoothie** (~48 KB parsé, ~12,7 KB gzip) : utilisé pour les graphiques (Charts). Vérifier si on peut remplacer par une lib plus légère ou un sous-ensemble (tree-shaking / build custom).
+2. **Smoothie** : remplacé par un module minimal (`src/components/Panels/smoothieChartMinimal.js`) compatible avec l’API utilisée par Charts.js (TimeSeries + SmoothieChart, linear only). Gain ~3,2 KB sur index.html.gz, sans lazy load.
 3. **Traductions** (~15 KB parsé, ~6 KB gzip) : une seule langue (en) dans le bundle ; déjà raisonnable. Option ultérieure : clés numériques + fichier de traduction minimal si d’autres langues sont chargées à part.
 4. **Targets / Panels** : le bloc targets est très gros car il contient tout Marlin (sources FLASH/SD, filters, MachineSettings). Pas de lazy load possible sans plusieurs artefacts ; éventuellement factoriser du code dupliqué entre targets (hors scope court terme).
 5. **Terser / minification** (point 4) : tester des options plus agressives et mesurer le gain sur le .gz.
@@ -98,12 +100,14 @@ Sans retirer d’icônes du picker, on peut encore :
 
 ---
 
-## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → ~90 600 (actuel)
+## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → 89 871 (actuel)
 
 - **Base de départ** : **98 117** octets (package Marlin de référence).
 - **163 KB** : état du code avec toutes les améliorations fonctionnelles mais avant les optimisations de taille (footprint énorme).
 - **92 870** : après réduction icônes + optimisation preferences (fichier sauvegardé).
-- **92 816** : actuel après clés raccourcies sur preferences statiques (bundle) ; gain négligeable (−54 o).
+- **92 816** : après clés raccourcies sur preferences statiques (bundle) ; gain négligeable (−54 o).
+- **92 913** : export lisible (id/value, toutes les prefs) + import full/optimisé, sauvegarde sur flash optimisée.
+- **89 871** : actuel — Smoothie remplacé par module minimal (resetBounds, labels min/max visibles), sans lazy load.
 - Le bloc ~70 KB (163 KB − 97 KB) venait surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
   - **Preferences.json sauvegardé** : optimisé (seulement les diffs aux défauts + minification) → quelques centaines d’octets au lieu de plusieurs KB.

@@ -290,8 +290,11 @@ const commandsQuery = (req, res, SendWS) => {
         const reg_ex_index = /T([0-9])/
         const result_target = reg_ex_temp.exec(url)
         const result_index = reg_ex_index.exec(url)
-        console.log(result_target[1], result_index[1])
-        temperatures["T"][result_index[1]].target = parseFloat(result_target[1])
+        const index = result_index ? result_index[1] : "0"
+        if (result_target && temperatures["T"][index] != null) {
+            temperatures["T"][index].target = parseFloat(result_target[1])
+            console.log("M104 T" + index + " S" + result_target[1])
+        }
         res.send("")
         return
     }
@@ -299,7 +302,9 @@ const commandsQuery = (req, res, SendWS) => {
     if (url.indexOf("M140") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const result_target = reg_ex_temp.exec(url)
-        temperatures["B"][0].target = parseFloat(result_target[1])
+        if (result_target && temperatures["B"][0] != null) {
+            temperatures["B"][0].target = parseFloat(result_target[1])
+        }
         res.send("")
         return
     }
@@ -307,7 +312,9 @@ const commandsQuery = (req, res, SendWS) => {
     if (url.indexOf("M141") != -1) {
         const reg_ex_temp = /S([0-9]*\.?[0-9]*)/
         const result_target = reg_ex_temp.exec(url)
-        temperatures["C"][0].target = parseFloat(result_target[1])
+        if (result_target && temperatures["C"][0] != null) {
+            temperatures["C"][0].target = parseFloat(result_target[1])
+        }
         res.send("")
         return
     }

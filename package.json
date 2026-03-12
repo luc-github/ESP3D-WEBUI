@@ -75,7 +75,6 @@
     "dependencies": {
         "preact": "^10.10.1",
         "preact-feather": "^4.2.1",
-        "smoothie": "^1.36.0",
         "spectre.css": "luc-github/spectre"
     },
     "browserslist": {
