@@ -61,10 +61,19 @@ const ItemControl = ({
 }) => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { id, value, editionMode, ...rest } = itemData
-    const indexIcon = value.findIndex((element) => element.id == id + "-icon")
-    const indexName = value.findIndex((element) => element.id == id + "-name")
-    const icon = value ? value[indexIcon != -1 ? indexIcon : 0].value : null
-    const name = value ? value[indexName != -1 ? indexName : 0].value : null
+    // Ensure value is always an array so rendering never crashes,
+    // even if preferences data is malformed or not yet formatted.
+    const safeValue = Array.isArray(value) ? value : []
+    const indexIcon = safeValue.findIndex((element) => element.id == id + "-icon")
+    const indexName = safeValue.findIndex((element) => element.id == id + "-name")
+    const icon =
+        safeValue.length > 0
+            ? safeValue[indexIcon != -1 ? indexIcon : 0].value
+            : null
+    const name =
+        safeValue.length > 0
+            ? safeValue[indexName != -1 ? indexName : 0].value
+            : null
     const controlIcon = iconsList[icon] ? iconsList[icon] : ""
 
     const onEdit = (state) => {
@@ -100,27 +109,48 @@ const ItemControl = ({
 
     let colorStyle
     if (
-        JSON.stringify(value).includes('"hasmodified":true') ||
+        JSON.stringify(safeValue).includes('"hasmodified":true') ||
         JSON.stringify(itemData).includes('"newitem":true')
     )
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 183, 0, .4);margin-right:0.5rem!important"
 
-    if (JSON.stringify(value).includes('"haserror":true'))
+    if (JSON.stringify(safeValue).includes('"haserror":true'))
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
 
-    const val = value.findIndex((e) => {
+    const val = safeValue.findIndex((e) => {
         return e.name == "key"
     })
 
-    const labelBtn =
-        val != -1
-            ? T(name) +
-              (value[val].value.length != 0
-                  ? " [" + value[val].value + "]"
-                  : "")
-            : T(name)
+    const VERBOSE_TYPE_KEYS = { startswith: "S229", endswith: "S230", contain: "S231", regex: "S232" }
+    let labelBtn
+    if (idList === "verbosefilters") {
+        if (safeValue.length > 0) {
+            const typeField = safeValue.find((e) => e.name === "type")
+            const valueField = safeValue.find((e) => e.name === "value")
+            const typeStr = typeField && typeField.value != null ? String(typeField.value) : ""
+            const valueStr =
+                valueField && valueField.value != null
+                    ? (typeof valueField.value === "string" ? valueField.value : String(valueField.value))
+                    : ""
+            const typeLabel = VERBOSE_TYPE_KEYS[typeStr] ? T(VERBOSE_TYPE_KEYS[typeStr]) : typeStr
+            labelBtn = typeStr !== "" || valueStr !== "" ? typeLabel + ": " + valueStr : id
+        } else {
+            const typeStr = itemData.type != null ? String(itemData.type) : ""
+            const typeLabel = VERBOSE_TYPE_KEYS[typeStr] ? T(VERBOSE_TYPE_KEYS[typeStr]) : typeStr
+            labelBtn =
+                typeLabel + ": " + (itemData.value != null ? String(itemData.value) : "")
+        }
+    } else {
+        labelBtn =
+            val != -1
+                ? T(name) +
+                  (safeValue[val].value.length != 0
+                      ? " [" + safeValue[val].value + "]"
+                      : "")
+                : T(name)
+    }
 
     return (
         <Fragment>
@@ -234,8 +264,8 @@ const ItemControl = ({
                         </div>
                     </div>
                     <div class="m-1">
-                        {value &&
-                            value.map((item) => {
+                        {safeValue &&
+                            safeValue.map((item) => {
                                 const {
                                     id,
                                     type,
@@ -247,6 +277,13 @@ const ItemControl = ({
                                 const [validation, setvalidation] = useState(
                                     validationfn(item)
                                 )
+                                // Avoid [object Object] when a sub-field value is object/array (e.g. malformed verbosefilters)
+                                const valueIsObject =
+                                    idList === "verbosefilters" &&
+                                    item.name === "value" &&
+                                    (typeof rest.value === "object" || Array.isArray(rest.value))
+                                if (valueIsObject) item.value = ""
+                                const safeRest = valueIsObject ? { ...rest, value: "" } : rest
                                 //Do translation if necessary
                                 const Options = options
                                     ? [...options].reduce((acc, curr) => {
@@ -259,6 +296,9 @@ const ItemControl = ({
                                       }, [])
                                     : null
                                 if (idList == "keymap" && item.name == "name") {
+                                    return
+                                }
+                                if (idList === "verbosefilters" && item.name === "index") {
                                     return
                                 }
                                 return (
@@ -276,7 +316,7 @@ const ItemControl = ({
                                                 ? true
                                                 : false
                                         }
-                                        {...rest}
+                                        {...safeRest}
                                         setValue={(val, update) => {
                                             if (!update) item.value = val
                                             setvalidation(validationfn(item))
@@ -314,21 +354,25 @@ const ItemsList = ({
         depend,
         interfaceSettings.current.settings
     )
-    console.log(id)
     const addItem = (e) => {
         useUiContextFn.haptic()
         e.target.blur()
-        const newItem = JSON.parse(
-            JSON.stringify(
-                id == "macros"
-                    ? defaultMacro
-                    : id == "pollingcmds"
-                      ? defaultPolling
-                      : defaultPanel
+        let newItem
+        if (id == "verbosefilters") {
+            newItem = { id: "contain-" + (value ? value.length : 0), type: "contain", value: "" }
+        } else {
+            newItem = JSON.parse(
+                JSON.stringify(
+                    id == "macros"
+                        ? defaultMacro
+                        : id == "pollingcmds"
+                          ? defaultPolling
+                          : defaultPanel
+                )
             )
-        )
-        newItem.id = generateUID()
-        newItem.name += " " + newItem.id
+            newItem.id = generateUID()
+            newItem.name += " " + newItem.id
+        }
         const formatedNewItem = formatItem(newItem, -1, id)
         formatedNewItem.editionMode = true
         formatedNewItem.newItem = true
@@ -356,7 +400,10 @@ const ItemsList = ({
     return (
         <fieldset
             id={id}
-            class="fieldset-top-separator fieldset-bottom-separator field-group"
+            class={
+                "fieldset-top-separator fieldset-bottom-separator field-group" +
+                (id === "verbosefilters" ? " items-list-top-separator" : "")
+            }
         >
             <legend>
                 {!fixed && (
@@ -367,7 +414,9 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
-                                  : T("S156")
+                                  : id == "verbosefilters"
+                                    ? T("S228")
+                                    : T("S156")
                         }
                         tooltip
                         data-tooltip={
@@ -375,7 +424,9 @@ const ItemsList = ({
                                 ? T("S128")
                                 : id == "pollingcmds"
                                   ? T("S207")
-                                  : T("S156")
+                                  : id == "verbosefilters"
+                                    ? T("S228")
+                                    : T("S156")
                         }
                         icon={<Plus />}
                         onClick={addItem}

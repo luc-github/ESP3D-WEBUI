@@ -71,7 +71,14 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                 case "type":
                     newItem.type = "select"
                     newItem.label = "S135"
-                    if (origineId == "macros") {
+                    if (origineId == "verbosefilters") {
+                        newItem.options = [
+                            { label: "S229", value: "startswith" },
+                            { label: "S230", value: "endswith" },
+                            { label: "S231", value: "contain" },
+                            { label: "S232", value: "regex" },
+                        ]
+                    } else if (origineId == "macros") {
                         newItem.options = [
                             {
                                 label: "S137",
@@ -156,6 +163,10 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S159"
                     newItem.min = "1"
                     break
+                case "value":
+                    newItem.type = "text"
+                    newItem.label = origineId == "verbosefilters" ? "S233" : key
+                    break
                 default:
                     newItem.type = "text"
                     newItem.label = key
@@ -164,6 +175,25 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
         }
     })
     return itemFormated
+}
+
+/**
+ * If the list item is in "formatted" form (value is array of { name, value }), flatten it
+ * so formatItem always receives flat shape { id, type, value, ... }. Avoids double-nesting
+ * and "[object Object]" when preferences are reloaded after save.
+ */
+function normalizeListItem(item) {
+    if (!item || typeof item !== "object") return item
+    const val = item.value
+    if (!Array.isArray(val) || val.length === 0) return item
+    const first = val[0]
+    if (typeof first !== "object" || first.name === undefined) return item
+    const flat = { id: item.id }
+    if (item.index !== undefined) flat.index = item.index
+    val.forEach((s) => {
+        flat[s.name] = s.value
+    })
+    return flat
 }
 
 /**
@@ -176,7 +206,11 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
 function formatItemsList(itemsList, origineId) {
     const formatedItems = []
     itemsList.forEach((element, index) => {
-        formatedItems.push(formatItem(element, index, origineId))
+        let el = normalizeListItem(element)
+        if (origineId === "verbosefilters" && (el.id == null || el.id === "")) {
+            el = { ...el, id: (el.type != null ? String(el.type) : "filter") + "-" + index }
+        }
+        formatedItems.push(formatItem(el, index, origineId))
     })
     return formatedItems
 }
@@ -189,21 +223,37 @@ function formatItemsList(itemsList, origineId) {
  * @returns {Object} - The formatted settings.
  */
 function formatPreferences(section) {
-    for (let key in section) {
-        if (Array.isArray(section[key])) {
-            for (let index = 0; index < section[key].length; index++) {
-                if (section[key][index].type == "group") {
-                    section[key][index].value.forEach((element, index) => {
+    function formatSection(arr) {
+        if (!Array.isArray(arr)) return
+        for (let index = 0; index < arr.length; index++) {
+            const el = arr[index]
+            if (el.type == "group") {
+                if (Array.isArray(el.value)) {
+                    el.value.forEach((element) => {
                         element.initial = element.value
                     })
-                } else if (section[key][index].type == "list") {
-                    section[key][index].nb = section[key][index].value.length
-                    section[key][index].value = formatItemsList(
-                        [...section[key][index].value],
-                        section[key][index].id
-                    )
-                } else section[key][index].initial = section[key][index].value
+                    // Also format list items inside the group
+                    el.value.forEach((element) => {
+                        if (element.type == "list" && Array.isArray(element.value)) {
+                            element.nb = element.value.length
+                            element.value = formatItemsList(
+                                [...element.value],
+                                element.id
+                            )
+                        }
+                    })
+                }
+            } else if (el.type == "list") {
+                el.nb = el.value.length
+                el.value = formatItemsList([...el.value], el.id)
+            } else {
+                el.initial = el.value
             }
+        }
+    }
+    for (let key in section) {
+        if (Array.isArray(section[key])) {
+            formatSection(section[key])
         }
     }
     return section

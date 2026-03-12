@@ -31,6 +31,7 @@ const FieldGroup = ({ className, children, label, id, depend }) => {
     if (!canshow) {
         return null
     }
+    const isTerminalGroup = id === "terminalsettings"
     return (
         <fieldset
             class={
@@ -40,14 +41,16 @@ const FieldGroup = ({ className, children, label, id, depend }) => {
                         ? "fieldset-top-separator"
                         : "fieldset-no-top-separator"
                 }` +
-                " fieldset-bottom-separator field-group"
+                (isTerminalGroup
+                    ? " fieldset-no-bottom-separator field-group field-group-fullwidth"
+                    : " fieldset-bottom-separator field-group")
             }
             id={id}
         >
             <legend>
                 <label class="m-1">{label}</label>
             </legend>
-            <div class="field-group-content">{children}</div>
+            <div class={"field-group-content" + (isTerminalGroup ? " field-group-content-fullwidth" : "")}>{children}</div>
         </fieldset>
     )
 }

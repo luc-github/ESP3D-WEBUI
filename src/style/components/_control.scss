@@ -143,6 +143,10 @@ input[type="range"]::-ms-thumb {
     margin-top: -1.8rem;
 }
 
+.fieldset-no-bottom-separator {
+    border-bottom: none;
+}
+
 .fieldset-bottom-separator {
     border-bottom: 0.05rem solid #dadee4;
 }
@@ -196,6 +200,18 @@ span.input-group-addon {
     margin-top: -1rem;
     padding-bottom: 0.5rem;
     max-width: fit-content;
+}
+
+.field-group-content-fullwidth {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* List inside group (e.g. Verbose filters): legend covers top border so it doesn't cut through the button */
+.items-list-top-separator legend {
+    background: var(--body-bg, #fff);
+    padding: 0 0.25rem;
+    margin-left: -0.25rem;
 }
 
 .maxwidth {

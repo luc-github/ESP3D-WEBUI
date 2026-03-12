@@ -18,15 +18,24 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { matchVerboseLine } from "../../../components/Helpers/verboseFilters"
 import { isTemperatures, isPositions, isPrintStatus } from "./filters"
 
-const isVerboseOnly = (type, data) => {
+/**
+ * @param {string} type
+ * @param {string} data
+ * @param {Array<{ type?: string, value?: string }>|null|undefined} filters - From preferences verbosefilters; when set, used instead of built-in rules.
+ */
+const isVerboseOnly = (type, data, filters) => {
     const line = data.trim()
+    if (line.length === 0) return true
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+        return matchVerboseLine(line, filters)
+    }
     return (
         isTemperatures(line) ||
         isPositions(line) ||
         isPrintStatus(line) ||
-        line.trim().length === 0 ||
         line.startsWith("echo:") ||
         line.startsWith("ok") ||
         line.startsWith("M105") ||

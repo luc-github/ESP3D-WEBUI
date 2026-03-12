@@ -18,19 +18,21 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { matchVerboseLine } from "../../../components/Helpers/verboseFilters"
 
-const isVerboseOnly = (type, data) => {
+const isVerboseOnly = (type, data, filters) => {
     const line = data.trim()
-    if (
-        line.trim().length == 0 ||
+    if (line.length === 0) return true
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+        return matchVerboseLine(line, filters)
+    }
+    return (
         line.startsWith("[") ||
         line.startsWith("ok") ||
         line.startsWith("<") ||
         line.startsWith("SENSOR:") ||
         (line.startsWith("{") && line.endsWith("}"))
     )
-        return true
-    else return false
 }
 
 export { isVerboseOnly }

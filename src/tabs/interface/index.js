@@ -138,22 +138,26 @@ const generateValidationGlobal = (
             validation.valid = !stringified.includes('"haserror":true')
         }
         if (fieldData.type == "text") {
+            // Be robust: value may occasionally be non-string, always work on a string
+            const valueStr =
+                fieldData.value === null || fieldData.value === undefined
+                    ? ""
+                    : String(fieldData.value)
             if (fieldData.regexpattern) {
                 const regex = new RegExp(fieldData.regexpattern)
-                if (!regex.test(fieldData.value)) {
+                if (!regex.test(valueStr)) {
                     validation.valid = false
                     console.log("Error")
                 }
             }
             if (typeof fieldData.min != undefined) {
-                if (fieldData.value.trim().length < fieldData.min) {
+                if (valueStr.trim().length < fieldData.min) {
                     validation.valid = false
                     console.log("Error")
                 } else if (typeof fieldData.minSecondary != undefined) {
                     if (
-                        fieldData.value.trim().length <
-                            fieldData.minSecondary &&
-                        fieldData.value.trim().length > fieldData.min
+                        valueStr.trim().length < fieldData.minSecondary &&
+                        valueStr.trim().length > fieldData.min
                     ) {
                         validation.valid = false
                         console.log("Error")
@@ -162,7 +166,7 @@ const generateValidationGlobal = (
             }
 
             if (fieldData.max) {
-                if (fieldData.value.trim().length > fieldData.max) {
+                if (valueStr.trim().length > fieldData.max) {
                     validation.valid = false
                     console.log("Error")
                 }

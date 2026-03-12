@@ -137,16 +137,24 @@
                         "value": true
                     },
                     {
+                        "id": "autoscroll",
+                        "type": "boolean",
+                        "label": "S77",
+                        "value": true
+                    },
+                    {
                         "id": "verbose",
                         "type": "boolean",
                         "label": "S76",
                         "value": true
                     },
                     {
-                        "id": "autoscroll",
-                        "type": "boolean",
-                        "label": "S77",
-                        "value": true
+                        "id": "verbosefilters",
+                        "type": "list",
+                        "sorted": false,
+                        "label": "S227",
+                        "value": [],
+                        "depend": [{ "id": "showterminalpanel", "value": true }]
                     }
                 ]
             }

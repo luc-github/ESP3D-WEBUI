@@ -27,8 +27,8 @@ function deepEqual(a, b) {
     return JSON.stringify(a) === JSON.stringify(b)
 }
 
-/** Keys that must always be included when present (required for extra contents / extensions to load). */
-const ALWAYS_INCLUDE_KEYS = ["showextracontents", "openextrapanelsonstart", "extracontents"]
+/** Keys that must always be included when present (e.g. empty array required for loader). */
+const ALWAYS_INCLUDE_KEYS = []
 
 /** True if settings is full structure (sections as arrays of { id, type, value, ... }) instead of flat { id: value }. */
 function isFullStructureSettings(settings) {
@@ -50,6 +50,37 @@ function omitDefaultSettings(settings, defaultSettings) {
     return out
 }
 
+/** Export a single list's value (used for top-level lists and for lists inside groups). */
+function exportListValue(listEl, asFile, listId) {
+    const listValue = Array.isArray(listEl.value) ? listEl.value : []
+    const extensionMetadataKeys = ["owner", "version", "github", "description", "supportedVersion", "targetSystem"]
+    const itemsList = []
+    listValue.forEach((element) => {
+        const item = { id: element.id }
+        const itemValue = Array.isArray(element.value) ? element.value : []
+        if (itemValue.length > 0) {
+            itemValue.forEach((setting) => {
+                item[setting.name] = asFile ? (setting.initial ?? setting.value) : setting.value
+            })
+        } else {
+            Object.keys(element).forEach((k) => {
+                if (k !== "id" && k !== "value" && k !== "index") item[k] = element[k]
+            })
+        }
+        if (listId === "verbosefilters") {
+            itemsList.push({ type: item.type, value: item.value })
+        } else if (listId === "panelsorder") {
+            itemsList.push({ id: item.id, name: item.name })
+        } else if (listId === "extracontents") {
+            extensionMetadataKeys.forEach((k) => delete item[k])
+            itemsList.push(item)
+        } else {
+            itemsList.push(item)
+        }
+    })
+    return itemsList
+}
+
 function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, initial_value = false) {
     const section = {}
     for (let key in interfaceSettingsDataSection) {
@@ -60,36 +91,18 @@ function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, i
                         ? interfaceSettingsDataSection[key][subkey].value
                         : []
                     groupValue.forEach((element) => {
-                        const val = asFile ? (element.initial ?? element.value) : element.value
-                        section[element.id] = val
+                        if (element.type == "list") {
+                            section[element.id] = exportListValue(element, asFile, element.id)
+                        } else {
+                            const val = asFile ? (element.initial ?? element.value) : element.value
+                            section[element.id] = val
+                        }
                     })
                 } else if (
                     interfaceSettingsDataSection[key][subkey].type == "list"
                 ) {
                     const listEl = interfaceSettingsDataSection[key][subkey]
-                    const listId = listEl.id
-                    const listValue = Array.isArray(listEl.value) ? listEl.value : []
-                    const extensionMetadataKeys = ["owner", "version", "github", "description", "supportedVersion", "targetSystem"]
-                    const itemsList = []
-                    listValue.forEach((element) => {
-                        const item = { id: element.id }
-                        const itemValue = Array.isArray(element.value) ? element.value : []
-                        if (itemValue.length > 0) {
-                            itemValue.forEach((setting) => {
-                                item[setting.name] = asFile ? (setting.initial ?? setting.value) : setting.value
-                            })
-                        } else {
-                            // Flat form (e.g. default panelsorder: { id: "Files", name: "files" })
-                            Object.keys(element).forEach((k) => {
-                                if (k !== "id" && k !== "value" && k !== "index") item[k] = element[k]
-                            })
-                        }
-                        if (listId === "extracontents") {
-                            extensionMetadataKeys.forEach((k) => delete item[k])
-                        }
-                        itemsList.push(item)
-                    })
-                    section[listId] = itemsList
+                    section[listEl.id] = exportListValue(listEl, asFile, listEl.id)
                 } else {
                     const el = interfaceSettingsDataSection[key][subkey]
                     section[el.id] = asFile || initial_value ? (el.initial ?? el.value) : el.value
