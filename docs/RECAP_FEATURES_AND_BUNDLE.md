@@ -14,7 +14,8 @@
 | 2 | PurgeCSS | 92 100 | −6 017 |
 | 3 | Réduction icônes (34 retirées de `icons.js`) | 92 595 | +495 |
 | 4 | Optimisation sauvegarde preferences.json (diffs + minification) | 92 870 | +275 |
-| 5 | *prochaine étape…* | | |
+| 5 | Clés raccourcies preferences statiques (bundle) | 92 816 | −54 |
+| 6 | *prochaine étape…* | | |
 
 **Légende :** *Variation* = différence vs ligne précédente (négatif = on descend, positif = on remonte).
 
@@ -49,10 +50,7 @@ D’après le treemap (build Printer3D/Marlin), chunk **main** ≈ **839 KB** pa
   **Pas de gain.** Webpack importe les JSON avec `import … from "…/preferences.json"`, les parse et les intègre comme objets JS. Le bundle final contient la sérialisation minifiée de ces objets, pas le texte brut des fichiers. Les espaces des .json sources ne se retrouvent donc pas dans le bundle. Minifier les fichiers .json sur disque ne change pas la taille du .gz.
 
 - **Clés raccourcies (short keys) ?**  
-  **Gain possible (estimé 2–5 KB).** Les clés `"id"`, `"type"`, `"label"`, `"value"`, `"depend"`, `"help"`, `"append"`, etc. sont répétées des centaines de fois. On peut :
-  - À la **build** : produire des JSON (ou un module) où ces clés sont remplacées par une lettre (`i`, `t`, `l`, `v`, `d`, `h`, `a`, …) via un dictionnaire fixe.
-  - Au **runtime** : une seule fonction `expandShortKeys(prefs)` (ou équivalent) appliquée au chargement des default preferences, avec un petit objet de mapping (~100–200 octets). Le code existant continue d’utiliser `id`, `type`, `label`, etc. sur l’objet déjà développé.  
-  Le coût du mapping reste faible ; l’économie sur les répétitions de clés peut être significative. À valider par un prototype (script de build + expand au chargement).
+  **Implémenté.** Loader webpack (`config/shrink-preferences-loader.js`) raccourcit les clés dans les `preferences.json` du bundle ; au runtime `expandShortKeys()` (dans `src/components/Helpers/preferencesKeys.js`) restaure les clés après merge dans `targets/index.js`. Gain mesuré sur index.html.gz : **−54 octets** (92 870 → 92 816). En gzip les clés répétées se compriment déjà très bien, donc le gain est négligeable ; on peut revert si on préfère garder le code plus simple.
 
 **Propositions prioritaires (sans changer la règle « un seul fichier ») :**
 
@@ -100,11 +98,12 @@ Sans retirer d’icônes du picker, on peut encore :
 
 ---
 
-## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → 92 870 (actuel)
+## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → ~90 600 (actuel)
 
 - **Base de départ** : **98 117** octets (package Marlin de référence).
 - **163 KB** : état du code avec toutes les améliorations fonctionnelles mais avant les optimisations de taille (footprint énorme).
-- **92 870** : actuel après réduction icônes + optimisation preferences (fichier sauvegardé).
+- **92 870** : après réduction icônes + optimisation preferences (fichier sauvegardé).
+- **92 816** : actuel après clés raccourcies sur preferences statiques (bundle) ; gain négligeable (−54 o).
 - Le bloc ~70 KB (163 KB − 97 KB) venait surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
   - **Preferences.json sauvegardé** : optimisé (seulement les diffs aux défauts + minification) → quelques centaines d’octets au lieu de plusieurs KB.

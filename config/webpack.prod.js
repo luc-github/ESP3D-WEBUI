@@ -72,6 +72,12 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /preferences\.json$/,
+                include: path.join(__dirname, "../src/targets"),
+                use: path.join(__dirname, "shrink-preferences-loader.js"),
+                type: "javascript/auto",
+            },
         ],
     },
     plugins: [

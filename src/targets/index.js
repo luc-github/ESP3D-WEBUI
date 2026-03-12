@@ -46,14 +46,17 @@ import defaultPreferencesSubTarget from "SubTargetDir/preferences.json"
 import defaultPreferencesTarget from "TargetDir/preferences.json"
 import defaultPreferencesBase from "./preferences.json"
 import { mergeJSON } from "../components/Helpers"
+import { expandShortKeys } from "../components/Helpers/preferencesKeys"
 
 /*
  * Local const
  *
  */
-const defaultPreferences = mergeJSON(
-    mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
-    defaultPreferencesSubTarget
+const defaultPreferences = expandShortKeys(
+    mergeJSON(
+        mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
+        defaultPreferencesSubTarget
+    )
 )
 
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"
