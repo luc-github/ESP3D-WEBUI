@@ -43,9 +43,20 @@ D’après le treemap (build Printer3D/Marlin), chunk **main** ≈ **839 KB** pa
 | **preferences.json** (base + target + subtarget) | — | ~3,6 | Inclus dans targets : base ~3 KB, Printer3D ~12 KB, Marlin ~6 KB (parsed) |
 | **style (Spectre + app)** | — | (dans HTML) | CSS extrait puis inliné |
 
+**Réduire les preferences statiques (bundle) (~21 KB parsé)**
+
+- **Minifier les .json avant intégration (enlever espaces / retours à la ligne) ?**  
+  **Pas de gain.** Webpack importe les JSON avec `import … from "…/preferences.json"`, les parse et les intègre comme objets JS. Le bundle final contient la sérialisation minifiée de ces objets, pas le texte brut des fichiers. Les espaces des .json sources ne se retrouvent donc pas dans le bundle. Minifier les fichiers .json sur disque ne change pas la taille du .gz.
+
+- **Clés raccourcies (short keys) ?**  
+  **Gain possible (estimé 2–5 KB).** Les clés `"id"`, `"type"`, `"label"`, `"value"`, `"depend"`, `"help"`, `"append"`, etc. sont répétées des centaines de fois. On peut :
+  - À la **build** : produire des JSON (ou un module) où ces clés sont remplacées par une lettre (`i`, `t`, `l`, `v`, `d`, `h`, `a`, …) via un dictionnaire fixe.
+  - Au **runtime** : une seule fonction `expandShortKeys(prefs)` (ou équivalent) appliquée au chargement des default preferences, avec un petit objet de mapping (~100–200 octets). Le code existant continue d’utiliser `id`, `type`, `label`, etc. sur l’objet déjà développé.  
+  Le coût du mapping reste faible ; l’économie sur les répétitions de clés peut être significative. À valider par un prototype (script de build + expand au chargement).
+
 **Propositions prioritaires (sans changer la règle « un seul fichier ») :**
 
-1. **Preferences JSON** : le **fichier sauvegardé** sur le device est déjà optimisé (diffs + minification, validé). Les **défauts dans le bundle** (base + target + subtarget) pèsent encore ~21 KB parsé ; pistes ultérieures : clés plus courtes en build (ex. `"label":"S68"` → garder tel quel pour i18n, ou raccourcir les clés de structure si possible) ou une structure minimale + complétion à l’exécution.
+1. **Preferences JSON (statiques dans le bundle)** : le fichier sauvegardé sur le device est déjà optimisé. Les défauts (base + target + subtarget) pèsent ~21 KB parsé. Voir ci‑dessus « Réduire les preferences statiques (bundle) ».
 2. **Smoothie** (~48 KB parsé, ~12,7 KB gzip) : utilisé pour les graphiques (Charts). Vérifier si on peut remplacer par une lib plus légère ou un sous-ensemble (tree-shaking / build custom).
 3. **Traductions** (~15 KB parsé, ~6 KB gzip) : une seule langue (en) dans le bundle ; déjà raisonnable. Option ultérieure : clés numériques + fichier de traduction minimal si d’autres langues sont chargées à part.
 4. **Targets / Panels** : le bloc targets est très gros car il contient tout Marlin (sources FLASH/SD, filters, MachineSettings). Pas de lazy load possible sans plusieurs artefacts ; éventuellement factoriser du code dupliqué entre targets (hors scope court terme).
