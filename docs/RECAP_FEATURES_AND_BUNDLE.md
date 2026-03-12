@@ -4,10 +4,35 @@
 
 ---
 
-## Taille du bundle : 97 KB (après filtres verboses) → 163 KB
+## Tracker de taille (index.html.gz)
+
+| Date / étape | Taille (octets) | Note |
+|--------------|-----------------|------|
+| Après filtres verboses | ~97 KB | Référence |
+| Avant réduction icônes | ~163 KB | — |
+| **Actuel** | **92 595** | Après **réduction du nombre d'icônes** dans `icons.js` (34 icônes retirées). **Optimisation déjà faite : ne pas revenir dessus.** |
+
+Référence : `docs/FEATHER_ICONS_USED_UNUSED.md`.
+
+### Optimisations icônes sans réduire le nombre
+
+Sans retirer d’icônes du picker, on peut encore :
+
+1. **Création différée de `iconsFeather`**  
+   Ne construire l’objet `iconsFeather` qu’à l’ouverture du modal IconSelect (lazy init), au lieu au chargement du module. Le code reste dans le bundle, mais le coût d’exécution (création des ~75 composants Preact) est reporté. **Gain : temps jusqu’à interactif, pas de gain sur la taille du fichier.**
+
+2. **Vérifier le tree-shaking**  
+   S’assurer que seuls les composants Feather réellement importés (dans `icons.js` et ailleurs) sont inclus. Avec des imports nommés `import { X, Y } from "preact-feather"`, le bundler devrait déjà éliminer le reste. À contrôler en inspectant le bundle (analyse de dépendances).
+
+3. **Pas de lazy loading des icônes**  
+   Comme rappelé en tête de document : un seul `index.html.gz` sans chunk séparé, donc pas de chargement différé du module icônes sans changer l’architecture de build.
+
+---
+
+## Taille du bundle : 97 KB (après filtres verboses) → 163 KB (avant réduction icônes)
 
 - **Après** l’ajout des filtres verboses : **97 KB**.
-- **Actuellement** : **163 KB**.
+- **Avant réduction icônes** : **163 KB**.
 - **Bloc ~70 KB** venant surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
   - Éventuellement un peu d’**optimisation de la taille de preferences.json** (comparaison, pas la minification).
