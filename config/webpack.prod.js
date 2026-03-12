@@ -37,7 +37,7 @@ module.exports = {
     mode: "production", // this trigger webpack out-of-box prod optimizations
     entry: path.resolve(__dirname, "../src/index.js"),
     output: {
-        filename: `[name].[hash].js`, // [hash] is useful for cache busting!
+        filename: `[name].[fullhash].js`, // [fullhash] for cache busting (webpack 5+)
         path: path.resolve(__dirname, "../build"),
     },
     module: {
