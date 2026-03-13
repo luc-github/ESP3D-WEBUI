@@ -55,11 +55,12 @@ function T(id, base = false, ressourcelanguage = null) {
 }
 
 function getLanguageName(languagePack) {
-    const id = languagePack.replace("lang-", "").replace(".json", "")
+    const filename = languagePack.replace(/^.*\//, "")
+    const id = filename.replace("lang-", "").replace(".json", "")
     let lang = listLanguagePacks[id]
     if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
         return id
-    if (typeof lang === "undefined") return languagePack
+    if (typeof lang === "undefined") return filename || languagePack
     return lang
 }
 
