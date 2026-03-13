@@ -51,7 +51,7 @@ import {
 import { dispatchToExtensions, isFullscreenActive, isFullscreenSupported, getFullscreenElement } from "./html"
 import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
-import { parseEmbeddedManifest } from "./extensions"
+import { parseEmbeddedManifest, isExtensionCompatible } from "./extensions"
 
 export {
     beautifyJSONString,
@@ -90,4 +90,5 @@ export {
     BitsArray,
     useStoredState,
     parseEmbeddedManifest,
+    isExtensionCompatible,
 }

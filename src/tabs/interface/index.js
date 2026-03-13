@@ -42,6 +42,7 @@ import {
 import { importPreferencesSection, formatPreferences } from "./importHelper"
 import { eventBus } from "../../hooks/eventBus"
 import { showModal } from "../../components/Modal"
+import { webUIVersion, targetCategory, Target } from "../../targets"
 
 const isDependenciesMet = (depend) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -322,6 +323,16 @@ const InterfaceTab = () => {
     useEffect(() => {
         const id = eventBus.on("settingsAction", (msg) => {
             if (msg.action !== "scanExtensions") return
+            const extraEntry = interfaceSettings?.current?.settings?.extracontents?.find((el) => el.id === "extracontents")
+            const extraList = extraEntry?.value || []
+            const addedPaths = extraList
+                .map((item) => {
+                    const typeField = item.value?.find((s) => s.name === "type")
+                    const sourceField = item.value?.find((s) => s.name === "source")
+                    if (typeField?.value === "extension" && sourceField?.value) return sourceField.value
+                    return null
+                })
+                .filter(Boolean)
             showModal({
                 modals,
                 id: "extensions",
@@ -333,6 +344,8 @@ const InterfaceTab = () => {
                         refreshfn={(fn) => {
                             scanExtensionsRef.current = fn
                         }}
+                        extensionCheckConfig={{ webUIVersion, targetCategory, target: Target }}
+                        addedPaths={addedPaths}
                     />
                 ),
                 button1: {
