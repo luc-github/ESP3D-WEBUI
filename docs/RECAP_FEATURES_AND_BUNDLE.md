@@ -20,7 +20,8 @@
 | 8 | Filtres verboses configurables (verbosefilters, export minimal, UI Terminal, traductions S228–S233) | 90 927 | +1 056 |
 | 9 | Mise à jour browserslist (update-browserslist-db) | 90 760 | −167 |
 | 10 | Extra contents (ordre panels, noms affichés, 3 panels) | 92 166 | +1 406 |
-| 11 | *prochaine étape…* | | |
+| 11 | Extra contents – manifest + fix refresh + protection messages + drop_console en prod | 94 623 | +2 457 |
+| 12 | *prochaine étape…* | | |
 
 **Légende :** *Variation* = différence vs ligne précédente (négatif = on descend, positif = on remonte).
 
@@ -103,7 +104,7 @@ Sans retirer d’icônes du picker, on peut encore :
 
 ---
 
-## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → 90 760 (actuel)
+## Taille du bundle : base 98 117 → 163 KB (footprint énorme) → 94 623 (actuel)
 
 - **Base de départ** : **98 117** octets (package Marlin de référence).
 - **163 KB** : état du code avec toutes les améliorations fonctionnelles mais avant les optimisations de taille (footprint énorme).
@@ -113,7 +114,8 @@ Sans retirer d’icônes du picker, on peut encore :
 - **89 871** : Smoothie remplacé par module minimal (resetBounds, labels min/max visibles), sans lazy load.
 - **90 927** : Filtres verboses configurables (verbosefilters, export minimal type/value, UI Terminal alignée Macros/Extra contents, traductions S228–S233, défauts par cible Printer3D/CNC/SandTable).
 - **90 760** : Mise à jour browserslist (update-browserslist-db).
-- **92 166** : actuel — Extra contents (ordre des panels, noms affichés au lieu des ids, prise en charge de plusieurs panels ; preferences.json ~1,17 KB).
+- **92 166** : Extra contents (ordre des panels, noms affichés au lieu des ids, prise en charge de plusieurs panels ; preferences.json ~1,17 KB).
+- **94 623** : actuel — Extra contents manifest + fix refresh + protection messages (seules les vraies extensions peuvent parler au WebUI) + nettoyage des logs via `drop_console` en prod.
 - Le bloc ~70 KB (163 KB − 97 KB) venait surtout de :
   - **Drag/drop + individualisation des panels** (ordre par panel, extra contents en panels individuels, expansion au chargement, marquage modifié, nom affiché, cadre/drapeau orange, correctifs dashboard + Settings).
   - **Preferences.json sauvegardé** : optimisé (seulement les diffs aux défauts + minification) → quelques centaines d’octets au lieu de plusieurs KB.

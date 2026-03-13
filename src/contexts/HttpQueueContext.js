@@ -42,6 +42,15 @@ const HttpQueueContextProvider = ({ children }) => {
     const { dialogs, connection } = useUiContext()
     //Add new Request to queue
     const addInQueue = (newRequest) => {
+        const reqId = newRequest?.params?.id ?? newRequest?.id ?? "?"
+        if (
+            process.env.NODE_ENV !== "production" &&
+            reqId &&
+            (String(reqId).startsWith("content") ||
+                String(reqId).startsWith("download"))
+        ) {
+            console.log("[HttpQueue] addInQueue extra/content", reqId)
+        }
         requestQueue.current = [...requestQueue.current, newRequest]
         if (!isBusy.current) executeHttpCall()
     }
@@ -85,6 +94,15 @@ const HttpQueueContextProvider = ({ children }) => {
         if (!isBusy.current) isBusy.current = true
         const { url, params, onSuccess, onFail, onProgress } =
             requestQueue.current[0]
+        const reqId = params?.id
+        if (
+            process.env.NODE_ENV !== "production" &&
+            reqId &&
+            (String(reqId).startsWith("content") ||
+                String(reqId).startsWith("download"))
+        ) {
+            console.log("[HttpQueue] executeHttpCall START", reqId)
+        }
         let is401Error = false
         try {
             currentRequest.current = httpAdapter(url, params, onProgress)
@@ -92,6 +110,14 @@ const HttpQueueContextProvider = ({ children }) => {
                 processData("echo", params.echo)
             }
             const response = await currentRequest.current.response
+            if (
+                process.env.NODE_ENV !== "production" &&
+                reqId &&
+                (String(reqId).startsWith("content") ||
+                    String(reqId).startsWith("download"))
+            ) {
+                console.log("[HttpQueue] onSuccess CALL", reqId)
+            }
             onSuccess(response)
             counterNoAnswer = 0
         } catch (e) {

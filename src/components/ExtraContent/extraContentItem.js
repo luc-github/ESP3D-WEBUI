@@ -18,6 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
+import { memo } from "preact/compat"
 import { useState, useEffect, useCallback, useRef, useMemo } from "preact/hooks"
 import { espHttpURL, dispatchToExtensions } from "../Helpers"
 import { useHttpFn } from "../../hooks"
@@ -31,7 +32,81 @@ import { elementsCache } from "../../areas/elementsCache"
 const visibilityState = {};
 const isLoadedState = {};
 
-const ExtraContentItem = ({
+/** Inline: extract manifest from <script id="esp3dext-manifest"> in extension HTML */
+function getEmbeddedManifest(htmlText) {
+    if (!htmlText || typeof htmlText !== "string") return null
+    const m = htmlText.match(/<script[^>]*\sid=["']esp3dext-manifest["'][^>]*>([\s\S]*?)<\/script>/i)
+    if (!m || !m[1]) return null
+    try {
+        return JSON.parse(m[1].trim())
+    } catch (_) {
+        return null
+    }
+}
+
+function matchVersion(version, pattern) {
+    if (!pattern || pattern === "*") return true
+    const v = String(version).split(".")
+    const p = String(pattern).split(".")
+    for (let i = 0; i < Math.max(v.length, p.length); i++) {
+        const pSeg = p[i] === undefined ? "*" : p[i]
+        const vSeg = v[i] === undefined ? "0" : v[i]
+        if (pSeg !== "*" && pSeg !== vSeg) return false
+    }
+    return true
+}
+
+/** Memoized frame; src is set only in useEffect when contentUrl changes to avoid reload on re-render */
+const ContentFrame = memo(({ contentUrl, className, frameId, onErrorRef, onLoadRef }) => {
+    const iframeRef = useRef(null)
+    const isExtension = className?.includes("extension")
+    useEffect(() => {
+        const el = iframeRef.current
+        if (!el || !contentUrl) return
+        const currentSrc = el.src || ""
+        const needSet = currentSrc !== contentUrl
+        if (process.env.NODE_ENV !== "production" && isExtension) {
+            console.log(
+                "[ContentFrame] useEffect",
+                frameId,
+                "extension",
+                "needSet:",
+                needSet,
+                "currentSrcLen:",
+                currentSrc.length,
+                "contentUrlLen:",
+                contentUrl.length
+            )
+        }
+        if (needSet) {
+            if (process.env.NODE_ENV !== "production" && isExtension)
+                console.log(
+                    "[ContentFrame] SETTING iframe.src for extension",
+                    frameId
+                )
+            el.src = contentUrl
+        }
+    }, [contentUrl, frameId, isExtension])
+    useEffect(() => {
+        if (process.env.NODE_ENV !== "production" && isExtension)
+            console.log("[ContentFrame] MOUNT extension", frameId)
+        return () => {
+            if (process.env.NODE_ENV !== "production" && isExtension)
+                console.log("[ContentFrame] UNMOUNT extension", frameId)
+        }
+    }, [])
+    return (
+        <iframe
+            ref={iframeRef}
+            class={className}
+            id={frameId}
+            onError={() => onErrorRef.current?.()}
+            onLoad={() => onLoadRef.current?.()}
+        />
+    )
+})
+
+const ExtraContentItemInner = ({
     id,
     source,
     type,
@@ -39,6 +114,7 @@ const ExtraContentItem = ({
     target,
     refreshtime,
     isVisibleOnStart,
+    extensionCheckConfig,
 }) => {
     const [contentUrl, setContentUrl] = useState("")
     const [hasError, setHasError] = useState(false)
@@ -47,43 +123,107 @@ const ExtraContentItem = ({
     const { createNewRequest } = useHttpFn
     const element_id = id.replace("extra_content_", type)
     const refreshIntervalRef = useRef(null)
-    //console.log(`Rendering ExtraContentItem ${id} at ${Date.now()}`);
+    const idRef = useRef(id)
+    const loadContentRef = useRef(() => {})
+    const handleErrorRef = useRef(() => {})
+    const handleLoadRef = useRef(() => {})
+    const hasContentRef = useRef(false)
+    idRef.current = id
+    if (process.env.NODE_ENV !== "production") {
+        console.log("[ExtraContent] ExtraContentItem RENDER", id, "type:", type)
+    }
     if (visibilityState[id] === undefined) {
-        visibilityState[id] = false;
-        if (type=="extension" && isLoadedState[id]){    
-            const iframeElement = element.querySelector('iframe.extensionContainer');
-            if (iframeElement){
-                iframeElement.contentWindow.postMessage(
-                    { type: "notification", content: {isVisible: msg.isVisible}, id },
-                    "*"
-                )
-            }
-        }
+        visibilityState[id] = false
     }
     if (isLoadedState[id] === undefined) {
         isLoadedState[id] = false;
     }
 
     const handleContentSuccess = useCallback((result) => {
-        let blob
-        switch (type) {
-            case "camera":
-            case "image":
-                blob = new Blob([result], { type: "image/jpeg" })
-                break
-            case "extension":
-            case "content":
-                blob = new Blob([result], { type: "text/html" })
-                break
-            default:
-                blob = new Blob([result], { type: "text/plain" })
+        const applyHtmlContent = (htmlText) => {
+            const blob = new Blob([htmlText], { type: "text/html" })
+            const url = URL.createObjectURL(blob)
+            hasContentRef.current = true
+            setContentUrl(url)
+            setHasError(false)
+            setIsLoading(false)
+            isLoadedState[id] = true
         }
+        const failExtension = (message) => {
+            useUiContextFn.toasts.addToast({ content: message, type: "error" })
+            setHasError(true)
+            setIsLoading(false)
+            isLoadedState[id] = false
+            eventBus.emit("extraContentIncompatible", { id: elementsCache.getRootfromId(id) })
+        }
+        const getHtmlThen = (htmlText) => {
+            if (type === "extension" && extensionCheckConfig) {
+                if (process.env.NODE_ENV !== "production") {
+                    console.log("[ExtraContent] extension runCheck", id, "manifest check")
+                }
+                const manifest = getEmbeddedManifest(htmlText)
+                const hasValidManifest =
+                    manifest &&
+                    manifest.supportedVersion != null &&
+                    String(manifest.supportedVersion).trim() !== "" &&
+                    manifest.targetSystem != null &&
+                    String(manifest.targetSystem).trim() !== ""
+                if (!hasValidManifest) {
+                    failExtension(`${name || id}: extension not compatible (no valid manifest)`)
+                    return
+                }
+                const { webUIVersion: wv, targetCategory: tc, target: tgt } = extensionCheckConfig
+                const categoryId = ({ Printer3D: "3d printer", CNC: "cnc", SandTable: "sand table" }[tc] || (tc || "").toLowerCase()).replace(/\s/g, "")
+                const targetId = (tgt || "").toLowerCase().replace(/\s/g, "")
+                const list = String(manifest.targetSystem).toLowerCase().replace(/\s/g, "").split(",").map((s) => s.trim()).filter(Boolean)
+                const matchTarget = list.length === 0 || list.includes("*") || list.includes(categoryId) || list.includes(targetId)
+                if (!matchVersion(wv || "3.0", String(manifest.supportedVersion).trim()) || !matchTarget) {
+                    failExtension(`${name || id}: extension not compatible`)
+                    return
+                }
+            }
+            applyHtmlContent(htmlText)
+        }
+        if (type === "camera" || type === "image") {
+            const blob =
+                result instanceof Blob
+                    ? result.type
+                        ? result
+                        : new Blob([result], { type: "image/jpeg" })
+                    : new Blob([result], { type: "image/jpeg" })
+            const url = URL.createObjectURL(blob)
+            hasContentRef.current = true
+            setContentUrl(url)
+            setHasError(false)
+            setIsLoading(false)
+            isLoadedState[id] = true
+            return
+        }
+        if (type === "content" || type === "extension") {
+            if (typeof result === "string") {
+                getHtmlThen(result)
+            } else if (result && typeof result.text === "function") {
+                result.text().then(getHtmlThen).catch((err) => {
+                    console.error("[ExtraContent] result.text() failed", id, err)
+                    setHasError(true)
+                    setIsLoading(false)
+                    isLoadedState[id] = false
+                    if (type === "extension") eventBus.emit("extraContentIncompatible", { id: elementsCache.getRootfromId(id) })
+                })
+            } else {
+                if (type === "extension") failExtension(`${name || id}: extension not compatible (no valid manifest)`)
+                else { setHasError(true); setIsLoading(false); isLoadedState[id] = false }
+            }
+            return
+        }
+        const blob = new Blob([result], { type: "text/plain" })
         const url = URL.createObjectURL(blob)
+        hasContentRef.current = true
         setContentUrl(url)
         setHasError(false)
         setIsLoading(false)
-        isLoadedState[id] = true;
-    }, [type])
+        isLoadedState[id] = true
+    }, [type, id, name, extensionCheckConfig])
 
     const handleContentError = useCallback((error) => {
         console.error(`Error loading content for ${id}:`, error)
@@ -93,7 +233,10 @@ const ExtraContentItem = ({
     }, [id])
 
     const loadContent = useCallback(() => {
-        
+        if (process.env.NODE_ENV !== "production") {
+            console.log("[ExtraContent] loadContent called", id)
+        }
+
         if (target=="page"){
             //console.log("Loading content for page " + id)
             //console.log(useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id)))
@@ -105,6 +248,7 @@ const ExtraContentItem = ({
         }
         //console.log("Loading content for " + id)
         if (source.startsWith("http")) {
+            hasContentRef.current = true
             setContentUrl(source)
             setHasError(false)
             setIsLoading(false)
@@ -114,11 +258,15 @@ const ExtraContentItem = ({
                 //console.log("Already loaded")
                 return
             }
-            setIsLoading(true)
-            const idquery = type === "content" ? type + id : "download" + id
+            const isRefresh = hasContentRef.current
+            if (!isRefresh) setIsLoading(true)
+            const idquery = type === "content" ? "content" + id : "download" + id
             let url = source
             if (url.endsWith(".gz")) {
                 url = url.substring(0, url.length - 3)
+            }
+            if (process.env.NODE_ENV !== "production") {
+                console.log("[ExtraContent] HTTP createNewRequest", "id:", id, "idquery:", idquery, "type:", type)
             }
             createNewRequest(
                 espHttpURL(url),
@@ -131,72 +279,67 @@ const ExtraContentItem = ({
         }
     }, [id, source, type, createNewRequest, handleContentSuccess, handleContentError, isPaused])
 
-    useEffect(() => {
-        loadContent()
-    }, [loadContent])
+    loadContentRef.current = loadContent
 
     useEffect(() => {
-        const listenerId = `listener_${id}`;
+        loadContentRef.current()
+    }, [id])
+
+    useEffect(() => {
+        const listenerId = `listener_${id}`
         const handleUpdateState = (msg) => {
-            if (msg.id == id) { 
-                //console.log(`Received message for ${id} with listener ${listenerId}`, msg);
-                const element = document.getElementById(id)
-                if ( 'forceRefresh' in msg && msg.forceRefresh) {
-                    //console.log(`Processing forceRefresh for ${id}`);
-                    isLoadedState[id] = false;
-                    loadContent()
-                }
-                if ('isVisible' in msg) {
-                    if (element) {
-                        //console.log("Updating visibility for element " + id + " to " + msg.isVisible)
-                        element.style.display = msg.isVisible ? 'block' : 'none';
-                        //is it the same as the current state?
-                        if (visibilityState[id]!= msg.isVisible){
-                            //if it is extension, check if the content is loaded
-                            if (type=="extension" && isLoadedState[id]){    
-                                const iframeElement = element.querySelector('iframe.extensionContainer');
-                                if (iframeElement){
-                                    iframeElement.contentWindow.postMessage(
-                                        { type: "notification", content: {isVisible: msg.isVisible}, id },
-                                        "*"
-                                    )
-                                }
+            const myId = idRef.current
+            if (msg.id !== myId) return
+            const element = document.getElementById(myId)
+            if ('isVisible' in msg) {
+                if (element) {
+                    element.style.display = msg.isVisible ? 'block' : 'none'
+                    if (visibilityState[myId] !== msg.isVisible) {
+                        if (type === "extension" && isLoadedState[myId]) {
+                            const iframeElement = element.querySelector('iframe.extensionContainer')
+                            if (iframeElement) {
+                                iframeElement.contentWindow.postMessage(
+                                    { type: "notification", content: { isVisible: msg.isVisible }, id: myId },
+                                    "*"
+                                )
                             }
                         }
-                        visibilityState[id]= msg.isVisible;
-                        if (!isLoadedState[id] && msg.isVisible) {
-                            loadContent()
-                            }
-
-                    } else {
-                        console.error("Element " + id + " doesn't exist")
                     }
-
-                }
-                if ('position' in msg) {
-                    //console.log("Updating position for element " + id )
-                    //console.log(msg.position)
-                    const element = document.getElementById(id)
-                    element.style.top = `${msg.position.top}px`;
-                    element.style.left = `${msg.position.left}px`;
-                    element.style.width = `${msg.position.width}px`;
-                    element.style.height = `${msg.position.height}px`;
+                    visibilityState[myId] = msg.isVisible
+                    if (!isLoadedState[myId] && msg.isVisible) {
+                        loadContentRef.current()
+                    }
+                } else {
+                    console.error("Element " + myId + " doesn't exist")
                 }
             }
+            if ('position' in msg && element) {
+                element.style.top = `${msg.position.top}px`
+                element.style.left = `${msg.position.left}px`
+                element.style.width = `${msg.position.width}px`
+                element.style.height = `${msg.position.height}px`
+            }
+        }
+        const handleRefreshOnly = (msg) => {
+            if (msg.id !== idRef.current) return
+            isLoadedState[idRef.current] = false
+            loadContentRef.current()
         }
         eventBus.on("updateState", handleUpdateState, listenerId)
+        const refreshListenerId = `refresh_${id}`
+        eventBus.on("extraContentRefresh", handleRefreshOnly, refreshListenerId)
         return () => {
-            //console.log(`Removing listener ${listenerId} for ${id}`);
-            //eventBus.off("updateState", handleUpdateState, listenerId)
+            eventBus.off("updateState", listenerId)
+            eventBus.off("extraContentRefresh", refreshListenerId)
         }
-    }, [id, loadContent])
+    }, [id])
 
     useEffect(() => {
         if (refreshtime > 0 && (type === "camera" || type === "image") && visibilityState[id] && !isPaused) {
             //console.log("Updating refresh interval for " + id)
             if (!refreshIntervalRef.current){
                 //console.log("Starting refresh interval for " + id+ " with refreshtime " + refreshtime)
-                refreshIntervalRef.current = setInterval(loadContent, refreshtime)
+                refreshIntervalRef.current = setInterval(() => loadContentRef.current(), refreshtime)
             }
         }
         return () => {
@@ -209,13 +352,15 @@ const ExtraContentItem = ({
     }, [refreshtime, type, isPaused, loadContent])
 
 
-    const handleError = () => {
+    const handleError = useCallback(() => {
         setHasError(true)
         setIsLoading(false)
-        isLoadedState[id] = false;
-    }
+        isLoadedState[id] = false
+    }, [id])
 
-    const handleLoad = () => {
+    handleErrorRef.current = handleError
+
+    const handleLoad = useCallback(() => {
         setHasError(false)
         setIsLoading(false)
         isLoadedState[id] = true;
@@ -240,7 +385,9 @@ const ExtraContentItem = ({
                 )
             }
         }
-    }
+    }, [type, element_id, id])
+
+    handleLoadRef.current = handleLoad
 
     const captureImage = useCallback(() => {
         if (type === "camera" || type === "image") {
@@ -288,7 +435,7 @@ const ExtraContentItem = ({
                 }
             } else {
                 if (refreshtime > 0 && (type === "camera" || type === "image") && visibilityState[id]) {
-                    refreshIntervalRef.current = setInterval(loadContent, refreshtime);
+                    refreshIntervalRef.current = setInterval(() => loadContentRef.current(), refreshtime);
                 }
             }
             return newPausedState;
@@ -324,16 +471,17 @@ const ExtraContentItem = ({
             )
         } else {
             return (
-                <iframe
-                    src={contentUrl}
-                    class={type === "extension" ? "extensionContainer" : "contentContainer"}
-                    id={element_id}
-                    onError={handleError}
-                    onLoad={handleLoad}
+                <ContentFrame
+                    key={id}
+                    contentUrl={contentUrl}
+                    className={type === "extension" ? "extensionContainer" : "contentContainer"}
+                    frameId={element_id}
+                    onErrorRef={handleErrorRef}
+                    onLoadRef={handleLoadRef}
                 />
             )
         }
-    }, [isLoading, hasError, type, contentUrl, name, element_id, handleError, handleLoad]);
+    }, [id, isLoading, hasError, type, contentUrl, name, element_id]);
 
     const RenderControls = useMemo(() => (
         <div class="m-2 image-button-bar">
@@ -366,4 +514,5 @@ const ExtraContentItem = ({
     )
 }
 
+const ExtraContentItem = memo(ExtraContentItemInner)
 export { ExtraContentItem }

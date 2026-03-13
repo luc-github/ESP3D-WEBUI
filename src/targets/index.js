@@ -23,6 +23,7 @@ import {
     machineSettings,
     defaultPanelsList,
     Target,
+    targetCategory,
     files,
     processor,
     fwUrl,
@@ -60,11 +61,14 @@ const defaultPreferences = expandShortKeys(
 )
 
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"
+const webUIVersion = "3.0"
 
 export {
     MachineSettings,
     machineSettings,
     Target,
+    targetCategory,
+    webUIVersion,
     defaultPreferences,
     files,
     processor,

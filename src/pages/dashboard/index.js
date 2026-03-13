@@ -26,6 +26,7 @@ import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 import { showModal } from "../../components/Modal"
+import { eventBus } from "../../hooks/eventBus"
 
 const keyTracker = {
     keybListenerCounter: 0,
@@ -118,6 +119,15 @@ const Dashboard = () => {
     const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
         shortcuts.enabled
     )
+    const [incompatibleExtraIds, setIncompatibleExtraIds] = useState(() => new Set())
+
+    useEffect(() => {
+        const handler = ({ id: rootId }) => {
+            if (rootId) setIncompatibleExtraIds((prev) => new Set(prev).add(rootId))
+        }
+        const listenerId = eventBus.on("extraContentIncompatible", handler)
+        return () => eventBus.off("extraContentIncompatible", listenerId)
+    }, [])
 
     //Show keyboard mapped keys
     const showKeyboarHelp = () => {
@@ -230,6 +240,7 @@ const Dashboard = () => {
         if (showExtra) {
             const extraPanelsList = (extraContents || []).reduce(
                 (acc, curr) => {
+                    if (incompatibleExtraIds.has(curr.id)) return acc
                     const item = (curr.value || []).reduce(
                         (accumulator, current) => {
                             accumulator[current.name] = current.initial
@@ -334,7 +345,7 @@ const Dashboard = () => {
             if (!orderedList.find((panel) => panel.id == element.id))
                 panels.hide(element.id)
         })
-    }, [isfixed, showExtra, (extraContents || []).length, panelsOrderKey])
+    }, [isfixed, showExtra, (extraContents || []).length, panelsOrderKey, incompatibleExtraIds])
 
     return (
         <div id="dashboard">

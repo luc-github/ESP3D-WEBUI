@@ -40,7 +40,6 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     const extra_content_id = `extra_content_${id}`
     const target_id = `target_${id}`
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    console.log("Extra Content " + id)
 
     const updateContentPosition = () => {
         if (!useUiContextFn.panels.isVisible(id)&& target=="panel") {
@@ -113,8 +112,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
 const handleRefresh = () => {
     useUiContextFn.haptic()
-    //console.log("Refreshing element " + extra_content_id)
-    eventBus.emit('updateState', { id: extra_content_id, isVisible: true, forceRefresh: true, from: "extraContent(refresh)-" + Date.now() })
+    eventBus.emit('extraContentRefresh', { id: extra_content_id })
     updateContentPosition()
 }
 

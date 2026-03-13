@@ -10,6 +10,7 @@ const HTMLInlineCSSWebpackPlugin =
     require("html-inline-css-webpack-plugin").default
 const Compression = require("compression-webpack-plugin")
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
+const TerserPlugin = require("terser-webpack-plugin")
 
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
@@ -145,6 +146,14 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: {
+                        drop_console: true,
+                        drop_debugger: true,
+                    },
+                },
+            }),
             new HtmlMinimizerPlugin({
                 minimizerOptions: {
                     collapseWhitespace: true,

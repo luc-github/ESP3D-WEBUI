@@ -41,6 +41,7 @@ import { AppLogo } from "./logo"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "grblHAL"
+const targetCategory = "CNC"
 const webUIbuild = "GH5"
 const Name = "grblHAL"
 const fwUrl = [
@@ -82,6 +83,7 @@ export {
     MachineSettings,
     machineSettings,
     Target,
+    targetCategory,
     fwUrl,
     Name,
     files,
