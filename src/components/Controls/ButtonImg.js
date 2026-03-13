@@ -56,7 +56,8 @@ const ButtonImg = ({
                         }
                         style={
                             "display:inline" +
-                            (width ? "max-width:" + width : "max-width:3rem")
+                            (width ? "max-width:" + width : "max-width:3rem") +
+                            (iconRight ? ";margin-right:0.35rem" : "")
                         }
                     >
                         {label}

@@ -248,6 +248,14 @@
                 "depend": [{ "id": "showextracontents", "value": true }]
             },
             {
+                "id": "scanextensions",
+                "type": "button",
+                "text": "S237",
+                "action": "scanExtensions",
+                "icon": "Search",
+                "depend": [{ "id": "showextracontents", "value": true }]
+            },
+            {
                 "id": "extracontents",
                 "type": "list",
                 "sorted": true,

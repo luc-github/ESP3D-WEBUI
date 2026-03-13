@@ -103,6 +103,10 @@ function exportPreferencesSection(interfaceSettingsDataSection, asFile = true, i
                 ) {
                     const listEl = interfaceSettingsDataSection[key][subkey]
                     section[listEl.id] = exportListValue(listEl, asFile, listEl.id)
+                } else if (
+                    interfaceSettingsDataSection[key][subkey].type == "button"
+                ) {
+                    // button: not exportable, skip
                 } else {
                     const el = interfaceSettingsDataSection[key][subkey]
                     section[el.id] = asFile || initial_value ? (el.initial ?? el.value) : el.value

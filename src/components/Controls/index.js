@@ -23,6 +23,7 @@ import Button from "./Button"
 import ButtonImg from "./ButtonImg"
 import { Field } from "./Field"
 import { ScanApList } from "./ScanAp"
+import { ScanExtensionsList } from "./ScanExtensions"
 import Loading from "./Loading"
 import Modal from "./Modal"
 import Toast from "./Toast"
@@ -46,5 +47,6 @@ export {
     Modal,
     Progress,
     ScanApList,
+    ScanExtensionsList,
     Toast,
 }

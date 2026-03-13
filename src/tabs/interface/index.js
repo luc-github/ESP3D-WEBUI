@@ -25,14 +25,14 @@ import {
     useSettingsContextFn,
     useUiContextFn,
 } from "../../contexts"
-import { ButtonImg, Loading } from "../../components/Controls"
+import { ButtonImg, Loading, ScanExtensionsList } from "../../components/Controls"
 import { useHttpQueue, useSettings } from "../../hooks"
 import {
     espHttpURL,
     checkDependencies,
 } from "../../components/Helpers"
 import { T } from "../../components/Translations"
-import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather"
+import { RefreshCcw, Save, ExternalLink, Flag, Download, Search } from "preact-feather"
 import { Field, FieldGroup } from "../../components/Controls"
 import {
     exportPreferences,
@@ -40,6 +40,8 @@ import {
     isFullStructureSettings,
 } from "./exportHelper"
 import { importPreferencesSection, formatPreferences } from "./importHelper"
+import { eventBus } from "../../hooks/eventBus"
+import { showModal } from "../../components/Modal"
 
 const isDependenciesMet = (depend) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -315,6 +317,38 @@ const InterfaceTab = () => {
     const [showSave, setShowSave] = useState(true)
     const [panelsOrderExpanded, setPanelsOrderExpanded] = useState(0)
     const inputFile = useRef(null)
+    const scanExtensionsRef = useRef(null)
+
+    useEffect(() => {
+        const id = eventBus.on("settingsAction", (msg) => {
+            if (msg.action !== "scanExtensions") return
+            showModal({
+                modals,
+                id: "extensions",
+                title: T("S96"),
+                icon: h(Search, null),
+                content: (
+                    <ScanExtensionsList
+                        id="extensions"
+                        refreshfn={(fn) => {
+                            scanExtensionsRef.current = fn
+                        }}
+                    />
+                ),
+                button1: {
+                    text: T("S50"),
+                    noclose: true,
+                    cb: () => scanExtensionsRef.current?.(),
+                },
+                button2: {
+                    text: T("S254"),
+                    cb: () => console.log("Add selected"),
+                },
+                button3: { text: T("S24") },
+            })
+        })
+        return () => eventBus.off("settingsAction", id)
+    }, [modals])
 
     useEffect(() => {
         const settings = interfaceSettings?.current?.settings
@@ -693,7 +727,9 @@ const InterfaceTab = () => {
                                                                         type ==
                                                                             "boolean" ||
                                                                         type ==
-                                                                            "icon"
+                                                                            "icon" ||
+                                                                        type ==
+                                                                            "button"
                                                                             ? true
                                                                             : false
                                                                     }
