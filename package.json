@@ -1,6 +1,6 @@
 {
     "name": "ESP3D-WEBUI",
-    "version": "3.0.0",
+    "version": "3.1.0-beta.1",
     "description": "Web UI for ESP3D V3 based FW ",
     "main": "index.js",
     "scripts": {
@@ -31,6 +31,12 @@
         "package": "node ./config/pack.js",
         "template": "node ./config/buildtemplate.js",
         "buildlangpack": "node ./config/buildlangpack.js",
+        "buildlangpack:all": "node ./config/buildlangpack-all.js",
+        "list-languages": "node ./config/list-languages.js",
+        "fill-missing-keys": "node ./config/fill-missing-lang-keys.js",
+        "fill-missing-root": "node ./config/fill-missing-root-lang.js",
+        "report-untranslated": "node ./config/report-untranslated.js",
+        "translate-from-report": "node ./config/translate-from-report.js",
         "check": "node ./config/checkpack.js"
     },
     "author": "",

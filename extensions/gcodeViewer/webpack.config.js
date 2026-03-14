@@ -4,6 +4,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 const htmlFileName = 'gcodeViewer.html';
+const outputFileName = 'esp3dext-gcodeViewer.html';
 
 module.exports = {
   entry: `./src/${htmlFileName}`,
@@ -29,7 +30,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: `./src/${htmlFileName}`,
-      filename: htmlFileName,
+      filename: outputFileName,
       minify: {
         collapseWhitespace: true,
         removeComments: true,
@@ -46,7 +47,7 @@ module.exports = {
     new FileManagerPlugin({
       events: {
         onEnd: {
-          delete: [`dist/${htmlFileName}`, 'dist/main.js'],
+          delete: [`dist/${outputFileName}`, 'dist/main.js'],
         },
       },
     }),

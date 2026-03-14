@@ -3,3 +3,6 @@ node_modules
 .vscode
 build
 server
+repomix-output.xml
+generate-context.ps1
+.env

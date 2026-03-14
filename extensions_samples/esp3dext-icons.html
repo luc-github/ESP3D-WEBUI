@@ -3,7 +3,7 @@
   "owner": "ESP3D",
   "version": "1.0.0",
   "github": "https://github.com/luc-github/ESP3D-WEBUI",
-  "description": "Loads and displays WebUI icons (Activity, Home, Camera, File) as buttons.",
+  "description": "Loads and displays WebUI icons (Activity, Home, Image, File) as buttons.",
   "name": "Icons",
   "icon": "Activity",
   "target": "panel",
@@ -13,7 +13,7 @@
 }
 </script>
 <script type="text/javascript">
-  const iconsToLoad = ["Activity", "Home", "Camera", "File"];
+  const iconsToLoad = ["Activity", "Home", "Image", "File"];
   const loadedIcons = {};
   let iconsLoaded = false;
 
@@ -29,10 +29,10 @@
           const iconName = eventMsg.data.id;
           const iconSvg = eventMsg.data.content.response;
           loadedIcons[iconName] = iconSvg;
-          console.log(`Icône ${iconName} chargée:`, iconSvg);
+          console.log(`Icon ${iconName} loaded:`, iconSvg);
 
           if (Object.keys(loadedIcons).length === iconsToLoad.length) {
-            console.log("Toutes les icônes sont chargées !");
+            console.log("All icons loaded.");
             useLoadedIcons();
             iconsLoaded = true;
           }
@@ -56,8 +56,8 @@
 
   function handleButtonClick(event) {
     const clickedIcon = event.currentTarget.getAttribute("data-icon");
-    console.log(`Bouton cliqué avec l'icône : ${clickedIcon}`);
-    // Ajoutez ici le code pour gérer les actions spécifiques à chaque bouton
+    console.log(`Button clicked with icon: ${clickedIcon}`);
+    // Add your button-specific action code here
   }
 
   function loadIcons() {

@@ -119,7 +119,7 @@ High-signal directories:
 - `languages/`: language packs, including compressed variants
 - `extensions/`: packaged extension subprojects
 - `extensions_samples/`: extension API documentation and examples
-- `Memo/`: internal notes on commands, handlers, firmware mapping, preferences, websocket behavior, and language packs
+- `docs/`: project documentation (features, bundle, extensions manifest, Feather icons, preferences, language packs, firmware IDs, variables, realtime commands). See **docs/MEMO_INDEX.md** for the index.
 - `.github/`: CI workflow and project automation
 
 ## Extensions
@@ -152,9 +152,9 @@ Extensions are optional pieces of code that add functionality to the Web UI (new
 
 **Documentation and samples:**
 
-- **Full API and message formats:** `extensions_samples/API.md` and `Memo/extensions/index.md` (message types, request/response shapes, modals, fields).
-- **Installation and concepts:** `Memo/extensions_installation/index.md`.
-- **Sample code:** `extensions_samples/*.html` and in-repo extensions: `extensions/click2go`, `extensions/gcodeViewer`.
+- **Full API and message formats:** `extensions_samples/API.md` (message types, request/response shapes, modals, manifest).
+- **Manifest and scan:** `docs/EXTENSIONS_MANIFEST.md`.
+- **Sample code:** `extensions_samples/esp3dext-*.html` and in-repo extensions: `extensions/click2go`, `extensions/gcodeViewer` (build as `esp3dext-click2go.html`, `esp3dext-gcodeViewer.html`).
 
 ## Localization
 
@@ -165,17 +165,18 @@ Localization is a first-class part of the repo. `languages/` contains shared tra
 Useful files for future contributors or agents:
 
 - `README.md`: setup, dev commands, build commands, compatibility
-- `Memo/TargetFW.md`: firmware naming and IDs
-- `Memo/Commands.md`, `Memo/Handlers.md`, `Memo/websocket.md`: protocol and runtime notes
-- `Memo/preferences.md`, `Memo/variablesList.md`, `Memo/languagepack.md`: configuration and translation details
-- **Extensions:** `extensions_samples/API.md` (full message contract), `Memo/extensions/index.md` (API description and notification format), `Memo/extensions_installation/index.md` (what extensions are and how to install them)
+- `docs/FEATURES_AND_BUNDLE.md`: bundle size and main features
+- `docs/EXTENSIONS_MANIFEST.md`: extension manifest and scan behaviour
+- `docs/FEATHER_ICONS_USED_UNUSED.md`: icon usage in the codebase
+- `docs/MEMO_INDEX.md`: index of **docs/** (preferences, language packs, firmware IDs, variables, realtime commands, features, data structure). For ESP3D protocol (commands, responses, WebSocket), see esp3d.io and firmware documentation.
+- **Extensions:** `extensions_samples/API.md` (full message contract and manifest), `docs/EXTENSIONS_MANIFEST.md` (scan and compatibility)
 
 ## Constraints And Gaps
 
 - There is no real automated test suite in the root project. `npm test` is a placeholder error command.
 - CI appears focused on build validation rather than unit/integration testing.
 - `repomix-output.xml` is a packed, read-only snapshot and may omit ignored files such as `node_modules`, `dist`, `build`, and anything excluded by ignore rules.
-- Version metadata is split: `package.json` reports `3.0.0`, while `info.json` reports `version: 3.0.1` and `devt: 3.0.2`.
+- Version metadata: `package.json` and `info.json` (if present) may need to be kept in sync for badges and release tagging.
 
 ## Practical Summary
 
