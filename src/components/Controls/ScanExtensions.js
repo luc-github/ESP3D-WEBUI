@@ -17,8 +17,8 @@ ScanExtensions.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
-import { useState, useEffect, useCallback } from "preact/hooks"
-import { useUiContext, useSettingsContextFn } from "../../contexts"
+import { useState, useEffect, useCallback, useRef } from "preact/hooks"
+import { useUiContext, useSettingsContextFn, useUiContextFn } from "../../contexts"
 import { useHttpQueue } from "../../hooks"
 import { espHttpURL, parseEmbeddedManifest, isExtensionCompatible } from "../Helpers"
 import { T } from "../Translations"
@@ -50,15 +50,35 @@ const parseAndFilter = (result, pathPrefix) => {
     }
 }
 
-const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = [] }) => {
+const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = [], addSelectedRef }) => {
     const { modals, toasts } = useUiContext()
     const [extensionsList, setExtensionsList] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [selectedIds, setSelectedIds] = useState(new Set())
     const { createNewRequest } = useHttpQueue()
 
+    useEffect(() => {
+        if (!addSelectedRef) return
+        addSelectedRef.current = {
+            getSelectedItems: () => extensionsList.filter((e) => selectedIds.has(e.id)),
+        }
+    }, [addSelectedRef, extensionsList, selectedIds])
+
+    const manifestUpdatesRef = useRef({})
+    const manifestPendingRef = useRef(0)
+
     const fetchManifestsForItems = useCallback((items) => {
+        if (!items.length) return
         const baseUrl = useSettingsContextFn.getValue("HostDownloadPath") || ""
+        manifestUpdatesRef.current = {}
+        manifestPendingRef.current = items.length
+        const flushManifestUpdates = () => {
+            if (manifestPendingRef.current !== 0) return
+            const updates = manifestUpdatesRef.current
+            setExtensionsList((prev) =>
+                prev.map((x) => (updates[x.id] ? { ...x, ...updates[x.id] } : x))
+            )
+        }
         items.forEach((ext) => {
             const entry = ext.path.endsWith(".html") || ext.path.endsWith(".htm") ? ext.path : ext.path + "/index.html"
             const url = (baseUrl + (baseUrl.endsWith("/") ? "" : "/") + entry).replace(/\/+/g, "/")
@@ -68,24 +88,20 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                     const compatible = extensionCheckConfig
                         ? isExtensionCompatible(manifest, extensionCheckConfig)
                         : !!manifest
-                    setExtensionsList((prev) =>
-                        prev.map((x) =>
-                            x.id === ext.id
-                                ? {
-                                      ...x,
-                                      status: compatible ? "ok" : "incompatible",
-                                      displayName: manifest?.name ?? null,
-                                      supportedVersion: manifest?.supportedVersion ?? null,
-                                      targetSystem: manifest?.targetSystem ?? null,
-                                  }
-                                : x
-                        )
-                    )
+                    manifestUpdatesRef.current[ext.id] = {
+                        status: compatible ? "ok" : "incompatible",
+                        displayName: manifest?.name ?? null,
+                        supportedVersion: manifest?.supportedVersion ?? null,
+                        targetSystem: manifest?.targetSystem ?? null,
+                        icon: manifest?.icon ?? "Package",
+                    }
+                    manifestPendingRef.current -= 1
+                    flushManifestUpdates()
                 },
                 onFail: () => {
-                    setExtensionsList((prev) =>
-                        prev.map((x) => (x.id === ext.id ? { ...x, status: "error" } : x))
-                    )
+                    manifestUpdatesRef.current[ext.id] = { status: "error" }
+                    manifestPendingRef.current -= 1
+                    flushManifestUpdates()
                 },
             })
         })

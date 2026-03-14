@@ -30,6 +30,7 @@ import { useHttpQueue, useSettings } from "../../hooks"
 import {
     espHttpURL,
     checkDependencies,
+    generateUID,
 } from "../../components/Helpers"
 import { T } from "../../components/Translations"
 import { RefreshCcw, Save, ExternalLink, Flag, Download, Search } from "preact-feather"
@@ -39,7 +40,7 @@ import {
     exportPreferencesSection,
     isFullStructureSettings,
 } from "./exportHelper"
-import { importPreferencesSection, formatPreferences } from "./importHelper"
+import { importPreferencesSection, formatPreferences, formatItem } from "./importHelper"
 import { eventBus } from "../../hooks/eventBus"
 import { showModal } from "../../components/Modal"
 import { webUIVersion, targetCategory, Target } from "../../targets"
@@ -319,6 +320,8 @@ const InterfaceTab = () => {
     const [panelsOrderExpanded, setPanelsOrderExpanded] = useState(0)
     const inputFile = useRef(null)
     const scanExtensionsRef = useRef(null)
+    const addSelectedRef = useRef(null)
+    const refreshSaveStatusRef = useRef(null)
 
     useEffect(() => {
         const id = eventBus.on("settingsAction", (msg) => {
@@ -346,6 +349,7 @@ const InterfaceTab = () => {
                         }}
                         extensionCheckConfig={{ webUIVersion, targetCategory, target: Target }}
                         addedPaths={addedPaths}
+                        addSelectedRef={addSelectedRef}
                     />
                 ),
                 button1: {
@@ -355,7 +359,73 @@ const InterfaceTab = () => {
                 },
                 button2: {
                     text: T("S254"),
-                    cb: () => console.log("Add selected"),
+                    cb: () => {
+                        const ref = addSelectedRef?.current
+                        if (!ref) return
+                        const toAdd = ref.getSelectedItems()
+                        if (!toAdd.length) return
+                        const settings = interfaceSettings?.current?.settings
+                        const extraEntry = settings?.extracontents?.find((el) => el.id === "extracontents")
+                        if (!extraEntry || !Array.isArray(extraEntry.value)) return
+                        const list = extraEntry.value
+                        const addedIds = []
+                        // Create one extracontents entry per checked extension (same shape as def_panel)
+                        toAdd.forEach((ext) => {
+                            const uid = generateUID()
+                            const newItem = {
+                                id: uid,
+                                name: ext.displayName || ext.name || "Extension",
+                                icon: ext.icon || "Package",
+                                target: "panel",
+                                source: ext.path,
+                                type: "extension",
+                                refreshtime: "0",
+                            }
+                            const formatted = formatItem(newItem, -1, "extracontents")
+                            formatted.newItem = true
+                            formatted.hasmodified = true
+                            formatted.index = list.length
+                            if (Array.isArray(formatted.value)) {
+                                formatted.value.forEach((sf) => {
+                                    sf.hasmodified = true
+                                })
+                            }
+                            list.push(formatted)
+                            addedIds.push(uid)
+                        })
+                        list.forEach((item, i) => {
+                            item.index = i
+                            const idxField = item.value?.find((s) => s.name === "index")
+                            if (idxField) idxField.value = i
+                        })
+                        extraEntry.nb = list.length
+                        extraEntry.hasmodified = true
+                        const panelsOrderEl = useUiContextFn.getElement("panelsorder", settings)
+                        if (panelsOrderEl && Array.isArray(panelsOrderEl.value)) {
+                            const arr = panelsOrderEl.value
+                            const startIdx = arr.length
+                            addedIds.forEach((id, i) => {
+                                arr.push({
+                                    id: "extracontents_" + id,
+                                    value: [
+                                        { name: "name", value: "extracontents_" + id },
+                                        { name: "index", value: startIdx + i },
+                                    ],
+                                    index: startIdx + i,
+                                })
+                            })
+                            arr.forEach((item, i) => {
+                                item.index = i
+                                const idxField = item.value?.find((s) => s.name === "index")
+                                if (idxField) idxField.value = i
+                            })
+                            panelsOrderEl.nb = arr.length
+                            panelsOrderEl.hasmodified = true
+                        }
+                        setPanelsOrderExpanded((n) => n + 1)
+                        modals.removeModal(modals.getModalIndex("extensions"))
+                        refreshSaveStatusRef.current?.()
+                    },
                 },
                 button3: { text: T("S24") },
             })
@@ -488,6 +558,7 @@ const InterfaceTab = () => {
         const haserrors = stringified.includes('"haserror":true')
         return !haserrors && hasmodified
     }
+    refreshSaveStatusRef.current = () => setShowSave(checkSaveStatus())
 
     const getInterface = () => {
         useUiContextFn.haptic()
