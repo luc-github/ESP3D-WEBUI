@@ -524,8 +524,6 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
-    SendWS("ok\n")
-    res.send("")
 }
 
 const loginURI = (req, res) => {

@@ -637,7 +637,7 @@ const Dashboard = () => {
                                 onDragStart={handleDragStart}
                                 aria-label={T("S256")}
                             >
-                                <Anchor size="1rem" />
+                                <Anchor size="0.8rem" />
                             </span>
                             {panel.content}
                         </div>

@@ -246,16 +246,34 @@ Each target (Marlin, Repetier, Smoothieware, GRBL, grblHAL) has its own **config
 
 These ideas can make the simulator **smarter** and **more useful** for development and debugging.
 
-### 3.1 Command coverage and discoverability
+### 3.1 Command coverage and discoverability *(partially implemented)*
 
-- **Central list of supported commands** (e.g. in a JSON or a small module) per target, with a short description and example response. Reduces duplication and documents what the UI can rely on.
-- **Fallback handler**: for unknown commands, log and return a generic `ok` or `error:unknown command` instead of failing silently. Makes it obvious when the UI sends a command the mock does not handle.
-- **Optional “verbose” mode** (e.g. env `MOCK_VERBOSE=1`): log every incoming `/command` and WebSocket send so developers can see the exact exchange.
+- **Central list of supported commands**: Per-target list in JSON (e.g. `config/targets/Printer3D/Marlin/commands.json`) with `cmd`, `description`, and `exampleResponse`. Reduces duplication and documents what the UI can rely on. *(Done for Marlin; other targets can add a `commands.json` in the same way.)*
+- **Fallback handler**: Unknown commands no longer fall through silently. If no target handler sends a response, the server responds with `error:unknown command\n` (HTTP 200) and, when `MOCK_VERBOSE=1`, logs the command. *(Implemented in `config/server.js`; each target’s `commandsQuery` no longer ends with a default `ok`.)*
+- **Optional “verbose” mode**: Set env **`MOCK_VERBOSE=1`** to log every incoming `/command` URL and every WebSocket message received. Example: `MOCK_VERBOSE=1 npm run dev-printer-marlin`.
 
-### 3.2 Stateful, consistent behaviour
+### 3.2 Stateful, consistent behaviour *(partially implemented for Marlin)*
 
-- **Shared state** (position, temperatures, SD list) in a small state object updated by commands (e.g. `G0`/`G1` move position, `M104`/`M140` set targets). Responses (e.g. `M114`, `M105`) read from that state so multiple panels and refreshes stay consistent.
-- **SD/Flash file list** driven by the real `server/<target>/<subtarget>/Flash` and `SD` directories (already the case); ensure listing/upload/delete responses match what the UI expects (e.g. same format as real firmware).
+- **Shared state**: In `config/targets/Printer3D/Marlin/index.js`, a `state.position` object (X, Y, Z, E) is updated by `G0`/`G1` and read by `M114`. Temperatures were already in a shared object and updated by `M104`/`M140`/`M141`; `M105` reads from it. So multiple panels and refreshes stay consistent for position and temperatures.
+- **SD file list from disk**: The server passes a `context` object to `commandsQuery(req, res, SendWS, context)` with `getSDList(path)` and `getFlashList(path)` that read from `server/<target>/<subtarget>/SD` and `Flash`. The Marlin target uses `context.getSDList("/")` for `M20`, `M20 L`, and `M20 1:` when available, so the listed files match the real SD directory. Other targets can adopt the same pattern (optional 4th argument).
+
+### 3.2bis Mock strategy by target type
+
+**Printer3D (Marlin, Repetier, etc.)**
+
+- **Stateful (priority)**:
+  - **Temperatures**: simulation de chauffe/refroidissement (déjà en place : `updateTemperature`, cibles M104/M140/M141, lecture M105). Important pour que l’UI reflète des courbes réalistes.
+  - **Position**: state partagé mis à jour par G0/G1, lu par M114 (déjà en place pour Marlin).
+- **Reste des commandes** : garder les réponses simulées existantes (M20, M115, M503, ESP*, etc.) ; pas besoin de tout rendre stateful.
+
+**CNC (GRBL, grblHAL)**
+
+- **Plus complexe** : le **status** (poll `?` ou équivalent) regroupe tout en une ligne : position (MPos, WCO), pins (Pn:), broche (M3/M4/M5), liquide de refroidissement (M7/M8/M9), etc. L’objectif est d’avoir un **état partagé** (position, broche on/off, coolant, pins) mis à jour par les commandes (G0/G1, M3/M4/M5, M7/M8/M9, etc.) et dont la **réponse status** est dérivée à chaque poll, pour que l’UI reste cohérente.
+- **Commandes ESP** (ESP800, ESP400, ESP401, ESP420, etc.) : conserver les réponses simulées actuelles (JSON / texte), comme pour Printer3D.
+
+### 3.1bis Gzip file preference
+
+- **Prefer .gz when present**: For any GET request under the Flash root (main app or **extensions**), the server first checks for the corresponding `.gz` file in `server/<target>/<subtarget>/Flash/`. For example: `toto.html` → `toto.html.gz`, `/` → `index.html.gz`, and for extensions e.g. `/ext/MyExtension/index.html` → `Flash/ext/MyExtension/index.html.gz`. If the `.gz` exists, it is served with `Content-Encoding: gzip` and the appropriate `Content-Type`; otherwise the uncompressed file is served. This lets you test with **final built files** (gzipped) as in production, both for the main UI and for extensions.
 
 ### 3.3 Scenarios and presets
 

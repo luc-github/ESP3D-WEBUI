@@ -201,6 +201,7 @@ const NotificationsPanelElement = {
     show: "shownotificationspanel",
     onstart: "opennotificationsonstart",
     settingid: "notification",
+    hasMenu: true,
 }
 
 export { NotificationsPanel, NotificationsPanelElement }

@@ -480,6 +480,7 @@ const ChartsPanelElement = {
     show: "showchartspanel",
     onstart: "openchartsonstart",
     settingid: "charts",
+    hasMenu: true,
 }
 
 export { ChartsPanel, ChartsPanelElement }

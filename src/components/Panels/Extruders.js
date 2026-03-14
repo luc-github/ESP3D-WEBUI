@@ -301,6 +301,7 @@ const ExtrudersPanelElement = {
     show: "showextruderspanel",
     onstart: "openextrudersonstart",
     settingid: "extruders",
+    hasMenu: true,
 }
 
 export { ExtrudersPanel, ExtrudersPanelElement }

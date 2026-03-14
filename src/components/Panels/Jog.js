@@ -1802,6 +1802,7 @@ const JogPanelElement = {
     show: "showjogpanel",
     onstart: "openjogonstart",
     settingid: "jog",
+    hasMenu: true,
 }
 
 export { JogPanel, JogPanelElement, PositionsControls }

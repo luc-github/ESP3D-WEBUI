@@ -338,6 +338,7 @@ const TerminalPanelElement = {
     show: "showterminalpanel",
     onstart: "openterminalonstart",
     settingid: "terminal",
+    hasMenu: true,
 }
 
 export { TerminalPanel, TerminalPanelElement }

@@ -74,6 +74,12 @@ const temperatures = {
     M: [{ value: roomTemperature, lastTime: -1, variation: 1 }], //the motherboard is same as room temperature +5/10 degres
 }
 
+// Shared state: position updated by G0/G1 (jog), read by M114; G90=absolute, G91=relative
+const state = {
+    position: { X: 0, Y: 0, Z: 0, E: 0 },
+    relative: false, // G91 = relative (jog uses this), G90 = absolute
+}
+
 const updateTemperature = (entry, time) => {
     if (entry.lastTime == -1) {
         entry.lastTime = time
@@ -170,7 +176,12 @@ function Temperatures() {
     return result
 }
 
-const commandsQuery = (req, res, SendWS) => {
+function parseAxis(url, axis) {
+    const m = url.match(new RegExp(axis + "([0-9.-]+)", "i"))
+    return m ? parseFloat(m[1]) : null
+}
+
+const commandsQuery = (req, res, SendWS, context) => {
     let url = req.query.cmd ? req.query.cmd : req.originalUrl
     if (req.query.cmd)
         console.log(commandcolor(`[server]/command params: ${req.query.cmd}`))
@@ -189,11 +200,56 @@ const commandsQuery = (req, res, SendWS) => {
     }
     lastconnection = Date.now()
 
+    if (url.indexOf("G90") != -1) {
+        state.relative = false
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+    if (url.indexOf("G91") != -1) {
+        state.relative = true
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("G0") != -1 || url.indexOf("G1") != -1) {
+        const x = parseAxis(url, "X")
+        const y = parseAxis(url, "Y")
+        const z = parseAxis(url, "Z")
+        const e = parseAxis(url, "E")
+        const p = state.position
+        if (x != null) state.position.X = state.relative ? p.X + x : x
+        if (y != null) state.position.Y = state.relative ? p.Y + y : y
+        if (z != null) state.position.Z = state.relative ? p.Z + z : z
+        if (e != null) state.position.E = state.relative ? p.E + e : e
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("G28") != -1) {
+        const hasX = url.indexOf("X") !== -1
+        const hasY = url.indexOf("Y") !== -1
+        const hasZ = url.indexOf("Z") !== -1
+        if (!hasX && !hasY && !hasZ) {
+            state.position.X = 0
+            state.position.Y = 0
+            state.position.Z = 0
+        } else {
+            if (hasX) state.position.X = 0
+            if (hasY) state.position.Y = 0
+            if (hasZ) state.position.Z = 0
+        }
+        state.relative = false // homing typically leaves machine in absolute
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M114") != -1) {
-        let X = Number(Math.random() * 200.12).toFixed(2)
-        let Y = Number(Math.random() * 200.12).toFixed(2)
-        let Z = Number(Math.random() * 200.12).toFixed(2)
-        SendWS(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`)
+        const p = state.position
+        SendWS(`X:${Number(p.X).toFixed(2)} Y:${Number(p.Y).toFixed(2)} Z:${Number(p.Z).toFixed(2)} E:${Number(p.E).toFixed(2)} Count X: 0 Y:10160 Z:116000\nok\n`)
         res.send("")
         return
     }
@@ -205,26 +261,37 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (url.indexOf("M20 1:") != -1) {
-        SendWS(
-            "Begin file list\n" +
-                "System Volume Information.DIR\n" +
-                "mycode3.gco\n" +
-                "CUBE.GCO\n" +
-                "bak_pic.DIR\n" +
-                "bak_font.DIR\n" +
-                "macro1.g\n" +
-                "BAK.DIR\n" +
-                "End file list\n" +
-                "ok\n"
-        )
+        if (context && context.getSDList) {
+            const list = context.getSDList("/")
+            const lines = list.map((f) => f.name + " " + f.size).join("\n")
+            SendWS("Begin file list\n" + lines + "\nEnd file list\nok\n")
+        } else {
+            SendWS(
+                "Begin file list\n" +
+                    "System Volume Information.DIR\n" +
+                    "mycode3.gco\n" +
+                    "CUBE.GCO\n" +
+                    "bak_pic.DIR\n" +
+                    "bak_font.DIR\n" +
+                    "macro1.g\n" +
+                    "BAK.DIR\n" +
+                    "End file list\n" +
+                    "ok\n"
+            )
+        }
         res.send("")
         return
     }
     if (url.indexOf("M20 L") != -1) {
-        SendWS(
-            "echo:SD card ok\n" +
-                "ok\n" +
-                "Begin file listt\n" +
+        if (context && context.getSDList) {
+            const list = context.getSDList("/")
+            const lines = list.map((f) => `${f.name} ${f.size} /${f.name}`).join("\n")
+            SendWS("echo:SD card ok\nok\nBegin file list\n" + lines + "\nEnd file list\nok\n")
+        } else {
+            SendWS(
+                "echo:SD card ok\n" +
+                    "ok\n" +
+                    "Begin file listt\n" +
                 "V2T-TEST.GCO 569266 V2T-TEST.GCO\n" +
                 "DFQ-PI~1.GCO 1490254 DFq-pika2.gco\n" +
                 "VJ1-TEST.GCO 569266 VJ1-TEST.GCO\n" +
@@ -247,17 +314,23 @@ const commandsQuery = (req, res, SendWS) => {
                 "TEST1.GCO 1143935 TEST1.GCO\n" +
                 "End file list\n" +
                 "ok"
-        )
+            )
+        }
         res.send("")
         return
     }
 
     if (url.indexOf("M20") != -1) {
-        SendWS(
-            "echo:SD card ok\n" +
-                "ok\n" +
-                "Begin file list\n" +
-                "V2T-TEST.GCO 569266\n" +
+        if (context && context.getSDList) {
+            const list = context.getSDList("/")
+            const lines = list.map((f) => f.name + " " + f.size).join("\n")
+            SendWS("echo:SD card ok\nok\nBegin file list\n" + lines + "\nEnd file list\nok\n")
+        } else {
+            SendWS(
+                "echo:SD card ok\n" +
+                    "ok\n" +
+                    "Begin file list\n" +
+                    "V2T-TEST.GCO 569266\n" +
                 "DFQ-PI~1.GCO 1490254\n" +
                 "VJ1-TEST.GCO 569266\n" +
                 "XRP-SU~1.GCO 569266\n" +
@@ -280,7 +353,8 @@ const commandsQuery = (req, res, SendWS) => {
                 "TEST1.GCO 1143935\n" +
                 "End file list\n" +
                 "ok\n"
-        )
+            )
+        }
         res.send("")
         return
     }
@@ -949,8 +1023,6 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
-    SendWS("ok\n")
-    res.send("")
 }
 
 const loginURI = (req, res) => {

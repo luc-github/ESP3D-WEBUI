@@ -123,6 +123,7 @@ const PanelRenderControls = () => (
         <ButtonImg
             xs
             m1
+            className="btn-header"
             nomin="yes"
             icon={<RefreshCcw size="0.8rem" />}
             onclick={handleRefresh}

@@ -56,6 +56,8 @@ const commandsQuery = (req, res, SendWS) => {
     }
     lastconnection = Date.now()
 
+    // Status "?" aggregates position (MPos, WCO), pins (Pn:), spindle (M3~M5), coolant (M7~M9), etc.
+    // TODO: drive from shared state (position, spindle, coolant) updated by G0/G1, M3/M4/M5, M7/M8/M9; keep ESP* canned.
     if (req.query.cmd && req.query.cmd == "?") {
         countStatus++
         if (countStatus == 1)
@@ -599,8 +601,6 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
-    SendWS("ok\n")
-    res.send("")
 }
 
 const loginURI = (req, res) => {

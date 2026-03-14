@@ -24,6 +24,7 @@ const subtarget = process.env.SUBTARGET_ENV
     : "Marlin"
 const target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 
+const MOCK_VERBOSE = process.env.MOCK_VERBOSE === "1"
 const serverpath =
     path.normalize(__dirname + "/../server/" + target + "/" + subtarget) + "/"
 if (!fs.existsSync(serverpath + "Flash")) {
@@ -46,6 +47,21 @@ const {
 
 const WebSocketServer = require("ws").Server,
     wss = new WebSocketServer({ port: 8089 })
+
+// Prefer .gz: if client asks for toto.html (or /), serve toto.html.gz with Content-Encoding: gzip when present
+app.use("/", (req, res, next) => {
+    if (req.method !== "GET" || req.path.endsWith(".gz")) return next()
+    const relPath = !req.path || req.path === "/" ? "index.html" : req.path
+    const base = path.join(serverpath, "Flash", relPath)
+    const gzPath = base + ".gz"
+    if (!fs.existsSync(gzPath) || !fs.statSync(gzPath).isFile()) return next()
+    const ext = path.extname(req.path)
+    const types = { ".html": "text/html", ".css": "text/css", ".js": "application/javascript", ".json": "application/json" }
+    if (types[ext]) res.setHeader("Content-Type", types[ext])
+    res.setHeader("Content-Encoding", "gzip")
+    res.sendFile(path.resolve(gzPath))
+})
+
 app.use("/", express.static(serverpath + "Flash"))
 app.use("/sd", express.static(serverpath + "sd"))
 app.use("/", expressStaticGzip(serverpath + "Flash"))
@@ -87,8 +103,19 @@ app.get("/config", function (req, res) {
     configURI(req, res)
 })
 
+const mockContext = {
+    getSDList: (p) => getFileListArray(p || "/", "SD"),
+    getFlashList: (p) => getFileListArray(p || "/", "Flash"),
+}
+
 app.get("/command", function (req, res) {
-    commandsQuery(req, res, SendWS)
+    const url = req.query.cmd != null ? req.query.cmd : req.originalUrl
+    if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command ${url}`))
+    commandsQuery(req, res, SendWS, mockContext)
+    if (!res.headersSent) {
+        if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command unknown: ${url}`))
+        res.status(200).send("error:unknown command\n")
+    }
 })
 
 /*app.get("/sdfiles", function (req, res) {
@@ -109,6 +136,17 @@ function fileSizeString(size) {
         ++i
     }
     return `${size.toFixed(2)} ${units[i]}`
+}
+
+function getFileListArray(mypath, destination) {
+    const currentPath = path.normalize(serverpath + destination + (mypath || "/"))
+    if (!fs.existsSync(currentPath)) return []
+    return fs.readdirSync(currentPath).map((file) => {
+        const fullpath = path.normalize(currentPath + "/" + file)
+        const fst = fs.statSync(fullpath)
+        const fsize = fst.isFile() ? fileSizeString(fst.size) : "-1"
+        return { name: file, size: fsize }
+    })
 }
 
 function filesList(mypath, destination) {
@@ -306,7 +344,8 @@ wss.on("connection", (socket, request) => {
     }
     currentID++
     socket.on("message", (message) => {
-        console.log(wscolor("[ws] received:", message))
+        if (MOCK_VERBOSE) console.log(wscolor("[ws] received:", message.toString()))
+        else console.log(wscolor("[ws] received:", message))
         if (hasEnabledAuthentication() && message.startsWith("PING:")) {
             wss.clients.forEach(function each(client) {
                 if (client.readyState === WebSocket.OPEN) {
