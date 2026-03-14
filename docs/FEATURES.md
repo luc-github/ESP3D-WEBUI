@@ -6,6 +6,7 @@ The full reference is **ESP3D-WebUI-features.xhtml** (converted from ESP3D-WebUI
 
 ## Global features
 
+-   **Panel size customization:** Panel height and min/max width (Settings → General) to adapt layout to screen and reduce scrollbars.
 -   Firmware update
 -   WebUI update
 -   List of enabled features / capabilities

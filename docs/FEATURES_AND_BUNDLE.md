@@ -22,6 +22,7 @@
 | 10 | Extra contents (panel order, 3 panels) | 92 166 | +1 406 |
 | 11 | Extra contents manifest + refresh fix + drop_console | 94 623 | +2 457 |
 | 12 | Fixed panel order (drag & drop) + z-index fix | ~98 310 | +3 687 |
+| 13 | Panel size customization (height, min/max width) | 98 987 | +677 |
 
 Reference: `docs/FEATHER_ICONS_USED_UNUSED.md` for icon usage.
 
@@ -29,6 +30,7 @@ Reference: `docs/FEATHER_ICONS_USED_UNUSED.md` for icon usage.
 
 ## Main features (summary)
 
+- **Panel size customization:** Settings → General: **Panel height** (200–1200 px, default 550), **Panel min width** (200–600 px, default 340), **Panel max width** (0 = no limit / 1fr, or 340–1200 px, default 520). Reduces scrollbars and empty space; desktop grid uses min/max width for column count.
 - **Verbose filters:** Terminal line filtering (startswith, endswith, contain, regex). Configurable in Settings → Interface.
 - **Panels and extra content:** Panel order (drag & drop when "Fixed panels order" is on), extra content as panels with names, manifest-based extension scan (/extensions, /themes, /languages, fallback /).
 - **Preferences:** Saved file optimized (only diffs vs defaults, minified JSON). Short keys in bundle (shrink-preferences-loader).

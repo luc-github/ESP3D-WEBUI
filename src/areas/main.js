@@ -59,7 +59,7 @@ const PANEL_MIN_WIDTH_DEFAULT = 340
 const PANEL_MIN_WIDTH_MIN = 200
 const PANEL_MIN_WIDTH_MAX = 600
 const PANEL_MAX_WIDTH_DEFAULT = 520
-const PANEL_MAX_WIDTH_MIN = 400
+const PANEL_MAX_WIDTH_MIN = 0
 const PANEL_MAX_WIDTH_MAX = 1200
 
 const clamp = (val, lo, hi, def) => {
@@ -96,20 +96,20 @@ const MainContainer = () => {
             PANEL_MIN_WIDTH_MAX,
             PANEL_MIN_WIDTH_DEFAULT
         )
-        let maxW = clamp(
+        const maxW = clamp(
             uisettings.getValue("panelmaxwidth"),
             PANEL_MAX_WIDTH_MIN,
             PANEL_MAX_WIDTH_MAX,
             PANEL_MAX_WIDTH_DEFAULT
         )
-        if (maxW < minW) maxW = minW
         document.documentElement.style.setProperty(
             "--panel-min-width",
             minW + "px"
         )
+        /* If max is 0 or min > max, use 1fr (no limit: columns grow to fill space) */
         document.documentElement.style.setProperty(
             "--panel-max-width",
-            maxW + "px"
+            maxW === 0 || minW > maxW ? "1fr" : maxW + "px"
         )
     }, [uisettings.current])
     mainRoutes.current = { ...defRoutes }

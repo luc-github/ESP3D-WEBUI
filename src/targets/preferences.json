@@ -83,7 +83,7 @@
                 "id": "panelmaxwidth",
                 "type": "number",
                 "label": "S260",
-                "min": "400",
+                "min": "0",
                 "max": "1200",
                 "value": "520",
                 "append": "S258"

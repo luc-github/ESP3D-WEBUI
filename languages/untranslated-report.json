@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-14T08:21:42.079Z",
+  "generated": "2026-03-14T14:44:11.715Z",
   "packs": {
     "printerpack": {
       "de": {
@@ -73,6 +73,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -255,8 +259,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 62
+        "totalKeysInReference": 544,
+        "untranslatedCount": 63
       },
       "es": {
         "missing": [],
@@ -329,6 +333,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -483,8 +491,8 @@
             "en": "mins"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 55
+        "totalKeysInReference": 544,
+        "untranslatedCount": 56
       },
       "fr": {
         "missing": [],
@@ -593,6 +601,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -771,8 +783,8 @@
             "en": "secs"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 70
+        "totalKeysInReference": 544,
+        "untranslatedCount": 71
       },
       "hu": {
         "missing": [],
@@ -829,6 +841,10 @@
           {
             "key": "S240",
             "en": "GitHub link"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -991,8 +1007,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 53
+        "totalKeysInReference": 544,
+        "untranslatedCount": 54
       },
       "id": {
         "missing": [],
@@ -1073,6 +1089,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -1271,8 +1291,8 @@
             "en": "Override"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 68
+        "totalKeysInReference": 544,
+        "untranslatedCount": 69
       },
       "it": {
         "missing": [],
@@ -1353,6 +1373,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -1535,8 +1559,8 @@
             "en": "Override"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 64
+        "totalKeysInReference": 544,
+        "untranslatedCount": 65
       },
       "ja": {
         "missing": [],
@@ -1565,6 +1589,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -1679,8 +1707,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 34
+        "totalKeysInReference": 544,
+        "untranslatedCount": 35
       },
       "ko": {
         "missing": [],
@@ -1709,6 +1737,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -1787,8 +1819,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 25
+        "totalKeysInReference": 544,
+        "untranslatedCount": 26
       },
       "pl": {
         "missing": [],
@@ -1849,6 +1881,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2007,8 +2043,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 53
+        "totalKeysInReference": 544,
+        "untranslatedCount": 54
       },
       "ptbr": {
         "missing": [],
@@ -2089,6 +2125,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2263,8 +2303,8 @@
             "en": "Override"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 62
+        "totalKeysInReference": 544,
+        "untranslatedCount": 63
       },
       "ru": {
         "missing": [],
@@ -2293,6 +2333,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2407,8 +2451,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 34
+        "totalKeysInReference": 544,
+        "untranslatedCount": 35
       },
       "th": {
         "missing": [],
@@ -2437,6 +2481,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2535,8 +2583,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 30
+        "totalKeysInReference": 544,
+        "untranslatedCount": 31
       },
       "tr": {
         "missing": [],
@@ -2585,6 +2633,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2719,8 +2771,8 @@
             "en": "Fan $"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 44
+        "totalKeysInReference": 544,
+        "untranslatedCount": 45
       },
       "uk": {
         "missing": [],
@@ -2753,6 +2805,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -2867,8 +2923,8 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
-        "untranslatedCount": 35
+        "totalKeysInReference": 544,
+        "untranslatedCount": 36
       },
       "zhcn": {
         "missing": [],
@@ -2995,7 +3051,7 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
+        "totalKeysInReference": 544,
         "untranslatedCount": 30
       },
       "zhtw": {
@@ -3123,7 +3179,7 @@
             "en": "℃"
           }
         ],
-        "totalKeysInReference": 540,
+        "totalKeysInReference": 544,
         "untranslatedCount": 30
       }
     },
@@ -3199,6 +3255,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -3377,8 +3437,8 @@
             "en": "Alarm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 61
+        "totalKeysInReference": 702,
+        "untranslatedCount": 62
       },
       "es": {
         "missing": [],
@@ -3451,6 +3511,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -3597,8 +3661,8 @@
             "en": "mm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 53
+        "totalKeysInReference": 702,
+        "untranslatedCount": 54
       },
       "fr": {
         "missing": [],
@@ -3707,6 +3771,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -3885,8 +3953,8 @@
             "en": "mm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 70
+        "totalKeysInReference": 702,
+        "untranslatedCount": 71
       },
       "hu": {
         "missing": [],
@@ -3943,6 +4011,10 @@
           {
             "key": "S240",
             "en": "GitHub link"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -4089,8 +4161,8 @@
             "en": "mm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 49
+        "totalKeysInReference": 702,
+        "untranslatedCount": 50
       },
       "id": {
         "missing": [],
@@ -4171,6 +4243,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -4397,8 +4473,8 @@
             "en": "Motor fault."
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 75
+        "totalKeysInReference": 702,
+        "untranslatedCount": 76
       },
       "it": {
         "missing": [],
@@ -4479,6 +4555,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -4665,8 +4745,8 @@
             "en": "Home"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 65
+        "totalKeysInReference": 702,
+        "untranslatedCount": 66
       },
       "ja": {
         "missing": [],
@@ -4695,6 +4775,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -4809,8 +4893,8 @@
             "en": "mm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 34
+        "totalKeysInReference": 702,
+        "untranslatedCount": 35
       },
       "ko": {
         "missing": [],
@@ -4839,6 +4923,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -4913,8 +5001,8 @@
             "en": "mm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 24
+        "totalKeysInReference": 702,
+        "untranslatedCount": 25
       },
       "pl": {
         "missing": [],
@@ -4975,6 +5063,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5145,8 +5237,8 @@
             "en": "Alarm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 56
+        "totalKeysInReference": 702,
+        "untranslatedCount": 57
       },
       "ptbr": {
         "missing": [],
@@ -5227,6 +5319,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5405,8 +5501,8 @@
             "en": "Status"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 63
+        "totalKeysInReference": 702,
+        "untranslatedCount": 64
       },
       "ru": {
         "missing": [],
@@ -5435,6 +5531,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5541,8 +5641,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 32
+        "totalKeysInReference": 702,
+        "untranslatedCount": 33
       },
       "th": {
         "missing": [],
@@ -5571,6 +5671,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5661,8 +5765,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 28
+        "totalKeysInReference": 702,
+        "untranslatedCount": 29
       },
       "tr": {
         "missing": [],
@@ -5711,6 +5815,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5841,8 +5949,8 @@
             "en": "Alarm"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 43
+        "totalKeysInReference": 702,
+        "untranslatedCount": 44
       },
       "uk": {
         "missing": [],
@@ -5875,6 +5983,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -5981,8 +6093,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 698,
-        "untranslatedCount": 33
+        "totalKeysInReference": 702,
+        "untranslatedCount": 34
       },
       "zhcn": {
         "missing": [],
@@ -6105,7 +6217,7 @@
             "en": "RPM"
           }
         ],
-        "totalKeysInReference": 698,
+        "totalKeysInReference": 702,
         "untranslatedCount": 29
       },
       "zhtw": {
@@ -6229,7 +6341,7 @@
             "en": "RPM"
           }
         ],
-        "totalKeysInReference": 698,
+        "totalKeysInReference": 702,
         "untranslatedCount": 29
       }
     },
@@ -6305,6 +6417,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -6587,8 +6703,8 @@
             "en": "Panel Encoder 3 Cpd"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 87
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 88
       },
       "es": {
         "missing": [],
@@ -6661,6 +6777,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -6895,8 +7015,8 @@
             "en": "Macro 9"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 75
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 76
       },
       "fr": {
         "missing": [],
@@ -7005,6 +7125,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -7327,8 +7451,8 @@
             "en": "Action 9"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 106
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 107
       },
       "hu": {
         "missing": [],
@@ -7385,6 +7509,10 @@
           {
             "key": "S240",
             "en": "GitHub link"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -7743,8 +7871,8 @@
             "en": "Rpm Min 1"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 102
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 103
       },
       "id": {
         "missing": [],
@@ -7825,6 +7953,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -8331,8 +8463,8 @@
             "en": "Mode 1"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 145
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 146
       },
       "it": {
         "missing": [],
@@ -8413,6 +8545,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -8899,8 +9035,8 @@
             "en": "Stepper 20"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 140
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 141
       },
       "ja": {
         "missing": [],
@@ -8929,6 +9065,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -9103,8 +9243,8 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 49
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 50
       },
       "ko": {
         "missing": [],
@@ -9133,6 +9273,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -9271,8 +9415,8 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 40
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 41
       },
       "pl": {
         "missing": [],
@@ -9333,6 +9477,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -9563,8 +9711,8 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 71
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 72
       },
       "ptbr": {
         "missing": [],
@@ -9645,6 +9793,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -9931,8 +10083,8 @@
             "en": "Macro 9"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 90
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 91
       },
       "ru": {
         "missing": [],
@@ -9961,6 +10113,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -10127,8 +10283,8 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 47
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 48
       },
       "th": {
         "missing": [],
@@ -10157,6 +10313,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -10507,8 +10667,8 @@
             "en": "Action Port 1"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 93
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 94
       },
       "tr": {
         "missing": [],
@@ -10557,6 +10717,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -10895,8 +11059,8 @@
             "en": "Spindle Offset Y"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 95
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 96
       },
       "uk": {
         "missing": [],
@@ -10929,6 +11093,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -11083,8 +11251,8 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
-        "untranslatedCount": 45
+        "totalKeysInReference": 1061,
+        "untranslatedCount": 46
       },
       "zhcn": {
         "missing": [],
@@ -11271,7 +11439,7 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
+        "totalKeysInReference": 1061,
         "untranslatedCount": 45
       },
       "zhtw": {
@@ -11459,7 +11627,7 @@
             "en": "VFD 21"
           }
         ],
-        "totalKeysInReference": 1057,
+        "totalKeysInReference": 1061,
         "untranslatedCount": 45
       }
     },
@@ -11535,6 +11703,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -11689,8 +11861,8 @@
             "en": "mm/min"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 55
+        "totalKeysInReference": 505,
+        "untranslatedCount": 56
       },
       "es": {
         "missing": [],
@@ -11763,6 +11935,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -11901,8 +12077,8 @@
             "en": "mm/min"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 51
+        "totalKeysInReference": 505,
+        "untranslatedCount": 52
       },
       "fr": {
         "missing": [],
@@ -12011,6 +12187,10 @@
           {
             "key": "S255",
             "en": "Version"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -12165,8 +12345,8 @@
             "en": "mm/min"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 64
+        "totalKeysInReference": 505,
+        "untranslatedCount": 65
       },
       "hu": {
         "missing": [],
@@ -12223,6 +12403,10 @@
           {
             "key": "S240",
             "en": "GitHub link"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -12365,8 +12549,8 @@
             "en": "USB port"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 48
+        "totalKeysInReference": 505,
+        "untranslatedCount": 49
       },
       "id": {
         "missing": [],
@@ -12447,6 +12631,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -12621,8 +12809,8 @@
             "en": "Home"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 62
+        "totalKeysInReference": 505,
+        "untranslatedCount": 63
       },
       "it": {
         "missing": [],
@@ -12703,6 +12891,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -12861,8 +13053,8 @@
             "en": "Home"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 58
+        "totalKeysInReference": 505,
+        "untranslatedCount": 59
       },
       "ja": {
         "missing": [],
@@ -12891,6 +13083,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -12997,8 +13193,8 @@
             "en": "mm/min"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 32
+        "totalKeysInReference": 505,
+        "untranslatedCount": 33
       },
       "ko": {
         "missing": [],
@@ -13027,6 +13223,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13093,8 +13293,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 22
+        "totalKeysInReference": 505,
+        "untranslatedCount": 23
       },
       "pl": {
         "missing": [],
@@ -13155,6 +13355,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13297,8 +13501,8 @@
             "en": "Stop"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 49
+        "totalKeysInReference": 505,
+        "untranslatedCount": 50
       },
       "ptbr": {
         "missing": [],
@@ -13379,6 +13583,10 @@
           {
             "key": "S247",
             "en": "Status"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13529,8 +13737,8 @@
             "en": "mm/min"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 56
+        "totalKeysInReference": 505,
+        "untranslatedCount": 57
       },
       "ru": {
         "missing": [],
@@ -13559,6 +13767,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13665,8 +13877,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 32
+        "totalKeysInReference": 505,
+        "untranslatedCount": 33
       },
       "th": {
         "missing": [],
@@ -13695,6 +13907,10 @@
           {
             "key": "S221",
             "en": "Bigtreetech"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13785,8 +14001,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 28
+        "totalKeysInReference": 505,
+        "untranslatedCount": 29
       },
       "tr": {
         "missing": [],
@@ -13835,6 +14051,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -13949,8 +14169,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 39
+        "totalKeysInReference": 505,
+        "untranslatedCount": 40
       },
       "uk": {
         "missing": [],
@@ -13983,6 +14203,10 @@
           {
             "key": "S232",
             "en": "Regex"
+          },
+          {
+            "key": "S258",
+            "en": "px"
           },
           {
             "key": "btn+X",
@@ -14089,8 +14313,8 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
-        "untranslatedCount": 33
+        "totalKeysInReference": 505,
+        "untranslatedCount": 34
       },
       "zhcn": {
         "missing": [],
@@ -14209,7 +14433,7 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
+        "totalKeysInReference": 505,
         "untranslatedCount": 28
       },
       "zhtw": {
@@ -14329,7 +14553,7 @@
             "en": "Grbl"
           }
         ],
-        "totalKeysInReference": 501,
+        "totalKeysInReference": 505,
         "untranslatedCount": 28
       }
     }

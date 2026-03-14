@@ -6,3 +6,4 @@ server
 repomix-output.xml
 generate-context.ps1
 .env
+languages/backup/
