@@ -121,6 +121,7 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                     setIsLoading(false)
                     const items = parseAndFilter(result, "extensions/")
                     setExtensionsList(items)
+                    setSelectedIds(new Set(items.map((e) => e.id)))
                     if (items.length) fetchManifestsForItems(items)
                 },
                 onFail: () => {
@@ -132,6 +133,7 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                                 setIsLoading(false)
                                 const items = parseAndFilter(result, "")
                                 setExtensionsList(items)
+                                setSelectedIds(new Set(items.map((e) => e.id)))
                                 if (items.length) fetchManifestsForItems(items)
                             },
                             onFail: (error) => {
@@ -167,7 +169,7 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
         )
         if (status === "installed") return cell("text-success", T("S248"), CheckCircle)
         if (status === "ok") return cell("text-warning", T("S250"), PlusCircle)
-        if (status === "incompatible") return cell("text-error", "Incompatible", XCircle)
+        if (status === "incompatible") return cell("text-error", "Unsupported", XCircle)
         return cell("text-gray", T("S249"), XCircle)
     }
 

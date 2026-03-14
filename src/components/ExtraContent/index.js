@@ -34,7 +34,6 @@ import { iconsTarget } from "../../targets"
 import { useUiContextFn, useUiContext } from "../../contexts"
 
 const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) => {
-
     const [isFullScreen, setIsFullScreen] = useState(false)
     const { panels } = useUiContext()
     const extra_content_id = `extra_content_${id}`

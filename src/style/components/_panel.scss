@@ -64,3 +64,61 @@
     height: 100%;
     width: 100%;
 }
+
+body.panel-dragging {
+    cursor: none !important;
+}
+
+.panel-drag-wrapper {
+    position: relative;
+    .panel-drag-handle {
+        position: absolute;
+        top: 0.15rem;
+        right: 3rem;
+        left: auto;
+        z-index: 10;
+        height: 1.25rem;
+        min-height: 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: move;
+        padding: 0 0.15rem;
+        border-radius: 0.1rem;
+        color: #5755d9;
+        opacity: 0.85;
+        box-sizing: border-box;
+        background: transparent;
+        border: 0 none;
+        outline: none;
+        box-shadow: none;
+        &:focus,
+        &:focus-visible {
+            outline: none;
+            box-shadow: none;
+            border: 0 none;
+        }
+        &:hover {
+            opacity: 1;
+            color: white !important;
+            background-color: #5755d9 !important;
+        }
+        &:active {
+            cursor: move;
+            color: white !important;
+            background-color: #5755d9 !important;
+        }
+    }
+    &.panel-has-menu .panel-drag-handle,
+    &.panel-extra-content .panel-drag-handle {
+        right: 4.5rem;
+    }
+    &.panel-drop-indicator-before {
+        border-left: 4px solid #5755d9;
+        margin-left: -4px;
+    }
+    &.panel-drop-indicator-after {
+        border-right: 4px solid #5755d9;
+        margin-right: -4px;
+    }
+}

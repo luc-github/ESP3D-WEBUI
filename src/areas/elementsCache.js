@@ -28,9 +28,9 @@ import { webUIVersion, Target, targetCategory } from "../targets"
 
 /** Renders from stable contentData so sibling refresh does not remount/reload others */
 const ElementsCacheList = memo(({ contentData, isVisibleOnStart }) => {
-    if (!contentData?.length) return <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible;" id="elementsCache" />
+    if (!contentData?.length) return <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache" />
     return (
-        <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible;" id="elementsCache">
+        <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache">
             {contentData.map((item) => (
                 <ExtraContentItem
                     key={item.id}

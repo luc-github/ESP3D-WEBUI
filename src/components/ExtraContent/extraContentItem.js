@@ -59,42 +59,12 @@ function matchVersion(version, pattern) {
 /** Memoized frame; src is set only in useEffect when contentUrl changes to avoid reload on re-render */
 const ContentFrame = memo(({ contentUrl, className, frameId, onErrorRef, onLoadRef }) => {
     const iframeRef = useRef(null)
-    const isExtension = className?.includes("extension")
     useEffect(() => {
         const el = iframeRef.current
         if (!el || !contentUrl) return
-        const currentSrc = el.src || ""
-        const needSet = currentSrc !== contentUrl
-        if (process.env.NODE_ENV !== "production" && isExtension) {
-            console.log(
-                "[ContentFrame] useEffect",
-                frameId,
-                "extension",
-                "needSet:",
-                needSet,
-                "currentSrcLen:",
-                currentSrc.length,
-                "contentUrlLen:",
-                contentUrl.length
-            )
-        }
-        if (needSet) {
-            if (process.env.NODE_ENV !== "production" && isExtension)
-                console.log(
-                    "[ContentFrame] SETTING iframe.src for extension",
-                    frameId
-                )
-            el.src = contentUrl
-        }
-    }, [contentUrl, frameId, isExtension])
-    useEffect(() => {
-        if (process.env.NODE_ENV !== "production" && isExtension)
-            console.log("[ContentFrame] MOUNT extension", frameId)
-        return () => {
-            if (process.env.NODE_ENV !== "production" && isExtension)
-                console.log("[ContentFrame] UNMOUNT extension", frameId)
-        }
-    }, [])
+        const needSet = (el.src || "") !== contentUrl
+        if (needSet) el.src = contentUrl
+    }, [contentUrl, frameId])
     return (
         <iframe
             ref={iframeRef}
@@ -129,9 +99,6 @@ const ExtraContentItemInner = ({
     const handleLoadRef = useRef(() => {})
     const hasContentRef = useRef(false)
     idRef.current = id
-    if (process.env.NODE_ENV !== "production") {
-        console.log("[ExtraContent] ExtraContentItem RENDER", id, "type:", type)
-    }
     if (visibilityState[id] === undefined) {
         visibilityState[id] = false
     }
@@ -158,9 +125,6 @@ const ExtraContentItemInner = ({
         }
         const getHtmlThen = (htmlText) => {
             if (type === "extension" && extensionCheckConfig) {
-                if (process.env.NODE_ENV !== "production") {
-                    console.log("[ExtraContent] extension runCheck", id, "manifest check")
-                }
                 const manifest = getEmbeddedManifest(htmlText)
                 const hasValidManifest =
                     manifest &&
@@ -199,12 +163,12 @@ const ExtraContentItemInner = ({
             isLoadedState[id] = true
             return
         }
-        if (type === "content" || type === "extension") {
+            if (type === "content" || type === "extension") {
             if (typeof result === "string") {
                 getHtmlThen(result)
             } else if (result && typeof result.text === "function") {
                 result.text().then(getHtmlThen).catch((err) => {
-                    console.error("[ExtraContent] result.text() failed", id, err)
+                    console.error("ExtraContent result.text() failed", id, err)
                     setHasError(true)
                     setIsLoading(false)
                     isLoadedState[id] = false
@@ -233,10 +197,6 @@ const ExtraContentItemInner = ({
     }, [id])
 
     const loadContent = useCallback(() => {
-        if (process.env.NODE_ENV !== "production") {
-            console.log("[ExtraContent] loadContent called", id)
-        }
-
         if (target=="page"){
             //console.log("Loading content for page " + id)
             //console.log(useUiContextFn.panels.isVisible(elementsCache.getRootfromId(id)))
@@ -264,9 +224,6 @@ const ExtraContentItemInner = ({
             let url = source
             if (url.endsWith(".gz")) {
                 url = url.substring(0, url.length - 3)
-            }
-            if (process.env.NODE_ENV !== "production") {
-                console.log("[ExtraContent] HTTP createNewRequest", "id:", id, "idquery:", idquery, "type:", type)
             }
             createNewRequest(
                 espHttpURL(url),

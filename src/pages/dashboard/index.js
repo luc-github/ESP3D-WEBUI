@@ -21,13 +21,14 @@ import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn, useSettingsContext } from "../../contexts"
 import { T } from "../../components/Translations"
-import { List, CheckCircle, Circle, HelpCircle } from "preact-feather"
+import { List, CheckCircle, Circle, HelpCircle, Anchor } from "preact-feather"
 import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 import { showModal } from "../../components/Modal"
 import { eventBus } from "../../hooks/eventBus"
 
+const fixedPanels = []
 const keyTracker = {
     keybListenerCounter: 0,
     keyState: 0,
@@ -86,8 +87,6 @@ const keyboardEventHandlerDown = (e) => {
         }
     })
 
-    //console.log("KeyMap override match, key = " + e.key + ", cmd= " + cmdMatch)
-
     if (cmdMatch) {
         e.preventDefault()
         const autorepeat = useUiContextFn.getValue("enableautorepeat")
@@ -119,6 +118,10 @@ const Dashboard = () => {
     const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
         shortcuts.enabled
     )
+    const [dropIndicator, setDropIndicator] = useState({
+        index: null,
+        side: null,
+    })
     const [incompatibleExtraIds, setIncompatibleExtraIds] = useState(() => new Set())
 
     useEffect(() => {
@@ -195,16 +198,9 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (!intialisationDone) {
-            //console.log("Init")
             intialisationDone = true
-            //console.log(uisettings.getValue("enableshortcuts"))
             setIsKeyboardEnabled(uisettings.getValue("enableshortcuts"))
             shortcuts.enable(uisettings.getValue("enableshortcuts"))
-        } else {
-            //console.log("Init Done")
-        }
-        return () => {
-//console.log("Unmount dashboard")
         }
     }, [])
 
@@ -219,96 +215,68 @@ const Dashboard = () => {
         }
     }, [shortcuts.enabled])
 
-    const showExtra = uisettings.getValue("showextracontents")
-    const extraContents = uisettings.getValue("extracontents")
-    const panelOrderRaw = uisettings.getValue("panelsorder")
-    const panelsOrderKey =
-        Array.isArray(panelOrderRaw) && panelOrderRaw.length > 0
-            ? panelOrderRaw
-                  .map((p) => {
-                      const nameField =
-                          p.value && p.value.find((s) => s.name === "name")
-                      return nameField != null && nameField.value != null
-                          ? nameField.value
-                          : (p.value && p.value[0] && p.value[0].value) || p.id
-                  })
-                  .join(",")
-            : ""
-
     useEffect(() => {
-        let baseList = [...defaultPanelsList]
-        if (showExtra) {
-            const extraPanelsList = (extraContents || []).reduce(
-                (acc, curr) => {
-                    if (incompatibleExtraIds.has(curr.id)) return acc
-                    const item = (curr.value || []).reduce(
-                        (accumulator, current) => {
-                            accumulator[current.name] = current.initial
-                            return accumulator
-                        },
-                        {}
-                    )
-                    if (item.target == "panel")
-                        acc.push(ExtraPanelElement(item, curr.id))
-                    return acc
-                },
-                []
-            )
-            baseList = [...defaultPanelsList, ...extraPanelsList]
-        }
-
-        let orderedList = baseList
-        if (isfixed) {
-            const panelOrder = panelOrderRaw
-            if (Array.isArray(panelOrder) && panelOrder.length > 0) {
-                const orderedIds = []
-                let didExpandExtra = false
-                panelOrder.forEach((panel) => {
-                    const nameField =
-                        panel.value &&
-                        panel.value.find((s) => s.name === "name")
-                    const id =
-                        nameField != null && nameField.value != null
-                            ? nameField.value
-                            : (panel.value &&
-                                  panel.value[0] &&
-                                  panel.value[0].value) ||
-                              panel.id
-                    if (id === "extracontents") {
-                        didExpandExtra = true
-                        baseList
-                            .filter((p) =>
-                                (p.settingid || "").startsWith("extracontents_")
-                            )
-                            .forEach((p) => orderedIds.push(p.settingid))
-                    } else {
-                        orderedIds.push(id)
-                    }
-                })
-                orderedList = orderedIds
-                    .map((id) =>
-                        baseList.find(
-                            (p) => (p.settingid || p.id) === id
+        if (!panels.initDone && panels.list.length !== 0) {
+            if (isfixed && fixedPanels.length === 0) {
+                const panelOrder = uisettings.getValue("panelsorder")
+                if (Array.isArray(panelOrder)) {
+                    let orderIndex = 0
+                    panelOrder.forEach((panel) => {
+                        const nameField =
+                            panel.value &&
+                            panel.value.find((s) => s.name === "name")
+                        const id =
+                            nameField != null && nameField.value != null
+                                ? nameField.value
+                                : (panel.value &&
+                                      panel.value[0] &&
+                                      panel.value[0].value) ||
+                                  panel.name ||
+                                  panel.id
+                        if (id === "extracontents") {
+                            panels.list
+                                .filter((p) =>
+                                    (p.settingid || "").startsWith(
+                                        "extracontents_"
+                                    )
+                                )
+                                .forEach((p) => {
+                                    fixedPanels.push({
+                                        index: orderIndex++,
+                                        id: p.settingid,
+                                    })
+                                })
+                        } else {
+                            fixedPanels.push({ index: orderIndex++, id })
+                        }
+                    })
+                    panels.setPanelsOrder(fixedPanels)
+                    const newList = fixedPanels.reduce((acc, panel) => {
+                        const paneldesc = panels.list.filter(
+                            (p) => p.settingid === panel.id
                         )
-                    )
-                    .filter(Boolean)
-                if (
-                    didExpandExtra &&
-                    interfaceSettings?.current?.settings &&
-                    useUiContextFn.getElement
-                ) {
+                        if (paneldesc.length > 0) acc.push(...paneldesc)
+                        return acc
+                    }, [])
+                    panels.set([...newList])
+                    const visibleList = newList.reduce((acc, curr) => {
+                        if (
+                            uisettings.getValue(curr.onstart) &&
+                            uisettings.getValue(curr.show)
+                        )
+                            acc.push(curr)
+                        return acc
+                    }, [])
+                    panels.setVisibles(visibleList)
                     const next = JSON.parse(
-                        JSON.stringify(interfaceSettings.current.settings)
+                        JSON.stringify(uisettings.current)
                     )
                     const el = useUiContextFn.getElement("panelsorder", next)
                     if (el && Array.isArray(el.value)) {
-                        const reordered = orderedList.map((p, i) => ({
-                            id: p.settingid || p.id,
+                        const reordered = newList.map((p, i) => ({
+                            id: p.id,
                             value: [
-                                {
-                                    name: "name",
-                                    value: p.settingid || p.id,
-                                },
+                                { name: "name", value: p.settingid },
                                 { name: "index", value: i },
                             ],
                             index: i,
@@ -321,31 +289,76 @@ const Dashboard = () => {
                                 item.value[0].hasmodified = true
                         })
                         uisettings.set(next)
-                        interfaceSettings.current.settings = next
+                        if (interfaceSettings?.current)
+                            interfaceSettings.current.settings = next
                     }
+                } else {
+                    const fallbackVisibles = panels.list.reduce((acc, curr) => {
+                        if (
+                            uisettings.getValue(curr.onstart) &&
+                            uisettings.getValue(curr.show)
+                        )
+                            acc.push(curr)
+                        return acc
+                    }, [])
+                    panels.setVisibles(fallbackVisibles)
                 }
+            } else {
+                const elseVisibles = panels.list.reduce((acc, curr) => {
+                    if (
+                        uisettings.getValue(curr.onstart) &&
+                        uisettings.getValue(curr.show)
+                    )
+                        acc.push(curr)
+                    return acc
+                }, [])
+                panels.setVisibles(elseVisibles)
             }
+            panels.setInitDone(true)
+        } else if (panels.initDone) {
+            panels.visibles.forEach((element) => {
+                if (!panels.list.find((panel) => panel.id === element.id))
+                    panels.hide(element.id)
+            })
         }
-        panels.set([...orderedList])
-        panels.setPanelsOrder(
-            orderedList.map((p, i) => ({ index: i, id: p.settingid || p.id }))
-        )
-        panels.setVisibles(
-            orderedList.reduce((acc, curr) => {
-                if (
-                    uisettings.getValue(curr.onstart) &&
-                    uisettings.getValue(curr.show)
+    })
+
+    useEffect(() => {
+        const showExtra = uisettings.getValue("showextracontents")
+        const extraContents = uisettings.getValue("extracontents")
+        if (showExtra) {
+            if (Array.isArray(extraContents)) {
+                fixedPanels.length = 0
+                const extraPanelsList = extraContents.reduce(
+                    (acc, curr) => {
+                        if (incompatibleExtraIds.has(curr.id)) return acc
+                        const item = (curr.value || []).reduce(
+                            (accumulator, current) => {
+                                accumulator[current.name] = current.initial
+                                return accumulator
+                            },
+                            {}
+                        )
+                        if (item.target === "panel")
+                            acc.push(ExtraPanelElement(item, curr.id))
+                        return acc
+                    },
+                    []
                 )
-                    acc.push(curr)
-                return acc
-            }, [])
-        )
-        panels.setInitDone(true)
+                panels.set([
+                    ...defaultPanelsList,
+                    ...extraPanelsList,
+                ])
+            } else {
+                panels.set([...defaultPanelsList])
+            }
+        } else {
+            panels.set([...defaultPanelsList])
+        }
         panels.visibles.forEach((element) => {
-            if (!orderedList.find((panel) => panel.id == element.id))
-                panels.hide(element.id)
+            if (!uisettings.getValue(element.show)) panels.hide(element.id)
         })
-    }, [isfixed, showExtra, (extraContents || []).length, panelsOrderKey, incompatibleExtraIds])
+    }, [uisettings.current, incompatibleExtraIds])
 
     return (
         <div id="dashboard">
@@ -485,9 +498,150 @@ const Dashboard = () => {
                 )}
                 <QuickButtonsBar />
             </div>
-            <div class="panels-container m-2">
-                {panels.visibles.map((panel) => {
-                    return <Fragment>{panel.content}</Fragment>
+            <div
+                class="panels-container m-2"
+                onDragLeave={(e) => {
+                    if (
+                        !e.relatedTarget ||
+                        !e.currentTarget.contains(e.relatedTarget)
+                    )
+                        setDropIndicator({ index: null, side: null })
+                }}
+            >
+                {panels.visibles.map((panel, index) => {
+                    if (!isfixed) {
+                        return (
+                            <Fragment key={panel.id}>
+                                {panel.content}
+                            </Fragment>
+                        )
+                    }
+                    const isExtraPanel =
+                        panel.settingid &&
+                        panel.settingid.startsWith("extracontents_")
+                    const handleDragStart = (e) => {
+                        e.dataTransfer.setData("text/plain", String(index))
+                        e.dataTransfer.effectAllowed = "move"
+                        useUiContextFn.haptic()
+                        document.body.classList.add("panel-dragging")
+                        const img = new Image()
+                        img.src =
+                            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                        e.dataTransfer.setDragImage(img, 0, 0)
+                    }
+                    const handleDragOver = (e) => {
+                        e.preventDefault()
+                        e.dataTransfer.dropEffect = "move"
+                        const rect = e.currentTarget.getBoundingClientRect()
+                        const side =
+                            e.clientX < rect.left + rect.width / 2
+                                ? "before"
+                                : "after"
+                        setDropIndicator({ index, side })
+                    }
+                    const handleDragEnd = () => {
+                        document.body.classList.remove("panel-dragging")
+                        setDropIndicator({ index: null, side: null })
+                    }
+                    const handleDrop = (e) => {
+                        e.preventDefault()
+                        const dragIndex = parseInt(
+                            e.dataTransfer.getData("text/plain"),
+                            10
+                        )
+                        const { index: dropIndex, side: dropSide } = dropIndicator
+                        setDropIndicator({ index: null, side: null })
+                        if (dropIndex == null || dropSide == null) return
+                        let insertIndex =
+                            dropSide === "before" ? dropIndex : dropIndex + 1
+                        if (dragIndex < insertIndex) insertIndex -= 1
+                        if (dragIndex === insertIndex) return
+                        const visibles = [...panels.visibles]
+                        const [moved] = visibles.splice(dragIndex, 1)
+                        visibles.splice(insertIndex, 0, moved)
+                        const newFixedPanels = visibles.map((p, i) => ({
+                            index: i,
+                            id: p.settingid || p.id,
+                        }))
+                        panels.setPanelsOrder(newFixedPanels)
+                        panels.setVisibles(visibles)
+                        const next = JSON.parse(
+                            JSON.stringify(uisettings.current)
+                        )
+                        const el = useUiContextFn.getElement(
+                            "panelsorder",
+                            next
+                        )
+                        if (el && Array.isArray(el.value)) {
+                            const reordered = visibles.map((p, i) => {
+                                const existing = el.value.find((item) => {
+                                    const nameField =
+                                        item.value &&
+                                        item.value.find(
+                                            (s) => s.name === "name"
+                                        )
+                                    return (
+                                        nameField &&
+                                        nameField.value === (p.settingid || p.id)
+                                    )
+                                })
+                                if (existing) {
+                                    existing.index = i
+                                    const idxField =
+                                        existing.value &&
+                                        existing.value.find(
+                                            (s) => s.name === "index"
+                                        )
+                                    if (idxField) idxField.value = i
+                                    return existing
+                                }
+                                return {
+                                    id: p.settingid || p.id,
+                                    value: [
+                                        {
+                                            name: "name",
+                                            value: p.settingid || p.id,
+                                        },
+                                        { name: "index", value: i },
+                                    ],
+                                    index: i,
+                                }
+                            })
+                            el.value = reordered
+                            el.nb = reordered.length
+                            el.hasmodified = true
+                            reordered.forEach((item) => {
+                                if (item.value && item.value[0])
+                                    item.value[0].hasmodified = true
+                            })
+                            uisettings.set(next)
+                            if (interfaceSettings?.current)
+                                interfaceSettings.current.settings = next
+                        }
+                    }
+                    return (
+                        <div
+                            key={panel.id}
+                            class={`panel-drag-wrapper${panel.hasMenu ? " panel-has-menu" : ""}${isExtraPanel ? " panel-extra-content" : ""}${dropIndicator.index === index ? ` panel-drop-indicator-${dropIndicator.side}` : ""}`}
+                            draggable={true}
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                            onDragEnd={handleDragEnd}
+                            data-panel-index={index}
+                        >
+                            <span
+                                class="panel-drag-handle tooltip tooltip-left"
+                                data-tooltip={T("S256")}
+                                draggable={true}
+                                onDragStart={handleDragStart}
+                                aria-label={T("S256")}
+                            >
+                                <Anchor size="1rem" />
+                            </span>
+                            {panel.content}
+                        </div>
+                    )
                 })}
             </div>
         </div>

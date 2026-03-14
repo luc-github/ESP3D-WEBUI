@@ -311,7 +311,7 @@ const generateValidationGlobal = (
 }
 
 const InterfaceTab = () => {
-    const { toasts, modals, connection } = useUiContext()
+    const { toasts, modals, connection, uisettings } = useUiContext()
     const { createNewRequest, abortRequest } = useHttpQueue()
     const { getInterfaceSettings } = useSettings()
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -423,6 +423,14 @@ const InterfaceTab = () => {
                             panelsOrderEl.hasmodified = true
                         }
                         setPanelsOrderExpanded((n) => n + 1)
+                        if (uisettings?.set && interfaceSettings?.current?.settings)
+                            uisettings.set(
+                                JSON.parse(
+                                    JSON.stringify(
+                                        interfaceSettings.current.settings
+                                    )
+                                )
+                            )
                         modals.removeModal(modals.getModalIndex("extensions"))
                         refreshSaveStatusRef.current?.()
                     },

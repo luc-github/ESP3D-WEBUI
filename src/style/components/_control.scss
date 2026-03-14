@@ -629,7 +629,9 @@ a label {
 
 .btn.btn-screen {
     background: transparent;
-    border: 0;
+    border: 0 none;
+    outline: none;
+    box-shadow: none;
     color: currentColor;
     height: 1rem;
     line-height: 0.8rem;
@@ -640,11 +642,33 @@ a label {
     text-decoration: none;
     width: 1rem;
 }
+.btn.btn-screen:focus,
+.btn.btn-screen:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border: 0 none;
+}
 
 .btn.btn-screen:hover {
     background: blue;
     color: #fff;
-    border: 0;
+    border: 0 none;
+}
+
+/* Panel navbar: no contour on dropdown/fullscreen when inactive */
+.panel-dashboard .navbar .btn-header,
+.panel-dashboard .navbar .btn-screen {
+    border: 0 none;
+    outline: none;
+    box-shadow: none;
+}
+.panel-dashboard .navbar .btn-header:focus,
+.panel-dashboard .navbar .btn-header:focus-visible,
+.panel-dashboard .navbar .btn-screen:focus,
+.panel-dashboard .navbar .btn-screen:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border: 0 none;
 }
 
 .nested-button {

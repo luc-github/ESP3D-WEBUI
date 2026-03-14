@@ -17,7 +17,7 @@
 */
 import { h } from "preact"
 import { webUIbuild } from "../../targets"
-export const webUIversion = "3.0.2"
+export const webUIversion = "3.1.0b1"
 export const Esp3dVersion = () => (
     <span>
         {webUIversion}.{webUIbuild}
