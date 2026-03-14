@@ -72,6 +72,37 @@ const temperatures = {
     M: [{ value: roomTemperature, lastTime: -1, variation: 1 }], //the motherboard is same as room temperature +5/10 degres
 }
 
+// Shared state: position updated by G0/G1 (jog), read by M114; G90=absolute, G91=relative
+const state = {
+    position: { X: 0, Y: 0, Z: 0, E: 0 },
+    relative: false,
+}
+let activeMove = null
+const DEFAULT_FEEDRATE = 3000
+
+function applyActiveMove() {
+    if (!activeMove) return
+    const elapsed = Date.now() - activeMove.startTime
+    if (elapsed >= activeMove.durationMs) {
+        state.position.X = activeMove.startPos.X + activeMove.delta.X
+        state.position.Y = activeMove.startPos.Y + activeMove.delta.Y
+        state.position.Z = activeMove.startPos.Z + activeMove.delta.Z
+        state.position.E = activeMove.startPos.E + activeMove.delta.E
+        activeMove = null
+        return
+    }
+    const t = elapsed / activeMove.durationMs
+    state.position.X = activeMove.startPos.X + activeMove.delta.X * t
+    state.position.Y = activeMove.startPos.Y + activeMove.delta.Y * t
+    state.position.Z = activeMove.startPos.Z + activeMove.delta.Z * t
+    state.position.E = activeMove.startPos.E + activeMove.delta.E * t
+}
+
+function parseAxis(url, axis) {
+    const m = url.match(new RegExp(axis + "([+-]?[0-9.]+)", "i"))
+    return m ? parseFloat(m[1]) : null
+}
+
 const updateTemperature = (entry, time) => {
     if (entry.lastTime == -1) {
         entry.lastTime = time
@@ -187,11 +218,79 @@ const commandsQuery = (req, res, SendWS) => {
     }
     lastconnection = Date.now()
 
+    // Jog: multi-command strings (e.g. "G91\nG1 X1 F3000\nG90"); process each line so position updates
+    const lines = (url || "").split(/\r?\n/).map((s) => s.trim()).filter(Boolean)
+    let positionHandled = false
+    for (const line of lines) {
+        if (line.indexOf("G90") !== -1) {
+            state.relative = false
+            SendWS("ok\n")
+            positionHandled = true
+        }
+        if (line.indexOf("G91") !== -1) {
+            state.relative = true
+            SendWS("ok\n")
+            positionHandled = true
+        }
+        if (line.indexOf("G0") !== -1 || line.indexOf("G1") !== -1) {
+            applyActiveMove()
+            const x = parseAxis(line, "X")
+            const y = parseAxis(line, "Y")
+            const z = parseAxis(line, "Z")
+            const e = parseAxis(line, "E")
+            const F = parseAxis(line, "F")
+            const p = state.position
+            const dx = x != null ? (state.relative ? x : x - p.X) : 0
+            const dy = y != null ? (state.relative ? y : y - p.Y) : 0
+            const dz = z != null ? (state.relative ? z : z - p.Z) : 0
+            const de = e != null ? (state.relative ? e : e - p.E) : 0
+            const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+            const feedrate = F != null && F > 0 ? F : DEFAULT_FEEDRATE
+            const durationMs = dist < 1e-6 ? 0 : (dist / feedrate) * 60 * 1000
+            if (durationMs < 50) {
+                if (x != null) state.position.X = state.relative ? p.X + x : x
+                if (y != null) state.position.Y = state.relative ? p.Y + y : y
+                if (z != null) state.position.Z = state.relative ? p.Z + z : z
+                if (e != null) state.position.E = state.relative ? p.E + e : e
+            } else {
+                activeMove = {
+                    startTime: Date.now(),
+                    startPos: { X: p.X, Y: p.Y, Z: p.Z, E: p.E },
+                    delta: { X: dx, Y: dy, Z: dz, E: de },
+                    durationMs,
+                }
+            }
+            SendWS("ok\n")
+            positionHandled = true
+        }
+        if (line.indexOf("G28") !== -1) {
+            activeMove = null
+            const hasX = line.indexOf("X") !== -1
+            const hasY = line.indexOf("Y") !== -1
+            const hasZ = line.indexOf("Z") !== -1
+            if (!hasX && !hasY && !hasZ) {
+                state.position.X = 0
+                state.position.Y = 0
+                state.position.Z = 0
+            } else {
+                if (hasX) state.position.X = 0
+                if (hasY) state.position.Y = 0
+                if (hasZ) state.position.Z = 0
+            }
+            state.relative = false
+            SendWS("ok\n")
+            positionHandled = true
+        }
+    }
+    if (positionHandled) {
+        res.send("")
+        return
+    }
+
     if (url.indexOf("M114") != -1) {
-        let X = Number(Math.random() * 200.12).toFixed(2)
-        let Y = Number(Math.random() * 200.12).toFixed(2)
-        let Z = Number(Math.random() * 200.12).toFixed(2)
-        SendWS(`X:${X} Y:${Y} Z:${Z} E:0.00 Count X: 0 Y:10160 Z:116000\nok\n`)
+        applyActiveMove()
+        const p = state.position
+        SendWS(`X:${Number(p.X).toFixed(2)} Y:${Number(p.Y).toFixed(2)} Z:${Number(p.Z).toFixed(2)} E:${Number(p.E).toFixed(2)} Count X: 0 Y:10160 Z:116000\nok\n`)
         res.send("")
         return
     }

@@ -26,11 +26,17 @@ import { isTemperatures, isPositions, isPrintStatus } from "./filters"
  * @param {string} data
  * @param {Array<{ type?: string, value?: string }>|null|undefined} filters - From preferences verbosefilters; when set, used instead of built-in rules.
  */
+const TERMINAL_VERBOSE_DEBUG = false
 const isVerboseOnly = (type, data, filters) => {
     const line = data.trim()
     if (line.length === 0) return true
-    if (filters && Array.isArray(filters) && filters.length > 0) {
-        return matchVerboseLine(line, filters)
+    const list = filters && (Array.isArray(filters) ? filters : filters.value)
+    if (list && Array.isArray(list) && list.length > 0) {
+        const result = matchVerboseLine(line, list)
+        if (TERMINAL_VERBOSE_DEBUG && (line.includes("T:") || line.includes("ok"))) {
+            console.log("[Terminal verbose] isVerboseOnly filters raw type=%s, list.length=%s => isverboseOnly=%s", typeof filters, list.length, result)
+        }
+        return result
     }
     return (
         isTemperatures(line) ||

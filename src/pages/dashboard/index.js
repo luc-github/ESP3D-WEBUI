@@ -268,30 +268,9 @@ const Dashboard = () => {
                         return acc
                     }, [])
                     panels.setVisibles(visibleList)
-                    const next = JSON.parse(
-                        JSON.stringify(uisettings.current)
-                    )
-                    const el = useUiContextFn.getElement("panelsorder", next)
-                    if (el && Array.isArray(el.value)) {
-                        const reordered = newList.map((p, i) => ({
-                            id: p.id,
-                            value: [
-                                { name: "name", value: p.settingid },
-                                { name: "index", value: i },
-                            ],
-                            index: i,
-                        }))
-                        el.value = reordered
-                        el.nb = reordered.length
-                        el.hasmodified = true
-                        reordered.forEach((item) => {
-                            if (item.value && item.value[0])
-                                item.value[0].hasmodified = true
-                        })
-                        uisettings.set(next)
-                        if (interfaceSettings?.current)
-                            interfaceSettings.current.settings = next
-                    }
+                    /* Do not write back to uisettings here: we are only loading
+                       the saved order. Writing would set hasmodified and mark
+                       panel order as modified when user just opened dashboard. */
                 } else {
                     const fallbackVisibles = panels.list.reduce((acc, curr) => {
                         if (

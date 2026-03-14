@@ -412,9 +412,10 @@ const JogPanel = () => {
                     </span>
                 </span>
             </div>
-            <div class="m-1 jog-container">
-                <PositionsControls />
-                <div class="m-1">
+            <div class="panel-body panel-body-dashboard">
+                <div class="m-1 jog-container">
+                    <PositionsControls />
+                    <div class="m-1">
                     <div class="jog-buttons-main-container">
                         <div class="m-1 jog-buttons-container">
                             <div class="jog-buttons-line-top-container">
@@ -691,6 +692,7 @@ const JogPanel = () => {
                             })
                         }}
                     />
+                </div>
                 </div>
             </div>
         </div>

@@ -115,12 +115,49 @@ input[type="range"]::-ms-thumb {
     background-color: #f1f1fc;
 }
 
+/* Panel Files: same horizontal inset as Terminal (0.2rem margin + 5px padding) */
+.panel.panel-dashboard .panel-body.files-panel-body {
+    margin: 0.2rem !important;
+    padding: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group,
+.panel.panel-dashboard .panel-body.files-panel-body .drop-zone.files-list {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group {
+    margin-bottom: 0.2rem !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group .form-select,
+.panel.panel-dashboard .panel-body.files-panel-body .input-group .form-control {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap {
+    min-width: 4rem;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap .form-select {
+    min-width: 100%;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .form-control-path {
+    margin: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .drop-zone.files-list {
+    margin-top: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .files-list-footer {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
 .files-list {
     border: 0.05rem solid #dadee4;
     border-radius: $border-radius;
     padding: 5px 5px !important;
     overflow-x: hidden;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
 }
 
 .drop-zone--over {

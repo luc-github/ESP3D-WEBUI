@@ -62,6 +62,33 @@
                 "value": true
             },
             {
+                "id": "panelheight",
+                "type": "number",
+                "label": "S257",
+                "min": "200",
+                "max": "1200",
+                "value": "550",
+                "append": "S258"
+            },
+            {
+                "id": "panelminwidth",
+                "type": "number",
+                "label": "S259",
+                "min": "200",
+                "max": "600",
+                "value": "340",
+                "append": "S258"
+            },
+            {
+                "id": "panelmaxwidth",
+                "type": "number",
+                "label": "S260",
+                "min": "400",
+                "max": "1200",
+                "value": "520",
+                "append": "S258"
+            },
+            {
                 "id": "shortcuts",
                 "type": "group",
                 "label": "S216",

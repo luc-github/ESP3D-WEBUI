@@ -19,7 +19,18 @@
     display: -ms-flexbox;
     display: flex;
     flex-flow: column;
-    height: 550px;
+    height: var(--panel-height, 550px);
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+}
+.panel .navbar {
+    flex: 0 0 auto;
+}
+.panel .panel-body-dashboard,
+.panel .panel-body-interface,
+.panel .panel-body-features {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto !important;
     overflow-x: hidden !important;
 }

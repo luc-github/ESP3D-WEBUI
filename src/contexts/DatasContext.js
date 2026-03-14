@@ -83,6 +83,11 @@ const DatasContextProvider = ({ children }) => {
         )
     }
 
+    const syncContentToVerboseMode = () => {
+        if (isVerbose.current) setTerminalContent([...terminalBuffer.current])
+        else setTerminalContent([...terminalBufferQuiet.current])
+    }
+
     const store = {
         terminal: {
             input: terminalInput,
@@ -94,6 +99,7 @@ const DatasContextProvider = ({ children }) => {
             isAutoScroll,
             isVerbose,
             isAutoScrollPaused,
+            syncContentToVerboseMode,
         },
     }
 

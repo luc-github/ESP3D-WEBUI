@@ -164,8 +164,10 @@ const TerminalPanel = () => {
 
     const toggleVerboseMode = () => {
         useUiContextFn.haptic()
-        terminal.isVerbose.current = !isVerbose
-        setIsVerbose(!isVerbose)
+        const next = !isVerbose
+        terminal.isVerbose.current = next
+        setIsVerbose(next)
+        if (terminal.syncContentToVerboseMode) terminal.syncContentToVerboseMode()
     }
 
     const toggleAutoScroll = () => {
@@ -242,7 +244,7 @@ const TerminalPanel = () => {
                     </span>
                 </span>
             </div>
-            <div class="input-group m-2">
+            <div class="input-group m-1">
                 <input
                     type="text"
                     class="form-input"

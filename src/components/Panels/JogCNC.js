@@ -407,9 +407,10 @@ const JogPanel = () => {
                     </span>
                 </span>
             </div>
-            <div class="m-1 jog-container">
-                <PositionsControls />
-                <div class="m-1">
+            <div class="panel-body panel-body-dashboard">
+                <div class="m-1 jog-container">
+                    <PositionsControls />
+                    <div class="m-1">
                     <div class="jog-buttons-main-container">
                         {mainAxisLettersList.map((letter) => {
                             if (
@@ -780,6 +781,7 @@ const JogPanel = () => {
                         />
                     </div>
                 )}
+                </div>
             </div>
         </div>
     )
