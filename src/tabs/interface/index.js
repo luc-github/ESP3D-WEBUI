@@ -742,9 +742,18 @@ const InterfaceTab = () => {
                                                                                 label,
                                                                                 initial,
                                                                                 type,
+                                                                                depend: subDepend,
                                                                                 ...rest
                                                                             } =
                                                                                 subFieldData
+                                                                            if (
+                                                                                subDepend &&
+                                                                                !isDependenciesMet(
+                                                                                    subDepend
+                                                                                )
+                                                                            ) {
+                                                                                return null
+                                                                            }
                                                                             return (
                                                                                 <Field
                                                                                     label={T(
@@ -793,6 +802,14 @@ const InterfaceTab = () => {
                                                         } else if (
                                                             !fieldData.hide
                                                         ) {
+                                                            if (
+                                                                fieldData.depend &&
+                                                                !isDependenciesMet(
+                                                                    fieldData.depend
+                                                                )
+                                                            ) {
+                                                                return null
+                                                            }
                                                             const [
                                                                 validation,
                                                                 setvalidation,

@@ -20,7 +20,7 @@
 import { Fragment, h } from "preact"
 import { memo } from "preact/compat"
 import { useState, useEffect, useCallback, useRef, useMemo } from "preact/hooks"
-import { espHttpURL, dispatchToExtensions } from "../Helpers"
+import { espHttpURL, dispatchToExtensions, decompressGzipToText } from "../Helpers"
 import { useHttpFn } from "../../hooks"
 import { ButtonImg, ContainerHelper } from "../Controls"
 import { T } from "../Translations"
@@ -164,16 +164,19 @@ const ExtraContentItemInner = ({
             return
         }
             if (type === "content" || type === "extension") {
+            const onTextFail = (err) => {
+                console.error("ExtraContent text/decompress failed", id, err)
+                setHasError(true)
+                setIsLoading(false)
+                isLoadedState[id] = false
+                if (type === "extension") eventBus.emit("extraContentIncompatible", { id: elementsCache.getRootfromId(id) })
+            }
             if (typeof result === "string") {
                 getHtmlThen(result)
+            } else if (source.endsWith(".gz") && result && typeof result.stream === "function") {
+                decompressGzipToText(result).then(getHtmlThen).catch(onTextFail)
             } else if (result && typeof result.text === "function") {
-                result.text().then(getHtmlThen).catch((err) => {
-                    console.error("ExtraContent result.text() failed", id, err)
-                    setHasError(true)
-                    setIsLoading(false)
-                    isLoadedState[id] = false
-                    if (type === "extension") eventBus.emit("extraContentIncompatible", { id: elementsCache.getRootfromId(id) })
-                })
+                result.text().then(getHtmlThen).catch(onTextFail)
             } else {
                 if (type === "extension") failExtension(`${name || id}: extension not compatible (no valid manifest)`)
                 else { setHasError(true); setIsLoading(false); isLoadedState[id] = false }
@@ -187,7 +190,7 @@ const ExtraContentItemInner = ({
         setHasError(false)
         setIsLoading(false)
         isLoadedState[id] = true
-    }, [type, id, name, extensionCheckConfig])
+    }, [type, id, name, extensionCheckConfig, source])
 
     const handleContentError = useCallback((error) => {
         console.error(`Error loading content for ${id}:`, error)
@@ -221,10 +224,7 @@ const ExtraContentItemInner = ({
             const isRefresh = hasContentRef.current
             if (!isRefresh) setIsLoading(true)
             const idquery = type === "content" ? "content" + id : "download" + id
-            let url = source
-            if (url.endsWith(".gz")) {
-                url = url.substring(0, url.length - 3)
-            }
+            const url = source
             createNewRequest(
                 espHttpURL(url),
                 { method: "GET", id: idquery, max: 1 },

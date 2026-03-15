@@ -20,7 +20,7 @@ import { Fragment, h } from "preact"
 import { useState, useEffect, useCallback, useRef } from "preact/hooks"
 import { useUiContext, useSettingsContextFn, useUiContextFn } from "../../contexts"
 import { useHttpQueue } from "../../hooks"
-import { espHttpURL, parseEmbeddedManifest, isExtensionCompatible } from "../Helpers"
+import { espHttpURL, parseEmbeddedManifest, isExtensionCompatible, decompressGzipToText } from "../Helpers"
 import { T } from "../Translations"
 import Loading from "./Loading"
 import { CheckCircle, PlusCircle, XCircle } from "preact-feather"
@@ -57,12 +57,20 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
     const [selectedIds, setSelectedIds] = useState(new Set())
     const { createNewRequest } = useHttpQueue()
 
+    const displayStatus = (e) => {
+        if (e.status === "ok" && (addedPaths || []).includes(e.path)) return "installed"
+        return e.status
+    }
+
     useEffect(() => {
         if (!addSelectedRef) return
         addSelectedRef.current = {
-            getSelectedItems: () => extensionsList.filter((e) => selectedIds.has(e.id)),
+            getSelectedItems: () =>
+                extensionsList.filter(
+                    (e) => selectedIds.has(e.id) && displayStatus(e) === "ok"
+                ),
         }
-    }, [addSelectedRef, extensionsList, selectedIds])
+    }, [addSelectedRef, extensionsList, selectedIds, addedPaths])
 
     const manifestUpdatesRef = useRef({})
     const manifestPendingRef = useRef(0)
@@ -80,23 +88,41 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
             )
         }
         items.forEach((ext) => {
-            const entry = ext.path.endsWith(".html") || ext.path.endsWith(".htm") ? ext.path : ext.path + "/index.html"
+            const isGz = ext.path.endsWith(".html.gz") || ext.path.endsWith(".htm.gz")
+            const entry =
+                ext.path.endsWith(".html") || ext.path.endsWith(".htm") || isGz
+                    ? ext.path
+                    : ext.path + "/index.html"
             const url = (baseUrl + (baseUrl.endsWith("/") ? "" : "/") + entry).replace(/\/+/g, "/")
-            createNewRequest(espHttpURL(url), { method: "GET" }, {
+            const requestId = isGz ? "download-manifest-" + ext.id : undefined
+            const applyManifest = (text) => {
+                const manifest = parseEmbeddedManifest(typeof text === "string" ? text : "")
+                const compatible = extensionCheckConfig
+                    ? isExtensionCompatible(manifest, extensionCheckConfig)
+                    : !!manifest
+                manifestUpdatesRef.current[ext.id] = {
+                    status: compatible ? "ok" : "incompatible",
+                    displayName: manifest?.name ?? null,
+                    supportedVersion: manifest?.supportedVersion ?? null,
+                    targetSystem: manifest?.targetSystem ?? null,
+                    icon: manifest?.icon ?? "Package",
+                }
+                manifestPendingRef.current -= 1
+                flushManifestUpdates()
+            }
+            createNewRequest(espHttpURL(url), { method: "GET", id: requestId }, {
                 onSuccess: (result) => {
-                    const manifest = parseEmbeddedManifest(typeof result === "string" ? result : "")
-                    const compatible = extensionCheckConfig
-                        ? isExtensionCompatible(manifest, extensionCheckConfig)
-                        : !!manifest
-                    manifestUpdatesRef.current[ext.id] = {
-                        status: compatible ? "ok" : "incompatible",
-                        displayName: manifest?.name ?? null,
-                        supportedVersion: manifest?.supportedVersion ?? null,
-                        targetSystem: manifest?.targetSystem ?? null,
-                        icon: manifest?.icon ?? "Package",
+                    if (isGz && result && typeof result.stream === "function") {
+                        decompressGzipToText(result)
+                            .then(applyManifest)
+                            .catch(() => {
+                                manifestUpdatesRef.current[ext.id] = { status: "error" }
+                                manifestPendingRef.current -= 1
+                                flushManifestUpdates()
+                            })
+                    } else {
+                        applyManifest(typeof result === "string" ? result : "")
                     }
-                    manifestPendingRef.current -= 1
-                    flushManifestUpdates()
                 },
                 onFail: () => {
                     manifestUpdatesRef.current[ext.id] = { status: "error" }
@@ -152,11 +178,6 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
         scanExtensions()
         if (refreshfn) refreshfn(scanExtensions)
     }, [])
-
-    const displayStatus = (e) => {
-        if (e.status === "ok" && (addedPaths || []).includes(e.path)) return "installed"
-        return e.status
-    }
 
     const statusContent = (e) => {
         const status = displayStatus(e)
