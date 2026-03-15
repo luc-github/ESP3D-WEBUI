@@ -33,11 +33,19 @@ const LANG_REGEX = /^lang-\w+\.json(\.gz)?$/
 const THEME_REGEX = /^theme-\w+(\.gz)?$/
 
 // Try subdir first (themes/ or languages/), then root. pathPrefix for save: "themes/" or "languages/" or "".
+// Returns { items, pathError } when the API returned 200 but reported path missing (e.g. production firmware).
 const parseAndFilter = (result, pathPrefix, isLanguage) => {
     try {
         const listFiles = JSON.parse(result)
         const raw = listFiles.files || []
-        return raw
+        const pathError =
+            typeof listFiles.status === "string" &&
+            listFiles.status.length > 0 &&
+            (listFiles.status.toLowerCase().includes("does not exist") ||
+                listFiles.status.toLowerCase().includes("not exist"))
+                ? listFiles.status
+                : null
+        const items = raw
             .filter((e) => {
                 const name = e && e.name
                 if (!name || name === "." || name === "..") return false
@@ -51,8 +59,9 @@ const parseAndFilter = (result, pathPrefix, isLanguage) => {
                     : nameNoGz.replace(/^theme-/, "")
                 return { path, displayName, rawName: e.name }
             })
+        return { items, pathError }
     } catch (_) {
-        return []
+        return { items: [], pathError: null }
     }
 }
 
@@ -75,17 +84,44 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
             { method: "GET" },
             {
                 onSuccess: (result) => {
+                    const { items, pathError } = parseAndFilter(result, subdir + "/", isLanguage)
+                    if (pathError && items.length === 0) {
+                        createNewRequest(
+                            espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: rootPath }),
+                            { method: "GET" },
+                            {
+                                onSuccess: (rootResult) => {
+                                    setIsLoading(false)
+                                    const { items: rootItems, pathError: rootPathError } =
+                                        parseAndFilter(rootResult, "", isLanguage)
+                                    setPacksList(rootItems)
+                                    if (rootPathError && rootItems.length === 0)
+                                        toasts.addToast({ content: rootPathError, type: "error" })
+                                },
+                                onFail: (error) => {
+                                    setIsLoading(false)
+                                    toasts.addToast({ content: error, type: "error" })
+                                    setPacksList([])
+                                },
+                            }
+                        )
+                        return
+                    }
                     setIsLoading(false)
-                    setPacksList(parseAndFilter(result, subdir + "/", isLanguage))
+                    setPacksList(items)
                 },
                 onFail: () => {
                     createNewRequest(
                         espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: rootPath }),
                         { method: "GET" },
                         {
-                            onSuccess: (result) => {
+                            onSuccess: (rootResult) => {
                                 setIsLoading(false)
-                                setPacksList(parseAndFilter(result, "", isLanguage))
+                                const { items: rootItems, pathError: rootPathError } =
+                                    parseAndFilter(rootResult, "", isLanguage)
+                                setPacksList(rootItems)
+                                if (rootPathError && rootItems.length === 0)
+                                    toasts.addToast({ content: rootPathError, type: "error" })
                             },
                             onFail: (error) => {
                                 setIsLoading(false)

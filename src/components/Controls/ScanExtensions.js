@@ -30,11 +30,19 @@ import { CheckCircle, PlusCircle, XCircle } from "preact-feather"
 const EXTENSIONS_NAME_REGEX = /^esp3dext-.+$/
 
 // pathPrefix: "extensions/" when listing that dir, "" when listing root. Full path is saved; display name trims esp3dext-.
+// Returns { items, pathError } when the API returned 200 but reported path missing (e.g. production firmware).
 const parseAndFilter = (result, pathPrefix) => {
     try {
         const listFiles = JSON.parse(result)
         const raw = listFiles.files || []
-        return raw
+        const pathError =
+            typeof listFiles.status === "string" &&
+            listFiles.status.length > 0 &&
+            (listFiles.status.toLowerCase().includes("does not exist") ||
+                listFiles.status.toLowerCase().includes("not exist"))
+                ? listFiles.status
+                : null
+        const items = raw
             .filter((e) => {
                 const name = e && e.name
                 if (!name || name === "." || name === "..") return false
@@ -45,8 +53,9 @@ const parseAndFilter = (result, pathPrefix) => {
                 const displayName = e.name.replace(/^esp3dext-/, "")
                 return { id: path, path, name: displayName, displayName: null, status: "loading" }
             })
+        return { items, pathError }
     } catch (_) {
-        return []
+        return { items: [], pathError: null }
     }
 }
 
@@ -144,8 +153,32 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
             { method: "GET" },
             {
                 onSuccess: (result) => {
+                    const { items, pathError } = parseAndFilter(result, "extensions/")
+                    if (pathError && items.length === 0) {
+                        // Production: 200 but path does not exist → try root listing
+                        createNewRequest(
+                            espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: rootPath }),
+                            { method: "GET" },
+                            {
+                                onSuccess: (rootResult) => {
+                                    setIsLoading(false)
+                                    const { items: rootItems, pathError: rootPathError } = parseAndFilter(rootResult, "")
+                                    setExtensionsList(rootItems)
+                                    setSelectedIds(new Set(rootItems.map((e) => e.id)))
+                                    if (rootItems.length) fetchManifestsForItems(rootItems)
+                                    if (rootPathError && rootItems.length === 0)
+                                        toasts.addToast({ content: rootPathError, type: "error" })
+                                },
+                                onFail: (error) => {
+                                    setIsLoading(false)
+                                    toasts.addToast({ content: error, type: "error" })
+                                    setExtensionsList([])
+                                },
+                            }
+                        )
+                        return
+                    }
                     setIsLoading(false)
-                    const items = parseAndFilter(result, "extensions/")
                     setExtensionsList(items)
                     setSelectedIds(new Set(items.map((e) => e.id)))
                     if (items.length) fetchManifestsForItems(items)
@@ -155,12 +188,14 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                         espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: rootPath }),
                         { method: "GET" },
                         {
-                            onSuccess: (result) => {
+                            onSuccess: (rootResult) => {
                                 setIsLoading(false)
-                                const items = parseAndFilter(result, "")
-                                setExtensionsList(items)
-                                setSelectedIds(new Set(items.map((e) => e.id)))
-                                if (items.length) fetchManifestsForItems(items)
+                                const { items: rootItems, pathError: rootPathError } = parseAndFilter(rootResult, "")
+                                setExtensionsList(rootItems)
+                                setSelectedIds(new Set(rootItems.map((e) => e.id)))
+                                if (rootItems.length) fetchManifestsForItems(rootItems)
+                                if (rootPathError && rootItems.length === 0)
+                                    toasts.addToast({ content: rootPathError, type: "error" })
                             },
                             onFail: (error) => {
                                 setIsLoading(false)
