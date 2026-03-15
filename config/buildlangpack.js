@@ -87,23 +87,15 @@ const processAllPacks = async () => {
             // Ajout de l'identifiant de la target
             newTranslations["target_lang"] = packName
             
-            // Copie des traductions correspondantes
+            // Copy all reference keys; use "" when translation is missing or empty (for later translation/report)
             Object.keys(reference).forEach(key => {
-                // Skip if reference value is null
                 if (reference[key] === null) {
                     console.log(chalk.yellow(`Skipping key "${key}" in ${packName} - null value in reference`))
                     return
                 }
-
                 const translationValue = translations[key]
-                // Skip if translation is null or empty string
-                if (!translationValue || translationValue === "") {
-                    console.log(chalk.yellow(`Skipping key "${key}" in ${packName} - translation empty or missing`))
-                    return
-                }
-                
-                // Add valid translation
-                newTranslations[key] = translationValue
+                newTranslations[key] =
+                    translationValue != null && translationValue !== "" ? translationValue : ""
             })
             
             // Création du répertoire si nécessaire
@@ -122,12 +114,14 @@ const processAllPacks = async () => {
             await compressFile(outputFile)
             
             // Affichage des statistiques
-            const totalKeys = Object.keys(reference).length
-            const translatedKeys = Object.keys(newTranslations).length - 1 // -1 pour target_lang
+            const totalKeys = Object.keys(reference).filter((k) => reference[k] != null && reference[k] !== "").length
+            const translatedKeys = Object.keys(newTranslations).filter(
+                (k) => k !== "target_lang" && newTranslations[k] != null && newTranslations[k] !== ""
+            ).length
             console.log(chalk.blue(`Statistics for ${packName}:`))
             console.log(chalk.blue(`- Total keys: ${totalKeys}`))
             console.log(chalk.blue(`- Translated keys: ${translatedKeys}`))
-            console.log(chalk.blue(`- Translation completion: ${((translatedKeys/totalKeys)*100).toFixed(2)}%`))
+            console.log(chalk.blue(`- Translation completion: ${totalKeys ? ((translatedKeys / totalKeys) * 100).toFixed(2) : 0}%`))
             
         } catch (error) {
             console.log(chalk.red(`Error processing ${packName}: ${error.message}`))

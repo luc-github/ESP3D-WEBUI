@@ -30,10 +30,34 @@ import {
     Slider,
     Mask,
 } from "./Fields"
+import ButtonImg from "./ButtonImg"
+import { T } from "../Translations"
+import { eventBus } from "../../hooks/eventBus"
+import { useUiContextFn } from "../../contexts"
+import { Search } from "preact-feather"
+
+const buttonIcons = { Search }
 
 const Field = (props) => {
     const { type, id, help } = props
     switch (type) {
+        case "button": {
+            const Icon = props.icon ? buttonIcons[props.icon] : null
+            return (
+                <FormGroup {...props}>
+                    <ButtonImg
+                        m2
+                        label={props.text ? T(props.text) : null}
+                        icon={Icon ? h(Icon, null) : null}
+                        iconRight={!!props.text && !!Icon}
+                        onClick={() => {
+                            useUiContextFn.haptic()
+                            if (props.action) eventBus.emit("settingsAction", { action: props.action })
+                        }}
+                    />
+                </FormGroup>
+            )
+        }
         case "mask":
         case "xmask":
             return (

@@ -18,22 +18,24 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { matchVerboseLine } from "../../../components/Helpers/verboseFilters"
 import { isTemperatures, isPositions } from "./filters"
 
-const isVerboseOnly = (type, data) => {
+const isVerboseOnly = (type, data, filters) => {
     const line = data.trim()
-    if (
+    if (line.length === 0) return true
+    if (filters && Array.isArray(filters) && filters.length > 0) {
+        return matchVerboseLine(line, filters)
+    }
+    return (
         isTemperatures(line) ||
         isPositions(line) ||
-        line.trim().length == 0 ||
         line.startsWith("echo:") ||
         line.startsWith("ok") ||
         line.startsWith("M105") ||
         line.startsWith("SENSOR:") ||
         (line.startsWith("{") && line.endsWith("}"))
     )
-        return true
-    else return false
 }
 
 export { isVerboseOnly }

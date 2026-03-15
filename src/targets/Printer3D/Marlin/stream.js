@@ -18,15 +18,30 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { matchVerboseLine } from "../../../components/Helpers/verboseFilters"
 import { isTemperatures, isPositions, isPrintStatus } from "./filters"
 
-const isVerboseOnly = (type, data) => {
+/**
+ * @param {string} type
+ * @param {string} data
+ * @param {Array<{ type?: string, value?: string }>|null|undefined} filters - From preferences verbosefilters; when set, used instead of built-in rules.
+ */
+const TERMINAL_VERBOSE_DEBUG = false
+const isVerboseOnly = (type, data, filters) => {
     const line = data.trim()
+    if (line.length === 0) return true
+    const list = filters && (Array.isArray(filters) ? filters : filters.value)
+    if (list && Array.isArray(list) && list.length > 0) {
+        const result = matchVerboseLine(line, list)
+        if (TERMINAL_VERBOSE_DEBUG && (line.includes("T:") || line.includes("ok"))) {
+            console.log("[Terminal verbose] isVerboseOnly filters raw type=%s, list.length=%s => isverboseOnly=%s", typeof filters, list.length, result)
+        }
+        return result
+    }
     return (
         isTemperatures(line) ||
         isPositions(line) ||
         isPrintStatus(line) ||
-        line.trim().length === 0 ||
         line.startsWith("echo:") ||
         line.startsWith("ok") ||
         line.startsWith("M105") ||

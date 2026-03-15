@@ -71,7 +71,14 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                 case "type":
                     newItem.type = "select"
                     newItem.label = "S135"
-                    if (origineId == "macros") {
+                    if (origineId == "verbosefilters") {
+                        newItem.options = [
+                            { label: "S229", value: "startswith" },
+                            { label: "S230", value: "endswith" },
+                            { label: "S231", value: "contain" },
+                            { label: "S232", value: "regex" },
+                        ]
+                    } else if (origineId == "macros") {
                         newItem.options = [
                             {
                                 label: "S137",
@@ -156,6 +163,10 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.label = "S159"
                     newItem.min = "1"
                     break
+                case "value":
+                    newItem.type = "text"
+                    newItem.label = origineId == "verbosefilters" ? "S233" : key
+                    break
                 default:
                     newItem.type = "text"
                     newItem.label = key
@@ -164,6 +175,25 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
         }
     })
     return itemFormated
+}
+
+/**
+ * If the list item is in "formatted" form (value is array of { name, value }), flatten it
+ * so formatItem always receives flat shape { id, type, value, ... }. Avoids double-nesting
+ * and "[object Object]" when preferences are reloaded after save.
+ */
+function normalizeListItem(item) {
+    if (!item || typeof item !== "object") return item
+    const val = item.value
+    if (!Array.isArray(val) || val.length === 0) return item
+    const first = val[0]
+    if (typeof first !== "object" || first.name === undefined) return item
+    const flat = { id: item.id }
+    if (item.index !== undefined) flat.index = item.index
+    val.forEach((s) => {
+        flat[s.name] = s.value
+    })
+    return flat
 }
 
 /**
@@ -176,7 +206,11 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
 function formatItemsList(itemsList, origineId) {
     const formatedItems = []
     itemsList.forEach((element, index) => {
-        formatedItems.push(formatItem(element, index, origineId))
+        let el = normalizeListItem(element)
+        if (origineId === "verbosefilters" && (el.id == null || el.id === "")) {
+            el = { ...el, id: (el.type != null ? String(el.type) : "filter") + "-" + index }
+        }
+        formatedItems.push(formatItem(el, index, origineId))
     })
     return formatedItems
 }
@@ -189,21 +223,37 @@ function formatItemsList(itemsList, origineId) {
  * @returns {Object} - The formatted settings.
  */
 function formatPreferences(section) {
-    for (let key in section) {
-        if (Array.isArray(section[key])) {
-            for (let index = 0; index < section[key].length; index++) {
-                if (section[key][index].type == "group") {
-                    section[key][index].value.forEach((element, index) => {
+    function formatSection(arr) {
+        if (!Array.isArray(arr)) return
+        for (let index = 0; index < arr.length; index++) {
+            const el = arr[index]
+            if (el.type == "group") {
+                if (Array.isArray(el.value)) {
+                    el.value.forEach((element) => {
                         element.initial = element.value
                     })
-                } else if (section[key][index].type == "list") {
-                    section[key][index].nb = section[key][index].value.length
-                    section[key][index].value = formatItemsList(
-                        [...section[key][index].value],
-                        section[key][index].id
-                    )
-                } else section[key][index].initial = section[key][index].value
+                    // Also format list items inside the group
+                    el.value.forEach((element) => {
+                        if (element.type == "list" && Array.isArray(element.value)) {
+                            element.nb = element.value.length
+                            element.value = formatItemsList(
+                                [...element.value],
+                                element.id
+                            )
+                        }
+                    })
+                }
+            } else if (el.type == "list") {
+                el.nb = el.value.length
+                el.value = formatItemsList([...el.value], el.id)
+            } else {
+                el.initial = el.value
             }
+        }
+    }
+    for (let key in section) {
+        if (Array.isArray(section[key])) {
+            formatSection(section[key])
         }
     }
     return section
@@ -252,4 +302,103 @@ function importPreferencesSection(currentPreferencesData, importedPreferences) {
     return [currentPreferences, hasErrors];
   }
 
-export { importPreferencesSection, formatPreferences, formatItem }
+/**
+ * Remove from panelsorder any entry whose name value is extracontents_<id>
+ * when <id> is not in the current extracontents list (panel target).
+ * Mutates settings in place.
+ * @param {Object} settings - preferences settings object (keyed by section, values are arrays of elements)
+ */
+function prunePanelsOrderOrphans(settings) {
+    if (!settings || typeof settings !== "object") return
+    let panelsOrderEl = null
+    let extraContentsEl = null
+    for (const key of Object.keys(settings)) {
+        const arr = settings[key]
+        if (!Array.isArray(arr)) continue
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === "panelsorder") panelsOrderEl = arr[i]
+            if (arr[i].id === "extracontents") extraContentsEl = arr[i]
+        }
+        if (panelsOrderEl && extraContentsEl) break
+    }
+    if (!panelsOrderEl || !Array.isArray(panelsOrderEl.value)) return
+    const panelIds =
+        extraContentsEl && Array.isArray(extraContentsEl.value)
+            ? extraContentsEl.value
+                  .filter((item) => {
+                      const targetField =
+                          item.value &&
+                          item.value.find((s) => s && s.name === "target")
+                      return (
+                          targetField &&
+                          (targetField.value === "panel" ||
+                              targetField.initial === "panel")
+                      )
+                  })
+                  .map((item) => item.id)
+            : []
+    let arr = panelsOrderEl.value
+    const filtered = arr.filter((item) => {
+        const nameVal =
+            item.value && item.value.find((s) => s && s.name === "name")?.value
+        if (!nameVal || !String(nameVal).startsWith("extracontents_"))
+            return true
+        const rootId = String(nameVal).replace("extracontents_", "")
+        return panelIds.includes(rootId)
+    })
+    if (filtered.length < arr.length) {
+        panelsOrderEl.value = filtered
+        panelsOrderEl.nb = filtered.length
+        arr = filtered
+        arr.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find(
+                    (s) => s && s.name === "index"
+                )
+                if (idxField) idxField.value = i
+            }
+        })
+    }
+    const existingExtraIds = new Set(
+        arr
+            .map((item) => {
+                const n =
+                    item.value &&
+                    item.value.find((s) => s && s.name === "name")?.value
+                if (!n || !String(n).startsWith("extracontents_")) return null
+                return String(n).replace("extracontents_", "")
+            })
+            .filter(Boolean)
+    )
+    const missingIds = panelIds.filter((id) => !existingExtraIds.has(id))
+    if (missingIds.length > 0) {
+        const newItems = missingIds.map((id, i) => ({
+            id: "extracontents_" + id,
+            value: [
+                { name: "name", value: "extracontents_" + id },
+                { name: "index", value: arr.length + i },
+            ],
+            index: arr.length + i,
+        }))
+        const newArray = [...arr, ...newItems]
+        newArray.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find(
+                    (s) => s && s.name === "index"
+                )
+                if (idxField) idxField.value = i
+            }
+        })
+        panelsOrderEl.value = newArray
+        panelsOrderEl.nb = newArray.length
+    }
+}
+
+export {
+    importPreferencesSection,
+    formatPreferences,
+    formatItem,
+    prunePanelsOrderOrphans,
+}

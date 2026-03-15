@@ -30,6 +30,31 @@ let countStatus = 0
 let change = false
 const emulationESP400 = false
 
+const state = { position: { X: 0, Y: 0, Z: 0 } }
+let jog = null
+const JOGCANCEL_BYTE = 0x85
+
+function parseAxis(url, axis) {
+    const m = url.match(new RegExp(axis + "([+-]?[0-9.]+)", "i"))
+    return m ? parseFloat(m[1]) : null
+}
+
+function applyJogPosition() {
+    if (!jog) return
+    const elapsed = Date.now() - jog.startTime
+    if (elapsed >= jog.durationMs) {
+        state.position.X = jog.startPos.X + jog.delta.X
+        state.position.Y = jog.startPos.Y + jog.delta.Y
+        state.position.Z = jog.startPos.Z + jog.delta.Z
+        jog = null
+        return
+    }
+    const t = elapsed / jog.durationMs
+    state.position.X = jog.startPos.X + jog.delta.X * t
+    state.position.Y = jog.startPos.Y + jog.delta.Y * t
+    state.position.Z = jog.startPos.Z + jog.delta.Z * t
+}
+
 function getLastconnection() {
     return lastconnection
 }
@@ -57,24 +82,58 @@ const commandsQuery = (req, res, SendWS) => {
     }
     lastconnection = Date.now()
 
+    if (url.indexOf(String.fromCharCode(JOGCANCEL_BYTE)) !== -1 || (typeof url === "string" && url.includes("%85"))) {
+        if (jog) {
+            applyJogPosition()
+            jog = null
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    if (url.indexOf("$J=") !== -1) {
+        if (jog) {
+            applyJogPosition()
+            jog = null
+        }
+        const rest = url.substring(url.indexOf("$J=") + 3)
+        const x = parseAxis(rest, "X") || 0
+        const y = parseAxis(rest, "Y") || 0
+        const z = parseAxis(rest, "Z") || 0
+        const F = parseAxis(rest, "F")
+        const distance = Math.sqrt(x * x + y * y + z * z)
+        if (distance < 1e-6) {
+            SendWS("ok\n")
+            res.send("")
+            return
+        }
+        const feedrate = F != null && F > 0 ? F : 1000
+        const durationMs = (distance / feedrate) * 60 * 1000
+        jog = {
+            startTime: Date.now(),
+            startPos: { X: state.position.X, Y: state.position.Y, Z: state.position.Z },
+            delta: { X: x, Y: y, Z: z },
+            durationMs,
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
     if (req.query.cmd && req.query.cmd == "?") {
+        applyJogPosition()
         countStatus++
+        const { X, Y, Z } = state.position
+        const wpos = `${Number(X).toFixed(3)},${Number(Y).toFixed(3)},${Number(Z).toFixed(3)},1.000,1.000`
         if (countStatus == 1)
-            SendWS(
-                "<Idle|WPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
-            )
-        if (countStatus == 2)
-            SendWS(
-                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.1,pcb_zebra.gcode||FS:0,0|Ov:100,100,100|Pn:XYZV>\n"
-            )
-        if (countStatus > 2 && countStatus < 8)
-            SendWS(
-                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:0.2,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n"
-            )
-        if (countStatus >= 8)
-            SendWS(
-                "<Run|WPos:0.000,0.000,0.000,1.000,1.000|SD:100.0,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n"
-            )
+            SendWS(`<Idle|WPos:${wpos}|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n`)
+        else if (countStatus == 2)
+            SendWS(`<Run|WPos:${wpos}|SD:0.1,pcb_zebra.gcode||FS:0,0|Ov:100,100,100|Pn:XYZV>\n`)
+        else if (countStatus > 2 && countStatus < 8)
+            SendWS(`<Run|WPos:${wpos}|SD:0.2,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n`)
+        else
+            SendWS(`<Run|WPos:${wpos}|SD:100.0,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n`)
         if (countStatus == 10) countStatus = 0
 
         res.send("")
@@ -2936,8 +2995,6 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }*/
-    SendWS("ok\n")
-    res.send("")
 }
 
 const loginURI = (req, res) => {

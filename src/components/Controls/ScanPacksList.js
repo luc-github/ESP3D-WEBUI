@@ -29,42 +29,81 @@ import {
 import { T, getLanguageName } from "./../Translations"
 import { CheckCircle } from "preact-feather"
 
+const LANG_REGEX = /^lang-\w+\.json(\.gz)?$/
+const THEME_REGEX = /^theme-\w+(\.gz)?$/
+
+// Try subdir first (themes/ or languages/), then root. pathPrefix for save: "themes/" or "languages/" or "".
+const parseAndFilter = (result, pathPrefix, isLanguage) => {
+    try {
+        const listFiles = JSON.parse(result)
+        const raw = listFiles.files || []
+        return raw
+            .filter((e) => {
+                const name = e && e.name
+                if (!name || name === "." || name === "..") return false
+                return isLanguage ? LANG_REGEX.test(name) : THEME_REGEX.test(name)
+            })
+            .map((e) => {
+                const nameNoGz = e.name.replace(/\.gz$/i, "")
+                const path = pathPrefix ? pathPrefix + nameNoGz : nameNoGz
+                const displayName = isLanguage
+                    ? getLanguageName(nameNoGz)
+                    : nameNoGz.replace(/^theme-/, "")
+                return { path, displayName, rawName: e.name }
+            })
+    } catch (_) {
+        return []
+    }
+}
+
 const ScanPacksList = ({ id, setValue, refreshfn }) => {
     const { modals, toasts } = useUiContext()
-    const [isLoading, setIsLoading] = useState(true)
-
     const [packsList, setPacksList] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const { createNewRequest } = useHttpQueue()
+    const isLanguage = id === "languagePickup"
+
     const ScanPacks = () => {
         setIsLoading(true)
+        const base = useSettingsContextFn.getValue("HostUploadPath") || ""
+        const subdir = isLanguage ? "languages" : "themes"
+        const subdirPath = base.replace(/\/$/, "") + "/" + subdir
+        const rootPath = base || "/"
 
         createNewRequest(
-            espHttpURL(
-                useSettingsContextFn.getValue("HostTarget"),
-
-                {
-                    path: useSettingsContextFn.getValue("HostUploadPath"), //yes it is upload not download as relative to target
-                }
-            ),
+            espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: subdirPath }),
             { method: "GET" },
             {
                 onSuccess: (result) => {
                     setIsLoading(false)
-                    const listFiles = JSON.parse(result)
-                    setPacksList(listFiles.files)
+                    setPacksList(parseAndFilter(result, subdir + "/", isLanguage))
                 },
-                onFail: (error) => {
-                    setIsLoading(false)
-                    toasts.addToast({ content: error, type: "error" })
-                    setPacksList([])
+                onFail: () => {
+                    createNewRequest(
+                        espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: rootPath }),
+                        { method: "GET" },
+                        {
+                            onSuccess: (result) => {
+                                setIsLoading(false)
+                                setPacksList(parseAndFilter(result, "", isLanguage))
+                            },
+                            onFail: (error) => {
+                                setIsLoading(false)
+                                toasts.addToast({ content: error, type: "error" })
+                                setPacksList([])
+                            },
+                        }
+                    )
                 },
             }
         )
     }
+
     useEffect(() => {
         ScanPacks()
         refreshfn(ScanPacks)
     }, [])
+
     return (
         <Fragment>
             {isLoading && <Loading />}
@@ -74,7 +113,7 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
                     <thead class="hide-low">
                         <tr>
                             <th>
-                                {id == "languagePickup" ? T("S67") : T("S183")}
+                                {isLanguage ? T("S67") : T("S183")}
                             </th>
                             <th>{T("S178")}</th>
                         </tr>
@@ -82,19 +121,16 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
                     <tbody>
                         <tr>
                             <td>
-                                {id == "languagePickup"
+                                {isLanguage
                                     ? T("lang", true)
                                     : T("none")}
                             </td>
-
                             <td>
                                 <ButtonImg
                                     m2
                                     ltooltip
                                     data-tooltip={
-                                        id == "languagePickup"
-                                            ? T("S179")
-                                            : T("S180")
+                                        isLanguage ? T("S179") : T("S180")
                                     }
                                     icon={<CheckCircle />}
                                     onClick={() => {
@@ -107,59 +143,33 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
                                 />
                             </td>
                         </tr>
-                        {packsList.map((e) => {
-                            if (
-                                (id == "languagePickup" &&
-                                    e.name.match(/^lang-\w*.json(.gz)*/g)) ||
-                                (id == "themePickup" &&
-                                    e.name.match(/^theme-\w*(.gz)*/g))
-                            )
-                                return (
-                                    <tr>
-                                        <td>
-                                            <span
-                                                class="tooltip tooltip-right"
-                                                data-tooltip={e.name}
-                                            >
-                                                {id == "languagePickup"
-                                                    ? getLanguageName(
-                                                          e.name.replace(
-                                                              ".gz",
-                                                              ""
-                                                          )
-                                                      )
-                                                    : e.name
-                                                          .replace(".gz", "")
-                                                          .replace(
-                                                              "theme-",
-                                                              ""
-                                                          )}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <ButtonImg
-                                                m2
-                                                ltooltip
-                                                data-tooltip={id == "languagePickup"?T("S179"):T("S180")}
-                                                icon={<CheckCircle />}
-                                                onClick={() => {
-                                                    useUiContextFn.haptic()
-                                                    setValue(
-                                                        e.name.replace(
-                                                            ".gz",
-                                                            ""
-                                                        )
-                                                    )
-                                                    modals.removeModal(
-                                                        modals.getModalIndex(id)
-                                                    )
-                                                }}
-                                            />
-                                        </td>
-                                    </tr>
-                                )
-                        })}
+                        {packsList.map((e) => (
+                            <tr key={e.path}>
+                                <td>
+                                    <span
+                                        class="tooltip tooltip-right"
+                                        data-tooltip={e.path}
+                                    >
+                                        {e.displayName}
+                                    </span>
+                                </td>
+                                <td>
+                                    <ButtonImg
+                                        m2
+                                        ltooltip
+                                        data-tooltip={isLanguage ? T("S179") : T("S180")}
+                                        icon={<CheckCircle />}
+                                        onClick={() => {
+                                            useUiContextFn.haptic()
+                                            setValue(e.path)
+                                            modals.removeModal(
+                                                modals.getModalIndex(id)
+                                            )
+                                        }}
+                                    />
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             )}

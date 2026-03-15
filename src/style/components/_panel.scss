@@ -19,7 +19,18 @@
     display: -ms-flexbox;
     display: flex;
     flex-flow: column;
-    height: 550px;
+    height: var(--panel-height, 550px);
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+}
+.panel .navbar {
+    flex: 0 0 auto;
+}
+.panel .panel-body-dashboard,
+.panel .panel-body-interface,
+.panel .panel-body-features {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto !important;
     overflow-x: hidden !important;
 }
@@ -63,4 +74,70 @@
     align-items: center;
     height: 100%;
     width: 100%;
+}
+
+body.panel-dragging {
+    cursor: none !important;
+}
+
+.panel-drag-wrapper {
+    position: relative;
+    /* Default: panels with only fullscreen + close */
+    .panel-drag-handle {
+        position: absolute;
+        top: 0.3rem;
+        right: 2.8rem;
+        left: auto;
+        z-index: 10;
+        width: 1rem;
+        height: 1rem;
+        min-width: 1rem;
+        min-height: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: move;
+        padding: 0;
+        border-radius: 0.2rem;
+        color: #5755d9;
+        opacity: 0.85;
+        box-sizing: border-box;
+        background: transparent;
+        border: 0 none;
+        outline: none;
+        box-shadow: none;
+        &:focus,
+        &:focus-visible {
+            outline: none;
+            box-shadow: none;
+            border: 0 none;
+        }
+        /* Same hover as .btn-header for consistent look with dropdown/fullscreen/close */
+        &:hover {
+            opacity: 1;
+            color: white !important;
+            background-color: blue !important;
+        }
+        &:active {
+            cursor: move;
+            color: white !important;
+            background-color: blue !important;
+        }
+    }
+    /* Panels with dropdown + fullscreen + close (Chart, Files, Notifications, Terminal, Jog, Extruders) */
+    &.panel-has-menu .panel-drag-handle {
+        right: 4.3rem;
+    }
+    /* Extra content: refresh + fullscreen + close (3 buttons) */
+    &.panel-extra-content .panel-drag-handle {
+        right: 4.3rem;
+    }
+    &.panel-drop-indicator-before {
+        border-left: 4px solid #5755d9;
+        margin-left: -4px;
+    }
+    &.panel-drop-indicator-after {
+        border-right: 4px solid #5755d9;
+        margin-right: -4px;
+    }
 }

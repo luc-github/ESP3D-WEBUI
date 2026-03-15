@@ -1,5 +1,24 @@
 {
     "settings": {
+        "terminal": [
+            {
+                "id": "terminalsettings",
+                "type": "group",
+                "value": [
+                    {
+                        "id": "verbosefilters",
+                        "type": "list",
+                        "sorted": false,
+                        "label": "S227",
+                        "value": [
+                            { "type": "contain", "value": "<" },
+                            { "type": "contain", "value": "ok" }
+                        ],
+                        "depend": [{ "id": "showterminalpanel", "value": true }]
+                    }
+                ]
+            }
+        ],
         "status": [
             {
                 "id": "showstatuspanel",

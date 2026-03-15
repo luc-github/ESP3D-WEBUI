@@ -681,8 +681,9 @@ const FilesPanel = () => {
                     </span>
                 </span>
             </div>
-            <div class="input-group m-2">
-                <div>
+            <div class="panel-body panel-body-dashboard files-panel-body">
+            <div class="input-group">
+                <div class="filesystem-select-wrap">
                     <select
                         class="form-select"
                         onchange={onSelectFS}
@@ -699,12 +700,12 @@ const FilesPanel = () => {
                         })}
                     </select>
                 </div>
-                <div class="form-control m-1">{filePath ? filePath : ""}</div>
+                <div class="form-control form-control-path">{filePath ? filePath : ""}</div>
             </div>
 
             <div
                 ref={dropRef}
-                class="drop-zone files-list m-1"
+                class="drop-zone files-list"
                 onDragOver={(e) => {
                     dropRef.current.classList.add("drop-zone--over")
                     e.preventDefault()
@@ -960,6 +961,7 @@ const FilesPanel = () => {
                     <div class="file-status">{T(filesList.status)}</div>
                 )}
             </div>
+            </div>
         </div>
     )
 }
@@ -972,6 +974,7 @@ const FilesPanelElement = {
     show: "showfilespanel",
     onstart: "openfilesonstart",
     settingid: "files",
+    hasMenu: true,
 }
 
 export { FilesPanel, FilesPanelElement }

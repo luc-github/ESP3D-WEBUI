@@ -1,5 +1,6 @@
 const path = require("path")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const { PurgeCSSPlugin } = require("purgecss-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin")
@@ -7,8 +8,13 @@ const HtmlInlineScriptPlugin = require("html-inline-script-webpack-plugin")
 const HTMLInlineCSSWebpackPlugin =
     require("html-inline-css-webpack-plugin").default
 const Compression = require("compression-webpack-plugin")
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
+const TerserPlugin = require("terser-webpack-plugin")
+const { purgeContent, purgeSafelist } = require("./purgecss.config")
+
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
+const runAnalyzer = process.env.ANALYZE === "1" || process.env.ANALYZE === "true"
 
 module.exports = {
     resolve: {
@@ -25,7 +31,7 @@ module.exports = {
     mode: "production", // this trigger webpack out-of-box prod optimizations
     entry: path.resolve(__dirname, "../src/index.js"),
     output: {
-        filename: `[name].[hash].js`, // [hash] is useful for cache busting!
+        filename: `[name].[fullhash].js`, // [fullhash] for cache busting (webpack 5+)
         path: path.resolve(__dirname, "../build"),
     },
     module: {
@@ -60,6 +66,12 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /preferences\.json$/,
+                include: path.join(__dirname, "../src/targets"),
+                use: path.join(__dirname, "shrink-preferences-loader.js"),
+                type: "javascript/auto",
+            },
         ],
     },
     plugins: [
@@ -75,23 +87,54 @@ module.exports = {
             inject: "body",
         }),
 
-        new HtmlInlineScriptPlugin({
-            scriptMatchPattern: [/.+[.]js$/],
-            htmlMatchPattern: [/index.html$/],
+        new PurgeCSSPlugin({
+            paths: purgeContent,
+            safelist: purgeSafelist,
         }),
-        new HTMLInlineCSSWebpackPlugin(),
-        new Compression({
-            test: /\.(html)$/,
-            filename:
-                "[path]../dist/" + target + "/" + subtarget + "/[base].gz",
-            algorithm: "gzip",
-            exclude: /.map$/,
-            deleteOriginalAssets: "keep-source-map",
-        }),
+
+        // When ANALYZE=1, skip inlining so the main JS chunk stays in the compilation
+        // and webpack-bundle-analyzer can display it. Otherwise the treemap is empty.
+        ...(runAnalyzer
+            ? []
+            : [
+                  new HtmlInlineScriptPlugin({
+                      scriptMatchPattern: [/.+[.]js$/],
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+                  new HTMLInlineCSSWebpackPlugin(),
+                  new Compression({
+                      test: /\.(html)$/,
+                      filename:
+                          "[path]../dist/" +
+                          target +
+                          "/" +
+                          subtarget +
+                          "/[base].gz",
+                      algorithm: "gzip",
+                      exclude: /.map$/,
+                      deleteOriginalAssets: "keep-source-map",
+                  }),
+              ]),
+        ...(runAnalyzer
+            ? [
+                  new BundleAnalyzerPlugin({
+                      analyzerMode: "server",
+                      openAnalyzer: true,
+                  }),
+              ]
+            : []),
     ],
     optimization: {
         minimize: true,
         minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    compress: {
+                        drop_console: true,
+                        drop_debugger: true,
+                    },
+                },
+            }),
             new HtmlMinimizerPlugin({
                 minimizerOptions: {
                     collapseWhitespace: true,

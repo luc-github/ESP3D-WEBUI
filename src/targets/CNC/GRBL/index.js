@@ -41,6 +41,7 @@ import { Eye as WebUILogo } from "preact-feather"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "GRBL"
+const targetCategory = "CNC"
 const webUIbuild = "G3"
 const Name = "ESP3D"
 const fwUrl = [
@@ -80,6 +81,7 @@ export {
     MachineSettings,
     machineSettings,
     Target,
+    targetCategory,
     fwUrl,
     Name,
     files,

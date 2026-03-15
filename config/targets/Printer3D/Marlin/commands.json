@@ -1,0 +1,33 @@
+{
+  "description": "Supported commands for Printer3D/Marlin mock. Used for documentation and discoverability.",
+  "commands": [
+    { "cmd": "PING", "description": "Keep-alive / session refresh", "exampleResponse": "ok\\n" },
+    { "cmd": "G90", "description": "Absolute positioning (state.relative=false)", "exampleResponse": "ok (via SendWS)" },
+    { "cmd": "G91", "description": "Relative positioning (jog; state.relative=true)", "exampleResponse": "ok (via SendWS)" },
+    { "cmd": "G0", "description": "Rapid move (updates state.position)", "exampleResponse": "ok (via SendWS)" },
+    { "cmd": "G1", "description": "Linear move / jog (respects G90/G91: absolute or relative)", "exampleResponse": "ok (via SendWS)" },
+    { "cmd": "G28", "description": "Homing (resets position, then G90)", "exampleResponse": "ok (via SendWS)" },
+    { "cmd": "M105", "description": "Report temperatures (T, B, C, P, R) from shared state", "exampleResponse": "ok T:21.50 /0.00 ... (via SendWS)" },
+    { "cmd": "M114", "description": "Report current position (X, Y, Z, E) from state.position", "exampleResponse": "X:0.00 Y:0.00 Z:0.00 E:0.00 ... (via SendWS)" },
+    { "cmd": "M104", "description": "Set hotend target temperature (e.g. M104 S200 T0)", "exampleResponse": "" },
+    { "cmd": "M140", "description": "Set bed target temperature", "exampleResponse": "" },
+    { "cmd": "M141", "description": "Set chamber target temperature", "exampleResponse": "" },
+    { "cmd": "M20", "description": "List SD card (short format)", "exampleResponse": "Begin file list\\n... End file list\\nok (via SendWS)" },
+    { "cmd": "M20 L", "description": "List SD card (long format with path)", "exampleResponse": "Begin file list\\n... End file list (via SendWS)" },
+    { "cmd": "M20 1:", "description": "List SD with subdirs (directory format)", "exampleResponse": "Begin file list\\n... End file list (via SendWS)" },
+    { "cmd": "M27", "description": "SD print status", "exampleResponse": "SD printing byte 990/1000 (via SendWS)" },
+    { "cmd": "M30", "description": "Delete file on SD (M30 filename)", "exampleResponse": "File deleted: ... (via SendWS)" },
+    { "cmd": "M31", "description": "Print time", "exampleResponse": "echo:Print time: ... (via SendWS)" },
+    { "cmd": "M115", "description": "Firmware info and capabilities", "exampleResponse": "FIRMWARE_NAME:... Cap:... (via SendWS)" },
+    { "cmd": "M503", "description": "Echo stored settings", "exampleResponse": "echo:; ... (via SendWS)" },
+    { "cmd": "SIM:", "description": "Simulation: send rest of string as WS response", "exampleResponse": "SIM:payload → SendWS(payload + ok)" },
+    { "cmd": "ESP111", "description": "Get IP address", "exampleResponse": "192.168.1.111" },
+    { "cmd": "ESP400", "description": "Settings list (JSON)", "exampleResponse": "JSON { cmd, status, data: [...] }" },
+    { "cmd": "ESP401", "description": "Get setting by path (P=...)", "exampleResponse": "JSON { cmd, status, data }" },
+    { "cmd": "ESP410", "description": "Extensions list (JSON)", "exampleResponse": "JSON { cmd, status, data }" },
+    { "cmd": "ESP420", "description": "System info (JSON)", "exampleResponse": "JSON { cmd, status, data }" },
+    { "cmd": "ESP600", "description": "Send message (echo to WS)", "exampleResponse": "" },
+    { "cmd": "ESP701", "description": "TFT: file action (JSON)", "exampleResponse": "JSON (TFT only)" },
+    { "cmd": "ESP800", "description": "ESP3D info (JSON)", "exampleResponse": "JSON { cmd, status, data }" }
+  ]
+}

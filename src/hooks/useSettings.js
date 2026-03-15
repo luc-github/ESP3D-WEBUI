@@ -45,6 +45,7 @@ import {
 import {
     importPreferencesSection,
     formatPreferences,
+    prunePanelsOrderOrphans,
 } from "../tabs/interface/importHelper"
 import { Frown, Info } from "preact-feather"
 import { showModal } from "../components/Modal"
@@ -372,6 +373,25 @@ const useSettings = () => {
                 finalizeDisplay()
             }
         }
+        const applyDefaultPreferences = () => {
+            const preferences = {
+                settings: JSON.parse(
+                    JSON.stringify(defaultPreferences.settings)
+                ),
+            }
+            if (defaultPreferences.custom)
+                preferences.custom = defaultPreferences.custom
+            if (defaultPreferences.extensions)
+                preferences.extensions = defaultPreferences.extensions
+            formatPreferences(preferences.settings)
+            uisettings.set(
+                JSON.parse(JSON.stringify(preferences.settings))
+            )
+            interfaceSettings.current = preferences
+            if (setLoading) setLoading(false)
+            loadTheme()
+        }
+
         createNewRequest(
             espHttpURL(
                 useSettingsContextFn.getValue("HostDownloadPath") +
@@ -380,8 +400,19 @@ const useSettings = () => {
             { method: "GET" },
             {
                 onSuccess: (result) => {
-                    const jsonResult = JSON.parse(result)
-                   
+                    let jsonResult
+                    try {
+                        jsonResult = JSON.parse(result)
+                    } catch (e) {
+                        console.log("preferences.json parse error", e)
+                        applyDefaultPreferences()
+                        return
+                    }
+                    if (!jsonResult || typeof jsonResult.settings !== "object") {
+                        console.log("No valid preferences.json (missing settings)")
+                        applyDefaultPreferences()
+                        return
+                    }
                     //console.log("preferences.json")
                     //console.log(jsonResult)
                     const [preferences_settings, haserrors] = importPreferencesSection(
@@ -390,9 +421,14 @@ const useSettings = () => {
                     )
                     //console.log("Format preferences.settings")
                     formatPreferences(preferences_settings)
+                    prunePanelsOrderOrphans(preferences_settings)
                     //console.log(preferences_settings)
-                    uisettings.set(
-                        JSON.parse(JSON.stringify(preferences_settings))
+                    const settingsCopy = JSON.parse(
+                        JSON.stringify(preferences_settings)
+                    )
+                    uisettings.set(settingsCopy)
+                    interfaceSettings.current.settings = JSON.parse(
+                        JSON.stringify(preferences_settings)
                     )
                     if (haserrors) {
                         toasts.addToast({
@@ -406,7 +442,6 @@ const useSettings = () => {
                         })
                         console.log("error")
                     }
-                    interfaceSettings.current.settings = preferences_settings
                     if (jsonResult.custom) {
                         interfaceSettings.current.custom = jsonResult.custom
                     }
@@ -473,23 +508,13 @@ const useSettings = () => {
                     }
                 },
                 onFail: (error) => {
-                    const preferences = defaultPreferences
-                    formatPreferences(preferences.settings)
-                    uisettings.set(
-                        JSON.parse(JSON.stringify(preferences.settings))
-                    )
-                    interfaceSettings.current = preferences
-
-                    if (setLoading) {
-                        setLoading(false)
-                    }
                     if (error != "404 - Not Found")
                         toasts.addToast({
                             content: error + " preferences.json",
                             type: "error",
                         })
                     console.log("No valid preferences.json")
-                    loadTheme()
+                    applyDefaultPreferences()
                 },
             }
         )

@@ -40,6 +40,7 @@ import { AppLogo } from "./logo"
 import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 
 const Target = "Marlin"
+const targetCategory = "Printer3D"
 const webUIbuild = "Me2"
 const Name = "Marlin"
 const fwUrl = [
@@ -78,6 +79,7 @@ export {
     MachineSettings,
     machineSettings,
     Target,
+    targetCategory,
     fwUrl,
     Name,
     files,

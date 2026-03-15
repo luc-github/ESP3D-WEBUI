@@ -29,6 +29,35 @@ const sessiontTime = 60000
 let countStatus = 0
 let change = false
 
+// Position updated by $J= jog (simulated over time from feedrate), read by status "?"
+const state = {
+    position: { X: 0, Y: 0, Z: 0 },
+}
+// Active jog simulation: position interpolates from startPos toward startPos+delta over durationMs
+let jog = null
+const JOGCANCEL_BYTE = 0x85
+
+function parseAxis(url, axis) {
+    const m = url.match(new RegExp(axis + "([+-]?[0-9.]+)", "i"))
+    return m ? parseFloat(m[1]) : null
+}
+
+function applyJogPosition() {
+    if (!jog) return
+    const elapsed = Date.now() - jog.startTime
+    if (elapsed >= jog.durationMs) {
+        state.position.X = jog.startPos.X + jog.delta.X
+        state.position.Y = jog.startPos.Y + jog.delta.Y
+        state.position.Z = jog.startPos.Z + jog.delta.Z
+        jog = null
+        return
+    }
+    const t = elapsed / jog.durationMs
+    state.position.X = jog.startPos.X + jog.delta.X * t
+    state.position.Y = jog.startPos.Y + jog.delta.Y * t
+    state.position.Z = jog.startPos.Z + jog.delta.Z * t
+}
+
 function getLastconnection() {
     return lastconnection
 }
@@ -56,20 +85,59 @@ const commandsQuery = (req, res, SendWS) => {
     }
     lastconnection = Date.now()
 
+    // Jog cancel: 0x85 stops any active jog immediately (current position = interpolated position)
+    if (url.indexOf(String.fromCharCode(JOGCANCEL_BYTE)) !== -1 || (typeof url === "string" && url.includes("%85"))) {
+        if (jog) {
+            applyJogPosition()
+            jog = null
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    // Jog: $J=G91 G21 X10 F1000 — simulate move over time (duration = distance/feedrate)
+    if (url.indexOf("$J=") !== -1) {
+        if (jog) {
+            applyJogPosition()
+            jog = null
+        }
+        const rest = url.substring(url.indexOf("$J=") + 3)
+        const x = parseAxis(rest, "X") || 0
+        const y = parseAxis(rest, "Y") || 0
+        const z = parseAxis(rest, "Z") || 0
+        const F = parseAxis(rest, "F")
+        const distance = Math.sqrt(x * x + y * y + z * z)
+        if (distance < 1e-6) {
+            SendWS("ok\n")
+            res.send("")
+            return
+        }
+        const feedrate = F != null && F > 0 ? F : 1000
+        const durationMs = (distance / feedrate) * 60 * 1000
+        jog = {
+            startTime: Date.now(),
+            startPos: { X: state.position.X, Y: state.position.Y, Z: state.position.Z },
+            delta: { X: x, Y: y, Z: z },
+            durationMs,
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    // Status "?" — use current position (interpolated if jog in progress)
     if (req.query.cmd && req.query.cmd == "?") {
+        applyJogPosition()
         countStatus++
+        const { X, Y, Z } = state.position
+        const mpos = `${Number(X).toFixed(3)},${Number(Y).toFixed(3)},${Number(Z).toFixed(3)}`
         if (countStatus == 1)
-            SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n"
-            )
-        if (countStatus == 2)
-            SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|Ov:100,100,100|Pn:XYZ>\n"
-            )
-        if (countStatus > 2)
-            SendWS(
-                "<Idle|MPos:0.000,0.000,0.000,1.000,1.000|FS:0,0|A:S|Pn:P>\n"
-            )
+            SendWS(`<Idle|MPos:${mpos}|FS:0,0|WCO:0.000,0.000,0.000>\n`)
+        else if (countStatus == 2)
+            SendWS(`<Idle|MPos:${mpos}|FS:0,0|Ov:100,100,100|Pn:XYZ>\n`)
+        else
+            SendWS(`<Idle|MPos:${mpos}|FS:0,0|A:S|Pn:P>\n`)
         if (countStatus == 10) countStatus = 0
         res.send("")
         return
@@ -599,8 +667,6 @@ const commandsQuery = (req, res, SendWS) => {
         })
         return
     }
-    SendWS("ok\n")
-    res.send("")
 }
 
 const loginURI = (req, res) => {

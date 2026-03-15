@@ -73,10 +73,11 @@ body {
     display: none;
 }
 
+/* Panel columns: min/max from preferences or defaults (340px / 520px) */
 .panels-container {
     display: grid;
     grid-gap: 5px;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--panel-min-width, 340px), var(--panel-max-width, 520px)));
 }
 
 .flex-cols {

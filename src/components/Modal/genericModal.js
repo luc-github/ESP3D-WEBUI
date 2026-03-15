@@ -22,6 +22,7 @@ const showModal = ({
     title,
     button1,
     button2,
+    button3,
     content,
     icon,
     id,
@@ -39,6 +40,12 @@ const showModal = ({
         if (button2 && button2.noclose != true)
             modals.removeModal(modals.getModalIndex(id))
         if (button2 && button2.cb) button2.cb()
+    }
+    const defaultCb3 = () => {
+        useUiContextFn.haptic()
+        if (button3 && button3.noclose != true)
+            modals.removeModal(modals.getModalIndex(id))
+        if (button3 && button3.cb) button3.cb()
     }
     if (modals.getModalIndex(id) == -1)
         modals.addModal({
@@ -69,6 +76,16 @@ const showModal = ({
                             onClick={defaultCb2}
                         >
                             {button2.text}
+                        </button>
+                    )}
+
+                    {button3 && (
+                        <button
+                            id={button3.id ? button3.id : null}
+                            class="btn mx-2"
+                            onClick={defaultCb3}
+                        >
+                            {button3.text}
                         </button>
                     )}
                 </div>

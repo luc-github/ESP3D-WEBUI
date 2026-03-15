@@ -19,57 +19,58 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, render } from "preact"
-import { useState, useEffect, useMemo } from "preact/hooks"
+import { memo } from "preact/compat"
+import { useState, useEffect } from "preact/hooks"
 import { ExtraContentItem } from "../components/ExtraContent"
-import { useUiContext,useUiContextFn, useSettingsContext } from "../contexts"
-import {  eventBus } from "../hooks/eventBus"
+import { useUiContext, useUiContextFn, useSettingsContext } from "../contexts"
+import { eventBus } from "../hooks/eventBus"
+import { webUIVersion, Target, targetCategory } from "../targets"
 
-const ElementsCache = () => {
-    const { ui } = useUiContext()
-    const { interfaceSettings } = useSettingsContext()
-    const [content, setContent] = useState([])
-
-    const extractValues = (entry) => {
-        const result = { id: "extra_content_" + entry.id };
-        entry.value.forEach(param => {
-            result[param.name] = param.value;
-        });
-        return result;
-    };
-    //console.log("ElementsCache is rendering")
-    useEffect(() => {
-        if (ui.ready && interfaceSettings.current?.settings?.extracontents) {
-            //console.log("ElementsCache can now be created")
-            const isEnabled  = useUiContextFn.getValue("showextracontents")
-            if (!isEnabled) {
-               // console.log("ExtraContent are disabled")
-                return
-            }
-            const isVisibleOnStart = useUiContextFn.getValue("openextrapanelsonstart")
-            const extraContentSettings = interfaceSettings.current.settings.extracontents;
-            const extraContentsEntry = extraContentSettings.find(entry => entry.id === 'extracontents');
-           
-            if (extraContentsEntry?.value?.length > 0) {
-                const newContent = extraContentsEntry.value.map(entry => {
-                    const item = extractValues(entry)
-                   // console.log(item)
-                    return <ExtraContentItem key={item.id} {...item} isVisibleOnStart={isVisibleOnStart} />
-                });
-                setContent(newContent);
-            }
-        }
-    }, [ui.ready, interfaceSettings]);
-
-    const memoizedContent = useMemo(() => content, [content]);
-
+/** Renders from stable contentData so sibling refresh does not remount/reload others */
+const ElementsCacheList = memo(({ contentData, isVisibleOnStart }) => {
+    if (!contentData?.length) return <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache" />
     return (
-        <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible;" id="elementsCache">
-            {memoizedContent}
+        <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache">
+            {contentData.map((item) => (
+                <ExtraContentItem
+                    key={item.id}
+                    {...item}
+                    isVisibleOnStart={isVisibleOnStart}
+                    extensionCheckConfig={{ webUIVersion, targetCategory, target: Target }}
+                />
+            ))}
         </div>
     )
+})
+
+const ElementsCacheInner = () => {
+    const { ui } = useUiContext()
+    const { interfaceSettings } = useSettingsContext()
+    const [contentData, setContentData] = useState([])
+    const isVisibleOnStart = useUiContextFn.getValue("openextrapanelsonstart")
+
+    const extractValues = (entry) => {
+        const result = { id: "extra_content_" + entry.id }
+        entry.value.forEach((param) => {
+            result[param.name] = param.value
+        })
+        return result
+    }
+    useEffect(() => {
+        if (!ui.ready || !interfaceSettings.current?.settings?.extracontents) return
+        if (!useUiContextFn.getValue("showextracontents")) return
+        const extraContentSettings = interfaceSettings.current.settings.extracontents
+        const extraContentsEntry = extraContentSettings.find((entry) => entry.id === "extracontents")
+        if (!extraContentsEntry?.value?.length) return
+        const newData = extraContentsEntry.value.map((entry) => extractValues(entry))
+        setContentData(newData)
+    }, [ui.ready, interfaceSettings])
+
+    return <ElementsCacheList contentData={contentData} isVisibleOnStart={isVisibleOnStart} />
 }
 
-export default ElementsCache;
+const ElementsCache = memo(ElementsCacheInner)
+export default ElementsCache
 
 const elementsCache = {
 

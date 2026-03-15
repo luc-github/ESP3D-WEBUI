@@ -24,7 +24,7 @@ import {
     beautifyJSONString,
     addObjectItem,
 } from "../../../components/Helpers"
-import { useDatasContext } from "../../../contexts"
+import { useDatasContext, useUiContextFn } from "../../../contexts"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import {
@@ -227,7 +227,10 @@ const TargetContextProvider = ({ children }) => {
                         if (dataBuffer.current[type].length > 0) {
                             const isverboseOnly = isVerboseOnly(
                                 type,
-                                dataBuffer.current[type]
+                                dataBuffer.current[type],
+                                useUiContextFn.getValue
+                                    ? useUiContextFn.getValue("verbosefilters")
+                                    : undefined
                             )
                             dispatchInternally(type, dataBuffer.current[type])
                             //format the output if needed
@@ -267,7 +270,13 @@ const TargetContextProvider = ({ children }) => {
                 //ignore such answer unless need to check response
                 //this response is to workaround some response lost when no response
                 if (data.startsWith("ESP3D says:")) return
-                const isverboseOnly = isVerboseOnly(type, data)
+                const isverboseOnly = isVerboseOnly(
+                    type,
+                    data,
+                    useUiContextFn.getValue
+                        ? useUiContextFn.getValue("verbosefilters")
+                        : undefined
+                )
                 dispatchInternally(type, data)
                 //format the output if needed
                 if (data.startsWith("{")) {
@@ -296,7 +305,13 @@ const TargetContextProvider = ({ children }) => {
                 }
             } else {
                 if (type != "core") {
-                    const isverboseOnly = isVerboseOnly(type, data)
+                    const isverboseOnly = isVerboseOnly(
+                        type,
+                        data,
+                        useUiContextFn.getValue
+                            ? useUiContextFn.getValue("verbosefilters")
+                            : undefined
+                    )
                     terminal.add({ type, content: data, isverboseOnly })
                 }
                 dispatchInternally(type, data)

@@ -82,6 +82,24 @@ const ContentContainer = () => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     //console.log(JSON.stringify(interfaceSettings.current))
     const processExtensionMessage = (eventMsg) => {
+        // Only accept messages coming from real extensions (iframes with class extensionContainer)
+        try {
+            const sourceWin = eventMsg.source
+            let isFromExtension = false
+            if (sourceWin && typeof document !== "undefined") {
+                const frames = document.querySelectorAll("iframe.extensionContainer")
+                for (let i = 0; i < frames.length; i++) {
+                    if (frames[i].contentWindow === sourceWin) {
+                        isFromExtension = true
+                        break
+                    }
+                }
+            }
+            if (!isFromExtension) return
+        } catch (e) {
+            // If anything goes wrong determining the source, ignore the message
+            return
+        }
         if (eventMsg.data.type && eventMsg.data.target == "webui") {
             switch (eventMsg.data.type) {
                 case "response":
@@ -672,9 +690,7 @@ const ContentContainer = () => {
 
                     //now stringify and save
                     const preferencestosave = JSON.stringify(
-                        interfaceSettingsData,
-                        null,
-                        " "
+                        interfaceSettingsData
                     )
                     //Create a blob
                     const blob = new Blob([preferencestosave], {

@@ -23,6 +23,7 @@ import {
     machineSettings,
     defaultPanelsList,
     Target,
+    targetCategory,
     files,
     processor,
     fwUrl,
@@ -46,22 +47,30 @@ import defaultPreferencesSubTarget from "SubTargetDir/preferences.json"
 import defaultPreferencesTarget from "TargetDir/preferences.json"
 import defaultPreferencesBase from "./preferences.json"
 import { mergeJSON } from "../components/Helpers"
+import { expandShortKeys } from "../components/Helpers/preferencesKeys"
 
 /*
  * Local const
- *
+ * Loader outputs short keys (g, i, l, t, v...); mergeJSON expects long keys (id, label, value...).
+ * Expand each imported prefs first, then merge.
  */
 const defaultPreferences = mergeJSON(
-    mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
-    defaultPreferencesSubTarget
+    mergeJSON(
+        expandShortKeys(defaultPreferencesBase),
+        expandShortKeys(defaultPreferencesTarget)
+    ),
+    expandShortKeys(defaultPreferencesSubTarget)
 )
 
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"
+const webUIVersion = "3.0"
 
 export {
     MachineSettings,
     machineSettings,
     Target,
+    targetCategory,
+    webUIVersion,
     defaultPreferences,
     files,
     processor,

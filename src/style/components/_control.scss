@@ -115,12 +115,49 @@ input[type="range"]::-ms-thumb {
     background-color: #f1f1fc;
 }
 
+/* Panel Files: same horizontal inset as Terminal (0.2rem margin + 5px padding) */
+.panel.panel-dashboard .panel-body.files-panel-body {
+    margin: 0.2rem !important;
+    padding: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group,
+.panel.panel-dashboard .panel-body.files-panel-body .drop-zone.files-list {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group {
+    margin-bottom: 0.2rem !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .input-group .form-select,
+.panel.panel-dashboard .panel-body.files-panel-body .input-group .form-control {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap {
+    min-width: 4rem;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap .form-select {
+    min-width: 100%;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .form-control-path {
+    margin: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .drop-zone.files-list {
+    margin-top: 0 !important;
+}
+.panel.panel-dashboard .panel-body.files-panel-body .files-list-footer {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
 .files-list {
     border: 0.05rem solid #dadee4;
     border-radius: $border-radius;
     padding: 5px 5px !important;
     overflow-x: hidden;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
 }
 
 .drop-zone--over {
@@ -141,6 +178,10 @@ input[type="range"]::-ms-thumb {
 
 .fieldset-no-top-separator {
     margin-top: -1.8rem;
+}
+
+.fieldset-no-bottom-separator {
+    border-bottom: none;
 }
 
 .fieldset-bottom-separator {
@@ -196,6 +237,18 @@ span.input-group-addon {
     margin-top: -1rem;
     padding-bottom: 0.5rem;
     max-width: fit-content;
+}
+
+.field-group-content-fullwidth {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* List inside group (e.g. Verbose filters): legend covers top border so it doesn't cut through the button */
+.items-list-top-separator legend {
+    background: var(--body-bg, #fff);
+    padding: 0 0.25rem;
+    margin-left: -0.25rem;
 }
 
 .maxwidth {
@@ -613,7 +666,9 @@ a label {
 
 .btn.btn-screen {
     background: transparent;
-    border: 0;
+    border: 0 none;
+    outline: none;
+    box-shadow: none;
     color: currentColor;
     height: 1rem;
     line-height: 0.8rem;
@@ -624,11 +679,33 @@ a label {
     text-decoration: none;
     width: 1rem;
 }
+.btn.btn-screen:focus,
+.btn.btn-screen:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border: 0 none;
+}
 
 .btn.btn-screen:hover {
     background: blue;
     color: #fff;
-    border: 0;
+    border: 0 none;
+}
+
+/* Panel navbar: no contour on dropdown/fullscreen when inactive */
+.panel-dashboard .navbar .btn-header,
+.panel-dashboard .navbar .btn-screen {
+    border: 0 none;
+    outline: none;
+    box-shadow: none;
+}
+.panel-dashboard .navbar .btn-header:focus,
+.panel-dashboard .navbar .btn-header:focus-visible,
+.panel-dashboard .navbar .btn-screen:focus,
+.panel-dashboard .navbar .btn-screen:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border: 0 none;
 }
 
 .nested-button {
@@ -680,6 +757,18 @@ a label {
 
 .go-previous-text {
     font-size: 1.4rem;
+}
+
+/* Upload/progression modal: color the <progress> bar (default is browser gray) */
+progress {
+    accent-color: $primary-color;
+}
+/* Fallback for older browsers */
+progress::-webkit-progress-value {
+    background: $primary-color;
+}
+progress::-moz-progress-bar {
+    background: $primary-color;
 }
 
 .progress-value-label {

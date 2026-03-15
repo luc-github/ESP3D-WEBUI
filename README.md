@@ -1,4 +1,4 @@
-# ESP3D-WEBUI 3.0 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.0/info.json)
+# ESP3D-WEBUI 3.1 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.0/info.json)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -19,14 +19,14 @@ Only compatible with [ESP3DLib 3.0](https://github.com/luc-github/ESP3DLib/tree/
 
 ### Setup development tools
 
-1 - Install current nodejs LTS (currently using v20.8.0)
+1 - Install current Node.js LTS (tested with v24.14.0)
 
 ```
 node -v
-v20.8.0
+v24.14.0
 
 npm -v
-10.2.0
+11.11.0
 ```
 
 2 - Download all necessary packages in ESP3D-WEBUI directory (repository root)

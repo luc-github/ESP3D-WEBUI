@@ -209,7 +209,9 @@ const Navbar = () => {
                                             href == "/about" ? "" : "hide-low"
                                         }
                                     >
-                                        {T(label)}
+                                        {typeof label === "string"
+                                            ? T(label)
+                                            : label}
                                     </label>
                                 </Link>
                             )

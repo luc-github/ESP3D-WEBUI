@@ -34,13 +34,11 @@ import { iconsTarget } from "../../targets"
 import { useUiContextFn, useUiContext } from "../../contexts"
 
 const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) => {
-
     const [isFullScreen, setIsFullScreen] = useState(false)
     const { panels } = useUiContext()
     const extra_content_id = `extra_content_${id}`
     const target_id = `target_${id}`
     const iconsList = { ...iconsTarget, ...iconsFeather }
-    console.log("Extra Content " + id)
 
     const updateContentPosition = () => {
         if (!useUiContextFn.panels.isVisible(id)&& target=="panel") {
@@ -53,8 +51,6 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             const { top, left, width, height } = container.getBoundingClientRect()
             //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
             eventBus.emit('updateState', { id: extra_content_id, position: { top, left, width, height }, isVisible: true, from: "extraContent(position)" })
-        } else {
-            console.error("Element " + target_id + " doesn't exist")
         }
     }
 
@@ -115,8 +111,7 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
 
 const handleRefresh = () => {
     useUiContextFn.haptic()
-    //console.log("Refreshing element " + extra_content_id)
-    eventBus.emit('updateState', { id: extra_content_id, isVisible: true, forceRefresh: true, from: "extraContent(refresh)-" + Date.now() })
+    eventBus.emit('extraContentRefresh', { id: extra_content_id })
     updateContentPosition()
 }
 
@@ -128,6 +123,7 @@ const PanelRenderControls = () => (
         <ButtonImg
             xs
             m1
+            className="btn-header"
             nomin="yes"
             icon={<RefreshCcw size="0.8rem" />}
             onclick={handleRefresh}

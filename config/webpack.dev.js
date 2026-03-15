@@ -1,9 +1,13 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const { PurgeCSSPlugin } = require("purgecss-webpack-plugin")
+const { purgeContent, purgeSafelist } = require("./purgecss.config")
+
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
 console.log("Target:", target, " Subtarget:", subtarget)
+
 module.exports = {
     resolve: {
         alias: {
@@ -49,7 +53,12 @@ module.exports = {
             inlineSource: ".(js|css)$",
             inject: true,
         }),
-    ], // automatically creates a 'index.html' for us with our <link>, <style>, <script> tags inserted! Visit https://github.com/jantimon/html-webpack-plugin for more options
+        // Same as prod: purge unused CSS so dev matches production behavior
+        new PurgeCSSPlugin({
+            paths: purgeContent,
+            safelist: purgeSafelist,
+        }),
+    ],
     module: {
         rules: [
             {
@@ -79,6 +88,12 @@ module.exports = {
                         },
                     },
                 ],
+            },
+            {
+                test: /preferences\.json$/,
+                include: path.join(__dirname, "../src/targets"),
+                use: path.join(__dirname, "shrink-preferences-loader.js"),
+                type: "javascript/auto",
             },
         ],
     },

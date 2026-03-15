@@ -18,24 +18,32 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useRef } from "preact/hooks"
+import { useState, useRef, useEffect } from "preact/hooks"
 import {
     useUiContext,
     useSettingsContext,
     useSettingsContextFn,
     useUiContextFn,
 } from "../../contexts"
-import { ButtonImg, Loading } from "../../components/Controls"
+import { ButtonImg, Loading, ScanExtensionsList } from "../../components/Controls"
 import { useHttpQueue, useSettings } from "../../hooks"
 import {
     espHttpURL,
     checkDependencies,
+    generateUID,
 } from "../../components/Helpers"
 import { T } from "../../components/Translations"
-import { RefreshCcw, Save, ExternalLink, Flag, Download } from "preact-feather"
+import { RefreshCcw, Save, ExternalLink, Flag, Download, Search } from "preact-feather"
 import { Field, FieldGroup } from "../../components/Controls"
-import { exportPreferences, exportPreferencesSection } from "./exportHelper"
-import { importPreferencesSection, formatPreferences } from "./importHelper"
+import {
+    exportPreferences,
+    exportPreferencesSection,
+    isFullStructureSettings,
+} from "./exportHelper"
+import { importPreferencesSection, formatPreferences, formatItem } from "./importHelper"
+import { eventBus } from "../../hooks/eventBus"
+import { showModal } from "../../components/Modal"
+import { webUIVersion, targetCategory, Target } from "../../targets"
 
 const isDependenciesMet = (depend) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -134,22 +142,26 @@ const generateValidationGlobal = (
             validation.valid = !stringified.includes('"haserror":true')
         }
         if (fieldData.type == "text") {
+            // Be robust: value may occasionally be non-string, always work on a string
+            const valueStr =
+                fieldData.value === null || fieldData.value === undefined
+                    ? ""
+                    : String(fieldData.value)
             if (fieldData.regexpattern) {
                 const regex = new RegExp(fieldData.regexpattern)
-                if (!regex.test(fieldData.value)) {
+                if (!regex.test(valueStr)) {
                     validation.valid = false
                     console.log("Error")
                 }
             }
             if (typeof fieldData.min != undefined) {
-                if (fieldData.value.trim().length < fieldData.min) {
+                if (valueStr.trim().length < fieldData.min) {
                     validation.valid = false
                     console.log("Error")
                 } else if (typeof fieldData.minSecondary != undefined) {
                     if (
-                        fieldData.value.trim().length <
-                            fieldData.minSecondary &&
-                        fieldData.value.trim().length > fieldData.min
+                        valueStr.trim().length < fieldData.minSecondary &&
+                        valueStr.trim().length > fieldData.min
                     ) {
                         validation.valid = false
                         console.log("Error")
@@ -158,7 +170,7 @@ const generateValidationGlobal = (
             }
 
             if (fieldData.max) {
-                if (fieldData.value.trim().length > fieldData.max) {
+                if (valueStr.trim().length > fieldData.max) {
                     validation.valid = false
                     console.log("Error")
                 }
@@ -299,14 +311,236 @@ const generateValidationGlobal = (
 }
 
 const InterfaceTab = () => {
-    const { toasts, modals, connection } = useUiContext()
+    const { toasts, modals, connection, uisettings } = useUiContext()
     const { createNewRequest, abortRequest } = useHttpQueue()
     const { getInterfaceSettings } = useSettings()
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     const [isLoading, setIsLoading] = useState(false)
     const [showSave, setShowSave] = useState(true)
+    const [panelsOrderExpanded, setPanelsOrderExpanded] = useState(0)
     const inputFile = useRef(null)
-    console.log("Interface")
+    const scanExtensionsRef = useRef(null)
+    const addSelectedRef = useRef(null)
+    const refreshSaveStatusRef = useRef(null)
+
+    useEffect(() => {
+        const id = eventBus.on("settingsAction", (msg) => {
+            if (msg.action !== "scanExtensions") return
+            const extraEntry = interfaceSettings?.current?.settings?.extracontents?.find((el) => el.id === "extracontents")
+            const extraList = extraEntry?.value || []
+            const addedPaths = extraList
+                .map((item) => {
+                    const typeField = item.value?.find((s) => s.name === "type")
+                    const sourceField = item.value?.find((s) => s.name === "source")
+                    if (typeField?.value === "extension" && sourceField?.value) return sourceField.value
+                    return null
+                })
+                .filter(Boolean)
+            showModal({
+                modals,
+                id: "extensions",
+                title: T("S96"),
+                icon: h(Search, null),
+                content: (
+                    <ScanExtensionsList
+                        id="extensions"
+                        refreshfn={(fn) => {
+                            scanExtensionsRef.current = fn
+                        }}
+                        extensionCheckConfig={{ webUIVersion, targetCategory, target: Target }}
+                        addedPaths={addedPaths}
+                        addSelectedRef={addSelectedRef}
+                    />
+                ),
+                button1: {
+                    text: T("S50"),
+                    noclose: true,
+                    cb: () => scanExtensionsRef.current?.(),
+                },
+                button2: {
+                    text: T("S254"),
+                    cb: () => {
+                        const ref = addSelectedRef?.current
+                        if (!ref) return
+                        const toAdd = ref.getSelectedItems()
+                        if (!toAdd.length) return
+                        const settings = interfaceSettings?.current?.settings
+                        const extraEntry = settings?.extracontents?.find((el) => el.id === "extracontents")
+                        if (!extraEntry || !Array.isArray(extraEntry.value)) return
+                        const list = extraEntry.value
+                        const addedIds = []
+                        // Create one extracontents entry per checked extension (same shape as def_panel)
+                        toAdd.forEach((ext) => {
+                            const uid = generateUID()
+                            const newItem = {
+                                id: uid,
+                                name: ext.displayName || ext.name || "Extension",
+                                icon: ext.icon || "Package",
+                                target: "panel",
+                                source: ext.path,
+                                type: "extension",
+                                refreshtime: "0",
+                            }
+                            const formatted = formatItem(newItem, -1, "extracontents")
+                            formatted.newItem = true
+                            formatted.hasmodified = true
+                            formatted.index = list.length
+                            if (Array.isArray(formatted.value)) {
+                                formatted.value.forEach((sf) => {
+                                    sf.hasmodified = true
+                                })
+                            }
+                            list.push(formatted)
+                            addedIds.push(uid)
+                        })
+                        list.forEach((item, i) => {
+                            item.index = i
+                            const idxField = item.value?.find((s) => s.name === "index")
+                            if (idxField) idxField.value = i
+                        })
+                        extraEntry.nb = list.length
+                        extraEntry.hasmodified = true
+                        const panelsOrderEl = useUiContextFn.getElement("panelsorder", settings)
+                        if (panelsOrderEl && Array.isArray(panelsOrderEl.value)) {
+                            const arr = panelsOrderEl.value
+                            const startIdx = arr.length
+                            addedIds.forEach((id, i) => {
+                                arr.push({
+                                    id: "extracontents_" + id,
+                                    value: [
+                                        { name: "name", value: "extracontents_" + id },
+                                        { name: "index", value: startIdx + i },
+                                    ],
+                                    index: startIdx + i,
+                                })
+                            })
+                            arr.forEach((item, i) => {
+                                item.index = i
+                                const idxField = item.value?.find((s) => s.name === "index")
+                                if (idxField) idxField.value = i
+                            })
+                            panelsOrderEl.nb = arr.length
+                            panelsOrderEl.hasmodified = true
+                        }
+                        setPanelsOrderExpanded((n) => n + 1)
+                        if (uisettings?.set && interfaceSettings?.current?.settings)
+                            uisettings.set(
+                                JSON.parse(
+                                    JSON.stringify(
+                                        interfaceSettings.current.settings
+                                    )
+                                )
+                            )
+                        modals.removeModal(modals.getModalIndex("extensions"))
+                        refreshSaveStatusRef.current?.()
+                    },
+                },
+                button3: { text: T("S24") },
+            })
+        })
+        return () => eventBus.off("settingsAction", id)
+    }, [modals])
+
+    useEffect(() => {
+        const settings = interfaceSettings?.current?.settings
+        if (!settings || !useUiContextFn.getElement) return
+        const el = useUiContextFn.getElement("panelsorder", settings)
+        if (!el || !Array.isArray(el.value)) return
+        const extraEl = useUiContextFn.getElement("extracontents", settings)
+        const panelIds = (extraEl && Array.isArray(extraEl.value))
+            ? extraEl.value
+                  .filter((item) => {
+                      const targetField =
+                          item.value && item.value.find((s) => s.name === "target")
+                      return targetField && targetField.value === "panel"
+                  })
+                  .map((item) => item.id)
+            : []
+
+        let arr = el.value
+        const filtered = arr.filter((item) => {
+            const nameVal =
+                item.value && item.value.find((s) => s.name === "name")?.value
+            if (!nameVal || !String(nameVal).startsWith("extracontents_"))
+                return true
+            const rootId = String(nameVal).replace("extracontents_", "")
+            return panelIds.includes(rootId)
+        })
+        if (filtered.length < arr.length) {
+            arr = filtered
+            el.value = arr
+            el.nb = arr.length
+            arr.forEach((item, i) => {
+                item.index = i
+                if (item.value) {
+                    const idxField = item.value.find((s) => s.name === "index")
+                    if (idxField) idxField.value = i
+                }
+            })
+            setPanelsOrderExpanded((n) => n + 1)
+        }
+
+        const hasAnyExtra = arr.some((item) => {
+            const n =
+                item.value && item.value.find((s) => s.name === "name")?.value
+            return (
+                n === "extracontents" ||
+                (n && String(n).startsWith("extracontents_"))
+            )
+        })
+        if (panelIds.length > 0 && !hasAnyExtra) {
+            const newItems = panelIds.map((id, i) => ({
+                id: "extracontents_" + id,
+                value: [
+                    { name: "name", value: "extracontents_" + id },
+                    { name: "index", value: arr.length + i },
+                ],
+                index: arr.length + i,
+            }))
+            const newArray = [...arr, ...newItems]
+            newArray.forEach((item, i) => {
+                item.index = i
+                if (item.value) {
+                    const idxField = item.value.find((s) => s.name === "index")
+                    if (idxField) idxField.value = i
+                }
+            })
+            el.value = newArray
+            el.nb = newArray.length
+            arr = newArray
+            setPanelsOrderExpanded((n) => n + 1)
+        }
+
+        const idx = arr.findIndex(
+            (item) =>
+                item.value &&
+                item.value.find((s) => s.name === "name")?.value === "extracontents"
+        )
+        if (idx === -1 || panelIds.length === 0) return
+        const newItems = panelIds.map((id, i) => ({
+            id: "extracontents_" + id,
+            value: [
+                { name: "name", value: "extracontents_" + id },
+                { name: "index", value: idx + i },
+            ],
+            index: idx + i,
+        }))
+        const newArray = [
+            ...arr.slice(0, idx),
+            ...newItems,
+            ...arr.slice(idx + 1),
+        ]
+        newArray.forEach((item, i) => {
+            item.index = i
+            if (item.value) {
+                const idxField = item.value.find((s) => s.name === "index")
+                if (idxField) idxField.value = i
+            }
+        })
+        el.value = newArray
+        el.nb = newArray.length
+        setPanelsOrderExpanded((n) => n + 1)
+    }, [interfaceSettings?.current?.settings])
     const isFlashFS =
         useSettingsContextFn.getValue("FlashFileSystem") == "none"
             ? false
@@ -332,6 +566,7 @@ const InterfaceTab = () => {
         const haserrors = stringified.includes('"haserror":true')
         return !haserrors && hasmodified
     }
+    refreshSaveStatusRef.current = () => setShowSave(checkSaveStatus())
 
     const getInterface = () => {
         useUiContextFn.haptic()
@@ -347,11 +582,14 @@ const InterfaceTab = () => {
                 const importFile = e.target.result
                 try {
                     const importData = JSON.parse(importFile)
-
+                    let settingsToImport = importData.settings
+                    if (settingsToImport && isFullStructureSettings(settingsToImport)) {
+                        settingsToImport = exportPreferencesSection(settingsToImport, true)
+                    }
                     const [preferences_settings, haserrors] =
                         importPreferencesSection(
                             interfaceSettings.current.settings,
-                            importData.settings
+                            settingsToImport
                         )
                     interfaceSettings.current.settings = preferences_settings
                     if (importData.custom) {
@@ -385,7 +623,7 @@ const InterfaceTab = () => {
             interfaceSettings.current,
             false
         )
-        const preferencestosave = JSON.stringify(settings_to_save, null, " ")
+        const preferencestosave = JSON.stringify(settings_to_save)
         const blob = new Blob([preferencestosave], {
             type: "application/json",
         })
@@ -504,9 +742,18 @@ const InterfaceTab = () => {
                                                                                 label,
                                                                                 initial,
                                                                                 type,
+                                                                                depend: subDepend,
                                                                                 ...rest
                                                                             } =
                                                                                 subFieldData
+                                                                            if (
+                                                                                subDepend &&
+                                                                                !isDependenciesMet(
+                                                                                    subDepend
+                                                                                )
+                                                                            ) {
+                                                                                return null
+                                                                            }
                                                                             return (
                                                                                 <Field
                                                                                     label={T(
@@ -555,6 +802,14 @@ const InterfaceTab = () => {
                                                         } else if (
                                                             !fieldData.hide
                                                         ) {
+                                                            if (
+                                                                fieldData.depend &&
+                                                                !isDependenciesMet(
+                                                                    fieldData.depend
+                                                                )
+                                                            ) {
+                                                                return null
+                                                            }
                                                             const [
                                                                 validation,
                                                                 setvalidation,
@@ -581,7 +836,9 @@ const InterfaceTab = () => {
                                                                         type ==
                                                                             "boolean" ||
                                                                         type ==
-                                                                            "icon"
+                                                                            "icon" ||
+                                                                        type ==
+                                                                            "button"
                                                                             ? true
                                                                             : false
                                                                     }
@@ -650,8 +907,7 @@ const InterfaceTab = () => {
                             onClick={(e) => {
                                 useUiContextFn.haptic()
                                 e.target.blur()
-                                //console.log(interfaceSettings.current)
-                                exportPreferences(interfaceSettings.current)
+                                exportPreferences(interfaceSettings.current, true, { readable: true })
                             }}
                         />
                         {showSave && (
