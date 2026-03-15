@@ -11,7 +11,7 @@ Usage:
   python tools/release_bundle_sizes.py --no-build
   python tools/release_bundle_sizes.py --output docs/BUNDLE_SIZES.md
 
-Use the generated table in RELEASE_*.md or FEATURES_AND_BUNDLE.md.
+Copyright (c) 2025 Luc Lebosse. All rights reserved.
 """
 
 from __future__ import annotations
