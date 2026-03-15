@@ -759,6 +759,18 @@ a label {
     font-size: 1.4rem;
 }
 
+/* Upload/progression modal: color the <progress> bar (default is browser gray) */
+progress {
+    accent-color: $primary-color;
+}
+/* Fallback for older browsers */
+progress::-webkit-progress-value {
+    background: $primary-color;
+}
+progress::-moz-progress-bar {
+    background: $primary-color;
+}
+
 .progress-value-label {
     margin-left: 15px;
 }
