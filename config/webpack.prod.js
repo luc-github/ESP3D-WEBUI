@@ -1,5 +1,4 @@
 const path = require("path")
-const glob = require("glob")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
@@ -11,17 +10,11 @@ const HTMLInlineCSSWebpackPlugin =
 const Compression = require("compression-webpack-plugin")
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
 const TerserPlugin = require("terser-webpack-plugin")
+const { purgeContent, purgeSafelist } = require("./purgecss.config")
 
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
 const runAnalyzer = process.env.ANALYZE === "1" || process.env.ANALYZE === "true"
-
-const srcPath = path.join(__dirname, "../src")
-const purgeContent = [
-    ...glob.sync(`${srcPath}/**/*.js`, { nodir: true }),
-    ...glob.sync(`${srcPath}/**/*.jsx`, { nodir: true }),
-    path.join(srcPath, "index.html"),
-]
 
 module.exports = {
     resolve: {
@@ -96,19 +89,7 @@ module.exports = {
 
         new PurgeCSSPlugin({
             paths: purgeContent,
-            safelist: {
-                standard: [
-                    /^tooltip/,
-                    /^modal/,
-                    /^dropdown/,
-                    /^toast/,
-                    /^open$/,
-                    /^active$/,
-                    /^disabled$/,
-                    /^loading$/,
-                    /^show$/,
-                ],
-            },
+            safelist: purgeSafelist,
         }),
 
         // When ANALYZE=1, skip inlining so the main JS chunk stays in the compilation

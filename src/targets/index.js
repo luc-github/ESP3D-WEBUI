@@ -51,13 +51,15 @@ import { expandShortKeys } from "../components/Helpers/preferencesKeys"
 
 /*
  * Local const
- *
+ * Loader outputs short keys (g, i, l, t, v...); mergeJSON expects long keys (id, label, value...).
+ * Expand each imported prefs first, then merge.
  */
-const defaultPreferences = expandShortKeys(
+const defaultPreferences = mergeJSON(
     mergeJSON(
-        mergeJSON(defaultPreferencesBase, defaultPreferencesTarget),
-        defaultPreferencesSubTarget
-    )
+        expandShortKeys(defaultPreferencesBase),
+        expandShortKeys(defaultPreferencesTarget)
+    ),
+    expandShortKeys(defaultPreferencesSubTarget)
 )
 
 const webUiUrl = "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"

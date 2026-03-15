@@ -38,13 +38,13 @@ const setCurrentLanguage = (lang) => (currentLanguage = lang)
  * give language base text if no corresponding id
  */
 function T(id, base = false, ressourcelanguage = null) {
+    if (id == null || typeof id === "object") return ""
     let translatedText = base
         ? baseLangRessource[id]
         : ressourcelanguage
           ? ressourcelanguage[id]
           : currentLanguage[id]
-    if (!id || typeof id == "object" || !isNaN(id) || !isNaN(id.charAt(0)))
-        return id
+    if (!id || !isNaN(id) || !isNaN(id.charAt(0))) return id
     if (typeof translatedText === "undefined") {
         translatedText = baseLangRessource[id]
         if (typeof translatedText === "undefined") {
@@ -55,6 +55,7 @@ function T(id, base = false, ressourcelanguage = null) {
 }
 
 function getLanguageName(languagePack) {
+    if (languagePack == null || typeof languagePack !== "string") return ""
     const filename = languagePack.replace(/^.*\//, "")
     const id = filename.replace("lang-", "").replace(".json", "")
     let lang = listLanguagePacks[id]

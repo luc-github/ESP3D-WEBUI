@@ -38,11 +38,13 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
         if (setValue) setValue(value)
 
         setDisplayValue(
-            value == "default"
+            value == null || value === "" || value == "default"
                 ? defaultDisplayValue
                 : id == "language"
                   ? getLanguageName(value)
-                  : value.replace(/^.*\//, "").replace("theme-", "").replace(".gz", "")
+                  : typeof value === "string"
+                    ? value.replace(/^.*\//, "").replace("theme-", "").replace(".gz", "")
+                    : defaultDisplayValue
         )
     }
 
@@ -54,11 +56,13 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
         //to update state
         if (setValue) setValue(null, true)
         setDisplayValue(
-            value == "default"
+            value == null || value === "" || value == "default"
                 ? defaultDisplayValue
                 : id == "language"
                   ? getLanguageName(value)
-                  : value.replace(/^.*\//, "").replace("theme-", "").replace(".gz", "")
+                  : typeof value === "string"
+                    ? value.replace(/^.*\//, "").replace("theme-", "").replace(".gz", "")
+                    : defaultDisplayValue
         )
     }, [value])
 

@@ -40,7 +40,9 @@ for (const [long, short] of Object.entries(SHORT_KEYS)) {
 export function expandShortKeys(obj) {
     if (obj === null || typeof obj !== "object") return obj
     if (Array.isArray(obj)) {
-        obj.forEach((item) => expandShortKeys(item))
+        for (let i = 0; i < obj.length; i++) {
+            obj[i] = expandShortKeys(obj[i])
+        }
         return obj
     }
     const expanded = {}

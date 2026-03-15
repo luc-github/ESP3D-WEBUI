@@ -373,6 +373,25 @@ const useSettings = () => {
                 finalizeDisplay()
             }
         }
+        const applyDefaultPreferences = () => {
+            const preferences = {
+                settings: JSON.parse(
+                    JSON.stringify(defaultPreferences.settings)
+                ),
+            }
+            if (defaultPreferences.custom)
+                preferences.custom = defaultPreferences.custom
+            if (defaultPreferences.extensions)
+                preferences.extensions = defaultPreferences.extensions
+            formatPreferences(preferences.settings)
+            uisettings.set(
+                JSON.parse(JSON.stringify(preferences.settings))
+            )
+            interfaceSettings.current = preferences
+            if (setLoading) setLoading(false)
+            loadTheme()
+        }
+
         createNewRequest(
             espHttpURL(
                 useSettingsContextFn.getValue("HostDownloadPath") +
@@ -381,8 +400,19 @@ const useSettings = () => {
             { method: "GET" },
             {
                 onSuccess: (result) => {
-                    const jsonResult = JSON.parse(result)
-                   
+                    let jsonResult
+                    try {
+                        jsonResult = JSON.parse(result)
+                    } catch (e) {
+                        console.log("preferences.json parse error", e)
+                        applyDefaultPreferences()
+                        return
+                    }
+                    if (!jsonResult || typeof jsonResult.settings !== "object") {
+                        console.log("No valid preferences.json (missing settings)")
+                        applyDefaultPreferences()
+                        return
+                    }
                     //console.log("preferences.json")
                     //console.log(jsonResult)
                     const [preferences_settings, haserrors] = importPreferencesSection(
@@ -478,23 +508,13 @@ const useSettings = () => {
                     }
                 },
                 onFail: (error) => {
-                    const preferences = defaultPreferences
-                    formatPreferences(preferences.settings)
-                    uisettings.set(
-                        JSON.parse(JSON.stringify(preferences.settings))
-                    )
-                    interfaceSettings.current = preferences
-
-                    if (setLoading) {
-                        setLoading(false)
-                    }
                     if (error != "404 - Not Found")
                         toasts.addToast({
                             content: error + " preferences.json",
                             type: "error",
                         })
                     console.log("No valid preferences.json")
-                    loadTheme()
+                    applyDefaultPreferences()
                 },
             }
         )
