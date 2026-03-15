@@ -3,3 +3,5 @@ node_modules
 .vscode
 build
 server
+.env
+languages/backup/

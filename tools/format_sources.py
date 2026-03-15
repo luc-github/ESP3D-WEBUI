@@ -1,4 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+"""
+format_sources.py - Format JavaScript and CSS files using Prettier. 
+
+
+Copyright (c) 2026 Luc Lebosse. All rights reserved.
+"""
 
 import os
 import subprocess
