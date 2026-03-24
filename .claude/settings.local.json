@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -roh className=\"\"[^\"\"]*\"\" src/components/ src/targets/ --include=*.js --include=*.jsx)",
+      "Bash(grep -roh class=[^]* src/ --include=*.js --include=*.jsx --include=*.html)",
+      "Bash(grep -v '^$')"
+    ]
+  }
+}

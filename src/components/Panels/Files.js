@@ -40,6 +40,7 @@ import {
     CornerRightUp,
     Edit3,
     XCircle,
+    ChevronDown,
 } from "preact-feather"
 import { files, processor, useTargetContextFn } from "../../targets"
 import { Folder, File, Trash2, Play } from "preact-feather"
@@ -79,6 +80,7 @@ const FilesPanel = () => {
     const { modals, toasts } = useUiContext()
     const fileref = useRef()
     const dropRef = useRef()
+    const fsToggleRef = useRef()
     const progressBar = {} 
     //console.log("currentFS", currentFS)
     //console.log(currentFS)
@@ -683,22 +685,34 @@ const FilesPanel = () => {
             </div>
             <div class="panel-body panel-body-dashboard files-panel-body">
             <div class="input-group">
-                <div class="filesystem-select-wrap">
-                    <select
-                        class="form-select"
-                        onchange={onSelectFS}
-                        value={currentFS}
+                <div class="dropdown">
+                    <span
+                        class="dropdown-toggle btn"
+                        tabindex="0"
+                        ref={fsToggleRef}
                     >
+                        {T(files.supported.find((e) => e.value === fileSystem)?.name || fileSystem)}
+                        <ChevronDown size="0.8rem" />
+                    </span>
+                    <ul class="menu">
                         {files.supported.map((element) => {
-                            if (element.depend)
-                                if (element.depend())
-                                    return (
-                                        <option value={element.value}>
+                            if (element.depend && element.depend())
+                                return (
+                                    <li class={`menu-item${fileSystem === element.value ? " active" : ""}`}>
+                                        <div
+                                            class="menu-entry"
+                                            onclick={() => {
+                                                currentFS = element.value
+                                                onSelectFS(null)
+                                                if (fsToggleRef.current) fsToggleRef.current.blur()
+                                            }}
+                                        >
                                             {T(element.name)}
-                                        </option>
-                                    )
+                                        </div>
+                                    </li>
+                                )
                         })}
-                    </select>
+                    </ul>
                 </div>
                 <div class="form-control form-control-path">{filePath ? filePath : ""}</div>
             </div>

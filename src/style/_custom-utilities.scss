@@ -1,0 +1,472 @@
+/* ============================================================================
+   ESP3D Custom Utilities — Vanilla CSS replacing Spectre.css utilities
+   Using Design System tokens from _variables.scss
+   ============================================================================ */
+
+// ─────────────────────────────────────────────────────────────────────────
+// Display utilities
+// ─────────────────────────────────────────────────────────────────────────
+.d-none,
+.d-hide {
+    display: none !important;
+}
+
+.d-block {
+    display: block !important;
+}
+
+.d-inline {
+    display: inline !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-inline-flex {
+    display: inline-flex !important;
+}
+
+.d-visible {
+    visibility: visible !important;
+}
+
+.d-invisible {
+    visibility: hidden !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Margin utilities (0.2rem = 1 unit)
+// ─────────────────────────────────────────────────────────────────────────
+.m-0 {
+    margin: 0 !important;
+}
+.m-1 {
+    margin: 0.2rem !important;
+}
+.m-2 {
+    margin: 0.4rem !important;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+.mb-1 {
+    margin-bottom: 0.2rem !important;
+}
+.mb-2 {
+    margin-bottom: 0.4rem !important;
+}
+
+.ml-0 {
+    margin-left: 0 !important;
+}
+.ml-1 {
+    margin-left: 0.2rem !important;
+}
+.ml-2 {
+    margin-left: 0.4rem !important;
+}
+
+.mr-0 {
+    margin-right: 0 !important;
+}
+.mr-1 {
+    margin-right: 0.2rem !important;
+}
+.mr-2 {
+    margin-right: 0.4rem !important;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+.mt-1 {
+    margin-top: 0.2rem !important;
+}
+.mt-2 {
+    margin-top: 0.4rem !important;
+}
+
+.mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.mx-1 {
+    margin-left: 0.2rem !important;
+    margin-right: 0.2rem !important;
+}
+.mx-2 {
+    margin-left: 0.4rem !important;
+    margin-right: 0.4rem !important;
+}
+
+.my-0 {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+.my-1 {
+    margin-bottom: 0.2rem !important;
+    margin-top: 0.2rem !important;
+}
+.my-2 {
+    margin-bottom: 0.4rem !important;
+    margin-top: 0.4rem !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Padding utilities (0.2rem = 1 unit)
+// ─────────────────────────────────────────────────────────────────────────
+.p-0 {
+    padding: 0 !important;
+}
+.p-1 {
+    padding: 0.2rem !important;
+}
+.p-2 {
+    padding: 0.4rem !important;
+}
+
+.pb-0 {
+    padding-bottom: 0 !important;
+}
+.pb-1 {
+    padding-bottom: 0.2rem !important;
+}
+.pb-2 {
+    padding-bottom: 0.4rem !important;
+}
+
+.pl-0 {
+    padding-left: 0 !important;
+}
+.pl-1 {
+    padding-left: 0.2rem !important;
+}
+.pl-2 {
+    padding-left: 0.4rem !important;
+}
+
+.pr-0 {
+    padding-right: 0 !important;
+}
+.pr-1 {
+    padding-right: 0.2rem !important;
+}
+.pr-2 {
+    padding-right: 0.4rem !important;
+}
+
+.pt-0 {
+    padding-top: 0 !important;
+}
+.pt-1 {
+    padding-top: 0.2rem !important;
+}
+.pt-2 {
+    padding-top: 0.4rem !important;
+}
+
+.px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.px-1 {
+    padding-left: 0.2rem !important;
+    padding-right: 0.2rem !important;
+}
+.px-2 {
+    padding-left: 0.4rem !important;
+    padding-right: 0.4rem !important;
+}
+
+.py-0 {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+}
+.py-1 {
+    padding-bottom: 0.2rem !important;
+    padding-top: 0.2rem !important;
+}
+.py-2 {
+    padding-bottom: 0.4rem !important;
+    padding-top: 0.4rem !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Text utilities
+// ─────────────────────────────────────────────────────────────────────────
+.text-primary {
+    color: var(--a) !important;
+}
+
+.text-dark {
+    color: var(--txt-dim) !important;
+}
+
+.text-gray {
+    color: #bcc3ce !important;
+}
+
+.text-light {
+    color: #fff !important;
+}
+
+.text-secondary {
+    color: #b8bcc4 !important;
+}
+
+.text-success {
+    color: var(--ok) !important;
+}
+
+.text-warning {
+    color: var(--warn) !important;
+}
+
+.text-error {
+    color: var(--err) !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+.text-bold {
+    font-weight: bold !important;
+}
+
+.text-normal {
+    font-weight: normal !important;
+}
+
+.text-italic {
+    font-style: italic !important;
+}
+
+.text-small {
+    font-size: 0.9em !important;
+}
+
+.text-tiny {
+    font-size: 0.8em !important;
+}
+
+.text-large {
+    font-size: 1.2em !important;
+}
+
+.text-muted {
+    opacity: 0.8 !important;
+}
+
+.text-ellipsis {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+.text-uppercase {
+    text-transform: uppercase !important;
+}
+
+.text-lowercase {
+    text-transform: lowercase !important;
+}
+
+.text-capitalize {
+    text-transform: capitalize !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Background utilities
+// ─────────────────────────────────────────────────────────────────────────
+.bg-primary {
+    background: var(--a) !important;
+    color: #fff !important;
+}
+
+.bg-dark {
+    background: #303742 !important;
+    color: #fff !important;
+}
+
+.bg-gray {
+    background: #f7f8f9 !important;
+}
+
+.bg-success {
+    background: var(--ok) !important;
+    color: #fff !important;
+}
+
+.bg-warning {
+    background: var(--warn) !important;
+    color: #fff !important;
+}
+
+.bg-error {
+    background: var(--err) !important;
+    color: #fff !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Positioning utilities
+// ─────────────────────────────────────────────────────────────────────────
+.p-relative {
+    position: relative !important;
+}
+
+.p-absolute {
+    position: absolute !important;
+}
+
+.p-fixed {
+    position: fixed !important;
+}
+
+.p-sticky {
+    position: sticky !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Floating & alignment
+// ─────────────────────────────────────────────────────────────────────────
+.float-left {
+    float: left !important;
+}
+
+.float-right {
+    float: right !important;
+}
+
+.p-centered {
+    display: block !important;
+    float: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.flex-centered {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.centered {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Responsive utilities
+// .hide-low = visible by default, hidden when .mobile-view is active (via
+//             _app.scss) or on real small screens (media query below)
+// .show-low = hidden by default, shown when .mobile-view is active or on
+//             real small screens
+// ─────────────────────────────────────────────────────────────────────────
+// .hide-low — visible by default; .mobile-view .hide-low in _app.scss hides it
+
+.show-low {
+    display: none !important;
+    // .mobile-view .show-low in _app.scss shows it
+}
+
+@media (max-width: 600px) {
+    .hide-low {
+        display: none !important;
+    }
+
+    .show-low {
+        display: block !important;
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Border radius
+// ─────────────────────────────────────────────────────────────────────────
+.s-rounded {
+    border-radius: 0.2rem !important;
+}
+
+.s-circle {
+    border-radius: 50% !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Cursor utilities
+// ─────────────────────────────────────────────────────────────────────────
+.c-hand {
+    cursor: pointer !important;
+}
+
+.c-move {
+    cursor: move !important;
+}
+
+.c-zoom-in {
+    cursor: zoom-in !important;
+}
+
+.c-zoom-out {
+    cursor: zoom-out !important;
+}
+
+.c-not-allowed {
+    cursor: not-allowed !important;
+}
+
+.c-auto {
+    cursor: auto !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Clearfix & dividers
+// ─────────────────────────────────────────────────────────────────────────
+.clearfix::after {
+    clear: both !important;
+    content: "" !important;
+    display: table !important;
+}
+
+.divider {
+    display: block !important;
+    position: relative !important;
+    border-top: 0.05rem solid #f1f3f5 !important;
+    height: 0.05rem !important;
+    margin: 0.4rem 0 !important;
+}
+
+.divider-vert {
+    display: block !important;
+    padding: 0.8rem !important;
+}
+
+.divider-vert::before {
+    border-left: 0.05rem solid var(--border-dim) !important;
+    bottom: 0.4rem !important;
+    content: "" !important;
+    display: block !important;
+    left: 50% !important;
+    position: absolute !important;
+    top: 0.4rem !important;
+    transform: translateX(-50%) !important;
+}

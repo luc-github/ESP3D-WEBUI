@@ -117,18 +117,16 @@ const ItemControl = ({
         if (setValue) setValue(null, true)
     }, [completeList])
 
-    let colorStyle
+    let colorClass = "nested-button"
     if (
         JSON.stringify(safeValue).includes('"hasmodified":true') ||
         JSON.stringify(itemData).includes('"newitem":true') ||
         JSON.stringify(itemData).includes('"newItem":true')
     )
-        colorStyle =
-            "box-shadow: 0 0 0 .2rem rgba(255, 183, 0, .4);margin-right:0.5rem!important"
+        colorClass = "btn-save"
 
     if (JSON.stringify(safeValue).includes('"haserror":true'))
-        colorStyle =
-            "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
+        colorClass = "btn-restart"
 
     const val = safeValue.findIndex((e) => {
         return e.name == "key"
@@ -212,6 +210,7 @@ const ItemControl = ({
                                 {index > 0 && completeList.length > 1 && (
                                     <ButtonImg
                                         m1
+                                        className="nested-button"
                                         tooltip
                                         data-tooltip={T("S38")}
                                         icon={<ArrowUp />}
@@ -222,6 +221,7 @@ const ItemControl = ({
                                     index < completeList.length - 1 && (
                                         <ButtonImg
                                             m1
+                                            className="nested-button"
                                             tooltip
                                             data-tooltip={T("S39")}
                                             icon={<ArrowDown />}
@@ -235,9 +235,9 @@ const ItemControl = ({
                         {(!fixed || editable) && (
                             <ButtonImg
                                 m2
+                                className={colorClass}
                                 tooltip
                                 data-tooltip={T("S94")}
-                                style={colorStyle}
                                 label={labelBtn}
                                 icon={controlIcon}
                                 width="100px"
@@ -256,6 +256,7 @@ const ItemControl = ({
                     {!(fixed || nodelete) && (
                         <ButtonImg
                             m2
+                            className="btn-restart"
                             tooltip
                             data-tooltip={T("S37")}
                             icon={<Trash2 />}
@@ -269,6 +270,7 @@ const ItemControl = ({
                     <div>
                         <ButtonImg
                             sm
+                            className="nested-button item-editor-close"
                             tooltip
                             data-tooltip={T("S95")}
                             icon={<Minimize2 />}
@@ -277,12 +279,12 @@ const ItemControl = ({
                                 e.target.blur()
                                 onEdit(false)
                             }}
-                            class="float-right"
                         />
                         <div>
                             {index > 0 && completeList.length > 1 && sorted && (
                                 <ButtonImg
                                     m1
+                                    className="nested-button"
                                     tooltip
                                     data-tooltip={T("S38")}
                                     icon={<ArrowUp />}
@@ -294,6 +296,7 @@ const ItemControl = ({
                                 index < completeList.length - 1 && (
                                     <ButtonImg
                                         m1
+                                        className="nested-button"
                                         tooltip
                                         data-tooltip={T("S39")}
                                         icon={<ArrowDown />}
@@ -304,6 +307,7 @@ const ItemControl = ({
                             {!nodelete && (
                                 <ButtonImg
                                     m2
+                                    className="btn-restart"
                                     tooltip
                                     data-tooltip={T("S37")}
                                     icon={<Trash2 />}
@@ -499,6 +503,7 @@ const ItemsList = ({
                 {!fixed && (
                     <ButtonImg
                         m2
+                        className="nested-button"
                         label={
                             id == "macros"
                                 ? T("S128")

@@ -47,6 +47,7 @@ const Field = (props) => {
                 <FormGroup {...props}>
                     <ButtonImg
                         m2
+                        className="nested-button"
                         label={props.text ? T(props.text) : null}
                         icon={Icon ? h(Icon, null) : null}
                         iconRight={!!props.text && !!Icon}

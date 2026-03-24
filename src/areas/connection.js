@@ -45,6 +45,7 @@ const ConnectionContainer = () => {
     let contentIcon
     let contentSubtitle
     let contentTitle
+    let contentTitleClass = "text-primary"
     let contentAction
     let intervalTimer = 0
 
@@ -73,6 +74,7 @@ const ConnectionContainer = () => {
             case "notauthenticated":
                 useUiContextFn.beepError()
                 contentTitle = T("S1") //"Connection error"
+                contentTitleClass = "text-error"
                 contentIcon = <Lock size="50px" />
                 contentSubtitle = T("S145") //"Authentication required"
                 document.title =
@@ -84,7 +86,7 @@ const ConnectionContainer = () => {
                     T("S145") +
                     ")"
                 contentAction = (
-                    <button class="btn" onClick={onclick}>
+                    <button class="btn btn-accent" onClick={onclick}>
                         {T("S11")}
                     </button>
                 )
@@ -93,6 +95,7 @@ const ConnectionContainer = () => {
             case "error":
                 useUiContextFn.beepError()
                 contentTitle = T("S1") //"Connection error"
+                contentTitleClass = "text-error"
                 contentIcon = <Frown size="50px" />
                 contentSubtitle = T("S5") //"Cannot connect with board"
                 if (connection.connectionState.extraMsg)
@@ -107,7 +110,7 @@ const ConnectionContainer = () => {
                     T("S22") +
                     ")"
                 contentAction = (
-                    <button class="btn" onClick={onclick}>
+                    <button class="btn btn-accent" onClick={onclick}>
                         {T("S8")}
                     </button>
                 )
@@ -118,6 +121,7 @@ const ConnectionContainer = () => {
             case "connectionlost":
                 useUiContextFn.beepError()
                 contentTitle = T("S1") //"Connection error"
+                contentTitleClass = "text-error"
                 contentIcon = <AlertTriangle size="50px" />
                 contentSubtitle =
                     connection.connectionState.page == "connectionlost"
@@ -132,7 +136,7 @@ const ConnectionContainer = () => {
                     T("S9") +
                     ")"
                 contentAction = (
-                    <button class="btn" onClick={onclick}>
+                    <button class="btn btn-accent" onClick={onclick}>
                         {T("S11")}
                     </button>
                 )
@@ -152,7 +156,7 @@ const ConnectionContainer = () => {
                     T("S9") +
                     ")"
                 contentAction = (
-                    <button class="btn" onClick={onclick}>
+                    <button class="btn btn-accent" onClick={onclick}>
                         {T("S11")}
                     </button>
                 )
@@ -217,14 +221,14 @@ const ConnectionContainer = () => {
                 <div class="centered text-primary">
                     <div class="empty-icon">
                         <div class="d-flex p-centered empty-content">
-                            <AppLogo />
+                            <AppLogo bgcolor="#070a0d" />
                             <Minus size="50px" class="hide-low" />
                             {contentIcon}
                             <Minus size="50px" class="hide-low" />
                             <HardDrive size="50px" />
                         </div>
                     </div>
-                    <div class="empty-title h5">{contentTitle}</div>
+                    <div class={`empty-title h5 ${contentTitleClass}`}>{contentTitle}</div>
                     <div class="empty-subtitle">{contentSubtitle}</div>
                     <div class="empty-action">{contentAction}</div>
                 </div>

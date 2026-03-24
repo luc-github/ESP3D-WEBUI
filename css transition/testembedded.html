@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>esp3d — Theme Restyle</title>
+<style>
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('data:font/woff2;base64,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') format('woff2');
+}
+
+/* ============================================================
+   TOKENS — Sharp Industrial, tinted borders only
+   Default = cyan (switch via .v-* on <body>)
+   ============================================================ */
+:root {
+  /* Fixed backgrounds — never tinted */
+  --bg:         #070a0d;
+  --bg-elev:    #0d1318;
+  --surface:    #10181f;
+  --surface-hv: #18232e;
+
+  /* Typography */
+  --text:   #f0f8ff;
+  --muted:  #9ab8cc;
+  --dim:    #5a7a90;
+
+  /* Semantic */
+  --ok:      #00e676;
+  --ok-g:    rgba(0,230,118,0.18);
+  --danger:  #ff3d57;
+  --danger-g:rgba(255,61,87,0.2);
+
+  /* Accent default = cyan */
+  --accent:      #00d4ff;
+  --accent-dim:  #0099bb;
+  --accent-soft: rgba(0,212,255,0.12);
+  --accent-glow: 0 0 14px rgba(0,212,255,0.35), 0 0 28px rgba(0,212,255,0.15);
+  --glow-muted:  0 0 10px rgba(154,184,204,0.3);
+
+  /* Tinted borders — cyan */
+  --border:       #1c2e3e;
+  --border-strong:#224055;
+  --border-lit:   #2e5670;
+
+  /* Other */
+  --terminal-bg: #050810;
+  --terminal-fg: #9ab8cc;
+  --cmd-fg:      #00d4ff;
+
+  --radius:    2px;
+  --radius-sm: 2px;
+  --shadow:    0 4px 20px rgba(0,0,0,0.45);
+
+  /* Orbitron Bold — embedded woff2, matches TFT display font */
+  --font-display: 'Orbitron', ui-monospace, monospace;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-ui:   system-ui, 'Segoe UI', sans-serif;
+  --font-body: system-ui, 'Segoe UI', sans-serif;
+  --t: 150ms;
+}
+
+/* ── Accent variants ── */
+body.v-amber {
+  --accent:#ffaa00; --accent-dim:#cc8000;
+  --accent-soft:rgba(255,170,0,0.12);
+  --accent-glow:0 0 14px rgba(255,170,0,0.4), 0 0 28px rgba(255,170,0,0.18);
+  --cmd-fg:#ffaa00;
+  --border:#2e2412; --border-strong:#3e3018; --border-lit:#584420;
+}
+body.v-green {
+  --accent:#39ff84; --accent-dim:#22cc5a;
+  --accent-soft:rgba(57,255,132,0.11);
+  --accent-glow:0 0 14px rgba(57,255,132,0.35), 0 0 28px rgba(57,255,132,0.15);
+  --cmd-fg:#39ff84;
+  --border:#162a1e; --border-strong:#1e3a28; --border-lit:#285438;
+}
+body.v-orange {
+  --accent:#ff6a1a; --accent-dim:#cc4800;
+  --accent-soft:rgba(255,106,26,0.12);
+  --accent-glow:0 0 14px rgba(255,106,26,0.4), 0 0 28px rgba(255,106,26,0.18);
+  --cmd-fg:#ff6a1a;
+  --border:#2e1e0e; --border-strong:#3e2814; --border-lit:#583820;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+
+body {
+  min-width: 360px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--text);
+  background-color: var(--bg);
+  /* Subtle scanline */
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(255,255,255,0.004) 3px, rgba(255,255,255,0.004) 4px);
+  user-select: none;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+/* Accent left stripe */
+.topbar::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-soft);
+}
+
+.topbar-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 14px var(--accent-soft);
+  text-decoration: none;
+  padding-left: 6px;
+}
+
+.topbar-resources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.topbar-resource-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: all var(--t);
+}
+.topbar-resource-link:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  background: var(--accent-soft);
+}
+
+.about-box {
+  color: var(--muted);
+  font-size: 0.85rem;
+  position: relative;
+}
+.about-summary {
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: all var(--t);
+}
+.about-summary::-webkit-details-marker { display: none; }
+.about-summary::before { content: "▸ "; color: var(--accent); }
+details[open] .about-summary::before { content: "▾ "; }
+.about-summary:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  background: var(--accent-soft);
+}
+.help-blurb {
+  position: absolute;
+  top: 100%; left: 0;
+  z-index: 100;
+  max-width: 26rem;
+  margin-top: 4px;
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  white-space: normal;
+}
+
+.topbar-spacer { flex-grow: 1; pointer-events: none; }
+
+.topbar-link {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text);
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  transition: all var(--t);
+}
+.topbar-link:hover {
+  box-shadow: var(--glow-muted);
+  border-color: var(--border-strong);
+  background: var(--surface-hv);
+  color: var(--accent);
+}
+
+.ver-badge {
+  padding: 6px 12px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  transition: all var(--t);
+  text-shadow: 0 0 8px var(--accent-soft);
+}
+.ver-badge:hover {
+  box-shadow: var(--accent-glow);
+  border-color: var(--accent-dim);
+  background: var(--accent-soft);
+  cursor: pointer;
+}
+
+/* Theme switcher — small dots in topbar */
+.theme-switcher {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding-left: 6px;
+  border-left: 1px solid var(--border-strong);
+  margin-left: 4px;
+}
+.tsw {
+  width: 14px; height: 14px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--t), border-color var(--t);
+}
+.tsw:hover { transform: scale(1.25); }
+.tsw.on { border-color: var(--text); }
+.tsw-cyan   { background: #00d4ff; box-shadow: 0 0 5px rgba(0,212,255,0.5); }
+.tsw-amber  { background: #ffaa00; box-shadow: 0 0 5px rgba(255,170,0,0.5); }
+.tsw-green  { background: #39ff84; box-shadow: 0 0 5px rgba(57,255,132,0.5); }
+.tsw-orange { background: #ff6a1a; box-shadow: 0 0 5px rgba(255,106,26,0.5); }
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.msg-wrap {
+  text-align: center;
+  padding: 8px 12px 0;
+}
+#MSG     { color: var(--muted); font-size: 0.78rem; font-family: var(--font-display); letter-spacing: 0.06em; text-align: center; }
+#MSGLimited { color: var(--danger); font-size: 0.85rem; line-height: 1.4; }
+
+/* ============================================================
+   PANEL
+   ============================================================ */
+.panel {
+  margin: 10px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+/* Top accent line on panels */
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--accent-soft), transparent 55%);
+  z-index: 1;
+}
+
+.panel-header {
+  background: linear-gradient(180deg, var(--surface-hv) 0%, var(--surface) 100%);
+  color: var(--text);
+  min-height: 2.4rem;
+  line-height: 2.4rem;
+  padding: 4px 16px 4px 14px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+/* Accent left bar on panel header */
+.panel-header::before {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-soft);
+  flex-shrink: 0;
+}
+
+.panel-body {
+  min-height: 50px;
+  background: var(--surface);
+}
+
+.no-header {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  border-top: 1px solid var(--border);
+  padding: 12px;
+}
+.no-footer {
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+  min-height: 2rem;
+  padding: 8px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.panel-footer span { background: transparent; color: inherit; }
+
+/* ============================================================
+   CONTROL BAR
+   ============================================================ */
+.controlBar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: var(--bg-elev);
+  gap: 6px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+button, .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent-dim);
+  color: var(--bg);
+  background: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: box-shadow var(--t), filter var(--t), transform 80ms;
+}
+button:hover, .btn:hover {
+  filter: brightness(1.1);
+  box-shadow: var(--accent-glow);
+}
+button:active, .btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.92);
+  box-shadow: none;
+}
+
+.btn-icon {
+  min-width: 2.2rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 3px;
+  background: var(--surface-hv);
+  border-color: var(--border-strong);
+  color: var(--accent);
+}
+.btn-icon:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-dim);
+  box-shadow: var(--accent-glow);
+  filter: none;
+}
+.btn-icon svg { display: block; color: inherit; fill: currentColor; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border-strong);
+  font-weight: 500;
+}
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--muted);
+  background: var(--surface-hv);
+  box-shadow: var(--glow-muted);
+  filter: none;
+}
+.btn-secondary:active { background: var(--surface); box-shadow: none; }
+
+.btn-terminal {
+  min-height: 2rem;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+.terminal-shell {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.terminal-log-wrap {
+  min-height: 180px;
+  max-height: min(45vh, 360px);
+  overflow: hidden auto;
+  margin: 10px 10px 0;
+  background: var(--terminal-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.025);
+}
+.terminal-log-wrap, #consoleContent { user-select: text; }
+.terminal-log-wrap::-webkit-scrollbar { width: 4px; }
+.terminal-log-wrap::-webkit-scrollbar-thumb { background: var(--border-strong); }
+
+pre {
+  padding: 10px 12px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--terminal-fg); /* system mono — intentional */
+  background: transparent;
+}
+#consoleContent {
+  min-height: 180px;
+  overflow-wrap: anywhere;
+  border: none;
+}
+.cmd { color: var(--cmd-fg); }
+
+.terminal-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 5px;
+  background: var(--surface);
+}
+label[for="monitor_enable_autoscroll"] {
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 3px 0;
+}
+#monitor_enable_autoscroll {
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.terminal-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px 10px 12px;
+  background: var(--surface);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.terminal-input-row .formControl {
+  flex: 1 1 160px;
+  min-width: 0;
+  min-height: 2.4rem;
+  border-radius: var(--radius);
+}
+
+/* ============================================================
+   FILESYSTEM
+   ============================================================ */
+.label {
+  height: auto;
+  min-height: 2.2rem;
+  padding: 7px 12px;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+#path {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  background: var(--bg);
+  display: block;
+  min-height: 0;
+}
+
+.fileLine {
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.45;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+  padding: 8px;
+  transition: background var(--t);
+}
+.fileLine:hover { background: var(--surface-hv); }
+.fileLineHead, .fileLineTail {
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  column-gap: 8px;
+  align-items: center;
+}
+.filetype { color: var(--accent); }
+.filetype svg { display: block; }
+.fileitem {
+  color: var(--text);
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: color var(--t), background var(--t);
+}
+.fileitem:hover { color: var(--accent); background: var(--accent-soft); }
+.filesize {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  padding: 4px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.fileicon {
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  padding: 4px;
+  transition: all var(--t);
+}
+.fileicon svg { filter: drop-shadow(0 0 1px rgba(255,255,255,0.3)); }
+.fileicon:hover {
+  cursor: pointer;
+  background: rgba(255,61,87,0.12);
+  border-color: rgba(255,61,87,0.4);
+  box-shadow: 0 0 14px rgba(255,61,87,0.25);
+}
+.fileicon:active { opacity: 0.88; }
+
+/* Progress bar */
+progress, .progbar {
+  height: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+::-webkit-progress-bar  { background: var(--surface); }
+::-webkit-progress-value { background: var(--accent); box-shadow: 0 0 6px var(--accent-soft); }
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+input[type="text"], input[type="password"], .formControl {
+  display: block;
+  width: auto;
+  flex: 1 1 0%;
+  min-height: 2.3rem;
+  padding: 7px 12px;
+  line-height: 1.4;
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+input[type="text"]:focus, input[type="password"]:focus, .formControl:focus {
+  border-color: var(--accent-dim);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal {
+  position: fixed;
+  z-index: 10000;
+  padding: 48px 16px;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background: rgba(4,6,10,0.75);
+  backdrop-filter: blur(4px);
+}
+.modal-content {
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  position: relative;
+  margin: auto;
+  max-width: 420px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+}
+.modal-header {
+  padding: 16px 20px;
+  color: var(--text);
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+}
+.modal-header::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--accent);
+}
+.modal-body { padding: 12px 16px; background: var(--surface); }
+.modal-body .controlBar { background: transparent; border: none; padding: 8px 0; }
+.modal-body hr { margin: 8px 0; }
+.modal-footer {
+  padding: 12px 16px;
+  background: var(--bg-elev);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 8px;
+}
+
+.text-primary { color: var(--ok); }
+.text-error   { color: var(--danger); }
+.text-error-login {
+  background: rgba(255,61,87,0.08);
+  color: var(--danger);
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.disabled { pointer-events: none; opacity: 0.4; }
+.hide     { display: none !important; }
+svg { background: transparent !important; }
+button > svg { background: transparent !important; color: inherit; }
+meter { background: var(--surface); }
+
+@media (max-width: 600px) {
+  .topbar-spacer { display: none; }
+  .terminal-log-wrap { max-height: 38vh; }
+}
+
+/* ── Font switch ── */
+body.font-system {
+  --font-display: system-ui, 'Segoe UI', sans-serif;
+  --font-ui:      system-ui, 'Segoe UI', sans-serif;
+  --font-body:    system-ui, 'Segoe UI', sans-serif;
+}
+body.font-system .topbar-brand  { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.06em; }
+body.font-system .ver-badge     { font-size: 0.88rem; letter-spacing: 0.02em; }
+body.font-system .panel-header  { font-size: 0.7rem;  letter-spacing: 0.16em; }
+body.font-system .btn           { font-size: 0.82rem; letter-spacing: 0.05em; }
+body.font-system #path          { font-size: 0.85rem; letter-spacing: 0; }
+body.font-system .filesize      { font-size: 0.82rem; }
+body.font-system .panel-footer  { font-size: 0.82rem; letter-spacing: 0; }
+body.font-system #MSG           { font-size: 0.88rem; letter-spacing: 0; }
+
+/* Font switcher button */
+.font-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-left: 4px;
+}
+.fsw {
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  min-height: 0;
+  transition: background var(--t), color var(--t);
+  text-transform: none;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+  white-space: nowrap;
+}
+.fsw:hover { background: var(--surface-hv); color: var(--text); filter: none; box-shadow: none; }
+.fsw.on    { background: var(--accent-soft); color: var(--accent); }
+.fsw:active { transform: none; }
+.fsw-sep {
+  width: 1px;
+  background: var(--border-strong);
+  align-self: stretch;
+  pointer-events: none;
+}
+/* Orbitron label renders in Orbitron, System label in system font */
+.fsw-orbitron { font-family: 'Orbitron', monospace; font-size: 0.65rem; }
+.fsw-system   { font-family: system-ui, sans-serif; }
+
+</style>
+</head>
+
+<!-- SVG icon defs reused from our design system -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg"><defs>
+  <symbol id="i-folder-plus" viewBox="0 0 640 640">
+    <path d="M128 464L512 464C520.8 464 528 456.8 528 448L528 208C528 199.2 520.8 192 512 192L362.7 192C345.4 192 328.5 186.4 314.7 176L276.3 147.2C273.5 145.1 270.2 144 266.7 144L128 144C119.2 144 112 151.2 112 160L112 448C112 456.8 119.2 464 128 464zM512 512L128 512C92.7 512 64 483.3 64 448L64 160C64 124.7 92.7 96 128 96L266.7 96C280.5 96 294 100.5 305.1 108.8L343.5 137.6C349 141.8 355.8 144 362.7 144L512 144C547.3 144 576 172.7 576 208L576 448C576 483.3 547.3 512 512 512z" fill="currentColor" stroke="none"/>
+    <line x1="320" y1="268" x2="320" y2="388" stroke="currentColor" stroke-width="40" stroke-linecap="round"/>
+    <line x1="260" y1="328" x2="380" y2="328" stroke="currentColor" stroke-width="40" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-upload" viewBox="0 0 200 200">
+    <path d="M52 26h58l46 46v88c0 14-12 26-26 26H52c-14 0-26-12-26-26V52c0-14 12-26 26-26z" fill="none" stroke="currentColor" stroke-width="15" stroke-linejoin="round"/>
+    <path d="M110 26v20c0 14 12 26 26 26h20" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="91" y1="148" x2="91" y2="95" stroke="currentColor" stroke-width="15" stroke-linecap="round"/>
+    <path d="M63 120l28-28 28 28" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-file" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="i-trash" viewBox="0 0 640 640">
+    <path fill="#ff3d57" d="M232.7 69.9C237.1 56.8 249.3 48 263.1 48L377 48C390.8 48 403 56.8 407.4 69.9L416 96L512 96C529.7 96 544 110.3 544 128C544 145.7 529.7 160 512 160L128 160C110.3 160 96 145.7 96 128C96 110.3 110.3 96 128 96L224 96L232.7 69.9zM128 208L512 208L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 208zM216 272C202.7 272 192 282.7 192 296L192 488C192 501.3 202.7 512 216 512C229.3 512 240 501.3 240 488L240 296C240 282.7 229.3 272 216 272zM320 272C306.7 272 296 282.7 296 296L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 296C344 282.7 333.3 272 320 272zM424 272C410.7 272 400 282.7 400 296L400 488C400 501.3 410.7 512 424 512C437.3 512 448 501.3 448 488L448 296C448 282.7 437.3 272 424 272z"/>
+  </symbol>
+  <symbol id="i-send" viewBox="0 0 24 24">
+    <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="22,2 15,22 11,13 2,9" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+  </symbol>
+</defs></svg>
+
+<body class="v-cyan" id="body">
+
+<!-- ─── TOPBAR ─── -->
+<header class="topbar" role="banner">
+  <a id="topbarBrand" class="topbar-brand" href="https://github.com/luc-github/ESP3D-TFT"
+     target="_blank" rel="noopener noreferrer">ESP3D</a>
+
+  <nav id="topbarResources" class="topbar-resources" aria-label="Project documentation">
+    <a class="topbar-link topbar-resource-link"
+       href="https://github.com/luc-github/ESP3D-WEBUI/tree/3.0"
+       target="_blank" rel="noopener noreferrer">WebUI</a>
+    <a class="topbar-link topbar-resource-link"
+       href="https://github.com/luc-github/ESP3D-TFT/wiki"
+       target="_blank" rel="noopener noreferrer">Help</a>
+  </nav>
+
+  <details class="about-box">
+    <summary id="aboutSummary" class="topbar-link about-summary">About</summary>
+    <p id="aboutBlurb" class="help-blurb">
+      Embedded WebUI for ESP3D pendant firmware. Offline single-page bundle served
+      from the device. Use Login when authentication is enabled.
+      Use Device UI to open the hosted WebUI file.
+      External links above require internet access.
+    </p>
+  </details>
+
+  <span class="topbar-spacer"></span>
+
+  <!-- Theme switcher -->
+  <div class="theme-switcher" title="Switch accent color">
+    <div class="tsw tsw-cyan   on" onclick="setTheme('cyan',   this)"></div>
+    <div class="tsw tsw-amber"     onclick="setTheme('amber',  this)"></div>
+    <div class="tsw tsw-green"     onclick="setTheme('green',  this)"></div>
+    <div class="tsw tsw-orange"    onclick="setTheme('orange', this)"></div>
+  </div>
+
+  <!-- Font switcher -->
+  <div class="font-switcher" title="Switch UI font">
+    <button class="fsw fsw-orbitron on" id="fsw-orb" onclick="setFont('orbitron')">Orb</button>
+    <div class="fsw-sep"></div>
+    <button class="fsw fsw-system"      id="fsw-sys" onclick="setFont('system')">Sys</button>
+  </div>
+
+  <span id="espLink"   class="topbar-link" role="button" tabindex="0">Device UI</span>
+  <span id="loginLink" class="topbar-link hide" role="button" tabindex="0">Login</span>
+  <span id="verLink"   class="ver-badge">v3.0.0.a28</span>
+</header>
+
+<hr>
+
+<!-- ─── MESSAGES ─── -->
+<div class="msg-wrap">
+  <div id="MSGLimited"></div>
+  <div id="MSG"></div>
+</div>
+
+<!-- ─── TERMINAL PANEL ─── -->
+<div id="consolePanel" class="panel">
+  <div id="consoleHeader" class="panel-header">Terminal</div>
+  <div id="consoleBody" class="panel-body no-footer terminal-shell">
+    <div id="consoleLogWrap" class="terminal-log-wrap">
+      <pre id="consoleContent"><span class="cmd">&gt; [ESP800]</span>
+FW:grblHAL V:1.1f NEWLINE:CR
+<span class="cmd">&gt; $H</span>
+ok
+&lt;Idle|MPos:0.000,0.000,0.000|FS:0,0&gt;
+<span class="cmd">&gt; G54 G17 G21 G90</span>
+ok</pre>
+    </div>
+    <div class="terminal-tools">
+      <input type="checkbox" id="monitor_enable_autoscroll" checked>
+      <label for="monitor_enable_autoscroll">Autoscroll</label>
+      <button type="button" class="btn btn-terminal btn-secondary" id="terminalScrollBottom">
+        Bottom
+      </button>
+    </div>
+    <div class="terminal-input-row">
+      <input class="formControl" spellcheck="false" autocorrect="off" autocomplete="off"
+             type="text" value="" id="customCmdTxt" placeholder="G-code command…"
+             onkeydown="if(event.key==='Enter') sendCmd()">
+      <button class="btn" id="cmdBtn" onclick="sendCmd()">
+        <svg width="16" height="16" style="margin-right:5px"><use href="#i-send"/></svg>
+        Send
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FILESYSTEM PANEL ─── -->
+<div id="fileSystem" class="panel">
+  <div id="fileSystemHeader" class="panel-header">FileSystem</div>
+  <div id="fileSystemBody" class="panel-body no-footer">
+
+    <div class="controlBar">
+      <input class="hide" type="file" value="" id="files" multiple>
+      <button class="btn" id="refresh">Refresh</button>
+      <button class="btn btn-icon" type="button" id="createdir"
+              title="Create directory" aria-label="Create directory">
+        <svg width="22" height="22"><use href="#i-folder-plus"/></svg>
+      </button>
+      <button class="btn btn-icon" type="button" id="uploadFiles"
+              title="Upload files" aria-label="Upload files">
+        <svg width="20" height="20"><use href="#i-upload"/></svg>
+      </button>
+      <div class="label hide" id="prgfiletext">0%</div>
+      <progress class="progbar hide" id="prgfile" max="100" value="50"></progress>
+    </div>
+
+    <div id="filecontent" class="panel">
+      <div id="filecontentbody" class="panel-body no-header">
+        <div class="label" id="path">/</div>
+        <div id="fileList">
+
+          <div class="fileLine">
+            <div class="fileLineHead">
+              <div class="filetype">
+                <svg width="20" height="20"><use href="#i-file"/></svg>
+              </div>
+              <div class="fileitem" id="File0">index.html.gz</div>
+            </div>
+            <div class="fileLineTail">
+              <div class="filesize">97.10 KB</div>
+              <div class="fileicon" id="FileDel0">
+                <svg width="20" height="20"><use href="#i-trash"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="fileLine">
+            <div class="fileLineHead">
+              <div class="filetype">
+                <svg width="20" height="20"><use href="#i-file"/></svg>
+              </div>
+              <div class="fileitem" id="File1">New Text Document.txt</div>
+            </div>
+            <div class="fileLineTail">
+              <div class="filesize">0 B</div>
+              <div class="fileicon" id="FileDel1">
+                <svg width="20" height="20"><use href="#i-trash"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div id="filecontentFooter" class="panel-footer">
+        <span>Status: ok&nbsp;&nbsp;</span>
+        <span>|&nbsp;&nbsp;Total: 1.20 MB&nbsp;&nbsp;</span>
+        <span>|&nbsp;&nbsp;Used: 97.10 KB&nbsp;&nbsp;</span>
+        <span>|&nbsp;&nbsp;Occupation: <meter min="0" max="100" high="90" value="8"></meter>&nbsp;8%</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FIRMWARE UPDATE PANEL ─── -->
+<div id="firmware" class="panel">
+  <div id="firmwareHeader" class="panel-header">Firmware Update</div>
+  <div id="firmwareBody" class="panel-body no-footer" style="display:none">
+    <div class="controlBar">
+      <input class="hide" type="file" accept=".bin" id="filefw">
+      <button class="btn" id="uploapFW">Select File</button>
+      <div class="label hide" id="prgupdatetext">0%</div>
+      <progress class="progbar hide" id="prgupdate" max="100" value="50"></progress>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<!-- ─── LOGIN MODAL ─── -->
+<div id="loginpage" class="modal hide">
+  <div class="modal-content">
+    <div class="modal-header">Identification</div>
+    <div class="modal-body">
+      <div class="controlBar">
+        <div class="label">User:</div>
+        <input type="text" id="loginInput" spellcheck="false" autocorrect="off" autocomplete="off">
+      </div>
+      <hr>
+      <div class="controlBar">
+        <div class="label">Password:</div>
+        <input type="password" id="passwordInput" spellcheck="false" autocorrect="off" autocomplete="off">
+      </div>
+    </div>
+    <div id="loginMsg" class="hide text-error-login">Invalid user or password</div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" id="disconnectbutton">Disconnect</button>
+      <button type="button" class="btn" id="loginbutton">Login</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Font switcher ── */
+function setFont(name) {
+  const body = document.getElementById('body');
+  if (name === 'system') {
+    body.classList.add('font-system');
+    document.getElementById('fsw-sys').classList.add('on');
+    document.getElementById('fsw-orb').classList.remove('on');
+  } else {
+    body.classList.remove('font-system');
+    document.getElementById('fsw-orb').classList.add('on');
+    document.getElementById('fsw-sys').classList.remove('on');
+  }
+}
+
+/* ── Theme switcher ── */
+function setTheme(name, el) {
+  const body = document.getElementById('body');
+  body.className = 'v-' + name;
+  document.querySelectorAll('.tsw').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ── Panel toggle on header click ── */
+document.querySelectorAll('.panel-header').forEach(h => {
+  h.addEventListener('click', () => {
+    const body = h.nextElementSibling;
+    if (body) body.style.display = body.style.display === 'none' ? '' : 'none';
+  });
+});
+
+/* ── Terminal send ── */
+const fakeCmds = [
+  () => appendLog('ok'),
+  () => appendLog('<Idle|MPos:0.000,0.000,0.000|FS:0,0>'),
+  () => appendLog('ok'),
+  () => appendLog('<Run|WPos:-142.350,87.100,-5.000|FS:1200,18000|Bf:14,127>'),
+];
+let fi = 0;
+function sendCmd() {
+  const inp = document.getElementById('customCmdTxt');
+  const cmd = inp.value.trim();
+  if (cmd) {
+    appendLog('> ' + cmd, true);
+    inp.value = '';
+  }
+  fakeCmds[fi++ % fakeCmds.length]();
+}
+function appendLog(text, isCmd) {
+  const pre = document.getElementById('consoleContent');
+  const span = document.createElement('span');
+  if (isCmd) span.className = 'cmd';
+  span.textContent = text;
+  pre.appendChild(document.createTextNode('\n'));
+  pre.appendChild(span);
+  const wrap = document.getElementById('consoleLogWrap');
+  if (document.getElementById('monitor_enable_autoscroll').checked) {
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+}
+</script>
+</body>
+</html>

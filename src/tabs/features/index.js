@@ -574,6 +574,7 @@ const FeaturesTab = () => {
                 {!isLoading && (
                     <ButtonImg
                         m2
+                        className="btn-accent"
                         label={T("S50")}
                         tooltip
                         data-tooltip={T("S23")}
@@ -588,6 +589,7 @@ const FeaturesTab = () => {
                     <Fragment>
                         <ButtonImg
                             m2
+                            className="btn-accent"
                             label={T("S54")}
                             tooltip
                             data-tooltip={T("S55")}
@@ -601,6 +603,7 @@ const FeaturesTab = () => {
                         />
                         <ButtonImg
                             m2
+                            className="btn-accent"
                             label={T("S52")}
                             tooltip
                             data-tooltip={T("S53")}
@@ -614,6 +617,7 @@ const FeaturesTab = () => {
                         {showSave && (
                             <ButtonImg
                                 m2
+                                className="btn-save"
                                 tooltip
                                 data-tooltip={T("S62")}
                                 label={T("S61")}
@@ -628,6 +632,7 @@ const FeaturesTab = () => {
 
                         <ButtonImg
                             m2
+                            className="btn-restart"
                             tooltip
                             data-tooltip={T("S59")}
                             label={T("S58")}

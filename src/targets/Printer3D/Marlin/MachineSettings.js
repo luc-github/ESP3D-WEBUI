@@ -284,6 +284,7 @@ const MachineSettings = () => {
                         <ButtonImg
                             donotdisable
                             showlow
+                            className="btn-restart"
                             icon={<XCircle />}
                             label={T("S28")}
                             tooltip
@@ -340,6 +341,7 @@ const MachineSettings = () => {
 
                         <ButtonImg
                             m2
+                            className="btn-accent"
                             icon={<RefreshCcw />}
                             label={T("S50")}
                             tooltip
@@ -349,6 +351,7 @@ const MachineSettings = () => {
                         {showSave && (
                             <ButtonImg
                                 m2
+                                className="btn-save"
                                 tooltip
                                 data-tooltip={T("S62")}
                                 label={T("S61")}

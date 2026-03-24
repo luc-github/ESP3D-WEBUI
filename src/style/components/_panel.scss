@@ -8,24 +8,30 @@
 }
 
 .macro-buttons-panel {
-    display: -ms-flexbox;
     display: flex;
-    flex-flow: row wrap;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-content: stretch;
 }
 
 .panel {
-    display: -ms-flexbox;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     height: var(--panel-height, 550px);
     overflow: hidden !important;
     overflow-x: hidden !important;
+
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    border-radius: var(--r);
+    color: var(--txt-bright);
+    box-shadow: 0 0 14px -6px rgba(0, 0, 0, 0.5);
 }
+
 .panel .navbar {
     flex: 0 0 auto;
 }
+
 .panel .panel-body-dashboard,
 .panel .panel-body-interface,
 .panel .panel-body-features {
@@ -35,22 +41,18 @@
     overflow-x: hidden !important;
 }
 
-.panel {
-    background-color: #fff;
-    color: #000;
-}
-
 .panel-body-dashboard,
 .panel-body-interface,
 .panel-body-features {
-    display: -ms-flexbox;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
 }
+
 .panel .navbar,
 .panel .navbar-section {
-    background: #f1f1fc;
-    color: #5755d9;
+    background: var(--bg-base);
+    color: var(--txt-mid);
+    border-bottom: 1px solid var(--border-dim);
 }
 
 .panel-item {
@@ -61,11 +63,9 @@
     padding: 0.2rem 0.8rem !important;
 }
 
-.column {
-    .panel {
-        height: 100%;
-        box-shadow: 0px 0px 14px -5px rgba(0, 0, 0, 0.05);
-    }
+.column .panel {
+    height: 100%;
+    box-shadow: 0 0 14px -5px rgba(0, 0, 0, 0.35);
 }
 
 .loading-panel {
@@ -82,62 +82,57 @@ body.panel-dragging {
 
 .panel-drag-wrapper {
     position: relative;
-    /* Default: panels with only fullscreen + close */
-    .panel-drag-handle {
-        position: absolute;
-        top: 0.3rem;
-        right: 2.8rem;
-        left: auto;
-        z-index: 10;
-        width: 1rem;
-        height: 1rem;
-        min-width: 1rem;
-        min-height: 1rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: move;
-        padding: 0;
-        border-radius: 0.2rem;
-        color: #5755d9;
-        opacity: 0.85;
-        box-sizing: border-box;
-        background: transparent;
-        border: 0 none;
-        outline: none;
-        box-shadow: none;
-        &:focus,
-        &:focus-visible {
-            outline: none;
-            box-shadow: none;
-            border: 0 none;
-        }
-        /* Same hover as .btn-header for consistent look with dropdown/fullscreen/close */
-        &:hover {
-            opacity: 1;
-            color: white !important;
-            background-color: blue !important;
-        }
-        &:active {
-            cursor: move;
-            color: white !important;
-            background-color: blue !important;
-        }
-    }
-    /* Panels with dropdown + fullscreen + close (Chart, Files, Notifications, Terminal, Jog, Extruders) */
-    &.panel-has-menu .panel-drag-handle {
-        right: 4.3rem;
-    }
-    /* Extra content: refresh + fullscreen + close (3 buttons) */
-    &.panel-extra-content .panel-drag-handle {
-        right: 4.3rem;
-    }
-    &.panel-drop-indicator-before {
-        border-left: 4px solid #5755d9;
-        margin-left: -4px;
-    }
-    &.panel-drop-indicator-after {
-        border-right: 4px solid #5755d9;
-        margin-right: -4px;
-    }
+}
+
+.panel-drag-handle {
+    position: absolute;
+    top: 0.3rem;
+    right: 2.8rem;
+    left: auto;
+    z-index: 10;
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    min-height: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+    padding: 0;
+    border-radius: var(--r);
+    color: var(--txt-mid);
+    opacity: 0.85;
+    box-sizing: border-box;
+    background: transparent;
+    border: 1px solid var(--border-mid);
+    outline: none;
+    box-shadow: none;
+}
+
+.panel-drag-handle:focus,
+.panel-drag-handle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.1rem rgba(0, 212, 255, 0.15);
+}
+
+.panel-drag-handle:hover,
+.panel-drag-handle:active {
+    opacity: 1;
+    color: var(--txt-bright);
+    background: var(--bg-hover);
+}
+
+.panel-drag-wrapper.panel-has-menu .panel-drag-handle,
+.panel-drag-wrapper.panel-extra-content .panel-drag-handle {
+    right: 4.3rem;
+}
+
+.panel-drop-indicator-before {
+    border-left: 4px solid var(--a);
+    margin-left: -4px;
+}
+
+.panel-drop-indicator-after {
+    border-right: 4px solid var(--a);
+    margin-right: -4px;
 }

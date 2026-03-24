@@ -80,8 +80,7 @@
     },
     "dependencies": {
         "preact": "^10.10.1",
-        "preact-feather": "^4.2.1",
-        "spectre.css": "luc-github/spectre"
+        "preact-feather": "^4.2.1"
     },
     "browserslist": {
         "production": [

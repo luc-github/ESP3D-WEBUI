@@ -104,6 +104,7 @@ const IconSelect = ({
             <ButtonImg
                 m1
                 min2rem
+                className="nested-button"
                 icon={controlIcon}
                 onClick={showList}
             />

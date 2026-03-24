@@ -10,19 +10,21 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 5px;
+    color: var(--txt-bright);
 }
 
 .menu-panel-item .feather-icon-container {
     vertical-align: middle;
     margin-top: 0.2rem;
+    color: var(--a);
 }
 
 .menu-item {
-    color: #5755d9;
+    color: var(--txt-bright);
 }
 
 .menu .menu-item > .menu-entry {
-    border-radius: 0.2rem;
+    border-radius: var(--r);
     color: inherit;
     display: block;
     margin: 0 -0.4rem;
@@ -33,8 +35,8 @@
 
 .menu .menu-item > .menu-entry:focus,
 .menu .menu-item > .menu-entry:hover {
-    background: #f1f1fc;
-    color: #5755d9;
+    background: var(--bg-hover);
+    color: var(--a);
 }
 
 .menu-container,
@@ -44,19 +46,19 @@
     border: 0px !important;
 }
 
-.menu-item-panel{
-    pointer-events: none!important;
+.menu-item-panel {
+    pointer-events: none !important;
 }
 
 .menu .menu-item > .menu-entry:active,
 .menu .menu-item > .menu-entry.active {
-    background: inherit;
-    color: inherit;
+    background: var(--bg-base);
+    color: var(--txt-bright);
 }
 
 .panel .menu-item:active,
 .panel .menu-item.active {
-    background: #5755d9;
-    color: #f1f1fc;
-    border-radius: 0.2rem;
+    background: var(--bg-raised);
+    color: var(--a);
+    border-radius: var(--r);
 }

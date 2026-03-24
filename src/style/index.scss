@@ -1,12 +1,283 @@
 // Variables and mixins
 @import "./variables";
 @import "./mixins";
-@import "./spectre";
 
-// Icons
-@import "./spectre-icons";
-// Experimental
-@import "./spectre-exp";
+// ══════════════════════════════════════════════════════════════════════════
+// Custom vanilla CSS replacing Spectre.css
+// Following ESP3D Design System tokens
+// ══════════════════════════════════════════════════════════════════════════
+
+// CSS Custom Properties - Design System Tokens
+// Theme: Cyan / Electric (default)
+:root {
+    // Accent tokens (Cyan / Electric theme)
+    --a: #00d4ff;                          // Primary accent
+    --a-dim: #0099bb;                      // Borders, dim variant
+    --a-g: rgba(0, 212, 255, 0.18);       // Glow / shadow
+    --a-fill: rgba(0, 212, 255, 0.12);    // Filled background
+    --a-f2: rgba(0, 212, 255, 0.22);      // Stronger fill
+    
+    // Border tokens (cyan tint)
+    --border-dim: #1c2e3e;                 // Panel borders
+    --border-mid: #224055;                 // Input borders, jog buttons
+    --border-lit: #2e5670;                 // Slider track, hover borders
+    
+    // Background tokens (fixed across all themes)
+    --bg-void: #070a0d;                    // Page background, deepest layer
+    --bg-base: #0c1116;                    // DRO cells, input backgrounds, terminal bg
+    --bg-panel: #10181f;                   // Panel cards
+    --bg-raised: #18242e;                  // Buttons (ghost), jog pads, chip backgrounds
+    --bg-hover: #1f2f3c;                   // Hover state for interactive elements
+    
+    // Semantic colors (fixed across all themes)
+    --ok: #00e676;                         // Success states, RUN badge
+    --ok-g: rgba(0, 230, 118, 0.18);      // OK glow
+    --err: #ff3d57;                        // Alarms, E-STOP, errors
+    --err-g: rgba(255, 61, 87, 0.20);     // Error glow
+    --warn: #ffb300;                       // Warnings, buffer high
+    --warn-g: rgba(255, 179, 0, 0.18);    // Warning glow
+    
+    // Text colors (fixed across all themes)
+    --txt-bright: #f0f8ff;                 // Primary text
+    --txt-mid: #9ab8cc;                    // Secondary text
+    --txt-dim: #5a7a90;                    // Tertiary text
+    
+    // Terminal specific
+    --terminal-bg: #050810;                // Serial monitor background
+
+    // Geometry & animation
+    --r: 2px;                              // Global border-radius (sharp industrial)
+    --t: 150ms;                            // Global transition duration
+}
+
+// Theme variants - uncomment to switch themes
+// @media (prefers-color-scheme: dark) {
+//     // Amber / Forge theme
+//     :root {
+//         --a: #ffaa00;
+//         --a-dim: #cc8000;
+//         --a-g: rgba(255, 170, 0, 0.20);
+//         --a-fill: rgba(255, 170, 0, 0.12);
+//         --a-f2: rgba(255, 170, 0, 0.22);
+//         --border-dim: #2e2412;
+//         --border-mid: #3e3018;
+//         --border-lit: #584420;
+//     }
+// }
+
+// Base reset & typography (minimal, using system fonts)
+html {
+    box-sizing: border-box;
+    font-size: 20px;
+    line-height: 1.5;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    background: var(--bg-void);
+    color: var(--txt-bright);
+    font-family: system-ui, "Segoe UI", "Helvetica Neue", sans-serif;
+    font-size: 0.8rem;
+    margin: 0;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+}
+
+// Links
+a {
+    color: var(--a);
+    outline: none;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 212, 255, 0.2);
+}
+
+a:hover {
+    color: var(--a-dim);
+    text-decoration: underline;
+}
+
+a:visited {
+    color: var(--a-dim);
+}
+
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 2rem;
+}
+h2 {
+    font-size: 1.6rem;
+}
+h3 {
+    font-size: 1.4rem;
+}
+h4 {
+    font-size: 1.2rem;
+}
+h5 {
+    font-size: 1rem;
+}
+h6 {
+    font-size: 0.8rem;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-weight: 500;
+}
+
+.h1 {
+    font-size: 2rem;
+}
+.h2 {
+    font-size: 1.6rem;
+}
+.h3 {
+    font-size: 1.4rem;
+}
+.h4 {
+    font-size: 1.2rem;
+}
+.h5 {
+    font-size: 1rem;
+}
+.h6 {
+    font-size: 0.8rem;
+}
+
+// Paragraph
+p {
+    margin: 0 0 1.2rem;
+}
+
+// Lists
+ul,
+ol {
+    margin: 0.8rem 0 0.8rem 0.8rem;
+    padding: 0;
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol {
+    margin: 0.8rem 0 0.8rem 0.8rem;
+}
+
+ul li,
+ol li {
+    margin-top: 0.4rem;
+}
+
+ul {
+    list-style: disc inside;
+}
+
+ul ul {
+    list-style-type: circle;
+}
+
+ol {
+    list-style: decimal inside;
+}
+
+ol ol {
+    list-style-type: lower-alpha;
+}
+
+dl dt {
+    font-weight: bold;
+}
+
+dl dd {
+    margin: 0.4rem 0 0.8rem 0;
+}
+
+// Blockquote
+blockquote {
+    border-left: 0.1rem solid var(--border-mid);
+    margin-left: 0;
+    padding: 0.4rem 0.8rem;
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+// Code & pre
+code,
+kbd,
+pre,
+samp {
+    font-family: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Courier,
+        monospace;
+    font-size: 1em;
+}
+
+dfn {
+    font-style: italic;
+}
+
+mark {
+    background: #ffe9b3;
+    border-bottom: 0.05rem solid #ffd367;
+    border-radius: 0.2rem;
+    color: #3b4351;
+    padding: 0.05rem 0.1rem 0;
+}
+
+small {
+    font-size: 80%;
+    font-weight: 400;
+}
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+sup {
+    top: -0.5em;
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// Custom components in separate files
+@import "./custom-utilities";
+@import "./custom-form-elements";
+@import "./custom-components";
 //Components
 @import "./components/app";
 @import "./components/control";

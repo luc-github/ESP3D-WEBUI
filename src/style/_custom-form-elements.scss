@@ -1,0 +1,607 @@
+/* ============================================================================
+   ESP3D Custom Form Elements — Dark industrial theme
+   Follows Design System tokens from index.scss
+   ============================================================================ */
+
+// ─────────────────────────────────────────────────────────────────────────
+// Form groups & structure
+// ─────────────────────────────────────────────────────────────────────────
+.form-group {
+    margin-bottom: 0.4rem;
+}
+
+.form-group:not(:last-child) {
+    margin-bottom: 0.4rem;
+}
+
+.form-label {
+    display: block;
+    line-height: 1.2rem;
+    padding: 0.3rem 0;
+    color: var(--txt-mid);
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.form-label.label-sm {
+    font-size: 0.7rem;
+    padding: 0.1rem 0;
+}
+
+.form-label.label-lg {
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+}
+
+fieldset {
+    margin-bottom: 0.8rem;
+    border: 0;
+    padding: 0;
+}
+
+legend {
+    color: var(--txt-mid);
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    white-space: normal;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Text inputs, select, textarea
+// ─────────────────────────────────────────────────────────────────────────
+.form-input,
+.form-select {
+    appearance: none;
+    background: var(--bg-base);
+    background-image: none;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--r);
+    color: var(--txt-bright);
+    display: block;
+    font-size: 0.8rem;
+    height: 1.8rem;
+    line-height: 1.2rem;
+    max-width: 100%;
+    outline: none;
+    padding: 0.25rem 0.4rem;
+    position: relative;
+    transition: background var(--t), border var(--t), box-shadow var(--t), color var(--t);
+    width: 100%;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--a-dim);
+    box-shadow: 0 0 0 2px var(--a-fill);
+}
+
+.form-input::placeholder {
+    color: var(--txt-dim);
+}
+
+// Size variants
+.form-input.input-sm,
+.form-select.select-sm {
+    font-size: 0.7rem;
+    height: 1.4rem;
+    padding: 0.05rem 0.3rem;
+}
+
+.form-input.input-lg,
+.form-select.select-lg {
+    font-size: 0.9rem;
+    height: 2rem;
+    padding: 0.35rem 0.6rem;
+}
+
+.form-input.input-inline {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+}
+
+.form-input[type="file"] {
+    height: auto;
+    color: var(--txt-mid);
+}
+
+textarea.form-input {
+    height: auto;
+    max-width: 100%;
+    resize: vertical;
+}
+
+// Select specific
+.form-select {
+    background: var(--bg-base);
+    padding-right: 1.2rem;
+    color: var(--txt-bright);
+}
+
+.form-select:not([multiple]):not([size]) {
+    background: var(--bg-base)
+        url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%204%205%27%3E%3Cpath%20fill=%27%235a7a90%27%20d=%27M2%200L0%202h4zm0%205L0%203h4z%27/%3E%3C/svg%3E")
+        no-repeat right 0.35rem center / 0.4rem 0.5rem;
+}
+
+.form-select::-ms-expand {
+    display: none;
+}
+
+.form-select[size],
+.form-select[multiple] {
+    height: auto;
+    padding: 0.25rem 0.4rem;
+}
+
+.form-select[size] option,
+.form-select[multiple] option {
+    padding: 0.1rem 0.2rem;
+    background: var(--bg-panel);
+    color: var(--txt-bright);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Input hint & validation
+// ─────────────────────────────────────────────────────────────────────────
+.form-input-hint {
+    color: var(--txt-dim);
+    font-size: 0.7rem;
+    margin-top: 0.2rem;
+}
+
+.has-success .form-input-hint,
+.is-success + .form-input-hint {
+    color: var(--ok);
+}
+
+.has-error .form-input-hint,
+.is-error + .form-input-hint {
+    color: var(--err);
+}
+
+.has-success .form-input,
+.form-input.is-success,
+.has-success .form-select,
+.form-select.is-success {
+    background: var(--bg-base);
+    border-color: var(--ok);
+}
+
+.has-success .form-input:focus,
+.form-input.is-success:focus,
+.has-success .form-select:focus,
+.form-select.is-success:focus {
+    box-shadow: 0 0 0 2px var(--ok-g);
+}
+
+.has-error .form-input,
+.form-input.is-error,
+.has-error .form-select,
+.form-select.is-error {
+    background: var(--bg-base);
+    border-color: var(--err);
+}
+
+.has-error .form-input:focus,
+.form-input.is-error:focus,
+.has-error .form-select:focus,
+.form-select.is-error:focus {
+    box-shadow: 0 0 0 2px var(--err-g);
+}
+
+.form-input:not(:placeholder-shown):invalid {
+    border-color: var(--err);
+}
+
+.form-input:not(:placeholder-shown):invalid:focus {
+    background: var(--bg-base);
+    box-shadow: 0 0 0 2px var(--err-g);
+}
+
+.form-input:not(:placeholder-shown):invalid + .form-input-hint {
+    color: var(--err);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Disabled & readonly states
+// ─────────────────────────────────────────────────────────────────────────
+.form-input:disabled,
+.form-input.disabled,
+.form-select:disabled,
+.form-select.disabled {
+    background: var(--bg-base);
+    border-color: var(--border-dim);
+    color: var(--txt-dim);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.form-input[readonly] {
+    background: var(--bg-base);
+    color: var(--txt-mid);
+    border-color: var(--border-dim);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Icon in form inputs
+// ─────────────────────────────────────────────────────────────────────────
+.has-icon-left,
+.has-icon-right {
+    position: relative;
+}
+
+.has-icon-left .form-icon,
+.has-icon-right .form-icon {
+    height: 0.8rem;
+    margin: 0 0.25rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.8rem;
+    z-index: 2;
+    color: var(--txt-dim);
+}
+
+.has-icon-left .form-icon {
+    left: 0.05rem;
+}
+
+.has-icon-left .form-input {
+    padding-left: 1.3rem;
+}
+
+.has-icon-right .form-icon {
+    right: 0.05rem;
+}
+
+.has-icon-right .form-input {
+    padding-right: 1.3rem;
+}
+
+.form-icon {
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Input group (input + addon/button)
+// ─────────────────────────────────────────────────────────────────────────
+.input-group {
+    display: flex;
+}
+
+.input-group .input-group-addon {
+    background: var(--bg-raised);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--r);
+    color: var(--txt-mid);
+    line-height: 1.2rem;
+    padding: 0.25rem 0.4rem;
+    white-space: nowrap;
+}
+
+.input-group .input-group-addon.addon-sm {
+    font-size: 0.7rem;
+    padding: 0.05rem 0.3rem;
+}
+
+.input-group .input-group-addon.addon-lg {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.6rem;
+}
+
+.input-group .form-input,
+.input-group .form-select {
+    flex: 1 1 auto;
+    width: 1%;
+}
+
+.input-group .input-group-btn {
+    z-index: 1;
+}
+
+// Grouped item radius & border
+.input-group .form-input:first-child:not(:last-child),
+.input-group .form-select:first-child:not(:last-child),
+.input-group .input-group-addon:first-child:not(:last-child),
+.input-group .input-group-btn:first-child:not(:last-child) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.input-group .form-input:not(:first-child):not(:last-child),
+.input-group .form-select:not(:first-child):not(:last-child),
+.input-group .input-group-addon:not(:first-child):not(:last-child),
+.input-group .input-group-btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+    margin-left: -1px;
+}
+
+.input-group .form-input:last-child:not(:first-child),
+.input-group .form-select:last-child:not(:first-child),
+.input-group .input-group-addon:last-child:not(:first-child),
+.input-group .input-group-btn:last-child:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    margin-left: -1px;
+}
+
+.input-group .form-input:focus,
+.input-group .form-select:focus {
+    z-index: 2;
+}
+
+.input-group .form-select {
+    width: auto;
+}
+
+.input-group.input-inline {
+    display: inline-flex;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Checkboxes, Radios, Switches
+// ─────────────────────────────────────────────────────────────────────────
+.form-checkbox,
+.form-radio,
+.form-switch {
+    display: block;
+    line-height: 1.2rem;
+    margin: 0.2rem 0;
+    min-height: 1.4rem;
+    padding: 0.1rem 0.4rem 0.1rem 1.2rem;
+    position: relative;
+    color: var(--txt-dim);
+}
+
+.form-checkbox:has(input:checked),
+.form-switch:has(input:checked) {
+    color: var(--txt-bright);
+}
+
+.form-switch:has(input:checked) .text-dark,
+.form-switch:has(input:checked) span {
+    color: var(--txt-bright) !important;
+}
+
+.form-checkbox input,
+.form-radio input,
+.form-switch input {
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+}
+
+.form-checkbox input:focus + .form-icon,
+.form-radio input:focus + .form-icon {
+    border-color: var(--a);
+    box-shadow: 0 0 0 2px var(--a-fill);
+}
+
+.form-radio input:checked + .form-icon,
+.form-switch input:checked + .form-icon {
+    background: var(--a);
+    border-color: var(--a);
+}
+
+.form-checkbox input:checked + .form-icon {
+    background: var(--a-fill);
+    border-color: var(--a);
+}
+
+.form-checkbox .form-icon,
+.form-radio .form-icon,
+.form-switch .form-icon {
+    border: 1px solid var(--border-mid);
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    transition: background var(--t), border var(--t), box-shadow var(--t);
+}
+
+.form-checkbox.input-sm,
+.form-radio.input-sm,
+.form-switch.input-sm {
+    font-size: 0.7rem;
+    margin: 0;
+}
+
+.form-checkbox.input-lg,
+.form-radio.input-lg,
+.form-switch.input-lg {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+}
+
+// Checkbox specific
+.form-checkbox .form-icon {
+    background: var(--bg-raised);
+    border-color: var(--txt-dim);
+    border-radius: var(--r);
+    height: 0.8rem;
+    left: 0;
+    top: 0.3rem;
+    width: 0.8rem;
+}
+
+.form-checkbox input:active + .form-icon {
+    background: var(--bg-hover);
+}
+
+.form-checkbox input:checked + .form-icon::before {
+    background-clip: padding-box;
+    border: 2px solid var(--a);
+    border-left-width: 0;
+    border-top-width: 0;
+    content: "";
+    height: 9px;
+    left: 50%;
+    margin-left: -3px;
+    margin-top: -6px;
+    position: absolute;
+    top: 50%;
+    transform: rotate(45deg);
+    width: 6px;
+}
+
+.form-checkbox input:indeterminate + .form-icon {
+    background: var(--a);
+    border-color: var(--a);
+}
+
+.form-checkbox input:indeterminate + .form-icon::before {
+    background: var(--bg-void);
+    content: "";
+    height: 2px;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -1px;
+    position: absolute;
+    top: 50%;
+    width: 10px;
+}
+
+// Radio specific
+.form-radio .form-icon {
+    background: var(--bg-raised);
+    border-radius: 50%;
+    height: 0.8rem;
+    left: 0;
+    top: 0.3rem;
+    width: 0.8rem;
+}
+
+.form-radio input:checked + .form-icon::before {
+    background: var(--bg-void);
+    border-radius: 50%;
+    content: "";
+    height: 6px;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+}
+
+// Switch specific
+.form-switch {
+    padding-left: 2rem;
+}
+
+.form-switch .form-icon {
+    background: var(--bg-panel);
+    background-clip: padding-box;
+    border-color: var(--txt-dim);
+    border-radius: var(--r);
+    height: 0.9rem;
+    left: 0;
+    top: 0.25rem;
+    width: 1.6rem;
+}
+
+.form-switch .form-icon::before {
+    background: var(--txt-dim);
+    border-radius: var(--r);
+    content: "";
+    display: block;
+    height: calc(0.9rem - 6px);
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    transition: background var(--t), border var(--t), box-shadow var(--t), left var(--t);
+    width: calc(0.9rem - 6px);
+}
+
+.form-switch input:checked + .form-icon {
+    background: var(--a-fill);
+    border-color: var(--a);
+}
+
+.form-switch input:checked + .form-icon::before {
+    background: var(--a);
+    box-shadow: 0 0 5px var(--a-g);
+    left: calc(1.6rem - (0.9rem - 6px) - 4px);
+}
+
+.form-switch input:active + .form-icon::before {
+    background: var(--txt-mid);
+}
+
+// Error states for checkbox/radio/switch
+.has-error .form-checkbox .form-icon,
+.form-checkbox.is-error .form-icon,
+.has-error .form-radio .form-icon,
+.form-radio.is-error .form-icon,
+.has-error .form-switch .form-icon,
+.form-switch.is-error .form-icon {
+    border-color: var(--err);
+}
+
+.has-error .form-checkbox input:checked + .form-icon,
+.form-checkbox.is-error input:checked + .form-icon,
+.has-error .form-radio input:checked + .form-icon,
+.form-radio.is-error input:checked + .form-icon,
+.has-error .form-switch input:checked + .form-icon,
+.form-switch.is-error input:checked + .form-icon {
+    background: var(--err);
+    border-color: var(--err);
+}
+
+.has-error .form-checkbox input:focus + .form-icon,
+.form-checkbox.is-error input:focus + .form-icon,
+.has-error .form-radio input:focus + .form-icon,
+.form-radio.is-error input:focus + .form-icon,
+.has-error .form-switch input:focus + .form-icon,
+.form-switch.is-error input:focus + .form-icon {
+    border-color: var(--err);
+    box-shadow: 0 0 0 2px var(--err-g);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Disabled state for all form elements
+// ─────────────────────────────────────────────────────────────────────────
+input:disabled + .form-icon,
+input.disabled + .form-icon {
+    background: var(--bg-base);
+    border-color: var(--border-dim);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.form-switch input:disabled + .form-icon::before,
+.form-switch input.disabled + .form-icon::before {
+    background: var(--txt-dim);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Form layout helpers
+// ─────────────────────────────────────────────────────────────────────────
+.form-horizontal {
+    padding: 0.4rem 0;
+}
+
+.form-horizontal .form-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-inline {
+    display: inline-block;
+}
+
+.form-group-inline {
+    margin-bottom: 0.4rem;
+}
+
+.form-group .form-label,
+.form-switch {
+    cursor: pointer;
+    user-select: none;
+}

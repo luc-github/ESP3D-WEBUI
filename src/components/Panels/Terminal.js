@@ -261,6 +261,7 @@ const TerminalPanel = () => {
                     label={T("S81")}
                     icon={<Send />}
                     onClick={onSend}
+                    className="btn-accent"
                 />
             </div>
             <div class="show-low">

@@ -1,26 +1,23 @@
 .tab-item {
-    color: #8080ff !important;
+    color: var(--a) !important;
 }
 section .active,
 li .active {
-    color: blue !important;
-    font-weight: 700; // bold
+    color: var(--txt-bright) !important;
+    font-weight: 700;
 }
 .mobile-view section .active,
 .mobile-view li .active {
-    background-color: rgba(0, 0, 255, 0.1) !important;
+    background-color: rgba(0, 212, 255, 0.15) !important;
 }
 
 .navbar {
-    padding: 0rem;
-    padding-left: 15px;
-    background-color: $bg-color-dark;
+    padding: 0.25rem 0.6rem;
+    background: var(--bg-base);
+    color: var(--txt-mid);
+    border-bottom: 1px solid var(--border-dim);
 }
 
-.tab {
-    .tab-item {
-        .btn {
-            border-radius: 0;
-        }
-    }
+.tab .tab-item .btn {
+    border-radius: var(--r);
 }
