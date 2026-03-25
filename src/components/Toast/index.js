@@ -20,6 +20,15 @@ import { useEffect } from "preact/hooks"
 import { useUiContext,useUiContextFn } from "../../contexts"
 import { Toast as SpectreToast } from "../Controls"
 import { T } from "../Translations"
+import { CheckCircle, XCircle, AlertTriangle, Info } from "preact-feather"
+
+const toastIcons = {
+    success: <CheckCircle size="16" />,
+    error: <XCircle size="16" />,
+    warning: <AlertTriangle size="16" />,
+    primary: <Info size="16" />,
+    notification: <Info size="16" />,
+}
 
 /*
  * Local const
@@ -36,15 +45,18 @@ const Toast = ({ index, type = "", children, timeout = 2000, remove }) => {
         }
     }, [])
 
+    const icon = toastIcons[type]
+
     return (
         <SpectreToast {...{ [type]: true }}>
+            {icon && <div class="alert-icon-wrap">{icon}</div>}
+            <span class="toast-text">{children}</span>
             <SpectreToast.Close
                 onClick={() => {
                     useUiContextFn.haptic()
                     remove(index)
                 }}
             />
-            {children}
         </SpectreToast>
     )
 }
@@ -63,7 +75,12 @@ const ToastsContainer = () => {
                             type={type}
                             key={id}
                         >
-                            {T(content)}
+                            {content && typeof content === "object" && content.title ? (
+                                <div class="alert-body">
+                                    <div class="alert-title">{content.title}</div>
+                                    {content.extra && <div class="alert-msg">{content.extra}</div>}
+                                </div>
+                            ) : typeof content === "object" ? content : T(content)}
                         </Toast>
                     )
                 })}

@@ -253,6 +253,13 @@
                 "depend": [{ "id": "showmacrospanel", "value": true }]
             },
             {
+                "id": "macroiconsonly",
+                "type": "boolean",
+                "label": "S261",
+                "value": false,
+                "depend": [{ "id": "showmacrospanel", "value": true }]
+            },
+            {
                 "id": "macros",
                 "type": "list",
                 "sorted": true,

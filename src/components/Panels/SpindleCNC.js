@@ -26,7 +26,7 @@ import {
     useSettingsContext,
 } from "../../contexts"
 import { useTargetContext, variablesList, eventsList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -257,23 +257,11 @@ const SpindlePanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Target />
-                    <strong class="text-ellipsis">{T("CN36")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Target />}
+                title={T("CN36")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <SpindleControls />
                 {buttons_list.map((item) => {

@@ -3,6 +3,7 @@
    Using Design System tokens from _variables.scss
    ============================================================================ */
 
+
 // ─────────────────────────────────────────────────────────────────────────
 // Display utilities
 // ─────────────────────────────────────────────────────────────────────────
@@ -450,7 +451,7 @@
 .divider {
     display: block !important;
     position: relative !important;
-    border-top: 0.05rem solid #f1f3f5 !important;
+    border-top: 0.05rem solid var(--border-dim) !important;
     height: 0.05rem !important;
     margin: 0.4rem 0 !important;
 }

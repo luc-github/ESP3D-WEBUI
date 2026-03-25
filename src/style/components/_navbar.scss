@@ -1,21 +1,71 @@
 .tab-item {
     color: var(--a) !important;
 }
-section .active,
-li .active {
-    color: var(--txt-bright) !important;
+
+// Navbar links — inactive
+.navbar section .btn-link.feather-icon-container {
+    color: var(--txt-dim);
+    transition: color var(--t), background var(--t);
+    gap: 0.45rem;
+    padding: 0 18px;
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
     font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 }
+
+// Navbar links — hover
+.navbar section .btn-link.feather-icon-container:hover {
+    color: var(--txt-mid);
+    background: var(--bg-hover);
+}
+
+// Navbar links — active
+.navbar section .btn-link.feather-icon-container.active {
+    color: var(--a) !important;
+    font-weight: 600;
+}
+
+// Mobile view active
 .mobile-view section .active,
 .mobile-view li .active {
-    background-color: rgba(0, 212, 255, 0.15) !important;
+    background-color: var(--a-fill) !important;
 }
 
 .navbar {
     padding: 0.25rem 0.6rem;
     background: var(--bg-base);
     color: var(--txt-mid);
-    border-bottom: 1px solid var(--border-dim);
+
+}
+
+// Logo in tab bar
+.tab .esp3dlogo {
+    fill: var(--bg-base);
+    color: currentColor;
+}
+
+// Logo — inactive
+.navbar-brand .esp3dlogo {
+    fill: var(--bg-base);
+    color: var(--txt-dim);
+    transition: color var(--t);
+}
+
+// Logo — hover
+.navbar-brand:hover {
+    background: var(--bg-hover);
+    border-radius: var(--r);
+}
+
+.navbar-brand:hover .esp3dlogo {
+    color: var(--txt-mid);
+}
+
+// Logo — active
+.navbar-brand.active .esp3dlogo {
+    color: var(--a);
 }
 
 .tab .tab-item .btn {

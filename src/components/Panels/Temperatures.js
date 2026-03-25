@@ -24,8 +24,7 @@ import {
     ButtonImg,
     Loading,
     Field,
-    FullScreenButton,
-    CloseButton,
+    PanelHeader,
 } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
@@ -299,23 +298,11 @@ const TemperaturesPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Thermometer />
-                    <strong class="text-ellipsis">{T("P29")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Thermometer />}
+                title={T("P29")}
+            />
             <div class="panel-body panel-body-dashboard">
                 {hasTemp && (
                     <div class="temperatures-container">

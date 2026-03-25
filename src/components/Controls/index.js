@@ -33,6 +33,7 @@ import FieldGroup from "./FieldGroup"
 import FullScreenButton from "./FullScreenButton"
 import CloseButton from "./CloseButton"
 import ContainerHelper from "./ContainerHelper"
+import PanelHeader from "./PanelHeader"
 
 export {
     Button,
@@ -45,6 +46,7 @@ export {
     FullScreenButton,
     Loading,
     Modal,
+    PanelHeader,
     Progress,
     ScanApList,
     ScanExtensionsList,

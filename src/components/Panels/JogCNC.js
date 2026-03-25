@@ -20,7 +20,6 @@ import { Fragment, h } from "preact"
 import {
     Move,
     Home,
-    ChevronDown,
     Edit3,
     StopCircle,
     MoreHorizontal,
@@ -29,7 +28,7 @@ import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "../Translations"
-import { Button, ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { Button, ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { showModal } from "../Modal"
 import { useTargetContext, variablesList } from "../../targets"
@@ -223,12 +222,13 @@ const JogPanel = () => {
                 },
                 text: T("S43"),
                 id: "applyFrBtn",
+                class: "btn-warning",
             },
             icon: <Edit3 />,
             id: "inputFeedrate",
             content: (
                 <Fragment>
-                    <div>{t}</div>
+                    <label class="form-label">{t}</label>
                     <input
                         class="form-input"
                         type="number"
@@ -335,78 +335,40 @@ const JogPanel = () => {
             setCurrentSelectedAxis(currentAxis)
         }
     })
+    const menu = feedList.reduce((acc, letter) => {
+        let help
+        let condition = false
+        if (letter.length == 2) {
+            help = T("CN2")
+            condition =
+                (useUiContextFn.getValue("showx") &&
+                    (positions.x || positions.wx)) ||
+                (useUiContextFn.getValue("showy") &&
+                    (positions.y || positions.wy))
+        } else {
+            help = T("CN3").replace("$", letter)
+            condition =
+                (positions[letter.toLowerCase()] ||
+                    positions["w" + letter.toLowerCase()]) &&
+                useUiContextFn.getValue("show" + letter.toLowerCase())
+        }
+        if (condition) {
+            acc.push({
+                label: help,
+                onClick: () => setFeedrate(letter),
+            })
+        }
+        return acc
+    }, [])
     return (
         <div class="panel panel-dashboard" id={id} >
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Move />
-                    <strong class="text-ellipsis">{T("S66")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <div class="dropdown dropdown-right">
-                            <span
-                                class="dropdown-toggle btn btn-xs btn-header m-1"
-                                tabindex="0"
-                            >
-                                <ChevronDown size="0.8rem" />
-                            </span>
-
-                            <ul class="menu">
-                                {feedList.map((letter) => {
-                                    let help
-                                    let condition = false
-                                    if (letter.length == 2) {
-                                        help = T("CN2")
-                                        condition =
-                                            (useUiContextFn.getValue("showx") &&
-                                                (positions.x ||
-                                                    positions.wx)) ||
-                                            (useUiContextFn.getValue("showy") &&
-                                                (positions.y || positions.wy))
-                                    } else {
-                                        help = T("CN3").replace("$", letter)
-                                        condition =
-                                            (positions[letter.toLowerCase()] ||
-                                                positions[
-                                                    "w" + letter.toLowerCase()
-                                                ]) &&
-                                            useUiContextFn.getValue(
-                                                "show" + letter.toLowerCase()
-                                            )
-                                    }
-                                    if (condition)
-                                        return (
-                                            <li class="menu-item">
-                                                <div
-                                                    class="menu-entry"
-                                                    onclick={(e) => {
-                                                        useUiContextFn.haptic()
-                                                        setFeedrate(letter)
-                                                    }}
-                                                >
-                                                    <div class="menu-panel-item">
-                                                        <span class="text-menu-item">
-                                                            {help}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        )
-                                })}
-                            </ul>
-                        </div>
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <ContainerHelper id={id} />
+            <PanelHeader
+                id={id}
+                icon={<Move />}
+                title={T("S66")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="m-1 jog-container">
                     <PositionsControls />

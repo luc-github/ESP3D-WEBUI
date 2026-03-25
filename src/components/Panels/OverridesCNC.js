@@ -22,7 +22,7 @@ import { T } from "../Translations"
 import { Repeat } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 
@@ -182,23 +182,11 @@ const OverridesPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Repeat />
-                    <strong class="text-ellipsis">{T("CN65")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                           elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Repeat />}
+                title={T("CN65")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <OverridesControls />
                 {buttons_list.map((item) => {

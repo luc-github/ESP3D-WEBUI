@@ -682,9 +682,9 @@ const InterfaceTab = () => {
                                         <div class="panel panel-interface">
                                             <div class="navbar">
                                                 <span class="navbar-section text-ellipsis">
-                                                    <strong class="text-ellipsis">
+                                                    <span class="panel-title text-ellipsis">
                                                         {T(sectionId)}
-                                                    </strong>
+                                                    </span>
                                                 </span>
                                             </div>
                                             <div class="panel-body panel-body-interface">

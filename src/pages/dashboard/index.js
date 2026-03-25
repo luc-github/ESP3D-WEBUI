@@ -21,12 +21,13 @@ import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn, useSettingsContext } from "../../contexts"
 import { T } from "../../components/Translations"
-import { List, CheckCircle, Circle, HelpCircle, Anchor } from "preact-feather"
+import { List, BookOpen } from "preact-feather"
 import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 import { showModal } from "../../components/Modal"
 import { eventBus } from "../../hooks/eventBus"
+import { PanelDragContext } from "../../hooks/panelDragContext"
 
 const fixedPanels = []
 const keyTracker = {
@@ -169,7 +170,7 @@ const Dashboard = () => {
             button1: {
                 text: T("S24"),
             },
-            icon: <HelpCircle />,
+            icon: <BookOpen />,
             content: <table class="table">{helpKeyboardJog}</table>,
         })
     }
@@ -375,13 +376,7 @@ const Dashboard = () => {
                                         <span class="text-menu-item">
                                             {T("S215")}
                                         </span>
-                                        <span class="feather-icon-container">
-                                            {isKeyboardEnabled ? (
-                                                <CheckCircle size="0.8rem" />
-                                            ) : (
-                                                <Circle size="0.8rem" />
-                                            )}
-                                        </span>
+                                        <span class={`menu-switch${isKeyboardEnabled ? " menu-switch-on" : ""}`} />
                                     </div>
                                 </div>
                             </li>
@@ -395,7 +390,7 @@ const Dashboard = () => {
                                             {T("S216")}
                                         </span>
                                         <span class="feather-icon-container">
-                                            <HelpCircle size="0.8rem" />
+                                            <BookOpen size="0.8rem" />
                                         </span>
                                     </div>
                                 </div>
@@ -420,6 +415,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </li>
+                            <li class="divider"></li>
                             {panels.list.map((panel) => {
                                 if (!uisettings.getValue(panel.show)) return
                                 const displayIcon = iconsList[panel.icon]
@@ -599,27 +595,18 @@ const Dashboard = () => {
                         }
                     }
                     return (
-                        <div
-                            key={panel.id}
-                            class={`panel-drag-wrapper${panel.hasMenu ? " panel-has-menu" : ""}${isExtraPanel ? " panel-extra-content" : ""}${dropIndicator.index === index ? ` panel-drop-indicator-${dropIndicator.side}` : ""}`}
-                            draggable={true}
-                            onDragStart={handleDragStart}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                            onDragEnd={handleDragEnd}
-                            data-panel-index={index}
-                        >
-                            <span
-                                class="panel-drag-handle tooltip tooltip-left"
-                                data-tooltip={T("S256")}
-                                draggable={true}
-                                onDragStart={handleDragStart}
-                                aria-label={T("S256")}
+                        <PanelDragContext.Provider value={{ onDragStart: handleDragStart }}>
+                            <div
+                                key={panel.id}
+                                class={`panel-drag-wrapper${isExtraPanel ? " panel-extra-content" : ""}${dropIndicator.index === index ? ` panel-drop-indicator-${dropIndicator.side}` : ""}`}
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                                onDragEnd={handleDragEnd}
+                                data-panel-index={index}
                             >
-                                <Anchor size="0.8rem" />
-                            </span>
-                            {panel.content}
-                        </div>
+                                {panel.content}
+                            </div>
+                        </PanelDragContext.Provider>
                     )
                 })}
             </div>

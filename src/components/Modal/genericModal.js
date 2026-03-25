@@ -62,7 +62,7 @@ const showModal = ({
                     {button1 && (
                         <button
                             id={button1.id ? button1.id : null}
-                            class="btn mx-2"
+                            class={`btn mx-2${button1.class ? " " + button1.class : ""}`}
                             onClick={defaultCb1}
                         >
                             {button1.text}
@@ -72,7 +72,7 @@ const showModal = ({
                     {button2 && (
                         <button
                             id={button2.id ? button2.id : null}
-                            class="btn mx-2"
+                            class={`btn mx-2${button2.class ? " " + button2.class : ""}`}
                             onClick={defaultCb2}
                         >
                             {button2.text}
@@ -82,7 +82,7 @@ const showModal = ({
                     {button3 && (
                         <button
                             id={button3.id ? button3.id : null}
-                            class="btn mx-2"
+                            class={`btn mx-2${button3.class ? " " + button3.class : ""}`}
                             onClick={defaultCb3}
                         >
                             {button3.text}

@@ -18,7 +18,19 @@
 */
 import { h, createContext } from "preact"
 import { useRef, useContext, useState } from "preact/hooks"
-import { limitArr, useStoredState } from "../components/Helpers"
+import { limitArr, useStoredState, lineClassFromContent, isError, isWarning, isSuccess, isInfo, parseNotification } from "../components/Helpers"
+import { useUiContextFn } from "./UiContext"
+
+function detectLineStyle(content, type) {
+    const lineClass = lineClassFromContent(content, type)
+    const isExplicitSuccess = (data) => /^success:/i.test((data || "").trim())
+    const toastType = (type === "error" || isError(content)) ? "error"
+        : isWarning(content) ? "warning"
+        : isExplicitSuccess(content) ? "success"
+        : isInfo(content) ? "primary"
+        : null
+    return { lineClass, toast: toastType }
+}
 
 /*
  * Local const
@@ -47,24 +59,26 @@ const DatasContextProvider = ({ children }) => {
     }
 
     const addTerminalContent = (element) => {
-        //console.log(element)
-        //console.log(
-        //    'isVerbose',
-        //    terminalBuffer.current.length,
-        //    'Quiet',
-        //    terminalBufferQuiet.current.length
-        //)
+        const { lineClass, toast } = detectLineStyle(element.content, element.type)
+        const enriched = { ...element, lineClass }
+        if (toast && useUiContextFn.toasts) {
+            const { title, extra } = parseNotification((element.content || "").trim())
+            useUiContextFn.toasts.addToast({
+                content: { title, extra },
+                type: toast,
+            })
+        }
         const newData = {}
         newData.verbose = limitArr(
-            [...terminalBuffer.current, element],
+            [...terminalBuffer.current, enriched],
             isAutoScrollPaused.current ? 600 : isAutoScroll.current ? 300 : 400
         )
         terminalBuffer.current = newData.verbose
         newData.quiet = terminalBufferQuiet.current
-        if (!element.isverboseOnly) {
-            //console.log("quiet command", element)
+        if (!enriched.isverboseOnly) {
+            //console.log("quiet command", enriched)
             newData.quiet = limitArr(
-                [...terminalBufferQuiet.current, element],
+                [...terminalBufferQuiet.current, enriched],
                 isAutoScrollPaused.current
                     ? 600
                     : isAutoScroll.current

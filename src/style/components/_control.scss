@@ -72,7 +72,18 @@ input[type="range"]::-ms-thumb {
 }
 
 .btn-close {
-    padding-left: 3px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 !important;
+    color: var(--txt-dim) !important;
+    border-color: transparent !important;
+    transition: color var(--t), background var(--t), border-color var(--t) !important;
+}
+
+.btn-close::before {
+    transform: translateY(0);
 }
 
 .btn-header {
@@ -82,7 +93,7 @@ input[type="range"]::-ms-thumb {
 }
 
 .emergency-btn {
-    color: var(--txt-bright);
+    color: var(--err);
     background-color: var(--err-g);
     border-color: var(--err);
 }
@@ -96,15 +107,22 @@ input[type="range"]::-ms-thumb {
 .emergency-btn svg {
     flex-shrink: 0;
     vertical-align: middle;
+    color: var(--err);
 }
 
 .emergency-btn:hover {
-    background-color: var(--err);
-    color: #fff;
+    background-color: rgba(255, 61, 87, 0.28);
+    border-color: var(--err);
+    color: var(--err);
 }
 
 .emergency-btn:active {
     background-color: var(--err);
+    border-color: var(--err);
+    color: #fff;
+}
+
+.emergency-btn:active svg {
     color: #fff;
 }
 
@@ -162,12 +180,13 @@ input[type="range"]::-ms-thumb {
     background-color: var(--bg-hover);
 }
 
+// ── Fullscreen button ─────────────────────────────────────────────────────
 .btn-screen {
     background: transparent;
     border: 0 none;
     outline: none;
     box-shadow: none;
-    color: currentColor;
+    color: var(--txt-mid);
     height: 1rem;
     line-height: 0.8rem;
     margin-left: 0.2rem;
@@ -178,50 +197,28 @@ input[type="range"]::-ms-thumb {
     width: 1rem;
 }
 
-.btn.btn-screen {
-    background: transparent;
-    border: 0 none;
+.btn-screen:focus,
+.btn-screen:focus-visible {
     outline: none;
     box-shadow: none;
-    color: currentColor;
-    height: 1rem;
-    line-height: 0.8rem;
-    margin-left: 0.2rem;
-    margin-right: -2px;
-    opacity: 1;
-    padding: 0.1rem;
-    text-decoration: none;
-    width: 1rem;
 }
 
-.btn.btn-screen:focus,
-.btn.btn-screen:focus-visible {
-    outline: none;
-    box-shadow: none;
-    border: 0 none;
-}
-
-.btn.btn-screen:hover {
+.btn-screen:hover {
     background: var(--a-fill);
     color: var(--a);
-    border: 0 none;
 }
 
-/* Panel navbar: subtle border on dropdown, none on fullscreen */
+// ── Panel navbar header buttons ───────────────────────────────────────────
+/* Dropdown toggle keeps a light border at rest */
 .panel-dashboard .navbar .btn-header {
     border: 1px solid var(--border-lit);
     outline: none;
     box-shadow: none;
 }
 
-.panel-dashboard .navbar .btn-screen {
-    border: 0 none;
-    outline: none;
-    box-shadow: none;
-}
-
-.panel-dashboard .navbar .btn-header:focus,
-.panel-dashboard .navbar .btn-header:focus-visible,
+/* Remove border on focus for non-toggle header buttons and btn-screen */
+.panel-dashboard .navbar .btn-header:not(.dropdown-toggle):focus,
+.panel-dashboard .navbar .btn-header:not(.dropdown-toggle):focus-visible,
 .panel-dashboard .navbar .btn-screen:focus,
 .panel-dashboard .navbar .btn-screen:focus-visible {
     outline: none;
@@ -229,12 +226,81 @@ input[type="range"]::-ms-thumb {
     border: 0 none;
 }
 
-.mobile-view .btn-header,
-.btn-header:hover,
-.mobile-view .btn-close,
+.btn-header:hover {
+    color: var(--a) !important;
+    background-color: var(--a-fill) !important;
+}
+
 .btn-close:hover {
     color: var(--a) !important;
     background-color: var(--a-fill) !important;
+    border-color: var(--a) !important;
+}
+
+// ── Panel header actions container ────────────────────────────────────────
+.panel-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+}
+
+/* All header action buttons: no visible border, unified color, transparent bg */
+.panel-header-actions > .btn,
+.panel-header-actions .btn-screen,
+.panel-header-actions .panel-drag-handle {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--txt-mid) !important;
+    box-shadow: none;
+    outline: none;
+    margin-top: 0;
+}
+
+.panel-header-actions .btn-screen {
+    margin: 0 0.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.panel-header-actions .btn-screen .insensitive {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover: theme border + icon */
+.panel-header-actions > .btn:hover,
+.panel-header-actions .btn-screen:hover,
+.panel-header-actions .panel-drag-handle:hover {
+    border: 1px solid var(--a) !important;
+    color: var(--a) !important;
+    background: transparent !important;
+    box-shadow: none;
+}
+
+/* Dropdown toggle: unified color at rest, theme on hover/focus */
+.panel-header-actions .dropdown-toggle.btn-header {
+    color: var(--txt-mid) !important;
+}
+
+.panel-header-actions .dropdown-toggle.btn-header:hover,
+.panel-header-actions .dropdown-toggle.btn-header:focus {
+    border-color: var(--a) !important;
+    color: var(--a) !important;
+    background-color: transparent !important;
+}
+
+/* No border on focus for non-toggle buttons */
+.panel-header-actions > .btn:not(.dropdown-toggle):focus,
+.panel-header-actions > .btn:not(.dropdown-toggle):focus-visible,
+.panel-header-actions .panel-drag-handle:focus,
+.panel-header-actions .panel-drag-handle:focus-visible {
+    border-color: transparent !important;
+    box-shadow: none;
+    outline: none;
 }
 
 .nested-button {
@@ -297,6 +363,11 @@ input[type="range"]::-ms-thumb {
     font-size: 0.8rem;
     height: 1.8rem;
     white-space: nowrap;
+}
+
+.panel.panel-dashboard .panel-body.files-panel-body .input-group > .dropdown .dropdown-toggle:hover {
+    border-color: var(--a);
+    color: var(--a);
 }
 
 .panel.panel-dashboard .panel-body.files-panel-body .input-group > .dropdown .menu {
@@ -461,8 +532,11 @@ span.input-group-addon {
 }
 
 .comment {
-    background: var(--bg-raised);
-    color: var(--a);
+    color: var(--txt-dim);
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
     padding-left: 0.5rem;
 }
 
@@ -476,6 +550,11 @@ span.input-group-addon {
 
 .files-list-footer {
     color: var(--txt-mid);
+    font-family: var(--font-ui);
+    font-weight: 200;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .file-line-controls {
@@ -523,7 +602,7 @@ span.input-group-addon {
 }
 
 .file-line:hover {
-    color: var(--a);
+    color: var(--txt-bright);
     background-color: var(--bg-hover);
     border-radius: var(--r);
 }
@@ -670,6 +749,8 @@ a label {
 }
 
 .notification-line {
+    display: flex;
+    align-items: center;
     padding-top: 4px !important;
     padding-left: 4px;
     padding-right: 4px;
@@ -686,6 +767,12 @@ a label {
     gap: 0.3rem;
 }
 
+.btn.feather-icon-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
 .feather-icon-container .text-menu-item,
 .feather-icon-container .text-ellipsis,
 .feather-icon-container label {
@@ -696,6 +783,24 @@ a label {
 .tooltip > svg,
 .tooltip > span {
     pointer-events: none;
+}
+
+// ─── Charts ───────────────────────────────────────────────────────────────────
+.charts-subcontainer {
+    border: 1px solid var(--border-dim);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.6rem;
+}
+
+.legend-name {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
 }
 
 .form-group-inline {
@@ -883,7 +988,17 @@ progress::-moz-progress-bar {
 }
 
 .modal_title {
-    line-height: 24px !important;
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-body table td:first-child {
+    color: var(--txt-dim);
+}
+
+.modal-body table td:last-child {
+    color: var(--txt-bright);
 }
 
 .modals-container {

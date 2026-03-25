@@ -25,14 +25,12 @@ import { T } from "../Translations"
 import {
     Button,
     ButtonImg,
-    FullScreenButton,
-    CloseButton,
     ContainerHelper,
+    PanelHeader,
 } from "../Controls"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { showModal } from "../Modal"
 import { useTargetContext } from "../../targets"
-import { Menu as PanelMenu } from "./"
 
 let currentFeedRate = []
 let jogDistance = 100
@@ -200,12 +198,13 @@ const JogPanel = () => {
                 },
                 text: T("S43"),
                 id: "applyFrBtn",
+                class: "btn-warning",
             },
             icon: <Edit3 />,
             id: "inputFeedrate",
             content: (
                 <Fragment>
-                    <div>{axis == "XY" ? T("P10") : T("P11")}</div>
+                    <label class="form-label">{axis == "XY" ? T("P10") : T("P11")}</label>
                     <input
                         class="form-input"
                         type="number"
@@ -364,24 +363,12 @@ const JogPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id} >
             <ContainerHelper id={id} />
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Move />
-                    <strong class="text-ellipsis">{T("S66")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Move />}
+                title={T("S66")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="m-1 jog-container">
                     <PositionsControls />

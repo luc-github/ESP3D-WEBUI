@@ -53,6 +53,15 @@ import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
 import { parseEmbeddedManifest, isExtensionCompatible } from "./extensions"
 import { decompressGzipToText } from "./gzip"
+import {
+    isError,
+    isWarning,
+    isSuccess,
+    isInfo,
+    toastTypeFromString,
+    parseNotification,
+    lineClassFromContent,
+} from "./notifications"
 
 export {
     beautifyJSONString,
@@ -93,4 +102,11 @@ export {
     parseEmbeddedManifest,
     isExtensionCompatible,
     decompressGzipToText,
+    isError,
+    isWarning,
+    isSuccess,
+    isInfo,
+    toastTypeFromString,
+    parseNotification,
+    lineClassFromContent,
 }

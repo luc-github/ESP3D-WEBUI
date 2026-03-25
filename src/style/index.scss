@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
+
+@font-face {
+  font-family: 'Orbitron';
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url('data:font/woff2;base64,d09GMgABAAAAAARwAA8AAAAACXwAAAQYAAIAQgAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcKgZgP1NUQVQqAFYRCAqLdIkRATYCJANICyYABCAFPgcgDAcb6QZRlDDKARA/DnIyevOJ07I1ke02K7WixGllnrwpcQ/+edd670syC0NbYESjgBWRJUWgfit7sr1/VFaojJ+3pFo6a+iE6VXUV53f7/B3ICEHoL11gsl5Qxes19Ax07uFV+g4xYYaGRSVWjSb4IAi8kNHzxN6wMe3aarA6ZCaiMgGjuE++u73ERBSiSqoV59Bo8jhALwHACD0OtTDDJYumr5qCeWAkO3OXKe7CMAcoHHAwOUgmkILTeLmFvy/czyUa6hNB1vkEzjNFMEuNL3MG6AaBiFyCChFmZUwa+fOWyXCAKqcuQtxgBWVDfqsowcQksNgqE1T2tPBe6A2DWmmlvnf4N/6Te+TAwCKEVMgIkXI/6cAiBIA1AIqg/6DqQcAOADAIoQwk8K+0HpSBKWz2VyTDrFrUDVJqxcvXiMNckGQDZJs6eLnS6MD88lubytKDo6C2XZ6GI9VcjDKTtPc+IAjUjAqnBi5CMrz0rQ9hB5CRWPYlgX2sdt8VCA6MKsU6ZKgDhXu5VLL21l+LZFizY1MRMgcRUoWSW2BtFpTfT5Y1GcPYoRmbAc8nz1RoCgEUboyWduHXlUcmeDpDPP0Wt6svx6u1kOUu2WcjZ/FoqKFn7Lxm4UPwcSmEP625BEzzy+PE3k0AzHOhW0hO4qHJ8EeKrLrEfWBtZb8uOQIMQR4RcdIrLZSVLrPAR5xi7+24XZZ4ncU/D6F7XIW6U9tvHkzbBTIDGxvnkODx3ES/AVJa4/1n7zdb8AGpFjCV0we2eAEV+0mZGktF/w1mM1wgb/9sGqSLcFDdiejHiHaVhh0DdvFzhmDrJFgp82IzOMpjNnX1/WIW9tKaCiMYMI3FHgO+/dlb5Nlgxl1Gftl1vDvI7d4J6MR6daW9TCn7ewz2QpkBnUZW3V+DcHxBAK0/Kw129j59FETBDmh56/NAXuLDq8KZPIDXMn+RO+2ofSKLxuX2Kuu3pPs2N4M9XFKXOTcnNn4paYH0VLnNIzELNcxosNlcaVuW9LtDlifslX32xQc3W2G4NfJ7CyTd5Yb42/QfQ6WQETQmsBTgbrcEbS+GYraxY9BhrafLjktP13B9jc0THA+BtqaqbmFWtqpvQ32wpEZx9D2KQf+3Do7CuiPClsYgVMKmFlBYeczKf8hHB5+yE8KXzzDL0q9564DvNe5yDqchJGax8QLjFCF4w0A2OozAgw9pr2x2ptU6PQvZ+13gGc2aQ7wserIk8iX21P0FpHBACD4xQ08QhhAH4j78hL6Synbg/baC9kutLcdaG3ekVE5W9HenIK1PdI70ZpPtBHw5++YPBkT0FEPKW4f0QwBJRhJAIDgbZYGWOTyGHLADIKY3D/lyAE9WMoiZjGW2cxnLvNYhQUAfwlaQKk3la/fcocBAAA=') format('woff2');
+}
+
 // Variables and mixins
 @import "./variables";
 @import "./mixins";
@@ -48,6 +58,10 @@
     // Geometry & animation
     --r: 2px;                              // Global border-radius (sharp industrial)
     --t: 150ms;                            // Global transition duration
+    --font-mono:  'Share Tech Mono', monospace;
+    --font-ui:    'Barlow Condensed', sans-serif;
+    --font-chart: 'Orbitron', sans-serif;
+    --text-xs:   0.7rem;
 }
 
 // Theme variants - uncomment to switch themes
@@ -82,11 +96,18 @@ html {
 body {
     background: var(--bg-void);
     color: var(--txt-bright);
-    font-family: system-ui, "Segoe UI", "Helvetica Neue", sans-serif;
+    font-family: var(--font-ui);
     font-size: 0.8rem;
+    font-weight: 400;
     margin: 0;
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
+}
+
+hr {
+    border-color: var(--border-mid);
+    border-style: solid;
+    border-width: 1px 0 0;
 }
 
 // Links
@@ -108,6 +129,18 @@ a:hover {
 
 a:visited {
     color: var(--a-dim);
+}
+
+// About page title and list
+#about h4 {
+    color: var(--txt-dim);
+    text-transform: uppercase;
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+#about ul {
+    color: var(--txt-dim);
 }
 
 // Headings
@@ -235,8 +268,7 @@ code,
 kbd,
 pre,
 samp {
-    font-family: "SF Mono", "Segoe UI Mono", "Roboto Mono", Menlo, Courier,
-        monospace;
+    font-family: var(--font-mono);
     font-size: 1em;
 }
 
@@ -285,3 +317,22 @@ sup {
 @import "./components/navbar";
 @import "./components/panel";
 @import "./components/media";
+
+// ─────────────────────────────────────────────────────────────────────────
+// Global scrollbar — thin, theme-colored, no arrows (must be last)
+// Standard CSS (Chrome 121+, Firefox) — no WebKit pseudo-elements
+// ─────────────────────────────────────────────────────────────────────────
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-lit) transparent;
+}
+
+// Hide number input spinners
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}

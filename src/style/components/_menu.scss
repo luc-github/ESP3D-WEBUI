@@ -4,19 +4,104 @@
 .menu-panel-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 .text-menu-item {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 5px;
+    color: var(--txt-dim);
+    transition: color var(--t);
+}
+
+.menu-panel-item:has(.menu-switch-on) .text-menu-item {
     color: var(--txt-bright);
 }
 
-.menu-panel-item .feather-icon-container {
+// ── Mini switch for menu toggles ──
+.menu-switch {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 1.4rem;
+    height: 0.7rem;
+    border-radius: var(--r);
+    background: var(--bg-panel);
+    border: 1px solid var(--txt-dim);
+    position: relative;
+    transition: background var(--t), border-color var(--t);
     vertical-align: middle;
-    margin-top: 0.2rem;
+}
+
+.menu-switch::before {
+    content: "";
+    position: absolute;
+    width: calc(0.7rem - 6px);
+    height: calc(0.7rem - 6px);
+    background: var(--txt-dim);
+    border-radius: var(--r);
+    top: 2px;
+    left: 2px;
+    transition: left var(--t), background var(--t);
+}
+
+.menu-switch.menu-switch-on {
+    background: var(--a-fill);
+    border-color: var(--a);
+}
+
+.menu-switch.menu-switch-on::before {
+    background: var(--a);
+    left: calc(1.4rem - (0.7rem - 6px) - 4px);
+}
+
+.menu-switch.menu-switch-pause {
+    border-color: var(--warn);
+}
+
+.menu-switch.menu-switch-pause::before {
+    background: var(--warn);
+}
+
+// Inner icon+text span
+.menu-panel-item.feather-icon-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.menu-panel-item.feather-icon-container svg {
+    color: var(--txt-dim);
+    flex-shrink: 0;
+    transition: color var(--t);
+}
+
+.menu-entry:hover .menu-panel-item.feather-icon-container svg {
     color: var(--a);
+}
+
+// Right-side feather icon (e.g. BookOpen in keyboard help)
+.menu-panel-item > .feather-icon-container {
+    vertical-align: middle;
+    color: var(--txt-bright);
+    transition: color var(--t);
+}
+
+.menu-entry:hover .menu-panel-item > .feather-icon-container {
+    color: var(--a);
+}
+
+// X button — grey by default, theme on hover
+.menu-panel-item .btn-clear {
+    color: var(--txt-dim);
+    margin-top: 0 !important;
+    transition: color var(--t), border-color var(--t);
+}
+
+.menu-entry:hover .menu-panel-item .btn-clear {
+    color: var(--a) !important;
+    background-color: transparent !important;
+    border-color: var(--a) !important;
 }
 
 .menu-item {

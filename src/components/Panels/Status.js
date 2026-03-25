@@ -22,7 +22,7 @@ import { T } from "../Translations"
 import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext } from "../../targets"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 
@@ -298,22 +298,11 @@ const StatusPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Layers />
-                    <strong class="text-ellipsis">{T("P97")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}/>
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Layers />}
+                title={T("P97")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
                 {((status.printState && status.printState.printing) ||

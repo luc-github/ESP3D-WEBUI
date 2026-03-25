@@ -22,7 +22,7 @@ import { T } from "../Translations"
 import { Loader, Sun, Power } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList, eventsList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -244,23 +244,11 @@ const LaserPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Loader />
-                    <strong class="text-ellipsis">{T("CN35")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Loader />}
+                title={T("CN35")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <LaserControls />
                 {laser_controls.map((block) => {

@@ -18,9 +18,13 @@
     display: block;
     line-height: 1.2rem;
     padding: 0.3rem 0;
-    color: var(--txt-mid);
-    font-weight: 500;
-    font-size: 0.75rem;
+    color: var(--txt-mid) !important;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    gap: 0.4rem;
 }
 
 .form-label.label-sm {
@@ -113,17 +117,26 @@ textarea.form-input {
     resize: vertical;
 }
 
-// Select specific
+// Select specific — styled to match custom dropdowns
 .form-select {
-    background: var(--bg-base);
+    background: var(--bg-raised);
+    border-color: var(--border-lit);
     padding-right: 1.2rem;
-    color: var(--txt-bright);
+    color: var(--txt-mid);
 }
 
 .form-select:not([multiple]):not([size]) {
-    background: var(--bg-base)
+    // arrow: gray (#5a7a90)
+    background: var(--bg-raised)
         url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%204%205%27%3E%3Cpath%20fill=%27%235a7a90%27%20d=%27M2%200L0%202h4zm0%205L0%203h4z%27/%3E%3C/svg%3E")
         no-repeat right 0.35rem center / 0.4rem 0.5rem;
+}
+
+.form-select:not([multiple]):not([size]):hover {
+    border-color: var(--a);
+    color: var(--a);
+    // arrow: theme (#00d4ff)
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%204%205%27%3E%3Cpath%20fill=%27%2300d4ff%27%20d=%27M2%200L0%202h4zm0%205L0%203h4z%27/%3E%3C/svg%3E");
 }
 
 .form-select::-ms-expand {
@@ -134,6 +147,11 @@ textarea.form-input {
 .form-select[multiple] {
     height: auto;
     padding: 0.25rem 0.4rem;
+}
+
+.form-select option {
+    background: var(--bg-panel);
+    color: var(--txt-bright);
 }
 
 .form-select[size] option,

@@ -25,7 +25,7 @@ import { eventBus } from "../../hooks/eventBus"
 import {
     ButtonImg,
     FullScreenButton,
-    CloseButton,
+    PanelHeader,
 } from "../Controls"
 import { T } from "../Translations"
 import { RefreshCcw } from "preact-feather"
@@ -117,29 +117,6 @@ const handleRefresh = () => {
 
 
 
-const PanelRenderControls = () => (
-    <span class="full-height">
-
-        <ButtonImg
-            xs
-            m1
-            className="btn-header"
-            nomin="yes"
-            icon={<RefreshCcw size="0.8rem" />}
-            onclick={handleRefresh}
-        />
-        <FullScreenButton
-            elementId={extra_content_id}
-        />
-        <CloseButton
-            elementId={id}
-            hideOnFullScreen={true}
-        />
-
-
-    </span>
-)
-
 const PageRenderControls = () => (
     <div class="m-2 image-button-bar">
         <ButtonImg
@@ -177,16 +154,13 @@ if (target === "panel") {
     return (
         <Fragment>
             <div class="panel panel-dashboard" id={id}>
-
-                <div class="navbar">
-                    <span class="navbar-section feather-icon-container">
-                        {displayIcon}
-                        <strong class="text-ellipsis">{T(label)}</strong>
-                    </span>
-                    <span class="navbar-section">
-                        {PanelRenderControls()}
-                    </span>
-                </div>
+                <PanelHeader
+                    id={extra_content_id}
+                    icon={displayIcon}
+                    title={T(label)}
+                    onRefresh={handleRefresh}
+                    closeElementId={id}
+                />
                 <div class="panel-body panel-body-dashboard no-margin-no-padding panel-target-container" id={target_id}>
                     {/* content should fit this container */}
                 </div>

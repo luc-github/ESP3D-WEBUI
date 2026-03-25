@@ -25,7 +25,7 @@ import {
     useHttpQueueContext,
 } from "../contexts"
 import { useHttpFn } from "../hooks"
-import { getCookie, splitArrayByLines, dispatchToExtensions } from "../components/Helpers"
+import { getCookie, splitArrayByLines, dispatchToExtensions, parseNotification } from "../components/Helpers"
 import { T } from "../components/Translations"
 
 
@@ -103,22 +103,10 @@ const WsContextProvider = ({ children }) => {
                         //Show notification
                         console.log("Notification: " + stdOutData)
 
-                        toasts.addToast({
-                            content: (
-                                <label class="m-1">
-                                    {stdOutData.substring(
-                                        eventLine[0].length + 1
-                                    )}
-                                </label>
-                            ),
-                            type: eventLine[1].startsWith("Error")
-                                ? "error"
-                                : eventLine[1].startsWith("Success")
-                                  ? "success"
-                                  : eventLine[1].startsWith("Warning")
-                                    ? "warning"
-                                    : "notification",
-                        })
+                        const { type, title, extra } = parseNotification(
+                            eventLine.slice(1).join(":")
+                        )
+                        toasts.addToast({ content: { title, extra }, type })
                         break
                     case "ERROR":
                         console.log(stdOutData)

@@ -22,9 +22,6 @@ import { T } from "../Translations"
 import {
     Terminal,
     Send,
-    CheckCircle,
-    Circle,
-    PauseCircle,
     ChevronLeft,
     ChevronRight,
 } from "preact-feather"
@@ -32,8 +29,7 @@ import { useUiContext, useDatasContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
 import { useHttpQueue } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
-import { Menu as PanelMenu } from "./"
+import { ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 
 /*
  * Local const
@@ -185,30 +181,14 @@ const TerminalPanel = () => {
         {
             label: T("S76"),
             displayToggle: () => (
-                <span class="feather-icon-container">
-                    {isVerbose ? (
-                        <CheckCircle size="0.8rem" />
-                    ) : (
-                        <Circle size="0.8rem" />
-                    )}
-                </span>
+                <span class={`menu-switch${isVerbose ? " menu-switch-on" : ""}`} />
             ),
             onClick: toggleVerboseMode,
         },
         {
             label: T("S77"),
             displayToggle: () => (
-                <span class="feather-icon-container">
-                    {isAutoScroll ? (
-                        isAutoScrollPaused ? (
-                            <PauseCircle size="0.8rem" />
-                        ) : (
-                            <CheckCircle size="0.8rem" />
-                        )
-                    ) : (
-                        <Circle size="0.8rem" />
-                    )}
-                </span>
+                <span class={`menu-switch${isAutoScroll ? " menu-switch-on" : ""}${isAutoScrollPaused ? " menu-switch-pause" : ""}`} />
             ),
             onClick: toggleAutoScroll,
         },
@@ -226,24 +206,12 @@ const TerminalPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id}/>
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Terminal />
-                    <strong class="text-ellipsis">{T("Terminal")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Terminal />}
+                title={T("Terminal")}
+                items={menu}
+            />
             <div class="input-group m-1">
                 <input
                     type="text"
@@ -303,17 +271,6 @@ const TerminalPanel = () => {
             >
                 {terminal.content &&
                     terminal.content.map((line) => {
-                        let className = ""
-                        switch (line.type) {
-                            case "echo":
-                                className = "echo"
-                                break
-                            case "error":
-                                className = "error"
-                                break
-                            default:
-                            //do nothing
-                        }
                         if (line.isAction) {
                             return (
                                 <pre class="action" title={line.actionType}>
@@ -324,7 +281,7 @@ const TerminalPanel = () => {
                             isVerbose ||
                             isVerbose === line.isverboseOnly
                         ) {
-                            return <pre class={className}>{line.content}</pre>
+                            return <pre class={line.lineClass || ""}>{line.content}</pre>
                         }
                     })}
                 <div ref={messagesEndRef} />

@@ -50,7 +50,7 @@ import {
  */
 const defaultLinks = [
     {
-        label: <AppLogo bgcolor="#ffffff" />,
+        label: <AppLogo />,
         icon: null,
         href: "/about",
     },

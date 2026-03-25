@@ -26,9 +26,8 @@ import {
     ButtonImg,
     CenterLeft,
     Progress,
-    FullScreenButton,
-    CloseButton,
     ContainerHelper,
+    PanelHeader,
 } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { showModal, showConfirmationModal, showProgressModal } from "../Modal"
@@ -44,7 +43,6 @@ import {
 } from "preact-feather"
 import { files, processor, useTargetContextFn } from "../../targets"
 import { Folder, File, Trash2, Play } from "preact-feather"
-import { Menu as PanelMenu } from "./"
 
 let currentFS = ""
 const currentPath = {}
@@ -127,6 +125,9 @@ const FilesPanel = () => {
                     )
                     setFilesList(filesListCache[currentFS])
                     setIsLoading(false)
+                    if (filesListCache[currentFS].status) {
+                        toasts.addToast({ content: T(filesListCache[currentFS].status), type: "info" })
+                    }
                 },
                 onFail: (error) => {
                     console.log(error)
@@ -166,6 +167,9 @@ const FilesPanel = () => {
                         )
                     } else {
                         setFilesList(filesListCache[currentFS])
+                    }
+                    if (filesListCache[currentFS].status) {
+                        toasts.addToast({ content: T(filesListCache[currentFS].status), type: "info" })
                     }
                 }
             } else {
@@ -490,6 +494,7 @@ const FilesPanel = () => {
                             downloadFile(line)
                         },
                         text: T("S27"),
+                        class: "btn-warning",
                     },
                     button2: { text: T("S28") },
                 })
@@ -587,12 +592,13 @@ const FilesPanel = () => {
                     if (name.length > 0) createDirectory(name)
                 },
                 text: T("S106"),
+                class: "btn-warning",
             },
             icon: <Edit3 />,
             id: "inputName",
             content: (
                 <Fragment>
-                    <div>{T("S105")}</div>
+                    <label class="form-label">{T("S105")}</label>
                     <input
                         class="form-input"
                         onInput={(e) => {
@@ -662,27 +668,12 @@ const FilesPanel = () => {
                 onChange={filesSelected}
             />
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section  feather-icon-container">
-                    <HardDrive />
-                    <strong class="text-ellipsis">{T("S65")}</strong>
-                </span>
-
-                <span class="navbar-section">
-                    <span class="full-height">
-                        {fileSystem != "" && !isLoading && (
-                            <PanelMenu items={menu} />
-                        )}
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<HardDrive />}
+                title={T("S65")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard files-panel-body">
             <div class="input-group">
                 <div class="dropdown">
@@ -895,6 +886,7 @@ const FilesPanel = () => {
                                             <ButtonImg
                                                 m1
                                                 ltooltip
+                                                className="btn-restart"
                                                 data-tooltip={
                                                     line.size == -1
                                                         ? T("S101")
@@ -912,11 +904,11 @@ const FilesPanel = () => {
                                                                     : T("S100")}
                                                                 :
                                                             </div>
-                                                            <center>
+                                                            <ul>
                                                                 <li>
                                                                     {line.name}
                                                                 </li>
-                                                            </center>
+                                                            </ul>
                                                         </Fragment>
                                                     )
                                                     showConfirmationModal({
@@ -930,6 +922,7 @@ const FilesPanel = () => {
                                                                 )
                                                             },
                                                             text: T("S27"),
+                                                            class: "btn-warning",
                                                         },
                                                         button2: {
                                                             text: T("S28"),
@@ -970,9 +963,6 @@ const FilesPanel = () => {
                             <span class="m-1">{filesList.occupation}%</span>
                         </div>
                     </div>
-                )}
-                {!isLoading && filesList && filesList.status && (
-                    <div class="file-status">{T(filesList.status)}</div>
                 )}
             </div>
             </div>

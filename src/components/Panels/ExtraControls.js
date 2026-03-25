@@ -26,8 +26,7 @@ import {
     ButtonImg,
     Loading,
     Field,
-    FullScreenButton,
-    CloseButton,
+    PanelHeader,
 } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
@@ -306,23 +305,11 @@ const ExtraControlsPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id} >
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Sliders />
-                    <strong class="text-ellipsis">{T("P96")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Sliders />}
+                title={T("P96")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <ExtraControls />
                 {temperatures["T"].length > 0 && (

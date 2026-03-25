@@ -21,7 +21,6 @@ import {
     Edit2,
     Home,
     Move,
-    ChevronDown,
     Edit3,
     StopCircle,
 } from "preact-feather"
@@ -29,7 +28,7 @@ import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "../Translations"
-import { Button, ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { Button, ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 import { useEffect, useRef } from "preact/hooks"
 import { showModal } from "../Modal"
 import { useTargetContext, variablesList } from "../../targets"
@@ -351,67 +350,25 @@ const JogPanel = () => {
         currentVelocity = useUiContextFn.getValue("velocity")
         currentSteps = useUiContextFn.getValue("steps")
     }, [])
+    const menu = [
+        {
+            label: T("HP1"),
+            onClick: setVelocity,
+        },
+        {
+            label: T("HP2"),
+            onClick: setSteps,
+        },
+    ]
     return (
         <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Move />
-                    <strong class="text-ellipsis">{T("S66")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <div class="dropdown dropdown-right">
-                            <span
-                                class="dropdown-toggle btn btn-xs btn-header m-1"
-                                tabindex="0"
-                            >
-                                <ChevronDown size="0.8rem" />
-                            </span>
-
-                            <ul class="menu">
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            setVelocity()
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP1")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            setSteps()
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP2")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <ContainerHelper id={id} />
+            <PanelHeader
+                id={id}
+                icon={<Move />}
+                title={T("S66")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="m-1 jog-container">
                     <PositionsControls />

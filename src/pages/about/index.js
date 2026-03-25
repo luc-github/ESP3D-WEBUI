@@ -118,7 +118,7 @@ const CustomEntry = () => {
     )
     return (
         <li class="feather-icon-container">
-            <span class="text-primary text-label">
+            <span class="text-dark text-label">
                 {T("S225")}:
             </span>
              {HelpEntry}
@@ -378,10 +378,10 @@ const About = () => {
                     <CenterLeft>
                         <ul>
                             <li>
-                                <span class="text-primary text-label">
+                                <span class="text-dark text-label">
                                     {T("S150")}:{" "}
                                 </span>
-                                <span class="text-dark">
+                                <span class="text-primary">
                                     <Esp3dVersion />
                                 </span>
                                 <ButtonImg
@@ -405,10 +405,10 @@ const About = () => {
                                 )}
                             </li>
                             <li>
-                                <span class="text-primary text-label">
+                                <span class="text-dark text-label">
                                     {T("FW ver")}:
                                 </span>
-                                <span class="text-dark">
+                                <span class="text-primary">
                                     {props.find(
                                         (element) => element.id == "FW ver"
                                     ) &&
@@ -439,10 +439,10 @@ const About = () => {
                             </li>
                             <CustomEntry />
                             <li>
-                                <span class="text-primary text-label">
+                                <span class="text-dark text-label">
                                     {T("S18")}:
                                 </span>
-                                <span class="text-dark">
+                                <span class="text-primary">
                                     {getBrowserInformation()}
                                 </span>
                             </li>
@@ -450,10 +450,10 @@ const About = () => {
                                 if (id != "FW ver")
                                     return (
                                         <li>
-                                            <span class="text-primary text-label">
+                                            <span class="text-dark text-label">
                                                 {T(id)}:
                                             </span>
-                                            <span class="text-dark">
+                                            <span class="text-primary">
                                                 {valueTranslated(value)}
                                             </span>
                                         </li>
@@ -464,6 +464,8 @@ const About = () => {
                     <hr />
                     <center>
                         <ButtonImg
+                            m2
+                            className="btn-accent"
                             icon={<RefreshCcw />}
                             label={T("S50")}
                             tooltip

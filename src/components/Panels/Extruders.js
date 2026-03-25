@@ -24,8 +24,7 @@ import {
     ButtonImg,
     Loading,
     Field,
-    FullScreenButton,
-    CloseButton,
+    PanelHeader,
 } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
@@ -35,7 +34,6 @@ import {
     MixedExtrudersControl,
 } from "SubTargetDir"
 import { Plus, Minus, Edit3 } from "preact-feather"
-import { Menu as PanelMenu } from "./"
 import { showModal } from "../Modal"
 import { ContainerHelper } from "../Controls"
 
@@ -202,12 +200,13 @@ const ExtrudersPanel = () => {
                 },
                 text: T("S43"),
                 id: "applyFrBtn",
+                class: "btn-warning",
             },
             icon: <Edit3 />,
             id: "inputFeedrate",
             content: (
                 <Fragment>
-                    <div>{T("P50")}</div>
+                    <label class="form-label">{T("P50")}</label>
                     <input
                         class="form-input"
                         type="number"
@@ -244,24 +243,12 @@ const ExtrudersPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    {iconsTarget["Extruder"]}
-                    <strong class="text-ellipsis">{T("P36")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={iconsTarget["Extruder"]}
+                title={T("P36")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="extruders-container">
                     {!isMixedExtruder &&

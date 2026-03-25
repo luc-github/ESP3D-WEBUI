@@ -122,7 +122,7 @@ const FeaturesTab = () => {
                 modals,
                 title: T("S58"),
                 content: T("S174"),
-                button1: { cb: reStartBoard, text: T("S27") },
+                button1: { cb: reStartBoard, text: T("S27"), class: "btn-warning" },
                 button2: { text: T("S28") },
             })
         }
@@ -453,11 +453,11 @@ const FeaturesTab = () => {
                                                         <div class="panel panel-features">
                                                             <div class="navbar">
                                                                 <span class="navbar-section text-ellipsis">
-                                                                    <strong class="text-ellipsis">
+                                                                    <span class="panel-title text-ellipsis">
                                                                         {T(
                                                                             subsectionId
                                                                         )}
-                                                                    </strong>
+                                                                    </span>
                                                                 </span>
                                                                 <span class="navbar-section">
                                                                     <span style="height: 100%;">
@@ -647,6 +647,7 @@ const FeaturesTab = () => {
                                     button1: {
                                         cb: reStartBoard,
                                         text: T("S27"),
+                                        class: "btn-warning",
                                     },
                                     button2: { text: T("S28") },
                                 })

@@ -17,37 +17,15 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { Fragment, h } from "preact"
-import { useEffect } from "preact/hooks"
+import { h } from "preact"
+import { useEffect, useRef } from "preact/hooks"
+import { ChevronDown } from "preact-feather"
 import { useSettingsContext, useUiContextFn } from "../../../contexts"
 import { T } from "../../Translations"
 import {
     generateDependIds,
     checkDependencies
 } from "../../Helpers"
-
-const Option = ({ label, depend, ...props }) => {
-    const { interfaceSettings, connectionSettings } = useSettingsContext()
-    if (depend) {
-        const canshow = checkDependencies(
-            depend,
-            interfaceSettings.current.settings,
-            connectionSettings.current
-        )
-        if (!canshow) return null
-    }
-    //Condition for camera - no need to display if none setup
-    if (props.value == "camera") {
-        if (connectionSettings.current.CameraName) {
-            return (
-                <option {...props}>
-                    {connectionSettings.current.CameraName}
-                </option>
-            )
-        } else return null
-    }
-    return <option {...props}>{T(label)}</option>
-}
 
 const Select = ({
     label = "",
@@ -61,23 +39,13 @@ const Select = ({
     button,
     ...rest
 }) => {
-    const props = {
-        id,
-        name: id,
-    }
-    const onChange = (e) => {
-        if (e) useUiContextFn.haptic()
-        if (setValue) setValue(e.target.value)
-    }
+    const toggleRef = useRef()
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     const dependIds = generateDependIds(
         depend,
         interfaceSettings.current.settings
     )
-    const optionList = options.map((option) => {
-        return <Option {...option} />
-    })
-    options.map((option) => {
+    options.forEach((option) => {
         if (option.depend) {
             const deps = generateDependIds(
                 option.depend,
@@ -86,36 +54,68 @@ const Select = ({
             dependIds.push(...deps)
         }
     })
+
     useEffect(() => {
         let visible = checkDependencies(depend, interfaceSettings.current.settings, connectionSettings.current)
         if (document.getElementById(id))
-            document.getElementById(id).style.display = visible
-                ? "block"
-                : "none"
+            document.getElementById(id).style.display = visible ? "block" : "none"
         if (document.getElementById("group-" + id))
-            document.getElementById("group-" + id).style.display = visible
-                ? "block"
-                : "none"
+            document.getElementById("group-" + id).style.display = visible ? "block" : "none"
         if (setValue) setValue(null, true)
     }, [...dependIds])
 
     useEffect(() => {
-        //to update state
         if (setValue) setValue(null, true)
     }, [value])
 
+    // Build visible options (dependency + camera filter)
+    const visibleOptions = options.filter((option) => {
+        if (option.value === "camera") return !!connectionSettings.current.CameraName
+        if (!option.depend) return true
+        return checkDependencies(option.depend, interfaceSettings.current.settings, connectionSettings.current)
+    })
+
+    const getOptionLabel = (option) =>
+        option.value === "camera"
+            ? connectionSettings.current.CameraName
+            : T(option.label)
+
+    const currentOption = visibleOptions.find((o) => o.value === value)
+    const currentLabel = currentOption ? getOptionLabel(currentOption) : ""
+
+    const onSelect = (val) => {
+        useUiContextFn.haptic()
+        if (setValue) setValue(val)
+        if (toggleRef.current) toggleRef.current.blur()
+    }
+
     return (
-        <div class={`${inline ? "column" : ""} ${help ? "tooltip tooltip-top" : ""}`}
-                data-tooltip={T(help)}>
-            <select
-                class={`form-select  ${inline ? "column" : ""}`}
-                {...props}
-                {...rest}
-                value={value}
-                onChange={onChange}
-            >
-                {optionList}
-            </select>
+        <div
+            class={`${inline ? "column" : ""} ${help ? "tooltip tooltip-top" : ""}`}
+            data-tooltip={T(help)}
+        >
+            <div id={id} class="dropdown">
+                <span
+                    class="dropdown-toggle btn"
+                    tabindex="0"
+                    ref={toggleRef}
+                >
+                    {currentLabel}
+                    <ChevronDown size="0.8rem" />
+                </span>
+                <ul class="menu">
+                    {visibleOptions.map((option) => (
+                        <li class={`menu-item${value === option.value ? " active" : ""}`}>
+                            <div
+                                class="menu-entry"
+                                onclick={() => onSelect(option.value)}
+                            >
+                                {getOptionLabel(option)}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
             {button}
         </div>
     )

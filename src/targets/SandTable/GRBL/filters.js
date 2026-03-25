@@ -252,12 +252,6 @@ const getMessage = (str) => {
 
 ////////////////////////////////////////////////////////
 //
-// error format is :  error:error_CODE
-
-const isError = (str) => {
-    const reg_search = /error:[0-9]+/g
-    return reg_search.test(str)
-}
 
 const getError = (str) => {
     let result = null
@@ -418,3 +412,7 @@ export {
     isStreamingStatus,
     getStreamingStatus,
 }
+
+// Shared notification helpers (isError already defined above)
+// Shared notification helpers
+export { isError, isWarning, isSuccess, isInfo } from "../../../components/Helpers/notifications"

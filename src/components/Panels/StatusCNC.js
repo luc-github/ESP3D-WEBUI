@@ -21,7 +21,7 @@ import { T } from "../Translations"
 import { useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, Button, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Button, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import {
@@ -232,23 +232,11 @@ const StatusPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Layers />
-                    <strong class="text-ellipsis">{T("CN34")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Layers />}
+                title={T("CN34")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <StatusControls />
                 {pinsStates && Object.keys(pinsStates).length > 0 && (

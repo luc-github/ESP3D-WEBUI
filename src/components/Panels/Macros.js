@@ -21,7 +21,7 @@ import { T } from "../Translations"
 import { Cast } from "preact-feather"
 import { useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { iconsFeather } from "../Images"
@@ -73,6 +73,7 @@ const MacrosPanel = () => {
     }
 
     const macroList = uisettings.getValue("macros")
+    const iconsOnly = uisettings.getValue("macroiconsonly")
     const macroButtons = macroList.reduce((acc, curr) => {
         const item = curr.value.reduce((accumulator, current) => {
             accumulator[current.name] = current.initial
@@ -147,21 +148,11 @@ const MacrosPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Cast />
-                    <strong class="text-ellipsis">{T("macros")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton elementId={id}/>
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Cast />}
+                title={T("macros")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="macro-buttons-panel">
                     {macroButtons.map((element) => {
@@ -173,8 +164,10 @@ const MacrosPanel = () => {
                                 id={element.id}
                                 m1
                                 showlow
-                                label={element.name}
+                                label={iconsOnly ? "" : element.name}
                                 icon={displayIcon}
+                                tooltip={iconsOnly}
+                                data-tooltip={iconsOnly ? element.name : undefined}
                                 onclick={(e) => {
                                     useUiContextFn.haptic()
                                     e.target.blur()

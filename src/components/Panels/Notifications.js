@@ -23,13 +23,10 @@ import {
     MessageSquare,
     AlertCircle,
     CheckCircle,
-    Circle,
-    PauseCircle,
     Eye,
 } from "preact-feather"
-import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ContainerHelper, PanelHeader } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { Menu as PanelMenu } from "./"
 
 /*
  * Local const
@@ -78,17 +75,7 @@ const NotificationsPanel = () => {
         {
             label: T("S77"),
             displayToggle: () => (
-                <span class="feather-icon-container">
-                    {isAutoScroll ? (
-                        isAutoScrollPaused ? (
-                            <PauseCircle size="0.8rem" />
-                        ) : (
-                            <CheckCircle size="0.8rem" />
-                        )
-                    ) : (
-                        <Circle size="0.8rem" />
-                    )}
-                </span>
+                <span class={`menu-switch${isAutoScroll ? " menu-switch-on" : ""}${isAutoScrollPaused ? " menu-switch-pause" : ""}`} />
             ),
             onClick: toggleAutoScroll,
         },
@@ -109,24 +96,12 @@ const NotificationsPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <MessageSquare />
-                    <strong class="text-ellipsis">{T("notification")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<MessageSquare />}
+                title={T("notification")}
+                items={menu}
+            />
             <div class="m-1" />
             <div
                 ref={notificationsOutput}
@@ -183,7 +158,13 @@ const NotificationsPanel = () => {
                             >
                                 {icon}
                                 <label class="m-1">{line.time}</label>
-                                <label>{line.content}</label>
+                                <label>
+                                    {line.content && typeof line.content === "object"
+                                        ? line.content.title
+                                            ? `${line.content.title}${line.content.extra ? ": " + line.content.extra : ""}`
+                                            : ""
+                                        : line.content}
+                                </label>
                             </div>
                         )
                     })}

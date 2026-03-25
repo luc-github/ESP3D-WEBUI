@@ -9,9 +9,44 @@
 
 .macro-buttons-panel {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: stretch;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 0.35rem;
+}
+
+.macro-buttons-panel > .btn {
+    flex: 1 1 auto;
+}
+
+.macro-buttons-panel > .btn:only-child {
+    width: 100%;
+}
+
+// Macro button tooltips appear below (panel body clips upward overflow)
+.macro-buttons-panel .btn::after {
+    bottom: auto;
+    top: 100%;
+    transform: translate(-50%, -0.4rem);
+}
+
+.macro-buttons-panel .btn:hover::after,
+.macro-buttons-panel .btn:focus::after {
+    transform: translate(-50%, 0.2rem);
+}
+
+.macro-buttons-panel .btn:hover,
+.macro-buttons-panel .btn:focus {
+    border-color: var(--a);
+    color: var(--a);
+    background: var(--a-fill);
+}
+
+.macro-buttons-panel .btn:hover svg,
+.macro-buttons-panel .btn:focus svg {
+    color: var(--a);
 }
 
 .panel {
@@ -30,6 +65,29 @@
 
 .panel .navbar {
     flex: 0 0 auto;
+    flex-wrap: nowrap;
+    position: relative;
+    background: var(--bg-base);
+    color: var(--txt-mid);
+}
+
+.panel .navbar-section {
+    border-bottom: 1px solid var(--border-dim);
+}
+
+.panel .navbar .feather-icon-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.panel .navbar .panel-title {
+    font-family: var(--font-ui);
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--txt-dim);
 }
 
 .panel .panel-body-dashboard,
@@ -46,13 +104,6 @@
 .panel-body-features {
     display: flex;
     flex-direction: column;
-}
-
-.panel .navbar,
-.panel .navbar-section {
-    background: var(--bg-base);
-    color: var(--txt-mid);
-    border-bottom: 1px solid var(--border-dim);
 }
 
 .panel-item {
@@ -85,11 +136,6 @@ body.panel-dragging {
 }
 
 .panel-drag-handle {
-    position: absolute;
-    top: 0.3rem;
-    right: 2.8rem;
-    left: auto;
-    z-index: 10;
     width: 1rem;
     height: 1rem;
     min-width: 1rem;
@@ -101,12 +147,12 @@ body.panel-dragging {
     padding: 0;
     border-radius: var(--r);
     color: var(--txt-mid);
-    opacity: 0.85;
     box-sizing: border-box;
     background: transparent;
     border: 1px solid var(--border-mid);
     outline: none;
     box-shadow: none;
+    margin: 0 0.15rem;
 }
 
 .panel-drag-handle:focus,
@@ -122,10 +168,6 @@ body.panel-dragging {
     background: var(--bg-hover);
 }
 
-.panel-drag-wrapper.panel-has-menu .panel-drag-handle,
-.panel-drag-wrapper.panel-extra-content .panel-drag-handle {
-    right: 4.3rem;
-}
 
 .panel-drop-indicator-before {
     border-left: 4px solid var(--a);

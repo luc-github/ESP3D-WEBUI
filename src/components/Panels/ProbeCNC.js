@@ -26,7 +26,7 @@ import {
     useSettingsContext,
 } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field, ContainerHelper, PanelHeader } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -376,23 +376,11 @@ const ProbePanel = () => {
     return (
         <div class="panel panel-dashboard" id={id}>
             <ContainerHelper id={id} />
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Underline />
-                    <strong class="text-ellipsis">{T("CN37")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Underline />}
+                title={T("CN37")}
+            />
             <div class="panel-body panel-body-dashboard">
                 <ProbeControls />
                 {probe_controls.map((block) => {

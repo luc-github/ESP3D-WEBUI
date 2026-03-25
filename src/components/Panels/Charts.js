@@ -20,11 +20,10 @@ import { h } from "preact"
 import { T } from "../Translations"
 import { useUiContextFn } from "../../contexts"
 import { useRef, useEffect } from "preact/hooks"
-import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ContainerHelper, PanelHeader } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
 import { SmoothieChart, TimeSeries } from "./smoothieChartMinimal"
-import { Menu as PanelMenu } from "./"
 
 /*
  * Local const
@@ -165,42 +164,50 @@ const isChartVisible = (index) => {
 }*/
 
 const chartColors = [
-    "255,128,128", //pink
-    "0,0,255", //blue
-    "0,128,0", //dark green
-    "198,165,0", //gold
-    "255,0,0", //red
-    "0,0,128", //dark blue
-    "128,255,128", //light green
-    "255,128,0", //orange
-    "178,0,255", //purple
-    "0,128,128", //green blue
-    "128,128,0", //olive
-    "128,128,128", //grey
-    "0,0,0", //black
+    "255,100,100", //red
+    "255,160,0",   //amber
+    "80,220,100",  //green
+    "60,180,255",  //blue
+    "255,80,200",  //pink
+    "0,220,200",   //cyan
+    "200,120,255", //purple
+    "255,220,60",  //yellow
+    "255,140,80",  //orange
+    "120,220,160", //mint
+    "140,180,255", //light blue
+    "200,200,200", //light grey
+    "255,180,180", //light pink
 ]
 
-const smoothieOptions = {
-    responsive: true,
-    tooltip: false,
-    millisPerPixel: 200,
-    maxValueScale: 1.1,
-    minValueScale: 1.1,
-    enableDpiScaling: false,
-    interpolation: "linear",
-    grid: {
-        fillStyle: "#ffffff",
-        strokeStyle: "rgba(128,128,128,0.5)",
-        verticalSections: 5,
-        millisPerLine: 0,
-        borderVisible: true,
-    },
-    labels: {
-        fillStyle: "#000000",
-        precision: 1,
-        showIntermediateLabels: true,
-        enableTopYLabel: false,
-    },
+const buildSmoothieOptions = () => {
+    const style = getComputedStyle(document.documentElement)
+    const bgPanel   = style.getPropertyValue("--bg-panel").trim()   || "#131c22"
+    const gridLine  = style.getPropertyValue("--border-dim").trim() || "rgba(128,128,128,0.25)"
+    const txtDim    = style.getPropertyValue("--txt-dim").trim()    || "#6b7280"
+    const fontChart = style.getPropertyValue("--font-chart").trim() || "Orbitron, sans-serif"
+    return {
+        responsive: true,
+        tooltip: false,
+        millisPerPixel: 200,
+        maxValueScale: 1.1,
+        minValueScale: 1.1,
+        enableDpiScaling: false,
+        interpolation: "linear",
+        grid: {
+            fillStyle: bgPanel,
+            strokeStyle: gridLine,
+            verticalSections: 5,
+            millisPerLine: 0,
+            borderVisible: false,
+        },
+        labels: {
+            fillStyle: txtDim,
+            fontFamily: fontChart,
+            precision: 1,
+            showIntermediateLabels: true,
+            enableTopYLabel: false,
+        },
+    }
 }
 
 const colorIndex = (chart, tool, index) => {
@@ -232,7 +239,7 @@ const /* Creating the charts. */
         //check is visible
         if (isChartVisible(index)) {
             //create the chart
-            chart.chart = new SmoothieChart(smoothieOptions)
+            chart.chart = new SmoothieChart(buildSmoothieOptions())
             //parse defined tools
             Object.keys(chart.series).forEach((tool) => {
                 //if tool is visible
@@ -396,24 +403,12 @@ const ChartsPanel = () => {
     return (
         <div class="panel panel-dashboard" id={id} >
          <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Image />
-                    <strong class="text-ellipsis">{T("P56")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
+            <PanelHeader
+                id={id}
+                icon={<Image />}
+                title={T("P56")}
+                items={menu}
+            />
             <div class="panel-body panel-body-dashboard">
                 <div class="charts-container">
                     {isChartVisible(0) && (

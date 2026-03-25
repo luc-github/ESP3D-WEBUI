@@ -335,6 +335,26 @@ const ExtraContentItemInner = ({
             css.forEach((csstag) => {
                 doc.head.appendChild(csstag.cloneNode(true))
             })
+            const dropdownScript = doc.createElement("script")
+            dropdownScript.textContent = `
+document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+    var toggle = dropdown.querySelector('.dropdown-toggle');
+    if (!toggle) return;
+    dropdown.querySelectorAll('.menu-item').forEach(function(item) {
+        var entry = item.querySelector('.menu-entry');
+        if (!entry) return;
+        entry.addEventListener('click', function() {
+            var firstChild = toggle.firstChild;
+            if (firstChild && firstChild.nodeType === 3) firstChild.textContent = entry.textContent;
+            dropdown.querySelectorAll('.menu-item').forEach(function(i) { i.classList.remove('active'); });
+            item.classList.add('active');
+            toggle.blur();
+            dropdown.dispatchEvent(new CustomEvent('change', { detail: { value: item.dataset.value } }));
+        });
+    });
+});
+`
+            doc.head.appendChild(dropdownScript)
             if (iframeElement){
                 iframeElement.contentWindow.postMessage(
                     { type: "notification", content: {isConnected: true, isVisible: visibilityState[id]}, id },
