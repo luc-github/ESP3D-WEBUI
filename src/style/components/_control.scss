@@ -792,6 +792,11 @@ a label {
     overflow: hidden;
 }
 
+.charts-subcontainer canvas.chart {
+    width: 100%;
+    display: block;
+}
+
 .chart-legend {
     display: flex;
     flex-wrap: wrap;

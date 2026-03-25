@@ -27,7 +27,6 @@ import About from "../pages/about"
 import Dashboard from "../pages/dashboard"
 import Settings from "../pages/settings"
 import ExtraPage from "../pages/extrapages"
-import { Informations } from "../areas/informations"
 import { FooterContainer } from "./footer"
 import { processor, BackgroundContainer } from "../targets"
 
@@ -45,10 +44,6 @@ const defRoutes = {
     SETTINGS: {
         component: <Settings />,
         path: "/settings",
-    },
-    INFORMATIONS: {
-        component: <Informations />,
-        path: "/informations",
     },
 }
 

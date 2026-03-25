@@ -29,7 +29,6 @@ import {
     useSettingsContext,
     useUiContext,
     useWsContext,
-    useRouterContext,
     useUiContextFn,
 } from "../../contexts"
 import { useHttpQueue } from "../../hooks"
@@ -38,7 +37,6 @@ import { showConfirmationModal } from "../Modal"
 import {
     Server,
     Settings,
-    Activity,
     LogOut,
     Trello,
     ChevronDown,
@@ -54,7 +52,6 @@ const defaultLinks = [
         icon: null,
         href: "/about",
     },
-    { label: "S123", icon: <Activity />, href: "/informations" },
     {
         label: "S13",
         icon: <Server />,
@@ -71,7 +68,6 @@ const defaultLinks = [
 
 const Navbar = () => {
     const { connectionSettings } = useSettingsContext()
-    const { defaultRoute, activeRoute } = useRouterContext()
     const { modals, uisettings } = useUiContext()
     const { createNewRequest } = useHttpQueue()
     const { Disconnect } = useWsContext()
@@ -85,23 +81,6 @@ const Navbar = () => {
         </Fragment>
     )
     const [hrefbutton, setHrefButton] = useState()
-
-    function onResize() {
-        //if infopage is visible but we are not in mobile view
-        if (
-            document.getElementById("infopage") &&
-            document.getElementById("infopage").clientWidth == 0
-        ) {
-            //we should not be there so move to another page
-            document
-                .getElementById(
-                    defaultRoute.current == "/dashboard"
-                        ? "dashboardLink"
-                        : "settingsLink"
-                )
-                .click()
-        }
-    }
 
     /*
     auto-scroll textarea into view if mobile keyboard is blocking textarea to prevent
@@ -176,11 +155,6 @@ const Navbar = () => {
                 <section class="navbar-section">
                     {defaultLinks &&
                         defaultLinks.map(({ label, icon, href, id }) => {
-                            if (
-                                href == "/informations" &&
-                                !uisettings.getValue("showinformationpage")
-                            )
-                                return
                             return (
                                 <Link
                                     onclick={(e) => {
