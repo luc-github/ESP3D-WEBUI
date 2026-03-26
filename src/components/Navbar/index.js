@@ -20,7 +20,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { useState, useEffect, useRef } from "preact/hooks"
+import { useState, useRef } from "preact/hooks"
 import { iconsFeather } from "../Images"
 import { iconsTarget, AppLogo } from "../../targets"
 import { Link } from "../Router"
@@ -134,10 +134,6 @@ const Navbar = () => {
             menuLinks.push(...extraPages)
         }
     }
-    useEffect(() => {
-        new ResizeObserver(onResize).observe(document.getElementById("app"))
-    }, [])
-
     const onDisconnect = () => {
         useUiContextFn.haptic()
         showConfirmationModal({
