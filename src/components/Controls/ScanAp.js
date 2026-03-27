@@ -23,7 +23,7 @@ import { useHttpQueue } from "../../hooks"
 import { espHttpURL } from "../../components/Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "./../Translations"
-import { Lock, CheckCircle } from "preact-feather"
+import { Lock, Wifi } from "preact-feather"
 
 const ScanApList = ({ id, setValue, refreshfn }) => {
     const { modals, toasts } = useUiContext()
@@ -90,8 +90,9 @@ const ScanApList = ({ id, setValue, refreshfn }) => {
                                         <ButtonImg
                                             m2
                                             ltooltip
+                                            className="btn-scan-wifi"
                                             data-tooltip={T("S51")}
-                                            icon={<CheckCircle />}
+                                            icon={<Wifi class="scan-wifi-icon" />}
                                             onClick={() => {
                                                 useUiContextFn.haptic()
                                                 setValue(SSID)

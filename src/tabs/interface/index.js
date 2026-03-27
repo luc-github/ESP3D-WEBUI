@@ -355,10 +355,12 @@ const InterfaceTab = () => {
                 button1: {
                     text: T("S50"),
                     noclose: true,
+                    class: "btn-primary",
                     cb: () => scanExtensionsRef.current?.(),
                 },
                 button2: {
                     text: T("S254"),
+                    class: "btn-warning",
                     cb: () => {
                         const ref = addSelectedRef?.current
                         if (!ref) return
@@ -398,7 +400,6 @@ const InterfaceTab = () => {
                             const idxField = item.value?.find((s) => s.name === "index")
                             if (idxField) idxField.value = i
                         })
-                        extraEntry.nb = list.length
                         extraEntry.hasmodified = true
                         const panelsOrderEl = useUiContextFn.getElement("panelsorder", settings)
                         if (panelsOrderEl && Array.isArray(panelsOrderEl.value)) {

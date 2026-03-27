@@ -305,6 +305,7 @@ const Input = ({
                                 cb: refreshList,
                                 text: T("S50"),
                                 noclose: true,
+                                class: "btn-primary",
                             },
                             icon: <Search />,
                             id: modalId,

@@ -269,15 +269,17 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                                     <tr key={e.id}>
                                         <td>
                                             {showCheckbox ? (
-                                                <input
-                                                    type="checkbox"
-                                                    class="form-checkbox"
-                                                    checked={selectedIds.has(e.id)}
-                                                    onChange={() => {
-                                                        useUiContextFn.haptic()
-                                                        toggleSelected(e.id)
-                                                    }}
-                                                />
+                                                <label class="form-switch">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedIds.has(e.id)}
+                                                        onChange={() => {
+                                                            useUiContextFn.haptic()
+                                                            toggleSelected(e.id)
+                                                        }}
+                                                    />
+                                                    <i class="form-icon" />
+                                                </label>
                                             ) : (
                                                 <span />
                                             )}

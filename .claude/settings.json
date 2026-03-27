@@ -24,7 +24,14 @@
       "Bash(then echo:*)",
       "Bash(for class:*)",
       "Bash(do echo:*)",
-      "Bash(grep -r \"class.*$class\" \"C:\\\\Users\\\\luc\\\\Documents\\\\GitHub\\\\ESP3D-WEBUI\\\\src\" --include=\"*.js\")"
+      "Bash(grep -r \"class.*$class\" \"C:\\\\Users\\\\luc\\\\Documents\\\\GitHub\\\\ESP3D-WEBUI\\\\src\" --include=\"*.js\")",
+      "Bash(grep -r \"ScanApList\\\\|ScanAp\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src --include=*.js --include=*.jsx --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"S45|S48|S49|S50|S51\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src/targets/translations/ --include=*.json)",
+      "Bash(xargs cat:*)",
+      "Bash(grep -r \"extra.*scan\\\\|extra=.*scan\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src --include=*.js --include=*.jsx)",
+      "Bash(grep -r \"ssid_sta\\\\|extra.*scan\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src --include=*.json --include=*.js)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r ssid_sta /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/config --include=*.json)"
     ]
   }
 }

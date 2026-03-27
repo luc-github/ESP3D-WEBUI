@@ -1112,6 +1112,11 @@ code {
     &.table-hover tbody tr:hover { background: var(--bg-hover); }
     &.table-scroll { display: block; overflow-x: auto; padding-bottom: 0.75rem; white-space: nowrap; }
 }
+.table thead th { color: var(--txt-dim); font-weight: 600; }
+.table tbody td { color: var(--txt-bright) !important; }
+.btn-scan-wifi { color: var(--warn); background: rgba(255,179,0,0.08); border-color: rgba(255,179,0,0.4); }
+.btn-scan-wifi:hover { background: rgba(255,179,0,0.16); border-color: var(--warn); filter: none; box-shadow: none; }
+.btn-scan-wifi .scan-wifi-icon { color: var(--warn); stroke: var(--warn); }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APP LAYOUT
@@ -1179,16 +1184,18 @@ code {
 // ═══════════════════════════════════════════════════════════════════════════════
 .temp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
     gap: 4px;
-    padding: 0.2rem;
+    padding: 0.1rem;
 }
+#temperaturesPanel .panel-body { padding: 0.2rem; padding-bottom: 0; }
 .temp-cell {
     background: var(--bg-base);
     border: 1px solid var(--border-dim);
     border-radius: var(--r);
-    padding: 0.65rem 0.8rem 0.55rem;
+    padding: 0.65rem 0.55rem 0.55rem;
     position: relative;
+    min-width: 175px;
     transition: border-color var(--t), box-shadow var(--t);
 }
 .temp-cell:hover { border-color: var(--a-dim); box-shadow: 0 0 10px var(--a-g); }
@@ -1251,7 +1258,8 @@ code {
 
 .temp-input-wrap {
     display: flex; align-items: stretch; gap: 4px;
-    margin-top: 0.4rem;
+    margin: 0.4rem auto 0;
+    width: fit-content;
 }
 .temp-input {
     font-family: var(--font-chart);
