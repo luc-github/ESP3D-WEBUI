@@ -306,8 +306,8 @@ const JogPanel = () => {
         } else {
             V_axis_top_dir = "-"
             V_axis_bottom_dir = "+"
-            pos_x_v_axis_label_top = "113"
-            pos_x_v_axis_label_bottom = "110"
+            pos_x_v_axis_label_top = "114"
+            pos_x_v_axis_label_bottom = "113"
         }
     } else {
         if (useUiContextFn.getValue("swap_x_y")) {
@@ -316,8 +316,8 @@ const JogPanel = () => {
         } else {
             V_axis_top_dir = "+"
             V_axis_bottom_dir = "-"
-            pos_x_v_axis_label_top = "110"
-            pos_x_v_axis_label_bottom = "113"
+            pos_x_v_axis_label_top = "113"
+            pos_x_v_axis_label_bottom = "114"
         }
     }
 
@@ -325,8 +325,8 @@ const JogPanel = () => {
         if (useUiContextFn.getValue("swap_x_y")) {
             V_axis_top_dir = "-"
             V_axis_bottom_dir = "+"
-            pos_x_v_axis_label_top = "113"
-            pos_x_v_axis_label_bottom = "110"
+            pos_x_v_axis_label_top = "114"
+            pos_x_v_axis_label_bottom = "113"
         } else {
             H_axis_left_dir = "+"
             H_axis_right_dir = "-"
@@ -335,8 +335,8 @@ const JogPanel = () => {
         if (useUiContextFn.getValue("swap_x_y")) {
             V_axis_top_dir = "+"
             V_axis_bottom_dir = "-"
-            pos_x_v_axis_label_top = "110"
-            pos_x_v_axis_label_bottom = "113"
+            pos_x_v_axis_label_top = "113"
+            pos_x_v_axis_label_bottom = "114"
         } else {
             H_axis_left_dir = "-"
             H_axis_right_dir = "+"
@@ -346,13 +346,13 @@ const JogPanel = () => {
     if (useUiContextFn.getValue("invert_z")) {
         Z_axis_top_dir = "+"
         Z_axis_bottom_dir = "-"
-        pos_x_z_axis_label_top = 41
-        pos_x_z_axis_label_bottom = 43
+        pos_x_z_axis_label_top = 44
+        pos_x_z_axis_label_bottom = 44
     } else {
         Z_axis_top_dir = "-"
         Z_axis_bottom_dir = "+"
-        pos_x_z_axis_label_top = 43
-        pos_x_z_axis_label_bottom = 41
+        pos_x_z_axis_label_top = 44
+        pos_x_z_axis_label_bottom = 44
     }
     label_z_axis_bottom = Z_axis_bottom_dir + Z_axis
     label_z_axis_top = Z_axis_top_dir + Z_axis
@@ -360,7 +360,112 @@ const JogPanel = () => {
     label_h_axis_right = H_axis_right_dir + H_axis
     label_v_axis_bottom = V_axis_bottom_dir + V_axis
     label_v_axis_top = V_axis_top_dir + V_axis
+    useEffect(() => {
+  // Nettoyage précédent si nécessaire
+  const cleanup = () => {
+    // On peut laisser vide ou ajouter removeEventListener si tu veux être très propre
+  };
 
+  const attach = (id, handlers) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (handlers.down) el.addEventListener('mousedown', handlers.down);
+    if (handlers.up) el.addEventListener('mouseup', handlers.up);
+    if (handlers.out) el.addEventListener('mouseout', handlers.out);
+    if (handlers.over) el.addEventListener('mouseover', handlers.over);
+  };
+
+  // === Home buttons ===
+  attach("HomeAll", {
+    down: () => onMouseDown("HomeAll"),
+    up: () => sendHomeCommand("", "HomeAll"),
+    out: () => onOut("HomeAll")
+  });
+
+  attach("HomeX", {
+    down: () => onMouseDown("HomeX"),
+    up: () => sendHomeCommand("X", "HomeX"),
+    out: () => onOut("HomeX")
+  });
+
+  attach("HomeY", {
+    down: () => onMouseDown("HomeY"),
+    up: () => sendHomeCommand("Y", "HomeY"),
+    out: () => onOut("HomeY")
+  });
+
+  attach("HomeZ", {
+    down: () => onMouseDown("HomeZ"),
+    up: () => sendHomeCommand("Z", "HomeZ"),
+    out: () => onOut("HomeZ")
+  });
+
+  // === Jog circles (factorisé) ===
+  const jogSizes = ['100', '10', '1', '0_1'];
+  const directions = [
+    { prefix: 'V_top',    axis: V_axis, dist: (s) => V_axis_top_dir + s.replace('_', '.') },
+    { prefix: 'H_right',  axis: H_axis, dist: (s) => H_axis_right_dir + s.replace('_', '.') },
+    { prefix: 'V_bottom', axis: V_axis, dist: (s) => V_axis_bottom_dir + s.replace('_', '.') },
+    { prefix: 'H_left',   axis: H_axis, dist: (s) => H_axis_left_dir + s.replace('_', '.') },
+  ];
+
+  jogSizes.forEach(size => {
+    directions.forEach(dir => {
+      const btnId = `${dir.prefix}_${size}`;
+      const labelId = size === '0_1' ? 'label_circle_0_1' : `label_circle_${size}`;
+
+      attach(btnId, {
+        down: () => onMouseDown(btnId),
+        up: () => sendJogCommand(dir.axis, btnId, dir.dist(size)),
+        out: () => onOutJog(labelId, btnId),
+        over: () => onHoverJog(labelId)
+      });
+    });
+  });
+
+  // === Z Bar buttons ===
+  const zDirections = [
+    { id: 'Z_top_100',    dist: Z_axis_top_dir + '100' },
+    { id: 'Z_top_10',     dist: Z_axis_top_dir + '10' },
+    { id: 'Z_top_1',      dist: Z_axis_top_dir + '1' },
+    { id: 'Z_top_0_1',    dist: Z_axis_top_dir + '0.1' },
+    { id: 'Z_bottom_0_1', dist: Z_axis_bottom_dir + '0.1' },
+    { id: 'Z_bottom_1',   dist: Z_axis_bottom_dir + '1' },
+    { id: 'Z_bottom_10',  dist: Z_axis_bottom_dir + '10' },
+    { id: 'Z_bottom_100', dist: Z_axis_bottom_dir + '100' },
+  ];
+
+  zDirections.forEach(z => {
+    const labelId = z.id.includes('100') ? 'z100' : 
+                    z.id.includes('10') ? 'z10' : 
+                    z.id.includes('1') && !z.id.includes('0_1') ? 'z1' : 'z0_1';
+
+    attach(z.id, {
+      down: () => onMouseDown(z.id),
+      up: () => sendJogCommand(Z_axis, z.id, z.dist),
+      out: () => onOutJog(labelId, z.id),
+      over: () => onHoverJog(labelId)
+    });
+  });
+
+  // === Centre posxy et posz ===
+  attach("posxy", {
+    down: () => onMouseDown("posxy"),
+    up: () => sendMoveCommand("posxy", "posxy"),
+    out: () => onOut("posxy"),
+    over: () => onHoverJog("posxy")
+  });
+
+  attach("posz", {
+    down: () => onMouseDown("posz"),
+    up: () => sendMoveCommand("posz", "posz"),
+    out: () => onOut("posz"),
+    over: () => onHoverJog("posz")
+  });
+
+  return cleanup;
+}, [V_axis, H_axis, V_axis_top_dir, V_axis_bottom_dir, H_axis_left_dir, H_axis_right_dir, Z_axis_top_dir, Z_axis_bottom_dir, moveToTitleXY, moveToTitleZ]);
     return (
         <div class="panel panel-dashboard" id={id} >
             <ContainerHelper id={id} />
@@ -585,1125 +690,180 @@ const JogPanel = () => {
                 {!shortcuts.enabled && (
                     <div class="hide-low jog-svg-container">
                         <svg
-                            viewBox="0 -5 325 255"
-                            xmlns="http://www.w3.org/2000/svg"
-                            version="1.1"
-                        >
-                            <defs>
-                                <filter
-                                    id="f1"
-                                    x="-1"
-                                    y="-1"
-                                    width="300%"
-                                    height="300%"
-                                >
-                                    <feOffset
-                                        result="offOut"
-                                        in="SourceAlpha"
-                                        dx="3"
-                                        dy="3"
-                                    ></feOffset>
-                                    <feGaussianBlur
-                                        result="blurOut"
-                                        in="offOut"
-                                        stdDeviation="4"
-                                    ></feGaussianBlur>
-                                    <feBlend
-                                        in="SourceGraphic"
-                                        in2="blurOut"
-                                        mode="normal"
-                                    ></feBlend>
-                                </filter>
-                                <symbol
-                                    id="HomeIcon"
-                                    viewBox="0 0 20 18"
-                                    pointer-events="none"
-                                >
-                                    <desc>HomeIcon - house</desc>
-                                    <path
-                                        class="home"
-                                        d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z"
-                                        fill="black"
-                                    ></path>
-                                    <path
-                                        class="home"
-                                        d="M0,10 l10-8.5 l10,8.5"
-                                        stroke-width="1.5"
-                                        fill="none"
-                                    ></path>
-                                    <path
-                                        class="home"
-                                        d="M15,3 v2.8 l1,.8 v-3.6 z"
-                                    ></path>
-                                </symbol>
-                            </defs>
-                            <g
-                                id="HomeAll"
-                                onmouseup={(e) =>
-                                    sendHomeCommand("", "HomeAll")
-                                }
-                                onmousedown={(e) => onMouseDown("HomeAll")}
-                                onmouseout={(e) => onOut("HomeAll")}
-                            >
-                                <title>{T("P6")}</title>
-                                <path
-                                    class="std"
-                                    d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z"
-                                    fill="#f0f0f0"
-                                ></path>
-                                <use
-                                    x="3"
-                                    y="217"
-                                    width="20"
-                                    height="18"
-                                    xlinkHref="#HomeIcon"
-                                ></use>
-                            </g>
-                            <g
-                                id="HomeX"
-                                onmouseup={(e) => sendHomeCommand("X", "HomeX")}
-                                onmousedown={(e) => onMouseDown("HomeX")}
-                                onmouseout={(e) => onOut("HomeX")}
-                            >
-                                <title>{T("P7")}</title>
-                                <path
-                                    class="std"
-                                    d="M10 57.50 h-10 v-57.5 h57.5 v10 a 125,125 0 0,0 -47.5 47.5 Z"
-                                    fill="Khaki"
-                                ></path>
-                                <use
-                                    x="3"
-                                    y="5"
-                                    width="20"
-                                    height="18"
-                                    xlinkHref="#HomeIcon"
-                                ></use>
-                                <text x="25" y="20" class="home">
-                                    X
-                                </text>
-                            </g>
-                            <g
-                                id="HomeY"
-                                onmouseup={(e) => sendHomeCommand("Y", "HomeY")}
-                                onmousedown={(e) => onMouseDown("HomeY")}
-                                onmouseout={(e) => onOut("HomeY")}
-                            >
-                                <title>{T("P8")}</title>
-                                <path
-                                    class="std"
-                                    d="M230 57.50 h10 v-57.5 h-57.5 v10 a 125,125 0 0,1 47.5 47.5 z"
-                                    fill="SteelBlue"
-                                ></path>
-                                <use
-                                    x="217"
-                                    y="5"
-                                    width="20"
-                                    height="18"
-                                    xlinkHref="#HomeIcon"
-                                ></use>
-                                <text x="202" y="20" class="home">
-                                    Y
-                                </text>
-                            </g>
-                            <g
-                                id="HomeZ"
-                                onmouseup={(e) => sendHomeCommand("Z", "HomeZ")}
-                                onmousedown={(e) => onMouseDown("HomeZ")}
-                                onmouseout={(e) => onOut("HomeZ")}
-                            >
-                                <title>{T("P9")}</title>
-                                <path
-                                    class="std"
-                                    d="M230 182.5 h10 v57.5 h-57.5 v-10 a 125,125 0 0,0 47.5 -47.5 z"
-                                    fill="DarkSeaGreen"
-                                ></path>
-                                <use
-                                    x="217"
-                                    y="217"
-                                    width="20"
-                                    height="18"
-                                    xlinkHref="#HomeIcon"
-                                ></use>
-                                <text
-                                    x="202"
-                                    y="232"
-                                    class="home"
-                                    id="homeZlabel"
-                                >
-                                    Z
-                                </text>
-                            </g>
-                            <g id="Jog100" fill="#c0c0c0" class="std">
-                                <g
-                                    id="V_top_100"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_top_100",
-                                            V_axis_top_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_top_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_100",
-                                            "V_top_100"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60.00,-67.07 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_right_100"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_right_100",
-                                            H_axis_right_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_right_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_100",
-                                            "H_right_100"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="V_bottom_100"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_bottom_100",
-                                            V_axis_bottom_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_bottom_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_100",
-                                            "V_bottom_100"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60.00,67.07 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_left_100"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_left_100",
-                                            H_axis_left_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_left_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_100",
-                                            "H_left_100"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"
-                                    ></path>
-                                </g>
-                            </g>
-                            <g id="Jog10" fill="#d0d0d0">
-                                <g
-                                    id="V_top_10"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_top_10",
-                                            V_axis_top_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_10")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("V_top_10")}
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_10", "V_top_10")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_right_10"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_right_10",
-                                            H_axis_right_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_10")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_right_10")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_10",
-                                            "H_right_10"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="V_bottom_10"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_bottom_10",
-                                            V_axis_bottom_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_10")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_bottom_10")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_10",
-                                            "V_bottom_10"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_left_10"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_left_10",
-                                            H_axis_left_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_10")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_left_10")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_10", "H_left_10")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"
-                                    ></path>
-                                </g>
-                            </g>
-                            <g id="Jog1" fill="#e0e0e0">
-                                <g
-                                    id="V_top_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_top_1",
-                                            V_axis_top_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_1")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("V_top_1")}
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_1", "V_top_1")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_right_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_right_1",
-                                            H_axis_right_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_right_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_1", "H_right_1")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M35.16 -28.09 L51.13,-44.06 A67.5,67.05 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="V_bottom_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_bottom_1",
-                                            V_axis_bottom_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_bottom_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_1")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_left_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_left_1",
-                                            H_axis_left_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_1")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("H_left_1")}
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_1", "H_left_1")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.05 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"
-                                    ></path>
-                                </g>
-                            </g>
-                            <g id="Jog0_1" fill="#f0f0f0">
-                                <g
-                                    id="V_top_0_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_top_0_1",
-                                            V_axis_top_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_top_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_0_1"),
-                                            "V_top_0_1"
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_right_0_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_right_0_1",
-                                            H_axis_right_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_right_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_0_1",
-                                            "H_right_0_1"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="V_bottom_0_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            V_axis,
-                                            "V_bottom_0_1",
-                                            V_axis_bottom_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("V_bottom_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog(
-                                            "label_circle_0_1",
-                                            "V_bottom_0_1"
-                                        )
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="H_left_0_1"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            H_axis,
-                                            "H_left_0_1",
-                                            H_axis_left_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("label_circle_0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("H_left_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("label_circle_0_1")
-                                    }}
-                                    transform="translate(120 120)"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"
-                                    ></path>
-                                </g>
-                            </g>
-                            <g id="label_circle_0_1" style="opacity:0.2">
-                                <circle
-                                    class="scl"
-                                    cx="144"
-                                    cy="96"
-                                    r="9.5"
-                                ></circle>
-                                <text class="scl" x="137" y="99" font-size="10">
-                                    0.1
-                                </text>
-                            </g>
-                            <g id="label_circle_1" style="opacity:0.2">
-                                <circle
-                                    class="scl"
-                                    cx="159.5"
-                                    cy="80.5"
-                                    r="10.5"
-                                ></circle>
-                                <text class="scl" x="155" y="85" font-size="14">
-                                    1
-                                </text>
-                            </g>
-                            <g id="label_circle_10" style="opacity:0.2">
-                                <circle
-                                    class="scl"
-                                    cx="175"
-                                    cy="65"
-                                    r="12"
-                                ></circle>
-                                <text class="scl" x="166" y="70" font-size="15">
-                                    10
-                                </text>
-                            </g>
-                            <g id="label_circle_100" style="opacity:0.2">
-                                <circle
-                                    class="scl"
-                                    cx="195"
-                                    cy="45"
-                                    r="15"
-                                ></circle>
-                                <text class="scl" x="182" y="50" font-size="15">
-                                    100
-                                </text>
-                            </g>
-                            <g
-                                id="Decoration"
-                                pointer-events="none"
-                                fill-opacity=".6"
-                            >
-                                <path
-                                    class="std"
-                                    d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
-                                    fill="SteelBlue"
-                                ></path>
-                                <path
-                                    class="std"
-                                    d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z"
-                                    fill="SteelBlue"
-                                ></path>
-                                <path
-                                    class="std"
-                                    d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z"
-                                    fill="Khaki"
-                                ></path>
-                                <path
-                                    class="std"
-                                    d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z"
-                                    fill="Khaki"
-                                ></path>
-                                <text
-                                    class="jog"
-                                    x={pos_x_v_axis_label_top}
-                                    y="36"
-                                >
-                                    {label_v_axis_top}
-                                </text>
-                                <text
-                                    class="jog"
-                                    x={pos_x_v_axis_label_bottom}
-                                    y="212"
-                                >
-                                    {label_v_axis_bottom}
-                                </text>
-                                <text class="jog" x="27" y="124">
-                                    {label_h_axis_left}
-                                </text>
-                                <text class="jog" x="196" y="124">
-                                    {label_h_axis_right}
-                                </text>
-                            </g>
-                            <g
-                                id="posxy"
-                                onmouseup={(e) => {
-                                    sendMoveCommand("posxy", "posxy")
-                                }}
-                                onmouseover={(e) => {
-                                    onHoverJog("posxy")
-                                }}
-                                onmousedown={(e) => onMouseDown("posxy")}
-                                onmouseout={(e) => {
-                                    onOut("posxy")
-                                }}
-                            >
-                                <title>{moveToTitleXY}</title>
-                                <circle
-                                    class="std"
-                                    cx="120.2"
-                                    cy="120.3"
-                                    r="15"
-                                ></circle>
-                                <circle
-                                    class="cross"
-                                    cx="116"
-                                    cy="120.3"
-                                    r="4"
-                                ></circle>
-                                <line
-                                    x1="116"
-                                    y1="125.3"
-                                    x2="116"
-                                    y2="129"
-                                    style="stroke:black;stroke-width:1"
-                                />
-                                <line
-                                    x1="116"
-                                    y1="115.3"
-                                    x2="116"
-                                    y2="111.6"
-                                    style="stroke:black;stroke-width:1"
-                                />
-                                <line
-                                    x1="121"
-                                    y1="120.3"
-                                    x2="124.7"
-                                    y2="120.3"
-                                    style="stroke:black;stroke-width:1"
-                                />
-                                <line
-                                    x1="111"
-                                    y1="120.3"
-                                    x2="107.3"
-                                    y2="120.3"
-                                    style="stroke:black;stroke-width:1"
-                                />
-                                <text class="posscl" x="125" y="118">
-                                    X
-                                </text>
-                                <text class="posscl" x="125" y="130">
-                                    Y
-                                </text>
-                            </g>
-                            <g id="JogBar" transform="translate(250,0)">
-                                <g
-                                    id="Z_top_100"
-                                    fill="#d0d0d0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_top_100",
-                                            Z_axis_top_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_top_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z100", "Z_top_100")
-                                    }}
-                                >
-                                    <path
-                                        class="std"
-                                        d=" M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"
-                                    ></path>
-                                    <g id="z100" style="opacity:0.2">
-                                        <circle
-                                            class="scl"
-                                            cx="20"
-                                            cy="16"
-                                            r="14"
-                                        ></circle>
-                                        <text
-                                            class="scl"
-                                            x="8"
-                                            y="22"
-                                            font-size="14"
-                                        >
-                                            100
-                                        </text>
-                                    </g>
-                                </g>
-                                <g
-                                    id="Z_top_10"
-                                    fill="#d0d0d0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_top_10",
-                                            Z_axis_top_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z10")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("Z_top_10")}
-                                    onmouseout={(e) => {
-                                        onOutJog("z10", "Z_top_10")
-                                    }}
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="32"
-                                        width="40"
-                                        height="30"
-                                    ></rect>
-                                    <g id="z10" style="opacity:0.2">
-                                        <circle
-                                            class="scl"
-                                            cx="20"
-                                            cy="47"
-                                            r="12"
-                                        ></circle>
-                                        <text
-                                            class="scl"
-                                            x="11"
-                                            y="53"
-                                            font-size="15"
-                                        >
-                                            10
-                                        </text>
-                                    </g>
-                                </g>
-                                <g
-                                    id="Z_top_1"
-                                    fill="#e0e0e0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_top_1",
-                                            Z_axis_top_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z1")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("Z_top_1")}
-                                    onmouseout={(e) => {
-                                        onOutJog("z1", "Z_top_1")
-                                    }}
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="62"
-                                        width="40"
-                                        height="26"
-                                    ></rect>
-                                    <g id="z1" style="opacity:0.2">
-                                        <circle
-                                            class="scl"
-                                            cx="20"
-                                            cy="75"
-                                            r="10.5"
-                                        ></circle>
-                                        <text
-                                            class="scl"
-                                            x="16"
-                                            y="80"
-                                            font-size="14"
-                                        >
-                                            1
-                                        </text>
-                                    </g>
-                                </g>
-                                <g
-                                    id="ZSpace"
-                                    fill="#000000"
-                                    style="pointer-events:none;"
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="112"
-                                        width="40"
-                                        height="16"
-                                    ></rect>
-                                </g>
-                                <g
-                                    id="Z_top_0_1"
-                                    fill="#f0f0f0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_top_0_1",
-                                            Z_axis_top_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_top_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z0_1", "Z_top_0_1")
-                                    }}
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="88"
-                                        width="40"
-                                        height="24"
-                                    ></rect>
-                                    <g id="z0_1" style="opacity:0.2">
-                                        <circle
-                                            class="scl"
-                                            cx="20"
-                                            cy="100"
-                                            r="9.5"
-                                        ></circle>
-                                        <text
-                                            class="scl"
-                                            x="13.5"
-                                            y="103.5"
-                                            font-size="10"
-                                        >
-                                            0.1
-                                        </text>
-                                    </g>
-                                </g>
-                                <g
-                                    id="Z_bottom_0_1"
-                                    fill="#f0f0f0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_bottom_0_1",
-                                            Z_axis_bottom_dir + "0.1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z0_1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_bottom_0_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z0_1", "Z_bottom_0_1")
-                                    }}
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="128"
-                                        width="40"
-                                        height="24"
-                                    ></rect>
-                                </g>
-                                <g
-                                    id="Z_bottom_1"
-                                    fill="#e0e0e0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_bottom_1",
-                                            Z_axis_bottom_dir + "1"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z1")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_bottom_1")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z1", "Z_bottom_1")
-                                    }}
-                                >
-                                    <rect
-                                        class="std"
-                                        x="0"
-                                        y="152"
-                                        width="40"
-                                        height="26"
-                                    ></rect>
-                                </g>
-                                <g
-                                    id="Z_bottom_10"
-                                    fill="#d0d0d0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_bottom_10",
-                                            Z_axis_bottom_dir + "10"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z10")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_bottom_10")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z10", "Z_bottom_10")
-                                    }}
-                                >
-                                    <rect
-                                        class="std r10"
-                                        x="0"
-                                        y="178"
-                                        width="40"
-                                        height="30"
-                                    ></rect>
-                                </g>
+  viewBox="0 -5 325 255"
+  xmlns="http://www.w3.org/2000/svg"
+  version="1.1"
+  class="jog-svg"
+>
+  <defs>
+    <filter id="f1" x="-1" y="-1" width="300%" height="300%">
+      <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3"/>
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="4"/>
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+    </filter>
+    <symbol id="HomeIcon" viewBox="0 0 20 18">
+      <path class="home" d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z" fill="black"/>
+      <path class="home" d="M0,10 l10-8.5 l10,8.5" stroke-width="1.5" fill="none"/>
+      <path class="home" d="M15,3 v2.8 l1,.8 v-3.6 z"/>
+    </symbol>
+  </defs>
 
-                                <g
-                                    id="Z_bottom_100"
-                                    fill="#d0d0d0"
-                                    onmouseup={(e) =>
-                                        sendJogCommand(
-                                            Z_axis,
-                                            "Z_bottom_100",
-                                            Z_axis_bottom_dir + "100"
-                                        )
-                                    }
-                                    onmouseover={(e) => {
-                                        onHoverJog("z100")
-                                    }}
-                                    onmousedown={(e) =>
-                                        onMouseDown("Z_bottom_100")
-                                    }
-                                    onmouseout={(e) => {
-                                        onOutJog("z100", "Z_bottom_100")
-                                    }}
-                                >
-                                    <path
-                                        class="std"
-                                        d=" M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"
-                                    ></path>
-                                </g>
-                                <g
-                                    id="+Z"
-                                    fill-opacity=".6"
-                                    pointer-events="none"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z"
-                                        fill="DarkSeaGreen"
-                                    ></path>
-                                    <text
-                                        class="jog"
-                                        x={pos_x_z_axis_label_top}
-                                        y="36"
-                                        id="axisup"
-                                    >
-                                        {label_z_axis_top}
-                                    </text>
-                                </g>
-                                <g
-                                    id="-Z"
-                                    fill-opacity=".6"
-                                    pointer-events="none"
-                                >
-                                    <path
-                                        class="std"
-                                        d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z"
-                                        fill="DarkSeaGreen"
-                                    ></path>
-                                    <text
-                                        class="jog"
-                                        x={pos_x_z_axis_label_bottom}
-                                        y="210"
-                                        id="axisdown"
-                                    >
-                                        {label_z_axis_bottom}
-                                    </text>
-                                </g>
-                                <g
-                                    id="posz"
-                                    onmouseup={(e) => {
-                                        sendMoveCommand("posz", "posz")
-                                    }}
-                                    onmouseover={(e) => {
-                                        onHoverJog("posz")
-                                    }}
-                                    onmousedown={(e) => onMouseDown("posz")}
-                                    onmouseout={(e) => {
-                                        onOut("posz")
-                                    }}
-                                >
-                                    <title>{moveToTitleZ}</title>
-                                    <rect
-                                        class="movez"
-                                        x="-1"
-                                        y="110"
-                                        width="42"
-                                        height="20"
-                                        rx="5"
-                                    />
-                                    <circle
-                                        class="cross"
-                                        cx="13"
-                                        cy="120.3"
-                                        r="4"
-                                    ></circle>
-                                    <line
-                                        x1="13"
-                                        y1="125.3"
-                                        x2="13"
-                                        y2="128.8"
-                                        style="stroke:black;stroke-width:1"
-                                    />
-                                    <line
-                                        x1="13"
-                                        y1="115.3"
-                                        x2="13"
-                                        y2="111.6"
-                                        style="stroke:black;stroke-width:1"
-                                    />
-                                    <line
-                                        x1="4"
-                                        y1="120.3"
-                                        x2="8.7"
-                                        y2="120.3"
-                                        style="stroke:black;stroke-width:1"
-                                    />
-                                    <line
-                                        x1="18"
-                                        y1="120.3"
-                                        x2="21.7"
-                                        y2="120.3"
-                                        style="stroke:black;stroke-width:1"
-                                    />
-                                    <text class="posscl" x="25" y="122">
-                                        Z
-                                    </text>
-                                </g>
-                            </g>
-                        </svg>
+  {/* Home buttons */}
+  <g id="HomeAll" class="std">
+    <title>{T("P6")}</title>
+    <path class="std" d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z" fill="#f0f0f0"/>
+    <use x="3" y="217" width="20" height="18" href="#HomeIcon"/>
+  </g>
+
+  <g id="HomeX" class="std">
+    <title>{T("P7")}</title>
+    <path class="std" d="M10 57.5 h-10 v-57.5 h57.5 v10 a125,125 0 0,0 -47.5 47.5Z" fill="Khaki"/>
+    <use x="3" y="5" width="20" height="18" href="#HomeIcon"/>
+    <text x="25" y="20" class="home">X</text>
+  </g>
+
+  <g id="HomeY" class="std">
+    <title>{T("P8")}</title>
+    <path class="std" d="M230 57.5 h10 v-57.5 h-57.5 v10 a125,125 0 0,1 47.5 47.5z" fill="SteelBlue"/>
+    <use x="217" y="5" width="20" height="18" href="#HomeIcon"/>
+    <text x="202" y="20" class="home">Y</text>
+  </g>
+
+  <g id="HomeZ" class="std">
+    <title>{T("P9")}</title>
+    <path class="std" d="M230 182.5 h10 v57.5 h-57.5 v-10 a125,125 0 0,0 47.5 -47.5z" fill="DarkSeaGreen"/>
+    <use x="217" y="217" width="20" height="18" href="#HomeIcon"/>
+    <text x="202" y="232" class="home">Z</text>
+  </g>
+
+  {/* Jog circles */}
+  <g id="Jog100" fill="#c0c0c0" class="std">
+    <g id="V_top_100" transform="translate(120 120)"><path class="std" d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60,-67.07 z"/></g>
+    <g id="H_right_100" transform="translate(120 120)"><path class="std" d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"/></g>
+    <g id="V_bottom_100" transform="translate(120 120)"><path class="std" d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60,67.07 z"/></g>
+    <g id="H_left_100" transform="translate(120 120)"><path class="std" d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"/></g>
+  </g>
+
+  <g id="Jog10" fill="#d0d0d0" class="std">
+    <g id="V_top_10" transform="translate(120 120)"><path class="std" d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"/></g>
+    <g id="H_right_10" transform="translate(120 120)"><path class="std" d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"/></g>
+    <g id="V_bottom_10" transform="translate(120 120)"><path class="std" d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"/></g>
+    <g id="H_left_10" transform="translate(120 120)"><path class="std" d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"/></g>
+  </g>
+
+  <g id="Jog1" fill="#e0e0e0" class="std">
+    <g id="V_top_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"/></g>
+    <g id="H_right_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"/></g>
+    <g id="V_bottom_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"/></g>
+    <g id="H_left_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"/></g>
+  </g>
+
+  <g id="Jog0_1" fill="#f0f0f0" class="std">
+    <g id="V_top_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"/></g>
+    <g id="H_right_0_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"/></g>
+    <g id="V_bottom_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"/></g>
+    <g id="H_left_0_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"/></g>
+  </g>
+
+  {/* Labels des cercles */}
+  <g id="label_circle_0_1" style="opacity:0.2">
+    <circle class="scl" cx="144" cy="96" r="9.5"/>
+    <text class="scl" x="140" y="100" font-size="10">0.1</text>
+  </g>
+  <g id="label_circle_1" style="opacity:0.2">
+    <circle class="scl" cx="159.5" cy="80.5" r="10.5"/>
+    <text class="scl" x="157" y="86" font-size="14">1</text>
+  </g>
+  <g id="label_circle_10" style="opacity:0.2">
+    <circle class="scl" cx="175" cy="65" r="12"/>
+    <text class="scl" x="169.5" y="70" font-size="15">10</text>
+  </g>
+  <g id="label_circle_100" style="opacity:0.2">
+    <circle class="scl" cx="195" cy="45" r="15"/>
+    <text class="scl" x="185" y="50" font-size="15">100</text>
+  </g>
+
+  {/* Decoration */}
+  <g id="Decoration" pointer-events="none" fill-opacity=".6">
+    <path class="std" d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="SteelBlue"/>
+    <path class="std" d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z" fill="SteelBlue"/>
+    <path class="std" d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z" fill="Khaki"/>
+    <path class="std" d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z" fill="Khaki"/>
+    <text class="jog" x={pos_x_v_axis_label_top} y="36">{label_v_axis_top}</text>
+    <text class="jog" x={pos_x_v_axis_label_bottom} y="212">{label_v_axis_bottom}</text>
+    <text class="jog" x="29" y="124">{label_h_axis_left}</text>
+    <text class="jog" x="200" y="124">{label_h_axis_right}</text>
+  </g>
+
+  {/* Centre XY */}
+  <g id="posxy">
+    <title>{moveToTitleXY}</title>
+    <circle class="std" cx="120.2" cy="120.3" r="15"/>
+    <circle class="cross" cx="116" cy="120.3" r="4"/>
+    <line x1="116" y1="125.3" x2="116" y2="129" stroke="black" stroke-width="1"/>
+    <line x1="116" y1="115.3" x2="116" y2="111.6" stroke="black" stroke-width="1"/>
+    <line x1="121" y1="120.3" x2="124.7" y2="120.3" stroke="black" stroke-width="1"/>
+    <line x1="111" y1="120.3" x2="107.3" y2="120.3" stroke="black" stroke-width="1"/>
+    <text class="posscl" x="125" y="118">X</text>
+    <text class="posscl" x="125" y="130">Y</text>
+  </g>
+
+  {/* JogBar Z */}
+  <g id="JogBar" transform="translate(250,0)">
+    <g id="Z_top_100" fill="#d0d0d0" class="std">
+      <path class="std" d="M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"/>
+      <g id="z100" style="opacity:0.2"><circle class="scl" cx="20" cy="16" r="14"/><text class="scl" x="12
+      " y="22" font-size="14">100</text></g>
+    </g>
+    <g id="Z_top_10" fill="#d0d0d0" class="std">
+      <rect class="std" x="0" y="32" width="40" height="30"/>
+      <g id="z10" style="opacity:0.2"><circle class="scl" cx="20" cy="47" r="12"/><text class="scl" x="15" y="53" font-size="15">10</text></g>
+    </g>
+    <g id="Z_top_1" fill="#e0e0e0" class="std">
+      <rect class="std" x="0" y="62" width="40" height="26"/>
+      <g id="z1" style="opacity:0.2"><circle class="scl" cx="20" cy="75" r="10.5"/><text class="scl" x="18" y="80" font-size="14">1</text></g>
+    </g>
+    <g id="ZSpace" fill="#000000" style="pointer-events:none;">
+      <rect class="std" x="0" y="112" width="40" height="16"/>
+    </g>
+    <g id="Z_top_0_1" fill="#f0f0f0" class="std">
+      <rect class="std" x="0" y="88" width="40" height="24"/>
+      <g id="z0_1" style="opacity:0.2"><circle class="scl" cx="20" cy="100" r="9.5"/><text class="scl" x="15" y="103.5" font-size="10">0.1</text></g>
+    </g>
+    <g id="Z_bottom_0_1" fill="#f0f0f0" class="std">
+      <rect class="std" x="0" y="128" width="40" height="24"/>
+    </g>
+    <g id="Z_bottom_1" fill="#e0e0e0" class="std">
+      <rect class="std" x="0" y="152" width="40" height="26"/>
+    </g>
+    <g id="Z_bottom_10" fill="#d0d0d0" class="std">
+      <rect class="std" x="0" y="178" width="40" height="30"/>
+    </g>
+    <g id="Z_bottom_100" fill="#d0d0d0" class="std">
+      <path class="std" d="M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"/>
+    </g>
+
+    <g id="+Z" fill-opacity=".6" pointer-events="none">
+      <path class="std" d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="DarkSeaGreen"/>
+      <text class="jog" x={pos_x_z_axis_label_top} y="36">{label_z_axis_top}</text>
+    </g>
+    <g id="-Z" fill-opacity=".6" pointer-events="none">
+      <path class="std" d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z" fill="DarkSeaGreen"/>
+      <text class="jog" x={pos_x_z_axis_label_bottom} y="210">{label_z_axis_bottom}</text>
+    </g>
+
+    <g id="posz">
+      <title>{moveToTitleZ}</title>
+      <rect class="movez" x="-1" y="110" width="42" height="20" rx="5"/>
+      <circle class="cross" cx="13" cy="120.3" r="4"/>
+      <line x1="13" y1="125.3" x2="13" y2="128.8" stroke="black" stroke-width="1"/>
+      <line x1="13" y1="115.3" x2="13" y2="111.6" stroke="black" stroke-width="1"/>
+      <line x1="4" y1="120.3" x2="8.7" y2="120.3" stroke="black" stroke-width="1"/>
+      <line x1="18" y1="120.3" x2="21.7" y2="120.3" stroke="black" stroke-width="1"/>
+      <text class="posscl" x="25" y="122">Z</text>
+    </g>
+  </g>
+</svg>
                     </div>
                 )}
                 <div

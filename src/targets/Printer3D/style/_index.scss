@@ -1,90 +1,56 @@
-text.jog {
-    font-weight: 900;
-    font-size: 11px;
-    fill: black;
+/* === Styles communs (user-select + pointer-events) === */
+.jog, .home, .scl, .posscl, .cross {
     pointer-events: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+/* === Textes === */
+text.jog {
+    font-weight: 900;
+    font-size: 11px;
+    fill: black;
 }
 
 text.home {
     font-weight: 600;
     font-size: 16px;
-    pointer-events: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
+
 text.scl {
     stroke: white;
     fill: white;
-    pointer-events: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
-
-.charts-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    height: 100%;
-}
-
-.charts-subcontainer {
-    flex: 0 0 auto;
-}
-
 
 text.posscl {
     font-weight: 200;
     font-size: 8px;
     stroke: black;
     fill: black;
-    pointer-events: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
-circle.cross {
-    stroke: black;
-    fill-opacity: 0;
-    stroke-width: 2;
-    pointer-events: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-rect.movez {
-    fill: #f06565;
-    fill-opacity: 1;
+/* === Éléments interactifs standards === */
+.std, .movez {
     stroke: black;
     stroke-width: 1;
     filter: url(#f1);
+}
+
+.path.std, rect.std, circle.std, path.std {
+    &:hover {
+        fill: orange;
+        cursor: pointer;
+    }
+}
+
+circle.std, rect.movez {
+    fill: #f06565;
+    fill-opacity: 1;
 }
 
 rect.movez:hover {
-    fill: orange;
-    cursor: pointer;
-}
-
-circle.std {
-    fill: #f06565;
-    fill-opacity: 1;
-    stroke: black;
-    stroke-width: 1;
-    filter: url(#f1);
-}
-
-circle.std:hover {
     fill: orange;
     cursor: pointer;
 }
@@ -95,17 +61,16 @@ circle.scl {
     stroke: red;
     stroke-width: 3;
     filter: url(#f1);
-    pointer-events: none;
+}
+
+circle.cross {
+    stroke: black;
+    fill-opacity: 0;
+    stroke-width: 2;
 }
 
 path.home {
     stroke: black;
-}
-
-path.std {
-    stroke: black;
-    stroke-width: 1;
-    filter: url(#f1);
 }
 
 .pressedbutton {
@@ -115,21 +80,17 @@ path.std {
     cursor: pointer;
 }
 
-rect.std {
-    stroke: black;
-    stroke-width: 1;
-    filter: url(#f1);
-}
-rect.std:hover {
-    fill: orange;
-    cursor: pointer;
+/* Layout (si tu les gardes) */
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
 }
 
-path.std:hover {
-    fill: orange;
-    cursor: pointer;
+.charts-subcontainer {
+    flex: 0 0 auto;
 }
-
 .H-100 {
     height: 100%;
 }
