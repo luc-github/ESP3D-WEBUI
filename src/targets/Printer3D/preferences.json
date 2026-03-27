@@ -19,6 +19,21 @@
                 ]
             }
         ],
+        "positions": [
+            {
+                "id": "showpositionspanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "openpositionsonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showpositionspanel", "value": true }]
+            }
+        ],
         "status": [
             {
                 "id": "showstatuspanel",

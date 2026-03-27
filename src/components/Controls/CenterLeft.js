@@ -27,14 +27,13 @@ const CenterLeft = ({ bordered, children }) => {
             <div
                 class={
                     bordered
-                        ? `${
+                        ? `d-inline-block text-left ${
                               bordered == "warning"
                                   ? "bordered_warning"
-                                  : "bordered "
+                                  : "bordered"
                           } m-2`
-                        : ""
+                        : "d-inline-block text-left"
                 }
-                style="display: inline-block;text-align: left;"
             >
                 {children}
             </div>

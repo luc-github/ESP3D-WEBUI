@@ -460,7 +460,7 @@ const FeaturesTab = () => {
                                                                     </span>
                                                                 </span>
                                                                 <span class="navbar-section">
-                                                                    <span style="height: 100%;">
+                                                                    <span class="full-height">
                                                                         <span class="label label-primary align-top">
                                                                             {T(
                                                                                 sectionId

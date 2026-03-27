@@ -19,35 +19,21 @@ Temperatures.js - ESP3D WebUI component file
 import { Fragment, h } from "preact"
 import { T } from "../Translations"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { useState, useRef } from "preact/hooks"
-import {
-    ButtonImg,
-    Loading,
-    Field,
-    PanelHeader,
-} from "../Controls"
+import { useState } from "preact/hooks"
+import { ButtonImg, Loading, PanelHeader, ContainerHelper } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
-import { Thermometer, Power, Send } from "preact-feather"
+import { Thermometer, Power, ChevronDown } from "preact-feather"
 import { useTargetContext } from "../../targets"
-import { ContainerHelper } from "../Controls"
 
 /*
  * Local const
  *
  */
-//each one has
-//{current: 0, max: tbd}
-const target_temperatures = {
-    T: [], //0->8 T0->T8 Extruders
-    B: [], //0->1 B Bed
-    C: [], //0->1  Chamber
-}
+// Module-level store for stop commands (indexed by tool+index)
+const stopcmds = {}
 
-const isEditable = (tool) => {
-    if (tool == "T" || tool == "B" || tool == "C") return true
-    return false
-}
+const isEditable = (tool) => tool === "T" || tool === "B" || tool === "C"
 
 const isVisible = (tool) => {
     const setting = {
@@ -64,79 +50,74 @@ const isVisible = (tool) => {
 }
 
 const preheatList = (tool) => {
-    if (tool == "T" || tool == "B" || tool == "C") {
-        const list = useUiContextFn.getValue(
-            tool == "T"
-                ? "extruderpreheat"
-                : tool == "B"
-                  ? "bedpreheat"
-                  : "chamberpreheat"
-        )
-        if (list)
-            return list.split(";").map((item) => {
-                return { display: item + T("P72"), value: item }
-            })
-    }
-    return ""
+    if (!isEditable(tool)) return []
+    const key =
+        tool === "T"
+            ? "extruderpreheat"
+            : tool === "B"
+              ? "bedpreheat"
+              : "chamberpreheat"
+    const list = useUiContextFn.getValue(key)
+    if (!list) return []
+    return list.split(";").filter(Boolean).map((item) => item.trim())
 }
 
 const heaterCommand = (tool, index, value) => {
-    if (tool == "T" || tool == "B" || tool == "C") {
-        const cmd = useUiContextFn.getValue(
-            tool == "T"
-                ? "heatextruder"
-                : tool == "B"
-                  ? "heatbed"
-                  : "heatchamber"
-        )
-        if (cmd) return cmd.replace("#", index).replace("$", value)
-    }
-    return ""
+    if (!isEditable(tool)) return ""
+    const key =
+        tool === "T"
+            ? "heatextruder"
+            : tool === "B"
+              ? "heatbed"
+              : "heatchamber"
+    const cmd = useUiContextFn.getValue(key)
+    return cmd ? cmd.replace("#", index).replace("$", value) : ""
 }
 
 const sensorName = (tool, index, size) => {
     const name = { T: "P41", B: "P37", C: "P43", P: "P42", R: "P44", M: "P90" }
     return name[tool] != undefined
-        ? T(name[tool]).replace("$", size == 1 ? "" : index + 1)
+        ? T(name[tool]).replace("$", size === 1 ? "" : index + 1)
         : ""
 }
 
-//A separate control to avoid the full panel to be updated when the temperatures are updated
+const getMaxTemperature = (tool) => {
+    const setting = { T: "extrudermax", B: "bedmax", C: "chambermax" }
+    return setting[tool] != undefined
+        ? parseFloat(useUiContextFn.getValue(setting[tool])) || 0
+        : 0
+}
+
+// ─── Top-bar mini chips (used by InformationsControls) ────────────────────────
 const TemperaturesControls = () => {
     const { temperatures } = useTargetContext()
     return (
         <div class="temperatures-ctrls">
             {Object.keys(temperatures).map((tool) => {
-                if (temperatures[tool].length == 0 || !isVisible(tool)) return
+                if (temperatures[tool].length === 0 || !isVisible(tool)) return
                 return (
                     <Fragment>
-                        {temperatures[tool].map((temp, index) => {
-                            return (
-                                <div
-                                    class="temperatures-ctrl mt-1 tooltip tooltip-bottom"
-                                    data-tooltip={sensorName(
-                                        tool,
-                                        index,
-                                        temperatures[tool].length
-                                    )}
-                                >
-                                    <div class="temperatures-header">
-                                        {tool}
-                                        {temperatures[tool].length > 1
-                                            ? index
-                                            : ""}
-                                    </div>
-                                    <div class="temperatures-value">
-                                        {temp.value}
-                                    </div>
-                                    {temp.target > 0 && (
-                                        <div class=" temperatures-target">
-                                            {temp.target}
-                                        </div>
-                                    )}
+                        {temperatures[tool].map((temp, index) => (
+                            <div
+                                class="temperatures-ctrl mt-1 tooltip tooltip-bottom"
+                                data-tooltip={sensorName(
+                                    tool,
+                                    index,
+                                    temperatures[tool].length
+                                )}
+                            >
+                                <div class="temperatures-header">
+                                    {tool}
+                                    {temperatures[tool].length > 1 ? index : ""}
                                 </div>
-                            )
-                        })}
+                                <div class="temperatures-value">{temp.value}</div>
+                                {temp.target > 0 && (
+                                    <div class="temperatures-target">
+                                        {temp.target}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
                     </Fragment>
                 )
             })}
@@ -144,220 +125,239 @@ const TemperaturesControls = () => {
     )
 }
 
-const TemperatureInputControl = ({ tool, index, size }) => {
+// ─── Live display (isolated — re-renders on every temp tick) ─────────────────
+// Renders the full visual block: header (label+dot), value, target row, track
+const TempLiveDisplay = ({ tool, index, size, maxTemp }) => {
+    const { temperatures } = useTargetContext()
+    const temp = temperatures[tool] && temperatures[tool][index]
+    if (!temp) return null
+
+    const current = parseFloat(temp.value) || 0
+    const target = parseFloat(temp.target) || 0
+    const pct = maxTemp > 0 ? Math.min(100, (current / maxTemp) * 100) : 0
+
+    const dotClass =
+        "temp-dot" +
+        (target > 0
+            ? " heating"
+            : current >= 40
+              ? " warm"
+              : " cool")
+
+    const valueClass =
+        "temp-current" +
+        (current > 100 ? " hot" : current > 40 ? " warm" : "")
+
+    const trackClass =
+        current > 100 ? "tf-hot" : current > 40 ? "tf-warm" : "tf-cool"
+
+    return (
+        <Fragment>
+            <div class="temp-header">
+                <div class="temp-label">
+                    <Thermometer size="0.75em" />
+                    {sensorName(tool, index, size)}
+                </div>
+                <div class={dotClass} />
+            </div>
+            <div class={valueClass}>{Math.round(current)}</div>
+            <div class="temp-target-row">
+                {target > 0 ? (
+                    <div class="temp-target">
+                        {"→ "}
+                        <span>{target + T("P72")}</span>
+                    </div>
+                ) : (
+                    <div class="temp-target" />
+                )}
+                <div class="temp-unit">{T("P72")}</div>
+            </div>
+            <div class="temp-track">
+                <div
+                    class={"temp-fill " + trackClass}
+                    style={"width:" + pct + "%"}
+                />
+            </div>
+        </Fragment>
+    )
+}
+
+// ─── One card per sensor ──────────────────────────────────────────────────────
+const TemperatureCard = ({ tool, index, size }) => {
     const { toasts } = useUiContext()
     const { createNewRequest } = useHttpFn
+    const editable = isEditable(tool)
+    const max = getMaxTemperature(tool)
+    const [inputVal, setInputVal] = useState("0")
+    const [dropOpen, setDropOpen] = useState(false)
+    const key = tool + index
+
+    // Store stop command once
+    if (editable && !stopcmds[key]) {
+        stopcmds[key] = heaterCommand(tool, index, 0)
+    }
+
     const sendCommand = (command) => {
+        if (!command) return
         createNewRequest(
             espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: () => {},
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
-                    console.log(error)
                 },
             }
         )
     }
-    //we won't handle modified state just handle error
-    //too many user cases where changing value to show button is not suitable
-    const [validation, setvalidation] = useState({
-        message: null,
-        valid: true,
-        modified: false,
-    })
 
-    const getMaxTemperature = (tool) => {
-        const setting = {
-            T: "extrudermax",
-            B: "bedmax",
-            C: "chambermax",
-        }
-        return setting[tool] != undefined
-            ? useUiContextFn.getValue(setting[tool])
-            : 0
+    const isValid = () => {
+        const v = parseFloat(inputVal)
+        return !isNaN(v) && v >= 0 && (max <= 0 || v <= max)
     }
-    const generateValidation = (tool, index) => {
-        let validation = {
-            message: null,
-            valid: true,
-            modified: false,
-        }
-        if (
-            target_temperatures[tool][index].current.length == 0 ||
-            target_temperatures[tool][index].current < 0 ||
-            (target_temperatures[tool][index].max &&
-                target_temperatures[tool][index].current >
-                    target_temperatures[tool][index].max)
-        ) {
-            //No error message to keep all control aligned
-            //may be have a better way ?
-            // validation.message = T("S42");
-            validation.valid = false
-        }
 
-        return validation
-    }
-    //todo extract max value from settings
-    const max = parseFloat(getMaxTemperature(tool))
-    if (target_temperatures[tool][index] == undefined)
-        target_temperatures[tool][index] = {
-            current: 0,
-            max: max > 0 ? max : null,
-            stopcmd: heaterCommand(tool, index, 0),
-        }
+    const presets = preheatList(tool)
+
     return (
-        <div class="temperature-ctrls-container m-1">
-            <div class="temperature-ctrl-name">
-                {sensorName(tool, index, size)}
-            </div>
-            <div class="temperature-ctrls-container2">
-                <ButtonImg
-                    id={"btn-stop-" + tool + index}
-                    class="temperature-ctrl-stop m-1"
-                    icon={<Power />}
-                    tooltip
-                    data-tooltip={T("P38")}
-                    onClick={(e) => {
-                        useUiContextFn.haptic()
-                        e.target.blur()
-                        sendCommand(target_temperatures[tool][index].stopcmd)
-                    }}
-                />
-                <div class="m-1" />
-                <div>
-                    <Field
-                        id={"input-" + tool + index}
+        <div class="temp-cell">
+            <TempLiveDisplay tool={tool} index={index} size={size} maxTemp={max} />
+            {editable && (
+                <div class="temp-input-wrap">
+                    <input
+                        class="temp-input"
                         type="number"
-                        value={target_temperatures[tool][index].current}
                         min="0"
-                        step="0.5"
-                        max={max > 0 ? max : null}
-                        width="4rem"
-                        extra="dropList"
-                        options={preheatList(tool)}
-                        setValue={(val, update) => {
-                            if (!update)
-                                target_temperatures[tool][index].current = val
-                            setvalidation(generateValidation(tool, index))
-                        }}
-                        validation={validation}
+                        step="1"
+                        max={max > 0 ? max : undefined}
+                        value={inputVal}
+                        onInput={(e) => setInputVal(e.target.value)}
                     />
+                    {presets.length > 0 && (
+                        <div class="temp-preset-dropdown">
+                            <button
+                                class={"temp-preset-toggle" + (dropOpen ? " active" : "")}
+                                onclick={() => setDropOpen(!dropOpen)}
+                            >
+                                <ChevronDown size="0.7em" />
+                            </button>
+                            {dropOpen && (
+                                <div class="temp-preset-list">
+                                    {presets.map((v) => (
+                                        <button
+                                            class="temp-preset-item"
+                                            onclick={() => {
+                                                setInputVal(v)
+                                                setDropOpen(false)
+                                            }}
+                                        >
+                                            {v}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    <button
+                        class={
+                            "temp-set-btn" +
+                            (!isValid() ? " d-invisible" : "")
+                        }
+                        onclick={(e) => {
+                            useUiContextFn.haptic()
+                            e.target.blur()
+                            sendCommand(heaterCommand(tool, index, inputVal))
+                        }}
+                    >
+                        {T("S43")}
+                    </button>
+                    <button
+                        class="temp-set-btn temp-off-btn tooltip tooltip-top"
+                        data-tooltip={T("P38")}
+                        onclick={(e) => {
+                            useUiContextFn.haptic()
+                            e.target.blur()
+                            sendCommand(stopcmds[key])
+                        }}
+                    >
+                        <Power size="0.8em" />
+                    </button>
                 </div>
-                <ButtonImg
-                    id={"btn-send" + tool + index}
-                    class={`temperature-ctrl-send ${
-                        !validation.valid ? "d-invisible" : ""
-                    }`}
-                    icon={<Send />}
-                    tooltip
-                    data-tooltip={T("S43")}
-                    onClick={(e) => {
-                        useUiContextFn.haptic()
-                        e.target.blur()
-                        sendCommand(
-                            heaterCommand(
-                                tool,
-                                index,
-                                target_temperatures[tool][index].current
-                            )
-                        )
-                    }}
-                />
-            </div>
+            )}
         </div>
     )
 }
 
+// ─── Panel ────────────────────────────────────────────────────────────────────
 const TemperaturesPanel = () => {
     const { temperatures } = useTargetContext()
+    const { toasts } = useUiContext()
     const { createNewRequest } = useHttpFn
-    const sendCommand = (command) => {
-        const cmds = command.split(";")
-        cmds.forEach((cmd) => {
-            createNewRequest(
-                espHttpURL("command", { cmd }),
-                { method: "GET", echo: cmd },
-                {
-                    onSuccess: (result) => {},
-                    onFail: (error) => {
-                        toasts.addToast({ content: error, type: "error" })
-                        console.log(error)
-                    },
-                }
-            )
-        })
-    }
     const id = "temperaturesPanel"
     console.log(id)
+
     let hasTemp = false
     Object.keys(temperatures).forEach((tool) => {
-        if (temperatures[tool].length != 0) hasTemp = true
+        if (temperatures[tool].length) hasTemp = true
     })
+
+    const sendCommand = (command) => {
+        if (!command) return
+        createNewRequest(
+            espHttpURL("command", { cmd: command }),
+            { method: "GET", echo: command },
+            {
+                onSuccess: () => {},
+                onFail: (error) => {
+                    toasts.addToast({ content: error, type: "error" })
+                },
+            }
+        )
+    }
+
     return (
         <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
+            <ContainerHelper id={id} />
             <PanelHeader
                 id={id}
                 icon={<Thermometer />}
                 title={T("P29")}
             />
             <div class="panel-body panel-body-dashboard">
-                {hasTemp && (
-                    <div class="temperatures-container">
-                        <TemperaturesControls />
-                        {Object.keys(temperatures).map((tool) => {
-                            if (
-                                temperatures[tool].length == 0 ||
-                                !isVisible(tool) ||
-                                !isEditable(tool)
-                            )
-                                return
-                            return (
-                                <Fragment>
-                                    {temperatures[tool].map((temp, index) => {
-                                        return (
-                                            <TemperatureInputControl
-                                                tool={tool}
-                                                index={index}
-                                                size={temperatures[tool].length}
-                                            />
-                                        )
-                                    })}
-                                </Fragment>
-                            )
-                        })}
-                        <div class="temperature-extra-buttons-container m-2">
+                {hasTemp ? (
+                    <Fragment>
+                        <div class="temp-grid">
+                            {Object.keys(temperatures).map((tool) => {
+                                if (
+                                    temperatures[tool].length === 0 ||
+                                    !isVisible(tool)
+                                )
+                                    return null
+                                return temperatures[tool].map((_, index) => (
+                                    <TemperatureCard
+                                        tool={tool}
+                                        index={index}
+                                        size={temperatures[tool].length}
+                                    />
+                                ))
+                            })}
+                        </div>
+                        <div class="temp-stop-all">
                             <ButtonImg
                                 id="stop-all"
                                 icon={<Power />}
                                 label={T("P40")}
+                                className="btn-error"
                                 tooltip
                                 data-tooltip={T("P38")}
                                 onClick={(e) => {
                                     useUiContextFn.haptic()
                                     e.target.blur()
-                                    Object.keys(target_temperatures).forEach(
-                                        (tool) => {
-                                            if (
-                                                target_temperatures[tool]
-                                                    .length == 0
-                                            )
-                                                return
-                                            target_temperatures[tool].forEach(
-                                                (temp, index) => {
-                                                    sendCommand(temp.stopcmd)
-                                                }
-                                            )
-                                        }
-                                    )
+                                    Object.values(stopcmds).forEach(sendCommand)
                                 }}
                             />
                         </div>
-                    </div>
-                )}
-                {!hasTemp && (
+                    </Fragment>
+                ) : (
                     <div class="loading-panel">
                         <div class="m-2">
                             <div class="m-1">{T("P89")}</div>

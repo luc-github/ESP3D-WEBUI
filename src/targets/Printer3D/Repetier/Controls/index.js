@@ -22,9 +22,11 @@ import { QuickButtonsBar } from "./QuickButtonsBar"
 import { InformationsControls } from "./InformationsControls"
 import { MixedExtrudersControl } from "./MixedExtrudersControl"
 import { BackgroundContainer } from "../../Controls/BackgroundContainer"
+import { SimpleExtruderControl } from "../../Controls/SimpleExtruderControl"
 export {
     QuickButtonsBar,
     InformationsControls,
     MixedExtrudersControl,
     BackgroundContainer,
+    SimpleExtruderControl,
 }

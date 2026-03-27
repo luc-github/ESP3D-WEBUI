@@ -1521,6 +1521,10 @@ input[type="range"]::-moz-range-thumb { width:14px; height:14px; background:var(
     justify-content: center;
 }
 
+.empty .centered {
+    text-align: center;
+}
+
 .empty .empty-icon {
     margin-bottom: 0.8rem;
 }

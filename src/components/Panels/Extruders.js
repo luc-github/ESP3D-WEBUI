@@ -169,7 +169,7 @@ const ExtruderInputControl = ({ index, size, hasdivider }) => {
                     />
                 </div>
             </div>
-            {hasdivider && <div class="divider W-100"></div>}
+            {hasdivider && <div class="divider full-width"></div>}
         </Fragment>
     )
 }

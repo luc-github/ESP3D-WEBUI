@@ -69,8 +69,7 @@ const PickUp = ({ label = "", id = "", inline, setValue, value, ...rest }) => {
     return (
         <div class={`input-group ${inline ? "column" : ""} `}>
             <span
-                class="form-input"
-                style="cursor: pointer;"
+                class="form-input c-hand"
                 readonly
                 value={id == "language" ? T("lang") : T("none")}
                 onClick={(e) => {

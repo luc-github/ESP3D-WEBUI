@@ -22,6 +22,7 @@ import { FilesPanelElement } from "../../../components/Panels/Files"
 import { MacrosPanelElement } from "../../../components/Panels/Macros"
 import { TerminalPanelElement } from "../../../components/Panels/Terminal"
 import { JogPanelElement } from "../../../components/Panels/Jog"
+import { PositionsPanelElement } from "../../../components/Panels/Positions"
 import { ExtrudersPanelElement } from "../../../components/Panels/Extruders"
 import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures"
 import { NotificationsPanelElement } from "../../../components/Panels/Notifications"
@@ -34,6 +35,7 @@ const defaultPanelsList = [
     TerminalPanelElement,
     MacrosPanelElement,
     JogPanelElement,
+    PositionsPanelElement,
     ExtrudersPanelElement,
     TemperaturesPanelElement,
     NotificationsPanelElement,

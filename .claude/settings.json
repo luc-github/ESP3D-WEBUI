@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -name \"*.scss\" -exec cat {})",
+      "Bash(git -C \"c:/Users/luc/Documents/GitHub/ESP3D-WEBUI\" log --oneline -10)",
+      "Bash(git -C \"c:/Users/luc/Documents/GitHub/ESP3D-WEBUI\" show 7f86d12 --name-only --format=\"\")",
+      "Bash(git -C \"c:/Users/luc/Documents/GitHub/ESP3D-WEBUI\" stash list)",
+      "Bash(git -C c:/Users/luc/Documents/GitHub/ESP3D-WEBUI show 3.0:src/style/index.scss)",
+      "Bash(git -C c:/Users/luc/Documents/GitHub/ESP3D-WEBUI show 3.0:src/style/components/control.scss)",
+      "Bash(git -C \"c:/Users/luc/Documents/GitHub/ESP3D-WEBUI\" ls-tree -r 3.0 -- src/style/)",
+      "Bash(git -C \"c:/Users/luc/Documents/GitHub/ESP3D-WEBUI\" show 9bc0d74c7b0548afa5de71d03082ccbbad0d1942)",
+      "Bash(cut -d'{' -f1)",
+      "Bash(for cls:*)",
+      "Bash(do)",
+      "Bash(if grep:*)",
+      "Bash(then)",
+      "Bash(echo \"✓ $cls\")",
+      "Bash(else)",
+      "Bash(echo \"✗ MANQUANT: $cls\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(grep -o ^.[a-z-]* C:UserslucDocumentsGitHubESP3D-WEBUIsrcstyleindex.scss)",
+      "Bash(do if:*)",
+      "Bash(then echo:*)",
+      "Bash(for class:*)",
+      "Bash(do echo:*)",
+      "Bash(grep -r \"class.*$class\" \"C:\\\\Users\\\\luc\\\\Documents\\\\GitHub\\\\ESP3D-WEBUI\\\\src\" --include=\"*.js\")"
+    ]
+  }
+}

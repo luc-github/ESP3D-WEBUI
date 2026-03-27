@@ -3,7 +3,11 @@
     "allow": [
       "Bash(grep -roh className=\"\"[^\"\"]*\"\" src/components/ src/targets/ --include=*.js --include=*.jsx)",
       "Bash(grep -roh class=[^]* src/ --include=*.js --include=*.jsx --include=*.html)",
-      "Bash(grep -v '^$')"
+      "Bash(grep -v '^$')",
+      "Read(//tmp/**)",
+      "Bash(while read:*)",
+      "Bash(do grep:*)",
+      "Bash(echo $class done)"
     ]
   }
 }

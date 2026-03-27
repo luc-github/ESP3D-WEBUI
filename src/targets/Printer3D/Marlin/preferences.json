@@ -32,6 +32,7 @@
                     { "id": "Files", "name": "files" },
                     { "id": "Terminal", "name": "terminal" },
                     { "id": "Jog", "name": "jog", "value": "jog" },
+                    { "id": "Positions", "name": "positions" },
                     { "id": "Extruders", "name": "extruders" },
                     { "id": "Temperatures", "name": "temperatures" },
                     { "id": "Charts", "name": "charts" },

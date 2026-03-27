@@ -286,7 +286,7 @@ const Navbar = () => {
                         onClick={onDisconnect}
                     >
                         <LogOut />
-                        <label style="cursor:pointer;" class="hide-low">
+                        <label class="c-hand hide-low">
                             {T("S151")}
                         </label>
                     </span>

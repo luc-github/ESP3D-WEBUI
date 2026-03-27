@@ -28,6 +28,7 @@ import {
     QuickButtonsBar,
     MixedExtrudersControl,
     BackgroundContainer,
+    SimpleExtruderControl,
 } from "./Controls"
 import {
     TargetContextProvider,
@@ -99,4 +100,5 @@ export {
     QuickButtonsBar,
     MixedExtrudersControl,
     BackgroundContainer,
+    SimpleExtruderControl,
 }

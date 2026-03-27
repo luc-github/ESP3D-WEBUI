@@ -218,7 +218,7 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
         const status = displayStatus(e)
         if (status === "loading") return <span class="text-gray">—</span>
         const cell = (className, label, Icon) => (
-            <div class={className} style="display:flex; flex-direction:column; align-items:center; gap:0.15rem;">
+            <div class={`${className} d-flex flex-col items-center gap-1`}>
                 <span>{label}</span>
                 <span class="feather-icon-container"><Icon size={16} /></span>
             </div>
@@ -248,10 +248,10 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                         <tr>
                             <th style="width:2rem;" />
                             <th>{T("S121")}</th>
-                            <th style="text-align:center;">{T("S129")}</th>
-                            <th style="text-align:center;">{T("S255")}</th>
-                            <th style="text-align:center;">{T("system")}</th>
-                            <th style="text-align:center;">{T("S247")}</th>
+                            <th class="text-center">{T("S129")}</th>
+                            <th class="text-center">{T("S255")}</th>
+                            <th class="text-center">{T("system")}</th>
+                            <th class="text-center">{T("S247")}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -283,10 +283,10 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                                             )}
                                         </td>
                                         <td>{e.name}</td>
-                                        <td style="text-align:center;">{e.displayName || "—"}</td>
-                                        <td style="text-align:center;">{e.supportedVersion ?? "—"}</td>
-                                        <td style="text-align:center;">{e.targetSystem ?? "—"}</td>
-                                        <td style="text-align:center;">{statusContent(e)}</td>
+                                        <td class="text-center">{e.displayName || "—"}</td>
+                                        <td class="text-center">{e.supportedVersion ?? "—"}</td>
+                                        <td class="text-center">{e.targetSystem ?? "—"}</td>
+                                        <td class="text-center">{statusContent(e)}</td>
                                     </tr>
                                 )
                             })
