@@ -1,0 +1,174 @@
+<svg
+  viewBox="0 -5 325 255"
+  xmlns="http://www.w3.org/2000/svg"
+  version="1.1"
+  class="jog-svg"
+>
+  <defs>
+    <filter id="f1" x="-1" y="-1" width="300%" height="300%">
+      <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3"/>
+      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="4"/>
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+    </filter>
+    <symbol id="HomeIcon" viewBox="0 0 20 18">
+      <path class="home" d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z" fill="black"/>
+      <path class="home" d="M0,10 l10-8.5 l10,8.5" stroke-width="1.5" fill="none"/>
+      <path class="home" d="M15,3 v2.8 l1,.8 v-3.6 z"/>
+    </symbol>
+  </defs>
+
+  {/* Home buttons */}
+  <g id="HomeAll" class="std">
+    <title>{T("P6")}</title>
+    <path class="std" d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z" fill="#f0f0f0"/>
+    <use x="3" y="217" width="20" height="18" href="#HomeIcon"/>
+  </g>
+
+  <g id="HomeX" class="std">
+    <title>{T("P7")}</title>
+    <path class="std" d="M10 57.5 h-10 v-57.5 h57.5 v10 a125,125 0 0,0 -47.5 47.5Z" fill="Khaki"/>
+    <use x="3" y="5" width="20" height="18" href="#HomeIcon"/>
+    <text x="25" y="20" class="home">X</text>
+  </g>
+
+  <g id="HomeY" class="std">
+    <title>{T("P8")}</title>
+    <path class="std" d="M230 57.5 h10 v-57.5 h-57.5 v10 a125,125 0 0,1 47.5 47.5z" fill="SteelBlue"/>
+    <use x="217" y="5" width="20" height="18" href="#HomeIcon"/>
+    <text x="202" y="20" class="home">Y</text>
+  </g>
+
+  <g id="HomeZ" class="std">
+    <title>{T("P9")}</title>
+    <path class="std" d="M230 182.5 h10 v57.5 h-57.5 v-10 a125,125 0 0,0 47.5 -47.5z" fill="DarkSeaGreen"/>
+    <use x="217" y="217" width="20" height="18" href="#HomeIcon"/>
+    <text x="202" y="232" class="home">Z</text>
+  </g>
+
+  {/* Jog circles */}
+  <g id="Jog100" fill="#c0c0c0" class="std">
+    <g id="V_top_100" transform="translate(120 120)"><path class="std" d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60,-67.07 z"/></g>
+    <g id="H_right_100" transform="translate(120 120)"><path class="std" d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"/></g>
+    <g id="V_bottom_100" transform="translate(120 120)"><path class="std" d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60,67.07 z"/></g>
+    <g id="H_left_100" transform="translate(120 120)"><path class="std" d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"/></g>
+  </g>
+
+  <g id="Jog10" fill="#d0d0d0" class="std">
+    <g id="V_top_10" transform="translate(120 120)"><path class="std" d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"/></g>
+    <g id="H_right_10" transform="translate(120 120)"><path class="std" d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"/></g>
+    <g id="V_bottom_10" transform="translate(120 120)"><path class="std" d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"/></g>
+    <g id="H_left_10" transform="translate(120 120)"><path class="std" d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"/></g>
+  </g>
+
+  <g id="Jog1" fill="#e0e0e0" class="std">
+    <g id="V_top_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"/></g>
+    <g id="H_right_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"/></g>
+    <g id="V_bottom_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"/></g>
+    <g id="H_left_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"/></g>
+  </g>
+
+  <g id="Jog0_1" fill="#f0f0f0" class="std">
+    <g id="V_top_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"/></g>
+    <g id="H_right_0_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"/></g>
+    <g id="V_bottom_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"/></g>
+    <g id="H_left_0_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"/></g>
+  </g>
+
+  {/* Labels des cercles */}
+  <g id="label_circle_0_1" style="opacity:0.2">
+    <circle class="scl" cx="144" cy="96" r="9.5"/>
+    <text class="scl" x="137" y="99" font-size="10">0.1</text>
+  </g>
+  <g id="label_circle_1" style="opacity:0.2">
+    <circle class="scl" cx="159.5" cy="80.5" r="10.5"/>
+    <text class="scl" x="155" y="85" font-size="14">1</text>
+  </g>
+  <g id="label_circle_10" style="opacity:0.2">
+    <circle class="scl" cx="175" cy="65" r="12"/>
+    <text class="scl" x="166" y="70" font-size="15">10</text>
+  </g>
+  <g id="label_circle_100" style="opacity:0.2">
+    <circle class="scl" cx="195" cy="45" r="15"/>
+    <text class="scl" x="182" y="50" font-size="15">100</text>
+  </g>
+
+  {/* Decoration */}
+  <g id="Decoration" pointer-events="none" fill-opacity=".6">
+    <path class="std" d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="SteelBlue"/>
+    <path class="std" d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z" fill="SteelBlue"/>
+    <path class="std" d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z" fill="Khaki"/>
+    <path class="std" d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z" fill="Khaki"/>
+    <text class="jog" x={pos_x_v_axis_label_top} y="36">{label_v_axis_top}</text>
+    <text class="jog" x={pos_x_v_axis_label_bottom} y="212">{label_v_axis_bottom}</text>
+    <text class="jog" x="27" y="124">{label_h_axis_left}</text>
+    <text class="jog" x="196" y="124">{label_h_axis_right}</text>
+  </g>
+
+  {/* Centre XY */}
+  <g id="posxy">
+    <title>{moveToTitleXY}</title>
+    <circle class="std" cx="120.2" cy="120.3" r="15"/>
+    <circle class="cross" cx="116" cy="120.3" r="4"/>
+    <line x1="116" y1="125.3" x2="116" y2="129" stroke="black" stroke-width="1"/>
+    <line x1="116" y1="115.3" x2="116" y2="111.6" stroke="black" stroke-width="1"/>
+    <line x1="121" y1="120.3" x2="124.7" y2="120.3" stroke="black" stroke-width="1"/>
+    <line x1="111" y1="120.3" x2="107.3" y2="120.3" stroke="black" stroke-width="1"/>
+    <text class="posscl" x="125" y="118">X</text>
+    <text class="posscl" x="125" y="130">Y</text>
+  </g>
+
+  {/* JogBar Z */}
+  <g id="JogBar" transform="translate(250,0)">
+    <g id="Z_top_100" fill="#d0d0d0" class="std">
+      <path class="std" d="M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"/>
+      <g id="z100" style="opacity:0.2"><circle class="scl" cx="20" cy="16" r="14"/><text class="scl" x="8" y="22" font-size="14">100</text></g>
+    </g>
+    <g id="Z_top_10" fill="#d0d0d0" class="std">
+      <rect class="std" x="0" y="32" width="40" height="30"/>
+      <g id="z10" style="opacity:0.2"><circle class="scl" cx="20" cy="47" r="12"/><text class="scl" x="11" y="53" font-size="15">10</text></g>
+    </g>
+    <g id="Z_top_1" fill="#e0e0e0" class="std">
+      <rect class="std" x="0" y="62" width="40" height="26"/>
+      <g id="z1" style="opacity:0.2"><circle class="scl" cx="20" cy="75" r="10.5"/><text class="scl" x="16" y="80" font-size="14">1</text></g>
+    </g>
+    <g id="ZSpace" fill="#000000" style="pointer-events:none;">
+      <rect class="std" x="0" y="112" width="40" height="16"/>
+    </g>
+    <g id="Z_top_0_1" fill="#f0f0f0" class="std">
+      <rect class="std" x="0" y="88" width="40" height="24"/>
+      <g id="z0_1" style="opacity:0.2"><circle class="scl" cx="20" cy="100" r="9.5"/><text class="scl" x="13.5" y="103.5" font-size="10">0.1</text></g>
+    </g>
+    <g id="Z_bottom_0_1" fill="#f0f0f0" class="std">
+      <rect class="std" x="0" y="128" width="40" height="24"/>
+    </g>
+    <g id="Z_bottom_1" fill="#e0e0e0" class="std">
+      <rect class="std" x="0" y="152" width="40" height="26"/>
+    </g>
+    <g id="Z_bottom_10" fill="#d0d0d0" class="std">
+      <rect class="std" x="0" y="178" width="40" height="30"/>
+    </g>
+    <g id="Z_bottom_100" fill="#d0d0d0" class="std">
+      <path class="std" d="M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"/>
+    </g>
+
+    <g id="+Z" fill-opacity=".6" pointer-events="none">
+      <path class="std" d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="DarkSeaGreen"/>
+      <text class="jog" x={pos_x_z_axis_label_top} y="36">{label_z_axis_top}</text>
+    </g>
+    <g id="-Z" fill-opacity=".6" pointer-events="none">
+      <path class="std" d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z" fill="DarkSeaGreen"/>
+      <text class="jog" x={pos_x_z_axis_label_bottom} y="210">{label_z_axis_bottom}</text>
+    </g>
+
+    <g id="posz">
+      <title>{moveToTitleZ}</title>
+      <rect class="movez" x="-1" y="110" width="42" height="20" rx="5"/>
+      <circle class="cross" cx="13" cy="120.3" r="4"/>
+      <line x1="13" y1="125.3" x2="13" y2="128.8" stroke="black" stroke-width="1"/>
+      <line x1="13" y1="115.3" x2="13" y2="111.6" stroke="black" stroke-width="1"/>
+      <line x1="4" y1="120.3" x2="8.7" y2="120.3" stroke="black" stroke-width="1"/>
+      <line x1="18" y1="120.3" x2="21.7" y2="120.3" stroke="black" stroke-width="1"/>
+      <text class="posscl" x="25" y="122">Z</text>
+    </g>
+  </g>
+</svg>

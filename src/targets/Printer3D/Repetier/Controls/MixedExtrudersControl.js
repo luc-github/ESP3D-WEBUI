@@ -18,13 +18,14 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { Plus, Minus, Lock, Unlock, Sliders } from "preact-feather"
+import { Plus, Minus, Lock, Unlock, Sliders, ChevronDown } from "preact-feather"
 import { useState } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../../../contexts"
 import { T } from "../../../../components/Translations"
 import { ButtonImg, Field } from "../../../../components/Controls"
 import { useHttpFn } from "../../../../hooks"
 import { espHttpURL } from "../../../../components/Helpers"
+import { ExtruderIcon } from "../../Controls/SimpleExtruderControl"
 
 const hasError = []
 
@@ -141,6 +142,7 @@ const MixedExtrudersControl = ({ feedrate }) => {
         )
     }
 
+    const [distDropOpen, setDistDropOpen] = useState(false)
     const [validation, setvalidation] = useState({
         message: null,
         valid: true,
@@ -205,20 +207,12 @@ const MixedExtrudersControl = ({ feedrate }) => {
                     return validation
                 }
                 return (
-                    <div class="mixed-extruder-control m-1">
-                        <div
-                            class="mixed-extruder-control-header"
-                            style={
-                                "background-color:" +
-                                mixedExtrudersWeight[index].color
-                            }
-                        >
-                            <div class="label">
-                                {String.fromCharCode(
-                                    65 + (index < 4 ? index : index + 3)
-                                )}
-                            </div>
-                        </div>
+                    <div class="mixed-extruder-control m-1" style={`--extruder-color: ${mixedExtrudersWeight[index].color}; --slider-val: ${item.value}%`}>
+                        <span class="mixed-extruder-letter">
+                            {String.fromCharCode(
+                                65 + (index < 4 ? index : index + 3)
+                            )}
+                        </span>
                         {mixedExtrudersWeight.length > 2 && (
                             <ButtonImg
                                 className={item.locked ? "btn-primary" : ""}
@@ -319,6 +313,7 @@ const MixedExtrudersControl = ({ feedrate }) => {
             >
                 <ButtonImg
                     tooltip
+                    className="jog-extrude-btn btn-primary"
                     icon={<Sliders />}
                     label={T("S43")}
                     data-tooltip={T("P107")}
@@ -337,37 +332,84 @@ const MixedExtrudersControl = ({ feedrate }) => {
                 class={
                     hasError.reduce((acc, cur) => acc || cur, false)
                         ? "d-none"
-                        : "extruder-extrude-controls-container m-2"
+                        : "divider full-width"
+                }
+            />
+            <div
+                class={
+                    hasError.reduce((acc, cur) => acc || cur, false)
+                        ? "d-none"
+                        : "mixed-extruder-distance-header"
                 }
             >
-                <Field
-                    inline
-                    label={T("P55")}
-                    id={"input-extruder-mixed"}
-                    type="number"
-                    value={extrudeDistance[0]}
-                    min="0"
-                    step="0.5"
-                    width="4rem"
-                    extra="dropList"
-                    append={T("P16")}
-                    options={distances}
-                    setValue={(val, update) => {
-                        if (!update) extrudeDistance[0] = val
-                        setvalidation(generateValidation(0))
-                    }}
-                    validation={validation}
-                />
+                {T("P128")}
             </div>
             <div
                 class={
                     hasError.reduce((acc, cur) => acc || cur, false)
                         ? "d-none"
-                        : "extruder-extrude-controls-container"
+                        : "extruder-extrude-controls-container m-1"
+                }
+            >
+                <ExtruderIcon />
+                <div class="jog-step-wrap">
+                    <input
+                        class="temp-input"
+                        type="number"
+                        min="0"
+                        step="0.5"
+                        value={extrudeDistance[0]}
+                        onInput={(e) => {
+                            extrudeDistance[0] = e.target.value
+                            setvalidation(generateValidation(0))
+                        }}
+                    />
+                    <span class="jog-step-unit">{T("P16")}</span>
+                </div>
+                {distances.length > 0 && (
+                    <div
+                        class="temp-preset-dropdown"
+                        tabIndex={-1}
+                        onBlur={(e) => {
+                            if (!e.currentTarget.contains(e.relatedTarget))
+                                setDistDropOpen(false)
+                        }}
+                    >
+                        <button
+                            class={"temp-preset-toggle" + (distDropOpen ? " active" : "")}
+                            onclick={() => setDistDropOpen(!distDropOpen)}
+                        >
+                            <ChevronDown size="0.7em" />
+                        </button>
+                        {distDropOpen && (
+                            <div class="temp-preset-list">
+                                {distances.map((d) => (
+                                    <button
+                                        class="temp-preset-item"
+                                        onclick={() => {
+                                            extrudeDistance[0] = d.value
+                                            setvalidation(generateValidation(0))
+                                            setDistDropOpen(false)
+                                        }}
+                                    >
+                                        {d.display}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+            <div
+                class={
+                    hasError.reduce((acc, cur) => acc || cur, false)
+                        ? "d-none"
+                        : "extruder-extrude-controls-container m-2"
                 }
             >
                 <ButtonImg
                     tooltip
+                    className="jog-extrude-btn btn-primary"
                     icon={<Plus />}
                     label={T("P53")}
                     data-tooltip={T("P53")}
@@ -389,6 +431,7 @@ const MixedExtrudersControl = ({ feedrate }) => {
                 />
                 <ButtonImg
                     tooltip
+                    className="jog-extrude-btn btn-primary"
                     icon={<Minus />}
                     label={T("P54")}
                     data-tooltip={T("P54")}

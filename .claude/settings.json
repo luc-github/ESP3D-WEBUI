@@ -31,7 +31,18 @@
       "Bash(grep -r \"extra.*scan\\\\|extra=.*scan\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src --include=*.js --include=*.jsx)",
       "Bash(grep -r \"ssid_sta\\\\|extra.*scan\" /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/src --include=*.json --include=*.js)",
       "Bash(xargs grep:*)",
-      "Bash(grep -r ssid_sta /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/config --include=*.json)"
+      "Bash(grep -r ssid_sta /c/Users/luc/Documents/GitHub/ESP3D-WEBUI/config --include=*.json)",
+      "Bash(grep -r extruderdistance /c/Users/luc/Documents/GitHub/ESP3D-WEBUI --include=*.json --include=*.js)",
+      "Bash(grep -r efeedrate /c/Users/luc/Documents/GitHub/ESP3D-WEBUI --include=*.json --include=*.js)",
+      "Bash(for f:*)",
+      "Bash(sed -i '/{ \"\"id\"\": \"\"Extruders\"\", \"\"name\"\": \"\"extruders\"\" },/d' \"$f\")",
+      "Bash(echo \"done: $f\")",
+      "Bash(sed -i 's/import { PositionsPanelElement } from \"\"..\\\\/..\\\\/..\\\\/components\\\\/Panels\\\\/Positions\"\"/import { PositionsPanelElement } from \"\"..\\\\/..\\\\/..\\\\/components\\\\/Panels\\\\/Positions\"\"\\\\nimport { ExtrudersPanelElement } from \"\"..\\\\/..\\\\/..\\\\/components\\\\/Panels\\\\/Extruders\"\"/' \"$f\")",
+      "Bash(sed -i 's/    PositionsPanelElement,$/    PositionsPanelElement,\\\\n    ExtrudersPanelElement,/' \"$f\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\luc\\Documents\\GitHub\\ESP3D-WEBUI",
+      "c:\\Users\\luc\\.claude\\projects\\c--Users-luc-Documents-GitHub-ESP3D-WEBUI\\memory"
     ]
   }
 }

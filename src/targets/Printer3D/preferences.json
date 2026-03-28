@@ -32,6 +32,20 @@
                 "label": "S93",
                 "value": true,
                 "depend": [{ "id": "showpositionspanel", "value": true }]
+            },
+            {
+                "id": "zeroaxiscmd",
+                "type": "text",
+                "label": "P129",
+                "value": "G92 #0",
+                "depend": [{ "id": "showpositionspanel", "value": true }]
+            },
+            {
+                "id": "zeroallcmd",
+                "type": "text",
+                "label": "P130",
+                "value": "G92 X0 Y0 Z0",
+                "depend": [{ "id": "showpositionspanel", "value": true }]
             }
         ],
         "status": [
@@ -708,6 +722,27 @@
                 "type": "text",
                 "label": "P13",
                 "value": "M84",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "xsteps",
+                "type": "text",
+                "label": "P125",
+                "value": "100;10;1;0.1",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "ysteps",
+                "type": "text",
+                "label": "P126",
+                "value": "100;10;1;0.1",
+                "depend": [{ "id": "showjogpanel", "value": true }]
+            },
+            {
+                "id": "zsteps",
+                "type": "text",
+                "label": "P127",
+                "value": "100;10;1;0.1",
                 "depend": [{ "id": "showjogpanel", "value": true }]
             }
      ,

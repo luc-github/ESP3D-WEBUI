@@ -1,0 +1,81 @@
+/* === Styles communs (user-select + pointer-events) === */
+.jog, .home, .scl, .posscl, .cross {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* === Textes === */
+text.jog {
+    font-weight: 900;
+    font-size: 11px;
+    fill: black;
+}
+
+text.home {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+text.scl {
+    stroke: white;
+    fill: white;
+}
+
+text.posscl {
+    font-weight: 200;
+    font-size: 8px;
+    stroke: black;
+    fill: black;
+}
+
+/* === Éléments interactifs standards === */
+.std, .movez {
+    stroke: black;
+    stroke-width: 1;
+    filter: url(#f1);
+}
+
+.path.std, rect.std, circle.std, path.std {
+    &:hover {
+        fill: orange;
+        cursor: pointer;
+    }
+}
+
+circle.std, rect.movez {
+    fill: #f06565;
+    fill-opacity: 1;
+}
+
+rect.movez:hover {
+    fill: orange;
+    cursor: pointer;
+}
+
+circle.scl {
+    fill: black;
+    fill-opacity: 0.5;
+    stroke: red;
+    stroke-width: 3;
+    filter: url(#f1);
+}
+
+circle.cross {
+    stroke: black;
+    fill-opacity: 0;
+    stroke-width: 2;
+}
+
+path.home {
+    stroke: black;
+}
+
+.pressedbutton {
+    fill: #ff7c26;
+    stroke: black;
+    stroke-width: 1;
+    cursor: pointer;
+}

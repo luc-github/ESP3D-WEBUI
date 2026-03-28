@@ -17,7 +17,7 @@ Jog.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
-import { Move, Crosshair, Home, ZapOff, Edit3 } from "preact-feather"
+import { Move, Crosshair, Home, ZapOff, Edit3, ChevronDown } from "preact-feather"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
@@ -34,7 +34,7 @@ import { useTargetContext } from "../../targets"
 import { SimpleExtruderControl } from "SubTargetDir"
 
 let currentFeedRate = []
-let jogDistance = 100
+const jogAxisStep = { X: null, Y: null, Z: null }
 let movetoX
 let movetoY
 let movetoZ
@@ -47,28 +47,76 @@ let currentButtonPressed
 //A separate control to avoid the full panel to be updated when the positions are updated
 const PositionsControls = () => {
     const { positions } = useTargetContext()
+    const { toasts } = useUiContext()
+    const { createNewRequest } = useHttpFn
+
+    const sendCommand = (cmd) => {
+        createNewRequest(
+            espHttpURL("command", { cmd }),
+            { method: "GET", echo: cmd },
+            {
+                onSuccess: () => {},
+                onFail: (err) => toasts.addToast({ content: err, type: "error" }),
+            }
+        )
+    }
+
+    const zeroAxis = (axis) => {
+        useUiContextFn.haptic()
+        const template = useUiContextFn.getValue("zeroaxiscmd") || "G92 #0"
+        sendCommand(template.replace("#", axis))
+    }
+
+    const zeroAll = () => {
+        useUiContextFn.haptic()
+        const cmd = useUiContextFn.getValue("zeroallcmd") || "G92 X0 Y0 Z0"
+        sendCommand(cmd)
+    }
+
     return (
-        <div class="jog-positions-ctrls">
-            <div class="jog-position-ctrl">
-                <div class="jog-position-header">X</div>
-                <div class="m-1 jog-position-value">{positions.x}</div>
+        <div class="dro-container">
+            <div class="dro-axes">
+                {["X", "Y", "Z"].map((axis) => (
+                    <div class="dro-axis">
+                        <div class="dro-header">
+                            <span class="dro-label">
+                                <Move size="0.9em" />
+                                {axis}
+                            </span>
+                            <button
+                                class="dro-zero-btn tooltip tooltip-top"
+                                data-tooltip={T("P129")}
+                                onclick={() => zeroAxis(axis)}
+                            >
+                                <Crosshair size="0.6em" />
+                            </button>
+                        </div>
+                        <div class="dro-value">
+                            {positions[axis.toLowerCase()]}
+                        </div>
+                        <div class="dro-target-row">
+                            <span class="dro-unit">{T("P16")}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
-            <div class="jog-position-ctrl">
-                <div class="jog-position-header">Y</div>
-                <div class="m-1 jog-position-value">{positions.y}</div>
-            </div>
-            <div class="jog-position-ctrl">
-                <div class="jog-position-header">Z</div>
-                <div class="m-1 jog-position-value">{positions.z}</div>
-            </div>
+            <ButtonImg
+                m1
+                icon={<Crosshair />}
+                label={T("P130")}
+                onclick={zeroAll}
+            />
         </div>
     )
 }
 
 const JogPanel = () => {
     const { modals, toasts, panels, shortcuts } = useUiContext()
-
+    const { temperatures } = useTargetContext()
     const { createNewRequest } = useHttpFn
+    const setExtruderFeedrateRef = useRef(null)
+    const extruderCount = temperatures?.T?.length || 0
+    const isMixedExtruder = !!useUiContextFn.getValue("ismixedextruder")
     const [isKeyboardEnabled, setIsKeyboardEnabled] = useState(
         shortcuts.enabled
     )
@@ -77,6 +125,81 @@ const JogPanel = () => {
         T("P20") + movetoX + "," + movetoY
     )
     const [moveToTitleZ, setMoveToTitleZ] = useState(T("P75") + movetoZ)
+
+    const getStepPresets = (id) => {
+        const v = useUiContextFn.getValue(id)
+        return v ? v.split(";") : []
+    }
+    const xStepPresets = getStepPresets("xsteps")
+    const yStepPresets = getStepPresets("ysteps")
+    const zStepPresets = getStepPresets("zsteps")
+    if (!jogAxisStep.X) jogAxisStep.X = xStepPresets.length ? parseFloat(xStepPresets[0]) : 1
+    if (!jogAxisStep.Y) jogAxisStep.Y = yStepPresets.length ? parseFloat(yStepPresets[0]) : 1
+    if (!jogAxisStep.Z) jogAxisStep.Z = zStepPresets.length ? parseFloat(zStepPresets[0]) : 1
+
+    const [xStep, setXStep] = useState(jogAxisStep.X)
+    const [yStep, setYStep] = useState(jogAxisStep.Y)
+    const [zStep, setZStep] = useState(jogAxisStep.Z)
+    const [xDropOpen, setXDropOpen] = useState(false)
+    const [yDropOpen, setYDropOpen] = useState(false)
+    const [zDropOpen, setZDropOpen] = useState(false)
+
+    const renderStepRow = (step, setStep, dropOpen, setDropOpen, presets, axisKey) => (
+        <div class="jog-axis-step">
+            <div class="jog-step-wrap">
+                <input
+                    class="temp-input"
+                    type="number"
+                    min="0.01"
+                    step="0.1"
+                    value={step}
+                    onInput={(e) => {
+                        const v = parseFloat(e.target.value)
+                        if (!isNaN(v) && v > 0) {
+                            jogAxisStep[axisKey] = v
+                            setStep(v)
+                        }
+                    }}
+                />
+                <span class="jog-step-unit">{T("P16")}</span>
+            </div>
+            {presets.length > 0 && (
+                <div
+                    class="temp-preset-dropdown"
+                    tabIndex={-1}
+                    onBlur={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget))
+                            setDropOpen(false)
+                    }}
+                >
+                    <button
+                        class={"temp-preset-toggle" + (dropOpen ? " active" : "")}
+                        onclick={() => setDropOpen(!dropOpen)}
+                    >
+                        <ChevronDown size="0.7em" />
+                    </button>
+                    {dropOpen && (
+                        <div class="temp-preset-list">
+                            {presets.map((v) => (
+                                <button
+                                    class="temp-preset-item"
+                                    onclick={() => {
+                                        const pv = parseFloat(v)
+                                        jogAxisStep[axisKey] = pv
+                                        setStep(pv)
+                                        setDropOpen(false)
+                                    }}
+                                >
+                                    {v}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    )
+
     const id = "jogPanel"
     console.log(id)
 
@@ -125,19 +248,20 @@ const JogPanel = () => {
             ? currentFeedRate["zfeedrate"]
             : currentFeedRate["xyfeedrate"]
         if (distance) movement = axis + distance
-        else movement = axis + jogDistance
+        else {
+            const step = axis.startsWith("Z")
+                ? jogAxisStep.Z
+                : axis.startsWith("Y")
+                ? jogAxisStep.Y
+                : jogAxisStep.X
+            movement = axis + (step || 1)
+        }
         let cmd = "G91\nG1 " + movement + " F" + feedrate + "\nG90"
         if (id && currentButtonPressed != id) {
             console.log(id, " is different than ", currentButtonPressed)
             return
         }
         SendCommand(cmd)
-    }
-
-    //click distance button
-    const onCheck = (e, distance) => {
-        e.target.blur()
-        jogDistance = distance
     }
 
     //mouse hover jog button
@@ -270,6 +394,9 @@ const JogPanel = () => {
             label: T("P11"),
             onClick: setFeedrateZ,
         },
+        ...(SimpleExtruderControl && !isMixedExtruder
+            ? [{ label: T("P50"), onClick: () => setExtruderFeedrateRef.current?.() }]
+            : []),
     ]
     let label_h_axis_left = ""
     let label_h_axis_right = ""
@@ -495,6 +622,7 @@ const JogPanel = () => {
                             </Button>
                             <Button
                                 m2
+                                success
                                 tooltip
                                 data-tooltip={T("P7")}
                                 id="btnHX"
@@ -520,6 +648,7 @@ const JogPanel = () => {
                             >
                                 -X
                             </Button>
+                            {renderStepRow(xStep, setXStep, xDropOpen, setXDropOpen, xStepPresets, "X")}
                         </div>
                         <div class="m-1 jog-buttons-container">
                             <Button
@@ -537,6 +666,7 @@ const JogPanel = () => {
                             </Button>
                             <Button
                                 m2
+                                success
                                 tooltip
                                 data-tooltip={T("P8")}
                                 id="btnHY"
@@ -562,6 +692,7 @@ const JogPanel = () => {
                             >
                                 -Y
                             </Button>
+                            {renderStepRow(yStep, setYStep, yDropOpen, setYDropOpen, yStepPresets, "Y")}
                         </div>
 
                         <div class="m-1 jog-buttons-container">
@@ -580,6 +711,7 @@ const JogPanel = () => {
                             </Button>
                             <Button
                                 m2
+                                success
                                 tooltip
                                 data-tooltip={T("P9")}
                                 id="btnHZ"
@@ -605,84 +737,7 @@ const JogPanel = () => {
                             >
                                 -Z
                             </Button>
-                        </div>
-                        <div class="m-1 p-2 jog-buttons-container">
-                            <div class="btn-group jog-distance-selector-container">
-                                <center class="jog-distance-selector-header">
-                                    mm
-                                </center>
-
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("P78")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_100"
-                                        name="select_distance"
-                                        value="100"
-                                        checked={jogDistance == 100}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 100)
-                                        }}
-                                    />
-                                    <label for="move_100">100</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("P78")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_10"
-                                        name="select_distance"
-                                        value="10"
-                                        checked={jogDistance == 10}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 10)
-                                        }}
-                                    />
-                                    <label for="move_10">10</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("P78")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_1"
-                                        name="select_distance"
-                                        value="1"
-                                        checked={jogDistance == 1}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 1)
-                                        }}
-                                    />
-                                    <label for="move_1">1</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("P78")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_0_1"
-                                        name="select_distance"
-                                        value="0.1"
-                                        checked={jogDistance == 0.1}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 0.1)
-                                        }}
-                                    />
-                                    <label class="last-button" for="move_0_1">
-                                        0.1
-                                    </label>
-                                </div>
-                            </div>
+                            {renderStepRow(zStep, setZStep, zDropOpen, setZDropOpen, zStepPresets, "Z")}
                         </div>
                     </div>
                 </div>
@@ -874,6 +929,7 @@ const JogPanel = () => {
                     <div class="jog-extra-buttons-container">
                         <Button
                             m1
+                            success
                             tooltip
                             data-tooltip={T("P6")}
                             id="btnHXYZ"
@@ -888,6 +944,7 @@ const JogPanel = () => {
                         </Button>
                         <Button
                             m1
+                            class="btn-warning"
                             tooltip
                             data-tooltip={moveToTitleXY}
                             id="btnMoveXY"
@@ -902,6 +959,7 @@ const JogPanel = () => {
                         </Button>
                         <Button
                             m1
+                            class="btn-warning"
                             tooltip
                             data-tooltip={moveToTitleZ}
                             id="btnMoveZ"
@@ -924,6 +982,7 @@ const JogPanel = () => {
                         data-tooltip={T("P13")}
                         icon={<ZapOff />}
                         id="btnMotorOff"
+                        className="btn-error"
                         onclick={(e) => {
                             useUiContextFn.haptic()
                             const cmds = useUiContextFn
@@ -936,7 +995,12 @@ const JogPanel = () => {
                         }}
                     />
                 </div>
-                {SimpleExtruderControl && <SimpleExtruderControl />}
+                {SimpleExtruderControl && !isMixedExtruder && (
+                    <SimpleExtruderControl
+                        extruderCount={extruderCount}
+                        setFeedrateRef={setExtruderFeedrateRef}
+                    />
+                )}
                 </div>
             </div>
         </div>

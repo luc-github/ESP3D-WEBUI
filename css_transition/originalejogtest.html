@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ESP3D Jog Panel - Test SVG Interactif</title>
+    <style>
+        /* ========== Styles inspirés de jog-optimized.css ========== */
+        .jog, .home, .scl, .posscl, .cross {
+            pointer-events: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        text.jog {
+            font-weight: 900;
+            font-size: 11px;
+            fill: black;
+        }
+
+        text.home {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        text.scl {
+            stroke: white;
+            fill: white;
+        }
+
+        text.posscl {
+            font-weight: 200;
+            font-size: 8px;
+            stroke: black;
+            fill: black;
+        }
+
+        .std, .movez {
+            stroke: black;
+            stroke-width: 1;
+            filter: url(#f1);
+        }
+
+        .path.std, rect.std, circle.std, path.std {
+            transition: fill 0.1s ease;
+        }
+        .path.std:hover, rect.std:hover, circle.std:hover, path.std:hover {
+            fill: orange !important;
+            cursor: pointer;
+        }
+
+        circle.std, rect.movez {
+            fill: #f06565;
+            fill-opacity: 1;
+        }
+
+        rect.movez:hover {
+            fill: orange;
+            cursor: pointer;
+        }
+
+        circle.scl {
+            fill: black;
+            fill-opacity: 0.5;
+            stroke: red;
+            stroke-width: 3;
+            filter: url(#f1);
+        }
+
+        circle.cross {
+            stroke: black;
+            fill-opacity: 0;
+            stroke-width: 2;
+        }
+
+        path.home {
+            stroke: black;
+        }
+
+        .pressedbutton {
+            fill: #ff7c26 !important;
+            stroke: black;
+            stroke-width: 1;
+            cursor: pointer;
+        }
+
+        /* Styles pour la page de test */
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+            background: #1e1e2f;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .test-container {
+            background: #2d2d3a;
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        .svg-wrapper {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        .controls-panel {
+            background: #252530;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 20px;
+            color: #eee;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .config-group {
+            background: #1e1e28;
+            border-radius: 8px;
+            padding: 10px 15px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .config-group h4 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            border-left: 3px solid #f0a500;
+            padding-left: 8px;
+        }
+
+        .config-group label {
+            display: block;
+            margin: 6px 0;
+            font-size: 0.85rem;
+        }
+
+        input, select {
+            background: #333;
+            border: 1px solid #555;
+            color: #eee;
+            padding: 4px 8px;
+            border-radius: 5px;
+            width: 100px;
+            margin-left: 8px;
+        }
+
+        button {
+            background: #f0a500;
+            border: none;
+            color: #1e1e2f;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        button:hover {
+            background: #ffb82e;
+        }
+
+        .log-area {
+            background: #0f0f17;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 12px;
+            border-radius: 8px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .clear-log {
+            background: #555;
+            color: white;
+            padding: 2px 12px;
+            font-size: 0.7rem;
+        }
+        hr {
+            border-color: #444;
+        }
+    </style>
+</head>
+<body>
+<div class="test-container">
+    <div class="svg-wrapper">
+        <!-- SVG complet avec IDs et classes, adapté pour le test -->
+        <svg viewBox="0 -5 325 255" xmlns="http://www.w3.org/2000/svg" version="1.1" class="jog-svg">
+            <defs>
+                <filter id="f1" x="-1" y="-1" width="300%" height="300%">
+                    <feOffset result="offOut" in="SourceAlpha" dx="3" dy="3"/>
+                    <feGaussianBlur result="blurOut" in="offOut" stdDeviation="4"/>
+                    <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+                </filter>
+                <symbol id="HomeIcon" viewBox="0 0 20 18">
+                    <path class="home" d="M3,18 v-8 l7,-6 l7,6 v8 h-5 v-6 h-4 v6 z" fill="black"/>
+                    <path class="home" d="M0,10 l10-8.5 l10,8.5" stroke-width="1.5" fill="none"/>
+                    <path class="home" d="M15,3 v2.8 l1,.8 v-3.6 z"/>
+                </symbol>
+            </defs>
+
+            <!-- Home buttons -->
+            <g id="HomeAll" class="std">
+                <title>Home All axes</title>
+                <path class="std" d="M10 182.5 h-10 v57.5 h57.5 v-10 a 125,125 0 0,1 -47.5 -47.5 Z" fill="#f0f0f0"/>
+                <use x="3" y="217" width="20" height="18" href="#HomeIcon"/>
+            </g>
+
+            <g id="HomeX" class="std">
+                <title>Home X</title>
+                <path class="std" d="M10 57.5 h-10 v-57.5 h57.5 v10 a125,125 0 0,0 -47.5 47.5Z" fill="Khaki"/>
+                <use x="3" y="5" width="20" height="18" href="#HomeIcon"/>
+                <text x="25" y="20" class="home">X</text>
+            </g>
+
+            <g id="HomeY" class="std">
+                <title>Home Y</title>
+                <path class="std" d="M230 57.5 h10 v-57.5 h-57.5 v10 a125,125 0 0,1 47.5 47.5z" fill="SteelBlue"/>
+                <use x="217" y="5" width="20" height="18" href="#HomeIcon"/>
+                <text x="202" y="20" class="home">Y</text>
+            </g>
+
+            <g id="HomeZ" class="std">
+                <title>Home Z</title>
+                <path class="std" d="M230 182.5 h10 v57.5 h-57.5 v-10 a125,125 0 0,0 47.5 -47.5z" fill="DarkSeaGreen"/>
+                <use x="217" y="217" width="20" height="18" href="#HomeIcon"/>
+                <text x="202" y="232" class="home">Z</text>
+            </g>
+
+            <!-- Jog circles -->
+            <g id="Jog100" fill="#c0c0c0" class="std">
+                <g id="V_top_100" transform="translate(120 120)"><path class="std" d="M-60 -67.07 L-75.93,-83 A112.5,112.5 0 0,1 75,-83 L60,-67.07 A90,90 0 0,0 -60,-67.07 z"/></g>
+                <g id="H_right_100" transform="translate(120 120)"><path class="std" d="M67.07,-60 L83,-75.93 A112.5,112.5 0 0,1 83,75.93 L67.07,60 A90,90 0 0,0 67.07,-60"/></g>
+                <g id="V_bottom_100" transform="translate(120 120)"><path class="std" d="M-60,67.07 L-75.93,83 A112.5,112.5 0 0,0 75,83 L60,67.07 A90,90 0 0,1 -60,67.07 z"/></g>
+                <g id="H_left_100" transform="translate(120 120)"><path class="std" d="M-67.07,-60 L-83,-75.93 A112.5,112.5 0 0,0 -83,75.93 L-67.07,60 A90,90 0 0,1 -67.07,-60 z"/></g>
+            </g>
+
+            <g id="Jog10" fill="#d0d0d0" class="std">
+                <g id="V_top_10" transform="translate(120 120)"><path class="std" d="M-44.06 -51.13 L-60,-67.07 A90,90 0 0,1 60,-67 L44.06,-51.13 A67.5,67.5 0 0,0 -44.06,-51.13 z"/></g>
+                <g id="H_right_10" transform="translate(120 120)"><path class="std" d="M51.13 44.06 L67.07,60 A90,90 0 0,0 67.07,-60 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 z"/></g>
+                <g id="V_bottom_10" transform="translate(120 120)"><path class="std" d="M-44.06 51.13 L-60,67.07 A90,90 0 0,0 60,67 L44.06,51.13 A67.5,67.5 0 0,1 -44.06,51.13 z"/></g>
+                <g id="H_left_10" transform="translate(120 120)"><path class="std" d="M-51.13 44.06 L-67.07,60 A90,90 0 0,1 -67.07,-60 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 z"/></g>
+            </g>
+
+            <g id="Jog1" fill="#e0e0e0" class="std">
+                <g id="V_top_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 L-44.06,-51.13 A67.5,67.5 0 0,1 44.06,-51.13 L28.09,-35.16 A45,45 0 0,0 -28.09,-35.16 z"/></g>
+                <g id="H_right_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 L51.13,-44.06 A67.5,67.5 0 0,1 51.13,44.06 L35.16,28.09 A45,45 0 0,0 35.16,-28.09 z"/></g>
+                <g id="V_bottom_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 L-44.06,51.13 A67.5,67.5 0 0,0 44.06,51.13 L28.09,35.16 A45,45 0 0,1 -28.09,35.16 z"/></g>
+                <g id="H_left_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 L-51.13,-44.06 A67.5,67.5 0 0,0 -51.13,44.06 L-35.16,28.09 A45,45 0 0,1 -35.16,-28.09 z"/></g>
+            </g>
+
+            <g id="Jog0_1" fill="#f0f0f0" class="std">
+                <g id="V_top_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 -35.16 A45,45 0 0,1 29.09,-35.16 L0,-7.07 z"/></g>
+                <g id="H_right_0_1" transform="translate(120 120)"><path class="std" d="M35.16 -28.09 A45,45 0 0,1 35.16,28.09 L7.07,0 z"/></g>
+                <g id="V_bottom_0_1" transform="translate(120 120)"><path class="std" d="M-28.09 35.16 A45,45 0 0,0 29.09,35.16 L0,7.07 z"/></g>
+                <g id="H_left_0_1" transform="translate(120 120)"><path class="std" d="M-35.16 -28.09 A45,45 0 0,0 -35.16,28.09 L-7.07,0 z"/></g>
+            </g>
+
+            <!-- Labels des cercles -->
+            <g id="label_circle_0_1" style="opacity:0.2">
+                <circle class="scl" cx="144" cy="96" r="9.5"/>
+                <text class="scl" x="140" y="100" font-size="10">0.1</text>
+            </g>
+            <g id="label_circle_1" style="opacity:0.2">
+                <circle class="scl" cx="159.5" cy="80.5" r="10.5"/>
+                <text class="scl" x="157" y="86" font-size="14">1</text>
+            </g>
+            <g id="label_circle_10" style="opacity:0.2">
+                <circle class="scl" cx="175" cy="65" r="12"/>
+                <text class="scl" x="169.5" y="70" font-size="15">10</text>
+            </g>
+            <g id="label_circle_100" style="opacity:0.2">
+                <circle class="scl" cx="195" cy="45" r="15"/>
+                <text class="scl" x="185" y="50" font-size="15">100</text>
+            </g>
+
+            <!-- Decoration (axes direction texts) -->
+            <g id="Decoration" pointer-events="none" fill-opacity=".6">
+                <path class="std" d="M120,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="SteelBlue"/>
+                <path class="std" d="M120,220 l17,-17 h-10 v-11 h-14 v11 h-10 z" fill="SteelBlue"/>
+                <path class="std" d="M20,120 l17,17 v-10 h11 v-14 h-11 v-10 z" fill="Khaki"/>
+                <path class="std" d="M220,120 l-17,-17 v10 h-11 v14 h11 v10 z" fill="Khaki"/>
+                <text id="labelVTop" class="jog" x="113" y="36">+Y</text>
+                <text id="labelVBottom" class="jog" x="114" y="212">-Y</text>
+                <text id="labelHLeft" class="jog" x="29" y="124">-X</text>
+                <text id="labelHRight" class="jog" x="200" y="124">+X</text>
+            </g>
+
+            <!-- Centre XY -->
+            <g id="posxy">
+                <title id="posxyTitle">Move to 0,0</title>
+                <circle class="std" cx="120.2" cy="120.3" r="15"/>
+                <circle class="cross" cx="116" cy="120.3" r="4"/>
+                <line x1="116" y1="125.3" x2="116" y2="129" stroke="black" stroke-width="1"/>
+                <line x1="116" y1="115.3" x2="116" y2="111.6" stroke="black" stroke-width="1"/>
+                <line x1="121" y1="120.3" x2="124.7" y2="120.3" stroke="black" stroke-width="1"/>
+                <line x1="111" y1="120.3" x2="107.3" y2="120.3" stroke="black" stroke-width="1"/>
+                <text class="posscl" x="125" y="118">X</text>
+                <text class="posscl" x="125" y="130">Y</text>
+            </g>
+
+            <!-- JogBar Z -->
+            <g id="JogBar" transform="translate(250,0)">
+                <g id="Z_top_100" fill="#d0d0d0" class="std">
+                    <path class="std" d="M5,0 h30 a5,5 0 0,1 5,5 v27 h-40 v-27 a5,5 0 0,1 5,-5 z"/>
+                    <g id="z100" style="opacity:0.2"><circle class="scl" cx="20" cy="16" r="14"/><text class="scl" x="12" y="22" font-size="14">100</text></g>
+                </g>
+                <g id="Z_top_10" fill="#d0d0d0" class="std">
+                    <rect class="std" x="0" y="32" width="40" height="30"/>
+                    <g id="z10" style="opacity:0.2"><circle class="scl" cx="20" cy="47" r="12"/><text class="scl" x="15" y="53" font-size="15">10</text></g>
+                </g>
+                <g id="Z_top_1" fill="#e0e0e0" class="std">
+                    <rect class="std" x="0" y="62" width="40" height="26"/>
+                    <g id="z1" style="opacity:0.2"><circle class="scl" cx="20" cy="75" r="10.5"/><text class="scl" x="18" y="80" font-size="14">1</text></g>
+                </g>
+                <g id="ZSpace" fill="#000000" style="pointer-events:none;">
+                    <rect class="std" x="0" y="112" width="40" height="16"/>
+                </g>
+                <g id="Z_top_0_1" fill="#f0f0f0" class="std">
+                    <rect class="std" x="0" y="88" width="40" height="24"/>
+                    <g id="z0_1" style="opacity:0.2"><circle class="scl" cx="20" cy="100" r="9.5"/><text class="scl" x="15" y="103.5" font-size="10">0.1</text></g>
+                </g>
+                <g id="Z_bottom_0_1" fill="#f0f0f0" class="std">
+                    <rect class="std" x="0" y="128" width="40" height="24"/>
+                </g>
+                <g id="Z_bottom_1" fill="#e0e0e0" class="std">
+                    <rect class="std" x="0" y="152" width="40" height="26"/>
+                </g>
+                <g id="Z_bottom_10" fill="#d0d0d0" class="std">
+                    <rect class="std" x="0" y="178" width="40" height="30"/>
+                </g>
+                <g id="Z_bottom_100" fill="#d0d0d0" class="std">
+                    <path class="std" d="M0,208 h40 v27 a5,5 0 0,1 -5,5 h-30 a5,5 0 0,1 -5,-5 z"/>
+                </g>
+
+                <g id="+Z" fill-opacity=".6" pointer-events="none">
+                    <path class="std" d="M50,20 l17,17 h-10 v11 h-14 v-11 h-10 z" fill="DarkSeaGreen"/>
+                    <text id="labelZTop" class="jog" x="44" y="36">-Z</text>
+                </g>
+                <g id="-Z" fill-opacity=".6" pointer-events="none">
+                    <path class="std" d="M50,220 l-17,-17 h10 v-11 h14 v11 h10 z" fill="DarkSeaGreen"/>
+                    <text id="labelZBottom" class="jog" x="44" y="210">+Z</text>
+                </g>
+
+                <g id="posz">
+                    <title id="poszTitle">Move to 0</title>
+                    <rect class="movez" x="-1" y="110" width="42" height="20" rx="5"/>
+                    <circle class="cross" cx="13" cy="120.3" r="4"/>
+                    <line x1="13" y1="125.3" x2="13" y2="128.8" stroke="black" stroke-width="1"/>
+                    <line x1="13" y1="115.3" x2="13" y2="111.6" stroke="black" stroke-width="1"/>
+                    <line x1="4" y1="120.3" x2="8.7" y2="120.3" stroke="black" stroke-width="1"/>
+                    <line x1="18" y1="120.3" x2="21.7" y2="120.3" stroke="black" stroke-width="1"/>
+                    <text class="posscl" x="25" y="122">Z</text>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div class="controls-panel">
+        <div class="config-group">
+            <h4>🔄 Orientation axes</h4>
+            <label><input type="checkbox" id="swapXY"> Swap X/Y</label>
+            <label><input type="checkbox" id="invertX"> Inverser X</label>
+            <label><input type="checkbox" id="invertY"> Inverser Y</label>
+            <label><input type="checkbox" id="invertZ"> Inverser Z</label>
+            <button id="refreshAxes">Appliquer orientation</button>
+        </div>
+        <div class="config-group">
+            <h4>⚙️ Feedrate & Positions</h4>
+            <label>XY Feedrate: <input type="number" id="xyFeed" value="1000" step="50"></label>
+            <label>Z Feedrate: <input type="number" id="zFeed" value="500" step="50"></label>
+            <label>MoveTo X: <input type="number" id="moveX" value="0" step="1"></label>
+            <label>MoveTo Y: <input type="number" id="moveY" value="0" step="1"></label>
+            <label>MoveTo Z: <input type="number" id="moveZ" value="0" step="1"></label>
+        </div>
+        <div class="config-group">
+            <h4>📦 Pas de jog (mm)</h4>
+            <label>Step X: <input type="number" id="stepX" value="1" step="0.1" min="0.01"></label>
+            <label>Step Y: <input type="number" id="stepY" value="1" step="0.1" min="0.01"></label>
+            <label>Step Z: <input type="number" id="stepZ" value="1" step="0.1" min="0.01"></label>
+        </div>
+    </div>
+
+    <div class="log-area">
+        <div class="log-header">
+            <span>📡 Console de commandes (simulation)</span>
+            <button class="clear-log" id="clearLog">Effacer logs</button>
+        </div>
+        <div id="logMessages"></div>
+    </div>
+</div>
+
+<script>
+    // Variables globales de configuration (copie de la logique Jog.js)
+    let H_axis = "X";
+    let V_axis = "Y";
+    let H_axis_left_dir = "-";
+    let H_axis_right_dir = "+";
+    let V_axis_top_dir = "+";
+    let V_axis_bottom_dir = "-";
+    let Z_axis = "Z";
+    let Z_axis_top_dir = "-";
+    let Z_axis_bottom_dir = "+";
+    
+    // Feedrates et positions cibles
+    let currentFeedRate = { xyfeedrate: 1000, zfeedrate: 500 };
+    let movetoX = 0, movetoY = 0, movetoZ = 0;
+    
+    // Pas de jog (valeurs par défaut)
+    let jogAxisStep = { X: 1, Y: 1, Z: 1 };
+    
+    let currentButtonPressed = null;
+    
+    // Helper pour log dans la console et dans le panneau
+    function addLog(message) {
+        console.log(message);
+        const logDiv = document.getElementById('logMessages');
+        const entry = document.createElement('div');
+        entry.textContent = `> ${new Date().toLocaleTimeString()} : ${message}`;
+        logDiv.appendChild(entry);
+        entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    function clearLog() {
+        document.getElementById('logMessages').innerHTML = '';
+        addLog('Log effacé.');
+    }
+    
+    // Envoi simulé de commande
+    function SendCommand(cmd) {
+        addLog(`📨 COMMANDE : ${cmd}`);
+    }
+    
+    // Home
+    function sendHomeCommand(axis, id) {
+        const homeCmd = axis ? `G28 ${axis}` : "G28";
+        addLog(`🏠 HOME ${axis || 'ALL'} → ${homeCmd}`);
+        onOut(id);
+        if (id && currentButtonPressed !== id) return;
+        SendCommand(homeCmd);
+    }
+    
+    // Jog
+    function sendJogCommand(axis, id, distance) {
+        let movement;
+        let feedrate = axis.startsWith("Z") ? currentFeedRate.zfeedrate : currentFeedRate.xyfeedrate;
+        if (distance) {
+            movement = axis + distance;
+        } else {
+            let step = axis.startsWith("Z") ? jogAxisStep.Z : (axis.startsWith("Y") ? jogAxisStep.Y : jogAxisStep.X);
+            movement = axis + (step || 1);
+        }
+        const cmd = `G91\nG1 ${movement} F${feedrate}\nG90`;
+        addLog(`🕹️ JOG ${movement} (F${feedrate}) → ${cmd.replace(/\n/g, ' ; ')}`);
+        onOut(id);
+        if (id && currentButtonPressed !== id) return;
+        SendCommand(cmd);
+    }
+    
+    // Move to position (centre XY ou Z)
+    function sendMoveCommand(buttonId, id) {
+        onOut(buttonId);
+        if (id && currentButtonPressed !== id) return;
+        let cmd;
+        if (buttonId === "posxy") {
+            cmd = `G1 X${movetoX} Y${movetoY} F${currentFeedRate.xyfeedrate}`;
+            addLog(`🎯 Move to XY (${movetoX},${movetoY}) → ${cmd}`);
+        } else {
+            cmd = `G1 Z${movetoZ} F${currentFeedRate.zfeedrate}`;
+            addLog(`🎯 Move to Z=${movetoZ} → ${cmd}`);
+        }
+        SendCommand(cmd);
+    }
+    
+    // UI pressed visual
+    function onMouseDown(id) {
+        currentButtonPressed = id;
+        const el = document.getElementById(id);
+        if (el) {
+            const targetElem = id === "posz" ? el.querySelector(".movez") : el.querySelector(".std");
+            if (targetElem) {
+                targetElem.classList.add("pressedbutton");
+                if (id === "posz") targetElem.classList.remove("movez");
+                else targetElem.classList.remove("std");
+            }
+        }
+    }
+    
+    function onOut(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            const pressed = el.querySelector(".pressedbutton");
+            if (pressed) {
+                if (id === "posz") pressed.classList.add("movez");
+                else pressed.classList.add("std");
+                pressed.classList.remove("pressedbutton");
+            }
+        }
+    }
+    
+    function onHoverJog(labelId) {
+        const lbl = document.getElementById(labelId);
+        if (lbl) lbl.style.opacity = "1";
+    }
+    
+    function onOutJog(labelId, buttonId) {
+        const lbl = document.getElementById(labelId);
+        if (lbl) lbl.style.opacity = "0.2";
+        onOut(buttonId);
+    }
+    
+    // Mise à jour des directions et labels SVG selon paramètres utilisateur
+    function updateAxesAndLabels() {
+        const swap = document.getElementById('swapXY').checked;
+        const invX = document.getElementById('invertX').checked;
+        const invY = document.getElementById('invertY').checked;
+        const invZ = document.getElementById('invertZ').checked;
+        
+        if (swap) {
+            H_axis = "Y";
+            V_axis = "X";
+        } else {
+            H_axis = "X";
+            V_axis = "Y";
+        }
+        
+        // Directions horizontales (H)
+        if (invX) {
+            if (swap) {
+                H_axis_left_dir = "+";
+                H_axis_right_dir = "-";
+            } else {
+                H_axis_left_dir = "+";
+                H_axis_right_dir = "-";
+            }
+        } else {
+            if (swap) {
+                H_axis_left_dir = "-";
+                H_axis_right_dir = "+";
+            } else {
+                H_axis_left_dir = "-";
+                H_axis_right_dir = "+";
+            }
+        }
+        
+        // Directions verticales (V)
+        if (invY) {
+            if (swap) {
+                V_axis_top_dir = "-";
+                V_axis_bottom_dir = "+";
+            } else {
+                V_axis_top_dir = "-";
+                V_axis_bottom_dir = "+";
+            }
+        } else {
+            if (swap) {
+                V_axis_top_dir = "+";
+                V_axis_bottom_dir = "-";
+            } else {
+                V_axis_top_dir = "+";
+                V_axis_bottom_dir = "-";
+            }
+        }
+        
+        // Z inversions
+        if (invZ) {
+            Z_axis_top_dir = "+";
+            Z_axis_bottom_dir = "-";
+        } else {
+            Z_axis_top_dir = "-";
+            Z_axis_bottom_dir = "+";
+        }
+        
+        // Mise à jour des textes SVG
+        document.getElementById('labelHLeft').textContent = H_axis_left_dir + H_axis;
+        document.getElementById('labelHRight').textContent = H_axis_right_dir + H_axis;
+        document.getElementById('labelVTop').textContent = V_axis_top_dir + V_axis;
+        document.getElementById('labelVBottom').textContent = V_axis_bottom_dir + V_axis;
+        document.getElementById('labelZTop').textContent = Z_axis_top_dir + Z_axis;
+        document.getElementById('labelZBottom').textContent = Z_axis_bottom_dir + Z_axis;
+        
+        // Mise à jour des titres des centres (moveTo positions)
+        document.getElementById('posxyTitle').textContent = `Move to X${movetoX} Y${movetoY}`;
+        document.getElementById('poszTitle').textContent = `Move to Z${movetoZ}`;
+        
+        // Re-attacher events ? Non, les handlers utilisent les variables globales mises à jour, donc les prochains clics utiliseront les nouvelles directions.
+        addLog(`Orientation appliquée : H=${H_axis_left_dir}${H_axis}/${H_axis_right_dir}${H_axis} | V=${V_axis_top_dir}${V_axis}/${V_axis_bottom_dir}${V_axis} | Z=${Z_axis_top_dir}${Z_axis}/${Z_axis_bottom_dir}${Z_axis}`);
+    }
+    
+    // Mise à jour des feedrates / positions depuis les inputs
+    function updateSettings() {
+        currentFeedRate.xyfeedrate = parseFloat(document.getElementById('xyFeed').value) || 1000;
+        currentFeedRate.zfeedrate = parseFloat(document.getElementById('zFeed').value) || 500;
+        movetoX = parseFloat(document.getElementById('moveX').value) || 0;
+        movetoY = parseFloat(document.getElementById('moveY').value) || 0;
+        movetoZ = parseFloat(document.getElementById('moveZ').value) || 0;
+        jogAxisStep.X = parseFloat(document.getElementById('stepX').value) || 1;
+        jogAxisStep.Y = parseFloat(document.getElementById('stepY').value) || 1;
+        jogAxisStep.Z = parseFloat(document.getElementById('stepZ').value) || 1;
+        document.getElementById('posxyTitle').textContent = `Move to X${movetoX} Y${movetoY}`;
+        document.getElementById('poszTitle').textContent = `Move to Z${movetoZ}`;
+        addLog(`Paramètres : XY feed=${currentFeedRate.xyfeedrate}, Z feed=${currentFeedRate.zfeedrate}, MoveTo (${movetoX},${movetoY},${movetoZ}), Steps (${jogAxisStep.X},${jogAxisStep.Y},${jogAxisStep.Z})`);
+    }
+    
+    // Attacher tous les événements aux éléments SVG
+    function attachEvents() {
+        // helpers d'attachement
+        const attach = (id, handlers) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (handlers.down) el.addEventListener('mousedown', handlers.down);
+            if (handlers.up) el.addEventListener('mouseup', handlers.up);
+            if (handlers.out) el.addEventListener('mouseout', handlers.out);
+            if (handlers.over) el.addEventListener('mouseover', handlers.over);
+        };
+        
+        // Home
+        attach("HomeAll", { down: () => onMouseDown("HomeAll"), up: () => sendHomeCommand("", "HomeAll"), out: () => onOut("HomeAll") });
+        attach("HomeX", { down: () => onMouseDown("HomeX"), up: () => sendHomeCommand("X", "HomeX"), out: () => onOut("HomeX") });
+        attach("HomeY", { down: () => onMouseDown("HomeY"), up: () => sendHomeCommand("Y", "HomeY"), out: () => onOut("HomeY") });
+        attach("HomeZ", { down: () => onMouseDown("HomeZ"), up: () => sendHomeCommand("Z", "HomeZ"), out: () => onOut("HomeZ") });
+        
+        // Jog circles avec taille et direction dynamiques
+        const jogSizes = ['100', '10', '1', '0_1'];
+        const getDirections = () => [
+            { prefix: 'V_top',    axis: V_axis, dist: (s) => V_axis_top_dir + s.replace('_', '.') },
+            { prefix: 'H_right',  axis: H_axis, dist: (s) => H_axis_right_dir + s.replace('_', '.') },
+            { prefix: 'V_bottom', axis: V_axis, dist: (s) => V_axis_bottom_dir + s.replace('_', '.') },
+            { prefix: 'H_left',   axis: H_axis, dist: (s) => H_axis_left_dir + s.replace('_', '.') },
+        ];
+        
+        function refreshJogEvents() {
+            // On retire d'abord les anciens pour éviter les doublons (simple: on supprime tous les écouteurs connus? on peut réattacher en boucle en les remplaçant)
+            // Pour la simplicité, on va détruire et réattacher par clonage ou on utilise une approche avec des closures? 
+            // Méthode: pour chaque élément, on clone et remplace pour reset les events.
+            const elementsToRefresh = [];
+            jogSizes.forEach(size => {
+                getDirections().forEach(dir => {
+                    elementsToRefresh.push(`${dir.prefix}_${size}`);
+                });
+            });
+            elementsToRefresh.forEach(id => {
+                const old = document.getElementById(id);
+                if (old) {
+                    const clone = old.cloneNode(true);
+                    old.parentNode.replaceChild(clone, old);
+                }
+            });
+            // puis réattacher
+            jogSizes.forEach(size => {
+                getDirections().forEach(dir => {
+                    const btnId = `${dir.prefix}_${size}`;
+                    const labelId = size === '0_1' ? 'label_circle_0_1' : `label_circle_${size}`;
+                    attach(btnId, {
+                        down: () => onMouseDown(btnId),
+                        up: () => sendJogCommand(dir.axis, btnId, dir.dist(size)),
+                        out: () => onOutJog(labelId, btnId),
+                        over: () => onHoverJog(labelId)
+                    });
+                });
+            });
+        }
+        
+        // Z bar
+        const zDirections = [
+            { id: 'Z_top_100',    dist: () => Z_axis_top_dir + '100' },
+            { id: 'Z_top_10',     dist: () => Z_axis_top_dir + '10' },
+            { id: 'Z_top_1',      dist: () => Z_axis_top_dir + '1' },
+            { id: 'Z_top_0_1',    dist: () => Z_axis_top_dir + '0.1' },
+            { id: 'Z_bottom_0_1', dist: () => Z_axis_bottom_dir + '0.1' },
+            { id: 'Z_bottom_1',   dist: () => Z_axis_bottom_dir + '1' },
+            { id: 'Z_bottom_10',  dist: () => Z_axis_bottom_dir + '10' },
+            { id: 'Z_bottom_100', dist: () => Z_axis_bottom_dir + '100' },
+        ];
+        
+        function refreshZEvents() {
+            zDirections.forEach(z => {
+                const labelId = z.id.includes('100') ? 'z100' : (z.id.includes('10') ? 'z10' : (z.id.includes('1') && !z.id.includes('0_1') ? 'z1' : 'z0_1'));
+                attach(z.id, {
+                    down: () => onMouseDown(z.id),
+                    up: () => sendJogCommand(Z_axis, z.id, z.dist()),
+                    out: () => onOutJog(labelId, z.id),
+                    over: () => onHoverJog(labelId)
+                });
+            });
+        }
+        
+        // Centre XY et Z
+        attach("posxy", { down: () => onMouseDown("posxy"), up: () => sendMoveCommand("posxy", "posxy"), out: () => onOut("posxy"), over: () => onHoverJog("posxy") });
+        attach("posz", { down: () => onMouseDown("posz"), up: () => sendMoveCommand("posz", "posz"), out: () => onOut("posz"), over: () => onHoverJog("posz") });
+        
+        refreshJogEvents();
+        refreshZEvents();
+        
+        // Stocker les fonctions pour mise à jour lors du changement d'axes
+        window.refreshAllEvents = () => {
+            refreshJogEvents();
+            refreshZEvents();
+        };
+    }
+    
+    // Initialisation
+    function init() {
+        updateSettings();
+        updateAxesAndLabels();
+        attachEvents();
+        
+        // Écouteurs des paramètres
+        document.getElementById('refreshAxes').addEventListener('click', () => {
+            updateAxesAndLabels();
+            window.refreshAllEvents();
+        });
+        document.getElementById('clearLog').addEventListener('click', clearLog);
+        const inputs = ['xyFeed','zFeed','moveX','moveY','moveZ','stepX','stepY','stepZ'];
+        inputs.forEach(id => {
+            document.getElementById(id).addEventListener('change', updateSettings);
+            document.getElementById(id).addEventListener('input', updateSettings);
+        });
+        
+        addLog("✅ Interface de test SVG chargée – toutes les commandes sont simulées dans la console et ici.");
+    }
+    
+    window.onload = init;
+</script>
+</body>
+</html>

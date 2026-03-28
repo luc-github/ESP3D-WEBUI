@@ -285,7 +285,7 @@ const ExtrudersPanelElement = {
     content: <ExtrudersPanel />,
     name: "P36",
     icon: "Extruder",
-    show: "showextruderspanel",
+    show: "ismixedextruder",
     onstart: "openextrudersonstart",
     settingid: "extruders",
     hasMenu: true,

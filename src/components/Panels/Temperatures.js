@@ -127,7 +127,7 @@ const TemperaturesControls = () => {
 
 // ─── Live display (isolated — re-renders on every temp tick) ─────────────────
 // Renders the full visual block: header (label+dot), value, target row, track
-const TempLiveDisplay = ({ tool, index, size, maxTemp }) => {
+const TempLiveDisplay = ({ tool, index, size, maxTemp, onOff }) => {
     const { temperatures } = useTargetContext()
     const temp = temperatures[tool] && temperatures[tool][index]
     if (!temp) return null
@@ -170,7 +170,17 @@ const TempLiveDisplay = ({ tool, index, size, maxTemp }) => {
                 ) : (
                     <div class="temp-target" />
                 )}
-                <div class="temp-unit">{T("P72")}</div>
+                {target > 0 && onOff ? (
+                    <button
+                        class="temp-set-btn temp-off-btn tooltip tooltip-top"
+                        data-tooltip={T("P38")}
+                        onclick={onOff}
+                    >
+                        <Power size="0.8em" />
+                    </button>
+                ) : (
+                    <div class="temp-unit">{T("P72")}</div>
+                )}
             </div>
             <div class="temp-track">
                 <div
@@ -218,9 +228,17 @@ const TemperatureCard = ({ tool, index, size }) => {
 
     const presets = preheatList(tool)
 
+    const handleOff = editable
+        ? (e) => {
+              useUiContextFn.haptic()
+              e.currentTarget.blur()
+              sendCommand(stopcmds[key])
+          }
+        : null
+
     return (
         <div class="temp-cell">
-            <TempLiveDisplay tool={tool} index={index} size={size} maxTemp={max} />
+            <TempLiveDisplay tool={tool} index={index} size={size} maxTemp={max} onOff={handleOff} />
             {editable && (
                 <div class="temp-input-wrap">
                     <input
@@ -233,7 +251,14 @@ const TemperatureCard = ({ tool, index, size }) => {
                         onInput={(e) => setInputVal(e.target.value)}
                     />
                     {presets.length > 0 && (
-                        <div class="temp-preset-dropdown">
+                        <div
+                            class="temp-preset-dropdown"
+                            tabIndex={-1}
+                            onBlur={(e) => {
+                                if (!e.currentTarget.contains(e.relatedTarget))
+                                    setDropOpen(false)
+                            }}
+                        >
                             <button
                                 class={"temp-preset-toggle" + (dropOpen ? " active" : "")}
                                 onclick={() => setDropOpen(!dropOpen)}
@@ -269,17 +294,6 @@ const TemperatureCard = ({ tool, index, size }) => {
                         }}
                     >
                         {T("S43")}
-                    </button>
-                    <button
-                        class="temp-set-btn temp-off-btn tooltip tooltip-top"
-                        data-tooltip={T("P38")}
-                        onclick={(e) => {
-                            useUiContextFn.haptic()
-                            e.target.blur()
-                            sendCommand(stopcmds[key])
-                        }}
-                    >
-                        <Power size="0.8em" />
                     </button>
                 </div>
             )}

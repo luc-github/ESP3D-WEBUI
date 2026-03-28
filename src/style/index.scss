@@ -1168,6 +1168,7 @@ code {
 }
 .panel-title { display: flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--txt-dim); }
 .panel-title svg { color: var(--a); }
+.panel .navbar .navbar-section.feather-icon-container > svg { color: var(--a); width: 0.75rem; height: 0.75rem; flex-shrink: 0; }
 
 .files-list-footer {
     padding: 0.2rem 0.8rem !important;
@@ -1184,7 +1185,7 @@ code {
 // ═══════════════════════════════════════════════════════════════════════════════
 .temp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 4px;
     padding: 0.1rem;
 }
@@ -1195,7 +1196,7 @@ code {
     border-radius: var(--r);
     padding: 0.65rem 0.55rem 0.55rem;
     position: relative;
-    min-width: 175px;
+    min-width: 140px;
     transition: border-color var(--t), box-shadow var(--t);
 }
 .temp-cell:hover { border-color: var(--a-dim); box-shadow: 0 0 10px var(--a-g); }
@@ -1305,10 +1306,11 @@ code {
     align-items: stretch;
 }
 .temp-preset-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
+    display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap;
     color: var(--txt-dim); background: var(--bg-raised);
     border: 1px solid var(--border-mid); border-radius: var(--r);
     padding: 0 0.3rem; cursor: pointer;
+    font-size: 0.7rem; text-align: center; text-transform: none;
     transition: all var(--t);
     min-height: 0; box-shadow: none; filter: none; transform: none;
 }
@@ -1330,6 +1332,7 @@ code {
 }
 .temp-preset-item {
     display: block; width: 100%;
+    text-transform: none;
     font-family: var(--font-chart);
     font-size: 0.65rem; color: var(--txt-mid);
     background: transparent;
@@ -1352,10 +1355,24 @@ code {
 // JOG PANEL — simple extruder control
 // ═══════════════════════════════════════════════════════════════════════════════
 .jog-extruder-ctrl {
-    display: flex; flex-direction: row; align-items: center; justify-content: center;
-    gap: 0.25rem; padding: 0.3rem 0; margin-top: 0.2rem;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.3rem; padding: 0.3rem 0; margin-top: 0.2rem;
     border-top: 1px solid var(--border-dim);
-    flex-wrap: wrap;
+}
+.jog-extruder-row {
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 0.25rem;
+    .temp-input { height: 1.8rem; box-sizing: border-box; }
+    .temp-preset-toggle { height: 1.8rem; box-sizing: border-box; text-transform: uppercase; letter-spacing: 0.1em; }
+    .temp-unit { font-size: 0.62rem; font-weight: 700; color: var(--txt-dim); letter-spacing: 0.1em; }
+}
+.jog-extruder-title {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--txt-dim);
+}
+.jog-extruder-actions {
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
+    gap: 0.5rem;
 }
 
 // Drag & drop
@@ -1482,7 +1499,13 @@ body.panel-dragging { cursor: none !important; }
 .btn.feather-icon-container { display: inline-flex; align-items: center; gap: 0.45rem; }
 .feather-icon-container .text-menu-item,
 .feather-icon-container .text-ellipsis,
-.feather-icon-container label { vertical-align: middle; margin-left: 0; }
+.feather-icon-container label { vertical-align: middle; margin-left: 0; text-transform: none; font-size: 0.72rem; }
+.btn.btn-error label,
+.btn.jog-extrude-btn label { text-transform: uppercase; }
+
+// Restore uppercase for main nav and settings tabs
+.navbar section .btn-link.feather-icon-container label,
+.tab-item .btn-link.feather-icon-container label { text-transform: uppercase; letter-spacing: 0.14em; }
 
 // Misc control helpers
 .text-like-icon { font-size: 1.4rem; vertical-align: top; }

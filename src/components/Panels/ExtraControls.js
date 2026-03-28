@@ -292,19 +292,14 @@ const ExtraInputControl = ({ element, index, size, pos }) => {
 }
 
 const ExtraControlsPanel = () => {
-    const { temperatures, fanSpeed, flowRate, feedRate, sensor } = useTargetContext()
+    const { temperatures, fanSpeed, sensor } = useTargetContext()
     const id = "extraControlsPanel"
-    const inputList = [
-        { name: "P91", list: fanSpeed },
-        { name: "P92", list: flowRate },
-        { name: "P93", list: feedRate },
-    ]
 
     console.log("Extra Controls panel")
 
     return (
         <div class="panel panel-dashboard" id={id} >
-            <ContainerHelper id={id} /> 
+            <ContainerHelper id={id} />
             <PanelHeader
                 id={id}
                 icon={<Sliders />}
@@ -314,23 +309,14 @@ const ExtraControlsPanel = () => {
                 <ExtraControls />
                 {temperatures["T"].length > 0 && (
                     <div class="extruders-container">
-                        {inputList.map((element, pos) => {
-                            return temperatures["T"].map((item, index) => {
-                                if (pos == 2 && index > 0) return null
-                                return (
-                                    <ExtraInputControl
-                                        element={element}
-                                        index={index}
-                                        size={
-                                            pos == 2
-                                                ? 1
-                                                : temperatures["T"].length
-                                        }
-                                        pos={pos}
-                                    />
-                                )
-                            })
-                        })}
+                        {temperatures["T"].map((item, index) => (
+                            <ExtraInputControl
+                                element={{ name: "P91", list: fanSpeed }}
+                                index={index}
+                                size={temperatures["T"].length}
+                                pos={0}
+                            />
+                        ))}
                     </div>
                 )}
                 {temperatures["T"].length == 0 && (!sensor.S || sensor.S.length == 0) && (
@@ -356,4 +342,4 @@ const ExtraControlsPanelElement = {
     settingid: "controls",
 }
 
-export { ExtraControlsPanel, ExtraControlsPanelElement, ExtraControls }
+export { ExtraControlsPanel, ExtraControlsPanelElement, ExtraControls, ExtraInputControl }
