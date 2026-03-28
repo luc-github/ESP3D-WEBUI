@@ -1,12 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
-
-@font-face {
-  font-family: 'Orbitron';
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-  src: url('data:font/woff2;base64,d09GMgABAAAAAARwAA8AAAAACXwAAAQYAAIAQgAAAAAAAAAAAAAAAAAAAAAAAAAAGyAcKgZgP1NUQVQqAFYRCAqLdIkRATYCJANICyYABCAFPgcgDAcb6QZRlDDKARA/DnIyevOJ07I1ke02K7WixGllnrwpcQ/+edd770syC0NbYESjgBWRJUWgfit7sr1/VFaojJ+3pFo6a+iE6VXUV53f7/B3ICEHoL11gsl5Qxes19Ax07uFV+g4xYYaGRSVWjSb4IAi8kNHzxN6wMe3aarA6ZCaiMgGjuE++u73ERBSiSqoV59Bo8jhALwHACD0OtTDDJYumr5qCeWAkO3OXKe7CMAcoHHAwOUgmkILTeLmFvy/czyUa6hNB1vkEzjNFMEuNL3MG6AaBiFyCChFmZUwa+fOWyXCAKqcuQtxgBWVDfqsowcQksNgqE1T2tPBe6A2DWmmlvnf4N/6Te+TAwCKEVMgIkXI/6cAiBIA1AIqg/6DqQcAOADAIoQwk8K+0HpSBKWz2VyTDrFrUDVJqxcvXiMNckGQDZJs6eLnS6MD88lubytKDo6C2XZ6GI9VcjDKTtPc+IAjUjAqnBi5CMrz0rQ9hB5CRWPYlgX2sdt8VCA6MKsU6ZKgDhXu5VLL21l+LZFizY1MRMgcRUoWSW2BtFpTfT5Y1GcPYoRmbAc8nz1RoCgEUboyWduHXlUcmeDpDPP0Wt6svx6u1kOUu2WcjZ/FoqKFn7Lxm4UPwcSmEP625BEzzy+PE3k0AzHOhW0hO4qHJ8EeKrLrEfWBtZb8uOQIMQR4RcdIrLZSVLrPAR5xi7+24XZZ4ncU/D6F7XIW6U9tvHkzbBTIDGxvnkODx3ES/AVJa4/1n7zdb8AGpFjCV0we2eAEV+0mZGktF/w1mM1wgb/9sGqSLcFDdiejHiHaVhh0DdvFzhmDrJFgp82IzOMpjNnX1/WIW9tKaCiMYMI3FHgO+/dlb5Nlgxl1Gftl1vDvI7d4J6MR6daW9TCn7ewz2QpkBnUZW3V+DcHxBAK0/Kw129j59FETBDmh56/NAXuLDq8KZPIDXMn+RO+2ofSKLxuX2Kuu3pPs2N4M9XFKXOTcnNn4paYH0VLnNIzELNcxosNlcaVuW9LtDlifslX32xQc3W2G4NfJ7CyTd5Yb42/QfQ6WQETQmsBTgbrcEbS+GYraxY9BhrafLjktP13B9jc0THA+BtqaqbmFWtqpvQ32wpEZx9D2KQf+3Do7CuiPClsYgVMKmFlBYeczKf8hHB5+yE8KXzzDL0q9564DvNe5yDqchJGax8QLjFCF4w0A2OozAgw9pr2x2ptU6PQvZ+13gGc2aQ7wserIk8iX21P0FpHBACD4xQ08QhhAH4j78hL6Synbg/baC9kutLcdaG3ekVE5W9HenIK1PdI70ZpPtBHw5++YPBkT0FEPKW4f0QwBJRhJAIDgbZYGWOTyGHLADIKY3D/lyAE9WMoiZjGW2cxnLvNYhQUAfwlaQKk3la/fcocBAAA=') format('woff2');
-}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DESIGN SYSTEM TOKENS
@@ -39,7 +31,7 @@
     --t:          150ms;
     --font-mono:  'Share Tech Mono', monospace;
     --font-ui:    'Barlow Condensed', sans-serif;
-    --font-chart: 'Orbitron', sans-serif;
+    --font-chart: 'Orbitron', 'Share Tech Mono', monospace;
     --text-xs:    0.7rem;
 }
 
@@ -652,7 +644,7 @@ progress::-moz-progress-bar { background: var(--a); }
 
 // Semantic action button typography
 .btn.btn-accent, .btn.btn-save, .btn.btn-restart,
-.btn.btn-warning, .btn.btn-success, .btn.btn-error {
+.btn.btn-primary, .btn.btn-warning, .btn.btn-success, .btn.btn-error {
     font-family: var(--font-ui); font-weight: 700;
     font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
 }
@@ -1245,7 +1237,7 @@ code {
     font-size: 0.65rem; color: var(--txt-dim); letter-spacing: 0.04em;
 }
 .temp-target span { color: var(--txt-mid); }
-.temp-unit { font-size: 0.62rem; font-weight: 700; color: var(--txt-dim); letter-spacing: 0.1em; }
+.temp-unit { font-family: inherit; font-size: 0.62rem; font-weight: 700; color: var(--txt-dim); letter-spacing: 0.1em; }
 
 .temp-track {
     height: 2px; background: var(--bg-raised);
@@ -1261,6 +1253,10 @@ code {
     display: flex; align-items: stretch; gap: 4px;
     margin: 0.4rem auto 0;
     width: fit-content;
+    .temp-input        { height: 1.8rem; box-sizing: border-box; }
+    .temp-set-btn      { height: 1.8rem; box-sizing: border-box; }
+    .temp-preset-toggle { height: 1.8rem; box-sizing: border-box; }
+    .sf-reset-btn      { height: 1.8rem; box-sizing: border-box; }
 }
 .temp-input {
     font-family: var(--font-chart);
@@ -1364,7 +1360,7 @@ code {
     flex-wrap: wrap; gap: 0.25rem;
     .temp-input { height: 1.8rem; box-sizing: border-box; }
     .temp-preset-toggle { height: 1.8rem; box-sizing: border-box; text-transform: uppercase; letter-spacing: 0.1em; }
-    .temp-unit { font-size: 0.62rem; font-weight: 700; color: var(--txt-dim); letter-spacing: 0.1em; }
+    .temp-unit { font-family: inherit; font-size: 0.62rem; font-weight: 700; color: var(--txt-dim); letter-spacing: 0.1em; }
 }
 .jog-extruder-title {
     font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -1506,6 +1502,10 @@ body.panel-dragging { cursor: none !important; }
 // Restore uppercase for main nav and settings tabs
 .navbar section .btn-link.feather-icon-container label,
 .tab-item .btn-link.feather-icon-container label { text-transform: uppercase; letter-spacing: 0.14em; }
+.btn-primary.feather-icon-container label,
+.btn-success.feather-icon-container label,
+.btn-warning.feather-icon-container label,
+.btn-error.feather-icon-container label { text-transform: uppercase; letter-spacing: 0.06em; }
 
 // Misc control helpers
 .text-like-icon { font-size: 1.4rem; vertical-align: top; }
@@ -1530,9 +1530,10 @@ body.panel-dragging { cursor: none !important; }
         > .dropdown { flex: 0 0 auto; }
         > .dropdown .dropdown-toggle {
             font-size: 0.8rem; height: 1.8rem; white-space: nowrap;
+            text-transform: uppercase; letter-spacing: 0.08em;
             &:hover { border-color: var(--a); color: var(--a); }
         }
-        > .dropdown .menu { font-size: 0.8rem; }
+        > .dropdown .menu { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
     }
     .form-control-path { flex: 1 1 auto; margin: 0 !important; }
     .drop-zone.files-list { margin-top: 0 !important; }

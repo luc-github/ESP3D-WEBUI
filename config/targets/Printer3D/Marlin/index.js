@@ -449,7 +449,7 @@ const commandsQuery = (req, res, SendWS, context) => {
     }
 
     if (url.indexOf("M27") != -1) {
-        SendWS("SD printing byte 990/1000\n")
+        SendWS("SD printing byte 90/1000\n")
         res.send("")
         return
     }

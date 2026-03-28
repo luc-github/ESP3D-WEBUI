@@ -17,12 +17,11 @@
 */
 
 import { Fragment, h } from "preact"
-import { useRef } from "preact/hooks"
 import { T } from "../Translations"
-import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
+import { PlayCircle, PauseCircle, StopCircle, Printer } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext } from "../../targets"
-import { ButtonImg, ContainerHelper, PanelHeader } from "../Controls"
+import { ButtonImg } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 
@@ -34,32 +33,14 @@ const TimeControl = ({ label, time }) => {
     time.sec = time.sec ? time.sec.toString() : "0"
     if (time.day == "Infinity") return null
     return (
-        <div class="extra-control-value flex-row-between">
-            <div class="m-1">{T(label)}:</div>
-            {time.day != "0" && (
-                <div class="m-1">
-                    {time.day}
-                    {T("P108")}
-                </div>
-            )}
-            {(time.day != "0" || time.hour != "0") && (
-                <div class="m-1">
-                    {time.hour}
-                    {T("P109")}
-                </div>
-            )}
-            {(time.day != "0" || time.hour != "0" || time.min != "0") && (
-                <div class="m-1">
-                    {time.min}
-                    {T("P110")}
-                </div>
-            )}
-            {time.sec && (
-                <div class="m-1">
-                    {time.sec}
-                    {T("P111")}
-                </div>
-            )}
+        <div class="print-time-row">
+            <span class="print-time-label">{T(label)}:</span>
+            <span class="print-time-value">
+                {time.day != "0" && <span>{time.day}{T("P108")} </span>}
+                {(time.day != "0" || time.hour != "0") && <span>{time.hour}{T("P109")} </span>}
+                {(time.day != "0" || time.hour != "0" || time.min != "0") && <span>{time.min}{T("P110")} </span>}
+                {time.sec && <span>{time.sec}{T("P111")}</span>}
+            </span>
         </div>
     )
 }
@@ -72,105 +53,73 @@ const TimeControl = ({ label, time }) => {
 const StatusControls = () => {
     const { streamStatus, status } = useTargetContext()
     if (!useUiContextFn.getValue("showstatuspanel")) return null
-    //console.log("streamStatus")
-    //console.log(streamStatus)
-    //console.log("status")
-    //console.log(status)
-    return (
-        <Fragment>
-            {streamStatus &&
-                streamStatus.status &&
-                streamStatus.status != "no stream" && (
-                    <div class="status-ctrls">
-                        <div
-                            class="extra-control mt-1 tooltip tooltip-bottom"
-                            data-tooltip={T("P97")}
-                        >
-                            <div class="extra-control-header">
-                                {T(streamStatus.status)}
-                            </div>
-                            {streamStatus.name &&
-                                streamStatus.name.length > 0 && (
-                                    <div class="extra-control-value m-1">
-                                        {streamStatus.name}
-                                    </div>
-                                )}
-                            {streamStatus &&
-                                streamStatus.status &&
-                                streamStatus.status != "no stream" && (
-                                    <Fragment>
-                                        <div class="extra-control-value">
-                                            {streamStatus.progress}%
-                                        </div>
 
-                                        <TimeControl
-                                            label="P105"
-                                            time={streamStatus.printTime}
-                                        />
-                                        <TimeControl
-                                            label="P112"
-                                            time={streamStatus.printLeftTime}
-                                        />
-                                    </Fragment>
-                                )}
+    const isStreaming = streamStatus && streamStatus.status && streamStatus.status != "no stream"
+    const hasPrintState = status.printState && status.printState.status != "Unknown"
+
+    if (!isStreaming && !hasPrintState) return null
+
+    const filename = isStreaming ? streamStatus.name : status.filename
+    const progress = isStreaming
+        ? streamStatus.progress
+        : (status.printState.printing && status.printState.progress != "NaN" ? status.printState.progress : null)
+    const printTime = isStreaming ? streamStatus.printTime : (status.printState.printing ? status.printTime : null)
+    const printLeftTime = isStreaming ? streamStatus.printLeftTime : (status.printState.printing ? status.printLeftTime : null)
+    const printStatusLabel = isStreaming ? T(streamStatus.status) : status.printState.status
+
+    return (
+        <div class="print-card-wrap">
+            <div class="sf-card">
+                <div class="sf-header">
+                    <div class="sf-label">
+                        <Printer size="0.75em" />
+                        {T("P97")}
+                    </div>
+                    <span class="print-state-badge">{printStatusLabel}</span>
+                </div>
+                {filename && filename.length > 0 && (
+                    <div class="print-filename">{filename}</div>
+                )}
+                {progress != null && (
+                    <div class="print-progress-wrap">
+                        <div class="print-progress-track">
+                            <div
+                                class="print-progress-fill"
+                                style={`width: ${Math.min(100, Math.max(0, progress))}%`}
+                            />
+                        </div>
+                        <div class="print-pct-wrap">
+                            <span class="sf-current">{progress}</span>
+                            <span class="sf-unit">%</span>
                         </div>
                     </div>
                 )}
-            {status.state && status.state.length > 0 && (
-                <div class="status-ctrls">
-                    <div
-                        class="status-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("P67")}
-                    >
-                        <div class="status-control-header">{T("P67")}</div>
-                        <div class="status-control-value">{status.state}</div>
+                {(printTime || printLeftTime) && (
+                    <div class="print-times">
+                        <TimeControl label="P105" time={printTime} />
+                        <TimeControl label="P112" time={printLeftTime} />
                     </div>
-                </div>
-            )}
-            {status.printState && status.printState.status != "Unknown" && (
-                <div class="status-ctrls">
-                    <div
-                        class="extra-control mt-1 tooltip tooltip-bottom"
-                        data-tooltip={T("P97")}
-                    >
-                        <div class="extra-control-header">
-                            {status.printState.status}
-                        </div>
-                        {status.filename && status.filename.length > 0 && (
-                            <div class="extra-control-value">
-                                {status.filename}
-                            </div>
-                        )}
-                        {status.printState.printing &&
-                            status.printState.progress != "NaN" && (
-                                    <Fragment>
-                                        <div class="extra-control-value">
-                                            {status.printState.progress}%
-                                        </div>
-
-                                        <TimeControl
-                                            label="P105"
-                                            time={status.printTime}
-                                        />
-                                        <TimeControl
-                                            label="P112"
-                                            time={status.printLeftTime}
-                                        />
-                                    </Fragment>
-                                )}
-                    </div>
-                </div>
-            )}
-        </Fragment>
+                )}
+            </div>
+        </div>
     )
 }
 
-const StatusPanel = () => {
-    const { toasts, panels } = useUiContext()
+const StatusButtons = () => {
+    const { toasts } = useUiContext()
     const { status, streamStatus } = useTargetContext()
-    //console.log(status, streamStatus)
     const { createNewRequest } = useHttpFn
-    const id = "statusPanel"
+
+    if (
+        !(
+            (status.printState && status.printState.printing) ||
+            (streamStatus &&
+                streamStatus.status &&
+                streamStatus.status != "no stream" &&
+                streamStatus.name != "")
+        )
+    )
+        return null
 
     const deviceList = [
         {
@@ -267,113 +216,61 @@ const StatusPanel = () => {
         },
     ]
 
-    console.log("Status panel")
     const sendCommand = (command) => {
         createNewRequest(
             espHttpURL("command", { cmd: command }),
             { method: "GET", echo: command },
             {
-                onSuccess: (result) => {},
+                onSuccess: () => {},
                 onFail: (error) => {
                     toasts.addToast({ content: error, type: "error" })
-                    console.log(error)
                 },
             }
         )
     }
     const isVisible = (button) => {
-        if (button.depend) {
-            if (
-                streamStatus &&
-                streamStatus.status &&
-                button.depend.streamStatus
-            ) {
-                if (!button.depend.streamStatus.includes(streamStatus.status)) {
-                    return false
-                }
-            }
+        if (button.depend && streamStatus && streamStatus.status && button.depend.streamStatus) {
+            if (!button.depend.streamStatus.includes(streamStatus.status)) return false
         }
         return true
     }
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <PanelHeader
-                id={id}
-                icon={<Layers />}
-                title={T("P97")}
-            />
-            <div class="panel-body panel-body-dashboard">
-                <StatusControls />
-                {((status.printState && status.printState.printing) ||
-                    (streamStatus &&
-                        streamStatus.status &&
-                        streamStatus.status != "no stream" &&
-                        streamStatus.name != "")) &&
-                    deviceList.map((device) => {
-                        if (
-                            !device.depend.every((d) =>
-                                useUiContextFn.getValue(d)
-                            )
-                        )
-                            return null
-                        return (
-                            <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                                <legend>
-                                    <label class="m-1">{T(device.name)}</label>
-                                </legend>
-                                <div class="field-group-content maxwidth">
-                                    <div class="print-buttons-container">
-                                        {device.buttons.map((button) => {
-                                            if (!isVisible(button)) return null
-                                            return (
-                                                <ButtonImg
-                                                    icon={button.icon}
-                                                    tooltip
-                                                    data-tooltip={T(
-                                                        button.desc
-                                                    )}
-                                                    onClick={(e) => {
-                                                        useUiContextFn.haptic()
-                                                        e.target.blur()
-                                                        console.log(
-                                                            button.cmd()
-                                                        )
-                                                        const cmd =
-                                                            status.printState &&
-                                                            status.printState
-                                                                .printing
-                                                                ? useUiContextFn.getValue(
-                                                                      button.cmd()
-                                                                  )
-                                                                : button.cmd()
-                                                        const cmds =
-                                                            cmd.split("\n")
-                                                        cmds.forEach((cmd) => {
-                                                            sendCommand(cmd)
-                                                        })
-                                                    }}
-                                                />
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            </fieldset>
-                        )
-                    })}
-            </div>
-        </div>
+        <Fragment>
+            {deviceList.map((device) => {
+                if (!device.depend.every((d) => useUiContextFn.getValue(d))) return null
+                return (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1">{T(device.name)}</label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            <div class="print-buttons-container">
+                                {device.buttons.map((button) => {
+                                    if (!isVisible(button)) return null
+                                    return (
+                                        <ButtonImg
+                                            icon={button.icon}
+                                            tooltip
+                                            data-tooltip={T(button.desc)}
+                                            onClick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                const cmd =
+                                                    status.printState && status.printState.printing
+                                                        ? useUiContextFn.getValue(button.cmd())
+                                                        : button.cmd()
+                                                cmd.split("\n").forEach(sendCommand)
+                                            }}
+                                        />
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </Fragment>
     )
 }
 
-const StatusPanelElement = {
-    id: "statusPanel",
-    content: <StatusPanel />,
-    name: "P97",
-    icon: "Layers",
-    show: "showstatuspanel",
-    onstart: "openstatusonstart",
-    settingid: "status",
-}
-
-export { StatusPanel, StatusPanelElement, StatusControls }
+export { StatusControls, StatusButtons }

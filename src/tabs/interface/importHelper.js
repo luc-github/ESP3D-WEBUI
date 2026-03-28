@@ -274,7 +274,7 @@ function importPreferencesSection(currentPreferencesData, importedPreferences) {
         for (let key in obj) {
           if (obj.hasOwnProperty(key)) {
             if (obj[key] && typeof obj[key] === 'object') {
-              if (obj[key].id === id) {
+              if (obj[key].id === id && obj[key].type !== undefined) {
                 obj[key].value = value;
                 return true;
               }

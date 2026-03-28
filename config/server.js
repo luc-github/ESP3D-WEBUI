@@ -15,7 +15,7 @@ const WebSocket = require("ws")
 let currentID = 0
 const app = express()
 const fileUpload = require("express-fileupload")
-let sensorInterval = -1
+let sensorInterval = 500
 
 //const serverpath = path.normalize(__dirname + "/../server/public/");
 

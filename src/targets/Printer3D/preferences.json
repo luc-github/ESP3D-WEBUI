@@ -822,29 +822,24 @@
                         "key": "M"
                     },
                     {
-                        "id": "move_100",
-                        "name": "move_100",
-                        "key": "1"
-                    },
-                    {
-                        "id": "move_10",
-                        "name": "move_10",
-                        "key": "2"
-                    },
-                    {
-                        "id": "move_1",
-                        "name": "move_1",
-                        "key": "3"
-                    },
-                    {
-                        "id": "move_0_1",
-                        "name": "move_0_1",
-                        "key": "4"
-                    },
-                    {
                         "id": "btnEStop",
                         "name": "btnEStop",
                         "key": "Delete"
+                    },
+                    {
+                        "id": "btnCycleX",
+                        "name": "btnCycleX",
+                        "key": "Shift+X"
+                    },
+                    {
+                        "id": "btnCycleY",
+                        "name": "btnCycleY",
+                        "key": "Shift+Y"
+                    },
+                    {
+                        "id": "btnCycleZ",
+                        "name": "btnCycleZ",
+                        "key": "Shift+Z"
                     }
                 ]
             }

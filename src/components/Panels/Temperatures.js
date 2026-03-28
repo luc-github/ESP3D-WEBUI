@@ -241,15 +241,18 @@ const TemperatureCard = ({ tool, index, size }) => {
             <TempLiveDisplay tool={tool} index={index} size={size} maxTemp={max} onOff={handleOff} />
             {editable && (
                 <div class="temp-input-wrap">
-                    <input
-                        class="temp-input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        max={max > 0 ? max : undefined}
-                        value={inputVal}
-                        onInput={(e) => setInputVal(e.target.value)}
-                    />
+                    <div class="jog-step-wrap">
+                        <input
+                            class="temp-input"
+                            type="number"
+                            min="0"
+                            step="1"
+                            max={max > 0 ? max : undefined}
+                            value={inputVal}
+                            onInput={(e) => setInputVal(e.target.value)}
+                        />
+                        <span class="jog-step-unit">{T("P72")}</span>
+                    </div>
                     {presets.length > 0 && (
                         <div
                             class="temp-preset-dropdown"

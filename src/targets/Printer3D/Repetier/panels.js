@@ -27,7 +27,6 @@ import { ExtrudersPanelElement } from "../../../components/Panels/Extruders"
 import { TemperaturesPanelElement } from "../../../components/Panels/Temperatures"
 import { NotificationsPanelElement } from "../../../components/Panels/Notifications"
 import { ChartsPanelElement } from "../../../components/Panels/Charts"
-import { StatusPanelElement } from "../../../components/Panels/Status"
 import { ExtraControlsPanelElement } from "../../../components/Panels/ExtraControls"
 
 const defaultPanelsList = [
@@ -40,7 +39,6 @@ const defaultPanelsList = [
     TemperaturesPanelElement,
     NotificationsPanelElement,
     ChartsPanelElement,
-    StatusPanelElement,
     ExtraControlsPanelElement,
 ]
 

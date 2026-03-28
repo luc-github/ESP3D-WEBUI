@@ -91,10 +91,10 @@ const PositionsControls = () => {
                                 <Crosshair size="0.6em" />
                             </button>
                         </div>
-                        <div class="dro-value">
-                            {positions[axis.toLowerCase()]}
-                        </div>
-                        <div class="dro-target-row">
+                        <div class="dro-value-wrap">
+                            <span class="dro-value">
+                                {positions[axis.toLowerCase()]}
+                            </span>
                             <span class="dro-unit">{T("P16")}</span>
                         </div>
                     </div>
@@ -102,6 +102,7 @@ const PositionsControls = () => {
             </div>
             <ButtonImg
                 m1
+                className="btn-primary"
                 icon={<Crosshair />}
                 label={T("P130")}
                 onclick={zeroAll}
@@ -1001,6 +1002,25 @@ const JogPanel = () => {
                         setFeedrateRef={setExtruderFeedrateRef}
                     />
                 )}
+                {/* Hidden step cycle buttons — triggered by Shift+X/Y/Z keyboard shortcuts */}
+                <button class="d-none" id="btnCycleX" onClick={() => {
+                    if (!xStepPresets.length) return
+                    const idx = xStepPresets.findIndex(p => parseFloat(p) === xStep)
+                    const next = parseFloat(xStepPresets[(idx + 1) % xStepPresets.length])
+                    jogAxisStep.X = next; setXStep(next)
+                }} />
+                <button class="d-none" id="btnCycleY" onClick={() => {
+                    if (!yStepPresets.length) return
+                    const idx = yStepPresets.findIndex(p => parseFloat(p) === yStep)
+                    const next = parseFloat(yStepPresets[(idx + 1) % yStepPresets.length])
+                    jogAxisStep.Y = next; setYStep(next)
+                }} />
+                <button class="d-none" id="btnCycleZ" onClick={() => {
+                    if (!zStepPresets.length) return
+                    const idx = zStepPresets.findIndex(p => parseFloat(p) === zStep)
+                    const next = parseFloat(zStepPresets[(idx + 1) % zStepPresets.length])
+                    jogAxisStep.Z = next; setZStep(next)
+                }} />
                 </div>
             </div>
         </div>

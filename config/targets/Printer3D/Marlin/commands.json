@@ -15,7 +15,7 @@
     { "cmd": "M20", "description": "List SD card (short format)", "exampleResponse": "Begin file list\\n... End file list\\nok (via SendWS)" },
     { "cmd": "M20 L", "description": "List SD card (long format with path)", "exampleResponse": "Begin file list\\n... End file list (via SendWS)" },
     { "cmd": "M20 1:", "description": "List SD with subdirs (directory format)", "exampleResponse": "Begin file list\\n... End file list (via SendWS)" },
-    { "cmd": "M27", "description": "SD print status", "exampleResponse": "SD printing byte 990/1000 (via SendWS)" },
+    { "cmd": "M27", "description": "SD print status", "exampleResponse": "SD printing byte 90/1000 (via SendWS)" },
     { "cmd": "M30", "description": "Delete file on SD (M30 filename)", "exampleResponse": "File deleted: ... (via SendWS)" },
     { "cmd": "M31", "description": "Print time", "exampleResponse": "echo:Print time: ... (via SendWS)" },
     { "cmd": "M115", "description": "Firmware info and capabilities", "exampleResponse": "FIRMWARE_NAME:... Cap:... (via SendWS)" },
