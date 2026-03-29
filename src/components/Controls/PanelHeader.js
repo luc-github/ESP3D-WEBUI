@@ -66,6 +66,7 @@ const PanelHeader = ({
                         data-tooltip={T("S256")}
                         draggable
                         onDragStart={dragCtx.onDragStart}
+                        onDragEnd={() => document.body.classList.remove("panel-dragging")}
                         aria-label={T("S256")}
                     >
                         <Anchor size="0.8rem" />

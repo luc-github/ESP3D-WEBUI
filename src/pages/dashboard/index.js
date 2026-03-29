@@ -133,6 +133,15 @@ const Dashboard = () => {
         return () => eventBus.off("extraContentIncompatible", listenerId)
     }, [])
 
+    useEffect(() => {
+        const cleanup = () => document.body.classList.remove("panel-dragging")
+        document.addEventListener("dragend", cleanup)
+        return () => {
+            document.removeEventListener("dragend", cleanup)
+            cleanup()
+        }
+    }, [])
+
     //Show keyboard mapped keys
     const showKeyboarHelp = () => {
         useUiContextFn.haptic()
