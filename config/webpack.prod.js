@@ -112,8 +112,23 @@ module.exports = {
                           "/[base].gz",
                       algorithm: "gzip",
                       exclude: /.map$/,
-                      deleteOriginalAssets: "keep-source-map",
+                      deleteOriginalAssets: false,
                   }),
+                  new Compression({
+                        test: /\.(html)$/,
+                        filename:
+                            "[path]../dist/" +
+                            target +
+                            "/" +
+                            subtarget +
+                            "/[base].br",
+                        algorithm: "brotliCompress",
+                        compressionOptions: {
+                            level: 11, // max compression
+                        },
+                        exclude: /.map$/,
+                        deleteOriginalAssets: false,
+                    }),
               ]),
         ...(runAnalyzer
             ? [
