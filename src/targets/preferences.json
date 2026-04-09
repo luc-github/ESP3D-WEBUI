@@ -268,13 +268,6 @@
                 "value": false
             },
             {
-                "id": "openextrapanelsonstart",
-                "type": "boolean",
-                "label": "S93",
-                "value": false,
-                "depend": [{ "id": "showextracontents", "value": true }]
-            },
-            {
                 "id": "scanextensions",
                 "type": "button",
                 "text": "S237",

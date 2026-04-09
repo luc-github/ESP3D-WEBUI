@@ -55,7 +55,7 @@ const ExtraPanelElement = (element, id) => {
         name: element.name,
         icon: element.icon,
         show: "showextracontents",
-        onstart: "openextrapanelsonstart",
+        onstart: element.openonstart !== false,
         settingid: "extracontents_" + id,
     }
 }

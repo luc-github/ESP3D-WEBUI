@@ -153,6 +153,10 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                         { label: "S157", value: "panel" },
                     ]
                     break
+                case "openonstart":
+                    newItem.type = "boolean"
+                    newItem.label = "S93"
+                    break
                 case "source":
                     newItem.type = "text"
                     newItem.label = "S139"
@@ -174,6 +178,17 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
             itemFormated.value.push(newItem)
         }
     })
+    // For extracontents items saved before openonstart was introduced, inject the default
+    if (origineId === "extracontents" && !("openonstart" in itemData)) {
+        itemFormated.value.push({
+            id: itemData.id + "-openonstart",
+            name: "openonstart",
+            value: true,
+            initial: true,
+            type: "boolean",
+            label: "S93",
+        })
+    }
     return itemFormated
 }
 

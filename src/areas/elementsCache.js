@@ -27,7 +27,7 @@ import { eventBus } from "../hooks/eventBus"
 import { webUIVersion, Target, targetCategory } from "../targets"
 
 /** Renders from stable contentData so sibling refresh does not remount/reload others */
-const ElementsCacheList = memo(({ contentData, isVisibleOnStart }) => {
+const ElementsCacheList = memo(({ contentData }) => {
     if (!contentData?.length) return <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache" />
     return (
         <div style="position: fixed; top: 0; left: 0; width: 0; height: 0; overflow: visible; z-index: 10000;" id="elementsCache">
@@ -35,7 +35,6 @@ const ElementsCacheList = memo(({ contentData, isVisibleOnStart }) => {
                 <ExtraContentItem
                     key={item.id}
                     {...item}
-                    isVisibleOnStart={isVisibleOnStart}
                     extensionCheckConfig={{ webUIVersion, targetCategory, target: Target }}
                 />
             ))}
@@ -47,8 +46,6 @@ const ElementsCacheInner = () => {
     const { ui } = useUiContext()
     const { interfaceSettings } = useSettingsContext()
     const [contentData, setContentData] = useState([])
-    const isVisibleOnStart = useUiContextFn.getValue("openextrapanelsonstart")
-
     const extractValues = (entry) => {
         const result = { id: "extra_content_" + entry.id }
         entry.value.forEach((param) => {
@@ -66,7 +63,7 @@ const ElementsCacheInner = () => {
         setContentData(newData)
     }, [ui.ready, interfaceSettings])
 
-    return <ElementsCacheList contentData={contentData} isVisibleOnStart={isVisibleOnStart} />
+    return <ElementsCacheList contentData={contentData} />
 }
 
 const ElementsCache = memo(ElementsCacheInner)

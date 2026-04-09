@@ -261,7 +261,7 @@ const Dashboard = () => {
                     panels.set([...newList])
                     const visibleList = newList.reduce((acc, curr) => {
                         if (
-                            uisettings.getValue(curr.onstart) &&
+                            (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
                             uisettings.getValue(curr.show)
                         )
                             acc.push(curr)
@@ -274,7 +274,7 @@ const Dashboard = () => {
                 } else {
                     const fallbackVisibles = panels.list.reduce((acc, curr) => {
                         if (
-                            uisettings.getValue(curr.onstart) &&
+                            (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
                             uisettings.getValue(curr.show)
                         )
                             acc.push(curr)
@@ -285,7 +285,7 @@ const Dashboard = () => {
             } else {
                 const elseVisibles = panels.list.reduce((acc, curr) => {
                     if (
-                        uisettings.getValue(curr.onstart) &&
+                        (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
                         uisettings.getValue(curr.show)
                     )
                         acc.push(curr)

@@ -83,7 +83,6 @@ const ExtraContentItemInner = ({
     name,
     target,
     refreshtime,
-    isVisibleOnStart,
     extensionCheckConfig,
 }) => {
     const [contentUrl, setContentUrl] = useState("")

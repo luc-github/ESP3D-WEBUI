@@ -165,4 +165,10 @@ module.exports = {
         ],
     },
     devtool: "source-map", // supposedly the ideal type without bloating bundle size
+    performance: {
+        // All JS/CSS is intentionally inlined into a single HTML file for embedded targets.
+        // The resulting index.html will always exceed webpack's default 244 KiB hint.
+        maxAssetSize: 512 * 1024,
+        maxEntrypointSize: 512 * 1024,
+    },
 }

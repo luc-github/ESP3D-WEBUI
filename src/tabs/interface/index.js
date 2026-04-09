@@ -380,6 +380,7 @@ const InterfaceTab = () => {
                                 source: ext.path,
                                 type: "extension",
                                 refreshtime: "0",
+                                openonstart: true,
                             }
                             const formatted = formatItem(newItem, -1, "extracontents")
                             formatted.newItem = true

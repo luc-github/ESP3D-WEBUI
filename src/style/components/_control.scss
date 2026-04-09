@@ -88,6 +88,12 @@ input[type="range"]::-ms-thumb {
     border-radius: $border-radius;
     margin-bottom: 0.4rem;
     width: 100%;
+
+    // Prevent Spectre's .columns negative margin from overflowing the editor border
+    .columns {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 .information-buttons-bar {
