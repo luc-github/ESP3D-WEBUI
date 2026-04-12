@@ -35,8 +35,9 @@ rootFiles.forEach((fileName) => {
         }
     })
     if (added === 0) return
-    // Preserve order: lang first, then reference keys
+    // Preserve order: _manifest first, lang second, then reference keys
     const out = {}
+    if (data._manifest !== undefined) out._manifest = data._manifest
     if (data.lang !== undefined) out.lang = data.lang
     refKeys.forEach((key) => {
         out[key] = data[key] !== undefined ? data[key] : ""

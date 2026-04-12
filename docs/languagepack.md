@@ -1,5 +1,194 @@
 # Language packs
 
+---
+
+## Language pack manifest (`_manifest`)
+
+A language pack file can carry an optional `_manifest` key at the top level. It is stripped before translations are applied and never shown to users as a translated string. Existing packs without `_manifest` continue to work without any change.
+
+```json
+{
+    "_manifest": {
+        "version": "1.2.0",
+        "owner": "Jane Doe",
+        "github": "https://github.com/janedoe/esp3d-lang-ar",
+        "description": "Arabic translation for ESP3D WebUI.",
+        "supportedVersion": "3.*",
+        "targetSystem": "*",
+        "rtl": true,
+        "fonts": [
+            {
+                "family": "Noto Naskh Arabic",
+                "src": "https://fonts.gstatic.com/s/notonaskharabic/v33/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc9smDZ.woff2",
+                "format": "woff2",
+                "weight": "400",
+                "display": "swap"
+            }
+        ]
+    },
+    "lang": "العربية",
+    "S1": "الاتصال",
+    "S2": "قطع الاتصال"
+}
+```
+
+The `_manifest` key must be the **first** key in the file. Build scripts preserve this ordering automatically.
+
+---
+
+### `_manifest` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `version` | string | Pack version (semver) |
+| `owner` | string | Author / maintainer name |
+| `github` | string | Repository or homepage URL |
+| `description` | string | Short description (English) |
+| `supportedVersion` | string | WebUI version pattern. Informational only — the pack is never rejected, but the information is shown in the language list. |
+| `targetSystem` | string | Comma-separated targets. Informational only. |
+| `rtl` | boolean | `true` → sets `dir="rtl"` on `<html>` when this language is active |
+| `fonts` | array | Custom fonts to load when this language is active (same format as theme fonts) |
+
+All fields are optional. An empty `_manifest: {}` is valid.
+
+---
+
+### `supportedVersion` and `targetSystem`
+
+These fields follow the same syntax as theme and extension manifests (segment-by-segment with `*` wildcard):
+
+| Pattern | Matches |
+|---|---|
+| `*` | Any version |
+| `3.*` | Any 3.x version |
+| `3.1.*` | Any 3.1.x version |
+
+**Language packs are never rejected** based on these fields — they are loaded regardless. The values are informational only (displayed in `docs/languages.md` via `npm run list-languages`).
+
+---
+
+### RTL support
+
+When `rtl: true` is set, the WebUI adds `dir="rtl"` to `<html>` while the language is active. This reverses flex direction, text alignment, scrollbars, and margins for all standard CSS that respects `dir`. No extra CSS is needed in the pack.
+
+When a non-RTL language is selected, the `dir` attribute is removed.
+
+RTL is also propagated into extension iframes automatically.
+
+---
+
+### Fonts
+
+Some languages require a specific font to display correctly (Arabic, Hebrew, Chinese, Japanese, Korean, etc.). The `fonts` array lets the language pack load that font when active, independently of the active theme.
+
+Font objects support the same three source formats as theme fonts:
+
+| Format | Use case |
+|---|---|
+| `data` | Base64-encoded font (offline, self-contained bundle) |
+| `src` | URL of the font file (online systems, lighter pack) |
+| `sources` | Array of `{ src, format }` or `{ data, format }` for multi-format fallback |
+
+Common fields:
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `family` | string | — | `font-family` name used in CSS |
+| `format` | string | `woff2` | Font format (`woff2`, `woff`, `ttf`, `otf`) |
+| `weight` | string | `400` | `font-weight` |
+| `style` | string | `normal` | `font-style` |
+| `display` | string | `auto` | `font-display` — use `swap` to avoid invisible text during load |
+
+The font is injected as `<style id="langfonts">` and is replaced each time the language changes. If the active theme already loads the required font, the language pack does not need to duplicate it.
+
+**The language pack does not need to set `font-family` CSS** — that is the theme's responsibility. The `fonts` array only ensures the font *data* is available. If you also want to force the font on all text regardless of the theme, add a short CSS snippet to the relevant theme, or ask users to set it in their theme.
+
+---
+
+## Application examples
+
+### Example 1 — RTL language (Arabic) with online font
+
+**File:** `languages/printerpack/lang-ar.json`
+
+```json
+{
+    "_manifest": {
+        "version": "1.0.0",
+        "owner": "ESP3D Contributors",
+        "rtl": true,
+        "supportedVersion": "3.*",
+        "fonts": [
+            {
+                "family": "Noto Naskh Arabic",
+                "src": "https://fonts.gstatic.com/s/notonaskharabic/v33/RrQ5bpV-9Dd1b1OAGA6M9PkyDuVBePeKNaxcsss0Y7bwvc9smDZ.woff2",
+                "format": "woff2",
+                "weight": "400",
+                "display": "swap"
+            }
+        ]
+    },
+    "lang": "العربية",
+    "S1": "اتصال",
+    "S2": "قطع الاتصال"
+}
+```
+
+The WebUI will set `dir="rtl"` and load the Noto Naskh Arabic font while this language is active. Switching to any other language removes both.
+
+---
+
+### Example 2 — CJK language (Japanese) with offline font
+
+The font is base64-encoded into the pack. No network access required.
+
+```json
+{
+    "_manifest": {
+        "version": "1.0.0",
+        "owner": "ESP3D Contributors",
+        "supportedVersion": "3.*",
+        "fonts": [
+            {
+                "family": "NotoSansJP",
+                "data": "AAEAAAALA...",
+                "format": "woff2",
+                "weight": "400",
+                "display": "swap"
+            }
+        ]
+    },
+    "lang": "日本語",
+    "S1": "接続",
+    "S2": "切断"
+}
+```
+
+> **Note:** CJK fonts are large (several MB for a full character set). For offline use, consider a subset font that only covers characters actually used in the UI. Tools like [pyftsubset](https://fonttools.readthedocs.io) or [glyphhanger](https://github.com/zachleat/glyphhanger) can generate subsets.
+
+---
+
+### Example 3 — Standard LTR language (no font needed)
+
+Most Western European languages do not need a custom font or RTL. The manifest is optional but useful for attribution.
+
+```json
+{
+    "_manifest": {
+        "version": "2.1.0",
+        "owner": "Jean Dupont",
+        "github": "https://github.com/jeandupont/esp3d-lang-fr",
+        "description": "French translation.",
+        "supportedVersion": "3.*"
+    },
+    "lang": "Français",
+    "S1": "Connexion",
+    "S2": "Déconnexion"
+}
+```
+
+---
+
 ## When adding new translation keys
 
 1. Add or update keys in the source translation files:

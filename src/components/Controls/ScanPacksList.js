@@ -30,7 +30,7 @@ import { T, getLanguageName } from "./../Translations"
 import { CheckCircle } from "preact-feather"
 
 const LANG_REGEX = /^lang-\w+\.json(\.gz)?$/
-const THEME_REGEX = /^theme-\w+(\.gz)?$/
+const THEME_REGEX = /^theme-\w+(\.json)?(\.gz)?$/
 
 // Try subdir first (themes/ or languages/), then root. pathPrefix for save: "themes/" or "languages/" or "".
 // Returns { items, pathError } when the API returned 200 but reported path missing (e.g. production firmware).

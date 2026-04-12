@@ -40,4 +40,28 @@ const isExtensionCompatible = (manifest, config) => {
     return matchVersion(wv || "3.0", String(manifest.supportedVersion).trim()) && matchTarget
 }
 
-export { parseEmbeddedManifest, matchVersion, isExtensionCompatible }
+/**
+ * Check theme pack manifest compatibility. Permissive: absent fields = accepted.
+ * Only rejects when a field is present and does not match.
+ * config: { webUIVersion, targetCategory, target }
+ */
+const isThemeCompatible = (manifest, config) => {
+    if (!manifest) return true
+    const { webUIVersion: wv, targetCategory: tc, target: tgt } = config || {}
+
+    if (manifest.supportedVersion != null && String(manifest.supportedVersion).trim() !== "") {
+        if (!matchVersion(wv || "3.0", String(manifest.supportedVersion).trim())) return false
+    }
+
+    if (manifest.targetSystem != null && String(manifest.targetSystem).trim() !== "") {
+        const categoryId = ({ Printer3D: "3d printer", CNC: "cnc", SandTable: "sand table" }[tc] || (tc || "").toLowerCase()).replace(/\s/g, "")
+        const targetId = (tgt || "").toLowerCase().replace(/\s/g, "")
+        const list = String(manifest.targetSystem).toLowerCase().replace(/\s/g, "").split(",").map((s) => s.trim()).filter(Boolean)
+        const matchTarget = list.length === 0 || list.includes("*") || list.includes(categoryId) || list.includes(targetId)
+        if (!matchTarget) return false
+    }
+
+    return true
+}
+
+export { parseEmbeddedManifest, matchVersion, isExtensionCompatible, isThemeCompatible }

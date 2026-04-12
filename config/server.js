@@ -178,7 +178,7 @@ function filesList(mypath, destination) {
 const getAllFiles = function (dirPath, arrayOfFiles = []) {
     let files = fs.readdirSync(dirPath) || []
     const newFiles = files.reduce((acc, file) => {
-        const fullpath = dirPath + "/" + file
+        const fullpath = path.join(dirPath, file)
         return fs.statSync(fullpath).isDirectory()
             ? getAllFiles(fullpath, acc)
             : [...acc, fullpath]
@@ -188,7 +188,7 @@ const getAllFiles = function (dirPath, arrayOfFiles = []) {
 
 const getTotalSize = function (directoryPath) {
     const allFiles = getAllFiles(directoryPath)
-    console.log("allFiles", allFiles)
+    if (MOCK_VERBOSE) console.log("allFiles", allFiles)
     return allFiles.reduce(
         (acc, currFile) => acc + fs.statSync(currFile).size,
         0

@@ -330,10 +330,24 @@ const ExtraContentItemInner = ({
                 return
             } 
             body.classList.add("body-extension")
+            // Clone all <style> tags: covers #themevariables, #themestyle, #themefonts
             const css = document.querySelectorAll("style")
             css.forEach((csstag) => {
                 doc.head.appendChild(csstag.cloneNode(true))
             })
+            // Re-inject external theme scripts (src= must be set on a new element to load)
+            document.querySelectorAll("script[data-theme-script]").forEach((extScript) => {
+                const s = doc.createElement("script")
+                s.src = extScript.src
+                doc.head.appendChild(s)
+            })
+            // Inline theme JS (copy textContent into a new script to re-execute)
+            const themescript = document.getElementById("themescript")
+            if (themescript) {
+                const s = doc.createElement("script")
+                s.textContent = themescript.textContent
+                doc.head.appendChild(s)
+            }
             if (iframeElement){
                 iframeElement.contentWindow.postMessage(
                     { type: "notification", content: {isConnected: true, isVisible: visibilityState[id]}, id },

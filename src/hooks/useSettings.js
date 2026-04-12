@@ -24,6 +24,7 @@ import {
     getBrowserTime,
     getBrowserTimeZone,
     isLimitedEnvironment,
+    isThemeCompatible,
 } from "../components/Helpers"
 import { useHttpQueue } from "../hooks/"
 import {
@@ -41,6 +42,9 @@ import {
     defaultPreferences,
     useTargetContextFn,
     variablesList,
+    webUIVersion,
+    targetCategory,
+    Target,
 } from "../targets"
 import {
     importPreferencesSection,
@@ -317,61 +321,145 @@ const useSettings = () => {
             ui.setReady(true)
         }
         function loadTheme(themepack) {
-            if (!themepack) {
+            // Clean up all theme-injected elements
+            ;["themestyle", "themescript", "themefonts", "themevariables"].forEach((id) => {
+                const el = document.getElementById(id)
+                if (el) el.parentNode.removeChild(el)
+            })
+            document.querySelectorAll("script[data-theme-script]").forEach((el) =>
+                el.parentNode.removeChild(el)
+            )
+
+            const applyAndFinalize = () => {
                 if (next) next()
-                if (setLoading) {
-                    setLoading(false)
-                }
+                if (setLoading) setLoading(false)
                 finalizeDisplay()
+            }
+
+            const onThemeError = (error) => {
+                applyAndFinalize()
+                console.log("error")
+                toasts.addToast({ content: error + " " + themepack, type: "error" })
+            }
+
+            if (!themepack || themepack === "default") {
+                applyAndFinalize()
                 return
             }
-            const elem = document.getElementById("themestyle")
-            if (elem) elem.parentNode.removeChild(elem)
 
-            if (themepack != "default") {
-                //console.log("Loading theme: " + themepack)
-                createNewRequest(
-                    espHttpURL(
-                        useSettingsContextFn.getValue("HostDownloadPath") +
-                            themepack
-                    ),
-                    { method: "GET" },
-                    {
-                        onSuccess: (result) => {
-                            var styleItem = document.createElement("style")
-                            styleItem.type = "text/css"
-                            styleItem.id = "themestyle"
-                            styleItem.innerHTML = result
-                            document.head.appendChild(styleItem)
-                            if (next) next()
-                            if (setLoading) {
-                                setLoading(false)
+            createNewRequest(
+                espHttpURL(
+                    useSettingsContextFn.getValue("HostDownloadPath") + themepack
+                ),
+                { method: "GET" },
+                {
+                    onSuccess: (result) => {
+                        let parsed = null
+                        try { parsed = JSON.parse(result) } catch (_) {}
+
+                        if (parsed && typeof parsed === "object") {
+                            // Check manifest compatibility
+                            if (parsed.manifest) {
+                                const compatible = isThemeCompatible(parsed.manifest, {
+                                    webUIVersion,
+                                    targetCategory,
+                                    target: Target,
+                                })
+                                if (!compatible) {
+                                    onThemeError("Theme " + themepack + " is not compatible")
+                                    return
+                                }
                             }
-                            finalizeDisplay()
-                        },
-                        onFail: (error) => {
-                            if (next) next()
-                            if (setLoading) {
-                                setLoading(false)
+
+                            // 1. Variables → :root{} injected before CSS
+                            if (parsed.variables && typeof parsed.variables === "object") {
+                                const varCSS = `:root{${Object.entries(parsed.variables)
+                                    .map(([k, v]) => `${k}:${v}`)
+                                    .join(";")}}`
+                                const varEl = document.createElement("style")
+                                varEl.type = "text/css"
+                                varEl.id = "themevariables"
+                                varEl.innerHTML = varCSS
+                                document.head.appendChild(varEl)
                             }
-                            finalizeDisplay()
-                            console.log("error")
-                            toasts.addToast({
-                                content: error + " " + themepack,
-                                type: "error",
-                            })
-                        },
-                    }
-                )
-            } else {
-                const elem = document.getElementById("themestyle")
-                if (elem) elem.parentNode.removeChild(elem)
-                if (next) next()
-                if (setLoading) {
-                    setLoading(false)
+
+                            // 2. CSS
+                            if (parsed.css) {
+                                const styleEl = document.createElement("style")
+                                styleEl.type = "text/css"
+                                styleEl.id = "themestyle"
+                                styleEl.innerHTML = parsed.css
+                                document.head.appendChild(styleEl)
+                            }
+
+                            // 3. Fonts — supports data (base64), src (URL), sources[] (multi-format)
+                            if (parsed.fonts && parsed.fonts.length > 0) {
+                                const fontCSS = parsed.fonts.map((f) => {
+                                    let srcParts
+                                    if (f.sources && f.sources.length > 0) {
+                                        srcParts = f.sources
+                                            .map((s) =>
+                                                s.data
+                                                    ? `url('data:font/${s.format || "woff2"};base64,${s.data}') format('${s.format || "woff2"}')`
+                                                    : `url('${s.src}') format('${s.format || "woff2"}')`
+                                            )
+                                            .join(",")
+                                    } else if (f.data) {
+                                        srcParts = `url('data:font/${f.format || "woff2"};base64,${f.data}') format('${f.format || "woff2"}')`
+                                    } else {
+                                        srcParts = `url('${f.src}') format('${f.format || "woff2"}')`
+                                    }
+                                    return (
+                                        `@font-face{font-family:'${f.family}';src:${srcParts};` +
+                                        `font-weight:${f.weight || "400"};` +
+                                        `font-style:${f.style || "normal"};` +
+                                        `font-display:${f.display || "auto"};}`
+                                    )
+                                }).join("")
+                                const fontEl = document.createElement("style")
+                                fontEl.type = "text/css"
+                                fontEl.id = "themefonts"
+                                fontEl.innerHTML = fontCSS
+                                document.head.appendChild(fontEl)
+                            }
+
+                            // 4. External scripts (sequential) then inline JS
+                            const injectInlineJS = () => {
+                                if (parsed.js) {
+                                    const scriptEl = document.createElement("script")
+                                    scriptEl.id = "themescript"
+                                    scriptEl.textContent = parsed.js
+                                    document.head.appendChild(scriptEl)
+                                }
+                                applyAndFinalize()
+                            }
+                            if (parsed.scripts && parsed.scripts.length > 0) {
+                                const loadNext = (i) => {
+                                    if (i >= parsed.scripts.length) { injectInlineJS(); return }
+                                    const s = document.createElement("script")
+                                    s.src = parsed.scripts[i]
+                                    s.dataset.themeScript = "true"
+                                    s.onload = () => loadNext(i + 1)
+                                    s.onerror = () => loadNext(i + 1)
+                                    document.head.appendChild(s)
+                                }
+                                loadNext(0)
+                            } else {
+                                injectInlineJS()
+                            }
+                        } else {
+                            // Legacy: plain CSS file
+                            const styleEl = document.createElement("style")
+                            styleEl.type = "text/css"
+                            styleEl.id = "themestyle"
+                            styleEl.innerHTML = result
+                            document.head.appendChild(styleEl)
+                            applyAndFinalize()
+                        }
+                    },
+                    onFail: onThemeError,
                 }
-                finalizeDisplay()
-            }
+            )
         }
         const applyDefaultPreferences = () => {
             const preferences = {
@@ -471,6 +559,43 @@ const useSettings = () => {
                     )
                     //set default first
                     setCurrentLanguage(baseLangRessource)
+
+                    function applyLangManifest(manifest) {
+                        // Clean up previous lang injections
+                        const prevFonts = document.getElementById("langfonts")
+                        if (prevFonts) prevFonts.parentNode.removeChild(prevFonts)
+                        document.documentElement.removeAttribute("dir")
+                        if (!manifest) return
+                        if (manifest.rtl === true)
+                            document.documentElement.setAttribute("dir", "rtl")
+                        if (manifest.fonts && manifest.fonts.length > 0) {
+                            const fontCSS = manifest.fonts.map((f) => {
+                                let srcParts
+                                if (f.sources && f.sources.length > 0) {
+                                    srcParts = f.sources.map((s) =>
+                                        s.data
+                                            ? `url('data:font/${s.format || "woff2"};base64,${s.data}') format('${s.format || "woff2"}')`
+                                            : `url('${s.src}') format('${s.format || "woff2"}')`
+                                    ).join(",")
+                                } else if (f.data) {
+                                    srcParts = `url('data:font/${f.format || "woff2"};base64,${f.data}') format('${f.format || "woff2"}')`
+                                } else {
+                                    srcParts = `url('${f.src}') format('${f.format || "woff2"}')`
+                                }
+                                return (
+                                    `@font-face{font-family:'${f.family}';src:${srcParts};` +
+                                    `font-weight:${f.weight || "400"};font-style:${f.style || "normal"};` +
+                                    `font-display:${f.display || "auto"};}`
+                                )
+                            }).join("")
+                            const fontEl = document.createElement("style")
+                            fontEl.type = "text/css"
+                            fontEl.id = "langfonts"
+                            fontEl.innerHTML = fontCSS
+                            document.head.appendChild(fontEl)
+                        }
+                    }
+
                     if (
                         !(
                             languagepack == "default" ||
@@ -490,6 +615,9 @@ const useSettings = () => {
                             {
                                 onSuccess: (result) => {
                                     const langjson = JSON.parse(result)
+                                    const manifest = langjson._manifest || null
+                                    delete langjson._manifest
+                                    applyLangManifest(manifest)
                                     setCurrentLanguage(langjson)
                                     loadTheme(themepack)
                                 },
@@ -504,6 +632,7 @@ const useSettings = () => {
                             }
                         )
                     } else {
+                        applyLangManifest(null)
                         loadTheme(themepack)
                     }
                 },

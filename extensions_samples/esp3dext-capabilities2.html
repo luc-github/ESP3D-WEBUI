@@ -1,0 +1,71 @@
+<script type="application/json" id="esp3dext-manifest">
+{
+  "owner": "ESP3D",
+  "version": "1.1.0",
+  "github": "https://github.com/luc-github/ESP3D-WEBUI",
+  "description": "Query WebUI capabilities (connection, features, interface, settings, extensions).",
+  "name": "Capabilities",
+  "icon": "Activity",
+  "target": "panel",
+  "refreshtime": "0",
+  "supportedVersion": "3.*",
+  "targetSystem": "*"
+}
+</script>
+<script type="text/javascript">
+  var currentId = 'connection';
+
+  function sendMessage(msg) {
+    window.parent.postMessage(msg, '*');
+  }
+
+  function selectOption(value) {
+    currentId = value;
+    document.getElementById('selected_label').textContent = value;
+    document.getElementById('dropdown_toggle').blur();
+    document.getElementById('extensionNameInput').classList.toggle('d-none', value !== 'extensions');
+  }
+
+  function getCapabilities() {
+    const extensionName = document.getElementById('extension_name').value;
+    sendMessage({ type: 'capabilities', target: 'webui', id: currentId, name: extensionName });
+  }
+
+  function processMessage(eventMsg) {
+    if (eventMsg.data.type === 'capabilities') {
+      document.getElementById('output').textContent =
+        JSON.stringify(eventMsg.data.content.response, null, 2);
+    }
+  }
+
+  window.onload = () => {
+    window.addEventListener('message', processMessage, false);
+  };
+</script>
+
+<div class="container">
+  <div class="form-group">
+    <div class="dropdown">
+      <a id="dropdown_toggle" class="btn dropdown-toggle" tabindex="0">
+        <span id="selected_label">connection</span>
+        <i class="icon icon-caret"></i>
+      </a>
+      <ul class="menu">
+        <li class="menu-item"><a href="#" onclick="selectOption('connection'); return false;">connection</a></li>
+        <li class="menu-item"><a href="#" onclick="selectOption('features');   return false;">features</a></li>
+        <li class="menu-item"><a href="#" onclick="selectOption('interface');  return false;">interface</a></li>
+        <li class="menu-item"><a href="#" onclick="selectOption('settings');   return false;">settings</a></li>
+        <li class="menu-item"><a href="#" onclick="selectOption('extensions'); return false;">extensions</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group d-none" id="extensionNameInput">
+    <label class="form-label" for="extension_name">Extension Name:</label>
+    <input class="form-input" id="extension_name" type="text" value="click2go">
+  </div>
+
+  <button class="btn m-1" onclick="getCapabilities()">Get Capabilities</button>
+
+  <pre class="container m-2" id="output"></pre>
+</div>

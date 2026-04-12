@@ -76,8 +76,10 @@ const fileReference = JSON.parse(
     fs.readFileSync(referenceFile, "UTF-8").toString()
 )
 console.log("")
+const META_KEYS = new Set(["_manifest"])
 console.log(chalk.green("Checking extra entries..."))
 Object.keys(fileTarget).map((key) => {
+    if (META_KEYS.has(key)) return
     if (typeof fileReference[key] == "undefined") {
         console.log(chalk.yellow(key + " : " + fileTarget[key]))
         count++
@@ -93,6 +95,7 @@ count = 0
 console.log("")
 console.log(chalk.green("Checking missing entries..."))
 Object.keys(fileReference).map((key) => {
+    if (META_KEYS.has(key)) return
     if (typeof fileTarget[key] == "undefined") {
         count++
         console.log(chalk.red(key + " : " + fileReference[key]))

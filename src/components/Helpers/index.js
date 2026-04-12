@@ -51,7 +51,7 @@ import {
 import { dispatchToExtensions, isFullscreenActive, isFullscreenSupported, getFullscreenElement } from "./html"
 import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
-import { parseEmbeddedManifest, isExtensionCompatible } from "./extensions"
+import { parseEmbeddedManifest, isExtensionCompatible, isThemeCompatible } from "./extensions"
 import { decompressGzipToText } from "./gzip"
 
 export {
@@ -92,5 +92,6 @@ export {
     useStoredState,
     parseEmbeddedManifest,
     isExtensionCompatible,
+    isThemeCompatible,
     decompressGzipToText,
 }
