@@ -219,8 +219,9 @@ const WsContextProvider = ({ children }) => {
             document.location.port != ""
                 ? parseInt(document.location.port) + 1
                 : connectionSettings.current.WebSocketPort
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
         wsConnection.current = new WebSocket(
-            `ws://${document.location.hostname}${wsPort ? `:${wsPort}` : ""}${path}`,
+            `${wsProtocol}://${document.location.hostname}${wsPort ? `:${wsPort}` : ""}${path}`,
             `webui-v3`
         )
         wsConnection.current.binaryType = "arraybuffer"

@@ -39,7 +39,7 @@ const espHttpURL = (base = "", args = {}) => {
         try {
             return new URL(base)
         } catch (error) {
-            return new URL(base, `http://${window.location.host}`)
+            return new URL(base, window.location.origin)
         }
     })()
     Object.entries(args).forEach(([key, value]) =>
