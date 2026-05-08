@@ -27,7 +27,7 @@ import { CheckCircle, PlusCircle, XCircle } from "preact-feather"
 
 // Same API as themes/language pack: GET with path, response { files: [ { name, size }, ... ] }.
 // Try path=/extensions first (organized); on error retry path=/ and filter by esp3dext-* (small FS, no subdir).
-const EXTENSIONS_NAME_REGEX = /^esp3dext-.+$/
+const EXTENSIONS_NAME_REGEX = /^esp3dext-.+\.html(?:\.gz)?$/i
 
 // pathPrefix: "extensions/" when listing that dir, "" when listing root. Full path is saved; display name trims esp3dext-.
 // Returns { items, pathError } when the API returned 200 but reported path missing (e.g. production firmware).
@@ -46,12 +46,15 @@ const parseAndFilter = (result, pathPrefix) => {
             .filter((e) => {
                 const name = e && e.name
                 if (!name || name === "." || name === "..") return false
+                if (e.size == -1) return /^esp3dext-.+/i.test(name)
                 return EXTENSIONS_NAME_REGEX.test(name)
             })
             .map((e) => {
-                const path = pathPrefix ? pathPrefix + e.name : e.name
-                const displayName = e.name.replace(/^esp3dext-/, "")
-                return { id: path, path, name: displayName, displayName: null, status: "loading" }
+                const isDir = e.size == -1
+                const basePath = pathPrefix ? pathPrefix + e.name : e.name
+                const path = isDir ? basePath + "/" + e.name + ".html" : basePath
+                const displayName = e.name.replace(/^esp3dext-/i, "").replace(/\.html(?:\.gz)?$/i, "")
+                return { id: path, path, name: displayName, displayName: null, status: "loading", isDir }
             })
         return { items, pathError }
     } catch (_) {
@@ -97,15 +100,13 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
             )
         }
         items.forEach((ext) => {
-            const isGz = ext.path.endsWith(".html.gz") || ext.path.endsWith(".htm.gz")
-            const entry =
-                ext.path.endsWith(".html") || ext.path.endsWith(".htm") || isGz
-                    ? ext.path
-                    : ext.path + "/index.html"
+            const isGz = !ext.isDir && (ext.path.endsWith(".html.gz") || ext.path.endsWith(".htm.gz"))
+            const entry = ext.isDir || ext.path.endsWith(".html") || ext.path.endsWith(".htm") || isGz
+                ? ext.path
+                : ext.path + "/index.html"
             const url = (baseUrl + (baseUrl.endsWith("/") ? "" : "/") + entry).replace(/\/+/g, "/")
             const requestId = isGz ? "download-manifest-" + ext.id : undefined
-            const applyManifest = (text) => {
-                const manifest = parseEmbeddedManifest(typeof text === "string" ? text : "")
+            const finalize = (manifest) => {
                 const compatible = extensionCheckConfig
                     ? isExtensionCompatible(manifest, extensionCheckConfig)
                     : !!manifest
@@ -118,6 +119,23 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
                 }
                 manifestPendingRef.current -= 1
                 flushManifestUpdates()
+            }
+            const applyManifest = (text) => {
+                const manifest = parseEmbeddedManifest(typeof text === "string" ? text : "")
+                if (manifest) {
+                    finalize(manifest)
+                    return
+                }
+                const sidecarEntry = entry.replace(/\.html(?:\.gz)?$/i, ".json")
+                const sidecarUrl = (baseUrl + (baseUrl.endsWith("/") ? "" : "/") + sidecarEntry).replace(/\/+/g, "/")
+                createNewRequest(espHttpURL(sidecarUrl), { method: "GET" }, {
+                    onSuccess: (jsonResult) => {
+                        let sidecarManifest = null
+                        try { sidecarManifest = JSON.parse(typeof jsonResult === "string" ? jsonResult : "") } catch (_) {}
+                        finalize(sidecarManifest)
+                    },
+                    onFail: () => finalize(null),
+                })
             }
             createNewRequest(espHttpURL(url), { method: "GET", id: requestId }, {
                 onSuccess: (result) => {

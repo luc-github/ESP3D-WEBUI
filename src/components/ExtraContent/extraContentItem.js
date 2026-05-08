@@ -124,26 +124,39 @@ const ExtraContentItemInner = ({
         }
         const getHtmlThen = (htmlText) => {
             if (type === "extension" && extensionCheckConfig) {
+                const checkManifestAndApply = (manifest) => {
+                    const hasValidManifest =
+                        manifest &&
+                        manifest.supportedVersion != null &&
+                        String(manifest.supportedVersion).trim() !== "" &&
+                        manifest.targetSystem != null &&
+                        String(manifest.targetSystem).trim() !== ""
+                    if (!hasValidManifest) {
+                        failExtension(`${name || id}: extension not compatible (no valid manifest)`)
+                        return
+                    }
+                    const { webUIVersion: wv, targetCategory: tc, target: tgt } = extensionCheckConfig
+                    const categoryId = ({ Printer3D: "3d printer", CNC: "cnc", SandTable: "sand table" }[tc] || (tc || "").toLowerCase()).replace(/\s/g, "")
+                    const targetId = (tgt || "").toLowerCase().replace(/\s/g, "")
+                    const list = String(manifest.targetSystem).toLowerCase().replace(/\s/g, "").split(",").map((s) => s.trim()).filter(Boolean)
+                    const matchTarget = list.length === 0 || list.includes("*") || list.includes(categoryId) || list.includes(targetId)
+                    if (!matchVersion(wv || "3.0", String(manifest.supportedVersion).trim()) || !matchTarget) {
+                        failExtension(`${name || id}: extension not compatible`)
+                        return
+                    }
+                    applyHtmlContent(htmlText)
+                }
                 const manifest = getEmbeddedManifest(htmlText)
-                const hasValidManifest =
-                    manifest &&
-                    manifest.supportedVersion != null &&
-                    String(manifest.supportedVersion).trim() !== "" &&
-                    manifest.targetSystem != null &&
-                    String(manifest.targetSystem).trim() !== ""
-                if (!hasValidManifest) {
-                    failExtension(`${name || id}: extension not compatible (no valid manifest)`)
-                    return
+                if (manifest) {
+                    checkManifestAndApply(manifest)
+                } else {
+                    const jsonSource = source.replace(/\.html(?:\.gz)?$/i, ".json")
+                    fetch(espHttpURL(jsonSource))
+                        .then((r) => r.ok ? r.json() : Promise.reject())
+                        .then(checkManifestAndApply)
+                        .catch(() => failExtension(`${name || id}: extension not compatible (no valid manifest)`))
                 }
-                const { webUIVersion: wv, targetCategory: tc, target: tgt } = extensionCheckConfig
-                const categoryId = ({ Printer3D: "3d printer", CNC: "cnc", SandTable: "sand table" }[tc] || (tc || "").toLowerCase()).replace(/\s/g, "")
-                const targetId = (tgt || "").toLowerCase().replace(/\s/g, "")
-                const list = String(manifest.targetSystem).toLowerCase().replace(/\s/g, "").split(",").map((s) => s.trim()).filter(Boolean)
-                const matchTarget = list.length === 0 || list.includes("*") || list.includes(categoryId) || list.includes(targetId)
-                if (!matchVersion(wv || "3.0", String(manifest.supportedVersion).trim()) || !matchTarget) {
-                    failExtension(`${name || id}: extension not compatible`)
-                    return
-                }
+                return
             }
             applyHtmlContent(htmlText)
         }

@@ -1,0 +1,11 @@
+{
+  "name": "Hello World",
+  "owner": "ESP3D",
+  "version": "1.0.0",
+  "description": "Example extension using an external sidecar manifest.",
+  "icon": "Info",
+  "target": "panel",
+  "refreshtime": "0",
+  "supportedVersion": "3.*",
+  "targetSystem": "*"
+}

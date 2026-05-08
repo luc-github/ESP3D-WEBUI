@@ -1,0 +1,82 @@
+<!--
+  esp3dext-helloworld.html
+  Example extension using an external sidecar manifest (esp3dext-helloworld.json).
+  No embedded manifest in this file — the WebUI fetches the JSON file instead.
+-->
+<script type="text/javascript">
+  var myId = null;
+
+  function sendMessage(msg) {
+    window.parent.postMessage(msg, '*');
+  }
+
+  function queryInfo() {
+    sendMessage({ type: 'capabilities', target: 'webui', id: 'connection' });
+    sendMessage({ type: 'cmd', target: 'webui', id: 'hw_esp800', content: '[ESP800]' });
+  }
+
+  function setRow(id, value, isError) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = value;
+    el.className = isError ? 'text-error' : '';
+  }
+
+  function processMessage(eventMsg) {
+    var d = eventMsg.data;
+    if (!d || !d.type) return;
+
+    if (d.type === 'notification') {
+      myId = d.id;
+      var conn = d.content && d.content.isConnected;
+      setRow('row-connected', conn ? 'Yes' : 'No');
+      setRow('row-ext-id', myId || '—');
+      if (conn) queryInfo();
+      return;
+    }
+
+    if (d.type === 'capabilities' && d.id === 'connection') {
+      var info = d.content && d.content.response;
+      if (!info) return;
+      setRow('row-hostname',  info.Hostname       || '—');
+      setRow('row-ip',        info.WebSocketIP    || '—');
+      setRow('row-port',      info.WebSocketPort  ? String(parseInt(info.WebSocketPort) - 1) : '—');
+      setRow('row-mode',      info.WiFiMode       || info.RadioMode     || '—');
+      setRow('row-flash-fs',  info.FlashFileSystem || '—');
+      return;
+    }
+
+    if (d.type === 'cmd' && d.id === 'hw_esp800') {
+      var resp = d.content;
+      if (resp && resp.status === 'success') {
+        setRow('row-esp800', resp.response || '—');
+      } else {
+        setRow('row-esp800', (resp && resp.error) || 'error', true);
+      }
+      return;
+    }
+  }
+
+  window.onload = function () {
+    window.addEventListener('message', processMessage, false);
+  };
+</script>
+
+<div class="container">
+  <h5 class="m-2">Hello World <small class="label label-secondary">sidecar manifest</small></h5>
+
+  <table class="table table-striped">
+    <tbody>
+      <tr><td><strong>Extension ID</strong></td><td id="row-ext-id">—</td></tr>
+      <tr><td><strong>Connected</strong></td><td id="row-connected">—</td></tr>
+      <tr><td><strong>Hostname</strong></td><td id="row-hostname">—</td></tr>
+      <tr><td><strong>IP</strong></td><td id="row-ip">—</td></tr>
+      <tr><td><strong>HTTP Port</strong></td><td id="row-port">—</td></tr>
+      <tr><td><strong>Radio mode</strong></td><td id="row-mode">—</td></tr>
+      <tr><td><strong>Flash FS</strong></td><td id="row-flash-fs">—</td></tr>
+      <tr><td><strong>[ESP800]</strong></td><td id="row-esp800">—</td></tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-primary m-1" onclick="queryInfo()">Refresh</button>
+</div>

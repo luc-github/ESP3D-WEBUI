@@ -6,12 +6,74 @@ An extension is a single HTML file that runs inside the ESP3D WebUI as an iframe
 
 ## File format and naming
 
+### Flat file (simple extension)
+
 ```
 esp3dext-<name>.html          plain HTML
 esp3dext-<name>.html.gz       gzip-compressed (same content, smaller on flash)
 ```
 
 The file must start with `esp3dext-`. Upload it to the `extensions/` subdirectory of the device filesystem, or to the root as a fallback.
+
+### Subdirectory (extension with assets)
+
+When an extension needs additional files (images, CSS, scripts), use a subdirectory:
+
+```
+extensions/
+  esp3dext-<name>/
+    esp3dext-<name>.html        main HTML file (same name as the directory + .html)
+    esp3dext-<name>.json        sidecar manifest (optional — see below)
+    assets/                     any extra files referenced by the HTML
+```
+
+The directory must start with `esp3dext-`. The WebUI scans for both flat files and directories; the main HTML inside the directory must share the exact same base name as the directory.
+
+---
+
+## Manifest
+
+The manifest declares compatibility and metadata. It can be provided in two ways.
+
+### Embedded manifest (recommended for flat files)
+
+Embed the manifest directly in the HTML as a `<script>` block — no extra file needed:
+
+```html
+<script type="application/json" id="esp3dext-manifest">
+{
+  "name": "My Extension",
+  "supportedVersion": "3.*",
+  "targetSystem": "*"
+}
+</script>
+```
+
+### External sidecar manifest (required for subdirectory, optional for flat files)
+
+Place a JSON file alongside the HTML with the same base name:
+
+| Layout | HTML file | Manifest file |
+|---|---|---|
+| Flat | `esp3dext-myplugin.html` | `esp3dext-myplugin.json` |
+| Flat compressed | `esp3dext-myplugin.html.gz` | `esp3dext-myplugin.json` |
+| Subdirectory | `esp3dext-myplugin/esp3dext-myplugin.html` | `esp3dext-myplugin/esp3dext-myplugin.json` |
+
+When loading an extension, the WebUI first looks for an embedded manifest inside the HTML. If none is found, it fetches the sidecar JSON from the same location. If neither is present the extension is rejected.
+
+The sidecar JSON contains only the manifest object — no wrapper:
+
+```json
+{
+  "name": "My Extension",
+  "owner": "MyName",
+  "version": "1.0.0",
+  "icon": "Tool",
+  "target": "panel",
+  "supportedVersion": "3.*",
+  "targetSystem": "*"
+}
+```
 
 ---
 
@@ -34,12 +96,10 @@ The file must start with `esp3dext-`. Upload it to the `extensions/` subdirector
 </script>
 
 <script type="text/javascript">
-  // Send a message to the WebUI
   function sendMessage(msg) {
     window.parent.postMessage(msg, '*');
   }
 
-  // Receive messages from the WebUI
   function processMessage(eventMsg) {
     // handle eventMsg.data
   }
@@ -55,6 +115,8 @@ The file must start with `esp3dext-`. Upload it to the `extensions/` subdirector
 ```
 
 The WebUI injects its CSS and active theme into the iframe automatically — no stylesheet link needed.
+
+A working example using a sidecar manifest and subdirectory layout is available in `docs/examples/esp3dext-helloworld/`.
 
 ---
 
@@ -392,11 +454,20 @@ function processMessage(eventMsg) {
 
 ## Installing an extension
 
-1. Upload the `.html` (or `.html.gz`) file to the device filesystem — preferably into an `extensions/` subdirectory.
-2. In the WebUI, go to **Settings → Interface → Extra content**.
-3. Click **Extensions list** — the WebUI scans for `esp3dext-*` files and shows compatibility status.
-4. Check the extensions you want and click **Add selected**.
-5. Save settings.
+**Flat file layout:**
+1. Upload `esp3dext-<name>.html` (and optionally `esp3dext-<name>.json`) to the `extensions/` directory on the device filesystem (root as fallback).
+
+**Subdirectory layout:**
+1. Create the directory `esp3dext-<name>/` on the device filesystem (inside `extensions/` or at root).
+2. Upload `esp3dext-<name>.html` and, if used, `esp3dext-<name>.json` into that directory.
+3. Upload any additional asset files into the same directory.
+
+**Then in the WebUI:**
+
+4. Go to **Settings → Interface → Extra content**.
+5. Click **Extensions list** — the WebUI scans for `esp3dext-*` files and directories and shows compatibility status.
+6. Check the extensions you want and click **Add selected**.
+7. Save settings.
 
 ---
 
