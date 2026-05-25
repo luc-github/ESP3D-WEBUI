@@ -1,4 +1,4 @@
-# ESP3D-WEBUI 3.1 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.0/info.json)
+# ESP3D-WEBUI 3.1 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.1/info.json)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -6,10 +6,10 @@
 using Preact per @aganov suggestion  
 Rewrite per @alxblog suggestion to use proper Preactjs API and lighter css code: use spectre.css instead of bootstrap 4.x
 
-Only compatible with [ESP3DLib 3.0](https://github.com/luc-github/ESP3DLib/tree/3.0) , [ESP3D 3.0](https://github.com/luc-github/ESP3D/tree/3.0), [grblHAL](https://github.com/grblHAL), [ESP3D_TFT 1.0](https://github.com/luc-github/ESP3D-TFT/tree/main)   
+Only compatible with [ESP3DLib 3.0](https://github.com/luc-github/ESP3DLib/tree/3.0) , [ESP3D 3.1](https://github.com/luc-github/ESP3D/tree/3.1), [grblHAL](https://github.com/grblHAL), [ESP3D_TFT 1.0](https://github.com/luc-github/ESP3D-TFT/tree/main)   
 
-![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Development&query=$.devt&color=green&style=plastic&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.0/info.json)
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.0?style=plastic) 
+![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Development&query=$.devt&color=green&style=plastic&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.1/info.json)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/luc-github/ESP3D-WEBUI/3.1?style=plastic) 
 [![github-ci](https://github.com/luc-github/ESP3D-WeBUI/workflows/build-ci/badge.svg)](https://github.com/luc-github/ESP3D-WEBUI/actions/workflows/build-ci.yml)  
 
 > [!WARNING]
