@@ -182,7 +182,7 @@ const StatusPanel = () => {
                         if (status.printState && status.printState.printing) {
                             return "sdresumecmd"
                         }
-                        return "[ESP701]RESUME"
+                        return "[ESP701]action=RESUME"
                     },
                     depend: { streamStatus: ["pause"], status: [] },
                     icon: <PlayCircle />,
@@ -193,7 +193,7 @@ const StatusPanel = () => {
                         if (status.printState && status.printState.printing) {
                             return "sdpausecmd"
                         }
-                        return "[ESP701]PAUSE"
+                        return "[ESP701]action=PAUSE"
                     },
                     depend: { streamStatus: ["processing"], status: [] },
                     icon: <PauseCircle />,
@@ -204,7 +204,7 @@ const StatusPanel = () => {
                         if (status.printState && status.printState.printing) {
                             return "sdstopcmd"
                         }
-                        return "[ESP701]ABORT"
+                        return "[ESP701]action=ABORT"
                     },
                     icon: <StopCircle />,
                     desc: T("P100"),

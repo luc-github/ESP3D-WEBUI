@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { canProcessFile } from "../../helpers"
+import { canProcessFile, buildEsp700CommandFromParts } from "../../helpers"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 
@@ -129,16 +129,9 @@ const commands = {
             useSettingsContextFn.getValue("Streaming") == "Enabled" &&
             useSettingsContextFn.getValue("SDConnection") == "direct"
         ) {
-            const fullpath = (
-                "/sd" +
-                path +
-                (path.endsWith("/") ? "" : "/") +
-                filename
-            ).replaceAll("//", "/")
-            const cmd = "[ESP700]stream=" + fullpath
             return {
                 type: "cmd",
-                cmd,
+                cmd: buildEsp700CommandFromParts("/SD", path, filename),
             }
         } else {
             const spath = (
