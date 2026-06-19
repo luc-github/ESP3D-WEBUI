@@ -19,7 +19,13 @@
 import { Fragment, h } from "preact"
 import { useRef } from "preact/hooks"
 import { T } from "../Translations"
-import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
+import {
+    Layers,
+    PlayCircle,
+    PauseCircle,
+    StopCircle,
+    CheckCircle,
+} from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext } from "../../targets"
 import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
@@ -64,6 +70,61 @@ const TimeControl = ({ label, time }) => {
     )
 }
 
+const toTimeObject = (seconds) => {
+    const value = parseInt(seconds || 0)
+    if (!value || value < 0) return null
+    return {
+        year: null,
+        day: Math.floor((value % (86400 * 30)) / 86400),
+        hour: Math.floor((value % 86400) / 3600),
+        min: Math.floor((value % 3600) / 60),
+        sec: Math.floor(value % 60),
+    }
+}
+
+const getStreamView = (streamStatus) => {
+    if (!streamStatus || !streamStatus.status) return null
+    const progress =
+        typeof streamStatus.m73_progress !== "undefined"
+            ? parseFloat(streamStatus.m73_progress).toFixed(2)
+            : streamStatus.processed && streamStatus.total
+              ? Math.round(
+                    (streamStatus.processed / streamStatus.total) * 100
+                ).toFixed(2)
+              : null
+
+    const printTime =
+        typeof streamStatus.m73_elapsed !== "undefined"
+            ? toTimeObject(streamStatus.m73_elapsed)
+            : toTimeObject(
+                  streamStatus.elapsed
+                      ? Math.floor(streamStatus.elapsed / 1000)
+                      : 0
+              )
+
+    let printLeftTime = null
+    if (typeof streamStatus.m73_remaining !== "undefined") {
+        printLeftTime = toTimeObject(streamStatus.m73_remaining)
+    } else if (
+        streamStatus.elapsed &&
+        progress &&
+        parseFloat(progress) > 0 &&
+        parseFloat(progress) < 100
+    ) {
+        const timeLeft =
+            ((100 - parseFloat(progress)) / parseFloat(progress)) *
+            streamStatus.elapsed
+        printLeftTime = toTimeObject(Math.floor(timeLeft / 1000))
+    }
+
+    return {
+        ...streamStatus,
+        progress,
+        printTime,
+        printLeftTime,
+    }
+}
+
 /*
  * Local const
  *
@@ -71,6 +132,7 @@ const TimeControl = ({ label, time }) => {
 
 const StatusControls = () => {
     const { streamStatus, status } = useTargetContext()
+    const streamView = getStreamView(streamStatus)
     if (!useUiContextFn.getValue("showstatuspanel")) return null
     //console.log("streamStatus")
     //console.log(streamStatus)
@@ -78,38 +140,33 @@ const StatusControls = () => {
     //console.log(status)
     return (
         <Fragment>
-            {streamStatus &&
-                streamStatus.status &&
-                streamStatus.status != "no stream" && (
+            {streamView && streamView.status && streamView.status != "no stream" && (
                     <div class="status-ctrls">
                         <div
                             class="extra-control mt-1 tooltip tooltip-bottom"
                             data-tooltip={T("P97")}
                         >
                             <div class="extra-control-header">
-                                {T(streamStatus.status)}
+                                {T(streamView.status)}
                             </div>
-                            {streamStatus.name &&
-                                streamStatus.name.length > 0 && (
+                            {streamView.name && streamView.name.length > 0 && (
                                     <div class="extra-control-value m-1">
-                                        {streamStatus.name}
+                                        {streamView.name}
                                     </div>
                                 )}
-                            {streamStatus &&
-                                streamStatus.status &&
-                                streamStatus.status != "no stream" && (
+                            {streamView.status && streamView.status != "no stream" && (
                                     <Fragment>
                                         <div class="extra-control-value">
-                                            {streamStatus.progress}%
+                                            {streamView.progress}%
                                         </div>
 
                                         <TimeControl
                                             label="P105"
-                                            time={streamStatus.printTime}
+                                            time={streamView.printTime}
                                         />
                                         <TimeControl
                                             label="P112"
-                                            time={streamStatus.printLeftTime}
+                                            time={streamView.printLeftTime}
                                         />
                                     </Fragment>
                                 )}
@@ -178,36 +235,27 @@ const StatusPanel = () => {
             depend: ["sd"],
             buttons: [
                 {
-                    cmd: () => {
-                        if (status.printState && status.printState.printing) {
-                            return "sdresumecmd"
-                        }
-                        return "[ESP701]action=RESUME"
-                    },
+                    cmd: () => "[ESP701]action=RESUME",
                     depend: { streamStatus: ["pause"], status: [] },
                     icon: <PlayCircle />,
                     desc: T("P99"),
                 },
                 {
-                    cmd: () => {
-                        if (status.printState && status.printState.printing) {
-                            return "sdpausecmd"
-                        }
-                        return "[ESP701]action=PAUSE"
-                    },
+                    cmd: () => "[ESP701]action=PAUSE",
                     depend: { streamStatus: ["processing"], status: [] },
                     icon: <PauseCircle />,
                     desc: T("P98"),
                 },
                 {
-                    cmd: () => {
-                        if (status.printState && status.printState.printing) {
-                            return "sdstopcmd"
-                        }
-                        return "[ESP701]action=ABORT"
-                    },
+                    cmd: () => "[ESP701]action=ABORT",
                     icon: <StopCircle />,
                     desc: T("P100"),
+                },
+                {
+                    cmd: () => "[ESP701]action=CLEAR_ERROR",
+                    depend: { hasCode: true, status: [] },
+                    icon: <CheckCircle />,
+                    desc: T("S206"),
                 },
             ],
         },
@@ -283,6 +331,9 @@ const StatusPanel = () => {
     }
     const isVisible = (button) => {
         if (button.depend) {
+            if (button.depend.hasCode && !(streamStatus && streamStatus.code)) {
+                return false
+            }
             if (
                 streamStatus &&
                 streamStatus.status &&
@@ -319,8 +370,7 @@ const StatusPanel = () => {
                 {((status.printState && status.printState.printing) ||
                     (streamStatus &&
                         streamStatus.status &&
-                        streamStatus.status != "no stream" &&
-                        streamStatus.name != "")) &&
+                        streamStatus.status != "no stream")) &&
                     deviceList.map((device) => {
                         if (
                             !device.depend.every((d) =>
@@ -350,14 +400,23 @@ const StatusPanel = () => {
                                                         console.log(
                                                             button.cmd()
                                                         )
+                                                        const buttonCommand =
+                                                            button.cmd()
                                                         const cmd =
-                                                            status.printState &&
-                                                            status.printState
-                                                                .printing
-                                                                ? useUiContextFn.getValue(
-                                                                      button.cmd()
-                                                                  )
-                                                                : button.cmd()
+                                                            buttonCommand &&
+                                                            buttonCommand.startsWith(
+                                                                "[ESP"
+                                                            )
+                                                                ? buttonCommand
+                                                                : status.printState &&
+                                                                    status
+                                                                        .printState
+                                                                        .printing
+                                                                  ? useUiContextFn.getValue(
+                                                                        buttonCommand
+                                                                    )
+                                                                  : buttonCommand
+                                                        if (!cmd) return
                                                         const cmds =
                                                             cmd.split("\n")
                                                         cmds.forEach((cmd) => {
