@@ -131,13 +131,21 @@ const MacrosPanel = () => {
                     window.open(action)
                 }
                 break
-            case "CMD":
-                //split by ; and show in terminal
-                const commandsList = action.trim().split(";")
-                commandsList.forEach((command) => {
-                    sendCommand(command)
-                })
-                break
+            case "CMD": {
+        // Newline-delimited macros preserve semicolon G-code comments. Existing
+        // one-line macros keep their legacy semicolon-separated behavior.
+        const macroText = String(action || "").replace(/\r\n?/g, "\n").trim()
+        const commandsList = (macroText.includes("\n")
+          ? macroText.split("\n")
+          : macroText.split(";"))
+          .map((command) => command.trim())
+          .filter((command) => command.length > 0)
+
+        commandsList.forEach((command) => {
+          sendCommand(command)
+        })
+        break
+      }
             default:
                 console.log("type:", type, " action:", action)
                 break

@@ -166,6 +166,12 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
                     newItem.type = "text"
                     newItem.label = "S159"
                     newItem.min = "1"
+        // The action field is G-code for CMD macros; keep all macro actions editable
+        // as a textarea so switching the macro type does not require a reload.
+        if (origineId == "macros") {
+          newItem.multiline = true
+          newItem.rows = 8
+        }
                     break
                 case "value":
                     newItem.type = "text"

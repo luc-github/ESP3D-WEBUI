@@ -97,7 +97,9 @@ const Input = ({
     disabled,
     prec,
     shortkey,
-    ...rest
+    multiline = false,
+  rows = 8,
+  ...rest
 }) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     const dependIds = generateDependIds(
@@ -327,7 +329,34 @@ const Input = ({
     //but this is a quick fix
     let classAddition = ""
     if (rest.class) classAddition = rest.class.replace("form-input", "")
+    
+  if (multiline) {
     return (
+      <div
+        class={`input-group ${inline ? "column" : ""} ${
+          button ? "has-button-submit" : "no-button-submit"
+        } ${help ? "tooltip" : ""}`}
+        data-tooltip={T(help)}
+      >
+        <textarea
+          id={id}
+          name={id}
+          value={value}
+          disabled={disabled}
+          rows={rows}
+          spellcheck="false"
+          autocorrect="off"
+          autocomplete="off"
+          class={`form-input ${classAddition}`}
+          {...rest}
+          onInput={onInput}
+        />
+        {button}
+      </div>
+    )
+  }
+
+return (
         <div
             class={`input-group ${inline ? "column" : ""} ${
                 button ? "has-button-submit" : "no-button-submit"
