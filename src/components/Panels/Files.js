@@ -854,7 +854,7 @@ const FilesPanel = () => {
                                                                     currentPath[
                                                                         currentFS
                                                                     ],
-                                                                    line.name
+                                                                    line.playName || line.name
                                                                 )
                                                             sendSerialCmd(
                                                                 cmd.cmd

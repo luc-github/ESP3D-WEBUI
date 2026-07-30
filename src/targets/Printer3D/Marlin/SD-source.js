@@ -44,6 +44,7 @@ const formatFileSerialLine = (lines) => {
                 ...acc,
                 {
                     name: pathAlt || path,
+                    playName: path,
                     size: formatFileSizeToString(sizeAlt || size),
                 },
             ]
