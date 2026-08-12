@@ -426,7 +426,7 @@ const FilesPanel = () => {
             currentFS,
             element.size == -1 ? "deletedir" : "delete",
             currentPath[currentFS],
-            element.name
+            element.commandName || element.name
         )
         if (cmd.type == "url") {
             sendURLCmd(cmd)
@@ -514,37 +514,59 @@ const FilesPanel = () => {
             }
             setIsLoading(false)
         } else {
-            const cmd = files.command(currentFS, "list", currentPath[currentFS])
-            if (cmd.type == "url") {
-                createNewRequest(
-                    espHttpURL(cmd.url, cmd.args),
-                    { method: "GET" },
-                    {
-                        onSuccess: (result) => {
-                            filesListCache[currentFS] = files.command(
-                                currentFS,
-                                "formatResult",
-                                result
-                            )
-                            setFilesList(filesListCache[currentFS])
-                            setIsLoading(false)
-                        },
-                        onFail: (error) => {
-                            console.log(error)
-                            setIsLoading(false)
-                            toasts.addToast({ content: error, type: "error" })
-                        },
-                    }
+            const runListCommand = () => {
+                const cmd = files.command(
+                    currentFS,
+                    "list",
+                    currentPath[currentFS]
                 )
-            } else if (cmd.type == "cmd") {
+                if (cmd.type == "url") {
+                    createNewRequest(
+                        espHttpURL(cmd.url, cmd.args),
+                        { method: "GET" },
+                        {
+                            onSuccess: (result) => {
+                                filesListCache[currentFS] = files.command(
+                                    currentFS,
+                                    "formatResult",
+                                    result
+                                )
+                                setFilesList(filesListCache[currentFS])
+                                setIsLoading(false)
+                            },
+                            onFail: (error) => {
+                                console.log(error)
+                                setIsLoading(false)
+                                toasts.addToast({
+                                    content: error,
+                                    type: "error",
+                                })
+                            },
+                        }
+                    )
+                } else if (cmd.type == "cmd") {
+                    if (
+                        processor.startCatchResponse(
+                            currentFS,
+                            "list",
+                            processFeedback
+                        )
+                    )
+                        sendSerialCmd(cmd.cmd)
+                }
+            }
+            const preflight = files.command(currentFS, "preflightList")
+            if (preflight.type == "cmd") {
                 if (
                     processor.startCatchResponse(
                         currentFS,
-                        "list",
-                        processFeedback
+                        "preflightList",
+                        () => runListCommand()
                     )
                 )
-                    sendSerialCmd(cmd.cmd)
+                    sendSerialCmd(preflight.cmd)
+            } else {
+                runListCommand()
             }
         }
     }
@@ -854,7 +876,8 @@ const FilesPanel = () => {
                                                                     currentPath[
                                                                         currentFS
                                                                     ],
-                                                                    line.name
+                                                                    line.commandName ||
+                                                                        line.name
                                                                 )
                                                             sendSerialCmd(
                                                                 cmd.cmd
