@@ -42,7 +42,8 @@ const WsContextProvider = ({ children }) => {
     const { toasts, connection, dialogs, modals } = useUiContext()
     const { removeAllRequests } = useHttpQueueContext()
     const dataBuffer = useRef([])
-    const { connectionSettings, activity } = useSettingsContext()
+    const { connectionSettings, activity, setPrinterLinkState } =
+        useSettingsContext()
     const wsConnection = useRef()
     const [isPingPaused, setIsPingPaused] = useState(false)
     const [isPingStarted, setIsPingStarted] = useState(false)
@@ -88,6 +89,16 @@ const WsContextProvider = ({ children }) => {
                     case "ACTIVEID":
                         if (eventLine[1] != connectionSettings.current.wsID) {
                             Disconnect("already connected")
+                        }
+                        break
+                    case "PRINTERLINK":
+                        if (eventLine[1] == "captured") {
+                            setPrinterLinkState(
+                                true,
+                                eventLine.slice(2).join(":")
+                            )
+                        } else if (eventLine[1] == "released") {
+                            setPrinterLinkState(false)
                         }
                         break
                     case "PING":
@@ -156,6 +167,7 @@ const WsContextProvider = ({ children }) => {
         }
         //stop polling if any
         activity.stopPolling()
+        setPrinterLinkState(false)
         //Abort  / Remove all queries
         removeAllRequests()
         //Clear all opened modals

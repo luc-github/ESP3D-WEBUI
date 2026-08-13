@@ -39,6 +39,7 @@ const {
     configURI,
     getLastconnection,
     hasEnabledAuthentication,
+    marlinBftURI,
 } = require(
     path.normalize(
         __dirname + "/targets/" + target + "/" + subtarget + "/index.js"
@@ -117,6 +118,12 @@ app.get("/command", function (req, res) {
         res.status(200).send("error:unknown command\n")
     }
 })
+
+if (marlinBftURI) {
+    app.all("/printer-sd-transfer", function (req, res) {
+        marlinBftURI(req, res, SendWS)
+    })
+}
 
 /*app.get("/sdfiles", function (req, res) {
   res.status(200);

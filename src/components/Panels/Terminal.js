@@ -25,10 +25,16 @@ import {
     CheckCircle,
     Circle,
     PauseCircle,
+    AlertTriangle,
     ChevronLeft,
     ChevronRight,
 } from "preact-feather"
-import { useUiContext, useDatasContext, useUiContextFn } from "../../contexts"
+import {
+    useUiContext,
+    useDatasContext,
+    useUiContextFn,
+    useSettingsContext,
+} from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
 import { useHttpQueue } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
@@ -43,6 +49,7 @@ const TerminalPanel = () => {
     const { panels, uisettings } = useUiContext()
     const { terminal } = useDatasContext()
     const { processData } = useTargetContext()
+    const { printerLink } = useSettingsContext()
     const { createNewRequest } = useHttpQueue()
     if (terminal.isVerbose.current == undefined)
         terminal.isVerbose.current = uisettings.getValue("verbose")
@@ -106,6 +113,7 @@ const TerminalPanel = () => {
         }
     }
     const onSend = (e) => {
+        if (printerLink.captured) return
         useUiContextFn.haptic()
         inputRef.current.focus()
         if (!terminal.input.current && variablesList.allowEmptyLine)
@@ -253,6 +261,7 @@ const TerminalPanel = () => {
                     ref={inputRef}
                     value={terminal.input.current}
                     placeholder={T("S80")}
+                    disabled={printerLink.captured}
                 />
                 <ButtonImg
                     group
@@ -261,8 +270,20 @@ const TerminalPanel = () => {
                     label={T("S81")}
                     icon={<Send />}
                     onClick={onSend}
+                    disabled={printerLink.captured}
                 />
             </div>
+            {printerLink.captured && (
+                <div class="toast toast-warning m-1 feather-icon-container">
+                    <AlertTriangle />
+                    <span>
+                        {T("S261").replace(
+                            "%s",
+                            printerLink.owner || T("S19")
+                        )}
+                    </span>
+                </div>
+            )}
             <div class="show-low">
                 <ButtonImg
                     class=" m-2"

@@ -55,6 +55,8 @@ const UiContextProvider = ({ children }) => {
         page: "connecting",
     })
     const [uiSetup, setUiSetup] = useState(false)
+    const modalsRef = useRef(modals)
+    modalsRef.current = modals
     const toastsRef = useRef(toasts)
     toastsRef.current = toasts
     const notificationsRef = useRef(notifications)
@@ -123,19 +125,21 @@ const UiContextProvider = ({ children }) => {
     }
 
     const addModal = (newModal) =>
-        setModal([
-            ...modals,
+        setModal((currentModals) => [
+            ...currentModals,
             { ...newModal, id: newModal.id ? newModal.id : generateUID() },
         ])
     const getModalIndex = (id) => {
-        return modals.findIndex((element) => element.id == id)
+        return modalsRef.current.findIndex((element) => element.id == id)
     }
     const removeModal = (modalIndex) => {
-        const newModalList = modals.filter(
-            (modal, index) => index !== modalIndex
-        )
-        setModal(newModalList)
-        if (newModalList.length == 0) disableUI(false)
+        setModal((currentModals) => {
+            const newModalList = currentModals.filter(
+                (modal, index) => index !== modalIndex
+            )
+            if (newModalList.length == 0) disableUI(false)
+            return newModalList
+        })
     }
 
     const clearModals = () => {
