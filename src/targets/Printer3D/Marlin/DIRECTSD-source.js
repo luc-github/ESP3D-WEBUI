@@ -21,6 +21,7 @@ import { h } from "preact"
 import { canProcessFile } from "../../helpers"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
+import { getPrinterCapability } from "./printerCapabilities"
 
 const capabilities = {
     Process: (path, filename) => {
@@ -54,6 +55,12 @@ const capabilities = {
     },
     CreateDir: () => {
         return true
+    },
+    TransferToPrinter: () => {
+        return (
+            useSettingsContextFn.getValue("SDConnection") == "direct" &&
+            getPrinterCapability("BINARY_FILE_TRANSFER") == "1"
+        )
     },
 }
 
@@ -123,6 +130,15 @@ const commands = {
             ).replaceAll("//", "/"),
             args: {},
         }
+    },
+    transferToPrinter: (path, filename) => {
+        const source = (
+            "/SD" +
+            path +
+            (path.endsWith("/") ? "" : "/") +
+            filename
+        ).replaceAll("//", "/")
+        return { type: "bft", source }
     },
     play: (path, filename) => {
         if (

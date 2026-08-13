@@ -17,7 +17,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, createContext } from "preact"
-import { useRef, useContext } from "preact/hooks"
+import { useRef, useContext, useState } from "preact/hooks"
 import { useUiContext } from "./UiContext"
 import { espHttpURL } from "../components/Helpers"
 
@@ -35,16 +35,26 @@ const SettingsContextProvider = ({ children }) => {
     const connectionValues = useRef({})
     const featuresValues = useRef({})
     const pollingInterval = useRef([])
+    const printerLinkCaptured = useRef(false)
+    const [printerLink, setPrinterLink] = useState({
+        captured: false,
+        owner: "",
+    })
     useSettingsContextFn.getValue = (val) => connectionValues.current[val]
 
     function startPolling(id, interval, fn) {
         stopPolling(id)
         if (interval > 0 && fn) {
             const newInterval = setInterval(() => {
-                fn()
+                if (!printerLinkCaptured.current) fn()
             }, interval)
             pollingInterval.current.push({ id: id, interval: newInterval })
         }
+    }
+
+    function setPrinterLinkState(captured, owner = "") {
+        printerLinkCaptured.current = captured
+        setPrinterLink({ captured, owner: captured ? owner : "" })
     }
 
     /*
@@ -72,6 +82,8 @@ const SettingsContextProvider = ({ children }) => {
         connectionSettings: connectionValues,
         featuresSettings: featuresValues,
         activity: { startPolling, stopPolling },
+        printerLink,
+        setPrinterLinkState,
     }
 
     return (

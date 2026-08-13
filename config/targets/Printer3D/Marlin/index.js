@@ -30,6 +30,12 @@ let logindone = false
 const sessiontTime = 60000
 const isTFT = false
 const roomTemperature = 20
+let binaryTransfer = {
+    status: "idle",
+    active: false,
+    progress: 0,
+    error: "",
+}
 const temperatures = {
     T: [
         {
@@ -464,7 +470,7 @@ const commandsQuery = (req, res, SendWS, context) => {
         SendWS(
             "FIRMWARE_NAME:Marlin 2.0.9.1 (Sep  8 2021 17:07:06) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:MRR ESPA EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n" +
                 "Cap:SERIAL_XON_XOFF:0\n" +
-                "Cap:BINARY_FILE_TRANSFER:0\n" +
+                "Cap:BINARY_FILE_TRANSFER:1\n" +
                 "Cap:EEPROM:0\n" +
                 "Cap:VOLUMETRIC:1\n" +
                 "Cap:AUTOREPORT_POS:0\n" +
@@ -1126,10 +1132,62 @@ const configURI = (req, res) => {
     )
 }
 
+const marlinBftURI = (req, res, SendWS) => {
+    const action = req.query.action || "status"
+    if (action == "start") {
+        if (binaryTransfer.active) {
+            res.status(409).json(binaryTransfer)
+            return
+        }
+        binaryTransfer = {
+            status: "checking_capabilities",
+            active: true,
+            progress: 0,
+            source: req.query.source || "",
+            destination: req.query.destination || "",
+            error: "",
+            startedAt: Date.now(),
+        }
+        SendWS("printerLink:captured:binary-transfer", false, false)
+        res.status(202).json(binaryTransfer)
+        return
+    }
+    if (action == "cancel") {
+        binaryTransfer.status = "cancelled"
+        binaryTransfer.active = false
+        SendWS("printerLink:released", false, false)
+        res.status(202).json(binaryTransfer)
+        return
+    }
+    if (action != "status") {
+        res.status(400).json({
+            status: "failed",
+            active: false,
+            error: "Unknown action",
+        })
+        return
+    }
+    if (binaryTransfer.active) {
+        binaryTransfer.progress = Math.min(
+            100,
+            Math.floor((Date.now() - binaryTransfer.startedAt) / 50)
+        )
+        binaryTransfer.status =
+            binaryTransfer.progress < 10 ? "checking_capabilities" : "writing"
+        if (binaryTransfer.progress == 100) {
+            binaryTransfer.status = "completed"
+            binaryTransfer.active = false
+            SendWS("printerLink:released", false, false)
+        }
+    }
+    res.json(binaryTransfer)
+}
+
 module.exports = {
     commandsQuery,
     configURI,
     loginURI,
     getLastconnection,
     hasEnabledAuthentication,
+    marlinBftURI,
 }

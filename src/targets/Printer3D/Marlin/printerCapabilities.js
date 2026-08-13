@@ -13,14 +13,25 @@ import { addObjectItem } from "../../../components/Helpers"
 // Keep this outside TargetContext: SD-source is reached through processor,
 // which TargetContext imports, so importing TargetContext here would cycle.
 const printerCapabilities = []
+const capabilityListeners = new Set()
 
 const addPrinterCapabilities = (capabilities) => {
     capabilities.forEach((capability) => {
         addObjectItem(printerCapabilities, "name", capability)
     })
+    capabilityListeners.forEach((listener) => listener())
 }
 
 const getPrinterCapability = (name) =>
     printerCapabilities.find((capability) => capability.name == name)?.value
 
-export { addPrinterCapabilities, getPrinterCapability }
+const subscribePrinterCapabilities = (listener) => {
+    capabilityListeners.add(listener)
+    return () => capabilityListeners.delete(listener)
+}
+
+export {
+    addPrinterCapabilities,
+    getPrinterCapability,
+    subscribePrinterCapabilities,
+}

@@ -40,6 +40,7 @@ import {
     CornerRightUp,
     Edit3,
     XCircle,
+    ArrowUpCircle,
 } from "preact-feather"
 import { files, processor, useTargetContextFn } from "../../targets"
 import { Folder, File, Trash2, Play } from "preact-feather"
@@ -49,6 +50,28 @@ let currentFS = ""
 const currentPath = {}
 const filesListCache = {}
 let currentFSNeedInit = true
+
+const TransferProgress = ({ controller }) => {
+    const [transfer, setTransfer] = useState({
+        progress: 0,
+        status: "starting",
+    })
+
+    useEffect(() => {
+        controller.update = (status) => setTransfer(status)
+        return () => {
+            delete controller.update
+        }
+    }, [])
+
+    return (
+        <center>
+            <progress value={transfer.progress || 0} max="100" />
+            <div>{transfer.progress || 0}%</div>
+            <div>{transfer.status || T("P131")}</div>
+        </center>
+    )
+}
 
 /*
  * Local const
@@ -74,11 +97,16 @@ const FilesPanel = () => {
     const [fileSystem, setFileSystem] = useState(currentFS)
     const [filesList, setFilesList] = useState(filesListCache[currentFS])
     const [menu, setMenu] = useState(null)
+    const [, setCapabilitiesRevision] = useState(0)
     const { createNewRequest, abortRequest } = useHttpFn
     const { processData } = useTargetContextFn
     const { modals, toasts } = useUiContext()
+    const modalsRef = useRef(modals)
+    modalsRef.current = modals
     const fileref = useRef()
     const dropRef = useRef()
+    const transferPollTimer = useRef()
+    const transferProgress = useRef({}).current
     const progressBar = {} 
     //console.log("currentFS", currentFS)
     //console.log(currentFS)
@@ -89,6 +117,195 @@ const FilesPanel = () => {
         toasts.addToast({ content: T("S175"), type: "error" })
         filesListCache[currentFS] = { files: [], status: "S22" }
         setFilesList(filesListCache[currentFS])
+    }
+
+    useEffect(() => {
+        return () => clearTimeout(transferPollTimer.current)
+    }, [])
+
+    useEffect(() => {
+        if (!files.subscribeCapabilities) return
+        return files.subscribeCapabilities(() =>
+            setCapabilitiesRevision((revision) => revision + 1)
+        )
+    }, [])
+
+    const parseTransferStatus = (result) => {
+        try {
+            return typeof result == "string" ? JSON.parse(result) : result
+        } catch (error) {
+            console.log("Invalid Binary File Transfer status", error)
+            return null
+        }
+    }
+
+    const closeTransferModal = () => {
+        const index = modalsRef.current.getModalIndex("progression")
+        if (index != -1) modalsRef.current.removeModal(index)
+    }
+
+    const finishTransfer = (status) => {
+        clearTimeout(transferPollTimer.current)
+        if (transferProgress.update) transferProgress.update(status)
+        if (status.status == "completed") {
+            filesListCache.SD = undefined
+            toasts.addToast({ content: T("P128"), type: "success" })
+        } else if (status.status == "cancelled") {
+            toasts.addToast({ content: T("P130"), type: "warning" })
+        } else {
+            toasts.addToast({
+                content: T("P129").replace(
+                    "%s",
+                    status.error || status.status || T("S22")
+                ),
+                type: "error",
+            })
+        }
+        setTimeout(closeTransferModal, 500)
+    }
+
+    const pollTransfer = () => {
+        createNewRequest(
+            espHttpURL("printer-sd-transfer", { action: "status" }),
+            { method: "GET", id: "marlin-bft-status", max: 1 },
+            {
+                onSuccess: (result) => {
+                    const status = parseTransferStatus(result)
+                    if (!status) {
+                        finishTransfer({
+                            status: "failed",
+                            error: T("S4"),
+                            progress: 0,
+                        })
+                    } else if (status.active) {
+                        if (transferProgress.update)
+                            transferProgress.update(status)
+                        transferPollTimer.current = setTimeout(
+                            pollTransfer,
+                            500
+                        )
+                    } else {
+                        finishTransfer(status)
+                    }
+                },
+                onFail: (error) => {
+                    finishTransfer({
+                        status: "failed",
+                        error,
+                        progress: 0,
+                    })
+                },
+            }
+        )
+    }
+
+    const cancelTransfer = () => {
+        clearTimeout(transferPollTimer.current)
+        createNewRequest(
+            espHttpURL("printer-sd-transfer", { action: "cancel" }),
+            { method: "POST", id: "marlin-bft-cancel" },
+            {
+                onSuccess: () => {
+                    transferPollTimer.current = setTimeout(pollTransfer, 250)
+                },
+                onFail: (error) => {
+                    toasts.addToast({ content: error, type: "error" })
+                },
+            }
+        )
+    }
+
+    const startTransfer = (source, destination) => {
+        showProgressModal({
+            modals,
+            title: T("P127"),
+            button1: { cb: cancelTransfer, text: T("S28") },
+            content: <TransferProgress controller={transferProgress} />,
+        })
+        createNewRequest(
+            espHttpURL("printer-sd-transfer", {
+                action: "start",
+                source,
+                destination,
+                compression: "auto",
+            }),
+            { method: "POST", id: "marlin-bft-start" },
+            {
+                onSuccess: (result) => {
+                    const status = parseTransferStatus(result)
+                    if (status && status.active) {
+                        if (transferProgress.update)
+                            transferProgress.update(status)
+                        transferPollTimer.current = setTimeout(
+                            pollTransfer,
+                            250
+                        )
+                    } else {
+                        finishTransfer(
+                            status || {
+                                status: "failed",
+                                error: T("S4"),
+                                progress: 0,
+                            }
+                        )
+                    }
+                },
+                onFail: (error) => {
+                    finishTransfer({
+                        status: "failed",
+                        error,
+                        progress: 0,
+                    })
+                },
+            }
+        )
+    }
+
+    const showTransferModal = (element) => {
+        const command = files.command(
+            currentFS,
+            "transferToPrinter",
+            currentPath[currentFS],
+            element.name
+        )
+        let destination = "/" + element.name
+        showModal({
+            modals,
+            id: "marlinBftDestination",
+            title: T("P125"),
+            icon: <ArrowUpCircle />,
+            content: (
+                <Fragment>
+                    <div>{T("P126")}</div>
+                    <input
+                        class="form-input"
+                        value={destination}
+                        onInput={(e) => {
+                            destination = e.target.value.trim()
+                        }}
+                    />
+                </Fragment>
+            ),
+            button1: {
+                text: T("S27"),
+                cb: () => {
+                    if (
+                        !destination.startsWith("/") ||
+                        destination.includes("..") ||
+                        destination.length > 240 ||
+                        /[\r\n]/.test(destination)
+                    ) {
+                        toasts.addToast({
+                            content: T("P132"),
+                            type: "error",
+                        })
+                        return
+                    }
+                    startTransfer(command.source, destination)
+                },
+            },
+            button2: { text: T("S28") },
+        })
     }
 
     const sendSerialCmd = (command) => {
@@ -857,6 +1074,26 @@ const FilesPanel = () => {
                                                 <div>{line.size}</div>
                                                 {files.capability(
                                                     currentFS,
+                                                    "TransferToPrinter",
+                                                    currentPath[currentFS],
+                                                    line.name
+                                                ) && (
+                                                    <ButtonImg
+                                                        m1
+                                                        ltooltip
+                                                        data-tooltip={T("P125")}
+                                                        icon={<ArrowUpCircle />}
+                                                        onClick={(e) => {
+                                                            e.target.blur()
+                                                            useUiContextFn.haptic()
+                                                            showTransferModal(
+                                                                line
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                                {files.capability(
+                                                    currentFS,
                                                     "Process",
                                                     currentPath[currentFS],
                                                     line.name
@@ -890,7 +1127,15 @@ const FilesPanel = () => {
                                                     "Process",
                                                     currentPath[currentFS],
                                                     line.name
-                                                ) && <div style="width:2rem" />}
+                                                ) &&
+                                                    !files.capability(
+                                                        currentFS,
+                                                        "TransferToPrinter",
+                                                        currentPath[currentFS],
+                                                        line.name
+                                                    ) && (
+                                                        <div style="width:2rem" />
+                                                    )}
                                             </Fragment>
                                         )}
                                         {files.capability(

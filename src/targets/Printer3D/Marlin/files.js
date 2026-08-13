@@ -25,6 +25,7 @@ import { SDEXT } from "./SDEXT-source"
 import { TFTSD } from "./TFT-SD-source"
 import { TFTUSB } from "./TFT-USB-source"
 import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
+import { subscribePrinterCapabilities } from "./printerCapabilities"
 
 //List of supported files systems
 const supportedFileSystems = [
@@ -124,6 +125,7 @@ const files = {
     command,
     capability,
     supported: supportedFileSystems,
+    subscribeCapabilities: subscribePrinterCapabilities,
 }
 
 export { files }

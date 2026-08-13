@@ -21,6 +21,7 @@ import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
 import { canProcessFile } from "../../helpers"
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
+import { getPrinterCapability } from "./printerCapabilities"
 const capabilities = {
     Process: (path, filename) => {
         if (useSettingsContextFn.getValue("Streaming") == "Enabled") {
@@ -50,6 +51,9 @@ const capabilities = {
     },
     CreateDir: () => {
         return true
+    },
+    TransferToPrinter: () => {
+        return getPrinterCapability("BINARY_FILE_TRANSFER") == "1"
     },
 }
 
@@ -114,6 +118,15 @@ const commands = {
             url: upath,
             args: {},
         }
+    },
+    transferToPrinter: (path, filename) => {
+        const source = (
+            "/FS" +
+            path +
+            (path.endsWith("/") ? "" : "/") +
+            filename
+        ).replaceAll("//", "/")
+        return { type: "bft", source }
     },
     play: (path, filename) => {
         if (
