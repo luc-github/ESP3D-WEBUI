@@ -31,6 +31,7 @@ import {
     files,
     variablesList,
 } from "../../targets"
+import { buildEsp700Command } from "../../targets/helpers"
 
 /*
  * Local const
@@ -85,9 +86,7 @@ const MacrosPanel = () => {
     const processMacro = (action, type) => {
         switch (type) {
             case "FS":
-                //[ESP700] //ESP700 should send status to telnet / websocket
-                //Todo: handle response from ESP700
-                sendCommand("[ESP700]" + action)
+                sendCommand(buildEsp700Command(action))
                 break
             case "SD":
                 //get command accoring target FW

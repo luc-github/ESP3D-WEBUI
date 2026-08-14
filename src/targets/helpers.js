@@ -34,4 +34,35 @@ const canProcessFile = (filename) => {
     return false
 }
 
-export { canProcessFile }
+const normalizeEsp3dFilePath = (filePath) => {
+    if (!filePath) {
+        return ""
+    }
+
+    let normalizedPath = filePath.trim().replaceAll("\\", "/")
+    if (!normalizedPath.startsWith("/")) {
+        normalizedPath = "/" + normalizedPath
+    }
+
+    normalizedPath = normalizedPath.replace(/^\/(sd|fs)(?=\/|$)/i, (_, root) => {
+        return "/" + root.toUpperCase()
+    })
+
+    return normalizedPath.replace(/\/+/g, "/")
+}
+
+const buildEsp700Command = (filePath) => {
+    return "[ESP700]" + normalizeEsp3dFilePath(filePath)
+}
+
+const buildEsp700CommandFromParts = (rootPath, path, filename) => {
+    const basePath = rootPath + path + (path.endsWith("/") ? "" : "/") + filename
+    return buildEsp700Command(basePath)
+}
+
+export {
+    canProcessFile,
+    normalizeEsp3dFilePath,
+    buildEsp700Command,
+    buildEsp700CommandFromParts,
+}

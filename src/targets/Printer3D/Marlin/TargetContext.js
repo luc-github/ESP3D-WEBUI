@@ -261,45 +261,8 @@ const TargetContextProvider = ({ children }) => {
                 console.log("response", data)
                 if (isStreamingStatus(data)) {
                     const preStatus = getStreamingStatus(data)
-                    const name = preStatus.name
                     const status = preStatus.status
-                    const progress =
-                        preStatus.processed && preStatus.total
-                            ? Math.round(
-                                  (preStatus.processed / preStatus.total) * 100
-                              ).toFixed(2)
-                            : null
-                    const printTime = {}
-
-                    let time_elapsed = preStatus.elapsed
-                    printTime.sec = Math.floor(time_elapsed / 1000)
-                    printTime.min = Math.floor(printTime.sec / 60)
-                    printTime.sec = printTime.sec % 60
-                    printTime.hour = Math.floor(printTime.min / 60)
-                    printTime.min = printTime.min % 60
-                    printTime.day = Math.floor(printTime.hour / 24)
-                    printTime.hour = printTime.hour % 24
-                    const printLeftTime = {}
-                    if (preStatus.elapsed && progress && progress < 100) {
-                        const timeLeft =
-                            ((100 - progress) / progress) * preStatus.elapsed
-
-                        printLeftTime.sec = Math.floor(timeLeft / 1000)
-                        printLeftTime.min = Math.floor(printLeftTime.sec / 60)
-                        printLeftTime.sec = printLeftTime.sec % 60
-                        printLeftTime.hour = Math.floor(printLeftTime.min / 60)
-                        printLeftTime.min = printLeftTime.min % 60
-                        printLeftTime.day = Math.floor(printLeftTime.hour / 24)
-                        printLeftTime.hour = printLeftTime.hour % 24
-                    }
-                    const fullstatus = {
-                        status,
-                        progress,
-                        name,
-                        printTime,
-                        printLeftTime,
-                    }
-                    setStreamStatus(fullstatus)
+                    setStreamStatus(preStatus)
                     if (status != "no stream") {
                         setStatus({ printState: null })
                     }

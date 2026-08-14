@@ -19,7 +19,7 @@
 */
 import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
-import { canProcessFile } from "../../helpers"
+import { canProcessFile, buildEsp700CommandFromParts } from "../../helpers"
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 const capabilities = {
     Process: (path, filename) => {
@@ -120,11 +120,9 @@ const commands = {
             useSettingsContextFn.getValue("Streaming") == "Enabled" &&
             useSettingsContextFn.getValue("SDConnection") == "direct"
         ) {
-            let fullpath =
-                "/fs" + path + (path.endsWith("/") ? "" : "/") + filename
             return {
                 type: "cmd",
-                cmd: "[ESP700]stream=" + fullpath.replaceAll(" ", " "),
+                cmd: buildEsp700CommandFromParts("/FS", path, filename),
             }
         } else {
             return {

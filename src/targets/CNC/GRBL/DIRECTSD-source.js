@@ -19,7 +19,7 @@
 */
 import { h } from "preact"
 import { sortedFilesList, formatStatus } from "../../../components/Helpers"
-import { canProcessFile } from "../../helpers"
+import { canProcessFile, buildEsp700CommandFromParts } from "../../helpers"
 import { useUiContextFn } from "../../../contexts"
 
 const capabilities = {
@@ -106,12 +106,7 @@ const commands = {
     play: (path, filename) => {
         return {
             type: "cmd",
-            cmd:
-                "[ESP700]/SD" +
-                path +
-                (path == "/" ? "" : "/") +
-                filename +
-                "\n",
+            cmd: buildEsp700CommandFromParts("/SD", path, filename) + "\n",
         }
     },
 }
