@@ -22,10 +22,13 @@ import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
-    addObjectItem,
 } from "../../../components/Helpers"
 import { useDatasContext, useUiContextFn } from "../../../contexts"
 import { processor } from "./processor"
+import {
+    addPrinterCapabilities,
+    getPrinterCapability as getStoredPrinterCapability,
+} from "./printerCapabilities"
 import { isVerboseOnly } from "./stream"
 import {
     isOk,
@@ -65,7 +68,8 @@ useTargetContextFn.isStaId = (subsectionId, label, fieldData) => {
     return false
 }
 
-const printerCapabilities = []
+useTargetContextFn.getPrinterCapability = (name) =>
+    getStoredPrinterCapability(name)
 
 const TargetContextProvider = ({ children }) => {
     //format is x:value, y:value, z:value
@@ -231,12 +235,7 @@ const TargetContextProvider = ({ children }) => {
                 setFeedRate(feedsRate.current)
             } else if (isPrinterCapability(data)) {
                 const res = getPrinterCapability(data)
-                res.forEach((cap) => {
-                    addObjectItem(printerCapabilities, "name", {
-                        name: cap.name,
-                        value: cap.value,
-                    })
-                })
+                addPrinterCapabilities(res)
             } else if (isSensor(data)) {
                 const result = getSensor(data)
                 setSensorData({ S: result })

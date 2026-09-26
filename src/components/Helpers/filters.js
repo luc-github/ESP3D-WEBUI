@@ -69,7 +69,7 @@ const filterResultFiles = (files, path) => {
                 //it is file or subfile ?
                 if (newpath.indexOf("/") == -1 && newpath.length > 0) {
                     //file
-                    acc.push({ name: newpath, size: element.size })
+                    acc.push({ ...element, name: newpath })
                 } else {
                     //subdir
                     const foldername = newpath.substring(

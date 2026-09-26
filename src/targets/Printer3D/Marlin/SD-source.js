@@ -26,6 +26,17 @@ import {
     filterResultFiles,
 } from "../../../components/Helpers"
 import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
+import { getPrinterCapability } from "./printerCapabilities"
+
+let longFilenameCapabilityChecked = false
+
+const supportsLongFilenames = () =>
+    getPrinterCapability("LONG_FILENAME") == "1"
+
+const listCommand = () => {
+    const cmd = useUiContextFn.getValue("sdlistcmd")
+    return supportsLongFilenames() ? `${cmd} L` : cmd
+}
 
 //Extract information from string - specific to FW / source
 const formatFileSerialLine = (lines) => {
@@ -44,6 +55,7 @@ const formatFileSerialLine = (lines) => {
                 ...acc,
                 {
                     name: pathAlt || path,
+                    commandName: path,
                     size: formatFileSizeToString(sizeAlt || size),
                 },
             ]
@@ -82,10 +94,14 @@ const capabilities = {
 }
 
 const commands = {
+    preflightList: () => {
+        if (longFilenameCapabilityChecked) return { type: "none" }
+        return { type: "cmd", cmd: "M115" }
+    },
     list: (path, filename) => {
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd"),
+            cmd: listCommand(),
         }
     },
     upload: (path, filename) => {
@@ -98,7 +114,7 @@ const commands = {
         //other is not supported so return list command for safety
         return {
             type: "cmd",
-            cmd: useUiContextFn.getValue("sdlistcmd"),
+            cmd: listCommand(),
         }
     },
     postUpload: (path, filename) => {
@@ -129,10 +145,12 @@ const commands = {
         return res
     },
     play: (path, filename) => {
-        const spath = (path + (path == "/" ? "" : "/") + filename).replaceAll(
-            "//",
-            "/"
-        )
+        const spath = filename.includes("/")
+            ? `/${filename.replace(/^\/+/, "")}`
+            : (path + (path == "/" ? "" : "/") + filename).replaceAll(
+                  "//",
+                  "/"
+              )
         const cmd = useUiContextFn.getValue("sdplaycmd").replace("#", spath)
         return {
             type: "cmd",
@@ -140,10 +158,12 @@ const commands = {
         }
     },
     delete: (path, filename) => {
-        const spath = (path + (path == "/" ? "" : "/") + filename).replaceAll(
-            "//",
-            "/"
-        )
+        const spath = filename.includes("/")
+            ? `/${filename.replace(/^\/+/, "")}`
+            : (path + (path == "/" ? "" : "/") + filename).replaceAll(
+                  "//",
+                  "/"
+              )
         const cmd = useUiContextFn.getValue("sddeletecmd").replace("#", spath)
         return {
             type: "cmd",
@@ -153,6 +173,21 @@ const commands = {
 }
 
 const responseSteps = {
+    preflightList: {
+        start: (data) => data.startsWith("FIRMWARE_NAME:"),
+        end: (data) => {
+            const ended = data.startsWith("ok") && !data.startsWith("ok T:")
+            if (ended) longFilenameCapabilityChecked = true
+            return ended
+        },
+        error: (data) => {
+            const failed =
+                data.indexOf("error") != -1 ||
+                data.indexOf("Unknown command") != -1
+            if (failed) longFilenameCapabilityChecked = true
+            return failed
+        },
+    },
     list: {
         start: (data) => data.startsWith("Begin file list"),
         end: (data) => data.startsWith("End file list"),
