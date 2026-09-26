@@ -99,7 +99,16 @@ app.post("/login", function (req, res) {
     loginURI(req, res)
 })
 
+function checkAuthentication(req, res) {
+    if (hasEnabledAuthentication() && !getLastconnection()) {
+        res.status(401).send("Authentication required")
+        return false
+    }
+    return true
+}
+
 app.get("/config", function (req, res) {
+    if (!checkAuthentication(req, res)) return
     configURI(req, res)
 })
 
@@ -109,6 +118,7 @@ const mockContext = {
 }
 
 app.get("/command", function (req, res) {
+    if (!checkAuthentication(req, res)) return
     const url = req.query.cmd != null ? req.query.cmd : req.originalUrl
     if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command ${url}`))
     commandsQuery(req, res, SendWS, mockContext)
