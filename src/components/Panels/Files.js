@@ -181,11 +181,10 @@ const FilesPanel = () => {
                                     : T("S84").replace("%s", feedback.arg),
                             type: "error",
                         })
-                    } else {
-                        //Success now refresh content"
-                        onRefresh(null, false)
-                        return
                     }
+                    //Refresh content either way, the list shows what is really there
+                    onRefresh(null, false)
+                    return
                 }
             }
             setIsLoading(false)
