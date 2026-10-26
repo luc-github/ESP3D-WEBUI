@@ -168,9 +168,17 @@ const responseSteps = {
     },
     delete: {
         start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok") && !data.startsWith("ok T:"),
+        // An "ok" from M21 or from polling can come before "File deleted"
+        // and would end the query as an error, so end on the message itself
+        end: (data) => data.startsWith("File deleted"),
         error: (data) => {
-            return data.startsWith("Deletion failed")
+            return (
+                data.startsWith("Deletion failed") ||
+                data.indexOf("echo:No SD card") != -1 ||
+                data.indexOf("echo:No media") != -1 ||
+                data.indexOf('echo:Unknown command: "M21"') != -1 ||
+                data.indexOf('echo:Unknown command: "M30"') != -1
+            )
         },
     },
 }
