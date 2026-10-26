@@ -168,7 +168,9 @@ const responseSteps = {
     },
     delete: {
         start: (data) => data.startsWith("File deleted"),
-        end: (data) => data.startsWith("ok") && !data.startsWith("ok T:"),
+        // An "ok" from M21 or from polling can come before "File deleted"
+        // and would end the query as an error, so end on the message itself
+        end: (data) => data.startsWith("File deleted"),
         error: (data) => {
             return data.startsWith("Deletion failed")
         },
