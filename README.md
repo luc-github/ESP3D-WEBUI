@@ -135,6 +135,11 @@ Go to https://esp3d.io
    Support ESP3D Webui Development - <a href="https://esp3d.io/sponsoring" target="_blank" rel="noopener noreferrer">Become a Sponsor</a>
 </div>
 
+
+     
+
+<center><a href="https://esp3d.io/donate/?project=ESP3D"><img src="https://raw.githubusercontent.com/luc-github/luc-github/main/btn_donate.png"/></a></center>
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
