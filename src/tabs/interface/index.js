@@ -44,6 +44,7 @@ import { importPreferencesSection, formatPreferences, formatItem } from "./impor
 import { eventBus } from "../../hooks/eventBus"
 import { showModal } from "../../components/Modal"
 import { webUIVersion, targetCategory, Target } from "../../targets"
+import { CollapseAllToggle } from "../../components/Panels/CollapseAllToggle"
 
 const isDependenciesMet = (depend) => {
     const { interfaceSettings, connectionSettings } = useSettingsContext()
@@ -663,7 +664,10 @@ const InterfaceTab = () => {
                 accept=".json"
                 onChange={fileSelected}
             />
-            <h4 class="show-low title">{T("S17")}</h4>
+            <h4 class="show-low title">
+                {T("S17")}
+                <CollapseAllToggle containerSelector="#interface .panels-container" />
+            </h4>
             <div class="m-2" />
             {isLoading && <Loading large />}
 
@@ -680,7 +684,10 @@ const InterfaceTab = () => {
                                     ]
                                 return (
                                     <Fragment>
-                                        <div class="panel panel-interface">
+                                        <div
+                                            class="panel panel-interface"
+                                            id={`interface-panel-${sectionId}`}
+                                        >
                                             <div class="navbar">
                                                 <span class="navbar-section text-ellipsis">
                                                     <strong class="text-ellipsis">

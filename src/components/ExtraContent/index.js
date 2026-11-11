@@ -48,7 +48,40 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
         //console.log("Updating position for element " + extra_content_id, "in target", target_id, " of panel ", id)
         const container = document.getElementById(target_id)
         if (container) {
-            const { top, left, width, height } = container.getBoundingClientRect()
+            const rect = container.getBoundingClientRect()
+            //use the content box so any padding (e.g. the one added under
+            //the floating menu button in borderless mode) stays clear
+            const cs = window.getComputedStyle(container)
+            const pt = parseFloat(cs.paddingTop) || 0
+            const pl = parseFloat(cs.paddingLeft) || 0
+            const pr = parseFloat(cs.paddingRight) || 0
+            const pb = parseFloat(cs.paddingBottom) || 0
+            let top = rect.top + container.clientTop + pt
+            let left = rect.left + container.clientLeft + pl
+            let width = container.clientWidth - pl - pr
+            let height = container.clientHeight - pt - pb
+            //never cover the canvas overlay scrollbars: they live above
+            //the overlay content but below the floating contents
+            const overlay = container.closest("#dashboard")
+            if (overlay && overlay.classList.contains("dashboard-canvas")) {
+                const overlayRect = overlay.getBoundingClientRect()
+                const minTop = overlayRect.top
+                const minLeft = overlayRect.left
+                const maxRight = minLeft + overlay.clientWidth
+                const maxBottom = minTop + overlay.clientHeight
+                if (left + width > maxRight)
+                    width = Math.max(0, maxRight - left)
+                if (top + height > maxBottom)
+                    height = Math.max(0, maxBottom - top)
+                if (left < minLeft) {
+                    width = Math.max(0, width - (minLeft - left))
+                    left = minLeft
+                }
+                if (top < minTop) {
+                    height = Math.max(0, height - (minTop - top))
+                    top = minTop
+                }
+            }
             //console.log("New Position for element " + extra_content_id + ":", top, left, width, height)
             eventBus.emit('updateState', { id: extra_content_id, position: { top, left, width, height }, isVisible: true, from: "extraContent(position)" })
         }
@@ -57,22 +90,43 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
     const handleScrollAndResize = useCallback(() => {
         requestAnimationFrame(updateContentPosition);
     }, [updateContentPosition]);
+
+    //the cached content must follow its target: page scroll (#main),
+    //dashboard scroll (fixed layout fullscreen), window resize and any
+    //panel layout change (move / resize / mode switch)
+    const layoutListenerId = `layout_${id}`
+    const attachPositionListeners = () => {
+        const main = document.getElementById("main")
+        if (main) {
+            main.addEventListener('scroll', handleScrollAndResize)
+            main.addEventListener('resize', handleScrollAndResize)
+        }
+        const dashboard = document.getElementById("dashboard")
+        if (dashboard) {
+            dashboard.addEventListener('scroll', handleScrollAndResize)
+        }
+        window.addEventListener('resize', handleScrollAndResize)
+        eventBus.on("panelsLayoutChanged", handleScrollAndResize, layoutListenerId)
+    }
+    const detachPositionListeners = () => {
+        const main = document.getElementById("main")
+        if (main) {
+            main.removeEventListener('scroll', handleScrollAndResize)
+            main.removeEventListener('resize', handleScrollAndResize)
+        }
+        const dashboard = document.getElementById("dashboard")
+        if (dashboard) {
+            dashboard.removeEventListener('scroll', handleScrollAndResize)
+        }
+        window.removeEventListener('resize', handleScrollAndResize)
+        eventBus.off("panelsLayoutChanged", layoutListenerId)
+    }
     
     useEffect(() => {
         //console.log("Updating element " + extra_content_id + " because visible list changed")
         if (useUiContextFn.panels.isVisible(id)) {
-            const main = document.getElementById("main")
-            if (main) {
-                main.removeEventListener('scroll', handleScrollAndResize)
-                main.removeEventListener('resize', handleScrollAndResize)
-           }
-            window.removeEventListener('resize', handleScrollAndResize)
-            if (main) {
-                 main.addEventListener('scroll', handleScrollAndResize)
-                 main.addEventListener('resize', handleScrollAndResize)
-            }
-            window.addEventListener('resize', handleScrollAndResize)
-            
+            detachPositionListeners()
+            attachPositionListeners()
             updateContentPosition()
     }
     }, [panels.updateTrigger])
@@ -88,21 +142,11 @@ const ExtraContent = ({ id, source, refreshtime, label, type, target, icon }) =>
             }
         }
 
-        const main = document.getElementById("main")
-        if (main) {
-            main.addEventListener('scroll', handleScrollAndResize)
-            main.addEventListener('resize', handleScrollAndResize)
-        }
-        window.addEventListener('resize', handleScrollAndResize)
+        attachPositionListeners()
 
 
         return () => {
-            const main = document.getElementById("main")
-            if (main) {
-                main.removeEventListener('scroll', handleScrollAndResize)
-                main.removeEventListener('resize', handleScrollAndResize)
-            }
-            window.removeEventListener('resize', handleScrollAndResize)
+            detachPositionListeners()
             //console.log("Hiding element " + id)
             eventBus.emit('updateState', { id: extra_content_id, isVisible: false, from: "extraContent(return)" })
         }

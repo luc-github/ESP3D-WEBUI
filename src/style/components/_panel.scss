@@ -141,3 +141,296 @@ body.panel-dragging {
         margin-right: -4px;
     }
 }
+
+/* Collapsible panels: enabled in mobile view (preference) or on narrow
+   screens, i.e. when panels are stacked in a single column.
+   A tap/click on a panel navbar toggles the .panel-collapsed class
+   (see src/components/Panels/collapseHelper.js). */
+@mixin panel-collapsible-rules {
+    .panel {
+        & > .navbar {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            &::before {
+                content: "";
+                flex: 0 0 auto;
+                align-self: center;
+                width: 0.45rem;
+                height: 0.45rem;
+                margin: 0 0.4rem 0 0.2rem;
+                border-style: solid;
+                border-width: 0.1rem 0.1rem 0 0;
+                border-color: currentColor;
+                transform: rotate(-45deg); /* expanded: chevron up */
+                transition: transform 0.2s ease;
+            }
+        }
+        &.panel-collapsed {
+            height: auto !important;
+            min-height: 0 !important;
+            &:not(:fullscreen) > :not(.navbar) {
+                display: none !important;
+            }
+            & > .navbar::before {
+                transform: rotate(135deg); /* collapsed: chevron down */
+            }
+        }
+    }
+}
+
+.mobile-view {
+    @include panel-collapsible-rules;
+}
+
+@media (max-width: 768px) {
+    @include panel-collapsible-rules;
+}
+
+/* Per-panel layout edition (desktop), see
+   src/components/Panels/PanelLayoutControls.js and layoutHelper.js.
+   Two modes:
+   - grid (ardoise): responsive wrapping grid, panels sized in column /
+     row units (spans), reflows on window resize.
+   - canvas (fixe): absolute positions and sizes in px, preserved
+     whatever the window size is - the page scrolls instead of
+     reflowing. */
+
+/* --- grid (ardoise) mode: free panel width (column span), the height
+       is global (panelheight preference) and the grid wraps --- */
+.panel-layout-wrapper {
+    position: relative;
+}
+
+/* in canvas mode the wrapper carries the panel size, the panel fills
+   it (see layoutHelper.js) */
+.panels-canvas {
+    .panel-drag-wrapper .panel,
+    .panel-layout-wrapper .panel {
+        height: 100%;
+    }
+}
+
+/* --- layout edition controls (shared) --- */
+.panel-layout-controls {
+    display: none;
+}
+
+.panels-layout-edit {
+    /* avoid conflict between HTML5 panel drag and layout controls */
+    .panel-drag-handle {
+        display: none !important;
+    }
+
+    .panel-layout-controls {
+        position: absolute;
+        bottom: 0.15rem;
+        right: 0.3rem;
+        z-index: 20;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    /* canvas controls position themselves against the panel wrapper,
+       not against the controls cluster */
+    .panel-layout-controls.panel-canvas-controls {
+        position: static;
+        display: contents;
+    }
+}
+
+.panel-layout-group {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(241, 241, 252, 0.9);
+    border: 0.05rem solid rgba(87, 85, 217, 0.4);
+    border-radius: 0.3rem;
+    padding: 0 0.1rem;
+
+    .btn {
+        border: 0 none;
+        background: transparent;
+        padding: 0 0.15rem;
+        height: 0.9rem;
+    }
+}
+
+.panel-layout-group-label {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #5755d9;
+    padding: 0 0.1rem 0 0.25rem;
+    user-select: none;
+}
+
+.panel-layout-group-value {
+    min-width: 1rem;
+    text-align: center;
+    font-size: 0.6rem;
+    color: #5755d9;
+    user-select: none;
+}
+
+/* --- canvas (fixe) mode --- */
+.panels-canvas {
+    display: block;
+    position: relative;
+
+    /* order drag & drop has no meaning on a fixed canvas */
+    .panel-drag-handle {
+        display: none !important;
+    }
+
+    /* on a fixed canvas the panels are not closed nor fullscreened:
+       visibility is managed from the dashboard panels menu */
+    .panel > .navbar {
+        .btn-screen,
+        .btn-close {
+            display: none !important;
+        }
+    }
+}
+
+/* canvas mode acts as a fullscreen view: the dashboard covers the whole
+   viewport as a fixed overlay. The Fullscreen API is deliberately not
+   used: the cached extension contents (iframes) live in #elementsCache
+   outside #dashboard and would be hidden by the browser in real
+   fullscreen. The background color is set inline from the page body so
+   themes apply seamlessly */
+#dashboard.dashboard-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20000;
+    margin: 0;
+    overflow: auto;
+}
+
+/* keep the cached extension contents (iframes) above the fullscreen
+   dashboard overlay */
+#app.canvas-fullscreen #elementsCache {
+    z-index: 30000 !important;
+}
+
+/* in canvas edition the cached extra contents (iframes) float above the
+   panels: make them translucent and transparent to pointer events so the
+   panel below receives the hover cursor and the drag / resize gestures.
+   The dashed outline keeps their bounds visible for placement */
+#app.canvas-edit .extra-content-container {
+    pointer-events: none !important;
+    opacity: 0.45;
+    outline: 0.15rem dashed #e74c3c;
+    outline-offset: -0.15rem;
+}
+
+/* in canvas edition the whole panel is the move handle, and every panel
+   gets a dashed outline so its bounds stay visible - essential when the
+   panel chrome is hidden (borderless mode) */
+.panels-canvas.panels-layout-edit .panel {
+    cursor: move;
+    outline: 0.15rem dashed #e74c3c;
+    outline-offset: -0.15rem;
+}
+
+body.panel-canvas-moving {
+    user-select: none;
+    cursor: move;
+}
+
+.panel-canvas-resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 30;
+    width: 1rem;
+    height: 1rem;
+    cursor: nwse-resize;
+    /*solid triangle corner handle: stays visible over the dashed red
+      edition outline and the translucent extra contents*/
+    background: linear-gradient(135deg, transparent 50%, #e74c3c 50%);
+    border-radius: 0 0 0.2rem 0;
+    touch-action: none;
+    user-select: none;
+
+    &:hover {
+        background: linear-gradient(135deg, transparent 50%, #c0392b 50%);
+    }
+}
+
+.panel-canvas-borderless {
+    position: absolute;
+    bottom: 0.15rem;
+    right: 1.2rem;
+    z-index: 20;
+    border: 0.05rem solid rgba(87, 85, 217, 0.4) !important;
+    background: rgba(241, 241, 252, 0.9) !important;
+    border-radius: 0.3rem;
+    padding: 0 0.15rem !important;
+    height: 0.9rem;
+}
+
+/* layout edition is a desktop feature: never show the controls in
+   mobile view or on narrow screens */
+.mobile-view .panel-layout-controls,
+.mobile-view .panels-layout-edit .panel-layout-controls {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .panel-layout-controls,
+    .panels-layout-edit .panel-layout-controls {
+        display: none !important;
+    }
+}
+
+/* Borderless panels: removes the whole chrome of the panel (border,
+   shadow, title bar with its icon, fullscreen and close buttons, drag
+   handle) so the fixed layout looks like a single unified surface.
+   Only the panel dropdown menu remains, floating at the top right.
+   Only meaningful in canvas (fixed) mode - it has no sense in the
+   responsive grid. Can be applied to all panels (.panels-borderless on
+   #app, from the dashboard menu) or per panel (.panel-borderless, from
+   the canvas edition controls). */
+@mixin panel-chromeless-rules {
+    border: 0 none !important;
+    box-shadow: none !important;
+
+    & > .navbar {
+        position: absolute;
+        top: 0.1rem;
+        right: 0.1rem;
+        z-index: 15;
+        width: auto;
+        min-height: 0;
+        padding: 0;
+        background: transparent !important;
+
+        .navbar-section {
+            display: none !important;
+            background: transparent !important;
+        }
+
+        /* keep only the section holding the panel dropdown menu */
+        .navbar-section:has(.dropdown) {
+            display: inline-flex !important;
+        }
+    }
+
+    /* panels with a dropdown menu push their whole content down so the
+       floating menu button does not cover it - the padding is on the
+       panel itself because some panels (e.g. Terminal) keep controls
+       outside .panel-body */
+    &:has(> .navbar .dropdown) {
+        padding-top: 1.5rem !important;
+    }
+}
+
+.panels-borderless #dashboard .panels-canvas .panel {
+    @include panel-chromeless-rules;
+}
+
+#dashboard .panels-canvas .panel.panel-borderless {
+    @include panel-chromeless-rules;
+}

@@ -19,6 +19,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
+import { useEffect } from "preact/hooks"
 import {
     RouterContextProvider,
     HttpQueueContextProvider,
@@ -31,8 +32,14 @@ import { TargetContextProvider } from "../../targets"
 import { ContainerHelper } from "../Controls"
 import { ContentContainer } from "../../areas"
 import { ElementsCache } from "../../areas/elementsCache"
+import { initCollapseSupport } from "../Panels/collapseHelper"
+import { initLayoutSupport } from "../Panels/layoutHelper"
 
 const App = () => {
+    useEffect(() => {
+        initCollapseSupport()
+        initLayoutSupport()
+    }, [])
     return (
         <div id="app">
             

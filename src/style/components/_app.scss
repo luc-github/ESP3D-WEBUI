@@ -73,6 +73,22 @@ body {
     display: none;
 }
 
+/* Collapse all / expand all toggle: only useful when panels are stacked
+   in a single column (mobile view preference or narrow screen) */
+.collapse-all-toggle {
+    display: none;
+}
+
+.mobile-view .collapse-all-toggle {
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .collapse-all-toggle {
+        display: inline-block;
+    }
+}
+
 /* Panel columns: min/max from preferences or defaults (340px / 520px) */
 .panels-container {
     display: grid;

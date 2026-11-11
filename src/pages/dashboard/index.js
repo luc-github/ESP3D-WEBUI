@@ -17,16 +17,40 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { Fragment, h } from "preact"
+import { h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn, useSettingsContext } from "../../contexts"
 import { T } from "../../components/Translations"
-import { List, CheckCircle, Circle, HelpCircle, Anchor } from "preact-feather"
+import {
+    List,
+    CheckCircle,
+    Circle,
+    HelpCircle,
+    Anchor,
+    RotateCcw,
+    Maximize,
+    Minimize,
+} from "preact-feather"
 import { iconsFeather } from "../../components/Images"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 import { showModal } from "../../components/Modal"
 import { eventBus } from "../../hooks/eventBus"
+import { CollapseAllToggle } from "../../components/Panels/CollapseAllToggle"
+import { PanelLayoutControls } from "../../components/Panels/PanelLayoutControls"
+import {
+    clearLayouts,
+    getPanelLayout,
+    getPanelsBorderless,
+    setPanelsBorderless,
+    getLayoutMode,
+    setLayoutMode,
+    isDesktopLayout,
+    applyLayout,
+    tileCanvasLayout,
+    saveVisibility,
+    applyVisibilityOverrides,
+} from "../../components/Panels/layoutHelper"
 
 const fixedPanels = []
 const keyTracker = {
@@ -123,6 +147,154 @@ const Dashboard = () => {
         side: null,
     })
     const [incompatibleExtraIds, setIncompatibleExtraIds] = useState(() => new Set())
+    const [layoutEditMode, setLayoutEditMode] = useState(false)
+    const [borderlessMode, setBorderlessMode] = useState(getPanelsBorderless)
+    const [canvasMode, setCanvasMode] = useState(
+        () => getLayoutMode() === "canvas"
+    )
+    //layout modes are desktop-only
+    const effectiveCanvasMode = canvasMode && isDesktopLayout()
+    const [isFullscreen, setIsFullscreen] = useState(
+        () => typeof document !== "undefined" && !!document.fullscreenElement
+    )
+
+    //track the browser fullscreen state for the toggle button icon
+    useEffect(() => {
+        const onFullscreenChange = () =>
+            setIsFullscreen(!!document.fullscreenElement)
+        document.addEventListener("fullscreenchange", onFullscreenChange)
+        return () =>
+            document.removeEventListener(
+                "fullscreenchange",
+                onFullscreenChange
+            )
+    }, [])
+
+    //Browser fullscreen on #app (not #dashboard: the cached extension
+    //contents live outside #dashboard and must stay visible). This is the
+    //tap-friendly alternative to ESC for touch devices
+    const toggleFullscreen = () => {
+        useUiContextFn.haptic()
+        try {
+            if (document.fullscreenElement) {
+                const result = document.exitFullscreen()
+                if (result && result.catch) result.catch(() => {})
+            } else {
+                const element =
+                    document.getElementById("app") || document.documentElement
+                const result = element.requestFullscreen()
+                if (result && result.catch) result.catch(() => {})
+            }
+        } catch (e) {
+            //fullscreen may be refused (unsupported context)
+        }
+    }
+
+    //Canvas mode acts as a fullscreen view: the dashboard covers the
+    //viewport as a fixed overlay. The Fullscreen API is deliberately not
+    //used: the cached extension contents (iframes) live in #elementsCache
+    //outside #dashboard and would be hidden by the browser in real
+    //fullscreen
+    useEffect(() => {
+        const app = document.getElementById("app")
+        const element = document.getElementById("dashboard")
+        if (!app || !element) return
+        if (effectiveCanvasMode) {
+            app.classList.add("canvas-fullscreen")
+            //use the page background so themes apply seamlessly
+            element.style.backgroundColor = window.getComputedStyle(
+                document.body
+            ).backgroundColor
+        } else {
+            app.classList.remove("canvas-fullscreen")
+            element.style.backgroundColor = ""
+        }
+    }, [effectiveCanvasMode])
+
+    //ESC leaves the canvas mode (unless a modal or a dropdown is open)
+    useEffect(() => {
+        if (!effectiveCanvasMode) return
+        const onKeyDown = (e) => {
+            if (
+                e.key === "Escape" &&
+                !document.querySelector(".modal.active") &&
+                !document.querySelector(".dropdown.active")
+            ) {
+                setLayoutMode("grid")
+                setCanvasMode(false)
+            }
+        }
+        window.addEventListener("keydown", onKeyDown)
+        return () => window.removeEventListener("keydown", onKeyDown)
+    }, [effectiveCanvasMode])
+
+    const toggleCanvasMode = () => {
+        const next = !canvasMode
+        setLayoutMode(next ? "canvas" : "grid")
+        setCanvasMode(next)
+    }
+
+    //Ids of all panels enabled in the settings (visible or hidden), in
+    //dashboard order - used to tile the canvas
+    const getEnabledPanelIds = () =>
+        panels.list
+            .filter(
+                (p) =>
+                    uisettings.getValue(p.show) &&
+                    (typeof p.onstart === "boolean"
+                        ? p.onstart
+                        : uisettings.getValue(p.onstart))
+            )
+            .map((p) => p.id)
+
+    //Re-apply layouts to all dashboard panels when the mode changes
+    //(grid <-> canvas); tile them when entering a fresh canvas (no
+    //stored position yet)
+    useEffect(() => {
+        const container = document.querySelector(
+            "#dashboard .panels-container"
+        )
+        if (!container) return
+        const domPanels = container.querySelectorAll(".panel[id]")
+        if (effectiveCanvasMode) {
+            const hasStoredPosition = Array.from(domPanels).some(
+                (panel) => getPanelLayout(panel.id).x != null
+            )
+            if (!hasStoredPosition && domPanels.length > 0) {
+                tileCanvasLayout(container, getEnabledPanelIds())
+            } else {
+                domPanels.forEach(applyLayout)
+            }
+        } else {
+            domPanels.forEach(applyLayout)
+        }
+        //notify the cached extra contents (iframes) so they follow their
+        //panel to its new position
+        eventBus.emit("panelsLayoutChanged", {})
+        //panels.visibles is a dependency so the layout is (re)applied
+        //when panels appear after the mode was restored (F5) or when a
+        //panel is shown again - the observer alone may miss them
+    }, [effectiveCanvasMode, panels.visibles])
+
+    //Persist the shown / hidden panels on this device (localStorage) -
+    //the global default stays in the ESP settings
+    useEffect(() => {
+        if (!panels.initDone) return
+        saveVisibility(panels.list, panels.visibles)
+    }, [panels.visibles])
+
+    //In canvas edition the cached extra contents (iframes) float above
+    //the panels: make them translucent and transparent to pointer events
+    //so the panel below receives the drag / resize gestures
+    useEffect(() => {
+        const app = document.getElementById("app")
+        if (!app) return
+        app.classList.toggle(
+            "canvas-edit",
+            layoutEditMode && effectiveCanvasMode
+        )
+        return () => app.classList.remove("canvas-edit")
+    }, [layoutEditMode, effectiveCanvasMode])
 
     useEffect(() => {
         const handler = ({ id: rootId }) => {
@@ -131,6 +303,38 @@ const Dashboard = () => {
         const listenerId = eventBus.on("extraContentIncompatible", handler)
         return () => eventBus.off("extraContentIncompatible", listenerId)
     }, [])
+
+    //Reset the panels layout, with a confirmation modal: a misclick
+    //would otherwise be irreversible
+    const doResetLayout = () => {
+        clearLayouts()
+        //on the canvas, reset tiles the panels side by side with no
+        //overlap - including the ones currently hidden but enabled in
+        //the settings, so they fall in place when shown again
+        if (effectiveCanvasMode) {
+            tileCanvasLayout(
+                document.querySelector("#dashboard .panels-container"),
+                getEnabledPanelIds()
+            )
+        }
+    }
+
+    const confirmResetLayout = () => {
+        useUiContextFn.haptic()
+        showModal({
+            modals,
+            title: T("S26"),
+            icon: <RotateCcw />,
+            content: T("S270"),
+            button1: {
+                text: T("S27"),
+                cb: doResetLayout,
+            },
+            button2: {
+                text: T("S28"),
+            },
+        })
+    }
 
     //Show keyboard mapped keys
     const showKeyboarHelp = () => {
@@ -252,12 +456,25 @@ const Dashboard = () => {
                     })
                     panels.setPanelsOrder(fixedPanels)
                     const newList = fixedPanels.reduce((acc, panel) => {
+                        //skip duplicates: the saved order may reference
+                        //the same settingid several times (e.g. two
+                        //extensions that shared the same id before the
+                        //deduplication)
                         const paneldesc = panels.list.filter(
-                            (p) => p.settingid === panel.id
+                            (p) =>
+                                p.settingid === panel.id &&
+                                !acc.some((entry) => entry.id === p.id)
                         )
                         if (paneldesc.length > 0) acc.push(...paneldesc)
                         return acc
                     }, [])
+                    //panels missing from the saved order (e.g. an
+                    //extension whose id changed after a name collision)
+                    //are appended so they stay reachable
+                    panels.list.forEach((p) => {
+                        if (!newList.some((entry) => entry.id === p.id))
+                            newList.push(p)
+                    })
                     panels.set([...newList])
                     const visibleList = newList.reduce((acc, curr) => {
                         if (
@@ -267,7 +484,7 @@ const Dashboard = () => {
                             acc.push(curr)
                         return acc
                     }, [])
-                    panels.setVisibles(visibleList)
+                    panels.setVisibles(applyVisibilityOverrides(visibleList))
                     /* Do not write back to uisettings here: we are only loading
                        the saved order. Writing would set hasmodified and mark
                        panel order as modified when user just opened dashboard. */
@@ -280,7 +497,7 @@ const Dashboard = () => {
                             acc.push(curr)
                         return acc
                     }, [])
-                    panels.setVisibles(fallbackVisibles)
+                    panels.setVisibles(applyVisibilityOverrides(fallbackVisibles))
                 }
             } else {
                 const elseVisibles = panels.list.reduce((acc, curr) => {
@@ -291,7 +508,7 @@ const Dashboard = () => {
                         acc.push(curr)
                     return acc
                 }, [])
-                panels.setVisibles(elseVisibles)
+                panels.setVisibles(applyVisibilityOverrides(elseVisibles))
             }
             panels.setInitDone(true)
         } else if (panels.initDone) {
@@ -308,6 +525,11 @@ const Dashboard = () => {
         if (showExtra) {
             if (Array.isArray(extraContents)) {
                 fixedPanels.length = 0
+                //extra content entries may share the same id (e.g. two
+                //extensions with the same name): ensure every panel gets
+                //a unique id so edition / layout / collapse features can
+                //address each panel individually
+                const usedIds = new Set(defaultPanelsList.map((p) => p.id))
                 const extraPanelsList = extraContents.reduce(
                     (acc, curr) => {
                         if (incompatibleExtraIds.has(curr.id)) return acc
@@ -318,8 +540,17 @@ const Dashboard = () => {
                             },
                             {}
                         )
-                        if (item.target === "panel")
-                            acc.push(ExtraPanelElement(item, curr.id))
+                        if (item.target === "panel") {
+                            let uniqueId = curr.id || item.name || "extrapanel"
+                            if (usedIds.has(uniqueId)) {
+                                let suffix = 2
+                                while (usedIds.has(`${uniqueId}_${suffix}`))
+                                    suffix++
+                                uniqueId = `${uniqueId}_${suffix}`
+                            }
+                            usedIds.add(uniqueId)
+                            acc.push(ExtraPanelElement(item, uniqueId))
+                        }
                         return acc
                     },
                     []
@@ -340,7 +571,10 @@ const Dashboard = () => {
     }, [uisettings.current, incompatibleExtraIds])
 
     return (
-        <div id="dashboard">
+        <div
+            id="dashboard"
+            class={effectiveCanvasMode ? "dashboard-canvas" : ""}
+        >
             <div class="buttons-bar m-2">
                 {panels.list.length > 0 && (
                     <div class="dropdown">
@@ -385,11 +619,12 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </li>
-                            <li class="menu-item">
-                                <div
-                                    class="menu-entry"
-                                    onclick={showKeyboarHelp}
-                                >
+                            {isKeyboardEnabled && (
+                                <li class="menu-item">
+                                    <div
+                                        class="menu-entry"
+                                        onclick={showKeyboarHelp}
+                                    >
                                     <div class="menu-panel-item">
                                         <span class="text-menu-item">
                                             {T("S216")}
@@ -400,6 +635,96 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </li>
+                            )}
+                            <li class="menu-item hide-low">
+                                <div
+                                    class="menu-entry"
+                                    onclick={(e) => {
+                                        useUiContextFn.haptic()
+                                        setLayoutEditMode(!layoutEditMode)
+                                    }}
+                                >
+                                    <div class="menu-panel-item">
+                                        <span class="text-menu-item">
+                                            {T("S263")}
+                                        </span>
+                                        <span class="feather-icon-container">
+                                            {layoutEditMode ? (
+                                                <CheckCircle size="0.8rem" />
+                                            ) : (
+                                                <Circle size="0.8rem" />
+                                            )}
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            {layoutEditMode && (
+                                <li class="menu-item hide-low">
+                                    <div
+                                        class="menu-entry"
+                                        onclick={confirmResetLayout}
+                                    >
+                                    <div class="menu-panel-item">
+                                        <span class="text-menu-item">
+                                            {T("S264")}
+                                        </span>
+                                        <span class="feather-icon-container">
+                                            <RotateCcw size="0.8rem" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                            )}
+                            {layoutEditMode && (
+                                <li class="menu-item hide-low">
+                                    <div
+                                        class="menu-entry"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            toggleCanvasMode()
+                                        }}
+                                    >
+                                        <div class="menu-panel-item">
+                                            <span class="text-menu-item">
+                                                {T("S268")}
+                                            </span>
+                                            <span class="feather-icon-container">
+                                                {canvasMode ? (
+                                                    <CheckCircle size="0.8rem" />
+                                                ) : (
+                                                    <Circle size="0.8rem" />
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            )}
+                            {effectiveCanvasMode && (
+                                <li class="menu-item hide-low">
+                                    <div
+                                        class="menu-entry"
+                                        onclick={(e) => {
+                                            useUiContextFn.haptic()
+                                            const next = !borderlessMode
+                                            setPanelsBorderless(next)
+                                            setBorderlessMode(next)
+                                        }}
+                                    >
+                                        <div class="menu-panel-item">
+                                            <span class="text-menu-item">
+                                                {T("S266")}
+                                            </span>
+                                            <span class="feather-icon-container">
+                                                {borderlessMode ? (
+                                                    <CheckCircle size="0.8rem" />
+                                                ) : (
+                                                    <Circle size="0.8rem" />
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            )}
                             <li class="divider"></li>
                             <li class="menu-item">
                                 <div
@@ -475,10 +800,24 @@ const Dashboard = () => {
                         </ul>
                     </div>
                 )}
+                {effectiveCanvasMode && (
+                    <span
+                        class="btn tooltip tooltip-right m-1"
+                        tabindex="0"
+                        data-tooltip={T("S269")}
+                        aria-label={T("S269")}
+                        onclick={toggleFullscreen}
+                    >
+                        {isFullscreen ? <Minimize /> : <Maximize />}
+                    </span>
+                )}
+                {panels.visibles.length > 0 && (
+                    <CollapseAllToggle containerSelector="#dashboard .panels-container" />
+                )}
                 <QuickButtonsBar />
             </div>
             <div
-                class="panels-container m-2"
+                class={`panels-container m-2${layoutEditMode ? " panels-layout-edit" : ""}${effectiveCanvasMode ? " panels-canvas" : ""}`}
                 onDragLeave={(e) => {
                     if (
                         !e.relatedTarget ||
@@ -490,9 +829,19 @@ const Dashboard = () => {
                 {panels.visibles.map((panel, index) => {
                     if (!isfixed) {
                         return (
-                            <Fragment key={panel.id}>
+                            <div key={panel.id} class="panel-layout-wrapper">
                                 {panel.content}
-                            </Fragment>
+                                {layoutEditMode && (
+                                    <PanelLayoutControls
+                                        panelId={panel.id}
+                                        mode={
+                                            effectiveCanvasMode
+                                                ? "canvas"
+                                                : "grid"
+                                        }
+                                    />
+                                )}
+                            </div>
                         )
                     }
                     const isExtraPanel =
@@ -602,7 +951,7 @@ const Dashboard = () => {
                         <div
                             key={panel.id}
                             class={`panel-drag-wrapper${panel.hasMenu ? " panel-has-menu" : ""}${isExtraPanel ? " panel-extra-content" : ""}${dropIndicator.index === index ? ` panel-drop-indicator-${dropIndicator.side}` : ""}`}
-                            draggable={true}
+                            draggable={!effectiveCanvasMode}
                             onDragStart={handleDragStart}
                             onDragOver={handleDragOver}
                             onDrop={handleDrop}
@@ -612,13 +961,23 @@ const Dashboard = () => {
                             <span
                                 class="panel-drag-handle tooltip tooltip-left"
                                 data-tooltip={T("S256")}
-                                draggable={true}
+                                draggable={!effectiveCanvasMode}
                                 onDragStart={handleDragStart}
                                 aria-label={T("S256")}
                             >
                                 <Anchor size="0.8rem" />
                             </span>
                             {panel.content}
+                            {layoutEditMode && (
+                                <PanelLayoutControls
+                                    panelId={panel.id}
+                                    mode={
+                                        effectiveCanvasMode
+                                            ? "canvas"
+                                            : "grid"
+                                    }
+                                />
+                            )}
                         </div>
                     )
                 })}
