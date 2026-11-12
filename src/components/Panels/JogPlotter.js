@@ -29,7 +29,8 @@ import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { T } from "../Translations"
-import { Button, ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { Button, ButtonImg } from "../Controls"
+import { PanelShell } from "./"
 import { useEffect, useRef } from "preact/hooks"
 import { showModal } from "../Modal"
 import { useTargetContext, variablesList } from "../../targets"
@@ -352,70 +353,57 @@ const JogPanel = () => {
         currentSteps = useUiContextFn.getValue("steps")
     }, [])
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Move />
-                    <strong class="text-ellipsis">{T("S66")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <div class="dropdown dropdown-right">
-                            <span
-                                class="dropdown-toggle btn btn-xs btn-header m-1"
-                                tabindex="0"
-                            >
-                                <ChevronDown size="0.8rem" />
-                            </span>
-
-                            <ul class="menu">
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            setVelocity()
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP1")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="menu-item">
-                                    <div
-                                        class="menu-entry"
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            setSteps()
-                                        }}
-                                    >
-                                        <div class="menu-panel-item">
-                                            <span class="text-menu-item">
-                                                {T("HP2")}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
+        <PanelShell
+            id={id}
+            icon={<Move />}
+            title={T("S66")}
+            headerRight={
+                <div class="dropdown dropdown-right">
+                    <span
+                        class="dropdown-toggle btn btn-xs btn-header m-1"
+                        tabindex="0"
+                    >
+                        <ChevronDown size="0.8rem" />
                     </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="m-1 jog-container">
-                    <PositionsControls />
-                    <div class="m-1">
+
+                    <ul class="menu">
+                        <li class="menu-item">
+                            <div
+                                class="menu-entry"
+                                onclick={(e) => {
+                                    useUiContextFn.haptic()
+                                    setVelocity()
+                                }}
+                            >
+                                <div class="menu-panel-item">
+                                    <span class="text-menu-item">
+                                        {T("HP1")}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="menu-item">
+                            <div
+                                class="menu-entry"
+                                onclick={(e) => {
+                                    useUiContextFn.haptic()
+                                    setSteps()
+                                }}
+                            >
+                                <div class="menu-panel-item">
+                                    <span class="text-menu-item">
+                                        {T("HP2")}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            }
+        >
+            <div class="m-1 jog-container">
+                <PositionsControls />
+                <div class="m-1">
                     <div class="jog-buttons-main-container">
                         <div class="m-1 jog-buttons-container">
                             <div class="jog-buttons-line-top-container">
@@ -693,9 +681,8 @@ const JogPanel = () => {
                         }}
                     />
                 </div>
-                </div>
             </div>
-        </div>
+        </PanelShell>
     )
 }
 

@@ -47,3 +47,4 @@ const Menu = ({ items }) => {
 
 export default { Menu }
 export { Menu }
+export { PanelShell } from "./PanelShell"

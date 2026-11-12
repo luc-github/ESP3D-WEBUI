@@ -26,7 +26,8 @@ import {
     useSettingsContext,
 } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -374,278 +375,243 @@ const ProbePanel = () => {
     ]
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} />
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Underline />
-                    <strong class="text-ellipsis">{T("CN37")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <ProbeControls />
-                {probe_controls.map((block) => {
-                    return (
-                        <fieldset
-                            class={`field-group${
-                                block.label.length > 0
-                                    ? " fieldset-top-separator fieldset-bottom-separator"
-                                    : ""
-                            }`}
-                        >
-                            <legend>
-                                {block.label.length > 0 && (
-                                    <label class="m-1 buttons-bar-label">
-                                        {T(block.label)}
-                                    </label>
-                                )}
-                            </legend>
+        <PanelShell id={id} icon={<Underline />} title={T("CN37")}>
+            <ProbeControls />
+            {probe_controls.map((block) => {
+                return (
+                    <fieldset
+                        class={`field-group${
+                            block.label.length > 0
+                                ? " fieldset-top-separator fieldset-bottom-separator"
+                                : ""
+                        }`}
+                    >
+                        <legend>
+                            {block.label.length > 0 && (
+                                <label class="m-1 buttons-bar-label">
+                                    {T(block.label)}
+                                </label>
+                            )}
+                        </legend>
 
-                            <div class="field-group-content maxwidth text-dark">
-                                {block.controls.map((control) => {
-                                    return (
-                                        <div class="states-buttons-container">
-                                            {control.elements.map((element) => {
-                                                if (element.type === "m2") {
-                                                    return <div class="m-2" />
-                                                } else if (
-                                                    element.type === "button"
-                                                ) {
-                                                    let classname = "tooltip"
-                                                    return (
-                                                        <ButtonImg
-                                                            label={T(
-                                                                element.label
-                                                            )}
-                                                            disabled={hasError()}
-                                                            icon={element.icon}
-                                                            tooltip
-                                                            iconRight={
-                                                                element.iconRight
-                                                            }
-                                                            data-tooltip={T(
-                                                                element.tooltip
-                                                            )}
-                                                            mode={element.mode}
-                                                            useinput={
-                                                                element.useinput
-                                                            }
-                                                            onclick={
-                                                                element.onclick
-                                                            }
-                                                        />
-                                                    )
-                                                } else {
-                                                    //we won't handle modified state just handle error
-                                                    //too many user cases where changing value to show button is not suitable
-                                                    const [
-                                                        validation,
-                                                        setvalidation,
-                                                    ] = useState({
+                        <div class="field-group-content maxwidth text-dark">
+                            {block.controls.map((control) => {
+                                return (
+                                    <div class="states-buttons-container">
+                                        {control.elements.map((element) => {
+                                            if (element.type === "m2") {
+                                                return <div class="m-2" />
+                                            } else if (
+                                                element.type === "button"
+                                            ) {
+                                                let classname = "tooltip"
+                                                return (
+                                                    <ButtonImg
+                                                        label={T(element.label)}
+                                                        disabled={hasError()}
+                                                        icon={element.icon}
+                                                        tooltip
+                                                        iconRight={
+                                                            element.iconRight
+                                                        }
+                                                        data-tooltip={T(
+                                                            element.tooltip
+                                                        )}
+                                                        mode={element.mode}
+                                                        useinput={
+                                                            element.useinput
+                                                        }
+                                                        onclick={
+                                                            element.onclick
+                                                        }
+                                                    />
+                                                )
+                                            } else {
+                                                //we won't handle modified state just handle error
+                                                //too many user cases where changing value to show button is not suitable
+                                                const [
+                                                    validation,
+                                                    setvalidation,
+                                                ] = useState({
+                                                    message: null,
+                                                    valid: true,
+                                                    modified: false,
+                                                })
+
+                                                const generateValidation = (
+                                                    element
+                                                ) => {
+                                                    let validation = {
                                                         message: null,
                                                         valid: true,
                                                         modified: false,
-                                                    })
-
-                                                    const generateValidation = (
-                                                        element
-                                                    ) => {
-                                                        let validation = {
-                                                            message: null,
-                                                            valid: true,
-                                                            modified: false,
-                                                        }
-                                                        if (
-                                                            element.type ===
-                                                                "select" &&
-                                                            -1 ==
-                                                                filterOptions(
-                                                                    element.options
-                                                                ).findIndex(
-                                                                    (item) =>
-                                                                        item.value ==
-                                                                        element
-                                                                            .value
-                                                                            .current
-                                                                )
-                                                        ) {
-                                                            element.value.current =
-                                                                filterOptions(
-                                                                    element.options
-                                                                )[0].value
-                                                        }
-                                                        if (
-                                                            typeof element.step !==
-                                                            "undefined"
-                                                        ) {
-                                                            //hack to avoid float precision issue
-                                                            const mult =
-                                                                (
-                                                                    1 /
-                                                                    element.step
-                                                                ).toFixed(0) > 0
-                                                                    ? (
-                                                                          1 /
-                                                                          element.step
-                                                                      ).toFixed(
-                                                                          0
-                                                                      )
-                                                                    : 1
-                                                            const valueMult =
-                                                                Math.round(
+                                                    }
+                                                    if (
+                                                        element.type ===
+                                                            "select" &&
+                                                        -1 ==
+                                                            filterOptions(
+                                                                element.options
+                                                            ).findIndex(
+                                                                (item) =>
+                                                                    item.value ==
                                                                     element
                                                                         .value
-                                                                        .current *
-                                                                        mult
-                                                                )
-                                                            const stepMult =
-                                                                Math.round(
-                                                                    element.step *
-                                                                        mult
-                                                                )
-                                                            console.log(
-                                                                "Element:",
-                                                                element.value
-                                                                    .current,
-                                                                "Step:",
-                                                                element.step,
-                                                                "Mult",
-                                                                mult,
-                                                                "Modal:",
-                                                                "Value mult",
-                                                                valueMult,
-                                                                "Step mult",
-                                                                stepMult,
-                                                                "Modulo",
-                                                                valueMult %
-                                                                    stepMult
+                                                                        .current
                                                             )
-                                                            if (
-                                                                valueMult %
-                                                                    stepMult !=
-                                                                0
-                                                            ) {
-                                                                console.log(
-                                                                    "not valid"
-                                                                )
-                                                                validation.valid = false
-                                                            }
-                                                        }
-                                                        if (
-                                                            element.type ===
-                                                                "number" &&
-                                                            (element.value
-                                                                .current <
-                                                                element.min ||
+                                                    ) {
+                                                        element.value.current =
+                                                            filterOptions(
+                                                                element.options
+                                                            )[0].value
+                                                    }
+                                                    if (
+                                                        typeof element.step !==
+                                                        "undefined"
+                                                    ) {
+                                                        //hack to avoid float precision issue
+                                                        const mult =
+                                                            (
+                                                                1 / element.step
+                                                            ).toFixed(0) > 0
+                                                                ? (
+                                                                      1 /
+                                                                      element.step
+                                                                  ).toFixed(0)
+                                                                : 1
+                                                        const valueMult =
+                                                            Math.round(
                                                                 element.value
-                                                                    .current
-                                                                    .length ===
-                                                                    0)
+                                                                    .current *
+                                                                    mult
+                                                            )
+                                                        const stepMult =
+                                                            Math.round(
+                                                                element.step *
+                                                                    mult
+                                                            )
+                                                        console.log(
+                                                            "Element:",
+                                                            element.value
+                                                                .current,
+                                                            "Step:",
+                                                            element.step,
+                                                            "Mult",
+                                                            mult,
+                                                            "Modal:",
+                                                            "Value mult",
+                                                            valueMult,
+                                                            "Step mult",
+                                                            stepMult,
+                                                            "Modulo",
+                                                            valueMult % stepMult
+                                                        )
+                                                        if (
+                                                            valueMult %
+                                                                stepMult !=
+                                                            0
                                                         ) {
-                                                            //No error message to keep all control aligned
-                                                            //may be have a better way ?
-                                                            // validation.message = T("S42");
+                                                            console.log(
+                                                                "not valid"
+                                                            )
                                                             validation.valid = false
                                                         }
+                                                    }
+                                                    if (
+                                                        element.type ===
+                                                            "number" &&
+                                                        (element.value.current <
+                                                            element.min ||
+                                                            element.value
+                                                                .current
+                                                                .length === 0)
+                                                    ) {
+                                                        //No error message to keep all control aligned
+                                                        //may be have a better way ?
+                                                        // validation.message = T("S42");
+                                                        validation.valid = false
+                                                    }
 
-                                                        element.value.valid =
-                                                            validation.valid
-                                                        return validation
-                                                    }
-                                                    const filterOptions = (
-                                                        options
-                                                    ) => {
-                                                        if (options)
-                                                            return options.filter(
-                                                                (option) => {
-                                                                    return checkDependencies(
-                                                                        option.depend,
-                                                                        interfaceSettings
-                                                                            .current
-                                                                            .settings,
-                                                                        connectionSettings.current
-                                                                    )
-                                                                }
-                                                            )
-                                                        return options
-                                                    }
-                                                    return (
-                                                        <Field
-                                                            inline
-                                                            id={element.id}
-                                                            type={element.type}
-                                                            label={T(
-                                                                element.label
-                                                            )}
-                                                            append={
-                                                                element.append
-                                                            }
-                                                            options={filterOptions(
-                                                                element.options
-                                                            )}
-                                                            min={element.min}
-                                                            max={element.max}
-                                                            step={element.step}
-                                                            value={
-                                                                element.value
-                                                                    .current
-                                                            }
-                                                            setValue={(
-                                                                val,
-                                                                update = false
-                                                            ) => {
-                                                                if (!update) {
-                                                                    element.value.current =
-                                                                        val
-                                                                }
-                                                                const validationObj =
-                                                                    generateValidation(
-                                                                        element
-                                                                    )
-                                                                setvalidation(
-                                                                    validationObj
-                                                                )
-                                                                if (
-                                                                    validationObj.valid &&
-                                                                    element.variableName
-                                                                ) {
-                                                                    variablesList.addCommand(
-                                                                        {
-                                                                            name: element.variableName,
-                                                                            value: element
-                                                                                .value
-                                                                                .current,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            }}
-                                                            validation={
-                                                                validation
-                                                            }
-                                                        />
-                                                    )
+                                                    element.value.valid =
+                                                        validation.valid
+                                                    return validation
                                                 }
-                                            })}
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </fieldset>
-                    )
-                })}
-            </div>
-        </div>
+                                                const filterOptions = (
+                                                    options
+                                                ) => {
+                                                    if (options)
+                                                        return options.filter(
+                                                            (option) => {
+                                                                return checkDependencies(
+                                                                    option.depend,
+                                                                    interfaceSettings
+                                                                        .current
+                                                                        .settings,
+                                                                    connectionSettings.current
+                                                                )
+                                                            }
+                                                        )
+                                                    return options
+                                                }
+                                                return (
+                                                    <Field
+                                                        inline
+                                                        id={element.id}
+                                                        type={element.type}
+                                                        label={T(element.label)}
+                                                        append={element.append}
+                                                        options={filterOptions(
+                                                            element.options
+                                                        )}
+                                                        min={element.min}
+                                                        max={element.max}
+                                                        step={element.step}
+                                                        value={
+                                                            element.value
+                                                                .current
+                                                        }
+                                                        setValue={(
+                                                            val,
+                                                            update = false
+                                                        ) => {
+                                                            if (!update) {
+                                                                element.value.current =
+                                                                    val
+                                                            }
+                                                            const validationObj =
+                                                                generateValidation(
+                                                                    element
+                                                                )
+                                                            setvalidation(
+                                                                validationObj
+                                                            )
+                                                            if (
+                                                                validationObj.valid &&
+                                                                element.variableName
+                                                            ) {
+                                                                variablesList.addCommand(
+                                                                    {
+                                                                        name: element.variableName,
+                                                                        value: element
+                                                                            .value
+                                                                            .current,
+                                                                    }
+                                                                )
+                                                            }
+                                                        }}
+                                                        validation={validation}
+                                                    />
+                                                )
+                                            }
+                                        })}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </PanelShell>
     )
 }
 

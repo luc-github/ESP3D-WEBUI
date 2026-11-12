@@ -26,7 +26,8 @@ import {
     useSettingsContext,
 } from "../../contexts"
 import { useTargetContext, variablesList, eventsList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -255,151 +256,133 @@ const SpindlePanel = () => {
     }
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Target />
-                    <strong class="text-ellipsis">{T("CN36")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <SpindleControls />
-                {buttons_list.map((item) => {
-                    if (item.depend) {
+        <PanelShell id={id} icon={<Target />} title={T("CN36")}>
+            <SpindleControls />
+            {buttons_list.map((item) => {
+                if (item.depend) {
+                    if (
+                        !checkDependencies(
+                            item.depend,
+                            interfaceSettings.current.settings,
+                            connectionSettings.current
+                        )
+                    )
+                        return null
+                }
+                const content = item.buttons.map((button, index) => {
+                    if (button.depend) {
                         if (
                             !checkDependencies(
-                                item.depend,
+                                button.depend,
                                 interfaceSettings.current.settings,
                                 connectionSettings.current
                             )
                         )
                             return null
-                    }
-                    const content = item.buttons.map((button, index) => {
-                        if (button.depend) {
+                        let index = button.depend.findIndex((element) => {
+                            return element.states
+                        })
+                        if (index !== -1) {
                             if (
-                                !checkDependencies(
-                                    button.depend,
-                                    interfaceSettings.current.settings,
-                                    connectionSettings.current
+                                !button.depend[index].states.includes(
+                                    status.state
                                 )
                             )
                                 return null
-                            let index = button.depend.findIndex((element) => {
-                                return element.states
-                            })
-                            if (index !== -1) {
-                                if (
-                                    !button.depend[index].states.includes(
-                                        status.state
-                                    )
+                        }
+                    }
+                    let classname = "tooltip"
+                    if (!item.tooltipclassic) {
+                        if (item.buttons.length / 2 > index) {
+                            classname += " tooltip-right"
+                        } else {
+                            classname += " tooltip-left"
+                        }
+                    }
+                    if (states && button.mode && states[button.mode]) {
+                        if (Array.isArray(states[button.mode])) {
+                            if (
+                                states[button.mode].some(
+                                    (item) => item.value == button.label
                                 )
-                                    return null
+                            ) {
+                                classname += " btn-primary"
+                            }
+                        } else {
+                            if (states[button.mode].value == button.label) {
+                                classname += " btn-primary"
                             }
                         }
-                        let classname = "tooltip"
-                        if (!item.tooltipclassic) {
-                            if (item.buttons.length / 2 > index) {
-                                classname += " tooltip-right"
-                            } else {
-                                classname += " tooltip-left"
-                            }
-                        }
-                        if (states && button.mode && states[button.mode]) {
-                            if (Array.isArray(states[button.mode])){
-                               if(states[button.mode].some(item => item.value==button.label)){
-                                    classname += " btn-primary"
-                               }
-                            } else {
-                                if (states[button.mode].value == button.label) {
-                                    classname += " btn-primary"
-                                }
-                            }
-                        }
-                        return (
-                            <ButtonImg
-                                disabled={
-                                    button.useinput ? !validation.valid : false
-                                }
-                                label={T(button.label)}
-                                icon={button.icon}
-                                className={classname}
-                                iconRight={button.iconRight}
-                                data-tooltip={T(button.tooltip)}
-                                onClick={(e) => {
-                                    useUiContextFn.haptic()
-                                    e.target.blur()
-                                    if (button.useinput) {
-                                        sendCommand(
-                                            button.command.replace(
-                                                "S#",
-                                                "S" + spindleSpeedValue.current
-                                            )
-                                        )
-                                    } else sendCommand(button.command)
-                                }}
-                            />
-                        )
-                    })
-
-                    if (!(content.filter((item) => item != null).length != 0))
-                        return null
-
+                    }
                     return (
-                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                            <legend>
-                                <label class="m-1 buttons-bar-label">
-                                    {T(item.label)}
-                                </label>
-                            </legend>
-                            <div class="field-group-content maxwidth">
-                                <div class="states-buttons-container">
-                                    {content}
-                                </div>
-                                {item.control && (
-                                    <div>
-                                        <Field
-                                            id={item.control.id}
-                                            inline
-                                            width="4rem"
-                                            label={T(item.control.label)}
-                                            type={item.control.type}
-                                            min={item.control.min}
-                                            value={item.control.value.current}
-                                            setValue={(val, update = false) => {
-                                                if (!update) {
-                                                    item.control.value.current =
-                                                        val
-                                                }
-                                                setvalidation(
-                                                    generateValidation(
-                                                        item.control.value
-                                                            .current
-                                                    )
-                                                )
-                                            }}
-                                            validation={validation}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </fieldset>
+                        <ButtonImg
+                            disabled={
+                                button.useinput ? !validation.valid : false
+                            }
+                            label={T(button.label)}
+                            icon={button.icon}
+                            className={classname}
+                            iconRight={button.iconRight}
+                            data-tooltip={T(button.tooltip)}
+                            onClick={(e) => {
+                                useUiContextFn.haptic()
+                                e.target.blur()
+                                if (button.useinput) {
+                                    sendCommand(
+                                        button.command.replace(
+                                            "S#",
+                                            "S" + spindleSpeedValue.current
+                                        )
+                                    )
+                                } else sendCommand(button.command)
+                            }}
+                        />
                     )
-                })}
-            </div>
-        </div>
+                })
+
+                if (!(content.filter((item) => item != null).length != 0))
+                    return null
+
+                return (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1 buttons-bar-label">
+                                {T(item.label)}
+                            </label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            <div class="states-buttons-container">
+                                {content}
+                            </div>
+                            {item.control && (
+                                <div>
+                                    <Field
+                                        id={item.control.id}
+                                        inline
+                                        width="4rem"
+                                        label={T(item.control.label)}
+                                        type={item.control.type}
+                                        min={item.control.min}
+                                        value={item.control.value.current}
+                                        setValue={(val, update = false) => {
+                                            if (!update) {
+                                                item.control.value.current = val
+                                            }
+                                            setvalidation(
+                                                generateValidation(
+                                                    item.control.value.current
+                                                )
+                                            )
+                                        }}
+                                        validation={validation}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </PanelShell>
     )
 }
 

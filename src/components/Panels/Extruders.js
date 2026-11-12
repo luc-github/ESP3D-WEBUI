@@ -20,13 +20,7 @@ import { Fragment, h } from "preact"
 import { T } from "../Translations"
 import { useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import {
-    ButtonImg,
-    Loading,
-    Field,
-    FullScreenButton,
-    CloseButton,
-} from "../Controls"
+import { ButtonImg, Loading, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import {
@@ -35,9 +29,8 @@ import {
     MixedExtrudersControl,
 } from "SubTargetDir"
 import { Plus, Minus, Edit3 } from "preact-feather"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 import { showModal } from "../Modal"
-import { ContainerHelper } from "../Controls"
 
 const extrudeDistance = []
 const extruderFeedRate = { value: 0 }
@@ -242,54 +235,38 @@ const ExtrudersPanel = () => {
     ]
     console.log(id)
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    {iconsTarget["Extruder"]}
-                    <strong class="text-ellipsis">{T("P36")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="extruders-container">
-                    {!isMixedExtruder &&
-                        temperatures["T"].map((temp, index) => {
-                            return (
-                                <ExtruderInputControl
-                                    index={index}
-                                    size={temperatures["T"].length}
-                                    hasdivider={
-                                        index < temperatures["T"].length - 1
-                                    }
-                                />
-                            )
-                        })}
-                    {isMixedExtruder && (
-                        <MixedExtrudersControl feedrate={extruderFeedRate} />
-                    )}
-                    {!isMixedExtruder && temperatures["T"].length == 0 && (
-                        <div class="loading-panel">
-                            <div class="m-2">
-                                <div class="m-1">{T("P89")}</div>
-                                <Loading />
-                            </div>
+        <PanelShell
+            id={id}
+            icon={iconsTarget["Extruder"]}
+            title={T("P36")}
+            headerRight={<PanelMenu items={menu} />}
+        >
+            <div class="extruders-container">
+                {!isMixedExtruder &&
+                    temperatures["T"].map((temp, index) => {
+                        return (
+                            <ExtruderInputControl
+                                index={index}
+                                size={temperatures["T"].length}
+                                hasdivider={
+                                    index < temperatures["T"].length - 1
+                                }
+                            />
+                        )
+                    })}
+                {isMixedExtruder && (
+                    <MixedExtrudersControl feedrate={extruderFeedRate} />
+                )}
+                {!isMixedExtruder && temperatures["T"].length == 0 && (
+                    <div class="loading-panel">
+                        <div class="m-2">
+                            <div class="m-1">{T("P89")}</div>
+                            <Loading />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-        </div>
+        </PanelShell>
     )
 }
 

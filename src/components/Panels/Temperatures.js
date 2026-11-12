@@ -20,18 +20,12 @@ import { Fragment, h } from "preact"
 import { T } from "../Translations"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useState, useRef } from "preact/hooks"
-import {
-    ButtonImg,
-    Loading,
-    Field,
-    FullScreenButton,
-    CloseButton,
-} from "../Controls"
+import { ButtonImg, Loading, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import { Thermometer, Power, Send } from "preact-feather"
 import { useTargetContext } from "../../targets"
-import { ContainerHelper } from "../Controls"
+import { PanelShell } from "./"
 
 /*
  * Local const
@@ -297,89 +291,69 @@ const TemperaturesPanel = () => {
         if (temperatures[tool].length != 0) hasTemp = true
     })
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Thermometer />
-                    <strong class="text-ellipsis">{T("P29")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                {hasTemp && (
-                    <div class="temperatures-container">
-                        <TemperaturesControls />
-                        {Object.keys(temperatures).map((tool) => {
-                            if (
-                                temperatures[tool].length == 0 ||
-                                !isVisible(tool) ||
-                                !isEditable(tool)
-                            )
-                                return
-                            return (
-                                <Fragment>
-                                    {temperatures[tool].map((temp, index) => {
-                                        return (
-                                            <TemperatureInputControl
-                                                tool={tool}
-                                                index={index}
-                                                size={temperatures[tool].length}
-                                            />
-                                        )
-                                    })}
-                                </Fragment>
-                            )
-                        })}
-                        <div class="temperature-extra-buttons-container m-2">
-                            <ButtonImg
-                                id="stop-all"
-                                icon={<Power />}
-                                label={T("P40")}
-                                tooltip
-                                data-tooltip={T("P38")}
-                                onClick={(e) => {
-                                    useUiContextFn.haptic()
-                                    e.target.blur()
-                                    Object.keys(target_temperatures).forEach(
-                                        (tool) => {
-                                            if (
-                                                target_temperatures[tool]
-                                                    .length == 0
-                                            )
-                                                return
-                                            target_temperatures[tool].forEach(
-                                                (temp, index) => {
-                                                    sendCommand(temp.stopcmd)
-                                                }
-                                            )
-                                        }
+        <PanelShell id={id} icon={<Thermometer />} title={T("P29")}>
+            {hasTemp && (
+                <div class="temperatures-container">
+                    <TemperaturesControls />
+                    {Object.keys(temperatures).map((tool) => {
+                        if (
+                            temperatures[tool].length == 0 ||
+                            !isVisible(tool) ||
+                            !isEditable(tool)
+                        )
+                            return
+                        return (
+                            <Fragment>
+                                {temperatures[tool].map((temp, index) => {
+                                    return (
+                                        <TemperatureInputControl
+                                            tool={tool}
+                                            index={index}
+                                            size={temperatures[tool].length}
+                                        />
                                     )
-                                }}
-                            />
-                        </div>
+                                })}
+                            </Fragment>
+                        )
+                    })}
+                    <div class="temperature-extra-buttons-container m-2">
+                        <ButtonImg
+                            id="stop-all"
+                            icon={<Power />}
+                            label={T("P40")}
+                            tooltip
+                            data-tooltip={T("P38")}
+                            onClick={(e) => {
+                                useUiContextFn.haptic()
+                                e.target.blur()
+                                Object.keys(target_temperatures).forEach(
+                                    (tool) => {
+                                        if (
+                                            target_temperatures[tool].length ==
+                                            0
+                                        )
+                                            return
+                                        target_temperatures[tool].forEach(
+                                            (temp, index) => {
+                                                sendCommand(temp.stopcmd)
+                                            }
+                                        )
+                                    }
+                                )
+                            }}
+                        />
                     </div>
-                )}
-                {!hasTemp && (
-                    <div class="loading-panel">
-                        <div class="m-2">
-                            <div class="m-1">{T("P89")}</div>
-                            <Loading />
-                        </div>
+                </div>
+            )}
+            {!hasTemp && (
+                <div class="loading-panel">
+                    <div class="m-2">
+                        <div class="m-1">{T("P89")}</div>
+                        <Loading />
                     </div>
-                )}
-            </div>
-        </div>
+                </div>
+            )}
+        </PanelShell>
     )
 }
 

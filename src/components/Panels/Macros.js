@@ -21,7 +21,8 @@ import { T } from "../Translations"
 import { Cast } from "preact-feather"
 import { useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import { iconsFeather } from "../Images"
@@ -145,47 +146,29 @@ const MacrosPanel = () => {
     }
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Cast />
-                    <strong class="text-ellipsis">{T("macros")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton elementId={id}/>
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
+        <PanelShell id={id} icon={<Cast />} title={T("macros")}>
+            <div class="macro-buttons-panel">
+                {macroButtons.map((element) => {
+                    const displayIcon = iconsList[element.icon]
+                        ? iconsList[element.icon]
+                        : ""
+                    return (
+                        <ButtonImg
+                            id={element.id}
+                            m1
+                            showlow
+                            label={element.name}
+                            icon={displayIcon}
+                            onclick={(e) => {
+                                useUiContextFn.haptic()
+                                e.target.blur()
+                                processMacro(element.action, element.type)
+                            }}
                         />
-                    </span>
-                </span>
+                    )
+                })}
             </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="macro-buttons-panel">
-                    {macroButtons.map((element) => {
-                        const displayIcon = iconsList[element.icon]
-                            ? iconsList[element.icon]
-                            : ""
-                        return (
-                            <ButtonImg
-                                id={element.id}
-                                m1
-                                showlow
-                                label={element.name}
-                                icon={displayIcon}
-                                onclick={(e) => {
-                                    useUiContextFn.haptic()
-                                    e.target.blur()
-                                    processMacro(element.action, element.type)
-                                }}
-                            />
-                        )
-                    })}
-                </div>
-            </div>
-        </div>
+        </PanelShell>
     )
 }
 

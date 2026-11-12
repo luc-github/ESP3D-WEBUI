@@ -21,7 +21,8 @@ import { T } from "../Translations"
 import { useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, Button, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Button } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 import {
@@ -230,79 +231,59 @@ const StatusPanel = () => {
     }
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Layers />
-                    <strong class="text-ellipsis">{T("CN34")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <StatusControls />
-                {pinsStates && Object.keys(pinsStates).length > 0 && (
+        <PanelShell id={id} icon={<Layers />} title={T("CN34")}>
+            <StatusControls />
+            {pinsStates && Object.keys(pinsStates).length > 0 && (
+                <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                    <legend>
+                        <label class="m-1 buttons-bar-label">{T("CN92")}</label>
+                    </legend>
+                    <div class="field-group-content maxwidth">
+                        <div class="states-buttons-container">
+                            {Object.keys(pinsStates).map((pin) => {
+                                return (
+                                    <div
+                                        class={`badge-container m-1 s-circle ${
+                                            pinsStates[pin]
+                                                ? "bg-primary"
+                                                : "bg-secondary"
+                                        }`}
+                                    >
+                                        <div
+                                            class={`badge-label m-1 s-circle ${
+                                                pinsStates[pin]
+                                                    ? "bg-primary text-white"
+                                                    : "bg-secondary text-primary"
+                                            }`}
+                                        >
+                                            {pin}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </fieldset>
+            )}
+
+            {states &&
+                Object.keys(states).length > 0 &&
+                states["motion_mode"] &&
+                variablesList.modes && (
                     <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
                         <legend>
                             <label class="m-1 buttons-bar-label">
-                                {T("CN92")}
+                                {T("CN44")}
                             </label>
                         </legend>
                         <div class="field-group-content maxwidth">
                             <div class="states-buttons-container">
-                                {Object.keys(pinsStates).map((pin) => {
-                                    return (
-                                        <div
-                                            class={`badge-container m-1 s-circle ${
-                                                pinsStates[pin]
-                                                    ? "bg-primary"
-                                                    : "bg-secondary"
-                                            }`}
-                                        >
-                                            <div
-                                                class={`badge-label m-1 s-circle ${
-                                                    pinsStates[pin]
-                                                        ? "bg-primary text-white"
-                                                        : "bg-secondary text-primary"
-                                                }`}
-                                            >
-                                                {pin}
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    </fieldset>
-                )}
-
-                {states &&
-                    Object.keys(states).length > 0 &&
-                    states["motion_mode"] &&
-                    variablesList.modes && (
-                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                            <legend>
-                                <label class="m-1 buttons-bar-label">
-                                    {T("CN44")}
-                                </label>
-                            </legend>
-                            <div class="field-group-content maxwidth">
-                                <div class="states-buttons-container">
-                                    {variablesList.modes.map((element) => {
-                                        if (states[element.id]) {
-                                            if (Array.isArray(states[element.id])) {
-                                                return states[element.id].map((item) => {
-                                                    return(
+                                {variablesList.modes.map((element) => {
+                                    if (states[element.id]) {
+                                        if (Array.isArray(states[element.id])) {
+                                            return states[element.id].map(
+                                                (item) => {
+                                                    return (
                                                         <Button
                                                             m1
                                                             tooltip
@@ -321,8 +302,9 @@ const StatusPanel = () => {
                                                             {item.value}
                                                         </Button>
                                                     )
-                                                })
-                                            } else
+                                                }
+                                            )
+                                        } else
                                             return (
                                                 <Button
                                                     m1
@@ -342,68 +324,65 @@ const StatusPanel = () => {
                                                     {states[element.id].value}
                                                 </Button>
                                             )
-                                        }
-                                    })}
-                                </div>
+                                    }
+                                })}
                             </div>
-                        </fieldset>
-                    )}
-                {buttonsList.map((list) => {
+                        </div>
+                    </fieldset>
+                )}
+            {buttonsList.map((list) => {
+                if (list.depend) {
                     if (list.depend) {
-                        if (list.depend) {
-                            if (typeof list.depend === "function") {
-                                if (!list.depend()) {
-                                    return
-                                }
-                            } else if (!list.depend.includes(status.state))
+                        if (typeof list.depend === "function") {
+                            if (!list.depend()) {
                                 return
-                        }
+                            }
+                        } else if (!list.depend.includes(status.state)) return
                     }
-                    return (
-                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                            <legend>
-                                <label class="m-1 buttons-bar-label">
-                                    {T(list.name)}
-                                </label>
-                            </legend>
-                            <div class="field-group-content maxwidth">
-                                <div class="status-buttons-container">
-                                    {list.buttons.map((button) => {
-                                        if (button.depend) {
-                                            if (
-                                                typeof button.depend ===
-                                                "function"
-                                            ) {
-                                                if (!button.depend()) {
-                                                    return
-                                                }
-                                            } else if (
-                                                !button.depend.includes(
-                                                    status.state
-                                                )
-                                            )
+                }
+                return (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1 buttons-bar-label">
+                                {T(list.name)}
+                            </label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            <div class="status-buttons-container">
+                                {list.buttons.map((button) => {
+                                    if (button.depend) {
+                                        if (
+                                            typeof button.depend === "function"
+                                        ) {
+                                            if (!button.depend()) {
                                                 return
-                                        }
-                                        return (
-                                            <ButtonImg
-                                                icon={button.icon}
-                                                tooltip
-                                                data-tooltip={T(button.desc)}
-                                                onClick={(e) => {
-                                                    useUiContextFn.haptic()
-                                                    e.target.blur()
-                                                    sendCommand(button.cmd)
-                                                }}
-                                            />
+                                            }
+                                        } else if (
+                                            !button.depend.includes(
+                                                status.state
+                                            )
                                         )
-                                    })}
-                                </div>
+                                            return
+                                    }
+                                    return (
+                                        <ButtonImg
+                                            icon={button.icon}
+                                            tooltip
+                                            data-tooltip={T(button.desc)}
+                                            onClick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                sendCommand(button.cmd)
+                                            }}
+                                        />
+                                    )
+                                })}
                             </div>
-                        </fieldset>
-                    )
-                })}
-            </div>
-        </div>
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </PanelShell>
     )
 }
 

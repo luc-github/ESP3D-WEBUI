@@ -19,7 +19,11 @@
 */
 import { h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
-import { useUiContext, useUiContextFn, useSettingsContext } from "../../contexts"
+import {
+    useUiContext,
+    useUiContextFn,
+    useSettingsContext,
+} from "../../contexts"
 import { T } from "../../components/Translations"
 import {
     List,
@@ -146,7 +150,9 @@ const Dashboard = () => {
         index: null,
         side: null,
     })
-    const [incompatibleExtraIds, setIncompatibleExtraIds] = useState(() => new Set())
+    const [incompatibleExtraIds, setIncompatibleExtraIds] = useState(
+        () => new Set()
+    )
     const [layoutEditMode, setLayoutEditMode] = useState(false)
     const [borderlessMode, setBorderlessMode] = useState(getPanelsBorderless)
     const [canvasMode, setCanvasMode] = useState(
@@ -164,10 +170,7 @@ const Dashboard = () => {
             setIsFullscreen(!!document.fullscreenElement)
         document.addEventListener("fullscreenchange", onFullscreenChange)
         return () =>
-            document.removeEventListener(
-                "fullscreenchange",
-                onFullscreenChange
-            )
+            document.removeEventListener("fullscreenchange", onFullscreenChange)
     }, [])
 
     //Browser fullscreen on #app (not #dashboard: the cached extension
@@ -251,9 +254,7 @@ const Dashboard = () => {
     //(grid <-> canvas); tile them when entering a fresh canvas (no
     //stored position yet)
     useEffect(() => {
-        const container = document.querySelector(
-            "#dashboard .panels-container"
-        )
+        const container = document.querySelector("#dashboard .panels-container")
         if (!container) return
         const domPanels = container.querySelectorAll(".panel[id]")
         if (effectiveCanvasMode) {
@@ -298,7 +299,8 @@ const Dashboard = () => {
 
     useEffect(() => {
         const handler = ({ id: rootId }) => {
-            if (rootId) setIncompatibleExtraIds((prev) => new Set(prev).add(rootId))
+            if (rootId)
+                setIncompatibleExtraIds((prev) => new Set(prev).add(rootId))
         }
         const listenerId = eventBus.on("extraContentIncompatible", handler)
         return () => eventBus.off("extraContentIncompatible", listenerId)
@@ -478,7 +480,9 @@ const Dashboard = () => {
                     panels.set([...newList])
                     const visibleList = newList.reduce((acc, curr) => {
                         if (
-                            (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
+                            (typeof curr.onstart === "boolean"
+                                ? curr.onstart
+                                : uisettings.getValue(curr.onstart)) &&
                             uisettings.getValue(curr.show)
                         )
                             acc.push(curr)
@@ -491,18 +495,24 @@ const Dashboard = () => {
                 } else {
                     const fallbackVisibles = panels.list.reduce((acc, curr) => {
                         if (
-                            (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
+                            (typeof curr.onstart === "boolean"
+                                ? curr.onstart
+                                : uisettings.getValue(curr.onstart)) &&
                             uisettings.getValue(curr.show)
                         )
                             acc.push(curr)
                         return acc
                     }, [])
-                    panels.setVisibles(applyVisibilityOverrides(fallbackVisibles))
+                    panels.setVisibles(
+                        applyVisibilityOverrides(fallbackVisibles)
+                    )
                 }
             } else {
                 const elseVisibles = panels.list.reduce((acc, curr) => {
                     if (
-                        (typeof curr.onstart === 'boolean' ? curr.onstart : uisettings.getValue(curr.onstart)) &&
+                        (typeof curr.onstart === "boolean"
+                            ? curr.onstart
+                            : uisettings.getValue(curr.onstart)) &&
                         uisettings.getValue(curr.show)
                     )
                         acc.push(curr)
@@ -530,35 +540,29 @@ const Dashboard = () => {
                 //a unique id so edition / layout / collapse features can
                 //address each panel individually
                 const usedIds = new Set(defaultPanelsList.map((p) => p.id))
-                const extraPanelsList = extraContents.reduce(
-                    (acc, curr) => {
-                        if (incompatibleExtraIds.has(curr.id)) return acc
-                        const item = (curr.value || []).reduce(
-                            (accumulator, current) => {
-                                accumulator[current.name] = current.initial
-                                return accumulator
-                            },
-                            {}
-                        )
-                        if (item.target === "panel") {
-                            let uniqueId = curr.id || item.name || "extrapanel"
-                            if (usedIds.has(uniqueId)) {
-                                let suffix = 2
-                                while (usedIds.has(`${uniqueId}_${suffix}`))
-                                    suffix++
-                                uniqueId = `${uniqueId}_${suffix}`
-                            }
-                            usedIds.add(uniqueId)
-                            acc.push(ExtraPanelElement(item, uniqueId))
+                const extraPanelsList = extraContents.reduce((acc, curr) => {
+                    if (incompatibleExtraIds.has(curr.id)) return acc
+                    const item = (curr.value || []).reduce(
+                        (accumulator, current) => {
+                            accumulator[current.name] = current.initial
+                            return accumulator
+                        },
+                        {}
+                    )
+                    if (item.target === "panel") {
+                        let uniqueId = curr.id || item.name || "extrapanel"
+                        if (usedIds.has(uniqueId)) {
+                            let suffix = 2
+                            while (usedIds.has(`${uniqueId}_${suffix}`))
+                                suffix++
+                            uniqueId = `${uniqueId}_${suffix}`
                         }
-                        return acc
-                    },
-                    []
-                )
-                panels.set([
-                    ...defaultPanelsList,
-                    ...extraPanelsList,
-                ])
+                        usedIds.add(uniqueId)
+                        acc.push(ExtraPanelElement(item, uniqueId))
+                    }
+                    return acc
+                }, [])
+                panels.set([...defaultPanelsList, ...extraPanelsList])
             } else {
                 panels.set([...defaultPanelsList])
             }
@@ -625,16 +629,16 @@ const Dashboard = () => {
                                         class="menu-entry"
                                         onclick={showKeyboarHelp}
                                     >
-                                    <div class="menu-panel-item">
-                                        <span class="text-menu-item">
-                                            {T("S216")}
-                                        </span>
-                                        <span class="feather-icon-container">
-                                            <HelpCircle size="0.8rem" />
-                                        </span>
+                                        <div class="menu-panel-item">
+                                            <span class="text-menu-item">
+                                                {T("S216")}
+                                            </span>
+                                            <span class="feather-icon-container">
+                                                <HelpCircle size="0.8rem" />
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
                             )}
                             <li class="menu-item hide-low">
                                 <div
@@ -664,16 +668,16 @@ const Dashboard = () => {
                                         class="menu-entry"
                                         onclick={confirmResetLayout}
                                     >
-                                    <div class="menu-panel-item">
-                                        <span class="text-menu-item">
-                                            {T("S264")}
-                                        </span>
-                                        <span class="feather-icon-container">
-                                            <RotateCcw size="0.8rem" />
-                                        </span>
+                                        <div class="menu-panel-item">
+                                            <span class="text-menu-item">
+                                                {T("S264")}
+                                            </span>
+                                            <span class="feather-icon-container">
+                                                <RotateCcw size="0.8rem" />
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
                             )}
                             {layoutEditMode && (
                                 <li class="menu-item hide-low">
@@ -699,7 +703,7 @@ const Dashboard = () => {
                                     </div>
                                 </li>
                             )}
-                            {effectiveCanvasMode && (
+                            {layoutEditMode && effectiveCanvasMode && (
                                 <li class="menu-item hide-low">
                                     <div
                                         class="menu-entry"
@@ -877,7 +881,8 @@ const Dashboard = () => {
                             e.dataTransfer.getData("text/plain"),
                             10
                         )
-                        const { index: dropIndex, side: dropSide } = dropIndicator
+                        const { index: dropIndex, side: dropSide } =
+                            dropIndicator
                         setDropIndicator({ index: null, side: null })
                         if (dropIndex == null || dropSide == null) return
                         let insertIndex =
@@ -910,7 +915,8 @@ const Dashboard = () => {
                                         )
                                     return (
                                         nameField &&
-                                        nameField.value === (p.settingid || p.id)
+                                        nameField.value ===
+                                            (p.settingid || p.id)
                                     )
                                 })
                                 if (existing) {
@@ -972,9 +978,7 @@ const Dashboard = () => {
                                 <PanelLayoutControls
                                     panelId={panel.id}
                                     mode={
-                                        effectiveCanvasMode
-                                            ? "canvas"
-                                            : "grid"
+                                        effectiveCanvasMode ? "canvas" : "grid"
                                     }
                                 />
                             )}

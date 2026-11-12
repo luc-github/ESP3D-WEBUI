@@ -21,15 +21,7 @@ import { useEffect, useState, useRef } from "preact/hooks"
 import { T } from "../Translations"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, getBrowserTime } from "../Helpers"
-import {
-    Loading,
-    ButtonImg,
-    CenterLeft,
-    Progress,
-    FullScreenButton,
-    CloseButton,
-    ContainerHelper,
-} from "../Controls"
+import { Loading, ButtonImg, CenterLeft, Progress } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { showModal, showConfirmationModal, showProgressModal } from "../Modal"
 import {
@@ -43,7 +35,7 @@ import {
 } from "preact-feather"
 import { files, processor, useTargetContextFn } from "../../targets"
 import { Folder, File, Trash2, Play } from "preact-feather"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 
 let currentFS = ""
 const currentPath = {}
@@ -55,19 +47,18 @@ let currentFSNeedInit = true
  *
  */
 const FilesPanel = () => {
-
     const valids = files.supported.reduce((acc, element) => {
         if (element.depend)
-            if (element.depend())
-                {
-                    acc.push(element.value)
-                }
+            if (element.depend()) {
+                acc.push(element.value)
+            }
         return acc
-    },[])
+    }, [])
     if (currentFS == "") {
         currentFS = useUiContextFn.getValue("default_filesystem")
-        if (typeof currentFS === "undefined" || !valids.includes(currentFS)) currentFS = ""
-    } 
+        if (typeof currentFS === "undefined" || !valids.includes(currentFS))
+            currentFS = ""
+    }
     const id = "filesPanel"
     const [filePath, setFilePath] = useState(currentPath[currentFS])
     const [isLoading, setIsLoading] = useState(false)
@@ -79,7 +70,7 @@ const FilesPanel = () => {
     const { modals, toasts } = useUiContext()
     const fileref = useRef()
     const dropRef = useRef()
-    const progressBar = {} 
+    const progressBar = {}
     //console.log("currentFS", currentFS)
     //console.log(currentFS)
     const onCancel = () => {
@@ -651,36 +642,23 @@ const FilesPanel = () => {
 
     console.log(id)
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <input
-                type="file"
-                ref={fileref}
-                class="d-none"
-                onChange={filesSelected}
-            />
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section  feather-icon-container">
-                    <HardDrive />
-                    <strong class="text-ellipsis">{T("S65")}</strong>
-                </span>
-
-                <span class="navbar-section">
-                    <span class="full-height">
-                        {fileSystem != "" && !isLoading && (
-                            <PanelMenu items={menu} />
-                        )}
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard files-panel-body">
+        <PanelShell
+            id={id}
+            icon={<HardDrive />}
+            title={T("S65")}
+            headerRight={
+                fileSystem != "" && !isLoading && <PanelMenu items={menu} />
+            }
+            beforeBody={
+                <input
+                    type="file"
+                    ref={fileref}
+                    class="d-none"
+                    onChange={filesSelected}
+                />
+            }
+            bodyClass="files-panel-body"
+        >
             <div class="input-group">
                 <div class="filesystem-select-wrap">
                     <select
@@ -699,7 +677,9 @@ const FilesPanel = () => {
                         })}
                     </select>
                 </div>
-                <div class="form-control form-control-path">{filePath ? filePath : ""}</div>
+                <div class="form-control form-control-path">
+                    {filePath ? filePath : ""}
+                </div>
             </div>
 
             <div
@@ -796,9 +776,7 @@ const FilesPanel = () => {
                                     )
                                 }}
                             >
-                                <div
-                                    class="form-control go-previous file-line-name file-line-action"
-                                >
+                                <div class="form-control go-previous file-line-name file-line-action">
                                     <CornerRightUp />
                                     <label class="go-previous-text">...</label>
                                 </div>
@@ -960,8 +938,7 @@ const FilesPanel = () => {
                     <div class="file-status">{T(filesList.status)}</div>
                 )}
             </div>
-            </div>
-        </div>
+        </PanelShell>
     )
 }
 

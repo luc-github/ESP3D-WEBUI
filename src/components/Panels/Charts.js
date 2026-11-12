@@ -20,11 +20,10 @@ import { h } from "preact"
 import { T } from "../Translations"
 import { useUiContextFn } from "../../contexts"
 import { useRef, useEffect } from "preact/hooks"
-import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
 import { SmoothieChart, TimeSeries } from "./smoothieChartMinimal"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 
 /*
  * Local const
@@ -394,81 +393,65 @@ const ChartsPanel = () => {
         updateCharts(2, sensor)
     }, [sensor])
     return (
-        <div class="panel panel-dashboard" id={id} >
-         <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Image />
-                    <strong class="text-ellipsis">{T("P56")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
+        <PanelShell
+            id={id}
+            icon={<Image />}
+            title={T("P56")}
+            headerRight={<PanelMenu items={menu} />}
+        >
+            <div class="charts-container">
+                {isChartVisible(0) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart1"
+                            width="320"
+                            height="100"
+                            ref={charts[0].ref}
                         />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
+                        <Legendes
+                            index="0"
+                            temperatures={temperatures}
+                            temperaturesList={temperaturesList}
                         />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="charts-container">
-                    {isChartVisible(0) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart1"
-                                width="320"
-                                height="100"
-                                ref={charts[0].ref}
-                            />
-                            <Legendes
-                                index="0"
-                                temperatures={temperatures}
-                                temperaturesList={temperaturesList}
-                            />
-                        </div>
-                    )}
+                    </div>
+                )}
 
-                    {isChartVisible(1) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart2"
-                                width="320"
-                                height="100"
-                                ref={charts[1].ref}
-                            />
-                            <Legendes
-                                index="1"
-                                temperatures={temperatures}
-                                temperaturesList={temperaturesList}
-                            />
-                        </div>
-                    )}
-                    {isChartVisible(2) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart3"
-                                width="320"
-                                height="100"
-                                ref={charts[2].ref}
-                            />
-                            <Legendes
-                                index="2"
-                                temperatures={sensor}
-                                temperaturesList={sensorList}
-                            />
-                        </div>
-                    )}
-                    <div class="m-1" />
-                </div>
+                {isChartVisible(1) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart2"
+                            width="320"
+                            height="100"
+                            ref={charts[1].ref}
+                        />
+                        <Legendes
+                            index="1"
+                            temperatures={temperatures}
+                            temperaturesList={temperaturesList}
+                        />
+                    </div>
+                )}
+                {isChartVisible(2) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart3"
+                            width="320"
+                            height="100"
+                            ref={charts[2].ref}
+                        />
+                        <Legendes
+                            index="2"
+                            temperatures={sensor}
+                            temperaturesList={sensorList}
+                        />
+                    </div>
+                )}
+                <div class="m-1" />
             </div>
-        </div>
+        </PanelShell>
     )
 }
 

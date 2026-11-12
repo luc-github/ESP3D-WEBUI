@@ -16,7 +16,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import { h } from "preact"
+import { Fragment, h } from "preact"
 import { useEffect, useRef, useState } from "preact/hooks"
 import { T } from "../Translations"
 import {
@@ -32,8 +32,8 @@ import { useUiContext, useDatasContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
 import { useHttpQueue } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
-import { Menu as PanelMenu } from "./"
+import { ButtonImg } from "../Controls"
+import { Menu as PanelMenu, PanelShell } from "./"
 
 /*
  * Local const
@@ -58,7 +58,7 @@ const TerminalPanel = () => {
     const messagesEndRef = useRef(null)
     const terminalOutput = useRef(null)
     const id = "terminalPanel"
-    const inputHistoryIndex = useRef(terminal.inputHistory.length )
+    const inputHistoryIndex = useRef(terminal.inputHistory.length)
     const scrollToBottom = () => {
         if (
             terminal.isAutoScroll.current &&
@@ -69,9 +69,10 @@ const TerminalPanel = () => {
         }
     }
     const historyPrev = () => {
-        if (terminal.inputHistory.length > 0 && inputHistoryIndex.current > 0) { 
+        if (terminal.inputHistory.length > 0 && inputHistoryIndex.current > 0) {
             inputHistoryIndex.current--
-            inputRef.current.value = terminal.inputHistory[inputHistoryIndex.current]
+            inputRef.current.value =
+                terminal.inputHistory[inputHistoryIndex.current]
             terminal.input.current = inputRef.current.value
         }
     }
@@ -79,16 +80,17 @@ const TerminalPanel = () => {
     const historyNext = () => {
         if (
             terminal.inputHistory.length > 0 &&
-            inputHistoryIndex.current < terminal.inputHistory.length-1 
+            inputHistoryIndex.current < terminal.inputHistory.length - 1
         ) {
             inputHistoryIndex.current++
-            inputRef.current.value = terminal.inputHistory[inputHistoryIndex.current]
+            inputRef.current.value =
+                terminal.inputHistory[inputHistoryIndex.current]
             terminal.input.current = inputRef.current.value
         } else {
             inputRef.current.value = ""
             terminal.input.current = inputRef.current.value
             inputHistoryIndex.current = terminal.inputHistory.length
-        } 
+        }
     }
     const onKeyUp = (e) => {
         switch (e.keyCode) {
@@ -122,7 +124,7 @@ const TerminalPanel = () => {
             ) {
                 terminal.addInputHistory(cmd)
             }
-            inputHistoryIndex.current = terminal.inputHistory.length 
+            inputHistoryIndex.current = terminal.inputHistory.length
             processData(
                 "echo",
                 replaceVariables(variablesList.commands, cmd, true)
@@ -142,8 +144,8 @@ const TerminalPanel = () => {
                     },
                 }
             )
-        } 
-        inputHistoryIndex.current = terminal.inputHistory.length 
+        }
+        inputHistoryIndex.current = terminal.inputHistory.length
         terminal.input.current = ""
         inputRef.current.value = ""
     }
@@ -156,9 +158,9 @@ const TerminalPanel = () => {
     useEffect(() => {
         return () => {
             //console.log('Resetting terminal history');
-            inputHistoryIndex.current = terminal.inputHistory.length - 1;
-        };
-    }, []);
+            inputHistoryIndex.current = terminal.inputHistory.length - 1
+        }
+    }, [])
 
     console.log("Terminal panel")
 
@@ -167,7 +169,8 @@ const TerminalPanel = () => {
         const next = !isVerbose
         terminal.isVerbose.current = next
         setIsVerbose(next)
-        if (terminal.syncContentToVerboseMode) terminal.syncContentToVerboseMode()
+        if (terminal.syncContentToVerboseMode)
+            terminal.syncContentToVerboseMode()
     }
 
     const toggleAutoScroll = () => {
@@ -224,61 +227,50 @@ const TerminalPanel = () => {
     ]
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id}/>
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Terminal />
-                    <strong class="text-ellipsis">{T("Terminal")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
+        <PanelShell
+            id={id}
+            icon={<Terminal />}
+            title={T("Terminal")}
+            headerRight={<PanelMenu items={menu} />}
+            beforeBody={
+                <Fragment>
+                    <div class="input-group m-1">
+                        <input
+                            type="text"
+                            class="form-input"
+                            onInput={onInput}
+                            onkeyup={onKeyUp}
+                            ref={inputRef}
+                            value={terminal.input.current}
+                            placeholder={T("S80")}
                         />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
+                        <ButtonImg
+                            group
+                            ltooltip
+                            data-tooltip={T("S82")}
+                            label={T("S81")}
+                            icon={<Send />}
+                            onClick={onSend}
                         />
-                    </span>
-                </span>
-            </div>
-            <div class="input-group m-1">
-                <input
-                    type="text"
-                    class="form-input"
-                    onInput={onInput}
-                    onkeyup={onKeyUp}
-                    ref={inputRef}
-                    value={terminal.input.current}
-                    placeholder={T("S80")}
-                />
-                <ButtonImg
-                    group
-                    ltooltip
-                    data-tooltip={T("S82")}
-                    label={T("S81")}
-                    icon={<Send />}
-                    onClick={onSend}
-                />
-            </div>
-            <div class="show-low">
-                <ButtonImg
-                    class=" m-2"
-                    icon={<ChevronLeft />}
-                    onClick={historyPrev}
-                />
-                <ButtonImg
-                    class=" m-2"
-                    icon={<ChevronRight />}
-                    onClick={historyNext}
-                />
-            </div>
-            <div
-                ref={terminalOutput}
-                class="panel-body panel-body-dashboard terminal m-1"
-                onScroll={(e) => {
+                    </div>
+                    <div class="show-low">
+                        <ButtonImg
+                            class=" m-2"
+                            icon={<ChevronLeft />}
+                            onClick={historyPrev}
+                        />
+                        <ButtonImg
+                            class=" m-2"
+                            icon={<ChevronRight />}
+                            onClick={historyNext}
+                        />
+                    </div>
+                </Fragment>
+            }
+            bodyClass="terminal m-1"
+            bodyProps={{
+                ref: terminalOutput,
+                onScroll: (e) => {
                     if (
                         lastPos > e.target.scrollTop &&
                         terminal.isAutoScroll.current
@@ -298,37 +290,34 @@ const TerminalPanel = () => {
                         setIsAutoScrollPaused(false)
                     }
                     lastPos = e.target.scrollTop
-                }}
-            >
-                {terminal.content &&
-                    terminal.content.map((line) => {
-                        let className = ""
-                        switch (line.type) {
-                            case "echo":
-                                className = "echo"
-                                break
-                            case "error":
-                                className = "error"
-                                break
-                            default:
-                            //do nothing
-                        }
-                        if (line.isAction) {
-                            return (
-                                <pre class="action" title={line.actionType}>
-                                    {line.content}
-                                </pre>
-                            )
-                        } else if (
-                            isVerbose ||
-                            isVerbose === line.isverboseOnly
-                        ) {
-                            return <pre class={className}>{line.content}</pre>
-                        }
-                    })}
-                <div ref={messagesEndRef} />
-            </div>
-        </div>
+                },
+            }}
+        >
+            {terminal.content &&
+                terminal.content.map((line) => {
+                    let className = ""
+                    switch (line.type) {
+                        case "echo":
+                            className = "echo"
+                            break
+                        case "error":
+                            className = "error"
+                            break
+                        default:
+                        //do nothing
+                    }
+                    if (line.isAction) {
+                        return (
+                            <pre class="action" title={line.actionType}>
+                                {line.content}
+                            </pre>
+                        )
+                    } else if (isVerbose || isVerbose === line.isverboseOnly) {
+                        return <pre class={className}>{line.content}</pre>
+                    }
+                })}
+            <div ref={messagesEndRef} />
+        </PanelShell>
     )
 }
 
