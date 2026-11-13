@@ -39,6 +39,7 @@ import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 const maxprobe = {}
 const probefeedrate = {}
 const probethickness = {}
+const proberetract = {}
 const probetype = {}
 const probeaxis = {}
 
@@ -60,21 +61,25 @@ const ProbeControls = () => {
                     </div>
                     {pinsStates && (
                         <div class="extra-control-value">
-                            <div
-                                class={`badge-container m-1 s-circle ${
-                                    pinsStates.P ? "bg-primary" : "bg-secondary"
-                                }`}
-                            >
+                            {["P", "O"].map((pin) => (
                                 <div
-                                    class={`badge-label m-1 s-circle ${
-                                        pinsStates.P
-                                            ? "bg-primary text-white"
-                                            : "bg-secondary text-primary"
+                                    class={`badge-container m-1 s-circle ${
+                                        pinsStates[pin]
+                                            ? "bg-primary"
+                                            : "bg-secondary"
                                     }`}
                                 >
-                                    P
+                                    <div
+                                        class={`badge-label m-1 s-circle ${
+                                            pinsStates[pin]
+                                                ? "bg-primary text-white"
+                                                : "bg-secondary text-primary"
+                                        }`}
+                                    >
+                                        {pin}
+                                    </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     )}
                 </div>
@@ -86,9 +91,19 @@ const ProbeControls = () => {
 const ProbePanel = () => {
     const { toasts } = useUiContext()
     const { interfaceSettings, connectionSettings } = useSettingsContext()
-    //const { status } = useTargetContext()
+    const { status, states, pinsStates } = useTargetContext()
     const { createNewRequest } = useHttpFn
     const id = "ProbePanel"
+    const workUnit =
+        states && states.units && states.units.value == "G20" ? "in" : "mm"
+    const unitWord =
+        states && states.units && states.units.value
+            ? workUnit == "in"
+                ? "G20"
+                : "G21"
+            : null
+    const distanceUnit = workUnit == "in" ? "in" : "mm"
+    const feedrateUnit = workUnit == "in" ? "in/min" : "CN1"
 
     console.log("Probe panel")
     if (typeof maxprobe.current === "undefined") {
@@ -100,6 +115,9 @@ const ProbePanel = () => {
     if (typeof probethickness.current === "undefined") {
         probethickness.current = useUiContextFn.getValue("probethickness")
     }
+    if (typeof proberetract.current === "undefined") {
+        proberetract.current = useUiContextFn.getValue("proberetract")
+    }
     if (typeof probetype.current === "undefined") {
         probetype.current = "G38.2"
     }
@@ -108,7 +126,12 @@ const ProbePanel = () => {
     }
 
     const hasError = () => {
-        return !(probefeedrate.valid && probethickness.valid && maxprobe.valid)
+        return !(
+            probefeedrate.valid &&
+            probethickness.valid &&
+            proberetract.valid &&
+            maxprobe.valid
+        )
     }
 
     const sendCommand = (command) => {
@@ -277,7 +300,23 @@ const ProbePanel = () => {
                             tooltip: "CN93",
                             min: 1,
                             value: maxprobe,
-                            append: "CN96",
+                            append: distanceUnit,
+                        },
+                    ],
+                },
+                {
+                    id: "probe_retract",
+                    elements: [
+                        {
+                            id: "probe_retract_distance",
+                            type: "number",
+                            label: "CN114",
+                            tooltip: "CN114",
+                            min: 0,
+                            step: useUiContextFn.getElement("proberetract")
+                                .step,
+                            value: proberetract,
+                            append: distanceUnit,
                         },
                     ],
                 },
@@ -290,7 +329,7 @@ const ProbePanel = () => {
                             type: "number",
                             label: "CN9",
                             tooltip: "CN9",
-                            append: "CN1",
+                            append: feedrateUnit,
                             min: 1,
                             value: probefeedrate,
                         },
@@ -308,7 +347,7 @@ const ProbePanel = () => {
                             step: useUiContextFn.getElement("probethickness")
                                 .step,
                             value: probethickness,
-                            append: "CN96",
+                            append: distanceUnit,
                             variableName: "#probe_thickness#",
                         },
                     ],
@@ -333,38 +372,70 @@ const ProbePanel = () => {
                             label: "CN37",
                             tooltip: "CN100",
                             onclick: (e) => {
-                                const commands = [
-                                    "G91",
-                                    () => {
-                                        const signe =
-                                            probetype.current == "G38.2" ||
-                                            probetype.current == "G38.3"
-                                                ? "-"
-                                                : ""
-                                        return (
-                                            probetype.current +
-                                            " " +
-                                            probeaxis.current +
-                                            signe +
-                                            maxprobe.current +
-                                            " F" +
-                                            probefeedrate.current
-                                        )
-                                    },
-                                    "G90",
-
-                                    ...useUiContextFn
-                                        .getValue("probepostcommand")
-                                        .split(";"),
-                                ]
                                 e.target.blur()
                                 useUiContextFn.haptic()
+                                //guards: machine must be idle and probe connected
+                                if (status.state != "Idle") {
+                                    toasts.addToast({
+                                        content: T("CN115"),
+                                        type: "error",
+                                    })
+                                    return
+                                }
+                                if (pinsStates && pinsStates.O) {
+                                    toasts.addToast({
+                                        content: T("CN116"),
+                                        type: "error",
+                                    })
+                                    return
+                                }
+                                const signe =
+                                    probetype.current == "G38.2" ||
+                                    probetype.current == "G38.3"
+                                        ? "-"
+                                        : ""
+                                const feed = parseFloat(probefeedrate.current)
+                                const commands = ["G91"]
+                                //send the unit word only if the work unit is known
+                                //to avoid flipping an unknown machine state
+                                if (unitWord) commands.push(unitWord)
+                                //fast seek
+                                commands.push(
+                                    probetype.current +
+                                        " " +
+                                        probeaxis.current +
+                                        signe +
+                                        maxprobe.current +
+                                        " F" +
+                                        feed
+                                )
+                                //retract
+                                commands.push(
+                                    "G1 " +
+                                        probeaxis.current +
+                                        (signe == "-" ? "" : "-") +
+                                        proberetract.current +
+                                        " F" +
+                                        feed
+                                )
+                                //slow feed at half feedrate
+                                commands.push(
+                                    probetype.current +
+                                        " " +
+                                        probeaxis.current +
+                                        signe +
+                                        maxprobe.current +
+                                        " F" +
+                                        feed / 2
+                                )
+                                commands.push("G90")
+                                commands.push(
+                                    ...useUiContextFn
+                                        .getValue("probepostcommand")
+                                        .split(";")
+                                )
                                 commands.forEach((command) => {
-                                    if (typeof command === "function") {
-                                        sendCommand(command())
-                                    } else {
-                                        sendCommand(command)
-                                    }
+                                    sendCommand(command)
                                 })
                             },
                         },

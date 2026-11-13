@@ -47,15 +47,19 @@ const spindleSpeedValue = {}
 }
 
 const SpindleControls = () => {
-    const { states } = useTargetContext()
+    const { states, reportUnit } = useTargetContext()
     console.log(states)
     const { interfaceSettings, connectionSettings } = useSettingsContext()
     //Add callback to reset event
     eventsList.on("reset", onReset)
     if (!useUiContextFn.getValue("showspindlepanel")) return null
     const states_array = [
-        { id: "feed_rate", label: "CN9" },
-        { id: "spindle_speed", label: "CN64" },
+        {
+            id: "feed_rate",
+            label: "CN9",
+            unit: reportUnit == "1" ? "in/min" : T("CN1"),
+        },
+        { id: "spindle_speed", label: "CN64", unit: "rpm" },
         { id: "spindle_mode", label: "CN91" },
         {
             id: "coolant_mode",
@@ -93,6 +97,9 @@ const SpindleControls = () => {
 
                                         <div class="extra-control-value">
                                             {states[element.id].value}
+                                            {element.unit
+                                                ? " " + element.unit
+                                                : ""}
                                         </div>
                                     </div>
                                 )

@@ -20,7 +20,11 @@ import { Fragment, h } from "preact"
 import { T } from "../Translations"
 import { useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { useTargetContext, variablesList } from "../../targets"
+import {
+    useTargetContext,
+    useTargetContextFn,
+    variablesList,
+} from "../../targets"
 import { ButtonImg, Button } from "../Controls"
 import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
@@ -287,14 +291,10 @@ const StatusPanel = () => {
                                                         <Button
                                                             m1
                                                             tooltip
+                                                            class="btn-static"
                                                             data-tooltip={T(
                                                                 item.value
                                                             )}
-                                                            onClick={(e) => {
-                                                                useUiContextFn.haptic()
-                                                                e.target.blur()
-                                                                //TBD if need to change value from here
-                                                            }}
                                                         >
                                                             {item.pre
                                                                 ? item.pre
@@ -304,19 +304,85 @@ const StatusPanel = () => {
                                                     )
                                                 }
                                             )
-                                        } else
+                                        } else if (
+                                            element.id ==
+                                                "coordinate_system_select" ||
+                                            element.id == "units"
+                                        )
+                                            return (
+                                                <div
+                                                    class="form-group m-1 text-primary tooltip tooltip-bottom"
+                                                    data-tooltip={T(
+                                                        element.label
+                                                    )}
+                                                >
+                                                    <select
+                                                        class="form-select"
+                                                        value={
+                                                            states[element.id]
+                                                                .value
+                                                        }
+                                                        onChange={(e) => {
+                                                            useUiContextFn.haptic()
+                                                            e.target.blur()
+                                                            if (
+                                                                e.target
+                                                                    .value !=
+                                                                states[
+                                                                    element.id
+                                                                ].value
+                                                            ) {
+                                                                sendCommand(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                                if (
+                                                                    element.id ==
+                                                                    "units"
+                                                                ) {
+                                                                    //sync report unit with work unit
+                                                                    const reportunit =
+                                                                        e.target
+                                                                            .value ==
+                                                                        "G20"
+                                                                            ? "1"
+                                                                            : "0"
+                                                                    sendCommand(
+                                                                        "$13=" +
+                                                                            reportunit
+                                                                    )
+                                                                    useTargetContextFn.setReportUnit(
+                                                                        reportunit
+                                                                    )
+                                                                }
+                                                                //refresh the modal states display
+                                                                sendCommand(
+                                                                    "$G"
+                                                                )
+                                                            }
+                                                        }}
+                                                    >
+                                                        {element.values.map(
+                                                            (mode) => (
+                                                                <option
+                                                                    value={mode}
+                                                                >
+                                                                    {mode}
+                                                                </option>
+                                                            )
+                                                        )}
+                                                    </select>
+                                                </div>
+                                            )
+                                        else
                                             return (
                                                 <Button
                                                     m1
                                                     tooltip
+                                                    class="btn-static"
                                                     data-tooltip={T(
                                                         element.label
                                                     )}
-                                                    onClick={(e) => {
-                                                        useUiContextFn.haptic()
-                                                        e.target.blur()
-                                                        //TBD if need to change value from here
-                                                    }}
                                                 >
                                                     {element.pre
                                                         ? element.pre

@@ -22,8 +22,10 @@ import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
+    espHttpURL,
 } from "../../../components/Helpers"
 import { useDatasContext, useUiContextFn } from "../../../contexts"
+import { useHttpFn } from "../../../hooks"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import { eventsList, variablesList } from "."
@@ -46,6 +48,8 @@ import {
     isOptions,
     getOptions,
     isReset,
+    isGrblSetting,
+    getGrblSetting,
     isStreamingStatus,
     getStreamingStatus,
 } from "./filters"
@@ -75,6 +79,7 @@ const TargetContextProvider = ({ children }) => {
     const [overrides, setOverrides] = useState({})
     const [pinsStates, setPinStates] = useState(lastPins)
     const [states, setStates] = useState({})
+    const [reportUnit, setReportUnit] = useState("0")
     const [streamStatus, setStreamStatus] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
@@ -97,6 +102,17 @@ const TargetContextProvider = ({ children }) => {
         processor.handle(type, data)
         //sensors
         //status
+        if (type == "core" && data == "ESP800") {
+            //query report unit setting once connection is ready
+            //use useHttpFn.createNewRequest at call time as it may not be initialised yet
+            setTimeout(() => {
+                useHttpFn.createNewRequest(
+                    espHttpURL("command", { cmd: "$13" }),
+                    { method: "GET" },
+                    { onSuccess: () => {}, onFail: () => {} }
+                )
+            }, 2000)
+        }
         if (type === "stream") {
             if (isOk(data)) {
                 //just ignore this one so we can continue
@@ -207,6 +223,13 @@ const TargetContextProvider = ({ children }) => {
                 setMessage("")
                 setStatus({ state: "Error" })
                 eventsList.emit("error", data)
+            }
+            //grbl setting e.g $13=0
+            if (isGrblSetting(data)) {
+                const response = getGrblSetting(data)
+                if (response && response.id == "13") {
+                    setReportUnit(response.value)
+                }
             }
             //prefiltering
             if (data[0] === "[") {
@@ -374,12 +397,14 @@ const TargetContextProvider = ({ children }) => {
     }
 
     useTargetContextFn.processData = processData
+    useTargetContextFn.setReportUnit = setReportUnit
 
     const store = {
         positions,
         streamStatus,
         status,
         states,
+        reportUnit,
         pinsStates,
         message,
         alarmCode,

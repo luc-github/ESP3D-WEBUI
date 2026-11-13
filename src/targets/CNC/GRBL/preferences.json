@@ -127,7 +127,6 @@
                         "value": true,
                         "depend": [{ "id": "directsd", "value": true }]
                     }
-                    
                 ]
             },
             {
@@ -142,20 +141,24 @@
                     },
                     {
                         "orGroups": [
-                            [{
-                                "id": "sd",
-                                "value": true
-                            }],
-                            [{
-                                "id": "flashfs",
-                                "value": true
-                            }]
+                            [
+                                {
+                                    "id": "sd",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                {
+                                    "id": "flashfs",
+                                    "value": true
+                                }
+                            ]
                         ]
                     }
                 ],
                 "options": [
                     { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
-                   
+
                     {
                         "value": "DIRECTSD",
                         "label": "S190",
@@ -223,14 +226,18 @@
                         "depend": [
                             {
                                 "orGroups": [
-                                    [{
-                                        "id": "showx",
-                                        "value": true
-                                    }],
-                                    [{
-                                        "id": "showy",
-                                        "value": true
-                                    }]
+                                    [
+                                        {
+                                            "id": "showx",
+                                            "value": true
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "id": "showy",
+                                            "value": true
+                                        }
+                                    ]
                                 ]
                             }
                         ],
@@ -297,6 +304,13 @@
                         "value": "1000"
                     }
                 ]
+            },
+            {
+                "id": "jogdistances",
+                "type": "text",
+                "label": "CN18",
+                "depend": [{ "id": "showjogpanel", "value": true }],
+                "value": "mm;100;50;10;1;0.1;in;1;0.5;0.1;0.01;0.001"
             },
             {
                 "id": "keymap",

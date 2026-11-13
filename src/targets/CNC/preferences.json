@@ -77,6 +77,16 @@
                 "depend": [{ "id": "showprobepanel", "value": true }]
             },
             {
+                "id": "proberetract",
+                "type": "number",
+                "label": "CN114",
+                "value": "2",
+                "step": "0.001",
+                "append": "CN96",
+                "min": 0,
+                "depend": [{ "id": "showprobepanel", "value": true }]
+            },
+            {
                 "id": "probepostcommand",
                 "type": "text",
                 "label": "CN95",

@@ -9,6 +9,8 @@ Project documentation lives in **docs/** (English). Below is the list of main do
 | **preferences.md** | Structure of `preferences.json`: user (flash) vs application (in code), settings format, panels order, field types. |
 | **variablesList.md** | Variables from firmware output and UI (probe, position, laser) used in macros/templates. |
 | **realtimecmd.md** | Real-time commands (grbl/grblHAL): soft reset, feed/rapid/spindle overrides, coolant toggles. |
+| **probe.md** | Probe panel (CNC): two-pass cycle, command sequence, guards, mm/inch handling, probe type semantics, differences with the ESP3D pendant. |
+| **toolchange.md** | Tool change panel (grblHAL): M61Q / T M6 manual protocol (0xA3 ack, $TPW, cycle start, cancel), status-driven UI, differences with the ESP3D pendant. |
 | **TargetFW.md** | Firmware names and IDs (grbl, marlin, repetier, smoothieware, grblhal, etc.) for target detection. |
 | **FEATURES.md** | Feature list by target (global, 3D Printer, CNC, Sand Table). Source: **ESP3D-WebUI-features.xhtml** (converted from .xls, readable). |
 | **FEATURES_AND_BUNDLE.md** | Bundle size tracker and main features summary (no protocol detail). |

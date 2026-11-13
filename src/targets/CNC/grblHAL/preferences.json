@@ -35,6 +35,7 @@
                     { "id": "Laser", "name": "laser" },
                     { "id": "Spindle", "name": "spindle" },
                     { "id": "Probe", "name": "probe" },
+                    { "id": "Tool", "name": "tool" },
                     { "id": "Status", "name": "status" },
                     { "id": "Overrrides", "name": "overrides" },
                     { "id": "Notifications", "name": "notification" },
@@ -116,11 +117,11 @@
                     {
                         "id": "directsd",
                         "type": "boolean",
-                        
+
                         "label": "S63",
                         "value": true
                     },
-                
+
                     {
                         "id": "sort_directsd_files",
                         "type": "boolean",
@@ -128,7 +129,6 @@
                         "value": true,
                         "depend": [{ "id": "directsd", "value": true }]
                     }
-                    
                 ]
             },
             {
@@ -137,23 +137,24 @@
                 "label": "P119",
                 "value": "$F=#",
                 "help": "S97",
-                "depend": [ {
-                        
-                    "orGroups": [
-                        [
-                            {
-                                "id": "directsd",
-                                "value": true
-                            }
-                        ],
-                        [
-                            {
-                                "id": "flashfs",
-                                "value": true
-                            }
+                "depend": [
+                    {
+                        "orGroups": [
+                            [
+                                {
+                                    "id": "directsd",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                {
+                                    "id": "flashfs",
+                                    "value": true
+                                }
+                            ]
                         ]
-                    ]
-                }]
+                    }
+                ]
             },
             {
                 "id": "default_filesystem",
@@ -167,20 +168,24 @@
                     },
                     {
                         "orGroups": [
-                            [{
-                                "id": "sd",
-                                "value": true
-                            }],
-                            [{
-                                "id": "flashfs",
-                                "value": true
-                            }]
+                            [
+                                {
+                                    "id": "sd",
+                                    "value": true
+                                }
+                            ],
+                            [
+                                {
+                                    "id": "flashfs",
+                                    "value": true
+                                }
+                            ]
                         ]
                     }
                 ],
                 "options": [
                     { "value": "FLASH", "label": "S137", "depend": [{ "id": "flashfs", "value": true }] },
-                   
+
                     {
                         "value": "DIRECTSD",
                         "label": "S190",
@@ -190,7 +195,22 @@
                         ]
                     }
                 ]
-            }        
+            }
+        ],
+        "tool": [
+            {
+                "id": "showtoolpanel",
+                "type": "boolean",
+                "label": "S63",
+                "value": true
+            },
+            {
+                "id": "opentoolonstart",
+                "type": "boolean",
+                "label": "S93",
+                "value": true,
+                "depend": [{ "id": "showtoolpanel", "value": true }]
+            }
         ],
         "jog": [
             {
@@ -320,14 +340,18 @@
                         "depend": [
                             {
                                 "orGroups": [
-                                    [{
-                                        "id": "showx",
-                                        "value": true
-                                    }],
-                                    [{
-                                        "id": "showy",
-                                        "value": true
-                                    }]
+                                    [
+                                        {
+                                            "id": "showx",
+                                            "value": true
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "id": "showy",
+                                            "value": true
+                                        }
+                                    ]
                                 ]
                             },
                             {
@@ -468,6 +492,13 @@
                         "value": "1000"
                     }
                 ]
+            },
+            {
+                "id": "jogdistances",
+                "type": "text",
+                "label": "CN18",
+                "depend": [{ "id": "showjogpanel", "value": true }],
+                "value": "mm;100;50;10;1;0.1;in;1;0.5;0.1;0.01;0.001"
             },
             {
                 "id": "keymap",

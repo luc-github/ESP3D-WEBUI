@@ -144,7 +144,10 @@ input[type="range"]::-ms-thumb {
 .panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap {
     min-width: 4rem;
 }
-.panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap .form-select {
+.panel.panel-dashboard
+    .panel-body.files-panel-body
+    .filesystem-select-wrap
+    .form-select {
     min-width: 100%;
 }
 .panel.panel-dashboard .panel-body.files-panel-body .form-control-path {
@@ -376,7 +379,6 @@ span.input-group-addon {
     border-radius: $border-radius;
 }
 
-
 .m-05 {
     margin: 0.05rem !important;
 }
@@ -387,7 +389,7 @@ span.input-group-addon {
 
 .min1rem {
     min-width: 1rem;
-} 
+}
 
 .error-login-message {
     color: red;
@@ -397,7 +399,7 @@ span.input-group-addon {
 }
 
 .contentContainer,
-.extensionContainer ,
+.extensionContainer,
 .cameraContainer,
 .imageContainer {
     border: none;
@@ -418,7 +420,7 @@ span.input-group-addon {
 .picture-container {
     width: 100%;
     max-height: calc(100% - 3rem);
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -428,40 +430,43 @@ span.input-group-addon {
 .extensionContainer {
     height: 100%;
     width: 100%;
-    
 }
 
 .page-container {
-    display:flex;
+    display: flex;
     flex-direction: column;
-    height: 100% ;
-    overflow: hidden;    
+    height: 100%;
+    overflow: hidden;
 }
 .extra-content-container {
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
-    position:absolute;
+    position: absolute;
     z-index: 9999;
     opacity: 1;
     display: block;
-    pointer-events: auto!important;
-    user-select: auto!important;
-    -moz-user-select: auto!important;
-    -webkit-user-select:auto!important;
-    -ms-user-select: auto!important;
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -moz-user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -ms-user-select: auto !important;
     overflow: hidden;
     background-color: #fff;
 }
 
 .fallback-content {
     display: none;
-    text-align: center; font-size: 1.5rem; background-color: red; color: white; margin-top: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    background-color: red;
+    color: white;
+    margin-top: 0.5rem;
 }
 
 .page-target-container {
-    flex:1;
+    flex: 1;
     z-index: auto;
 }
 
@@ -469,7 +474,6 @@ span.input-group-addon {
     z-index: auto;
     overflow: hidden;
 }
-
 
 .body-extension {
     overflow-y: auto !important;
@@ -806,10 +810,9 @@ progress::-moz-progress-bar {
     line-height: 24px !important;
 }
 
-
 .modals-container {
-    overlay: auto!important;
-    z-index:100000 !important;
+    overlay: auto !important;
+    z-index: 100000 !important;
 }
 
 .toasts-container {
@@ -822,8 +825,11 @@ progress::-moz-progress-bar {
         margin: 0.2rem 0;
     }
 }
-:fullscreen .toasts-container{
+:fullscreen .toasts-container {
     top: 1.2rem;
     z-index: 100000 !important;
-    overlay: auto!important;
+    overlay: auto !important;
+}
+.btn-static {
+    cursor: default;
 }

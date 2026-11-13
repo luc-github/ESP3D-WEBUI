@@ -218,9 +218,9 @@ const getStates = (str) => {
                     if (mode.values && mode.values.includes(cur)) {
                         if (mode.multiple) {
                             if (!acc[mode.id]) acc[mode.id] = []
-                            acc[mode.id].push ({ "value": cur })
+                            acc[mode.id].push({ value: cur })
                         } else {
-                        acc[mode.id] = { "value": cur }
+                            acc[mode.id] = { value: cur }
                         }
                     }
                 })
@@ -393,6 +393,25 @@ const getStreamingStatus = (str) => {
     if (res.data.status) return res.data
     return { status: res.data }
 }
+
+////////////////////////////////////////////////////////
+//
+// Grbl setting format is : $ID=VALUE
+
+const isGrblSetting = (str) => {
+    const reg_search = /^\$\d+=.+$/g
+    return reg_search.test(str)
+}
+
+const getGrblSetting = (str) => {
+    let result = null
+    const reg_search = /^\$(?<id>\d+)=(?<value>.+)$/g
+    if ((result = reg_search.exec(str)) !== null) {
+        return { id: result.groups.id, value: result.groups.value }
+    }
+    return result
+}
+
 export {
     isOk,
     isStatus,
@@ -414,6 +433,8 @@ export {
     isOptions,
     getOptions,
     isReset,
+    isGrblSetting,
+    getGrblSetting,
     isStreamingStatus,
     getStreamingStatus,
 }

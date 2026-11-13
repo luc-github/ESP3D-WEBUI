@@ -33,7 +33,11 @@ import { Button, ButtonImg } from "../Controls"
 import { PanelShell } from "./"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { showModal } from "../Modal"
-import { useTargetContext, variablesList } from "../../targets"
+import {
+    useTargetContext,
+    useTargetContextFn,
+    variablesList,
+} from "../../targets"
 
 let currentFeedRate = []
 let currentJogDistance = 100
@@ -43,13 +47,35 @@ const feedList = ["XY", "Z", "A", "B", "C", "U", "V", "W"]
 const mainAxisLettersList = ["X", "Y", "Z"]
 const selectableAxisLettersList = ["A", "B", "C", "U", "V", "W"]
 
+//Parse the jog distances preference
+//format: mm;v1;v2;...;in;v1;v2;...
+//entries without unit tag are mm (backward compatibility)
+const parseJogDistances = (prefValue) => {
+    const lists = { mm: [], in: [] }
+    let current = "mm"
+    String(prefValue || "")
+        .split(";")
+        .forEach((token) => {
+            const value = token.trim()
+            if (value == "mm" || value == "in") {
+                current = value
+            } else if (value.length > 0 && !isNaN(parseFloat(value))) {
+                lists[current].push(parseFloat(value))
+            }
+        })
+    if (lists.mm.length == 0) lists.mm = [100, 50, 10, 1, 0.1]
+    if (lists.in.length == 0) lists.in = [1, 0.5, 0.1, 0.01, 0.001]
+    return lists
+}
+
 /*
  * Local const
  *
  */
 //A separate control to avoid the full panel to be updated when the positions are updated
 const PositionsControls = () => {
-    const { positions } = useTargetContext()
+    const { positions, reportUnit } = useTargetContext()
+    const unit = reportUnit == "1" ? "in" : "mm"
     const posLines = [
         ["x", "y", "z"],
         ["a", "b", "c"],
@@ -82,6 +108,9 @@ const PositionsControls = () => {
                                                     </div>
                                                     <div class="m-1 jog-position-value">
                                                         {positions[letter]}
+                                                        <span class="text-tiny m-1">
+                                                            {unit}
+                                                        </span>
                                                     </div>
                                                 </Fragment>
                                             )}
@@ -98,6 +127,9 @@ const PositionsControls = () => {
                                                                 "w" + letter
                                                             ]
                                                         }
+                                                        <span class="text-tiny m-1">
+                                                            {unit}
+                                                        </span>
                                                     </div>
                                                 </Fragment>
                                             )}
@@ -116,7 +148,14 @@ const JogPanel = () => {
     const { modals, toasts, panels } = useUiContext()
     const { createNewRequest } = useHttpFn
     const [currentSelectedAxis, setCurrentSelectedAxis] = useState(currentAxis)
-    const { positions } = useTargetContext()
+    const { positions, states } = useTargetContext()
+    const workUnit =
+        states && states.units && states.units.value == "G20" ? "in" : "mm"
+    const jogDistances = parseJogDistances(
+        useUiContextFn.getValue("jogdistances")
+    )[workUnit]
+    if (!jogDistances.includes(currentJogDistance))
+        currentJogDistance = jogDistances[0]
     const id = "jogPanel"
     console.log(id)
     function onChangeAxis(e) {
@@ -195,7 +234,13 @@ const JogPanel = () => {
             selected_axis = axis.replace("Axis", currentAxis)
         else selected_axis = axis
         let cmd =
-            "$J=G91 G21 " + selected_axis + currentJogDistance + " F" + feedrate
+            "$J=G91 " +
+            (workUnit == "in" ? "G20" : "G21") +
+            " " +
+            selected_axis +
+            currentJogDistance +
+            " F" +
+            feedrate
         SendCommand(cmd)
     }
 
@@ -259,18 +304,13 @@ const JogPanel = () => {
     //we could use an array of object {distance, prev, next}
     //but for the 5 entries this works too
     const selectorBtn = (type) => {
-        if (type == "+") {
-            if (currentJogDistance == 100) clickBtn("move_0_1")
-            else if (currentJogDistance == 0.1) clickBtn("move_1")
-            else if (currentJogDistance == 1) clickBtn("move_10")
-            else if (currentJogDistance == 10) clickBtn("move_50")
-            else if (currentJogDistance == 50) clickBtn("move_100")
-        } else if (type == "-") {
-            if (currentJogDistance == 100) clickBtn("move_50")
-            else if (currentJogDistance == 0.1) clickBtn("move_100")
-            else if (currentJogDistance == 1) clickBtn("move_0_1")
-            else if (currentJogDistance == 10) clickBtn("move_1")
-            else if (currentJogDistance == 50) clickBtn("move_10")
+        if (type == "+" || type == "-") {
+            let index = jogDistances.indexOf(currentJogDistance)
+            if (index == -1) index = 0
+            if (type == "+")
+                index = index <= 0 ? jogDistances.length - 1 : index - 1
+            else index = index >= jogDistances.length - 1 ? 0 : index + 1
+            clickBtn("move_" + String(jogDistances[index]).replace(".", "_"))
         } else if (type == "prev" || type == "next") {
             {
                 const axisList = selectableAxisLettersList.reduce(
@@ -478,8 +518,27 @@ const JogPanel = () => {
                         })}
                         <div class="m-1 p-2 jog-buttons-container">
                             <div class="btn-group jog-distance-selector-container">
-                                <center class="jog-distance-selector-header">
-                                    mm
+                                <center
+                                    class="jog-distance-selector-header tooltip tooltip-left"
+                                    data-tooltip={T("CN51")}
+                                    onclick={(e) => {
+                                        useUiContextFn.haptic()
+                                        e.target.blur()
+                                        //switch work unit and report unit together
+                                        const newReportUnit =
+                                            workUnit == "in" ? "0" : "1"
+                                        SendCommand(
+                                            newReportUnit == "1" ? "G20" : "G21"
+                                        )
+                                        SendCommand("$13=" + newReportUnit)
+                                        useTargetContextFn.setReportUnit(
+                                            newReportUnit
+                                        )
+                                        //refresh the modal states display
+                                        SendCommand("$G")
+                                    }}
+                                >
+                                    {workUnit}
                                 </center>
                                 <div
                                     class="d-none"
@@ -495,93 +554,43 @@ const JogPanel = () => {
                                         selectorBtn("-")
                                     }}
                                 />
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("CN18")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_100"
-                                        name="select_distance"
-                                        value="100"
-                                        checked={currentJogDistance == 100}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 100)
-                                        }}
-                                    />
-                                    <label for="move_100">100</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("CN18")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_50"
-                                        name="select_distance"
-                                        value="50"
-                                        checked={currentJogDistance == 50}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 50)
-                                        }}
-                                    />
-                                    <label for="move_50">50</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("CN18")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_10"
-                                        name="select_distance"
-                                        value="10"
-                                        checked={currentJogDistance == 10}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 10)
-                                        }}
-                                    />
-                                    <label for="move_10">10</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("CN18")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_1"
-                                        name="select_distance"
-                                        value="1"
-                                        checked={currentJogDistance == 1}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 1)
-                                        }}
-                                    />
-                                    <label for="move_1">1</label>
-                                </div>
-                                <div
-                                    class="flatbtn tooltip tooltip-left"
-                                    data-tooltip={T("CN18")}
-                                >
-                                    <input
-                                        type="radio"
-                                        id="move_0_1"
-                                        name="select_distance"
-                                        value="0.1"
-                                        checked={currentJogDistance == 0.1}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            onCheck(e, 0.1)
-                                        }}
-                                    />
-                                    <label class="last-button" for="move_0_1">
-                                        0.1
-                                    </label>
-                                </div>
+                                {jogDistances.map((distance, index) => {
+                                    const radioId =
+                                        "move_" +
+                                        String(distance).replace(".", "_")
+                                    return (
+                                        <div
+                                            class="flatbtn tooltip tooltip-left"
+                                            data-tooltip={T("CN18")}
+                                        >
+                                            <input
+                                                type="radio"
+                                                id={radioId}
+                                                name="select_distance"
+                                                value={distance}
+                                                checked={
+                                                    currentJogDistance ==
+                                                    distance
+                                                }
+                                                onclick={(e) => {
+                                                    useUiContextFn.haptic()
+                                                    onCheck(e, distance)
+                                                }}
+                                            />
+                                            <label
+                                                class={
+                                                    index ==
+                                                    jogDistances.length - 1
+                                                        ? "last-button"
+                                                        : null
+                                                }
+                                                for={radioId}
+                                            >
+                                                {distance}
+                                            </label>
+                                        </div>
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>
