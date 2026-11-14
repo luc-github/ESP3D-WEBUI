@@ -18,7 +18,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
-import { memo } from "preact/compat"
+import { memo } from "../Helpers/memo"
 import { useState, useEffect, useCallback, useRef, useMemo } from "preact/hooks"
 import { espHttpURL, dispatchToExtensions, decompressGzipToText } from "../Helpers"
 import { useHttpFn } from "../../hooks"

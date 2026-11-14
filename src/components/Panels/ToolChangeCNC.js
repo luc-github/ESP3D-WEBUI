@@ -17,6 +17,7 @@ ToolChangeCNC.js - ESP3D WebUI component file
 */
 
 import { Fragment, h } from "preact"
+import { useEffect } from "preact/hooks"
 import { T } from "../Translations"
 import {
     Tool,
@@ -72,6 +73,11 @@ const ToolChangePanel = () => {
         )
     }
 
+    //refresh the modal states display on mount so active tool is resolved
+    useEffect(() => {
+        sendCommand("$G")
+    }, [])
+
     const currentTool =
         states && states.active_tool ? states.active_tool.value : "?"
     //the panel actions are driven by the firmware Tool state,
@@ -109,6 +115,7 @@ const ToolChangePanel = () => {
             </div>
             {!isToolState && (
                 <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                    <legend />
                     <div class="field-group-content maxwidth">
                         <div class="states-buttons-container">
                             <Field
@@ -117,6 +124,7 @@ const ToolChangePanel = () => {
                                 type="number"
                                 label={T("CN117")}
                                 min={0}
+                                width="4rem"
                                 value={toolNumber.current}
                                 setValue={(val, update = false) => {
                                     if (!update) toolNumber.current = val
@@ -151,6 +159,7 @@ const ToolChangePanel = () => {
             )}
             {isToolState && (
                 <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                    <legend />
                     <div class="field-group-content maxwidth">
                         <div class="states-buttons-container">
                             <ButtonImg

@@ -63,7 +63,7 @@ const ToastsContainer = () => {
                             type={type}
                             key={id}
                         >
-                            {T(content)}
+                            {typeof content === "string" ? T(content) : content}
                         </Toast>
                     )
                 })}

@@ -342,6 +342,7 @@ const Input = ({
                 class="form-input"
                 {...props}
                 {...rest}
+                style={width ? "width:" + width : ""}
                 onInput={onInput}
             />
             {append && (

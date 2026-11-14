@@ -19,7 +19,7 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h, render } from "preact"
-import { memo } from "preact/compat"
+import { memo } from "../components/Helpers/memo"
 import { useState, useEffect } from "preact/hooks"
 import { ExtraContentItem } from "../components/ExtraContent"
 import { useUiContext, useUiContextFn, useSettingsContext } from "../contexts"

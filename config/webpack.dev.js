@@ -11,6 +11,12 @@ console.log("Target:", target, " Subtarget:", subtarget)
 module.exports = {
     resolve: {
         alias: {
+            // Local icon registry replaces preact-feather (same named exports,
+            // much smaller footprint: shared SVG wrapper + path data only)
+            "preact-feather": path.resolve(
+                __dirname,
+                "../src/components/Icons/index.js"
+            ),
             TargetDir: path.resolve(__dirname, "../src/targets", target),
             SubTargetDir: path.resolve(
                 __dirname,

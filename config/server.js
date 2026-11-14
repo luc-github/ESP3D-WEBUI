@@ -39,6 +39,7 @@ const {
     configURI,
     getLastconnection,
     hasEnabledAuthentication,
+    startAutoReport,
 } = require(
     path.normalize(
         __dirname + "/targets/" + target + "/" + subtarget + "/index.js"
@@ -69,6 +70,9 @@ app.use(fileUpload({ preserveExtension: true, debug: false }))
 
 app.listen(port, () => console.log("Env:", subtarget, ":", target))
 app.timeout = 2000
+
+//some targets (e.g. grblHAL) push periodic status reports like the real firmware
+if (typeof startAutoReport === "function") startAutoReport(SendWS)
 
 //app.use(express.urlencoded({ extended: false }));
 

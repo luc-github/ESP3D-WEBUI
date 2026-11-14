@@ -30,9 +30,18 @@ let countStatus = 0
 let change = false
 const emulationESP400 = false
 
-const state = { position: { X: 0, Y: 0, Z: 0 } }
+const state = {
+    position: { X: 0, Y: 0, Z: 0 },
+    units: "G21", //modal G20/G21
+    reportInches: "0", //$13
+    activeTool: 0,
+    pendingTool: 0,
+    toolChanging: false,
+}
 let jog = null
 const JOGCANCEL_BYTE = 0x85
+const CYCLESTART_BYTE = 0x81
+const TOOLCHANGE_BYTE = 0xa3
 
 function parseAxis(url, axis) {
     const m = url.match(new RegExp(axis + "([+-]?[0-9.]+)", "i"))
@@ -57,6 +66,30 @@ function applyJogPosition() {
 
 function getLastconnection() {
     return lastconnection
+}
+
+function formatPos(v) {
+    return (state.reportInches === "1" ? v / 25.4 : v).toFixed(3)
+}
+
+function currentStateName() {
+    if (state.toolChanging) return "Tool"
+    if (jog) return "Jog"
+    return "Idle"
+}
+
+function buildStatusReport() {
+    applyJogPosition()
+    const { X, Y, Z } = state.position
+    const wpos = `${formatPos(X)},${formatPos(Y)},${formatPos(Z)},1.000,1.000`
+    return `<${currentStateName()}|WPos:${wpos}|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n`
+}
+
+//mimic ESP3D firmware auto report: push status to all ws clients
+let autoReportTimer = null
+function startAutoReport(SendWS) {
+    if (autoReportTimer) clearInterval(autoReportTimer)
+    autoReportTimer = setInterval(() => SendWS(buildStatusReport()), 1000)
 }
 
 function hasEnabledAuthentication() {
@@ -121,11 +154,69 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    //modal units G20 (inches) / G21 (mm)
+    if (/\bG20\b/.test(url) || /\bG21\b/.test(url)) {
+        state.units = /\bG20\b/.test(url) ? "G20" : "G21"
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //set current tool number, no movement
+    const m61 = url.match(/\bM61\s*Q(\d+)/i)
+    if (m61) {
+        state.activeTool = parseInt(m61[1])
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //manual tool change protocol: T<n> M6 -> Tool state
+    const tMatch = url.match(/\bT(\d+)/)
+    if (tMatch) {
+        state.pendingTool = parseInt(tMatch[1])
+        if (/\bM6\b/.test(url)) state.toolChanging = true
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //tool change ack (real-time 0xA3)
+    if (
+        url.indexOf(String.fromCharCode(TOOLCHANGE_BYTE)) !== -1 ||
+        url.includes("%A3")
+    ) {
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //cycle start (real-time 0x81): completes a pending tool change
+    if (
+        url.indexOf(String.fromCharCode(CYCLESTART_BYTE)) !== -1 ||
+        url.includes("%81")
+    ) {
+        if (state.toolChanging) {
+            state.activeTool = state.pendingTool
+            state.toolChanging = false
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //tool probe workflow
+    if (url.indexOf("$TPW") != -1) {
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
     if (req.query.cmd && req.query.cmd == "?") {
         applyJogPosition()
         countStatus++
         const { X, Y, Z } = state.position
-        const wpos = `${Number(X).toFixed(3)},${Number(Y).toFixed(3)},${Number(Z).toFixed(3)},1.000,1.000`
+        const wpos = `${formatPos(X)},${formatPos(Y)},${formatPos(Z)},1.000,1.000`
         if (countStatus == 1)
             SendWS(`<Idle|WPos:${wpos}|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n`)
         else if (countStatus == 2)
@@ -267,13 +358,14 @@ const commandsQuery = (req, res, SendWS) => {
 
     if (url.indexOf("$G") != -1) {
         change = !change
-        //SendWS("[GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]\n")
         if (change) {
             SendWS(
-                "[GC:G0 G54 G17 G21 G90 G92 G94 G49 G98 G51:5 M5 M6 M9 T0 F0 S0.]\n"
+                `[GC:G0 G54 G17 ${state.units} G90 G92 G94 G49 G98 G51:5 M5 M6 M9 T${state.activeTool} F0 S0.]\n`
             )
         } else {
-            SendWS("[GC:G0 G54 G17 G21 G90 G94 G49 G98 M56 M5 M9 T0 F0 S0.]\n")
+            SendWS(
+                `[GC:G0 G54 G17 ${state.units} G90 G94 G49 G98 M56 M5 M9 T${state.activeTool} F0 S0.]\n`
+            )
         }
 
         res.send("")
@@ -322,7 +414,7 @@ const commandsQuery = (req, res, SendWS) => {
                 "$10=1\n" +
                 "$11=0.010\n" +
                 "$12=0.002\n" +
-                "$13=0\n" +
+                `$13=${state.reportInches}\n` +
                 "$20=0\n" +
                 "$21=0\n" +
                 "$22=0\n" +
@@ -361,6 +453,19 @@ const commandsQuery = (req, res, SendWS) => {
                 "$337=\n" +
                 "ok\n"
         )
+        res.send("")
+        return
+    }
+
+    //settings write e.g. $13=1 (report in inches)
+    if (/\$\d+=/.test(url)) {
+        const m = url.match(/\$(\d+)=([^\s&]*)/)
+        if (m && m[1] === "13") {
+            state.reportInches = m[2] === "1" ? "1" : "0"
+            //echo so the UI updates reportUnit immediately
+            SendWS(`$13=${state.reportInches}\n`)
+        }
+        SendWS("ok\n")
         res.send("")
         return
     }
@@ -3060,4 +3165,5 @@ module.exports = {
     loginURI,
     getLastconnection,
     hasEnabledAuthentication,
+    startAutoReport,
 }

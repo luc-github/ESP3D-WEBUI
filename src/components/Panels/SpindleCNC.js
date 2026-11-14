@@ -146,12 +146,6 @@ const SpindlePanel = () => {
                     command: "M5",
                     mode: "spindle_mode",
                 },
-                {
-                    label: "M6",
-                    tooltip: "CN109",
-                    command: "M6",
-                    mode: "spindle_mode",
-                },
             ],
             control: {
                 id: "spindlespeedInput",

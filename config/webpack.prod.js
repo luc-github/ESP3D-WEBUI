@@ -20,6 +20,12 @@ const runAnalyzer =
 module.exports = {
     resolve: {
         alias: {
+            // Local icon registry replaces preact-feather (same named exports,
+            // much smaller footprint: shared SVG wrapper + path data only)
+            "preact-feather": path.resolve(
+                __dirname,
+                "../src/components/Icons/index.js"
+            ),
             TargetDir: path.resolve(__dirname, "../src/targets", target),
             SubTargetDir: path.resolve(
                 __dirname,
@@ -111,7 +117,15 @@ module.exports = {
                           "/" +
                           subtarget +
                           "/[base].gz",
-                      algorithm: "gzip",
+                      // Zopfli: ~4% smaller than zlib gzip, output remains
+                      // standard gzip readable by any browser / ESP3D.
+                      // (provided by gzipper dependency: @gfx/zopfli)
+                      algorithm: (input, options, callback) =>
+                          require("@gfx/zopfli").gzip(
+                              input,
+                              { numiterations: 15 },
+                              callback
+                          ),
                       exclude: /.map$/,
                       deleteOriginalAssets: false,
                   }),
