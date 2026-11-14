@@ -4,7 +4,8 @@
     "description": "Web UI for ESP3D V3 based FW ",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "npm run test:roundtrip",
+        "test:roundtrip": "webpack --config test/webpack.roundtrip.js && node test/out/roundtrip.bundle.js",
         "front": "webpack serve --config config/webpack.dev.js ",
         "server": "nodemon config/server.js",
         "dev-cnc-grbl": "node config/dev.js CNC GRBL",

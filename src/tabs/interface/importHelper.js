@@ -64,26 +64,25 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
 }
 
 /**
- * If the list item is in "formatted" form (value is array of { name, value }), flatten it
- * so formatItem always receives flat shape { id, type, value, ... }. Avoids double-nesting
- * and "[object Object]" when preferences are reloaded after save.
+ * True if the list item is already in "formatted" form, i.e. the single
+ * internal representation: value is an array of { name, value, ... } sub-fields.
+ * Flat form ({ id, type, value, ... }) only exists in preferences.json files
+ * and in the raw default preferences — it is expanded once at load/import.
  */
-function normalizeListItem(item) {
-    if (!item || typeof item !== "object") return item
+function isFormattedItem(item) {
+    if (!item || typeof item !== "object") return false
     const val = item.value
-    if (!Array.isArray(val) || val.length === 0) return item
+    if (!Array.isArray(val) || val.length === 0) return false
     const first = val[0]
-    if (typeof first !== "object" || first.name === undefined) return item
-    const flat = { id: item.id }
-    if (item.index !== undefined) flat.index = item.index
-    val.forEach((s) => {
-        flat[s.name] = s.value
-    })
-    return flat
+    return typeof first === "object" && first !== null && first.name !== undefined
 }
 
 /**
  * Formats the items list.
+ * Already formatted items are kept as-is (only their position index is
+ * refreshed): re-expanding them would wipe runtime flags (hasmodified,
+ * editionMode, newItem) and caused the "double-nesting / [object Object]"
+ * bugs. Flat items (from preferences.json or defaults) are expanded here.
  *
  * @param {Array} itemsList - The list of items to be formatted.
  * @param {string} origineId - The origin ID.
@@ -92,7 +91,12 @@ function normalizeListItem(item) {
 function formatItemsList(itemsList, origineId) {
     const formatedItems = []
     itemsList.forEach((element, index) => {
-        let el = normalizeListItem(element)
+        if (isFormattedItem(element)) {
+            element.index = index
+            formatedItems.push(element)
+            return
+        }
+        let el = element
         if (origineId === "verbosefilters" && (el.id == null || el.id === "")) {
             el = { ...el, id: (el.type != null ? String(el.type) : "filter") + "-" + index }
         }
