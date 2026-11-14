@@ -140,7 +140,7 @@ const HttpQueueContextProvider = ({ children }) => {
                 }
             }
             if (onFail) {
-                onFail(e.message) //to-check
+                onFail(e.message, e.code)
             }
         } finally {
             //check if need to remove or not

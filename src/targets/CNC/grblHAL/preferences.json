@@ -35,9 +35,9 @@
                     { "id": "Laser", "name": "laser" },
                     { "id": "Spindle", "name": "spindle" },
                     { "id": "Probe", "name": "probe" },
-                    { "id": "Tool", "name": "tool" },
+                    { "id": "Tool change", "name": "tool" },
                     { "id": "Status", "name": "status" },
-                    { "id": "Overrrides", "name": "overrides" },
+                    { "id": "Overrides", "name": "overrides" },
                     { "id": "Notifications", "name": "notification" },
                     { "id": "Macros", "name": "macros" },
                     { "id": "Extracontents", "name": "extracontents" }

@@ -636,13 +636,20 @@ const useSettings = () => {
                         loadTheme(themepack)
                     }
                 },
-                onFail: (error) => {
-                    if (error != "404 - Not Found")
+                onFail: (error, code) => {
+                    if (code == 404) {
+                        //missing preferences.json is fine, just use defaults
+                        console.log(
+                            "preferences.json not found, using defaults"
+                        )
+                    } else {
+                        //real error or malformed file: warn the user
                         toasts.addToast({
                             content: error + " preferences.json",
                             type: "error",
                         })
-                    console.log("No valid preferences.json")
+                        console.log("No valid preferences.json")
+                    }
                     applyDefaultPreferences()
                 },
             }

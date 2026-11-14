@@ -37,7 +37,15 @@ const state = {
     activeTool: 0,
     pendingTool: 0,
     toolChanging: false,
+    alarm: false,
 }
+//force next $TPW outcome: "ok" (default) or "fail", set via SIM:TPW=OK / SIM:TPW=FAIL
+let tpwOutcome = "ok"
+//tool probe in progress: status reports Run during the motion window
+let tpwProbing = false
+let tpwTimer = null
+//writable grbl settings reflected in $$ output ($341 default: manual touch off)
+const grblSettings = { "341": "1" }
 let jog = null
 const JOGCANCEL_BYTE = 0x85
 const CYCLESTART_BYTE = 0x81
@@ -73,6 +81,8 @@ function formatPos(v) {
 }
 
 function currentStateName() {
+    if (state.alarm) return "Alarm"
+    if (tpwProbing) return "Run"
     if (state.toolChanging) return "Tool"
     if (jog) return "Jog"
     return "Idle"
@@ -205,9 +215,27 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
-    //tool probe workflow
+    //tool probe workflow: probing motion ~2s (status reports Run),
+    //then [PRB:..]+ok on success or ALARM:5 on failure
     if (url.indexOf("$TPW") != -1) {
-        SendWS("ok\n")
+        const fail = tpwOutcome == "fail"
+        tpwProbing = true
+        tpwTimer = setTimeout(() => {
+            tpwTimer = null
+            tpwProbing = false
+            if (fail) {
+                //probe failed to contact within travel -> grbl alarm 5
+                state.alarm = true
+                SendWS("ALARM:5\n")
+            } else {
+                const { X, Y, Z } = state.position
+                SendWS(
+                    `[PRB:${formatPos(X)},${formatPos(Y)},${formatPos(
+                        Z - 2
+                    )}:1]\n` + "ok\n"
+                )
+            }
+        }, 2000)
         res.send("")
         return
     }
@@ -227,6 +255,14 @@ const commandsQuery = (req, res, SendWS) => {
             SendWS(`<Run|WPos:${wpos}|SD:100.0,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n`)
         if (countStatus == 10) countStatus = 0
 
+        res.send("")
+        return
+    }
+
+    //force next $TPW outcome for testing: SIM:TPW=FAIL / SIM:TPW=OK
+    if (url.indexOf("SIM:TPW=") != -1) {
+        tpwOutcome = url.indexOf("SIM:TPW=FAIL") != -1 ? "fail" : "ok"
+        SendWS("ok\n")
         res.send("")
         return
     }
@@ -378,8 +414,32 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    //kill alarm lock
+    if (url.indexOf("$X") != -1) {
+        state.alarm = false
+        SendWS("[MSG:Caution: Unlocked]\n" + "ok\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("\x18") != -1) {
-        SendWS("Grbl 1.1f ['$' for help]\n")
+        //soft reset aborts any pending tool change / jog / tool probe
+        //hypothesis (bench test #4): reset during motion raises an alarm
+        const inMotion = jog != null || tpwProbing
+        if (tpwTimer) {
+            clearTimeout(tpwTimer)
+            tpwTimer = null
+        }
+        tpwProbing = false
+        state.toolChanging = false
+        jog = null
+        if (inMotion) {
+            state.alarm = true
+            SendWS("ALARM:1\n")
+        } else {
+            state.alarm = false
+            SendWS("Grbl 1.1f ['$' for help]\n")
+        }
         res.send("")
         return
     }
@@ -451,6 +511,7 @@ const commandsQuery = (req, res, SendWS) => {
                 "$134=300.000\n" +
                 "$135=300.000\n" +
                 "$337=\n" +
+                `$341=${grblSettings["341"]}\n` +
                 "ok\n"
         )
         res.send("")
@@ -460,10 +521,13 @@ const commandsQuery = (req, res, SendWS) => {
     //settings write e.g. $13=1 (report in inches)
     if (/\$\d+=/.test(url)) {
         const m = url.match(/\$(\d+)=([^\s&]*)/)
-        if (m && m[1] === "13") {
-            state.reportInches = m[2] === "1" ? "1" : "0"
-            //echo so the UI updates reportUnit immediately
-            SendWS(`$13=${state.reportInches}\n`)
+        if (m) {
+            grblSettings[m[1]] = m[2]
+            if (m[1] === "13") {
+                state.reportInches = m[2] === "1" ? "1" : "0"
+                //echo so the UI updates reportUnit immediately
+                SendWS(`$13=${state.reportInches}\n`)
+            }
         }
         SendWS("ok\n")
         res.send("")

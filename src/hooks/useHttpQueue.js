@@ -57,8 +57,8 @@ const useHttpQueue = () => {
                 if (onProgressCb) onProgressCb(e)
             },
             onFail: onFailCb
-                ? (error) => {
-                      if (onFailCb) onFailCb(error)
+                ? (error, code) => {
+                      if (onFailCb) onFailCb(error, code)
                   }
                 : null,
         })
@@ -97,12 +97,12 @@ const useHttpQueue = () => {
             onProgress: (e) => {
                 if (onProgressCb) onProgressCb(e)
             },
-            onFail: (error) => {
+            onFail: (error, code) => {
                 localRequests.current.splice(
                     localRequests.current.indexOf(id),
                     1
                 )
-                if (onFailCb) onFailCb(error)
+                if (onFailCb) onFailCb(error, code)
             },
         })
     }

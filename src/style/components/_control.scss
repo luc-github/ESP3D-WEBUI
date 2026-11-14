@@ -248,6 +248,15 @@ span.input-group-addon {
     max-width: fit-content;
 }
 
+/* Empty legend: no compensation needed, just a clean gap below the top border */
+.field-group legend:empty {
+    margin-bottom: 0;
+}
+
+.field-group legend:empty + .field-group-content {
+    margin-top: 0.2rem;
+}
+
 .field-group-content-fullwidth {
     width: 100%;
     max-width: 100%;

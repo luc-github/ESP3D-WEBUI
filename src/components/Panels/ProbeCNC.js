@@ -479,7 +479,12 @@ const ProbePanel = () => {
                                                 return (
                                                     <ButtonImg
                                                         label={T(element.label)}
-                                                        disabled={hasError()}
+                                                        disabled={
+                                                            hasError() ||
+                                                            //no G38 during a tool change, firmware would answer error 40
+                                                            status.state ==
+                                                                "Tool"
+                                                        }
                                                         icon={element.icon}
                                                         tooltip
                                                         iconRight={
