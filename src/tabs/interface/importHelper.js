@@ -19,8 +19,12 @@ importHelper.js - ESP3D WebUI helper file
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+import { clone, fieldMeta } from "../../components/Helpers"
+
 /**
  * Formats an item data object.
+ * Field editor metadata (type/label/options/depend) comes from the static
+ * list-kinds table in Helpers/settings/listKinds.js.
  *
  * @param {Object} itemData - The item data object to format.
  * @param {number} [index=-1] - The index of the item.
@@ -34,149 +38,16 @@ function formatItem(itemData, index = -1, origineId = "extrapanels") {
     itemFormated.index = index
     itemFormated.value = []
     Object.keys(itemData).forEach((key) => {
-        if (key != "id") {
-            const newItem = {}
-            newItem.id = itemData.id + "-" + key
-            newItem.name = key
-            newItem.value = itemData[key]
-            newItem.initial = itemData[key]
-            if (index == -1) newItem.newItem = true
-            switch (key) {
-                case "cmds":
-                    newItem.type = "text"
-                    newItem.label = "S115"
-                    newItem.help = "S97"
-                    break
-                case "key":
-                    newItem.type = "text"
-                    newItem.label = "key"
-                    newItem.shortkey = true
-                    break
-                case "name":
-                    newItem.type = "text"
-                    newItem.label = "S129"
-                    break
-                case "icon":
-                    newItem.type = "icon"
-                    newItem.label = "S132"
-                    break
-                case "refreshtime":
-                    newItem.type = "number"
-                    newItem.min = 0
-                    newItem.minsecondary = 100
-                    newItem.step = 100
-                    newItem.append = "S114"
-                    newItem.label = "S113"
-                    break
-                case "type":
-                    newItem.type = "select"
-                    newItem.label = "S135"
-                    if (origineId == "verbosefilters") {
-                        newItem.options = [
-                            { label: "S229", value: "startswith" },
-                            { label: "S230", value: "endswith" },
-                            { label: "S231", value: "contain" },
-                            { label: "S232", value: "regex" },
-                        ]
-                    } else if (origineId == "macros") {
-                        newItem.options = [
-                            {
-                                label: "S137",
-                                value: "FS",
-                                depend: [
-                                    {
-                                        id: "flashfs",
-                                        value: true,
-                                    },
-
-                                    {
-                                        connection_id: "FlashFileSystem",
-                                        value: "!='none'",
-                                    },
-                                    {
-                                        connection_id: "FWTargetID",
-                                        value: "!='30'",
-                                    },
-                                ],
-                            },
-                            {
-                                label: "S138",
-                                value: "SD",
-                                depend: [
-                                    {
-                                        ids: [
-                                            {
-                                                id: "sd",
-                                                value: true,
-                                            },
-                                            {
-                                                id: "directsd",
-                                                value: true,
-                                            },
-                                            {
-                                                id: "ext",
-                                                value: true,
-                                            },
-                                            {
-                                                id: "directsdext",
-                                                value: true,
-                                            },
-                                            {
-                                                id: "tftsd",
-                                                value: true,
-                                            },
-                                        ],
-                                    },
-                                    {
-                                        connection_id: "SDConnection",
-                                        value: "!='none'",
-                                    },
-                                ],
-                            },
-                            { label: "S139", value: "URI" },
-                            { label: "S140", value: "CMD" },
-                        ]
-                    } else {
-                        newItem.options = [
-                            { label: "S160", value: "image" },
-                            { label: "S161", value: "content" },
-                            { label: "S121", value: "extension" },
-                            { label: "S162", value: "camera" },
-                        ]
-                    }
-                    break
-                case "target":
-                    newItem.type = "select"
-                    newItem.label = "S136"
-                    newItem.options = [
-                        { label: "S158", value: "page" },
-                        { label: "S157", value: "panel" },
-                    ]
-                    break
-                case "openonstart":
-                    newItem.type = "boolean"
-                    newItem.label = "S93"
-                    break
-                case "source":
-                    newItem.type = "text"
-                    newItem.label = "S139"
-                    newItem.min = "2"
-                    break
-                case "action":
-                    newItem.type = "text"
-                    newItem.label = "S159"
-                    newItem.min = "1"
-                    break
-                case "value":
-                    newItem.type = "text"
-                    newItem.label = origineId == "verbosefilters" ? "S233" : key
-                    break
-                default:
-                    newItem.type = "text"
-                    newItem.label = key
-            }
-            itemFormated.value.push(newItem)
+        if (key === "id") return
+        const newItem = {
+            id: itemData.id + "-" + key,
+            name: key,
+            value: itemData[key],
+            initial: itemData[key],
+            ...fieldMeta(key, origineId),
         }
+        if (index == -1) newItem.newItem = true
+        itemFormated.value.push(newItem)
     })
     // For extracontents items saved before openonstart was introduced, inject the default
     if (origineId === "extracontents" && !("openonstart" in itemData)) {
@@ -282,7 +153,7 @@ function formatPreferences(section) {
  */
 function importPreferencesSection(currentPreferencesData, importedPreferences) {
     let hasErrors = false;
-    const currentPreferences = JSON.parse(JSON.stringify(currentPreferencesData));
+    const currentPreferences = clone(currentPreferencesData);
   
     function updateElement(id, value) {
       function traverse(obj) {
@@ -317,103 +188,8 @@ function importPreferencesSection(currentPreferencesData, importedPreferences) {
     return [currentPreferences, hasErrors];
   }
 
-/**
- * Remove from panelsorder any entry whose name value is extracontents_<id>
- * when <id> is not in the current extracontents list (panel target).
- * Mutates settings in place.
- * @param {Object} settings - preferences settings object (keyed by section, values are arrays of elements)
- */
-function prunePanelsOrderOrphans(settings) {
-    if (!settings || typeof settings !== "object") return
-    let panelsOrderEl = null
-    let extraContentsEl = null
-    for (const key of Object.keys(settings)) {
-        const arr = settings[key]
-        if (!Array.isArray(arr)) continue
-        for (let i = 0; i < arr.length; i++) {
-            if (arr[i].id === "panelsorder") panelsOrderEl = arr[i]
-            if (arr[i].id === "extracontents") extraContentsEl = arr[i]
-        }
-        if (panelsOrderEl && extraContentsEl) break
-    }
-    if (!panelsOrderEl || !Array.isArray(panelsOrderEl.value)) return
-    const panelIds =
-        extraContentsEl && Array.isArray(extraContentsEl.value)
-            ? extraContentsEl.value
-                  .filter((item) => {
-                      const targetField =
-                          item.value &&
-                          item.value.find((s) => s && s.name === "target")
-                      return (
-                          targetField &&
-                          (targetField.value === "panel" ||
-                              targetField.initial === "panel")
-                      )
-                  })
-                  .map((item) => item.id)
-            : []
-    let arr = panelsOrderEl.value
-    const filtered = arr.filter((item) => {
-        const nameVal =
-            item.value && item.value.find((s) => s && s.name === "name")?.value
-        if (!nameVal || !String(nameVal).startsWith("extracontents_"))
-            return true
-        const rootId = String(nameVal).replace("extracontents_", "")
-        return panelIds.includes(rootId)
-    })
-    if (filtered.length < arr.length) {
-        panelsOrderEl.value = filtered
-        panelsOrderEl.nb = filtered.length
-        arr = filtered
-        arr.forEach((item, i) => {
-            item.index = i
-            if (item.value) {
-                const idxField = item.value.find(
-                    (s) => s && s.name === "index"
-                )
-                if (idxField) idxField.value = i
-            }
-        })
-    }
-    const existingExtraIds = new Set(
-        arr
-            .map((item) => {
-                const n =
-                    item.value &&
-                    item.value.find((s) => s && s.name === "name")?.value
-                if (!n || !String(n).startsWith("extracontents_")) return null
-                return String(n).replace("extracontents_", "")
-            })
-            .filter(Boolean)
-    )
-    const missingIds = panelIds.filter((id) => !existingExtraIds.has(id))
-    if (missingIds.length > 0) {
-        const newItems = missingIds.map((id, i) => ({
-            id: "extracontents_" + id,
-            value: [
-                { name: "name", value: "extracontents_" + id },
-                { name: "index", value: arr.length + i },
-            ],
-            index: arr.length + i,
-        }))
-        const newArray = [...arr, ...newItems]
-        newArray.forEach((item, i) => {
-            item.index = i
-            if (item.value) {
-                const idxField = item.value.find(
-                    (s) => s && s.name === "index"
-                )
-                if (idxField) idxField.value = i
-            }
-        })
-        panelsOrderEl.value = newArray
-        panelsOrderEl.nb = newArray.length
-    }
-}
-
 export {
     importPreferencesSection,
     formatPreferences,
     formatItem,
-    prunePanelsOrderOrphans,
 }

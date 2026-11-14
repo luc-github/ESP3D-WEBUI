@@ -25,6 +25,9 @@ import {
     getBrowserTimeZone,
     isLimitedEnvironment,
     isThemeCompatible,
+    clone,
+    buildFontFaceCSS,
+    syncPanelsOrder,
 } from "../components/Helpers"
 import { useHttpQueue } from "../hooks/"
 import {
@@ -49,7 +52,6 @@ import {
 import {
     importPreferencesSection,
     formatPreferences,
-    prunePanelsOrderOrphans,
 } from "../tabs/interface/importHelper"
 import { Frown, Info } from "preact-feather"
 import { showModal } from "../components/Modal"
@@ -394,32 +396,12 @@ const useSettings = () => {
 
                             // 3. Fonts — supports data (base64), src (URL), sources[] (multi-format)
                             if (parsed.fonts && parsed.fonts.length > 0) {
-                                const fontCSS = parsed.fonts.map((f) => {
-                                    let srcParts
-                                    if (f.sources && f.sources.length > 0) {
-                                        srcParts = f.sources
-                                            .map((s) =>
-                                                s.data
-                                                    ? `url('data:font/${s.format || "woff2"};base64,${s.data}') format('${s.format || "woff2"}')`
-                                                    : `url('${s.src}') format('${s.format || "woff2"}')`
-                                            )
-                                            .join(",")
-                                    } else if (f.data) {
-                                        srcParts = `url('data:font/${f.format || "woff2"};base64,${f.data}') format('${f.format || "woff2"}')`
-                                    } else {
-                                        srcParts = `url('${f.src}') format('${f.format || "woff2"}')`
-                                    }
-                                    return (
-                                        `@font-face{font-family:'${f.family}';src:${srcParts};` +
-                                        `font-weight:${f.weight || "400"};` +
-                                        `font-style:${f.style || "normal"};` +
-                                        `font-display:${f.display || "auto"};}`
-                                    )
-                                }).join("")
                                 const fontEl = document.createElement("style")
                                 fontEl.type = "text/css"
                                 fontEl.id = "themefonts"
-                                fontEl.innerHTML = fontCSS
+                                fontEl.innerHTML = buildFontFaceCSS(
+                                    parsed.fonts
+                                )
                                 document.head.appendChild(fontEl)
                             }
 
@@ -463,18 +445,14 @@ const useSettings = () => {
         }
         const applyDefaultPreferences = () => {
             const preferences = {
-                settings: JSON.parse(
-                    JSON.stringify(defaultPreferences.settings)
-                ),
+                settings: clone(defaultPreferences.settings),
             }
             if (defaultPreferences.custom)
                 preferences.custom = defaultPreferences.custom
             if (defaultPreferences.extensions)
                 preferences.extensions = defaultPreferences.extensions
             formatPreferences(preferences.settings)
-            uisettings.set(
-                JSON.parse(JSON.stringify(preferences.settings))
-            )
+            uisettings.set(clone(preferences.settings))
             interfaceSettings.current = preferences
             if (setLoading) setLoading(false)
             loadTheme()
@@ -509,15 +487,12 @@ const useSettings = () => {
                     )
                     //console.log("Format preferences.settings")
                     formatPreferences(preferences_settings)
-                    prunePanelsOrderOrphans(preferences_settings)
+                    syncPanelsOrder(preferences_settings)
                     //console.log(preferences_settings)
-                    const settingsCopy = JSON.parse(
-                        JSON.stringify(preferences_settings)
-                    )
+                    const settingsCopy = clone(preferences_settings)
                     uisettings.set(settingsCopy)
-                    interfaceSettings.current.settings = JSON.parse(
-                        JSON.stringify(preferences_settings)
-                    )
+                    interfaceSettings.current.settings =
+                        clone(preferences_settings)
                     if (haserrors) {
                         toasts.addToast({
                             content: (
@@ -569,29 +544,10 @@ const useSettings = () => {
                         if (manifest.rtl === true)
                             document.documentElement.setAttribute("dir", "rtl")
                         if (manifest.fonts && manifest.fonts.length > 0) {
-                            const fontCSS = manifest.fonts.map((f) => {
-                                let srcParts
-                                if (f.sources && f.sources.length > 0) {
-                                    srcParts = f.sources.map((s) =>
-                                        s.data
-                                            ? `url('data:font/${s.format || "woff2"};base64,${s.data}') format('${s.format || "woff2"}')`
-                                            : `url('${s.src}') format('${s.format || "woff2"}')`
-                                    ).join(",")
-                                } else if (f.data) {
-                                    srcParts = `url('data:font/${f.format || "woff2"};base64,${f.data}') format('${f.format || "woff2"}')`
-                                } else {
-                                    srcParts = `url('${f.src}') format('${f.format || "woff2"}')`
-                                }
-                                return (
-                                    `@font-face{font-family:'${f.family}';src:${srcParts};` +
-                                    `font-weight:${f.weight || "400"};font-style:${f.style || "normal"};` +
-                                    `font-display:${f.display || "auto"};}`
-                                )
-                            }).join("")
                             const fontEl = document.createElement("style")
                             fontEl.type = "text/css"
                             fontEl.id = "langfonts"
-                            fontEl.innerHTML = fontCSS
+                            fontEl.innerHTML = buildFontFaceCSS(manifest.fonts)
                             document.head.appendChild(fontEl)
                         }
                     }

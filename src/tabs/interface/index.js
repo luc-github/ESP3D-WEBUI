@@ -31,6 +31,10 @@ import {
     espHttpURL,
     checkDependencies,
     generateUID,
+    clone,
+    reindexList,
+    settingsStatus,
+    syncPanelsOrder,
 } from "../../components/Helpers"
 import { T } from "../../components/Translations"
 import { RefreshCcw, Save, ExternalLink, Flag, Download, Search } from "preact-feather"
@@ -395,43 +399,20 @@ const InterfaceTab = () => {
                             list.push(formatted)
                             addedIds.push(uid)
                         })
-                        list.forEach((item, i) => {
-                            item.index = i
-                            const idxField = item.value?.find((s) => s.name === "index")
-                            if (idxField) idxField.value = i
-                        })
+                        reindexList(list)
                         extraEntry.nb = list.length
                         extraEntry.hasmodified = true
-                        const panelsOrderEl = useUiContextFn.getElement("panelsorder", settings)
-                        if (panelsOrderEl && Array.isArray(panelsOrderEl.value)) {
-                            const arr = panelsOrderEl.value
-                            const startIdx = arr.length
-                            addedIds.forEach((id, i) => {
-                                arr.push({
-                                    id: "extracontents_" + id,
-                                    value: [
-                                        { name: "name", value: "extracontents_" + id },
-                                        { name: "index", value: startIdx + i },
-                                    ],
-                                    index: startIdx + i,
-                                })
-                            })
-                            arr.forEach((item, i) => {
-                                item.index = i
-                                const idxField = item.value?.find((s) => s.name === "index")
-                                if (idxField) idxField.value = i
-                            })
-                            panelsOrderEl.nb = arr.length
-                            panelsOrderEl.hasmodified = true
+                        if (syncPanelsOrder(settings)) {
+                            const panelsOrderEl = useUiContextFn.getElement(
+                                "panelsorder",
+                                settings
+                            )
+                            if (panelsOrderEl) panelsOrderEl.hasmodified = true
                         }
                         setPanelsOrderExpanded((n) => n + 1)
                         if (uisettings?.set && interfaceSettings?.current?.settings)
                             uisettings.set(
-                                JSON.parse(
-                                    JSON.stringify(
-                                        interfaceSettings.current.settings
-                                    )
-                                )
+                                clone(interfaceSettings.current.settings)
                             )
                         modals.removeModal(modals.getModalIndex("extensions"))
                         refreshSaveStatusRef.current?.()
@@ -445,103 +426,8 @@ const InterfaceTab = () => {
 
     useEffect(() => {
         const settings = interfaceSettings?.current?.settings
-        if (!settings || !useUiContextFn.getElement) return
-        const el = useUiContextFn.getElement("panelsorder", settings)
-        if (!el || !Array.isArray(el.value)) return
-        const extraEl = useUiContextFn.getElement("extracontents", settings)
-        const panelIds = (extraEl && Array.isArray(extraEl.value))
-            ? extraEl.value
-                  .filter((item) => {
-                      const targetField =
-                          item.value && item.value.find((s) => s.name === "target")
-                      return targetField && targetField.value === "panel"
-                  })
-                  .map((item) => item.id)
-            : []
-
-        let arr = el.value
-        const filtered = arr.filter((item) => {
-            const nameVal =
-                item.value && item.value.find((s) => s.name === "name")?.value
-            if (!nameVal || !String(nameVal).startsWith("extracontents_"))
-                return true
-            const rootId = String(nameVal).replace("extracontents_", "")
-            return panelIds.includes(rootId)
-        })
-        if (filtered.length < arr.length) {
-            arr = filtered
-            el.value = arr
-            el.nb = arr.length
-            arr.forEach((item, i) => {
-                item.index = i
-                if (item.value) {
-                    const idxField = item.value.find((s) => s.name === "index")
-                    if (idxField) idxField.value = i
-                }
-            })
-            setPanelsOrderExpanded((n) => n + 1)
-        }
-
-        const hasAnyExtra = arr.some((item) => {
-            const n =
-                item.value && item.value.find((s) => s.name === "name")?.value
-            return (
-                n === "extracontents" ||
-                (n && String(n).startsWith("extracontents_"))
-            )
-        })
-        if (panelIds.length > 0 && !hasAnyExtra) {
-            const newItems = panelIds.map((id, i) => ({
-                id: "extracontents_" + id,
-                value: [
-                    { name: "name", value: "extracontents_" + id },
-                    { name: "index", value: arr.length + i },
-                ],
-                index: arr.length + i,
-            }))
-            const newArray = [...arr, ...newItems]
-            newArray.forEach((item, i) => {
-                item.index = i
-                if (item.value) {
-                    const idxField = item.value.find((s) => s.name === "index")
-                    if (idxField) idxField.value = i
-                }
-            })
-            el.value = newArray
-            el.nb = newArray.length
-            arr = newArray
-            setPanelsOrderExpanded((n) => n + 1)
-        }
-
-        const idx = arr.findIndex(
-            (item) =>
-                item.value &&
-                item.value.find((s) => s.name === "name")?.value === "extracontents"
-        )
-        if (idx === -1 || panelIds.length === 0) return
-        const newItems = panelIds.map((id, i) => ({
-            id: "extracontents_" + id,
-            value: [
-                { name: "name", value: "extracontents_" + id },
-                { name: "index", value: idx + i },
-            ],
-            index: idx + i,
-        }))
-        const newArray = [
-            ...arr.slice(0, idx),
-            ...newItems,
-            ...arr.slice(idx + 1),
-        ]
-        newArray.forEach((item, i) => {
-            item.index = i
-            if (item.value) {
-                const idxField = item.value.find((s) => s.name === "index")
-                if (idxField) idxField.value = i
-            }
-        })
-        el.value = newArray
-        el.nb = newArray.length
-        setPanelsOrderExpanded((n) => n + 1)
+        if (!settings) return
+        if (syncPanelsOrder(settings)) setPanelsOrderExpanded((n) => n + 1)
     }, [interfaceSettings?.current?.settings])
     const isFlashFS =
         useSettingsContextFn.getValue("FlashFileSystem") == "none"
@@ -563,9 +449,10 @@ const InterfaceTab = () => {
     }
 
     function checkSaveStatus() {
-        const stringified = JSON.stringify(interfaceSettings.current.settings)
-        const hasmodified = stringified.includes('"hasmodified":true')
-        const haserrors = stringified.includes('"haserror":true')
+        //early-exit scan, was: JSON.stringify(settings).includes(...) per keystroke
+        const { hasmodified, haserrors } = settingsStatus(
+            interfaceSettings.current.settings
+        )
         return !haserrors && hasmodified
     }
     refreshSaveStatusRef.current = () => setShowSave(checkSaveStatus())

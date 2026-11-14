@@ -26,6 +26,9 @@ import {
     generateUID,
     generateDependIds,
     checkDependencies,
+    clone,
+    scanFlag,
+    VERBOSE_TYPE_OPTIONS,
 } from "../../Helpers"
 import { Field } from "../../Controls"
 import { formatItem } from "../../../tabs/interface/importHelper"
@@ -41,6 +44,12 @@ import {
 import defaultPanel from "./def_panel.json"
 import defaultMacro from "./def_macro.json"
 import defaultPolling from "./def_polling.json"
+
+//value -> translation key map for verbose filter types
+const VERBOSE_TYPE_KEYS = VERBOSE_TYPE_OPTIONS.reduce((acc, o) => {
+    acc[o.value] = o.label
+    return acc
+}, {})
 
 /*
  * Local const
@@ -119,14 +128,14 @@ const ItemControl = ({
 
     let colorStyle
     if (
-        JSON.stringify(safeValue).includes('"hasmodified":true') ||
-        JSON.stringify(itemData).includes('"newitem":true') ||
-        JSON.stringify(itemData).includes('"newItem":true')
+        scanFlag(itemData, "hasmodified") ||
+        scanFlag(itemData, "newitem") ||
+        scanFlag(itemData, "newItem")
     )
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 183, 0, .4);margin-right:0.5rem!important"
 
-    if (JSON.stringify(safeValue).includes('"haserror":true'))
+    if (scanFlag(itemData, "haserror"))
         colorStyle =
             "box-shadow: 0 0 0 .2rem rgba(255, 0, 0, .4);margin-right:0.5rem!important"
 
@@ -170,7 +179,6 @@ const ItemControl = ({
         }
     }
 
-    const VERBOSE_TYPE_KEYS = { startswith: "S229", endswith: "S230", contain: "S231", regex: "S232" }
     let labelBtn
     if (idList === "verbosefilters") {
         if (safeValue.length > 0) {
@@ -451,14 +459,12 @@ const ItemsList = ({
         if (id == "verbosefilters") {
             newItem = { id: "contain-" + (value ? value.length : 0), type: "contain", value: "" }
         } else {
-            newItem = JSON.parse(
-                JSON.stringify(
-                    id == "macros"
-                        ? defaultMacro
-                        : id == "pollingcmds"
-                          ? defaultPolling
-                          : defaultPanel
-                )
+            newItem = clone(
+                id == "macros"
+                    ? defaultMacro
+                    : id == "pollingcmds"
+                      ? defaultPolling
+                      : defaultPanel
             )
             newItem.id = generateUID()
             newItem.name += " " + newItem.id

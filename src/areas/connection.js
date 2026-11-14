@@ -31,7 +31,6 @@ import {
     Lock,
 } from "preact-feather"
 import { T } from "../components/Translations"
-import { espHttpURL } from "../components/Helpers"
 import { restartdelay } from "../targets"
 
 /*
@@ -67,7 +66,8 @@ const ConnectionContainer = () => {
                 authenticate: connection.connectionState.authenticate,
                 page: "connecting",
             })
-            window.location.href = espHttpURL()
+            // reload the current page (keep its path, e.g. /www/index2.html)
+            window.location.href = window.location.pathname
         }
         switch (connection.connectionState.page) {
             case "notauthenticated":

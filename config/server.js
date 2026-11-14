@@ -49,18 +49,29 @@ const {
 const WebSocketServer = require("ws").Server,
     wss = new WebSocketServer({ port: 8089 })
 
-// Prefer .gz: if client asks for toto.html (or /), serve toto.html.gz with Content-Encoding: gzip when present
+// Like the firmware: if client asks for toto.html (or /), serve toto.html.br
+// (only when the browser advertises br, i.e. over HTTPS) or toto.html.gz
 app.use("/", (req, res, next) => {
-    if (req.method !== "GET" || req.path.endsWith(".gz")) return next()
+    if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next()
     const relPath = !req.path || req.path === "/" ? "index.html" : req.path
     const base = path.join(serverpath, "Flash", relPath)
-    const gzPath = base + ".gz"
-    if (!fs.existsSync(gzPath) || !fs.statSync(gzPath).isFile()) return next()
-    const ext = path.extname(req.path)
+    const isFile = (p) => fs.existsSync(p) && fs.statSync(p).isFile()
+    const acceptsBr = /\bbr\b/.test(req.headers["accept-encoding"] || "")
+    let file, encoding
+    if (acceptsBr && isFile(base + ".br")) {
+        file = base + ".br"
+        encoding = "br"
+    } else if (isFile(base + ".gz")) {
+        file = base + ".gz"
+        encoding = "gzip"
+    } else return next()
+    const ext = path.extname(relPath)
     const types = { ".html": "text/html", ".css": "text/css", ".js": "application/javascript", ".json": "application/json" }
     if (types[ext]) res.setHeader("Content-Type", types[ext])
-    res.setHeader("Content-Encoding", "gzip")
-    res.sendFile(path.resolve(gzPath))
+    res.setHeader("Content-Encoding", encoding)
+    res.setHeader("Vary", "Accept-Encoding")
+    console.log(expresscolor(`[server] ${relPath} -> ${path.basename(file)} (Accept-Encoding: ${req.headers["accept-encoding"] || "none"})`))
+    res.sendFile(path.resolve(file))
 })
 
 app.use("/", express.static(serverpath + "Flash"))

@@ -215,10 +215,10 @@ const WsContextProvider = ({ children }) => {
             connectionSettings.current.WebCommunication === "Synchronous"
                 ? ""
                 : "/ws"
-        const wsPort =
-            document.location.port != ""
-                ? parseInt(document.location.port) + 1
-                : connectionSettings.current.WebSocketPort
+        // The firmware knows its WebSocket port: always use it, whatever the
+        // page URL (http/https, explicit port or not). A reverse proxy must
+        // expose the WebSocket on that same port number.
+        const wsPort = connectionSettings.current.WebSocketPort
         const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
         wsConnection.current = new WebSocket(
             `${wsProtocol}://${document.location.hostname}${wsPort ? `:${wsPort}` : ""}${path}`,

@@ -34,7 +34,8 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true, // to make our SPA works after a full reload, so that it serves 'index.html' when 404 response
-        open: true,
+        // secure mode (npm run dev-xxx secure): page served by Caddy over https
+        open: process.env.SECURE ? "https://localhost:8443/" : true,
         static: {
             directory: path.resolve(__dirname, "server", "public"),
         },

@@ -36,7 +36,7 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
         if (typeof window !== "undefined") {
             const location = window.location.hash.slice(1).toLowerCase()
             if (location == "/settings") {
-                window.location.href = "/#" + activeTab.current
+                window.location.hash = activeTab.current
                 return activeTab.current
             } else {
                 return location
@@ -115,7 +115,7 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
             } else {
                 //console.log("no parentRoutes")
                 //.log("checking defaultRoute", defaultRoute)
-                window.location.href = "/#" + defaultRoute.current
+                window.location.hash = defaultRoute.current
             }
         } else {
             // console.log("found ", path, " in ", routesList)
@@ -134,13 +134,13 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
                 console.log("not found ", path, " in main menu ", routesList)
             }*/
             if (path.startsWith("/settings/")) {
-                window.location.href = "/#" + activeTab.current
+                window.location.hash = activeTab.current
             } else {
                 if (path.startsWith("/extrapage/")) {
                     //console.log("not valid extra page")
                 } else {
                     // console.log("root page")
-                    window.location.href = "/#" + defaultRoute.current
+                    window.location.hash = defaultRoute.current
                 }
             }
         }

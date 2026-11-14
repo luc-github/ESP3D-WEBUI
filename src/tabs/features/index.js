@@ -466,15 +466,18 @@ const FeaturesTab = () => {
                                                                         )}
                                                                     </strong>
                                                                 </span>
-                                                                <span class="navbar-section">
-                                                                    <span style="height: 100%;">
-                                                                        <span class="label label-primary align-top">
-                                                                            {T(
-                                                                                sectionId
-                                                                            )}
+                                                                {sectionId !==
+                                                                    subsectionId && (
+                                                                    <span class="navbar-section">
+                                                                        <span style="height: 100%;">
+                                                                            <span class="label label-primary align-top">
+                                                                                {T(
+                                                                                    sectionId
+                                                                                )}
+                                                                            </span>
                                                                         </span>
                                                                     </span>
-                                                                </span>
+                                                                )}
                                                             </div>
 
                                                             <div class="panel-body panel-body-features">

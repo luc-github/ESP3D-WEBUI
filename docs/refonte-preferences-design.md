@@ -8,6 +8,7 @@ Contexte : `index.html.gz` a dépassé 100 KB. Première passe déjà faite (ic�
 - Package **monolithique standalone** : pas d'externalisation de code dans les extensions ni de textes d'aide dans des fichiers séparés (serveur ESP synchrone, 1 requête à la fois, flash limitée).
 - Compatibilité ascendante du `preferences.json` sauvegardé sur l'ESP (les utilisateurs le conservent entre versions) et des packs de langue.
 - Le core est presque complet : peu de cas nouveaux à venir, plutôt des compléments de panels.
+- **Le moteur de conditions est gelé** (`checkDependencies` / `settingDepend` / `connectionDepend` / `generateDependIds` dans `components/Helpers/components.js`) : la refonte déplace les données `depend` **verbatim**, sans toucher à leur évaluation (voir §4.1).
 
 ## 2. État mesuré
 
@@ -43,7 +44,7 @@ Preuves à l'appui (fichier:ligne) :
 - **R3 — Double représentation des listes.** `normalizeListItem` (flatten) + `formatItem` (expand) + exportHelper (re-flatten) : la navette `{name,value,...}` ↔ `{clé: valeur}` est source de bugs (cf. le commentaire « Avoids double-nesting and "[object Object]" » dans `importHelper.js:195-199` — le bug a déjà existé).
 - **R4 — Builder de fonts CSS dupliqué** dans `useSettings.js` : le bloc construction `@font-face` (sources/data/format) est écrit deux fois (thème ligne ~396-424, manifest langue ligne ~572-596), ~30 lignes chacun.
 - **R5 — `JSON.parse(JSON.stringify(...))` dispersé** : 4 occurrences dans `useSettings.js` seul, plusieurs dans `tabs/interface`. Pas de helper `clone()`.
-- **R6 — `MachineSettings.js`** réimplémente sa propre gestion d'entrées (`cache`, `toSave`, `totalToSave` en module mutable) au lieu de réutiliser le schéma + Fields standard.
+- **R6 — `MachineSettings.js`** garde sa propre gestion d'entrées (`cache`, `generateValidation`, dirty tracking en module mutable) au lieu des helpers partagés. **Re-scopé (2026-11-14)** : le rendu utilise déjà le `Field` standard (avec bouton Send par entrée) — seule la gestion interne change, UX et format fil (ESP400 / `$$`, fournis par les firmwares, non modifiables) strictement inchangés.
 - **R7 — `checkSaveStatus` par `JSON.stringify(...).includes('"hasmodified":true')`** (`tabs/interface/index.js:565-570`) : sérialise tout l'arbre à chaque frappe et dépend du formatage JSON.
 
 ## 4. Architecture cible
@@ -64,13 +65,27 @@ src/components/Settings/            (nouveau module, ou dans Helpers)
 - **Représentation unique des listes** : garder la forme « formatted » en interne partout, ne flattener **qu'à l'export** (et à l'import) — supprime `normalizeListItem` et la double navette (R3). ⚠️ point le plus délicat : toucher au round-trip import/export, à couvrir par un test de round-trip.
 - **Dirty-check explicite** : un compteur/flag `dirty` incrémenté par les setters au lieu du `JSON.stringify().includes()` (R7) — supprime aussi des sérialisations complètes à chaque frappe.
 
+### 4.1 Le système de conditions (gelé)
+
+Le moteur actuel supporte, par entrée `depend` :
+
+- `id` + `value` / `notvalue` — dépendance à un autre setting (égalité / inégalité strictes), y compris le cas « élément absent » (`false === d.value`) ;
+- `connection_id` + `value` / `contains` — dépendance aux settings de connexion issus d'ESP800 (FWTarget, Axisletters, flashfs, directsd…) ;
+- `orGroups` — OU récursif de groupes, avec ET implicite entre conditions (`every`).
+
+Les données `depend` vivent à trois endroits : entrées de settings (ex. champ visible si `showfilespanel`), **options de select** (ex. FLASH visible si `flashfs`), et champs de l'éditeur de macros (5 conditions imbriquées FS/SD/URI/CMD — R2).
+
+**Règle de la refonte :** ces données sont déplacées verbatim (notamment vers les constantes de `listKinds.js` au palier B) ; leur évaluation n'est pas modifiée. Aucun palier ne touche au moteur.
+
+**Dette connue, hors scope** : `connectionDepend` utilise `eval()` sur les valeurs de connexion. À remplacer un jour par un mini-parseur (palier D éventuel) — sujet de robustesse, pas de taille.
+
 ## 5. Paliers de migration (incrémental, mesuré à chaque étape)
 
 | Palier | Contenu | Gain gz estimé | Risque |
 |---|---|---|---|
 | **A — Factorisation pure** | `syncPanelsOrder` unique (R1), `clone()` (R5), `buildFontFaceCSS` (R4), dirty flag (R7) | 1,5–3 KB | faible — comportement identique, renommages + déplacements |
 | **B — Table des kinds** | `listKinds.js` (R2), simplification `formatItem`/`ItemsList` | 2–4 KB | moyen — vérifier chaque kind visuellement |
-| **C — Représentation unique** | suppression flatten/unflatten (R3), MachineSettings sur schéma standard (R6) | 2–4 KB | moyen+ — nécessite test round-trip import/export |
+| **C — Représentation unique** | suppression flatten/unflatten (R3), MachineSettings sur helpers partagés (R6) | 2–4 KB | moyen+ — nécessite test round-trip import/export |
 
 Total réaliste : **5–8 KB gz** (≈ 88–91 KB sur Marlin) + gains de maintenabilité substantiels (R3/R7 sont des nids à bugs).
 
@@ -80,11 +95,16 @@ Honnêteté sur les chiffres : gzip déduplique déjà le code répété, donc l
 
 - Après chaque palier : `npm run buildall`, comparaison des 7 tailles gz/br.
 - Test visuel onglet Interface : affichage de chaque kind de liste, modification, sauvegarde, rechargement.
+- **Matrice d'affichage conditionnel** (obligatoire au palier B) :
+  - activer/désactiver `showfilespanel` / `showjogpanel` → les champs dépendants apparaissent et disparaissent ;
+  - options de select à dépendance connexion : FLASH visible seulement si `flashfs`, directsd idem ;
+  - éditeur de macros : chaque type FS/SD/URI/CMD affiche les bons champs ;
+  - cas `orGroups` et élément absent (ex. panels masqués quand le setting n'existe pas).
 - Test round-trip : export preferences.json → réimport → diff des valeurs.
 - Test langue + thème (palier A touche `useSettings`).
 
-## 7. Questions ouvertes
+## 7. Questions tranchées (2026-11-14)
 
-1. Palier C : acceptes-tu de toucher au round-trip import/export (avec test dédié), ou préfères-tu rester sur A+B dans un premier temps ?
-2. Le module `MachineSettings` (ESPxxx) : le migrer sur le schéma standard change un peu son UX (rendu Field standard) — acceptable ?
-3. Où loger le nouveau module : `src/components/Settings/` ou dans `Helpers/` existant ?
+1. **Palier C : approuvé.** R3 est un nid à bugs, il faut le refaire. Le test de round-trip import/export est le filet obligatoire ; l'import/export n'a jamais généré de retours utilisateurs, donc risque terrain faible — mais on évite quand même de le casser.
+2. **MachineSettings** : migration interne uniquement (validation + gestion d'état partagées) — rendu déjà standard, UX et format fil inchangés.
+3. **Emplacement du module** : `src/components/Helpers/settings/` (fonctions pures, pas des composants).

@@ -797,7 +797,7 @@ const commandsQuery = (req, res, SendWS) => {
                 Authentication: enableAuthentication ? "Enabled" : "Disabled",
                 WebCommunication: "Synchronous",
                 WebSocketIP: "localhost",
-                WebSocketPort: "81",
+                WebSocketPort: process.env.WS_PUBLIC_PORT || "8089",
                 Hostname: "smoothesp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",

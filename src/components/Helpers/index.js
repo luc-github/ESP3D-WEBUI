@@ -53,8 +53,20 @@ import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
 import { parseEmbeddedManifest, isExtensionCompatible, isThemeCompatible } from "./extensions"
 import { decompressGzipToText } from "./gzip"
+import { clone, reindexList, scanFlag, settingsStatus } from "./settings/model"
+import { buildFontFaceCSS } from "./settings/fonts"
+import { syncPanelsOrder } from "./settings/panelsOrder"
+import { VERBOSE_TYPE_OPTIONS, fieldMeta } from "./settings/listKinds"
 
 export {
+    clone,
+    reindexList,
+    scanFlag,
+    settingsStatus,
+    buildFontFaceCSS,
+    syncPanelsOrder,
+    VERBOSE_TYPE_OPTIONS,
+    fieldMeta,
     beautifyJSONString,
     capitalize,
     replaceVariables,
