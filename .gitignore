@@ -9,3 +9,4 @@ generate-context.ps1
 languages/backup/
 devserver.*
 build_analysis/*
+test/out/

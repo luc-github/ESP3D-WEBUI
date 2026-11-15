@@ -123,4 +123,43 @@ const syncPanelsOrder = (settings) => {
     return changed
 }
 
-export { syncPanelsOrder }
+//rebuild the panelsorder element value from a new panel order
+//(dashboard drag & drop): reuses existing entries when possible,
+//creates minimal { name, index } entries otherwise, and flags
+//everything modified so the change is picked up by save.
+//mutates panelsOrderEl in place, returns false when unusable
+const applyPanelsOrder = (panelsOrderEl, orderedIds) => {
+    if (!panelsOrderEl || !Array.isArray(panelsOrderEl.value)) return false
+    const reordered = orderedIds.map((settingId, i) => {
+        const existing = panelsOrderEl.value.find((item) => {
+            const nameField =
+                item.value && item.value.find((s) => s.name === "name")
+            return nameField && nameField.value === settingId
+        })
+        if (existing) {
+            existing.index = i
+            const idxField =
+                existing.value &&
+                existing.value.find((s) => s.name === "index")
+            if (idxField) idxField.value = i
+            return existing
+        }
+        return {
+            id: settingId,
+            value: [
+                { name: "name", value: settingId },
+                { name: "index", value: i },
+            ],
+            index: i,
+        }
+    })
+    panelsOrderEl.value = reordered
+    panelsOrderEl.nb = reordered.length
+    panelsOrderEl.hasmodified = true
+    reordered.forEach((item) => {
+        if (item.value && item.value[0]) item.value[0].hasmodified = true
+    })
+    return true
+}
+
+export { syncPanelsOrder, applyPanelsOrder }

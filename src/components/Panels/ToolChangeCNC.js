@@ -308,7 +308,7 @@ const ToolChangePanel = () => {
         <PanelShell id={id} icon={<Tool />} title={T("CN109")}>
             <div class="status-ctrls">
                 <div
-                    class="extra-control mt-1 tooltip tooltip-bottom"
+                    class="extra-control mt-1 tooltip tooltip-bottom active-tool-control"
                     data-tooltip={T("CN58")}
                 >
                     <div class="extra-control-header">{T("CN58")}</div>

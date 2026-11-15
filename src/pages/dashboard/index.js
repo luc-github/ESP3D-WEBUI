@@ -36,6 +36,7 @@ import {
     Minimize,
 } from "preact-feather"
 import { iconsFeather } from "../../components/Images"
+import { clone, applyPanelsOrder } from "../../components/Helpers"
 import { defaultPanelsList, iconsTarget, QuickButtonsBar } from "../../targets"
 import { ExtraPanelElement } from "../../components/Panels/ExtraPanel"
 import { showModal } from "../../components/Modal"
@@ -898,56 +899,19 @@ const Dashboard = () => {
                         }))
                         panels.setPanelsOrder(newFixedPanels)
                         panels.setVisibles(visibles)
-                        const next = JSON.parse(
-                            JSON.stringify(uisettings.current)
-                        )
+                        //write the new order back to the panelsorder
+                        //preference (flagged modified for save)
+                        const next = clone(uisettings.current)
                         const el = useUiContextFn.getElement(
                             "panelsorder",
                             next
                         )
-                        if (el && Array.isArray(el.value)) {
-                            const reordered = visibles.map((p, i) => {
-                                const existing = el.value.find((item) => {
-                                    const nameField =
-                                        item.value &&
-                                        item.value.find(
-                                            (s) => s.name === "name"
-                                        )
-                                    return (
-                                        nameField &&
-                                        nameField.value ===
-                                            (p.settingid || p.id)
-                                    )
-                                })
-                                if (existing) {
-                                    existing.index = i
-                                    const idxField =
-                                        existing.value &&
-                                        existing.value.find(
-                                            (s) => s.name === "index"
-                                        )
-                                    if (idxField) idxField.value = i
-                                    return existing
-                                }
-                                return {
-                                    id: p.settingid || p.id,
-                                    value: [
-                                        {
-                                            name: "name",
-                                            value: p.settingid || p.id,
-                                        },
-                                        { name: "index", value: i },
-                                    ],
-                                    index: i,
-                                }
-                            })
-                            el.value = reordered
-                            el.nb = reordered.length
-                            el.hasmodified = true
-                            reordered.forEach((item) => {
-                                if (item.value && item.value[0])
-                                    item.value[0].hasmodified = true
-                            })
+                        if (
+                            applyPanelsOrder(
+                                el,
+                                visibles.map((p) => p.settingid || p.id)
+                            )
+                        ) {
                             uisettings.set(next)
                             if (interfaceSettings?.current)
                                 interfaceSettings.current.settings = next

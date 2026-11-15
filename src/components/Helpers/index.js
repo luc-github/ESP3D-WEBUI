@@ -55,7 +55,7 @@ import { parseEmbeddedManifest, isExtensionCompatible, isThemeCompatible } from 
 import { decompressGzipToText } from "./gzip"
 import { clone, reindexList, scanFlag, settingsStatus } from "./settings/model"
 import { buildFontFaceCSS } from "./settings/fonts"
-import { syncPanelsOrder } from "./settings/panelsOrder"
+import { syncPanelsOrder, applyPanelsOrder } from "./settings/panelsOrder"
 import { VERBOSE_TYPE_OPTIONS, fieldMeta } from "./settings/listKinds"
 import { machineSettingValidation } from "./settings/machineValidation"
 
@@ -66,6 +66,7 @@ export {
     settingsStatus,
     buildFontFaceCSS,
     syncPanelsOrder,
+    applyPanelsOrder,
     VERBOSE_TYPE_OPTIONS,
     fieldMeta,
     machineSettingValidation,
