@@ -7,10 +7,12 @@ Files.js - ESP3D WebUI component file
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
  version 2.1 of the License, or (at your option) any later version.
+
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
+
  You should have received a copy of the GNU Lesser General Public
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -20,10 +22,10 @@ import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { T } from "../Translations"
 import { useHttpFn } from "../../hooks"
-import { espHttpURL, getBrowserTime } from "../Helpers"
-import { Loading, ButtonImg, CenterLeft, Progress } from "../Controls"
+import { espHttpURL } from "../Helpers"
+import { Loading, ButtonImg } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { showModal, showConfirmationModal, showProgressModal } from "../Modal"
+import { showModal, showConfirmationModal } from "../Modal"
 import {
     HardDrive,
     Upload,
@@ -33,10 +35,15 @@ import {
     Edit3,
     XCircle,
 } from "preact-feather"
-import { files, processor, useTargetContextFn } from "../../targets"
-import { Folder, File, Trash2, Play } from "preact-feather"
+import { files, processor } from "../../targets"
 import { Menu as PanelMenu, PanelShell } from "./"
+import { createFilesTransfer } from "./filesTransfer"
+import { FileLine } from "./FileLine"
+import { getFileDropHandlers } from "./fileDrop"
+import { FilesFooter } from "./FilesFooter"
 
+//Module-level state: survives hide/show cycles so the panel keeps its
+//filesystem, path and cached list when reopened
 let currentFS = ""
 const currentPath = {}
 const filesListCache = {}
@@ -66,13 +73,10 @@ const FilesPanel = () => {
     const [filesList, setFilesList] = useState(filesListCache[currentFS])
     const [menu, setMenu] = useState(null)
     const { createNewRequest, abortRequest } = useHttpFn
-    const { processData } = useTargetContextFn
     const { modals, toasts } = useUiContext()
     const fileref = useRef()
     const dropRef = useRef()
     const progressBar = {}
-    //console.log("currentFS", currentFS)
-    //console.log(currentFS)
     const onCancel = () => {
         useUiContextFn.haptic()
         processor.stopCatchResponse()
@@ -183,210 +187,6 @@ const FilesPanel = () => {
         setIsLoading(false)
     }
 
-    const uploadFiles = () => {
-        setIsLoading(true)
-        const cmd = files.command(currentFS, "upload", currentPath[currentFS])
-        const list = fileref.current.files
-        if (list.length > 0) {
-            showProgressModal({
-                modals,
-                title: T("S32"),
-                button1: {
-                    cb: abortRequest,
-                    text: T("S28"),
-                },
-                content: <Progress progressBar={progressBar} max="100" />,
-            })
-            //prepare POST data
-            const formData = new FormData()
-            formData.append("path", currentPath[currentFS])
-            for (let i = 0; i < list.length; i++) {
-                const file = list[i]
-
-                let fileName = ""
-                const needFormatFileName = files.command(
-                    currentFS,
-                    "needFormatFileName",
-                    cmd.args.path,
-                    fileref.current.files[i].name
-                )
-                if (
-                    needFormatFileName.type != "error" &&
-                    needFormatFileName.name
-                ) {
-                    fileName = needFormatFileName.name
-                } else {
-                    fileName = file.name
-                }
-                const arg =
-                    cmd.args.path +
-                    (cmd.args.path.endsWith("/") ? "" : "/") +
-                    fileName +
-                    "S"
-                //append file size first to check updload is complete
-                formData.append(arg, file.size)
-                //append last modified time
-                //no need timezone because will be saved as it is on FileSystem
-                const time_string = getBrowserTime(file.lastModified)
-                const argt = arg.substring(0, arg.length - 1) + "T"
-                formData.append(argt, time_string)
-                //append file
-                formData.append(
-                    "myfiles",
-                    file,
-                    cmd.args.path +
-                        (cmd.args.path.endsWith("/") ? "" : "/") +
-                        fileName
-                )
-            }
-            //now do request
-            createNewRequest(
-                espHttpURL(cmd.url),
-                { method: "POST", id: "upload", body: formData },
-                {
-                    onSuccess: (result) => {
-                        modals.removeModal(modals.getModalIndex("upload"))
-                        const cmdpost = files.command(
-                            currentFS,
-                            "postUpload",
-                            currentPath[currentFS],
-                            fileref.current.files[0].name
-                        )
-                        if (cmdpost.type == "error" || cmdpost.type == "none") {
-                            filesListCache[currentFS] = files.command(
-                                currentFS,
-                                "formatResult",
-                                result
-                            )
-                            setFilesList(filesListCache[currentFS])
-                            setIsLoading(false)
-                        } else {
-                            if (cmdpost.type == "refresh") {
-                                //this is needed because the board is still busy
-                                setTimeout(() => {
-                                    onRefresh(null, cmdpost.arg)
-                                }, cmdpost.timeOut)
-                            }
-                        }
-                    },
-                    onFail: (error) => {
-                        modals.removeModal(modals.getModalIndex("upload"))
-                        toasts.addToast({ content: error, type: "error" })
-                        setIsLoading(false)
-                    },
-                    onProgress: (e) => {
-                        if (
-                            progressBar.update &&
-                            typeof progressBar.update === "function"
-                        )
-                            progressBar.update(e)
-                    },
-                }
-            )
-        }
-    }
-
-    const filesSelected = (e) => {
-        const content = []
-        const length = fileref.current.files.length
-        for (let index = 0; index < length; index++) {
-            content.push(<li>{fileref.current.files[index].name}</li>)
-            if (
-                !files.capability(
-                    currentFS,
-                    "Upload",
-                    currentPath[currentFS],
-                    fileref.current.files[index].name
-                )
-            ) {
-                const eMsg = files.capability(
-                    currentFS,
-                    "Upload",
-                    currentPath[currentFS],
-                    fileref.current.files[index].name,
-                    true
-                )
-                toasts.add({ content: T(eMsg), type: "error" })
-            }
-        }
-
-        showConfirmationModal({
-            modals,
-            title: T("S31"),
-            content: <CenterLeft>{content}</CenterLeft>,
-            button1: {
-                cb: uploadFiles,
-                text: T("S27"),
-            },
-            button2: { text: T("S28") },
-        })
-    }
-
-    const downloadFile = (element) => {
-        const cmd = files.command(
-            currentFS,
-            "download",
-            currentPath[currentFS],
-            element.name
-        )
-        showProgressModal({
-            modals,
-            title: T("S108"),
-            button1: {
-                cb: abortRequest,
-                text: T("S28"),
-            },
-            content: <Progress progressBar={progressBar} max="100" />,
-        })
-        createNewRequest(
-            espHttpURL(cmd.url, cmd.args),
-            { method: "GET", id: "download" },
-            {
-                onSuccess: (result) => {
-                    if (
-                        progressBar.update &&
-                        typeof progressBar.update === "function"
-                    )
-                        progressBar.update(100)
-                    setTimeout(() => {
-                        modals.removeModal(modals.getModalIndex("progression"))
-                    }, 2000)
-
-                    const file = new Blob([result], {
-                        type: "application/octet-stream",
-                    })
-                    if (window.navigator.msSaveOrOpenBlob)
-                        // IE10+
-                        window.navigator.msSaveOrOpenBlob(file, element.name)
-                    else {
-                        // Others
-                        let a = document.createElement("a"),
-                            url = URL.createObjectURL(file)
-                        a.href = url
-                        a.download = element.name
-                        document.body.appendChild(a)
-                        a.click()
-                        setTimeout(function () {
-                            document.body.removeChild(a)
-                            window.URL.revokeObjectURL(url)
-                        }, 0)
-                    }
-                },
-                onFail: (error) => {
-                    modals.removeModal(modals.getModalIndex("progression"))
-                    toasts.addToast({ content: error, type: "error" })
-                },
-                onProgress: (e) => {
-                    if (
-                        progressBar.update &&
-                        typeof progressBar.update === "function"
-                    )
-                        progressBar.update(e)
-                },
-            }
-        )
-    }
-
     const createDirectory = (name) => {
         const cmd = files.command(
             currentFS,
@@ -459,32 +259,6 @@ const FilesPanel = () => {
         if (!norefresh) onRefresh(e, true)
     }
 
-    const ElementClicked = (e, line) => {
-        if (line.size == -1) {
-            currentPath[currentFS] =
-                currentPath[currentFS] +
-                (currentPath[currentFS] == "/" ? "" : "/") +
-                line.name
-            onRefresh(e, files.capability(currentFS, "IsFlatFS"))
-        } else {
-            if (files.capability(currentFS, "Download")) {
-                const content = <li>{line.name}</li>
-                showConfirmationModal({
-                    modals,
-                    title: T("S87"),
-                    content,
-                    button1: {
-                        cb: () => {
-                            downloadFile(line)
-                        },
-                        text: T("S27"),
-                    },
-                    button2: { text: T("S28") },
-                })
-            }
-        }
-    }
-
     const onRefresh = (e, usecache = false) => {
         if (e) useUiContextFn.haptic()
         setIsLoading(true)
@@ -535,6 +309,54 @@ const FilesPanel = () => {
                     )
                 )
                     sendSerialCmd(cmd.cmd)
+            }
+        }
+    }
+
+    const { filesSelected, downloadFile } = createFilesTransfer({
+        modals,
+        toasts,
+        createNewRequest,
+        abortRequest,
+        fileref,
+        progressBar,
+        currentPath,
+        filesListCache,
+        setFilesList,
+        setIsLoading,
+        getCurrentFS: () => currentFS,
+        onRefresh,
+    })
+
+    const dropHandlers = getFileDropHandlers({
+        dropRef,
+        fileref,
+        toasts,
+        onFilesReady: filesSelected,
+    })
+
+    const ElementClicked = (e, line) => {
+        if (line.size == -1) {
+            currentPath[currentFS] =
+                currentPath[currentFS] +
+                (currentPath[currentFS] == "/" ? "" : "/") +
+                line.name
+            onRefresh(e, files.capability(currentFS, "IsFlatFS"))
+        } else {
+            if (files.capability(currentFS, "Download")) {
+                const content = <li>{line.name}</li>
+                showConfirmationModal({
+                    modals,
+                    title: T("S87"),
+                    content,
+                    button1: {
+                        cb: () => {
+                            downloadFile(line)
+                        },
+                        text: T("S27"),
+                    },
+                    button2: { text: T("S28") },
+                })
             }
         }
     }
@@ -640,7 +462,6 @@ const FilesPanel = () => {
         setMenu(newMenu())
     }, [fileSystem])
 
-    console.log(id)
     return (
         <PanelShell
             id={id}
@@ -682,61 +503,7 @@ const FilesPanel = () => {
                 </div>
             </div>
 
-            <div
-                ref={dropRef}
-                class="drop-zone files-list"
-                onDragOver={(e) => {
-                    dropRef.current.classList.add("drop-zone--over")
-                    e.preventDefault()
-                }}
-                onDragLeave={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
-                    e.preventDefault()
-                }}
-                onDragEnd={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
-                    e.preventDefault()
-                }}
-                onDrop={(e) => {
-                    dropRef.current.classList.remove("drop-zone--over")
-                    if (e.dataTransfer.files.length) {
-                        const length = e.dataTransfer.items.length
-                        if (!fileref.current.multiple && length > 1) {
-                            toasts.addToast({
-                                content: T("S193"),
-                                type: "error",
-                            })
-                            console.log("Multiple detected abort")
-                            e.preventDefault()
-                            return
-                        }
-                        //webkitGetAsEntry seems experimental
-                        if (
-                            e.dataTransfer.items &&
-                            e.dataTransfer.items[0].webkitGetAsEntry()
-                        ) {
-                            for (let i = 0; i < length; i++) {
-                                const entry =
-                                    e.dataTransfer.items[i].webkitGetAsEntry()
-                                if (entry.isDirectory) {
-                                    toasts.addToast({
-                                        content: T("S192"),
-                                        type: "error",
-                                    })
-                                    console.log("Directory detected abort")
-                                    e.preventDefault()
-                                    return
-                                }
-                            }
-                        }
-                    }
-
-                    fileref.current.files = e.dataTransfer.files
-
-                    filesSelected(e)
-                    e.preventDefault()
-                }}
-            >
+            <div ref={dropRef} class="drop-zone files-list" {...dropHandlers}>
                 {isLoading && fileSystem != "" && (
                     <Fragment>
                         <center>
@@ -782,162 +549,29 @@ const FilesPanel = () => {
                                 </div>
                             </div>
                         )}
-                        {filesList.files.map((line) => {
-                            return (
-                                <div class="file-line form-control">
-                                    <div
-                                        class={`feather-icon-container file-line-name ${
-                                            files.capability(
-                                                fileSystem,
-                                                "Download"
-                                            ) || line.size == -1
-                                                ? "file-line-action"
-                                                : ""
-                                        }`}
-                                        onclick={(e) => {
-                                            useUiContextFn.haptic()
-                                            ElementClicked(e, line)
-                                        }}
-                                    >
-                                        {line.size == -1 ? (
-                                            <Folder />
-                                        ) : (
-                                            <File />
-                                        )}
-                                        <label>{line.name}</label>
-                                    </div>
-                                    <div class="file-line-controls">
-                                        {line.size != -1 && (
-                                            <Fragment>
-                                                <div>{line.size}</div>
-                                                {files.capability(
-                                                    currentFS,
-                                                    "Process",
-                                                    currentPath[currentFS],
-                                                    line.name
-                                                ) && (
-                                                    <ButtonImg
-                                                        m1
-                                                        ltooltip
-                                                        data-tooltip={T("S74")}
-                                                        icon={<Play />}
-                                                        onClick={(e) => {
-                                                            e.target.blur()
-                                                            useUiContextFn.haptic()
-                                                            const cmd =
-                                                                files.command(
-                                                                    currentFS,
-                                                                    "play",
-                                                                    currentPath[
-                                                                        currentFS
-                                                                    ],
-                                                                    line.name
-                                                                )
-                                                            sendSerialCmd(
-                                                                cmd.cmd
-                                                            )
-                                                        }}
-                                                    />
-                                                )}
-                                                {!files.capability(
-                                                    currentFS,
-                                                    "Process",
-                                                    currentPath[currentFS],
-                                                    line.name
-                                                ) && <div style="width:2rem" />}
-                                            </Fragment>
-                                        )}
-                                        {files.capability(
-                                            currentFS,
-                                            line.size == -1
-                                                ? "DeleteDir"
-                                                : "DeleteFile",
-                                            currentPath[currentFS],
-                                            line.name
-                                        ) && (
-                                            <ButtonImg
-                                                m1
-                                                ltooltip
-                                                data-tooltip={
-                                                    line.size == -1
-                                                        ? T("S101")
-                                                        : T("S100")
-                                                }
-                                                icon={<Trash2 />}
-                                                onClick={(e) => {
-                                                    useUiContextFn.haptic()
-                                                    e.target.blur()
-                                                    const content = (
-                                                        <Fragment>
-                                                            <div>
-                                                                {line.size == -1
-                                                                    ? T("S101")
-                                                                    : T("S100")}
-                                                                :
-                                                            </div>
-                                                            <center>
-                                                                <li>
-                                                                    {line.name}
-                                                                </li>
-                                                            </center>
-                                                        </Fragment>
-                                                    )
-                                                    showConfirmationModal({
-                                                        modals,
-                                                        title: T("S26"),
-                                                        content,
-                                                        button1: {
-                                                            cb: () => {
-                                                                deleteCommand(
-                                                                    line
-                                                                )
-                                                            },
-                                                            text: T("S27"),
-                                                        },
-                                                        button2: {
-                                                            text: T("S28"),
-                                                        },
-                                                    })
-                                                }}
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                            )
-                        })}
+                        {filesList.files.map((line) => (
+                            <FileLine
+                                line={line}
+                                currentFS={currentFS}
+                                path={currentPath[currentFS]}
+                                modals={modals}
+                                onOpen={ElementClicked}
+                                onPlay={(line) => {
+                                    const cmd = files.command(
+                                        currentFS,
+                                        "play",
+                                        currentPath[currentFS],
+                                        line.name
+                                    )
+                                    sendSerialCmd(cmd.cmd)
+                                }}
+                                onDelete={deleteCommand}
+                            />
+                        ))}
                     </Fragment>
                 )}
             </div>
-            <div class="files-list-footer">
-                {!isLoading && filesList && filesList.occupation && (
-                    <div class="filelist-occupation">
-                        <div class="flex-pack">
-                            {T("S98")}:{filesList.total}
-                        </div>
-                        <div class="m-1">-</div>
-                        <div class="flex-pack m-2">
-                            {T("S99")}:{filesList.used}
-                        </div>
-                        <div class="flex-pack hide-low m-1">
-                            <div class="bar bar-sm" style="width:4rem">
-                                <div
-                                    class="bar-item"
-                                    role="progressbar"
-                                    style={`width:${filesList.occupation}%`}
-                                    aria-valuenow={filesList.occupation}
-                                    aria-valuemin="0"
-                                    aria-valuemax="100"
-                                ></div>
-                            </div>
-
-                            <span class="m-1">{filesList.occupation}%</span>
-                        </div>
-                    </div>
-                )}
-                {!isLoading && filesList && filesList.status && (
-                    <div class="file-status">{T(filesList.status)}</div>
-                )}
-            </div>
+            <FilesFooter filesList={filesList} isLoading={isLoading} />
         </PanelShell>
     )
 }

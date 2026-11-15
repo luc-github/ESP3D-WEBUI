@@ -40,6 +40,10 @@ const {
     getLastconnection,
     hasEnabledAuthentication,
     startAutoReport,
+    //optional: the firmware roots its /files API and default document at a
+    //web subdir (e.g. grblHAL HostPath "/www"), while static URLs and
+    //uploads use the real FS path
+    webRoot = "",
 } = require(
     path.normalize(
         __dirname + "/targets/" + target + "/" + subtarget + "/index.js"
@@ -64,6 +68,17 @@ app.use("/", (req, res, next) => {
     } else if (isFile(base + ".gz")) {
         file = base + ".gz"
         encoding = "gzip"
+    } else if (webRoot && !relPath.startsWith(webRoot + "/")) {
+        //grblHAL-style targets: the default document lives under the web
+        //root (e.g. / -> /www/index.html), like the real firmware
+        const baseWeb = path.join(serverpath, "Flash", webRoot, relPath)
+        if (acceptsBr && isFile(baseWeb + ".br")) {
+            file = baseWeb + ".br"
+            encoding = "br"
+        } else if (isFile(baseWeb + ".gz")) {
+            file = baseWeb + ".gz"
+            encoding = "gzip"
+        } else return next()
     } else return next()
     const ext = path.extname(relPath)
     const types = { ".html": "text/html", ".css": "text/css", ".js": "application/javascript", ".json": "application/json" }
@@ -174,8 +189,12 @@ function getFileListArray(mypath, destination) {
     })
 }
 
-function filesList(mypath, destination) {
-    const currentPath = path.normalize(serverpath + destination + mypath)
+function filesList(mypath, destination, useWebRoot) {
+    const baseDir = path.join(
+        serverpath + destination,
+        useWebRoot ? "." + webRoot : "."
+    )
+    const currentPath = path.normalize(baseDir + mypath)
     console.log("[path]" + currentPath)
     const totalUsed = getTotalSize(serverpath + destination)
     const total = (destination == "SD" ? 4096 : 1.31) * 1024 * 1024
@@ -246,8 +265,12 @@ app.all("/updatefw", function (req, res) {
 app.all("/files", function (req, res) {
     let mypath = req.query.path
     let url = req.originalUrl
+    //query-driven actions (list/delete/createdir) use panel paths, which
+    //are rooted at the web root on grblHAL-style targets; uploads use the
+    //real FS path (body.path already includes HostUploadPath)
+    const filesBase = path.join(serverpath + "Flash", "." + webRoot)
     let filepath = path.normalize(
-        serverpath + "Flash" + mypath + "/" + req.query.filename
+        filesBase + mypath + "/" + req.query.filename
     )
     if (url.indexOf("action=deletedir") != -1) {
         console.log("[server]delete directory " + filepath)
@@ -271,7 +294,7 @@ app.all("/files", function (req, res) {
     }
     console.log("[server]path is " + mypath)
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.send(filesList(mypath, "Flash"))
+        return res.send(filesList(mypath, "Flash", true))
     }
     let myFile = req.files.myfiles
     if (typeof myFile.length == "undefined") {

@@ -289,6 +289,7 @@ The dev server also forces its HMR client socket to `wss://localhost:8443/ws` in
 - All HTTP routes: `/command`, `/config`, `/files`, `/sdfiles` (list / upload / delete / mkdir), `/login`, `/updatefw` (stub), static serving.
 - WebSocket push (status reports, `SendWS` messages, `PING:` session keep-alive when auth is enabled).
 - `.gz` / `.br` packaged serving (`.br` only over HTTPS, see §2bis).
+- grblHAL-style web root: when a target exports `webRoot` (grblHAL: `"/www"`), the mock behaves like that firmware — the `/files` API and the default document are rooted at `Flash/www/`, while static URLs (`/www/…`) and uploads use the real filesystem path. Fixtures must mirror the firmware layout (web content under `server/<target>/<subtarget>/Flash/www/`).
 - Authentication, when the target module enables it (`hasEnabledAuthentication`).
 - Extensions hosted under `Flash/ext/…`, 404 behaviour (e.g. missing `preferences.json`), upload flows.
 

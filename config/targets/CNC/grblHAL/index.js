@@ -3230,4 +3230,7 @@ module.exports = {
     getLastconnection,
     hasEnabledAuthentication,
     startAutoReport,
+    //the firmware roots its /files API and default document at /www
+    //(HostPath), while static URLs and uploads use the real FS path
+    webRoot: "/www",
 }
