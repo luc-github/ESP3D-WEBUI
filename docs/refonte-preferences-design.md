@@ -108,3 +108,32 @@ Honnêteté sur les chiffres : gzip déduplique déjà le code répété, donc l
 1. **Palier C : approuvé.** R3 est un nid à bugs, il faut le refaire. Le test de round-trip import/export est le filet obligatoire ; l'import/export n'a jamais généré de retours utilisateurs, donc risque terrain faible — mais on évite quand même de le casser.
 2. **MachineSettings** : migration interne uniquement (validation + gestion d'état partagées) — rendu déjà standard, UX et format fil inchangés.
 3. **Emplacement du module** : `src/components/Helpers/settings/` (fonctions pures, pas des composants).
+
+## 8. Bilan — les trois paliers sont livrés (2026-11-14)
+
+### Palier A — factorisation pure ✅
+
+- `Helpers/settings/` créé : `model.js` (`clone`, `reindexList`, `scanFlag`/`settingsStatus` en early-exit — fini les `JSON.stringify().includes('"hasmodified":true')` à chaque frappe), `fonts.js` (`buildFontFaceCSS` partagé thème/langue), `panelsOrder.js` (`syncPanelsOrder` unique : prune orphelins + insertion placeholder + réindexation).
+- `useSettings` et `tabs/interface` migrés (~250 lignes supprimées).
+
+### Palier B — table des kinds ✅
+
+- `listKinds.js` : métadonnées de champs + options par kind en constantes partagées ; les `depend` macros (FS/SD) déplacés **verbatim** — moteur de conditions non touché.
+- `formatItem` réécrit sur la table (~150 → ~25 lignes) ; `ItemsList` passe à `scanFlag`, `VERBOSE_TYPE_KEYS` dérivé de la table, `clone()`.
+
+### Palier C — représentation unique + MachineSettings ✅
+
+- **R3** : `normalizeListItem` supprimé. `formatItemsList` conserve les items déjà formatés (flags `hasmodified`/`editionMode`/`newItem` préservés — la corruption « double-nesting / [object Object] » est structurellement impossible). Le flatten n'existe plus qu'à l'import et à l'export.
+- **Filet de test** : `test/` (harnais webpack+Node, `npm run test`) — 21 vérifications : round-trip export→import→export stable dans les deux flux, préservation des flags, formes d'export par kind, injection `openonstart`, `depend` verbatim.
+- **R6** : `machineValidation.js` — coquille de validation unique pour les 7 `MachineSettings`, règles par cible passées en paramètre (exception `$337` grblHAL conservée). Flux de sauvegarde batch et format fil ESP400/`$$` non touchés.
+
+### Mesures réelles (grblHAL, index.html.gz)
+
+| Étape | Taille | Δ |
+|---|---|---|
+| Avant refonte (réf. 100 KB+ dépassé) | ~96,3 KB après 1ʳᵉ passe | — |
+| Palier A | 96 337 o | ~−240 o |
+| Palier B | 96 437 o | +100 o |
+| Palier C (R3+R6) | 96 452 o | +15 o |
+
+**Conclusion honnête** : la refonte est **neutre en taille** (±0,1 KB — gzip dédupliquait déjà, cf. §5). Ses gains sont ailleurs : nid à bugs R3 éliminé et prouvé par test, fin des sérialisations complètes par frappe, un seul endroit pour chaque savoir-faire (`listKinds`, `syncPanelsOrder`, `buildFontFaceCSS`, `machineSettingValidation`), et un harnais de régression durable (`npm run test`). La hausse grblHAL 95,8 → 96,9 KB constatée sur la période vient des **nouvelles fonctionnalités CNC** (tool change), pas de la refonte.

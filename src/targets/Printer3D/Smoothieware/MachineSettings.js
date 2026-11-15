@@ -28,6 +28,7 @@ import {
     espHttpURL,
     disableUI,
     formatFileSizeToString,
+    machineSettingValidation,
 } from "../../../components/Helpers"
 import {
     Field,
@@ -35,7 +36,7 @@ import {
     ButtonImg,
     Progress,
 } from "../../../components/Controls"
-import { RefreshCcw, XCircle, Save, Flag, RotateCw } from "preact-feather"
+import { RefreshCcw, XCircle, Save, RotateCw } from "preact-feather"
 import { CMD } from "./CMD-source"
 import {
     showConfirmationModal,
@@ -310,43 +311,18 @@ const MachineSettings = () => {
         }
     }
 
-    const generateValidation = (fieldData, isOverride) => {
-        const validation = {
-            message: <Flag size="1rem" />,
-            valid: true,
-            modified: true,
-        }
-        if (fieldData.type == "text") {
-            if (fieldData.value.trim() == fieldData.initial.trim()) {
-                fieldData.hasmodified = false
-            } else {
-                fieldData.hasmodified = true
-            }
-            if (isOverride) {
-                if (
-                    !(
-                        fieldData.value.trim().startsWith("M") ||
-                        fieldData.value.trim().startsWith("G")
-                    )
-                )
-                    validation.valid = false
-            } else {
-                if (fieldData.value.trim().indexOf(" ") != -1)
-                    validation.valid = false
-            }
-        }
-        if (!validation.valid) {
-            validation.message = T("S42")
-        }
-        fieldData.haserror = !validation.valid
-        setShowSave(checkSaveStatus())
-        if (!fieldData.hasmodified && !fieldData.haserror) {
-            validation.message = null
-            validation.valid = true
-            validation.modified = false
-        }
-        return validation
-    }
+    const generateValidation = (fieldData, isOverride) =>
+        machineSettingValidation(
+            fieldData,
+            (f) => {
+                if (f.type != "text") return true
+                const v = f.value.trim()
+                return isOverride
+                    ? v.startsWith("M") || v.startsWith("G")
+                    : v.indexOf(" ") == -1
+            },
+            () => setShowSave(checkSaveStatus())
+        )
     useEffect(() => {
         if (uisettings.getValue("autoload") && machineSettings.cache == "") {
             setIsLoading(true)

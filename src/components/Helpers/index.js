@@ -57,6 +57,7 @@ import { clone, reindexList, scanFlag, settingsStatus } from "./settings/model"
 import { buildFontFaceCSS } from "./settings/fonts"
 import { syncPanelsOrder } from "./settings/panelsOrder"
 import { VERBOSE_TYPE_OPTIONS, fieldMeta } from "./settings/listKinds"
+import { machineSettingValidation } from "./settings/machineValidation"
 
 export {
     clone,
@@ -67,6 +68,7 @@ export {
     syncPanelsOrder,
     VERBOSE_TYPE_OPTIONS,
     fieldMeta,
+    machineSettingValidation,
     beautifyJSONString,
     capitalize,
     replaceVariables,
