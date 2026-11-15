@@ -18,6 +18,7 @@
 */
 import { h } from "preact"
 import { useUiContextFn } from "../../contexts"
+import { evalConnectionValue, connectionContains } from "./connectionExpr"
 
 const getColClasses = ({ col, ...responsive }) => {
     const responsiveClasses = Object.keys(responsive).reduce(
@@ -107,15 +108,15 @@ const generateDependIds = (depend, settings) => {
 }
 
 //this won't change as it is initalised with [ESP800] which is call at start
+//expressions are parsed, not eval()'d (see connectionExpr.js)
 const connectionDepend = (depend, connectionsettings) => {
     if (Array.isArray(depend)) {
         return depend.every(d => {
             if (d.connection_id && connectionsettings[d.connection_id]) {
-                const quote = d.value && d.value.trim().endsWith("'") ? "'" : "";
                 if (d.value) {
-                    return eval(quote + connectionsettings[d.connection_id] + quote + d.value);
+                    return evalConnectionValue(connectionsettings[d.connection_id], d.value);
                 } else if (d.contains) {
-                    return eval("'" + connectionsettings[d.connection_id] + "'" + ".indexOf('" + d.contains + "')!=-1");
+                    return connectionContains(connectionsettings[d.connection_id], d.contains);
                 }
             }
             return true;

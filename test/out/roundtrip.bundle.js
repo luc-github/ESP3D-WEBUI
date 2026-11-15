@@ -1041,6 +1041,67 @@ module.exports = /*#__PURE__*/JSON.parse('{"settings":{"terminal":[{"id":"termin
 "use strict";
 module.exports = /*#__PURE__*/JSON.parse('{"settings":{"general":[{"id":"emergencystop","type":"text","label":"P15","value":"#SAFETYDOOR#","help":"S97"}],"panels":[{"id":"fixedpanels","type":"boolean","label":"S203","value":false},{"id":"panelsorder","fixed":true,"sorted":true,"depend":[{"id":"fixedpanels","value":true}],"type":"list","label":"S202","value":[{"id":"Files","name":"files"},{"id":"Terminal","name":"terminal"},{"id":"Jog","name":"jog","value":"jog"},{"id":"Laser","name":"laser"},{"id":"Spindle","name":"spindle"},{"id":"Probe","name":"probe"},{"id":"Tool change","name":"tool"},{"id":"Status","name":"status"},{"id":"Overrides","name":"overrides"},{"id":"Notifications","name":"notification"},{"id":"Macros","name":"macros"},{"id":"Extracontents","name":"extracontents"}]}],"polling":[{"id":"pollingcmds","depend":[{"id":"enablepolling","value":true}],"type":"list","sorted":false,"label":"S115","value":[{"id":"samplepolling","name":"3s","cmds":"?;[ESP701]json","refreshtime":"3000"}]}],"files":[{"id":"filesfilter","type":"text","label":"S96","value":"g;G;gco;GCO;gcode;GCODE;nc;txt;cnc;ngc","help":"S97","depend":[{"id":"showfilespanel","value":true}]},{"id":"flashfsgroup","type":"group","label":"S137","depend":[{"id":"showfilespanel","value":true},{"connection_id":"FlashFileSystem","value":"!=\'none\'"}],"value":[{"id":"flashfs","type":"boolean","label":"S63","value":true},{"id":"sort_flashfs_files","type":"boolean","label":"S224","value":true,"depend":[{"id":"flashfs","value":true}]}]},{"id":"sdfsgroup","type":"group","label":"S190","depend":[{"id":"showfilespanel","value":true},{"connection_id":"SDConnection","value":"!=\'none\'"}],"value":[{"id":"directsd","type":"boolean","label":"S63","value":true},{"id":"sort_directsd_files","type":"boolean","label":"S224","value":true,"depend":[{"id":"directsd","value":true}]}]},{"id":"playcmd","type":"text","label":"P119","value":"$F=#","help":"S97","depend":[{"orGroups":[[{"id":"directsd","value":true}],[{"id":"flashfs","value":true}]]}]},{"id":"default_filesystem","type":"select","label":"S223","value":"FLASH","depend":[{"id":"showfilespanel","value":true},{"orGroups":[[{"id":"sd","value":true}],[{"id":"flashfs","value":true}]]}],"options":[{"value":"FLASH","label":"S137","depend":[{"id":"flashfs","value":true}]},{"value":"DIRECTSD","label":"S190","depend":[{"id":"directsd","value":true},{"connection_id":"SDConnection","value":"!=\'none\'"}]}]}],"tool":[{"id":"showtoolpanel","type":"boolean","label":"S63","value":true},{"id":"opentoolonstart","type":"boolean","label":"S93","value":true,"depend":[{"id":"showtoolpanel","value":true}]}],"jog":[{"id":"axis","type":"group","label":"CN8","depend":[{"id":"showjogpanel","value":true}],"value":[{"id":"showx","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"X"}],"label":"X","value":true},{"id":"showy","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"Y"}],"label":"Y","value":true},{"id":"showz","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"Z"}],"label":"Z","value":true},{"id":"showa","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"A"}],"label":"A","value":true},{"id":"showb","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"B"}],"label":"B","value":true},{"id":"showc","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"C"}],"label":"C","value":true},{"id":"showu","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"U"}],"label":"U","value":true},{"id":"showv","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"V"}],"label":"V","value":true},{"id":"showw","type":"boolean","depend":[{"connection_id":"Axisletters","contains":"W"}],"label":"W","value":true}]},{"id":"feedrate","type":"group","label":"CN9","depend":[{"id":"showjogpanel","value":true}],"value":[{"id":"xyfeedrate","depend":[{"orGroups":[[{"id":"showx","value":true}],[{"id":"showy","value":true}]]},{"connection_id":"Axisletters","contains":"Y"}],"type":"number","label":"XY","min":"1","append":"CN1","value":"1000"},{"id":"zfeedrate","depend":[{"id":"showz","value":true},{"connection_id":"Axisletters","contains":"Z"}],"type":"number","label":"Z","append":"CN1","min":"1","value":"1000"},{"id":"afeedrate","depend":[{"id":"showa","value":true},{"connection_id":"Axisletters","contains":"A"}],"type":"number","label":"A","append":"CN1","min":"1","value":"1000"},{"id":"bfeedrate","depend":[{"id":"showb","value":true},{"connection_id":"Axisletters","contains":"B"}],"type":"number","label":"B","append":"CN1","min":"1","value":"1000"},{"id":"cfeedrate","depend":[{"id":"showc","value":true},{"connection_id":"Axisletters","contains":"C"}],"type":"number","label":"C","append":"CN1","min":"1","value":"1000"},{"id":"ufeedrate","depend":[{"id":"showu","value":true},{"connection_id":"Axisletters","contains":"U"}],"type":"number","label":"U","append":"CN1","min":"1","value":"1000"},{"id":"vfeedrate","depend":[{"id":"showv","value":true},{"connection_id":"Axisletters","contains":"V"}],"type":"number","label":"V","append":"CN1","min":"1","value":"1000"},{"id":"wfeedrate","depend":[{"id":"showw","value":true},{"connection_id":"Axisletters","contains":"W"}],"type":"number","label":"W","append":"CN1","min":"1","value":"1000"}]},{"id":"jogdistances","type":"text","label":"CN18","depend":[{"id":"showjogpanel","value":true}],"value":"mm;100;50;10;1;0.1;in;1;0.5;0.1;0.01;0.001"},{"id":"keymap","sorted":false,"fixed":true,"nodelete":true,"editable":true,"label":"S212","type":"list","depend":[{"id":"showjogpanel","value":true}],"value":[{"id":"btn+X","name":"btn+X","key":"ArrowRight"},{"id":"btn-X","name":"btn-X","key":"ArrowLeft"},{"id":"btnHX","name":"btnHX","key":"X"},{"id":"btnZX","name":"btnZX","key":"1"},{"id":"btn+Y","name":"btn+Y","key":"ArrowUp"},{"id":"btn-Y","name":"btn-Y","key":"ArrowDown"},{"id":"btnHY","name":"btnHY","key":"Y"},{"id":"btnZY","name":"btnZY","key":"2"},{"id":"btn+Z","name":"btn+Z","key":"PageUp"},{"id":"btn-Z","name":"btn-Z","key":"PageDown"},{"id":"btnHZ","name":"btnHZ","key":"Z"},{"id":"btnZZ","name":"btnZZ","key":"3"},{"id":"btn+axis","name":"btn+axis","key":"/"},{"id":"btn-axis","name":"btn-axis","key":"*"},{"id":"btnHaxis","name":"btnHaxis","key":"A"},{"id":"btnZaxis","name":"btnZaxis","key":"4"},{"id":"btnHAll","name":"btnHAll","key":"Home"},{"id":"btnZAll","name":"btnZAll","key":"0"},{"id":"btnaxisSel+","name":"btnaxisSel+","key":"Control+0"},{"id":"btnaxisSel-","name":"btnaxisSel-","key":"Control+0"},{"id":"btndistSel+","name":"btndistSel+","key":"+"},{"id":"btndistSel-","name":"btndistSel-","key":"-"},{"id":"btnStop","name":"btnStop","key":"Control+s"},{"id":"btnEStop","name":"btnEStop","key":"Delete"}]}]}}');
 
+/***/ }),
+/* 14 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   connectionContains: () => (/* binding */ connectionContains),
+/* harmony export */   evalConnectionValue: () => (/* binding */ evalConnectionValue)
+/* harmony export */ });
+/*
+ connectionExpr.js - ESP3D WebUI helper file
+
+ Copyright (c) 2026 Luc LEBOSSE. All rights reserved.
+
+ This code is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This code is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with This code; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+//Parser for the connection condition expressions found in "depend" data
+//(e.g. { connection_id: "SDConnection", value: "!='none'" } or
+//{ connection_id: "axis", value: ">3" }). Replaces the previous eval()
+//with identical semantics:
+//- literal quoted ('...')  -> string comparison against the raw value
+//- literal bare            -> numeric comparison (both sides coerced)
+//Unknown expressions fail open (condition considered true), matching the
+//existing "missing connection setting => visible" behavior.
+
+const CONNECTION_OPS = {
+  "==": (a, b) => a == b,
+  "!=": (a, b) => a != b,
+  ">=": (a, b) => a >= b,
+  "<=": (a, b) => a <= b,
+  ">": (a, b) => a > b,
+  "<": (a, b) => a < b
+};
+const evalConnectionValue = (actual, expr) => {
+  const str = String(expr).trim();
+  const quoted = str.endsWith("'");
+  const m = /^(==|!=|>=|<=|>|<)\s*'?(.*?)'?$/.exec(str);
+  if (!m) {
+    console.log("Unsupported connection condition:", expr);
+    return true;
+  }
+  if (quoted) return CONNECTION_OPS[m[1]](String(actual), m[2]);
+  return CONNECTION_OPS[m[1]](Number(actual), Number(m[2]));
+};
+const connectionContains = (actual, searched) => String(actual).indexOf(searched) != -1;
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -1120,6 +1181,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_tabs_interface_importHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _src_tabs_interface_exportHelper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
 /* harmony import */ var _stub_targets__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
+/* harmony import */ var _src_components_Helpers_connectionExpr__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
 /*
  roundtrip.js - offline test of the preferences import/export round-trip
 
@@ -1136,6 +1198,7 @@ __webpack_require__.r(__webpack_exports__);
 
  Run: npm run test:roundtrip
 */
+
 
 
 
@@ -1335,6 +1398,34 @@ const newMacro = (0,_src_tabs_interface_importHelper__WEBPACK_IMPORTED_MODULE_1_
 const macroType = newMacro.value.find(sf => sf.name === "type");
 check("macro type has 4 options", macroType && Array.isArray(macroType.options) && macroType.options.length === 4);
 check("macro FS option keeps its depend block", macroType && macroType.options.some(o => o.value === "FS" && Array.isArray(o.depend) && o.depend.length === 3));
+
+//------------------------------------------------------------------
+// 7 - Connection expression parser (replaces eval in connectionDepend)
+//------------------------------------------------------------------
+//reference implementation: the previous eval()-based behavior
+const legacyEval = (actual, expr) => {
+  const quote = String(expr).trim().endsWith("'") ? "'" : "";
+  // eslint-disable-next-line no-eval -- test-only, reproduces legacy behavior
+  return eval(quote + actual + quote + expr);
+};
+//every pattern found in preferences.json / listKinds.js / Probe panels,
+//crossed with representative connection values
+const exprCases = [["none", "!='none'"], ["direct", "!='none'"], ["none", "=='none'"], ["direct", "=='none'"], ["none", "!='direct'"], ["direct", "=='direct'"], ["MKS", "!='MKS'"], ["none", "!='MKS'"], ["30", "!='30'"], ["20", "!='30'"], ["1", ">1"], ["2", ">1"], ["4", ">3"], ["3", ">3"], ["10", ">2"],
+//numeric coercion: lexicographic compare would fail here
+["5", ">4"]];
+let parserOk = true;
+exprCases.forEach(([actual, expr]) => {
+  const expected = legacyEval(actual, expr);
+  const got = (0,_src_components_Helpers_connectionExpr__WEBPACK_IMPORTED_MODULE_4__.evalConnectionValue)(actual, expr);
+  if (got !== expected) {
+    parserOk = false;
+    console.log(`   mismatch: "${actual}" ${expr} -> ${got}, eval gave ${expected}`);
+  }
+});
+check("parser matches legacy eval on all real patterns", parserOk);
+check("contains: substring found", (0,_src_components_Helpers_connectionExpr__WEBPACK_IMPORTED_MODULE_4__.connectionContains)("XYZA", "A") === true);
+check("contains: substring missing", (0,_src_components_Helpers_connectionExpr__WEBPACK_IMPORTED_MODULE_4__.connectionContains)("XYZ", "A") === false);
+check("unknown expression fails open", (0,_src_components_Helpers_connectionExpr__WEBPACK_IMPORTED_MODULE_4__.evalConnectionValue)("x", "??") === true);
 
 //------------------------------------------------------------------
 console.log(failures === 0 ? "\nAll round-trip tests passed" : "\n" + failures + " test(s) FAILED");

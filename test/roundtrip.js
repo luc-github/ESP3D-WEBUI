@@ -22,6 +22,10 @@ import {
 } from "../src/tabs/interface/importHelper"
 import { exportPreferencesSection } from "../src/tabs/interface/exportHelper"
 import { defaultPreferences } from "./stub-targets"
+import {
+    evalConnectionValue,
+    connectionContains,
+} from "../src/components/Helpers/connectionExpr"
 
 const clone = (o) => JSON.parse(JSON.stringify(o))
 
@@ -252,6 +256,49 @@ check(
             (o) => o.value === "FS" && Array.isArray(o.depend) && o.depend.length === 3
         )
 )
+
+//------------------------------------------------------------------
+// 7 - Connection expression parser (replaces eval in connectionDepend)
+//------------------------------------------------------------------
+//reference implementation: the previous eval()-based behavior
+const legacyEval = (actual, expr) => {
+    const quote = String(expr).trim().endsWith("'") ? "'" : ""
+    // eslint-disable-next-line no-eval -- test-only, reproduces legacy behavior
+    return eval(quote + actual + quote + expr)
+}
+//every pattern found in preferences.json / listKinds.js / Probe panels,
+//crossed with representative connection values
+const exprCases = [
+    ["none", "!='none'"],
+    ["direct", "!='none'"],
+    ["none", "=='none'"],
+    ["direct", "=='none'"],
+    ["none", "!='direct'"],
+    ["direct", "=='direct'"],
+    ["MKS", "!='MKS'"],
+    ["none", "!='MKS'"],
+    ["30", "!='30'"],
+    ["20", "!='30'"],
+    ["1", ">1"],
+    ["2", ">1"],
+    ["4", ">3"],
+    ["3", ">3"],
+    ["10", ">2"], //numeric coercion: lexicographic compare would fail here
+    ["5", ">4"],
+]
+let parserOk = true
+exprCases.forEach(([actual, expr]) => {
+    const expected = legacyEval(actual, expr)
+    const got = evalConnectionValue(actual, expr)
+    if (got !== expected) {
+        parserOk = false
+        console.log(`   mismatch: "${actual}" ${expr} -> ${got}, eval gave ${expected}`)
+    }
+})
+check("parser matches legacy eval on all real patterns", parserOk)
+check("contains: substring found", connectionContains("XYZA", "A") === true)
+check("contains: substring missing", connectionContains("XYZ", "A") === false)
+check("unknown expression fails open", evalConnectionValue("x", "??") === true)
 
 //------------------------------------------------------------------
 console.log(

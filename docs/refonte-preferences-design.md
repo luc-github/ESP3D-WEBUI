@@ -77,7 +77,7 @@ Les données `depend` vivent à trois endroits : entrées de settings (ex. champ
 
 **Règle de la refonte :** ces données sont déplacées verbatim (notamment vers les constantes de `listKinds.js` au palier B) ; leur évaluation n'est pas modifiée. Aucun palier ne touche au moteur.
 
-**Dette connue, hors scope** : `connectionDepend` utilise `eval()` sur les valeurs de connexion. À remplacer un jour par un mini-parseur (palier D éventuel) — sujet de robustesse, pas de taille.
+**Dette connue, soldée (2026-11-15, palier D)** : `connectionDepend` utilisait `eval()` sur les valeurs de connexion. Remplacé par un mini-parseur (`Helpers/connectionExpr.js`) aux sémantiques identiques (littéral quoté → comparaison chaîne, littéral nu → comparaison numérique), vérifiées par le test hors-ligne contre l'`eval` legacy sur tous les motifs réels. Gain inattendu : **−4 KB gz par cible** — l'`eval` direct bloquait la concaténation de modules webpack et le mangling Terser de toute la chaîne de portée.
 
 ## 5. Paliers de migration (incrémental, mesuré à chaque étape)
 
@@ -127,6 +127,12 @@ Honnêteté sur les chiffres : gzip déduplique déjà le code répété, donc l
 - **Filet de test** : `test/` (harnais webpack+Node, `npm run test`) — 21 vérifications : round-trip export→import→export stable dans les deux flux, préservation des flags, formes d'export par kind, injection `openonstart`, `depend` verbatim.
 - **R6** : `machineValidation.js` — coquille de validation unique pour les 7 `MachineSettings`, règles par cible passées en paramètre (exception `$337` grblHAL conservée). Flux de sauvegarde batch et format fil ESP400/`$$` non touchés.
 
+### Palier D — parseur de conditions de connexion ✅ (2026-11-15)
+
+- `eval()` supprimé de `connectionDepend` (les 2 seules occurrences du code) : `Helpers/connectionExpr.js` parse les expressions (`==`/`!=`/`>=`/`<=`/`>`/`<`, littéral quoté = chaîne, nu = numérique) et le `contains`. Fail-open sur expression inconnue, comme le comportement « setting absent ⇒ visible ».
+- Le test hors-ligne compare le parseur à l'`eval` legacy sur les 16 motifs réels (dont le piège de coercion numérique `axis "10" > 2`) : identique partout.
+- **Gain : −4 KB gz par cible** (grblHAL 96 452 → 92 401 o) — voir §4.1.
+
 ### Mesures réelles (grblHAL, index.html.gz)
 
 | Étape | Taille | Δ |
@@ -135,5 +141,6 @@ Honnêteté sur les chiffres : gzip déduplique déjà le code répété, donc l
 | Palier A | 96 337 o | ~−240 o |
 | Palier B | 96 437 o | +100 o |
 | Palier C (R3+R6) | 96 452 o | +15 o |
+| Palier D | 92 401 o | **−4 051 o** |
 
-**Conclusion honnête** : la refonte est **neutre en taille** (±0,1 KB — gzip dédupliquait déjà, cf. §5). Ses gains sont ailleurs : nid à bugs R3 éliminé et prouvé par test, fin des sérialisations complètes par frappe, un seul endroit pour chaque savoir-faire (`listKinds`, `syncPanelsOrder`, `buildFontFaceCSS`, `machineSettingValidation`), et un harnais de régression durable (`npm run test`). La hausse grblHAL 95,8 → 96,9 KB constatée sur la période vient des **nouvelles fonctionnalités CNC** (tool change), pas de la refonte.
+**Conclusion honnête** : les paliers A–C sont **neutres en taille** (±0,1 KB — gzip dédupliquait déjà, cf. §5) ; leur valeur est la maintenabilité et la robustesse (nid à bugs R3 éliminé et prouvé par test, fin des sérialisations complètes par frappe, un seul endroit pour chaque savoir-faire). Le palier D, classé « robustesse seule », s'est révélé être le plus rentable en taille : **−4 KB gz par cible**. La hausse grblHAL 95,8 → 96,9 KB constatée sur la période venait des **nouvelles fonctionnalités CNC** (tool change) ; après palier D, grblHAL est à **92,4 KB** avec ces fonctionnalités incluses. Le harnais de régression (`npm run test`, 25 vérifications) reste en place pour la suite.
