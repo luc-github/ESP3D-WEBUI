@@ -38,6 +38,7 @@ import {
     setPanelsBorderless,
     applyLayout,
     tileCanvasLayout,
+    constrainCanvas,
     saveVisibility,
 } from "../../components/Panels/layoutHelper"
 import {
@@ -46,11 +47,11 @@ import {
     showKeyboardHelp,
 } from "./shortcuts"
 import { useCanvasMode } from "./useCanvasMode"
-import { initDashboardPanels } from "./panelsInit"
+import { initDashboardPanels, computeStartupPanels } from "./panelsInit"
 import { buildExtraPanels } from "./extraPanels"
 import { DashboardMenu } from "./DashboardMenu"
 import { DashboardPanel } from "./DashboardPanel"
-import { usePanelDnD } from "./usePanelDnD"
+import { usePanelsOrder } from "./usePanelsOrder"
 
 //Module-level mutables shared by every dashboard instance of the session:
 //the fixed panels order is loaded once, the shortcuts init runs once
@@ -77,7 +78,7 @@ const Dashboard = () => {
         toggleCanvasMode,
         toggleFullscreen,
     } = useCanvasMode()
-    const { dropIndicator, setDropIndicator, getDragHandlers } = usePanelDnD({
+    const { reorderPanels } = usePanelsOrder({
         panels,
         uisettings,
         interfaceSettings,
@@ -112,6 +113,9 @@ const Dashboard = () => {
             } else {
                 domPanels.forEach(applyLayout)
             }
+            //shrink / clamp / resolve the overlaps of stored layouts
+            //(e.g. coming from a larger window or an old version)
+            constrainCanvas(container)
         } else {
             domPanels.forEach(applyLayout)
         }
@@ -152,10 +156,14 @@ const Dashboard = () => {
         return () => eventBus.off("extraContentIncompatible", listenerId)
     }, [])
 
-    //Reset the panels layout, with a confirmation modal: a misclick
-    //would otherwise be irreversible
+    //Reset the panels layout and visibility, with a confirmation modal:
+    //a misclick would otherwise be irreversible
     const doResetLayout = () => {
         clearLayouts()
+        //restore the startup visibility (onstart panels), discarding the
+        //device-local overrides: a reset must bring back a usable
+        //dashboard even when every panel was closed
+        panels.setVisibles(computeStartupPanels(panels.list, uisettings))
         //on the canvas, reset tiles the panels side by side with no
         //overlap - including the ones currently hidden but enabled in
         //the settings, so they fall in place when shown again
@@ -301,24 +309,15 @@ const Dashboard = () => {
             </div>
             <div
                 class={`panels-container m-2${layoutEditMode ? " panels-layout-edit" : ""}${effectiveCanvasMode ? " panels-canvas" : ""}`}
-                onDragLeave={(e) => {
-                    if (
-                        !e.relatedTarget ||
-                        !e.currentTarget.contains(e.relatedTarget)
-                    )
-                        setDropIndicator({ index: null, side: null })
-                }}
             >
-                {panels.visibles.map((panel, index) => (
+                {panels.visibles.map((panel) => (
                     <DashboardPanel
                         key={panel.id}
                         panel={panel}
-                        index={index}
                         isfixed={isfixed}
                         effectiveCanvasMode={effectiveCanvasMode}
                         layoutEditMode={layoutEditMode}
-                        dropIndicator={dropIndicator}
-                        dragHandlers={getDragHandlers(index)}
+                        onReorder={reorderPanels}
                     />
                 ))}
             </div>

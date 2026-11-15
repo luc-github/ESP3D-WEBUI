@@ -76,70 +76,13 @@
     width: 100%;
 }
 
-body.panel-dragging {
-    cursor: none !important;
+body.panel-moving {
+    user-select: none;
+    cursor: move;
 }
 
 .panel-drag-wrapper {
     position: relative;
-    /* Default: panels with only fullscreen + close */
-    .panel-drag-handle {
-        position: absolute;
-        top: 0.3rem;
-        right: 2.8rem;
-        left: auto;
-        z-index: 10;
-        width: 1rem;
-        height: 1rem;
-        min-width: 1rem;
-        min-height: 1rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: move;
-        padding: 0;
-        border-radius: 0.2rem;
-        color: #5755d9;
-        opacity: 0.85;
-        box-sizing: border-box;
-        background: transparent;
-        border: 0 none;
-        outline: none;
-        box-shadow: none;
-        &:focus,
-        &:focus-visible {
-            outline: none;
-            box-shadow: none;
-            border: 0 none;
-        }
-        /* Same hover as .btn-header for consistent look with dropdown/fullscreen/close */
-        &:hover {
-            opacity: 1;
-            color: white !important;
-            background-color: blue !important;
-        }
-        &:active {
-            cursor: move;
-            color: white !important;
-            background-color: blue !important;
-        }
-    }
-    /* Panels with dropdown + fullscreen + close (Chart, Files, Notifications, Terminal, Jog, Extruders) */
-    &.panel-has-menu .panel-drag-handle {
-        right: 4.3rem;
-    }
-    /* Extra content: refresh + fullscreen + close (3 buttons) */
-    &.panel-extra-content .panel-drag-handle {
-        right: 4.3rem;
-    }
-    &.panel-drop-indicator-before {
-        border-left: 4px solid #5755d9;
-        margin-left: -4px;
-    }
-    &.panel-drop-indicator-after {
-        border-right: 4px solid #5755d9;
-        margin-right: -4px;
-    }
 }
 
 /* Collapsible panels: enabled in mobile view (preference) or on narrow
@@ -216,11 +159,6 @@ body.panel-dragging {
 }
 
 .panels-layout-edit {
-    /* avoid conflict between HTML5 panel drag and layout controls */
-    .panel-drag-handle {
-        display: none !important;
-    }
-
     .panel-layout-controls {
         position: absolute;
         bottom: 0.15rem;
@@ -276,18 +214,26 @@ body.panel-dragging {
     display: block;
     position: relative;
 
-    /* order drag & drop has no meaning on a fixed canvas */
-    .panel-drag-handle {
+    /* smooth live rearrangement when panels swap slots while dragging */
+    .panel-drag-wrapper,
+    .panel-layout-wrapper {
+        transition:
+            left 0.15s ease,
+            top 0.15s ease,
+            width 0.15s ease,
+            height 0.15s ease;
+    }
+
+    /* on a fixed canvas the panels are never fullscreened (the canvas
+       already is), and they can be closed only from the layout
+       edition: outside the edition the fixed UI has no close button -
+       visibility is then managed from the dashboard panels menu */
+    .panel > .navbar .btn-screen {
         display: none !important;
     }
 
-    /* on a fixed canvas the panels are not closed nor fullscreened:
-       visibility is managed from the dashboard panels menu */
-    .panel > .navbar {
-        .btn-screen,
-        .btn-close {
-            display: none !important;
-        }
+    &:not(.panels-layout-edit) .panel > .navbar .btn-close {
+        display: none !important;
     }
 }
 
@@ -306,6 +252,13 @@ body.panel-dragging {
     z-index: 20000;
     margin: 0;
     overflow: auto;
+
+    /* the canvas uses the whole viewport: no container margin, the
+       panels carry their own uniform gap (CANVAS_MARGIN in
+       layoutHelper.js) */
+    .panels-container {
+        margin: 0;
+    }
 }
 
 /* keep the cached extension contents (iframes) above the fullscreen
@@ -325,18 +278,27 @@ body.panel-dragging {
     outline-offset: -0.15rem;
 }
 
-/* in canvas edition the whole panel is the move handle, and every panel
+/* in layout edition the whole panel is the drag handle: every panel
    gets a dashed outline so its bounds stay visible - essential when the
-   panel chrome is hidden (borderless mode) */
-.panels-canvas.panels-layout-edit .panel {
+   panel chrome is hidden (borderless mode). On touch the grid keeps its
+   vertical scroll, the fixed canvas captures the whole gesture */
+.panels-layout-edit .panel {
     cursor: move;
     outline: 0.15rem dashed #e74c3c;
     outline-offset: -0.15rem;
+    touch-action: pan-y;
 }
 
-body.panel-canvas-moving {
-    user-select: none;
-    cursor: move;
+.panels-canvas.panels-layout-edit .panel {
+    touch-action: none;
+}
+
+/* a panel moved or resized by the pointer floats above the others and
+   follows the pointer instantly (no transition) */
+.panel-lifted {
+    z-index: 40;
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.35);
+    transition: none !important;
 }
 
 .panel-canvas-resize {

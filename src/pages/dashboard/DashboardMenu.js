@@ -17,7 +17,7 @@
  License along with This code; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import { h } from "preact"
+import { h, Fragment } from "preact"
 import { useEffect, useState } from "preact/hooks"
 import {
     List,
@@ -25,8 +25,12 @@ import {
     Circle,
     HelpCircle,
     RotateCcw,
+    Settings,
+    Activity,
+    Info,
 } from "preact-feather"
-import { useUiContextFn } from "../../contexts"
+import { useUiContextFn, useSettingsContext } from "../../contexts"
+import { Name } from "../../targets"
 import { T } from "../../components/Translations"
 
 //One menu entry per panel: it owns its visibility state, so no hooks live
@@ -87,7 +91,8 @@ const MenuEntry = ({ label, checked, icon, onClick, className }) => (
 )
 
 //The dashboard dropdown: shortcuts toggle / help, layout edition controls,
-//hide-all, and one visibility entry per panel
+//hide-all, one visibility entry per panel, and - in canvas (fixed) mode
+//only, where the dashboard covers the header - the main pages links
 const DashboardMenu = ({
     panels,
     uisettings,
@@ -104,7 +109,26 @@ const DashboardMenu = ({
     onToggleCanvasMode,
     borderlessMode,
     onToggleBorderless,
-}) => (
+}) => {
+    const { interfaceSettings } = useSettingsContext()
+    const aboutLabel = T("S12").replace(
+        "%s",
+        interfaceSettings.current &&
+            interfaceSettings.current.custom &&
+            interfaceSettings.current.custom.name
+            ? interfaceSettings.current.custom.name
+            : Name
+    )
+    //In canvas mode open panels are closed directly (edition X), so the
+    //menu only lists the closed ones; in grid mode every panel is listed
+    const menuPanels = effectiveCanvasMode
+        ? panels.list.filter(
+              (panel) =>
+                  uisettings.getValue(panel.show) &&
+                  !panels.visibles.find((element) => element.id == panel.id)
+          )
+        : panels.list
+    return (
     <div class="dropdown">
         <span
             class="dropdown-toggle btn tooltip tooltip-right m-1"
@@ -160,22 +184,8 @@ const DashboardMenu = ({
                     onClick={onToggleBorderless}
                 />
             )}
-            <li class="divider"></li>
-            <li class="menu-item">
-                <div
-                    class="menu-entry"
-                    onclick={(e) => {
-                        useUiContextFn.haptic()
-                        panels.setVisibles([])
-                    }}
-                >
-                    <div class="menu-panel-item">
-                        <span class="text-menu-item">{T("S117")}</span>
-                        <span class="btn btn-clear" aria-label="Close" />
-                    </div>
-                </div>
-            </li>
-            {panels.list.map((panel) => (
+            {menuPanels.length > 0 && <li class="divider"></li>}
+            {menuPanels.map((panel) => (
                 <PanelVisibilityItem
                     key={panel.id}
                     panel={panel}
@@ -185,8 +195,52 @@ const DashboardMenu = ({
                     isfixed={isfixed}
                 />
             ))}
+            {effectiveCanvasMode && (
+                <Fragment>
+                    <li class="divider"></li>
+                    <li class="menu-item">
+                        <a
+                            class="menu-entry feather-icon-container"
+                            href="#/settings"
+                            onclick={() => {
+                                useUiContextFn.haptic()
+                            }}
+                        >
+                            <Settings size="0.8rem" />
+                            <span class="text-menu-item">{T("S14")}</span>
+                        </a>
+                    </li>
+                    {uisettings.getValue("showinformationpage") && (
+                        <li class="menu-item">
+                            <a
+                                class="menu-entry feather-icon-container"
+                                href="#/informations"
+                                onclick={() => {
+                                    useUiContextFn.haptic()
+                                }}
+                            >
+                                <Activity size="0.8rem" />
+                                <span class="text-menu-item">{T("S123")}</span>
+                            </a>
+                        </li>
+                    )}
+                    <li class="menu-item">
+                        <a
+                            class="menu-entry feather-icon-container"
+                            href="#/about"
+                            onclick={() => {
+                                useUiContextFn.haptic()
+                            }}
+                        >
+                            <Info size="0.8rem" />
+                            <span class="text-menu-item">{aboutLabel}</span>
+                        </a>
+                    </li>
+                </Fragment>
+            )}
         </ul>
     </div>
-)
+    )
+}
 
 export { DashboardMenu }

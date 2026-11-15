@@ -36,10 +36,20 @@ const useCanvasMode = () => {
         () => typeof document !== "undefined" && !!document.fullscreenElement
     )
 
-    //track the browser fullscreen state for the toggle button icon
+    //track the browser fullscreen state for the toggle button icon; while
+    //fullscreen is active give #app the page background, otherwise the
+    //browser paints its default black backdrop around the panels
     useEffect(() => {
-        const onFullscreenChange = () =>
-            setIsFullscreen(!!document.fullscreenElement)
+        const onFullscreenChange = () => {
+            const active = !!document.fullscreenElement
+            setIsFullscreen(active)
+            const app = document.getElementById("app")
+            if (app) {
+                app.style.backgroundColor = active
+                    ? window.getComputedStyle(document.body).backgroundColor
+                    : ""
+            }
+        }
         document.addEventListener("fullscreenchange", onFullscreenChange)
         return () =>
             document.removeEventListener("fullscreenchange", onFullscreenChange)

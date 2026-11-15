@@ -19,21 +19,24 @@
 */
 import { applyVisibilityOverrides } from "../../components/Panels/layoutHelper"
 
+//Panels flagged to open on start (onstart) and enabled in the settings
+//(show) - the startup visibility, before any device-local override
+const computeStartupPanels = (panelsList, uisettings) =>
+    panelsList.reduce((acc, curr) => {
+        if (
+            (typeof curr.onstart === "boolean"
+                ? curr.onstart
+                : uisettings.getValue(curr.onstart)) &&
+            uisettings.getValue(curr.show)
+        )
+            acc.push(curr)
+        return acc
+    }, [])
+
 //Visible panels = enabled in settings (show) + flagged to open on start,
 //with the device-local visibility overrides applied
 const computeVisiblePanels = (panelsList, uisettings) =>
-    applyVisibilityOverrides(
-        panelsList.reduce((acc, curr) => {
-            if (
-                (typeof curr.onstart === "boolean"
-                    ? curr.onstart
-                    : uisettings.getValue(curr.onstart)) &&
-                uisettings.getValue(curr.show)
-            )
-                acc.push(curr)
-            return acc
-        }, [])
-    )
+    applyVisibilityOverrides(computeStartupPanels(panelsList, uisettings))
 
 //Load the saved panels order into panels.list and compute the visible
 //panels. Called on every render by the dashboard until panels.initDone is
@@ -117,4 +120,4 @@ const initDashboardPanels = ({ panels, uisettings, isfixed, fixedPanels }) => {
     }
 }
 
-export { initDashboardPanels, computeVisiblePanels }
+export { initDashboardPanels, computeVisiblePanels, computeStartupPanels }

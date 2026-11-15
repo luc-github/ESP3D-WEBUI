@@ -18,74 +18,39 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { Anchor } from "preact-feather"
-import { T } from "../../components/Translations"
 import { PanelLayoutControls } from "../../components/Panels/PanelLayoutControls"
 
-//One visible dashboard panel: plain wrapper, or draggable wrapper with a
-//drag handle and a drop position indicator when panels are fixed
+//One visible dashboard panel: a wrapper carrying the panel content and,
+//in layout edition mode, the layout controls (pointer drag to reorder
+//and width span in grid mode, move / resize / borderless in canvas
+//mode - see PanelLayoutControls.js). Only fixed panels can be
+//reordered, hence the distinct wrapper class
 const DashboardPanel = ({
     panel,
-    index,
     isfixed,
     effectiveCanvasMode,
     layoutEditMode,
-    dropIndicator,
-    dragHandlers,
+    onReorder,
 }) => {
+    const controls = layoutEditMode && (
+        <PanelLayoutControls
+            panelId={panel.id}
+            mode={effectiveCanvasMode ? "canvas" : "grid"}
+            onReorder={onReorder}
+        />
+    )
     if (!isfixed) {
         return (
             <div class="panel-layout-wrapper">
                 {panel.content}
-                {layoutEditMode && (
-                    <PanelLayoutControls
-                        panelId={panel.id}
-                        mode={effectiveCanvasMode ? "canvas" : "grid"}
-                    />
-                )}
+                {controls}
             </div>
         )
     }
-    const isExtraPanel =
-        panel.settingid && panel.settingid.startsWith("extracontents_")
-    const {
-        handleDragStart,
-        handleDragOver,
-        handleDrop,
-        handleDragEnd,
-    } = dragHandlers
     return (
-        <div
-            class={`panel-drag-wrapper${panel.hasMenu ? " panel-has-menu" : ""}${
-                isExtraPanel ? " panel-extra-content" : ""
-            }${
-                dropIndicator.index === index
-                    ? ` panel-drop-indicator-${dropIndicator.side}`
-                    : ""
-            }`}
-            draggable={!effectiveCanvasMode}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onDragEnd={handleDragEnd}
-            data-panel-index={index}
-        >
-            <span
-                class="panel-drag-handle tooltip tooltip-left"
-                data-tooltip={T("S256")}
-                draggable={!effectiveCanvasMode}
-                onDragStart={handleDragStart}
-                aria-label={T("S256")}
-            >
-                <Anchor size="0.8rem" />
-            </span>
+        <div class="panel-drag-wrapper">
             {panel.content}
-            {layoutEditMode && (
-                <PanelLayoutControls
-                    panelId={panel.id}
-                    mode={effectiveCanvasMode ? "canvas" : "grid"}
-                />
-            )}
+            {controls}
         </div>
     )
 }

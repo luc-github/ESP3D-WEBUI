@@ -101,10 +101,10 @@ const setPanelsCollapsed = (ids, collapsed) => {
 }
 
 //Elements inside the navbar that must keep their own behavior
-//(buttons, dropdown menus, links, inputs, drag handle)
+//(buttons, dropdown menus, links, inputs)
 const isInteractiveTarget = (target) =>
     !!target.closest(
-        "button, a, input, select, textarea, label, .btn, .dropdown, .menu, .panel-drag-handle"
+        "button, a, input, select, textarea, label, .btn, .dropdown, .menu"
     )
 
 const handleClick = (e) => {
