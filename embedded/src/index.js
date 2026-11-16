@@ -373,10 +373,12 @@ function processFWJson(text) {
     const radioMode = json.RadioMode || json.WiFiMode;
     if (radioMode && json.WebSocketIP) {
         if (isLimitedEnvironment(radioMode)) {
+            // Default ports are not in window.location.port: only append an
+            // explicit one, whatever the scheme (http/https).
             let address =
                 window.location.protocol + "//" +
                 json.WebSocketIP +
-                (window.location.port == 80 ? "" : ":" + window.location.port);
+                (window.location.port ? ":" + window.location.port : "");
             InfoMSGLimited(
                 "It seems you are in limited environment,<br> please open a browser using<BR>" +
                     address +
@@ -439,7 +441,11 @@ function startSocket(ip, port, sync) {
             );
             return;
         }
-        wsUrl = "ws://" + ip + ":" + port;
+        // Synchronous: dedicated firmware port; wss is mandatory when the
+        // page is served over https (ws would be blocked as mixed content).
+        const scheme =
+            window.location.protocol === "https:" ? "wss://" : "ws://";
+        wsUrl = scheme + ip + ":" + port;
     }
 
     wsSource = new WebSocket(wsUrl, ["webui-v3"]);

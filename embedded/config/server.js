@@ -6,6 +6,18 @@ const port = 8080;
 /*
  * Web Server for development
  * Web Socket server for development
+ *
+ * Secure test mode (`npm run dev secure`): Caddy terminates TLS in front of
+ * this mock (config/Caddyfile), like the webui dev flow:
+ *   https://localhost:8443 -> webpack dev server 8088 (dev bundle)
+ *   https://localhost:8445 -> this mock 8080 (packaged page + /ws upgrade)
+ *   wss://localhost:8444   -> this mock's WebSocket 81
+ * The launcher sets WS_PUBLIC_PORT=8444 so [ESP800] reports the secure port.
+ * No native TLS here on purpose: a self-signed certificate cannot be accepted
+ * for a WebSocket connection (the wss handshake has no browser error UI), so
+ * the test server would create failures to manage instead of running tests -
+ * Caddy's local CA is installed in the OS trust store and avoids the issue.
+ * WEBCOMM=Asynchronous switches the reported [ESP800] WebCommunication.
  */
 const wscolor = chalk.cyan;
 const expresscolor = chalk.green;
@@ -17,18 +29,56 @@ const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 let sdpath = path.normalize(__dirname + "/../server/sd/");
 
-let WebSocketServer = require("ws").Server,
-    wss = new WebSocketServer({
+let WebSocketServer = require("ws").Server;
+// All WebSocket endpoints share one connection handler and one broadcast
+// list:
+//  - standalone ws on 81 (wss://localhost:8444 via Caddy in secure mode)
+//  - /ws upgrade on the HTTP page port, like the firmware
+//    ("Asynchronous" mode connects to window.location.host + /ws)
+const wsServers = [];
+function registerWsServer(server, label) {
+    wsServers.push(server);
+    server.on("connection", onWsConnection);
+    server.on("error", (error) => {
+        console.log(wscolor(`[ws] Error (${label}):`), error);
+    });
+}
+function forEachWsClient(callback) {
+    wsServers.forEach((server) => server.clients.forEach(callback));
+}
+registerWsServer(
+    new WebSocketServer({
         port: 81,
         handleProtocols: function (protocol) {
             console.log("protocol received from client " + protocol);
             return "webui-v3";
-            return null;
         },
-    });
+    }),
+    "81"
+);
 app.use(fileUpload({ preserveExtension: true, debug: false }));
-app.listen(port, () =>
+
+// Like the firmware: serve the packaged page (gzip) from the "flash" dir
+app.use("/", (req, res, next) => {
+    if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next();
+    const relPath = !req.path || req.path === "/" ? "index.html" : req.path;
+    const base = path.join(serverpath, relPath);
+    if (fs.existsSync(base + ".gz") && fs.statSync(base + ".gz").isFile()) {
+        res.setHeader("Content-Type", "text/html");
+        res.setHeader("Content-Encoding", "gzip");
+        res.setHeader("Vary", "Accept-Encoding");
+        return res.sendFile(path.resolve(base + ".gz"));
+    }
+    next();
+});
+app.use("/", express.static(serverpath));
+
+const httpServer = app.listen(port, () =>
     console.log(expresscolor(`[express] Listening on port ${port}!`))
+);
+registerWsServer(
+    new WebSocketServer({ server: httpServer, path: "/ws" }),
+    "http/ws"
 );
 
 //app.use(express.urlencoded({ extended: false }));
@@ -38,7 +88,7 @@ function SendBinary(text) {
     for (let i = 0; i < array.length; ++i) {
         array[i] = text.charCodeAt(i);
     }
-    wss.clients.forEach(function each(client) {
+    forEachWsClient(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
             client.send(array);
         }
@@ -101,9 +151,9 @@ app.get("/command", function (req, res) {
                 FWTarget: 40,
                 SDConnection: "none",
                 Authentication: "Disabled",
-                WebCommunication: "Synchronous",
+                WebCommunication: process.env.WEBCOMM || "Synchronous",
                 WebSocketIP: "localhost",
-                WebSocketPort: "81",
+                WebSocketPort: process.env.WS_PUBLIC_PORT || "81",
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
@@ -668,11 +718,11 @@ app.all("/files", function (req, res) {
     }
 });
 
-wss.on("connection", (socket, request) => {
+function onWsConnection(socket, request) {
     console.log(wscolor("[ws] New connection"));
     console.log(wscolor(`[ws] currentID:${currentID}`));
     socket.send(`currentID:${currentID}`);
-    wss.clients.forEach(function each(client) {
+    forEachWsClient(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
             client.send(`activeID:${currentID}`);
         }
@@ -681,7 +731,4 @@ wss.on("connection", (socket, request) => {
     socket.on("message", (message) => {
         console.log(wscolor("[ws] received: %s", message));
     });
-});
-wss.on("error", (error) => {
-    console.log(wscolor("[ws] Error: %s", error));
-});
+}

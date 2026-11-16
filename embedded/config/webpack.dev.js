@@ -10,7 +10,15 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true, // to make our SPA works after a full reload, so that it serves 'index.html' when 404 response
-        open: true,
+        // secure mode (npm run dev secure): page served by Caddy over https
+        open: process.env.SECURE ? "https://localhost:8443/" : true,
+        // HMR websocket must go through the Caddy front in secure mode:
+        // the default URL is derived from the page (https) but keeps this
+        // server's plain-http port, which fails with ERR_SSL_PROTOCOL_ERROR
+        // and retries forever. Caddy proxies the ws upgrade to 8088.
+        client: process.env.SECURE
+            ? { webSocketURL: "wss://localhost:8443/ws" }
+            : undefined,
         static: {
             directory: path.resolve(__dirname, "./dist"),
         },

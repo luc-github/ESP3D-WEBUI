@@ -9,7 +9,7 @@
     "pack": "webpack --config config/webpack.prod.js",
     "convert-assets": "node ./config/buildassets.js",
     "server": "nodemon config/server.js",
-    "dev": "concurrently \"npm run server\" \"npm run front\"",
+    "dev": "node config/dev.js",
     "build": "npm run pack && npm run convert-assets"
   },
   "author": "",
