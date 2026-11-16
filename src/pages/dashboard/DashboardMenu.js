@@ -25,12 +25,12 @@ import {
     Circle,
     HelpCircle,
     RotateCcw,
-    Settings,
+    Tool,
     Activity,
     Info,
 } from "preact-feather"
 import { useUiContextFn, useSettingsContext } from "../../contexts"
-import { Name } from "../../targets"
+import { AppLogo, WebUILogo, variablesList, Name, Target } from "../../targets"
 import { T } from "../../components/Translations"
 
 //One menu entry per panel: it owns its visibility state, so no hooks live
@@ -110,7 +110,7 @@ const DashboardMenu = ({
     borderlessMode,
     onToggleBorderless,
 }) => {
-    const { interfaceSettings } = useSettingsContext()
+    const { interfaceSettings, connectionSettings } = useSettingsContext()
     const aboutLabel = T("S12").replace(
         "%s",
         interfaceSettings.current &&
@@ -198,18 +198,49 @@ const DashboardMenu = ({
             {effectiveCanvasMode && (
                 <Fragment>
                     <li class="divider"></li>
+                    {!variablesList.hideFeatures && (
+                        <li class="menu-item">
+                            <a
+                                class="menu-entry feather-icon-container"
+                                href="#/settings/features"
+                                onclick={() => {
+                                    useUiContextFn.haptic()
+                                }}
+                            >
+                                <AppLogo height="0.8rem" />
+                                <span class="text-menu-item">{T("S36")}</span>
+                            </a>
+                        </li>
+                    )}
                     <li class="menu-item">
                         <a
                             class="menu-entry feather-icon-container"
-                            href="#/settings"
+                            href="#/settings/interface"
                             onclick={() => {
                                 useUiContextFn.haptic()
                             }}
                         >
-                            <Settings size="0.8rem" />
-                            <span class="text-menu-item">{T("S14")}</span>
+                            <WebUILogo height="0.8rem" />
+                            <span class="text-menu-item">{T("S17")}</span>
                         </a>
                     </li>
+                    {uisettings.getValue("showmachinesettings") &&
+                        connectionSettings.current.FWTarget != 0 && (
+                            <li class="menu-item">
+                                <a
+                                    class="menu-entry feather-icon-container"
+                                    href="#/settings/machine"
+                                    onclick={() => {
+                                        useUiContextFn.haptic()
+                                    }}
+                                >
+                                    <Tool size="0.8rem" />
+                                    <span class="text-menu-item">
+                                        {T(Target)}
+                                    </span>
+                                </a>
+                            </li>
+                        )}
                     {uisettings.getValue("showinformationpage") && (
                         <li class="menu-item">
                             <a

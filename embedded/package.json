@@ -1,0 +1,42 @@
+{
+  "name": "base",
+  "version": "1.0.0",
+  "description": "base for webpack project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "front": "webpack serve --config config/webpack.dev.js ",
+    "pack": "webpack --config config/webpack.prod.js",
+    "convert-assets": "node ./config/buildassets.js",
+    "server": "nodemon config/server.js",
+    "dev": "concurrently \"npm run server\" \"npm run front\"",
+    "build": "npm run pack && npm run convert-assets"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "babel-loader": "^8.2.5",
+    "chalk": "^4.1.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "compression-webpack-plugin": "^10.0.0",
+    "concurrently": "^7.2.2",
+    "core-js": "^3.23.3",
+    "css-loader": "^6.7.1",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "express-ws": "^5.0.2",
+    "html-inline-css-webpack-plugin": "^1.11.1",
+    "html-inline-script-webpack-plugin": "^3.0.0",
+    "html-minimizer-webpack-plugin": "^4.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "nodemon": "^3.0.0",
+    "regenerator-runtime": "^0.13.9",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2"
+  }
+}

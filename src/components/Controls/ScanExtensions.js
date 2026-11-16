@@ -162,9 +162,17 @@ const ScanExtensionsList = ({ id, refreshfn, extensionCheckConfig, addedPaths = 
 
     const scanExtensions = () => {
         setIsLoading(true)
-        const base = useSettingsContextFn.getValue("HostUploadPath") || ""
-        const extensionsPath = base.replace(/\/$/, "") + "/extensions"
-        const rootPath = base || "/"
+        //The /files API is rooted at the host path (panel convention):
+        //list paths are relative to the web root. sdfiles takes absolute
+        //SD paths instead, so keep the upload path prefix there
+        const isFlash = useSettingsContextFn.getValue("HostTarget") === "files"
+        const base = isFlash
+            ? ""
+            : (
+                  useSettingsContextFn.getValue("HostUploadPath") || ""
+              ).replace(/\/$/, "")
+        const extensionsPath = base + "/extensions"
+        const rootPath = base + "/"
 
         createNewRequest(
             espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: extensionsPath }),

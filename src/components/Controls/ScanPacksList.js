@@ -74,10 +74,18 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
 
     const ScanPacks = () => {
         setIsLoading(true)
-        const base = useSettingsContextFn.getValue("HostUploadPath") || ""
+        //The /files API is rooted at the host path (panel convention):
+        //list paths are relative to the web root. sdfiles takes absolute
+        //SD paths instead, so keep the upload path prefix there
+        const isFlash = useSettingsContextFn.getValue("HostTarget") === "files"
+        const base = isFlash
+            ? ""
+            : (
+                  useSettingsContextFn.getValue("HostUploadPath") || ""
+              ).replace(/\/$/, "")
         const subdir = isLanguage ? "languages" : "themes"
-        const subdirPath = base.replace(/\/$/, "") + "/" + subdir
-        const rootPath = base || "/"
+        const subdirPath = base + "/" + subdir
+        const rootPath = base + "/"
 
         createNewRequest(
             espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: subdirPath }),

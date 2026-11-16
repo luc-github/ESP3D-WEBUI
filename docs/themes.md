@@ -70,6 +70,29 @@ All fields are optional. Injection order: `variables` → `css` → `fonts` → 
 
 ---
 
+## Reference theme
+
+[`themes_samples/theme-reference`](../themes_samples/theme-reference) is a complete, working template: every selector a theme can restyle — page, buttons, forms, navbars, tabs, panels, dashboard layout (grid, canvas, edition mode), menus, modals, toasts, tables, labels, bars, tooltips, terminal, files panel, extensions containers, logo, scrollbars — organized in commented sections with the factory default values. Start from it rather than from a blank file.
+
+Two ready-made examples built from it:
+
+- [`themes_samples/theme-ocean`](../themes_samples/theme-ocean) — **simple**: a palette swap in legacy CSS format. Only the main surfaces are restyled, everything else keeps the factory look.
+- [`themes_samples/theme-neon.json`](../themes_samples/theme-neon.json) — **advanced**: a dark neon theme in bundle format, showing `manifest`, `variables`, a web font via `@import` (internet required — embed a base64 font for offline devices), glow / motion effects, and a custom logo injected by `js`.
+
+Key points:
+
+- It uses the legacy CSS format (plain file, no extension) so it can be uploaded as-is, but it defines its palette as CSS custom properties on `:root` — change a variable once and every rule follows.
+- All rules carry `!important` (theme files must win over the built-in stylesheet).
+- Values marked `[= derived]` are Sass `lighten()`/`darken()` shades of a base color; treat them as indicative.
+- Three variables are **managed by the application** from the user preferences and must not be set by themes: `--panel-height`, `--panel-min-width`, `--panel-max-width`.
+- One variable is an optional **theme hook read by the application**: `--body-bg` (background of fieldset legends that cover a top border).
+- In canvas (fixed) mode the dashboard overlay takes its background inline from the page `body` color, so styling `body` is enough — no extra rule needed.
+- Panels can be borderless (`.panels-borderless` on `#app`, or `.panel-borderless` per panel): the whole chrome is then removed by design.
+- Close buttons are only visible in layout edition in canvas mode: `.panels-canvas:not(.panels-layout-edit) .panel > .navbar .btn-close` hides them. A theme can force them visible by overriding that rule.
+- Only the Spectre modules actually compiled in can be themed: buttons, forms, labels, codes, tables, media, navbar, badges, bars, cards, dropdowns, empty, menus, modals, navs, panels, tabs, toasts, tooltips. Accordions, avatars, breadcrumbs, chips, pagination, popovers, steps, tiles and heroes are **not** part of the build — rules targeting them are dead weight.
+
+---
+
 ## Bundle fields
 
 ### `manifest` (optional object)
