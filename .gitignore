@@ -7,6 +7,5 @@ repomix-output.xml
 generate-context.ps1
 .env
 languages/backup/
-devserver.*
 build_analysis/*
 test/out/
