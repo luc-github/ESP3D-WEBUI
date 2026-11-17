@@ -4,29 +4,22 @@ Extruders.js - ESP3D WebUI component file
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Fragment, h } from "preact"
 import { T } from "../Translations"
 import { useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import {
-    ButtonImg,
-    Loading,
-    Field,
-    FullScreenButton,
-    CloseButton,
-} from "../Controls"
+import { ButtonImg, Loading, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
 import {
@@ -35,9 +28,8 @@ import {
     MixedExtrudersControl,
 } from "SubTargetDir"
 import { Plus, Minus, Edit3 } from "preact-feather"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 import { showModal } from "../Modal"
-import { ContainerHelper } from "../Controls"
 
 const extrudeDistance = []
 const extruderFeedRate = { value: 0 }
@@ -242,54 +234,38 @@ const ExtrudersPanel = () => {
     ]
     console.log(id)
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    {iconsTarget["Extruder"]}
-                    <strong class="text-ellipsis">{T("P36")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="extruders-container">
-                    {!isMixedExtruder &&
-                        temperatures["T"].map((temp, index) => {
-                            return (
-                                <ExtruderInputControl
-                                    index={index}
-                                    size={temperatures["T"].length}
-                                    hasdivider={
-                                        index < temperatures["T"].length - 1
-                                    }
-                                />
-                            )
-                        })}
-                    {isMixedExtruder && (
-                        <MixedExtrudersControl feedrate={extruderFeedRate} />
-                    )}
-                    {!isMixedExtruder && temperatures["T"].length == 0 && (
-                        <div class="loading-panel">
-                            <div class="m-2">
-                                <div class="m-1">{T("P89")}</div>
-                                <Loading />
-                            </div>
+        <PanelShell
+            id={id}
+            icon={iconsTarget["Extruder"]}
+            title={T("P36")}
+            headerRight={<PanelMenu items={menu} />}
+        >
+            <div class="extruders-container">
+                {!isMixedExtruder &&
+                    temperatures["T"].map((temp, index) => {
+                        return (
+                            <ExtruderInputControl
+                                index={index}
+                                size={temperatures["T"].length}
+                                hasdivider={
+                                    index < temperatures["T"].length - 1
+                                }
+                            />
+                        )
+                    })}
+                {isMixedExtruder && (
+                    <MixedExtrudersControl feedrate={extruderFeedRate} />
+                )}
+                {!isMixedExtruder && temperatures["T"].length == 0 && (
+                    <div class="loading-panel">
+                        <div class="m-2">
+                            <div class="m-1">{T("P89")}</div>
+                            <Loading />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-        </div>
+        </PanelShell>
     )
 }
 

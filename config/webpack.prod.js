@@ -14,11 +14,18 @@ const { purgeContent, purgeSafelist } = require("./purgecss.config")
 
 let target = process.env.TARGET_ENV ? process.env.TARGET_ENV : "Printer3D"
 let subtarget = process.env.SUBTARGET_ENV ? process.env.SUBTARGET_ENV : "Marlin"
-const runAnalyzer = process.env.ANALYZE === "1" || process.env.ANALYZE === "true"
+const runAnalyzer =
+    process.env.ANALYZE === "1" || process.env.ANALYZE === "true"
 
 module.exports = {
     resolve: {
         alias: {
+            // Local icon registry replaces preact-feather (same named exports,
+            // much smaller footprint: shared SVG wrapper + path data only)
+            "preact-feather": path.resolve(
+                __dirname,
+                "../src/components/Icons/index.js"
+            ),
             TargetDir: path.resolve(__dirname, "../src/targets", target),
             SubTargetDir: path.resolve(
                 __dirname,
@@ -110,25 +117,33 @@ module.exports = {
                           "/" +
                           subtarget +
                           "/[base].gz",
-                      algorithm: "gzip",
+                      // Zopfli: ~4% smaller than zlib gzip, output remains
+                      // standard gzip readable by any browser / ESP3D.
+                      // (provided by gzipper dependency: @gfx/zopfli)
+                      algorithm: (input, options, callback) =>
+                          require("@gfx/zopfli").gzip(
+                              input,
+                              { numiterations: 15 },
+                              callback
+                          ),
                       exclude: /.map$/,
                       deleteOriginalAssets: false,
                   }),
                   new Compression({
-                        test: /\.(html)$/,
-                        filename:
-                            "[path]../dist/" +
-                            target +
-                            "/" +
-                            subtarget +
-                            "/[base].br",
-                        algorithm: "brotliCompress",
-                        compressionOptions: {
-                            level: 11, // max compression
-                        },
-                        exclude: /.map$/,
-                        deleteOriginalAssets: false,
-                    }),
+                      test: /\.(html)$/,
+                      filename:
+                          "[path]../dist/" +
+                          target +
+                          "/" +
+                          subtarget +
+                          "/[base].br",
+                      algorithm: "brotliCompress",
+                      compressionOptions: {
+                          level: 11, // max compression
+                      },
+                      exclude: /.map$/,
+                      deleteOriginalAssets: false,
+                  }),
               ]),
         ...(runAnalyzer
             ? [
@@ -164,7 +179,9 @@ module.exports = {
             }),
         ],
     },
-    devtool: "source-map", // supposedly the ideal type without bloating bundle size
+    // No source maps in prod: they are excluded from the final gz anyway,
+    // and disabling them speeds up the build.
+    devtool: false,
     performance: {
         // All JS/CSS is intentionally inlined into a single HTML file for embedded targets.
         // The resulting index.html will always exceed webpack's default 244 KiB hint.

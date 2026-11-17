@@ -3,7 +3,7 @@ const expressStaticGzip = require("express-static-gzip")
 const chalk = require("chalk")
 let path = require("path")
 const fs = require("fs")
-const port = 8080
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080
 /*
  * Web Server for development
  * Web Socket server for development
@@ -13,6 +13,8 @@ const expresscolor = chalk.green
 const commandcolor = chalk.white
 const WebSocket = require("ws")
 let currentID = 0
+//firmware session timeout when authentication is enabled (PING keep-alive)
+const sessionTime = 60000
 const app = express()
 const fileUpload = require("express-fileupload")
 let sensorInterval = -1
@@ -34,32 +36,81 @@ if (!fs.existsSync(serverpath + "SD")) {
     fs.mkdirSync(serverpath + "SD", { recursive: true })
 }
 
+//normalize the WEBROOT override (dev launcher root= arg) before targets
+//read it for their ESP800 HostPath; reject Git Bash-mangled Windows paths
+if (process.env.WEBROOT) {
+    if (/^[A-Za-z]:[\\/]/.test(process.env.WEBROOT)) {
+        console.log(
+            `[server] Invalid WEBROOT "${process.env.WEBROOT}" - in Git Bash use //www instead of /www, or use PowerShell`
+        )
+        process.exit(1)
+    }
+    let w = process.env.WEBROOT
+    if (!w.startsWith("/")) w = "/" + w
+    process.env.WEBROOT = w.replace(/\/+$/, "") || "/"
+}
+
 const {
     commandsQuery,
     configURI,
     getLastconnection,
     hasEnabledAuthentication,
+    loginURI,
+    startAutoReport,
+    webRoot: targetWebRoot = "",
 } = require(
     path.normalize(
         __dirname + "/targets/" + target + "/" + subtarget + "/index.js"
     )
 )
 
+//optional: the firmware roots its /files query API and default document
+//at a web subdir (e.g. grblHAL HostPath "/www"), while static URLs and
+//uploads use absolute FS paths - see docs/hostpath_files_api.md.
+//Exported by the target config, overridable via WEBROOT (normalized above)
+const webRoot = process.env.WEBROOT || targetWebRoot
+//a root= override on a target without prepared fixtures should still work:
+//create the web root directory (empty listing) instead of crashing
+const filesRootDir = path.join(serverpath + "Flash", "." + webRoot)
+if (!fs.existsSync(filesRootDir)) fs.mkdirSync(filesRootDir, { recursive: true })
+
 const WebSocketServer = require("ws").Server,
     wss = new WebSocketServer({ port: 8089 })
 
-// Prefer .gz: if client asks for toto.html (or /), serve toto.html.gz with Content-Encoding: gzip when present
+// Like the firmware: if client asks for toto.html (or /), serve toto.html.br
+// (only when the browser advertises br, i.e. over HTTPS) or toto.html.gz
 app.use("/", (req, res, next) => {
-    if (req.method !== "GET" || req.path.endsWith(".gz")) return next()
+    if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next()
     const relPath = !req.path || req.path === "/" ? "index.html" : req.path
     const base = path.join(serverpath, "Flash", relPath)
-    const gzPath = base + ".gz"
-    if (!fs.existsSync(gzPath) || !fs.statSync(gzPath).isFile()) return next()
-    const ext = path.extname(req.path)
+    const isFile = (p) => fs.existsSync(p) && fs.statSync(p).isFile()
+    const acceptsBr = /\bbr\b/.test(req.headers["accept-encoding"] || "")
+    let file, encoding
+    if (acceptsBr && isFile(base + ".br")) {
+        file = base + ".br"
+        encoding = "br"
+    } else if (isFile(base + ".gz")) {
+        file = base + ".gz"
+        encoding = "gzip"
+    } else if (webRoot && !relPath.startsWith(webRoot + "/")) {
+        //grblHAL-style targets: the default document lives under the web
+        //root (e.g. / -> /www/index.html), like the real firmware
+        const baseWeb = path.join(serverpath, "Flash", webRoot, relPath)
+        if (acceptsBr && isFile(baseWeb + ".br")) {
+            file = baseWeb + ".br"
+            encoding = "br"
+        } else if (isFile(baseWeb + ".gz")) {
+            file = baseWeb + ".gz"
+            encoding = "gzip"
+        } else return next()
+    } else return next()
+    const ext = path.extname(relPath)
     const types = { ".html": "text/html", ".css": "text/css", ".js": "application/javascript", ".json": "application/json" }
     if (types[ext]) res.setHeader("Content-Type", types[ext])
-    res.setHeader("Content-Encoding", "gzip")
-    res.sendFile(path.resolve(gzPath))
+    res.setHeader("Content-Encoding", encoding)
+    res.setHeader("Vary", "Accept-Encoding")
+    console.log(expresscolor(`[server] ${relPath} -> ${path.basename(file)} (Accept-Encoding: ${req.headers["accept-encoding"] || "none"})`))
+    res.sendFile(path.resolve(file))
 })
 
 app.use("/", express.static(serverpath + "Flash"))
@@ -67,8 +118,20 @@ app.use("/sd", express.static(serverpath + "sd"))
 app.use("/", expressStaticGzip(serverpath + "Flash"))
 app.use(fileUpload({ preserveExtension: true, debug: false }))
 
-app.listen(port, () => console.log("Env:", subtarget, ":", target))
+app.listen(port, () =>
+    console.log(
+        "Env:",
+        subtarget,
+        ":",
+        target,
+        webRoot ? "webRoot:" + webRoot : "",
+        process.env.AUTH === "1" ? "auth:admin/admin" : ""
+    )
+)
 app.timeout = 2000
+
+//some targets (e.g. grblHAL) push periodic status reports like the real firmware
+if (typeof startAutoReport === "function") startAutoReport(SendWS)
 
 //app.use(express.urlencoded({ extended: false }));
 
@@ -95,12 +158,17 @@ function SendWS(text, isbinary = true, isNotification = true) {
     }
 }
 
+//server-level mirror of the target login state: loginURI answers 200 on
+//success, 401 on failure/logout - track it so non-target endpoints
+//(/files, /sdfiles, /updatefw) can enforce authentication too
+let mockLoggedIn = false
 app.post("/login", function (req, res) {
     loginURI(req, res)
+    mockLoggedIn = res.statusCode == 200
 })
 
 function checkAuthentication(req, res) {
-    if (hasEnabledAuthentication() && !getLastconnection()) {
+    if (hasEnabledAuthentication() && !mockLoggedIn) {
         res.status(401).send("Authentication required")
         return false
     }
@@ -123,6 +191,9 @@ app.get("/command", function (req, res) {
     if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command ${url}`))
     commandsQuery(req, res, SendWS, mockContext)
     if (!res.headersSent) {
+        //a handler that set a non-200 status without a body still ends
+        //with that status - never mask it as "unknown command"
+        if (res.statusCode !== 200) return res.end()
         if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command unknown: ${url}`))
         res.status(200).send("error:unknown command\n")
     }
@@ -159,8 +230,12 @@ function getFileListArray(mypath, destination) {
     })
 }
 
-function filesList(mypath, destination) {
-    const currentPath = path.normalize(serverpath + destination + mypath)
+function filesList(mypath, destination, useWebRoot) {
+    const baseDir = path.join(
+        serverpath + destination,
+        useWebRoot ? "." + webRoot : "."
+    )
+    const currentPath = path.normalize(baseDir + mypath)
     console.log("[path]" + currentPath)
     const totalUsed = getTotalSize(serverpath + destination)
     const total = (destination == "SD" ? 4096 : 1.31) * 1024 * 1024
@@ -225,19 +300,27 @@ function deleteFolderRecursive(path) {
 }
 
 app.all("/updatefw", function (req, res) {
+    if (!checkAuthentication(req, res)) return
     res.send("ok")
 })
 
 app.all("/files", function (req, res) {
+    if (!checkAuthentication(req, res)) return
     let mypath = req.query.path
     let url = req.originalUrl
+    //Two path conventions, like the real firmware (docs/hostpath_files_api.md):
+    //- query-driven actions (list/delete/createdir) use paths relative to
+    //  the web root (HostPath, e.g. "/www" on grblHAL): "/files?path=/"
+    //  lists the CONTENT of /www - the user never sees "/www", the panel
+    //  root IS the host path content
+    //- uploads and direct downloads use absolute FS paths ("/www/themes/...")
+    const filesBase = path.join(serverpath + "Flash", "." + webRoot)
     let filepath = path.normalize(
-        serverpath + "Flash" + mypath + "/" + req.query.filename
+        filesBase + (mypath || "/") + "/" + req.query.filename
     )
     if (url.indexOf("action=deletedir") != -1) {
         console.log("[server]delete directory " + filepath)
         deleteFolderRecursive(filepath)
-        fs.readdirSync(mypath)
     } else if (url.indexOf("action=delete") != -1) {
         console.log("[server]delete file " + filepath)
         fs.unlinkSync(filepath)
@@ -255,35 +338,47 @@ app.all("/files", function (req, res) {
         }
     }
     console.log("[server]path is " + mypath)
+    //uploads report their directory as an absolute FS path ("/www/themes/") -
+    //bring it back to a web-root-relative path for the listing response
+    const listPath =
+        webRoot && mypath.startsWith(webRoot + "/")
+            ? mypath.substring(webRoot.length)
+            : mypath
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.send(filesList(mypath, "Flash"))
+        return res.send(filesList(listPath, "Flash", true))
     }
     let myFile = req.files.myfiles
+    //the WebUI sends the multipart filename as the absolute FS path
+    //(upload path + file name, e.g. "/www/themes/pack.gz") - use it as-is
+    //when absolute, fall back to the (web-root-relative) upload directory
+    //otherwise
+    const toAbsolute = (name) =>
+        name && name.startsWith("/")
+            ? path.normalize(serverpath + "Flash" + name)
+            : path.normalize(filesBase + listPath + name)
     if (typeof myFile.length == "undefined") {
-        let fullpath = path.normalize(
-            serverpath + "Flash" + mypath + myFile.name
-        )
+        let fullpath = toAbsolute(myFile.name)
         console.log("[server]one file:" + fullpath)
         myFile.mv(fullpath, function (err) {
             if (err) return res.status(500).send(err)
-            res.send(filesList(mypath, "Flash"))
+            res.send(filesList(listPath, "Flash", true))
         })
         return
     } else {
         console.log(myFile.length + " files")
         for (let i = 0; i < myFile.length; i++) {
-            let fullpath = path.normalize(
-                serverpath + "Flash" + mypath + myFile[i].name
-            )
+            let fullpath = toAbsolute(myFile[i].name)
             console.log(fullpath)
             myFile[i].mv(fullpath).then(() => {
-                if (i == myFile.length - 1) res.send(filesList(mypath, "Flash"))
+                if (i == myFile.length - 1)
+                    res.send(filesList(listPath, "Flash", true))
             })
         }
     }
 })
 
 app.all("/sdfiles", function (req, res) {
+    if (!checkAuthentication(req, res)) return
     let mypath = req.query.path
     let url = req.originalUrl
     let filepath = path.normalize(
@@ -359,12 +454,9 @@ wss.on("connection", (socket, request) => {
         if (hasEnabledAuthentication() && message.startsWith("PING:")) {
             wss.clients.forEach(function each(client) {
                 if (client.readyState === WebSocket.OPEN) {
-                    let t = hasEnableAuthentication()
-                        ? sessiontTime - (Date.now() - getLastconnection())
-                        : 60000
-                    let remainingtime = t < 0 ? 0 : t
-                    console.log("remain:", remainingtime, "millisec")
-                    client.send(`PING:${remainingtime}:60000`)
+                    //PING IS the session keep-alive: it refreshes the
+                    //session, so the reply reports the full window
+                    client.send(`PING:${sessionTime}:${sessionTime}`)
                 }
             })
         }

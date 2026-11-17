@@ -4,16 +4,15 @@ LaserCNC.js - ESP3D WebUI component file
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Fragment, h } from "preact"
@@ -22,7 +21,8 @@ import { T } from "../Translations"
 import { Loader, Sun, Power } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList, eventsList } from "../../targets"
-import { ButtonImg, Field, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg, Field } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables, checkDependencies } from "../Helpers"
 
@@ -242,183 +242,153 @@ const LaserPanel = () => {
         },
     ]
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Loader />
-                    <strong class="text-ellipsis">{T("CN35")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <LaserControls />
-                {laser_controls.map((block) => {
-                    return (
-                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                            <legend>
-                                <label class="m-1 buttons-bar-label">
-                                    {T(block.label)}
-                                </label>
-                            </legend>
-                            <div class="field-group-content maxwidth">
-                                {block.controls.map((control) => {
-                                    return (
-                                        <div class="states-buttons-container">
-                                            {control.elements.map((element) => {
-                                                if (element.type === "button") {
-                                                    let classname = "tooltip"
+        <PanelShell id={id} icon={<Loader />} title={T("CN35")}>
+            <LaserControls />
+            {laser_controls.map((block) => {
+                return (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1 buttons-bar-label">
+                                {T(block.label)}
+                            </label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            {block.controls.map((control) => {
+                                return (
+                                    <div class="states-buttons-container">
+                                        {control.elements.map((element) => {
+                                            if (element.type === "button") {
+                                                let classname = "tooltip"
+                                                if (
+                                                    states &&
+                                                    element.mode &&
+                                                    states[element.mode]
+                                                ) {
                                                     if (
-                                                        states &&
-                                                        element.mode &&
                                                         states[element.mode]
+                                                            .value ==
+                                                        element.desc
                                                     ) {
-                                                        if (
-                                                            states[element.mode]
-                                                                .value ==
-                                                            element.desc
-                                                        ) {
-                                                            classname +=
-                                                                " btn-primary"
-                                                        }
+                                                        classname +=
+                                                            " btn-primary"
                                                     }
-                                                    return (
-                                                        <ButtonImg
-                                                            label={T(
-                                                                element.label
-                                                            )}
-                                                            disabled={
-                                                                element.useinput
-                                                                    ? hasError()
-                                                                    : false
-                                                            }
-                                                            icon={element.icon}
-                                                            tooltip
-                                                            iconRight={
-                                                                element.iconRight
-                                                            }
-                                                            data-tooltip={T(
-                                                                element.tooltip
-                                                            )}
-                                                            mode={element.mode}
-                                                            useinput={
-                                                                element.useinput
-                                                            }
-                                                            onclick={
-                                                                element.onclick
-                                                            }
-                                                        />
-                                                    )
-                                                } else {
-                                                    //we won't handle modified state just handle error
-                                                    //too many user cases where changing value to show button is not suitable
-                                                    const [
-                                                        validation,
-                                                        setvalidation,
-                                                    ] = useState({
+                                                }
+                                                return (
+                                                    <ButtonImg
+                                                        label={T(element.label)}
+                                                        disabled={
+                                                            element.useinput
+                                                                ? hasError()
+                                                                : false
+                                                        }
+                                                        icon={element.icon}
+                                                        tooltip
+                                                        iconRight={
+                                                            element.iconRight
+                                                        }
+                                                        data-tooltip={T(
+                                                            element.tooltip
+                                                        )}
+                                                        mode={element.mode}
+                                                        useinput={
+                                                            element.useinput
+                                                        }
+                                                        onclick={
+                                                            element.onclick
+                                                        }
+                                                    />
+                                                )
+                                            } else {
+                                                //we won't handle modified state just handle error
+                                                //too many user cases where changing value to show button is not suitable
+                                                const [
+                                                    validation,
+                                                    setvalidation,
+                                                ] = useState({
+                                                    message: null,
+                                                    valid: true,
+                                                    modified: false,
+                                                })
+
+                                                const generateValidation = (
+                                                    element
+                                                ) => {
+                                                    let validation = {
                                                         message: null,
                                                         valid: true,
                                                         modified: false,
-                                                    })
+                                                    }
+                                                    if (
+                                                        element.value.current <
+                                                            element.min ||
+                                                        element.value.current
+                                                            .length === 0
+                                                    ) {
+                                                        //No error message to keep all control aligned
+                                                        //may be have a better way ?
+                                                        // validation.message = T("S42");
+                                                        validation.valid = false
+                                                    }
+                                                    element.value.valid =
+                                                        validation.valid
+                                                    return validation
+                                                }
 
-                                                    const generateValidation = (
-                                                        element
-                                                    ) => {
-                                                        let validation = {
-                                                            message: null,
-                                                            valid: true,
-                                                            modified: false,
-                                                        }
-                                                        if (
-                                                            element.value
-                                                                .current <
-                                                                element.min ||
+                                                return (
+                                                    <Field
+                                                        inline
+                                                        id={element.id}
+                                                        type={element.type}
+                                                        label={T(element.label)}
+                                                        append={element.append}
+                                                        min={element.min}
+                                                        max={element.max}
+                                                        value={
                                                             element.value
                                                                 .current
-                                                                .length === 0
-                                                        ) {
-                                                            //No error message to keep all control aligned
-                                                            //may be have a better way ?
-                                                            // validation.message = T("S42");
-                                                            validation.valid = false
                                                         }
-                                                        element.value.valid =
-                                                            validation.valid
-                                                        return validation
-                                                    }
-
-                                                    return (
-                                                        <Field
-                                                            inline
-                                                            id={element.id}
-                                                            type={element.type}
-                                                            label={T(
-                                                                element.label
-                                                            )}
-                                                            append={
-                                                                element.append
+                                                        setValue={(
+                                                            val,
+                                                            update = false
+                                                        ) => {
+                                                            if (!update) {
+                                                                element.value.current =
+                                                                    val
                                                             }
-                                                            min={element.min}
-                                                            max={element.max}
-                                                            value={
-                                                                element.value
-                                                                    .current
-                                                            }
-                                                            setValue={(
-                                                                val,
-                                                                update = false
-                                                            ) => {
-                                                                if (!update) {
-                                                                    element.value.current =
-                                                                        val
-                                                                }
-                                                                const validationObj =
-                                                                    generateValidation(
-                                                                        element
-                                                                    )
-                                                                setvalidation(
-                                                                    validationObj
+                                                            const validationObj =
+                                                                generateValidation(
+                                                                    element
                                                                 )
-                                                                if (
-                                                                    validationObj.valid &&
-                                                                    element.variableName
-                                                                ) {
-                                                                    variablesList.addCommand(
-                                                                        {
-                                                                            name: element.variableName,
-                                                                            value: element
-                                                                                .value
-                                                                                .current,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            }}
-                                                            validation={
-                                                                validation
+                                                            setvalidation(
+                                                                validationObj
+                                                            )
+                                                            if (
+                                                                validationObj.valid &&
+                                                                element.variableName
+                                                            ) {
+                                                                variablesList.addCommand(
+                                                                    {
+                                                                        name: element.variableName,
+                                                                        value: element
+                                                                            .value
+                                                                            .current,
+                                                                    }
+                                                                )
                                                             }
-                                                        />
-                                                    )
-                                                }
-                                            })}
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </fieldset>
-                    )
-                })}
-            </div>
-        </div>
+                                                        }}
+                                                        validation={validation}
+                                                    />
+                                                )
+                                            }
+                                        })}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </PanelShell>
     )
 }
 

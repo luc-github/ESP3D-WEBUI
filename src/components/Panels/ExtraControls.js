@@ -4,16 +4,15 @@
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { h } from "preact"
@@ -22,16 +21,10 @@ import { T } from "../Translations"
 import { Sliders, Send } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext } from "../../targets"
-import {
-    ButtonImg,
-    Loading,
-    Field,
-    FullScreenButton,
-    CloseButton,
-} from "../Controls"
+import { ButtonImg, Loading, Field } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
-import { ContainerHelper } from "../Controls"
+import { PanelShell } from "./"
 
 /*
  * Local const
@@ -293,7 +286,8 @@ const ExtraInputControl = ({ element, index, size, pos }) => {
 }
 
 const ExtraControlsPanel = () => {
-    const { temperatures, fanSpeed, flowRate, feedRate, sensor } = useTargetContext()
+    const { temperatures, fanSpeed, flowRate, feedRate, sensor } =
+        useTargetContext()
     const id = "extraControlsPanel"
     const inputList = [
         { name: "P91", list: fanSpeed },
@@ -304,49 +298,29 @@ const ExtraControlsPanel = () => {
     console.log("Extra Controls panel")
 
     return (
-        <div class="panel panel-dashboard" id={id} >
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Sliders />
-                    <strong class="text-ellipsis">{T("P96")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <ExtraControls />
-                {temperatures["T"].length > 0 && (
-                    <div class="extruders-container">
-                        {inputList.map((element, pos) => {
-                            return temperatures["T"].map((item, index) => {
-                                if (pos == 2 && index > 0) return null
-                                return (
-                                    <ExtraInputControl
-                                        element={element}
-                                        index={index}
-                                        size={
-                                            pos == 2
-                                                ? 1
-                                                : temperatures["T"].length
-                                        }
-                                        pos={pos}
-                                    />
-                                )
-                            })
-                        })}
-                    </div>
-                )}
-                {temperatures["T"].length == 0 && (!sensor.S || sensor.S.length == 0) && (
+        <PanelShell id={id} icon={<Sliders />} title={T("P96")}>
+            <ExtraControls />
+            {temperatures["T"].length > 0 && (
+                <div class="extruders-container">
+                    {inputList.map((element, pos) => {
+                        return temperatures["T"].map((item, index) => {
+                            if (pos == 2 && index > 0) return null
+                            return (
+                                <ExtraInputControl
+                                    element={element}
+                                    index={index}
+                                    size={
+                                        pos == 2 ? 1 : temperatures["T"].length
+                                    }
+                                    pos={pos}
+                                />
+                            )
+                        })
+                    })}
+                </div>
+            )}
+            {temperatures["T"].length == 0 &&
+                (!sensor.S || sensor.S.length == 0) && (
                     <div class="loading-panel">
                         <div class="m-2">
                             <div class="m-1">{T("P89")}</div>
@@ -354,8 +328,7 @@ const ExtraControlsPanel = () => {
                         </div>
                     </div>
                 )}
-            </div>
-        </div>
+        </PanelShell>
     )
 }
 

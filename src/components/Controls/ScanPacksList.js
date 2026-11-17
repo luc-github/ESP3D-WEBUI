@@ -4,16 +4,15 @@ ScanPacksList.js - ESP3D WebUI component file
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Fragment, h } from "preact"
@@ -74,10 +73,18 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
 
     const ScanPacks = () => {
         setIsLoading(true)
-        const base = useSettingsContextFn.getValue("HostUploadPath") || ""
+        //The /files API is rooted at the host path (panel convention):
+        //list paths are relative to the web root. sdfiles takes absolute
+        //SD paths instead, so keep the upload path prefix there
+        const isFlash = useSettingsContextFn.getValue("HostTarget") === "files"
+        const base = isFlash
+            ? ""
+            : (
+                  useSettingsContextFn.getValue("HostUploadPath") || ""
+              ).replace(/\/$/, "")
         const subdir = isLanguage ? "languages" : "themes"
-        const subdirPath = base.replace(/\/$/, "") + "/" + subdir
-        const rootPath = base || "/"
+        const subdirPath = base + "/" + subdir
+        const rootPath = base + "/"
 
         createNewRequest(
             espHttpURL(useSettingsContextFn.getValue("HostTarget"), { path: subdirPath }),

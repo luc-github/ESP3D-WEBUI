@@ -5,16 +5,15 @@
  Modified by Luc LEBOSSE 2021
  
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h, createContext } from "preact"
 import { useState, useEffect, useRef, useContext } from "preact/hooks"
@@ -215,10 +214,10 @@ const WsContextProvider = ({ children }) => {
             connectionSettings.current.WebCommunication === "Synchronous"
                 ? ""
                 : "/ws"
-        const wsPort =
-            document.location.port != ""
-                ? parseInt(document.location.port) + 1
-                : connectionSettings.current.WebSocketPort
+        // The firmware knows its WebSocket port: always use it, whatever the
+        // page URL (http/https, explicit port or not). A reverse proxy must
+        // expose the WebSocket on that same port number.
+        const wsPort = connectionSettings.current.WebSocketPort
         const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
         wsConnection.current = new WebSocket(
             `${wsProtocol}://${document.location.hostname}${wsPort ? `:${wsPort}` : ""}${path}`,

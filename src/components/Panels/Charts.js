@@ -4,27 +4,25 @@ charts.js - ESP3D WebUI component file
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { h } from "preact"
 import { T } from "../Translations"
 import { useUiContextFn } from "../../contexts"
 import { useRef, useEffect } from "preact/hooks"
-import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { Image } from "preact-feather"
 import { useTargetContext } from "../../targets"
 import { SmoothieChart, TimeSeries } from "./smoothieChartMinimal"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 
 /*
  * Local const
@@ -394,81 +392,65 @@ const ChartsPanel = () => {
         updateCharts(2, sensor)
     }, [sensor])
     return (
-        <div class="panel panel-dashboard" id={id} >
-         <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Image />
-                    <strong class="text-ellipsis">{T("P56")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="H-100">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
+        <PanelShell
+            id={id}
+            icon={<Image />}
+            title={T("P56")}
+            headerRight={<PanelMenu items={menu} />}
+        >
+            <div class="charts-container">
+                {isChartVisible(0) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart1"
+                            width="320"
+                            height="100"
+                            ref={charts[0].ref}
                         />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
+                        <Legendes
+                            index="0"
+                            temperatures={temperatures}
+                            temperaturesList={temperaturesList}
                         />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <div class="charts-container">
-                    {isChartVisible(0) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart1"
-                                width="320"
-                                height="100"
-                                ref={charts[0].ref}
-                            />
-                            <Legendes
-                                index="0"
-                                temperatures={temperatures}
-                                temperaturesList={temperaturesList}
-                            />
-                        </div>
-                    )}
+                    </div>
+                )}
 
-                    {isChartVisible(1) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart2"
-                                width="320"
-                                height="100"
-                                ref={charts[1].ref}
-                            />
-                            <Legendes
-                                index="1"
-                                temperatures={temperatures}
-                                temperaturesList={temperaturesList}
-                            />
-                        </div>
-                    )}
-                    {isChartVisible(2) && (
-                        <div class="charts-subcontainer">
-                            <canvas
-                                class="chart"
-                                id="chart3"
-                                width="320"
-                                height="100"
-                                ref={charts[2].ref}
-                            />
-                            <Legendes
-                                index="2"
-                                temperatures={sensor}
-                                temperaturesList={sensorList}
-                            />
-                        </div>
-                    )}
-                    <div class="m-1" />
-                </div>
+                {isChartVisible(1) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart2"
+                            width="320"
+                            height="100"
+                            ref={charts[1].ref}
+                        />
+                        <Legendes
+                            index="1"
+                            temperatures={temperatures}
+                            temperaturesList={temperaturesList}
+                        />
+                    </div>
+                )}
+                {isChartVisible(2) && (
+                    <div class="charts-subcontainer">
+                        <canvas
+                            class="chart"
+                            id="chart3"
+                            width="320"
+                            height="100"
+                            ref={charts[2].ref}
+                        />
+                        <Legendes
+                            index="2"
+                            temperatures={sensor}
+                            temperaturesList={sensorList}
+                        />
+                    </div>
+                )}
+                <div class="m-1" />
             </div>
-        </div>
+        </PanelShell>
     )
 }
 

@@ -4,18 +4,17 @@
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
 
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+ General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
@@ -31,7 +30,6 @@ import {
     Lock,
 } from "preact-feather"
 import { T } from "../components/Translations"
-import { espHttpURL } from "../components/Helpers"
 import { restartdelay } from "../targets"
 
 /*
@@ -67,7 +65,8 @@ const ConnectionContainer = () => {
                 authenticate: connection.connectionState.authenticate,
                 page: "connecting",
             })
-            window.location.href = espHttpURL()
+            // reload the current page (keep its path, e.g. /www/index2.html)
+            window.location.href = window.location.pathname
         }
         switch (connection.connectionState.page) {
             case "notauthenticated":

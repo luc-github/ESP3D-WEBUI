@@ -4,25 +4,24 @@
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
 
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+ General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 const chalk = require("chalk")
 const wscolor = chalk.cyan
 const expresscolor = chalk.green
 const commandcolor = chalk.white
-const enableAuthentication = false
+const enableAuthentication = process.env.AUTH === "1"
 let lastconnection = Date.now()
 let logindone = false
 const sessiontTime = 60000
@@ -30,9 +29,26 @@ let countStatus = 0
 let change = false
 const emulationESP400 = false
 
-const state = { position: { X: 0, Y: 0, Z: 0 } }
+const state = {
+    position: { X: 0, Y: 0, Z: 0 },
+    units: "G21", //modal G20/G21
+    reportInches: "0", //$13
+    activeTool: 0,
+    pendingTool: 0,
+    toolChanging: false,
+    alarm: false,
+}
+//force next $TPW outcome: "ok" (default) or "fail", set via SIM:TPW=OK / SIM:TPW=FAIL
+let tpwOutcome = "ok"
+//tool probe in progress: status reports Run during the motion window
+let tpwProbing = false
+let tpwTimer = null
+//writable grbl settings reflected in $$ output ($341 default: manual touch off)
+const grblSettings = { "341": "1" }
 let jog = null
 const JOGCANCEL_BYTE = 0x85
+const CYCLESTART_BYTE = 0x81
+const TOOLCHANGE_BYTE = 0xa3
 
 function parseAxis(url, axis) {
     const m = url.match(new RegExp(axis + "([+-]?[0-9.]+)", "i"))
@@ -59,6 +75,32 @@ function getLastconnection() {
     return lastconnection
 }
 
+function formatPos(v) {
+    return (state.reportInches === "1" ? v / 25.4 : v).toFixed(3)
+}
+
+function currentStateName() {
+    if (state.alarm) return "Alarm"
+    if (tpwProbing) return "Run"
+    if (state.toolChanging) return "Tool"
+    if (jog) return "Jog"
+    return "Idle"
+}
+
+function buildStatusReport() {
+    applyJogPosition()
+    const { X, Y, Z } = state.position
+    const wpos = `${formatPos(X)},${formatPos(Y)},${formatPos(Z)},1.000,1.000`
+    return `<${currentStateName()}|WPos:${wpos}|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n`
+}
+
+//mimic ESP3D firmware auto report: push status to all ws clients
+let autoReportTimer = null
+function startAutoReport(SendWS) {
+    if (autoReportTimer) clearInterval(autoReportTimer)
+    autoReportTimer = setInterval(() => SendWS(buildStatusReport()), 1000)
+}
+
 function hasEnabledAuthentication() {
     return enableAuthentication
 }
@@ -77,7 +119,7 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (!logindone && enableAuthentication) {
-        res.status(401)
+        res.sendStatus(401)
         return
     }
     lastconnection = Date.now()
@@ -121,11 +163,87 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    //modal units G20 (inches) / G21 (mm)
+    if (/\bG20\b/.test(url) || /\bG21\b/.test(url)) {
+        state.units = /\bG20\b/.test(url) ? "G20" : "G21"
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //set current tool number, no movement
+    const m61 = url.match(/\bM61\s*Q(\d+)/i)
+    if (m61) {
+        state.activeTool = parseInt(m61[1])
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //manual tool change protocol: T<n> M6 -> Tool state
+    const tMatch = url.match(/\bT(\d+)/)
+    if (tMatch) {
+        state.pendingTool = parseInt(tMatch[1])
+        if (/\bM6\b/.test(url)) state.toolChanging = true
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //tool change ack (real-time 0xA3)
+    if (
+        url.indexOf(String.fromCharCode(TOOLCHANGE_BYTE)) !== -1 ||
+        url.includes("%A3")
+    ) {
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //cycle start (real-time 0x81): completes a pending tool change
+    if (
+        url.indexOf(String.fromCharCode(CYCLESTART_BYTE)) !== -1 ||
+        url.includes("%81")
+    ) {
+        if (state.toolChanging) {
+            state.activeTool = state.pendingTool
+            state.toolChanging = false
+        }
+        SendWS("ok\n")
+        res.send("")
+        return
+    }
+
+    //tool probe workflow: probing motion ~2s (status reports Run),
+    //then [PRB:..]+ok on success or ALARM:5 on failure
+    if (url.indexOf("$TPW") != -1) {
+        const fail = tpwOutcome == "fail"
+        tpwProbing = true
+        tpwTimer = setTimeout(() => {
+            tpwTimer = null
+            tpwProbing = false
+            if (fail) {
+                //probe failed to contact within travel -> grbl alarm 5
+                state.alarm = true
+                SendWS("ALARM:5\n")
+            } else {
+                const { X, Y, Z } = state.position
+                SendWS(
+                    `[PRB:${formatPos(X)},${formatPos(Y)},${formatPos(
+                        Z - 2
+                    )}:1]\n` + "ok\n"
+                )
+            }
+        }, 2000)
+        res.send("")
+        return
+    }
+
     if (req.query.cmd && req.query.cmd == "?") {
         applyJogPosition()
         countStatus++
         const { X, Y, Z } = state.position
-        const wpos = `${Number(X).toFixed(3)},${Number(Y).toFixed(3)},${Number(Z).toFixed(3)},1.000,1.000`
+        const wpos = `${formatPos(X)},${formatPos(Y)},${formatPos(Z)},1.000,1.000`
         if (countStatus == 1)
             SendWS(`<Idle|WPos:${wpos}|FS:0,0|WCO:0.000,0.000,0.000,1.000,1.000>\n`)
         else if (countStatus == 2)
@@ -136,6 +254,14 @@ const commandsQuery = (req, res, SendWS) => {
             SendWS(`<Run|WPos:${wpos}|SD:100.0,pcb_zebra.gcode|FS:0,0|A:S|Pn:P>\n`)
         if (countStatus == 10) countStatus = 0
 
+        res.send("")
+        return
+    }
+
+    //force next $TPW outcome for testing: SIM:TPW=FAIL / SIM:TPW=OK
+    if (url.indexOf("SIM:TPW=") != -1) {
+        tpwOutcome = url.indexOf("SIM:TPW=FAIL") != -1 ? "fail" : "ok"
+        SendWS("ok\n")
         res.send("")
         return
     }
@@ -161,12 +287,12 @@ const commandsQuery = (req, res, SendWS) => {
                 Authentication: "Disabled",
                 WebCommunication: "Synchronous",
                 WebSocketIP: "localhost",
-                WebSocketPort: "81",
+                WebSocketPort: process.env.WS_PUBLIC_PORT || "8089",
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
                 FlashFileSystem: "LittleFS",
-                HostPath: "/www",
+                HostPath: process.env.WEBROOT || "/www",
                 Time: "none",
                 Axisletters: "XYZUV",
             },
@@ -267,13 +393,14 @@ const commandsQuery = (req, res, SendWS) => {
 
     if (url.indexOf("$G") != -1) {
         change = !change
-        //SendWS("[GC:G0 G54 G17 G21 G90 G94 M5 M9 T0 F0.0 S0]\n")
         if (change) {
             SendWS(
-                "[GC:G0 G54 G17 G21 G90 G92 G94 G49 G98 G51:5 M5 M6 M9 T0 F0 S0.]\n"
+                `[GC:G0 G54 G17 ${state.units} G90 G92 G94 G49 G98 G51:5 M5 M6 M9 T${state.activeTool} F0 S0.]\n`
             )
         } else {
-            SendWS("[GC:G0 G54 G17 G21 G90 G94 G49 G98 M56 M5 M9 T0 F0 S0.]\n")
+            SendWS(
+                `[GC:G0 G54 G17 ${state.units} G90 G94 G49 G98 M56 M5 M9 T${state.activeTool} F0 S0.]\n`
+            )
         }
 
         res.send("")
@@ -286,8 +413,32 @@ const commandsQuery = (req, res, SendWS) => {
         return
     }
 
+    //kill alarm lock
+    if (url.indexOf("$X") != -1) {
+        state.alarm = false
+        SendWS("[MSG:Caution: Unlocked]\n" + "ok\n")
+        res.send("")
+        return
+    }
+
     if (url.indexOf("\x18") != -1) {
-        SendWS("Grbl 1.1f ['$' for help]\n")
+        //soft reset aborts any pending tool change / jog / tool probe
+        //hypothesis (bench test #4): reset during motion raises an alarm
+        const inMotion = jog != null || tpwProbing
+        if (tpwTimer) {
+            clearTimeout(tpwTimer)
+            tpwTimer = null
+        }
+        tpwProbing = false
+        state.toolChanging = false
+        jog = null
+        if (inMotion) {
+            state.alarm = true
+            SendWS("ALARM:1\n")
+        } else {
+            state.alarm = false
+            SendWS("Grbl 1.1f ['$' for help]\n")
+        }
         res.send("")
         return
     }
@@ -322,7 +473,7 @@ const commandsQuery = (req, res, SendWS) => {
                 "$10=1\n" +
                 "$11=0.010\n" +
                 "$12=0.002\n" +
-                "$13=0\n" +
+                `$13=${state.reportInches}\n` +
                 "$20=0\n" +
                 "$21=0\n" +
                 "$22=0\n" +
@@ -359,8 +510,25 @@ const commandsQuery = (req, res, SendWS) => {
                 "$134=300.000\n" +
                 "$135=300.000\n" +
                 "$337=\n" +
+                `$341=${grblSettings["341"]}\n` +
                 "ok\n"
         )
+        res.send("")
+        return
+    }
+
+    //settings write e.g. $13=1 (report in inches)
+    if (/\$\d+=/.test(url)) {
+        const m = url.match(/\$(\d+)=([^\s&]*)/)
+        if (m) {
+            grblSettings[m[1]] = m[2]
+            if (m[1] === "13") {
+                state.reportInches = m[2] === "1" ? "1" : "0"
+                //echo so the UI updates reportUnit immediately
+                SendWS(`$13=${state.reportInches}\n`)
+            }
+        }
+        SendWS("ok\n")
         res.send("")
         return
     }
@@ -3001,7 +3169,10 @@ const loginURI = (req, res) => {
     if (req.body.DISCONNECT == "YES") {
         res.status(401)
         logindone = false
-    } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin") {
+    } else if (
+        !enableAuthentication ||
+        (req.body.USER == "admin" && req.body.PASSWORD == "admin")
+    ) {
         logindone = true
         lastconnection = Date.now()
     } else {
@@ -3013,7 +3184,7 @@ const loginURI = (req, res) => {
 
 const configURI = (req, res) => {
     if (!logindone && enableAuthentication) {
-        res.status(401)
+        res.sendStatus(401)
         return
     }
     lastconnection = Date.now()
@@ -3060,4 +3231,8 @@ module.exports = {
     loginURI,
     getLastconnection,
     hasEnabledAuthentication,
+    startAutoReport,
+    //the firmware roots its /files API and default document at /www
+    //(HostPath), while static URLs and uploads use the real FS path
+    webRoot: "/www",
 }

@@ -4,18 +4,17 @@
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
 
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+ General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
@@ -28,6 +27,7 @@ import {
     espHttpURL,
     disableUI,
     formatFileSizeToString,
+    machineSettingValidation,
 } from "../../../components/Helpers"
 import {
     Field,
@@ -35,7 +35,7 @@ import {
     ButtonImg,
     Progress,
 } from "../../../components/Controls"
-import { RefreshCcw, XCircle, Save, Flag, RotateCw } from "preact-feather"
+import { RefreshCcw, XCircle, Save, RotateCw } from "preact-feather"
 import { CMD } from "./CMD-source"
 import {
     showConfirmationModal,
@@ -310,43 +310,18 @@ const MachineSettings = () => {
         }
     }
 
-    const generateValidation = (fieldData, isOverride) => {
-        const validation = {
-            message: <Flag size="1rem" />,
-            valid: true,
-            modified: true,
-        }
-        if (fieldData.type == "text") {
-            if (fieldData.value.trim() == fieldData.initial.trim()) {
-                fieldData.hasmodified = false
-            } else {
-                fieldData.hasmodified = true
-            }
-            if (isOverride) {
-                if (
-                    !(
-                        fieldData.value.trim().startsWith("M") ||
-                        fieldData.value.trim().startsWith("G")
-                    )
-                )
-                    validation.valid = false
-            } else {
-                if (fieldData.value.trim().indexOf(" ") != -1)
-                    validation.valid = false
-            }
-        }
-        if (!validation.valid) {
-            validation.message = T("S42")
-        }
-        fieldData.haserror = !validation.valid
-        setShowSave(checkSaveStatus())
-        if (!fieldData.hasmodified && !fieldData.haserror) {
-            validation.message = null
-            validation.valid = true
-            validation.modified = false
-        }
-        return validation
-    }
+    const generateValidation = (fieldData, isOverride) =>
+        machineSettingValidation(
+            fieldData,
+            (f) => {
+                if (f.type != "text") return true
+                const v = f.value.trim()
+                return isOverride
+                    ? v.startsWith("M") || v.startsWith("G")
+                    : v.indexOf(" ") == -1
+            },
+            () => setShowSave(checkSaveStatus())
+        )
     useEffect(() => {
         if (uisettings.getValue("autoload") && machineSettings.cache == "") {
             setIsLoading(true)

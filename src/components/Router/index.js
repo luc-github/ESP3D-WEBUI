@@ -5,16 +5,15 @@
  modified by Luc LEBOSSE 2021
  
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h, Fragment } from "preact"
 import { useState, useEffect, useCallback } from "preact/hooks"
@@ -36,7 +35,7 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
         if (typeof window !== "undefined") {
             const location = window.location.hash.slice(1).toLowerCase()
             if (location == "/settings") {
-                window.location.href = "/#" + activeTab.current
+                window.location.hash = activeTab.current
                 return activeTab.current
             } else {
                 return location
@@ -115,7 +114,7 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
             } else {
                 //console.log("no parentRoutes")
                 //.log("checking defaultRoute", defaultRoute)
-                window.location.href = "/#" + defaultRoute.current
+                window.location.hash = defaultRoute.current
             }
         } else {
             // console.log("found ", path, " in ", routesList)
@@ -134,13 +133,13 @@ const Router = ({ children, routesList, parentRoutes, localDefault }) => {
                 console.log("not found ", path, " in main menu ", routesList)
             }*/
             if (path.startsWith("/settings/")) {
-                window.location.href = "/#" + activeTab.current
+                window.location.hash = activeTab.current
             } else {
                 if (path.startsWith("/extrapage/")) {
                     //console.log("not valid extra page")
                 } else {
                     // console.log("root page")
-                    window.location.href = "/#" + defaultRoute.current
+                    window.location.hash = defaultRoute.current
                 }
             }
         }

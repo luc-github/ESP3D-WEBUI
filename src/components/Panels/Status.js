@@ -4,16 +4,15 @@
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Fragment, h } from "preact"
@@ -22,9 +21,10 @@ import { T } from "../Translations"
 import { Layers, PlayCircle, PauseCircle, StopCircle } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext } from "../../targets"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg } from "../Controls"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL } from "../Helpers"
+import { PanelShell } from "./"
 
 const TimeControl = ({ label, time }) => {
     if (!time) return null
@@ -143,21 +143,21 @@ const StatusControls = () => {
                         )}
                         {status.printState.printing &&
                             status.printState.progress != "NaN" && (
-                                    <Fragment>
-                                        <div class="extra-control-value">
-                                            {status.printState.progress}%
-                                        </div>
+                                <Fragment>
+                                    <div class="extra-control-value">
+                                        {status.printState.progress}%
+                                    </div>
 
-                                        <TimeControl
-                                            label="P105"
-                                            time={status.printTime}
-                                        />
-                                        <TimeControl
-                                            label="P112"
-                                            time={status.printLeftTime}
-                                        />
-                                    </Fragment>
-                                )}
+                                    <TimeControl
+                                        label="P105"
+                                        time={status.printTime}
+                                    />
+                                    <TimeControl
+                                        label="P112"
+                                        time={status.printLeftTime}
+                                    />
+                                </Fragment>
+                            )}
                     </div>
                 </div>
             )}
@@ -296,84 +296,56 @@ const StatusPanel = () => {
         return true
     }
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Layers />
-                    <strong class="text-ellipsis">{T("P97")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                            elementId={id}/>
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <StatusControls />
-                {((status.printState && status.printState.printing) ||
-                    (streamStatus &&
-                        streamStatus.status &&
-                        streamStatus.status != "no stream" &&
-                        streamStatus.name != "")) &&
-                    deviceList.map((device) => {
-                        if (
-                            !device.depend.every((d) =>
-                                useUiContextFn.getValue(d)
-                            )
-                        )
-                            return null
-                        return (
-                            <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                                <legend>
-                                    <label class="m-1">{T(device.name)}</label>
-                                </legend>
-                                <div class="field-group-content maxwidth">
-                                    <div class="print-buttons-container">
-                                        {device.buttons.map((button) => {
-                                            if (!isVisible(button)) return null
-                                            return (
-                                                <ButtonImg
-                                                    icon={button.icon}
-                                                    tooltip
-                                                    data-tooltip={T(
-                                                        button.desc
-                                                    )}
-                                                    onClick={(e) => {
-                                                        useUiContextFn.haptic()
-                                                        e.target.blur()
-                                                        console.log(
-                                                            button.cmd()
-                                                        )
-                                                        const cmd =
-                                                            status.printState &&
-                                                            status.printState
-                                                                .printing
-                                                                ? useUiContextFn.getValue(
-                                                                      button.cmd()
-                                                                  )
-                                                                : button.cmd()
-                                                        const cmds =
-                                                            cmd.split("\n")
-                                                        cmds.forEach((cmd) => {
-                                                            sendCommand(cmd)
-                                                        })
-                                                    }}
-                                                />
-                                            )
-                                        })}
-                                    </div>
+        <PanelShell id={id} icon={<Layers />} title={T("P97")}>
+            <StatusControls />
+            {((status.printState && status.printState.printing) ||
+                (streamStatus &&
+                    streamStatus.status &&
+                    streamStatus.status != "no stream" &&
+                    streamStatus.name != "")) &&
+                deviceList.map((device) => {
+                    if (!device.depend.every((d) => useUiContextFn.getValue(d)))
+                        return null
+                    return (
+                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                            <legend>
+                                <label class="m-1">{T(device.name)}</label>
+                            </legend>
+                            <div class="field-group-content maxwidth">
+                                <div class="print-buttons-container">
+                                    {device.buttons.map((button) => {
+                                        if (!isVisible(button)) return null
+                                        return (
+                                            <ButtonImg
+                                                icon={button.icon}
+                                                tooltip
+                                                data-tooltip={T(button.desc)}
+                                                onClick={(e) => {
+                                                    useUiContextFn.haptic()
+                                                    e.target.blur()
+                                                    console.log(button.cmd())
+                                                    const cmd =
+                                                        status.printState &&
+                                                        status.printState
+                                                            .printing
+                                                            ? useUiContextFn.getValue(
+                                                                  button.cmd()
+                                                              )
+                                                            : button.cmd()
+                                                    const cmds = cmd.split("\n")
+                                                    cmds.forEach((cmd) => {
+                                                        sendCommand(cmd)
+                                                    })
+                                                }}
+                                            />
+                                        )
+                                    })}
                                 </div>
-                            </fieldset>
-                        )
-                    })}
-            </div>
-        </div>
+                            </div>
+                        </fieldset>
+                    )
+                })}
+        </PanelShell>
     )
 }
 

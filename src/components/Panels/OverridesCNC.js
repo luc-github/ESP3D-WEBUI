@@ -4,16 +4,15 @@ SpindleCNC.js - ESP3D WebUI component file
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Fragment, h } from "preact"
@@ -22,7 +21,8 @@ import { T } from "../Translations"
 import { Repeat } from "preact-feather"
 import { useUiContext, useUiContextFn } from "../../contexts"
 import { useTargetContext, variablesList } from "../../targets"
-import { ButtonImg, FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
+import { ButtonImg } from "../Controls"
+import { PanelShell } from "./"
 import { useHttpFn } from "../../hooks"
 import { espHttpURL, replaceVariables } from "../Helpers"
 
@@ -180,64 +180,43 @@ const OverridesPanel = () => {
         )
     }
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <Repeat />
-                    <strong class="text-ellipsis">{T("CN65")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <FullScreenButton
-                           elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="panel-body panel-body-dashboard">
-                <OverridesControls />
-                {buttons_list.map((item) => {
-                    return (
-                        <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
-                            <legend>
-                                <label class="m-1 buttons-bar-label">
-                                    {T(item.label)}
-                                </label>
-                            </legend>
-                            <div class="field-group-content maxwidth">
-                                <div class="states-buttons-container">
-                                    {item.buttons.map((button, index) => {
-                                        return (
-                                            <ButtonImg
-                                                mt1
-                                                className={
-                                                    item.buttons.length / 2 >
-                                                    index
-                                                        ? "tooltip tooltip-right"
-                                                        : "tooltip tooltip-left"
-                                                }
-                                                label={T(button.label)}
-                                                data-tooltip={T(button.tooltip)}
-                                                onClick={(e) => {
-                                                    useUiContextFn.haptic()
-                                                    e.target.blur()
-                                                    sendCommand(button.command)
-                                                }}
-                                            />
-                                        )
-                                    })}
-                                </div>
+        <PanelShell id={id} icon={<Repeat />} title={T("CN65")}>
+            <OverridesControls />
+            {buttons_list.map((item) => {
+                return (
+                    <fieldset class="fieldset-top-separator fieldset-bottom-separator field-group">
+                        <legend>
+                            <label class="m-1 buttons-bar-label">
+                                {T(item.label)}
+                            </label>
+                        </legend>
+                        <div class="field-group-content maxwidth">
+                            <div class="states-buttons-container">
+                                {item.buttons.map((button, index) => {
+                                    return (
+                                        <ButtonImg
+                                            mt1
+                                            className={
+                                                item.buttons.length / 2 > index
+                                                    ? "tooltip tooltip-right"
+                                                    : "tooltip tooltip-left"
+                                            }
+                                            label={T(button.label)}
+                                            data-tooltip={T(button.tooltip)}
+                                            onClick={(e) => {
+                                                useUiContextFn.haptic()
+                                                e.target.blur()
+                                                sendCommand(button.command)
+                                            }}
+                                        />
+                                    )
+                                })}
                             </div>
-                        </fieldset>
-                    )
-                })}
-            </div>
-        </div>
+                        </div>
+                    </fieldset>
+                )
+            })}
+        </PanelShell>
     )
 }
 

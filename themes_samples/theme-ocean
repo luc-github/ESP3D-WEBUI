@@ -1,0 +1,179 @@
+/* ==========================================================================
+   ESP3D-WEBUI - OCEAN THEME (simple example)
+   ==========================================================================
+
+   The simplest kind of theme: a palette swap. Only the main surfaces are
+   restyled - everything else keeps the factory look.
+
+   Built from themes_samples/theme-reference: copy the sections you need,
+   change the variables below, delete the rest.
+
+   Install: upload this file to the `themes/` directory of the device,
+   then select it in Settings > Interface.
+   ========================================================================== */
+
+:root {
+    --ocean-primary: #0277bd;
+    --ocean-primary-dark: #01579b;
+    --ocean-secondary: #e1f5fe;
+    --ocean-body-bg: #f4fafc;
+    --ocean-panel-bg: #ffffff;
+    --ocean-header-bg: #e1f5fe;
+    --ocean-header-color: #01579b;
+    --ocean-border: #b3dce8;
+}
+
+/* Page */
+html,
+body {
+    background-color: var(--ocean-body-bg) !important;
+}
+
+/* Links */
+a {
+    color: var(--ocean-primary) !important;
+}
+a:focus,
+a:hover,
+a:active,
+a.active {
+    color: var(--ocean-primary-dark) !important;
+}
+
+/* Panels */
+.panel {
+    background-color: var(--ocean-panel-bg) !important;
+}
+.panel .navbar,
+.panel .navbar-section {
+    background: var(--ocean-header-bg) !important;
+    color: var(--ocean-header-color) !important;
+}
+.btn-header {
+    background-color: var(--ocean-header-bg) !important;
+    color: var(--ocean-header-color) !important;
+}
+
+/* Top navbar */
+.navbar {
+    background-color: var(--ocean-secondary) !important;
+}
+
+/* Buttons */
+.btn {
+    border-color: var(--ocean-primary) !important;
+    color: var(--ocean-primary) !important;
+}
+.btn:focus,
+.btn:hover {
+    background: var(--ocean-secondary) !important;
+    border-color: var(--ocean-primary-dark) !important;
+    color: var(--ocean-primary-dark) !important;
+}
+.btn.btn-primary {
+    background: var(--ocean-primary) !important;
+    border-color: var(--ocean-primary-dark) !important;
+}
+.btn.btn-primary:focus,
+.btn.btn-primary:hover {
+    background: var(--ocean-primary-dark) !important;
+    border-color: var(--ocean-primary-dark) !important;
+}
+.btn.btn-link {
+    color: var(--ocean-primary) !important;
+}
+
+/* Forms */
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--ocean-primary) !important;
+    box-shadow: 0 0 0 0.1rem rgba(2, 119, 189, 0.2) !important;
+}
+.form-checkbox input:checked + .form-icon,
+.form-radio input:checked + .form-icon,
+.form-switch input:checked + .form-icon {
+    background: var(--ocean-primary) !important;
+    border-color: var(--ocean-primary) !important;
+}
+
+/* Menus */
+.menu .menu-item {
+    color: var(--ocean-primary) !important;
+}
+.menu .menu-item > .menu-entry:focus,
+.menu .menu-item > .menu-entry:hover,
+.menu .menu-item > a:focus,
+.menu .menu-item > a:hover {
+    background: var(--ocean-secondary) !important;
+    color: var(--ocean-primary-dark) !important;
+}
+.menu .menu-item > .menu-entry:active,
+.menu .menu-item > .menu-entry.active,
+.menu .menu-item > a:active,
+.menu .menu-item > a.active {
+    background: var(--ocean-secondary) !important;
+    color: var(--ocean-primary-dark) !important;
+}
+
+/* Tabs */
+.tab-item {
+    color: var(--ocean-primary) !important;
+}
+.tab .tab-item a.active,
+.tab .tab-item.active a {
+    border-bottom-color: var(--ocean-primary) !important;
+    color: var(--ocean-primary) !important;
+}
+section .active,
+li .active {
+    color: var(--ocean-primary-dark) !important;
+}
+
+/* Toasts, badges, labels, bars, spinner */
+.toast.toast-primary {
+    background: rgba(2, 119, 189, 0.95) !important;
+    border-color: var(--ocean-primary) !important;
+}
+.badge[data-badge]::after,
+.badge:not([data-badge])::after {
+    background: var(--ocean-primary) !important;
+}
+.label.label-primary {
+    background: var(--ocean-primary) !important;
+}
+.bar .bar-item {
+    background: var(--ocean-primary) !important;
+}
+.loading::after {
+    border-color: var(--ocean-primary) !important;
+    border-right-color: transparent !important;
+    border-top-color: transparent !important;
+}
+
+/* Panel dropdown active entry */
+.panel .menu-item:active,
+.panel .menu-item.active {
+    background: var(--ocean-primary) !important;
+    color: var(--ocean-secondary) !important;
+}
+
+/* Files panel & settings comments */
+.file-line:hover {
+    color: var(--ocean-primary) !important;
+    background-color: var(--ocean-secondary) !important;
+}
+.files-list-footer {
+    color: var(--ocean-primary) !important;
+}
+.comment {
+    background: var(--ocean-secondary) !important;
+    color: var(--ocean-primary-dark) !important;
+}
+.item-selection-list:hover {
+    background-color: var(--ocean-secondary) !important;
+}
+
+/* ESP3D logo */
+svg.esp3dlogo {
+    color: var(--ocean-primary) !important;
+}

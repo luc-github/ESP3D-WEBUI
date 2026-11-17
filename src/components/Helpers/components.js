@@ -5,19 +5,19 @@
  Modified by Luc LEBOSSE 2021
  
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h } from "preact"
 import { useUiContextFn } from "../../contexts"
+import { evalConnectionValue, connectionContains } from "./connectionExpr"
 
 const getColClasses = ({ col, ...responsive }) => {
     const responsiveClasses = Object.keys(responsive).reduce(
@@ -107,15 +107,15 @@ const generateDependIds = (depend, settings) => {
 }
 
 //this won't change as it is initalised with [ESP800] which is call at start
+//expressions are parsed, not eval()'d (see connectionExpr.js)
 const connectionDepend = (depend, connectionsettings) => {
     if (Array.isArray(depend)) {
         return depend.every(d => {
             if (d.connection_id && connectionsettings[d.connection_id]) {
-                const quote = d.value && d.value.trim().endsWith("'") ? "'" : "";
                 if (d.value) {
-                    return eval(quote + connectionsettings[d.connection_id] + quote + d.value);
+                    return evalConnectionValue(connectionsettings[d.connection_id], d.value);
                 } else if (d.contains) {
-                    return eval("'" + connectionsettings[d.connection_id] + "'" + ".indexOf('" + d.contains + "')!=-1");
+                    return connectionContains(connectionsettings[d.connection_id], d.contains);
                 }
             }
             return true;

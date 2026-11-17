@@ -1,7 +1,3 @@
-.H-100 {
-    height: 100%;
-}
-
 .W-100 {
     width: 100%;
 }
@@ -82,6 +78,12 @@
     font-size: 0.9rem !important;
 }
 
+/*tool change: the active tool value needs more room than the
+generic 3rem min-width once horizontal padding is accounted for*/
+.extra-control.active-tool-control {
+    min-width: 4.5rem;
+}
+
 .buttons-bar-label {
     font-size: 0.8rem;
     color: #5755d9;
@@ -159,8 +161,9 @@
     border-radius: 5px 5px 0px 0px;
     color: #5755d9;
     background-color: #f1f1fc;
+    cursor: pointer;
 }
 
-#selectAxisList{
-    border-color: #5755d9!important
+#selectAxisList {
+    border-color: #5755d9 !important;
 }

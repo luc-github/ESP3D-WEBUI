@@ -4,18 +4,17 @@
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
 
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+ General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { Fragment, h } from "preact"
 import { useEffect, useState, useRef } from "preact/hooks"
@@ -46,6 +45,7 @@ import { formatStructure } from "./formatHelper"
 import { exportFeatures } from "./exportHelper"
 import { importFeatures } from "./importHelper"
 import { restartdelay, useTargetContextFn } from "../../targets"
+import { CollapseAllToggle } from "../../components/Panels/CollapseAllToggle"
 
 const FeaturesTab = () => {
     const { toasts, modals, uisettings } = useUiContext()
@@ -432,7 +432,10 @@ const FeaturesTab = () => {
                 accept=".json"
                 onChange={fileSelected}
             />
-            <h4 class="show-low title">{T("S36")}</h4>
+            <h4 class="show-low title">
+                {T("S36")}
+                <CollapseAllToggle containerSelector="#features .panels-container" />
+            </h4>
             <div class="m-2" />
             {isLoading && <Loading large />}
 
@@ -450,7 +453,10 @@ const FeaturesTab = () => {
                                                     const subSection =
                                                         section[subsectionId]
                                                     return (
-                                                        <div class="panel panel-features">
+                                                        <div
+                                                            class="panel panel-features"
+                                                            id={`features-panel-${sectionId}-${subsectionId}`}
+                                                        >
                                                             <div class="navbar">
                                                                 <span class="navbar-section text-ellipsis">
                                                                     <strong class="text-ellipsis">
@@ -459,15 +465,18 @@ const FeaturesTab = () => {
                                                                         )}
                                                                     </strong>
                                                                 </span>
-                                                                <span class="navbar-section">
-                                                                    <span style="height: 100%;">
-                                                                        <span class="label label-primary align-top">
-                                                                            {T(
-                                                                                sectionId
-                                                                            )}
+                                                                {sectionId !==
+                                                                    subsectionId && (
+                                                                    <span class="navbar-section">
+                                                                        <span style="height: 100%;">
+                                                                            <span class="label label-primary align-top">
+                                                                                {T(
+                                                                                    sectionId
+                                                                                )}
+                                                                            </span>
                                                                         </span>
                                                                     </span>
-                                                                </span>
+                                                                )}
                                                             </div>
 
                                                             <div class="panel-body panel-body-features">

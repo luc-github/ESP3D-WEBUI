@@ -5,16 +5,15 @@
  Modified by Luc LEBOSSE 2021
  
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h } from "preact"
 import { espHttpURL, getCookie, isLimitedEnvironment } from "./http"
@@ -53,8 +52,23 @@ import { sortedFilesList, filterResultFiles } from "./filters"
 import { useStoredState } from "./storedState"
 import { parseEmbeddedManifest, isExtensionCompatible, isThemeCompatible } from "./extensions"
 import { decompressGzipToText } from "./gzip"
+import { clone, reindexList, scanFlag, settingsStatus } from "./settings/model"
+import { buildFontFaceCSS } from "./settings/fonts"
+import { syncPanelsOrder, applyPanelsOrder } from "./settings/panelsOrder"
+import { VERBOSE_TYPE_OPTIONS, fieldMeta } from "./settings/listKinds"
+import { machineSettingValidation } from "./settings/machineValidation"
 
 export {
+    clone,
+    reindexList,
+    scanFlag,
+    settingsStatus,
+    buildFontFaceCSS,
+    syncPanelsOrder,
+    applyPanelsOrder,
+    VERBOSE_TYPE_OPTIONS,
+    fieldMeta,
+    machineSettingValidation,
     beautifyJSONString,
     capitalize,
     replaceVariables,

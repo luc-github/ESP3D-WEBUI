@@ -193,9 +193,12 @@ Result: a single file **dist/Printer3D/Marlin/index.html.gz** (or other target/s
 
 ### Scripts (package.json)
 
-- **Dev**: `dev-<system>-<firmware>` (e.g. `dev-printer-marlin`) → sets `TARGET_ENV`/`SUBTARGET_ENV`, runs `server` (nodemon `config/server.js`) and `front` (webpack serve with `webpack.dev.js`).
+- **Dev**: `dev-<system>-<firmware>` (e.g. `dev-printer-marlin`) → `node config/dev.js <Target> <Subtarget> [secure] [auth] [root=<subdir>]`, which runs `server` (nodemon `config/server.js`) and `front` (webpack serve with `webpack.dev.js`) under `concurrently`, plus Caddy in secure mode (see §2bis). `npm run dev` without arguments defaults to `Printer3D/Marlin`. npm forwards extra arguments directly (no `--` needed), and flags can be combined in any order, e.g. `npm run dev-cnc-grblhal secure auth root=www`:
+  - `secure`: HTTPS front via Caddy (see §2bis).
+  - `auth`: enable authentication — sets `AUTH=1` for the mock and the target (login `admin`/`admin`; see §2ter).
+  - `root=<subdir>`: override the target web root (HostPath), e.g. `root=www` simulates a `HostPath=/www` system — sets `WEBROOT` for the mock; the fixtures directory is created if missing.
 - **Build**: `printer-marlin`, `cnc-grbl`, etc. → same env vars, `webpack --config config/webpack.prod.js`.
-- **Analyze**: `ANALYZE=1` with the same env and prod config to get the bundle treemap (no inlining).
+- **Analyze**: `ANALYZE=1` with the same env and prod config to get the bundle treemap (no inlining). For a scriptable alternative (CI, grepping), `webpack --config config/webpack.prod.js --json=build/stats.json` writes the full module statistics without starting the analyzer server.
 
 ### Other config scripts (not webpack)
 
@@ -220,7 +223,7 @@ The **test server** (`config/server.js`) runs on **port 8080** and simulates the
   - Loads **`config/targets/<target>/<subtarget>/index.js`**, which exports:
     - `commandsQuery(req, res, SendWS)` — handles `/command` and drives WebSocket replies.
     - `configURI(req, res)` — handles `/config` (e.g. preferences/capabilities).
-    - `getLastconnection`, `hasEnabledAuthentication` — auth/session (optional).
+    - `getLastconnection`, `hasEnabledAuthentication` — auth/session (optional); `hasEnabledAuthentication` reflects the `AUTH=1` env var (see §2ter).
   - Implements **`/files`**, **`/sdfiles`** (list/upload/delete/create dir) against `server/<target>/<subtarget>/Flash` and `SD`.
   - Implements **`/login`** (if auth enabled), **`/updatefw`** (stub).
 
@@ -239,6 +242,72 @@ Each target (Marlin, Repetier, Smoothieware, GRBL, grblHAL) has its own **config
 ### DevServer static
 
 - **webpack.dev.js** sets `devServer.static.directory` to **`config/server/public`**. If that folder exists, dev server serves it at the root; otherwise it has no effect. The **main** backend is the proxy to port 8080 (and WS to 8089).
+
+---
+
+## 2bis. Secure (HTTPS) dev mode
+
+`npm run dev-<system>-<firmware> secure` (e.g. `npm run dev-cnc-grblhal secure`) starts the same mock + dev server, plus **Caddy** as an HTTPS front (`config/Caddyfile`). This reproduces a WebUI served behind an HTTPS reverse proxy, like the firmware's own TLS setups.
+
+### Prerequisite: Caddy
+
+- Install Caddy: `winget install CaddyServer.Caddy`, or set the **`CADDY`** env var to the full path of `caddy.exe`. The launcher also probes the winget install folder (`%LOCALAPPDATA%\Microsoft\WinGet\Packages\CaddyServer.Caddy*`), which covers terminals started before the PATH update.
+- On **first run**, Caddy creates its local CA and asks to install it in the Windows trust store (confirm the dialog). After that, Chrome/Edge show **no certificate warning** for `https://localhost`.
+
+### Ports
+
+| URL | Proxied to | Purpose |
+|-----|-----------|---------|
+| `https://localhost:8443` | webpack dev server **:8088** | Dev UI over HTTPS (entry point in secure mode) |
+| `https://localhost` (443) | webpack dev server **:8088** | Same, default port — mimics a reverse proxy without explicit port; `http://localhost` redirects to https |
+| `https://localhost:8445` | mock HTTP server **:8080** | Packaged files (`Flash/index.html.br` / `.gz`) over HTTPS |
+| `wss://localhost:8444` | mock WebSocket **:8089** | Secure WebSocket |
+
+In secure mode the launcher sets `SECURE=1` and **`WS_PUBLIC_PORT=8444`**, so the mock reports `WebSocketPort: 8444` in `/config` and the UI connects to `wss://localhost:8444` — exactly like a firmware reporting its own WS port. Consequently the plain `http://localhost:8088` URL has **no working WebSocket** in this mode; use `https://localhost:8443`.
+
+The dev server also forces its HMR client socket to `wss://localhost:8443/ws` in secure mode — otherwise the browser derives an `https` page + plain port mix and loops on `ERR_SSL_PROTOCOL_ERROR`.
+
+### What secure mode is for
+
+- UI behaviour on an **https** page with a **wss** socket (mixed-content rules, `WsContext` port selection).
+- **Brotli** serving: browsers only advertise `br` in `Accept-Encoding` over HTTPS, so the `.br` path of the mock (and of the firmware) is only exercised through Caddy — over plain HTTP you always get `.gz`.
+- Firmware-reported `WebSocketPort` vs page port combinations (e.g. page on 443, WS on 8444).
+
+---
+
+## 2ter. What the mock can and cannot test
+
+### Environment variables
+
+| Variable | Effect |
+|----------|--------|
+| `TARGET_ENV` / `SUBTARGET_ENV` | Machine family / firmware — selects `config/targets/<target>/<subtarget>/index.js` and `server/<target>/<subtarget>/` (set by the `dev-*` scripts). |
+| `MOCK_VERBOSE=1` | Logs every `/command` URL and every WebSocket message received. |
+| `SECURE=1` | Set by the launcher in secure mode: dev server opens `https://localhost:8443` and fixes the HMR socket URL. |
+| `WS_PUBLIC_PORT` | Port reported as `WebSocketPort` by the mock (8444 in secure mode, 8089 otherwise). |
+| `CADDY` | Full path to `caddy.exe` if not in PATH. |
+| `AUTH=1` | Enable authentication — set by the launcher `auth` flag. All targets honor it; ESP800 reports `Authentication: Enabled`. |
+| `WEBROOT` | Override the target web root / HostPath (e.g. `/www`) — set by the launcher `root=` flag (normalized: leading slash added, trailing slash stripped); ESP800 reports it as `HostPath` and the fixtures directory is created if missing. |
+| `PORT` | Override the mock HTTP port (default 8080). |
+
+### Can be tested
+
+- All HTTP routes: `/command`, `/config`, `/files`, `/sdfiles` (list / upload / delete / mkdir), `/login`, `/updatefw` (stub), static serving.
+- WebSocket push (status reports, `SendWS` messages, `PING:` session keep-alive when auth is enabled).
+- `.gz` / `.br` packaged serving (`.br` only over HTTPS, see §2bis).
+- grblHAL-style web root: when a target exports `webRoot` (grblHAL: `"/www"`), the mock behaves like that firmware — the `/files` API and the default document are rooted at `Flash/www/`, while static URLs (`/www/…`) and uploads use the real filesystem path. Fixtures must mirror the firmware layout (web content under `server/<target>/<subtarget>/Flash/www/`). Full path-convention memo: [hostpath_files_api.md](hostpath_files_api.md).
+- Authentication, enabled with the `auth` launcher flag (`AUTH=1`): login `admin`/`admin`; until login, `/command`, `/config`, `/files`, `/sdfiles` and `/updatefw` answer **401** and the WebSocket only accepts `PING` (answered with the full keep-alive window `PING:60000:60000`); logout returns to 401. When auth is disabled, any login is accepted. The startup log recaps the active options (target, auth, web root, ports).
+- Extensions hosted under `Flash/ext/…`, 404 behaviour (e.g. missing `preferences.json`), upload flows.
+
+### Cannot be tested (limits)
+
+- **Not a real firmware**: only the commands implemented in `config/targets/<target>/<subtarget>/index.js` answer; anything else returns `error:unknown command` (HTTP 200). Responses are canned, not computed.
+- **No real serial / streaming semantics**: the real ESP3D HTTP server is synchronous and accepts **one query at a time**; the mock (Express) accepts everything concurrently. Timing, latency and back-pressure issues do not show up here.
+- **No real filesystem limits**: total sizes are hardcoded for the occupation display (SD = 4 GB, Flash = 1.31 MB); no quota, no SPIFFS/LittleFS failure modes.
+- **No real TLS on the mock itself**: TLS is Caddy's; the mock only ever sees plain HTTP.
+- **Simplified multi-client**: `currentID`/`activeID` is a simple counter, not the firmware's session logic.
+
+For protocol details and per-target command coverage, see `config/targets/<target>/<subtarget>/index.js` (and its `commands.json` when present).
 
 ---
 
@@ -271,9 +340,14 @@ These ideas can make the simulator **smarter** and **more useful** for developme
 - **Plus complexe** : le **status** (poll `?` ou équivalent) regroupe tout en une ligne : position (MPos, WCO), pins (Pn:), broche (M3/M4/M5), liquide de refroidissement (M7/M8/M9), etc. L’objectif est d’avoir un **état partagé** (position, broche on/off, coolant, pins) mis à jour par les commandes (G0/G1, M3/M4/M5, M7/M8/M9, etc.) et dont la **réponse status** est dérivée à chaque poll, pour que l’UI reste cohérente.
 - **Commandes ESP** (ESP800, ESP400, ESP401, ESP420, etc.) : conserver les réponses simulées actuelles (JSON / texte), comme pour Printer3D.
 
-### 3.1bis Gzip file preference
+### 3.1bis Compressed file preference (.br / .gz)
 
-- **Prefer .gz when present**: For any GET request under the Flash root (main app or **extensions**), the server first checks for the corresponding `.gz` file in `server/<target>/<subtarget>/Flash/`. For example: `toto.html` → `toto.html.gz`, `/` → `index.html.gz`, and for extensions e.g. `/ext/MyExtension/index.html` → `Flash/ext/MyExtension/index.html.gz`. If the `.gz` exists, it is served with `Content-Encoding: gzip` and the appropriate `Content-Type`; otherwise the uncompressed file is served. This lets you test with **final built files** (gzipped) as in production, both for the main UI and for extensions.
+- **Like the firmware**: for any GET under the Flash root (main app or **extensions**), the server picks the compressed variant of the file in `server/<target>/<subtarget>/Flash/`:
+  1. **`.br`** when the browser advertises `br` in `Accept-Encoding` — which browsers only do **over HTTPS**, so in practice this path is exercised via the secure mode (§2bis);
+  2. otherwise **`.gz`** when present (`Content-Encoding: gzip`);
+  3. otherwise the uncompressed file (fallthrough to `express.static`).
+- Examples: `toto.html` → `toto.html.br`/`toto.html.gz`, `/` → `index.html.br`/`index.html.gz`, extensions e.g. `/ext/MyExtension/index.html` → `Flash/ext/MyExtension/index.html.br|gz`. `Content-Type` is set from the real extension and `Vary: Accept-Encoding` is always sent.
+- This lets you test with **final built files** (compressed) as in production, both for the main UI and for extensions.
 
 ### 3.3 Scenarios and presets
 
@@ -283,7 +357,7 @@ These ideas can make the simulator **smarter** and **more useful** for developme
 ### 3.4 Documentation and maintenance
 
 - **README or section in this file** under `config/` that lists:
-  - Ports (8080 HTTP, 8089 WS, 8088 dev UI).
+  - Ports (8080 HTTP, 8089 WS, 8088 dev UI; secure mode adds 8443/8444/8445 + 443, see §2bis). *(Done in §2 and §2bis.)*
   - How to add a new command in a target (which file, how to register and respond).
   - How to add a new target/subtarget (new dir under `config/targets/`, new entry in server’s loader).
 - **One place** that lists all routes (e.g. `/command`, `/config`, `/files`, `/sdfiles`, `/login`, `/updatefw`) and whether they are target-specific or shared.

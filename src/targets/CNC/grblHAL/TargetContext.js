@@ -5,16 +5,15 @@
  Modified by Luc LEBOSSE 2021
  
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 import { h, createContext } from "preact"
 import { useRef, useContext, useState } from "preact/hooks"
@@ -22,8 +21,14 @@ import {
     limitArr,
     dispatchToExtensions,
     beautifyJSONString,
+    espHttpURL,
 } from "../../../components/Helpers"
-import { useDatasContext, useSettingsContextFn, useUiContextFn } from "../../../contexts"
+import {
+    useDatasContext,
+    useSettingsContextFn,
+    useUiContextFn,
+} from "../../../contexts"
+import { useHttpFn } from "../../../hooks"
 import { processor } from "./processor"
 import { isVerboseOnly } from "./stream"
 import { eventsList, variablesList } from "."
@@ -46,6 +51,8 @@ import {
     isOptions,
     getOptions,
     isReset,
+    isGrblSetting,
+    getGrblSetting,
     isStreamingStatus,
     getStreamingStatus,
 } from "./filters"
@@ -77,6 +84,7 @@ const TargetContextProvider = ({ children }) => {
     const [overrides, setOverrides] = useState({})
     const [pinsStates, setPinStates] = useState(lastPins)
     const [states, setStates] = useState({})
+    const [reportUnit, setReportUnit] = useState("0")
     const [streamStatus, setStreamStatus] = useState({})
     const [message, setMessage] = useState()
     const [alarmCode, setAlarmCode] = useState(0)
@@ -100,6 +108,15 @@ const TargetContextProvider = ({ children }) => {
         //sensors
         //status
         if (type == "core" && data == "ESP800") {
+            //query report unit setting once connection is ready
+            //use useHttpFn.createNewRequest at call time as it may not be initialised yet
+            setTimeout(() => {
+                useHttpFn.createNewRequest(
+                    espHttpURL("command", { cmd: "$13" }),
+                    { method: "GET" },
+                    { onSuccess: () => {}, onFail: () => {} }
+                )
+            }, 2000)
             if (useSettingsContextFn.getValue("Axisletters")) {
                 if (positions.x == "?") {
                     setPositions(
@@ -234,6 +251,13 @@ const TargetContextProvider = ({ children }) => {
                 setMessage("")
                 setStatus({ state: "Error" })
                 eventsList.emit("error", data)
+            }
+            //grbl setting e.g $13=0
+            if (isGrblSetting(data)) {
+                const response = getGrblSetting(data)
+                if (response && response.id == "13") {
+                    setReportUnit(response.value)
+                }
             }
             //prefiltering
             if (data[0] === "[") {
@@ -406,12 +430,14 @@ const TargetContextProvider = ({ children }) => {
     }
 
     useTargetContextFn.processData = processData
+    useTargetContextFn.setReportUnit = setReportUnit
 
     const store = {
         positions,
         streamStatus,
         status,
         states,
+        reportUnit,
         pinsStates,
         message,
         alarmCode,

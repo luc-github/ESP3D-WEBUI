@@ -4,16 +4,15 @@
  Copyright (c) 2021 Luc LEBOSSE. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ General Public License for more details.
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 import { h } from "preact"
@@ -27,9 +26,8 @@ import {
     PauseCircle,
     Eye,
 } from "preact-feather"
-import { FullScreenButton, CloseButton, ContainerHelper } from "../Controls"
 import { useUiContext, useUiContextFn } from "../../contexts"
-import { Menu as PanelMenu } from "./"
+import { Menu as PanelMenu, PanelShell } from "./"
 
 /*
  * Local const
@@ -107,31 +105,16 @@ const NotificationsPanel = () => {
     console.log("Notifications panel")
 
     return (
-        <div class="panel panel-dashboard" id={id}>
-            <ContainerHelper id={id} /> 
-            <div class="navbar">
-                <span class="navbar-section feather-icon-container">
-                    <MessageSquare />
-                    <strong class="text-ellipsis">{T("notification")}</strong>
-                </span>
-                <span class="navbar-section">
-                    <span class="full-height">
-                        <PanelMenu items={menu} />
-                        <FullScreenButton
-                            elementId={id}
-                        />
-                        <CloseButton
-                            elementId={id}
-                            hideOnFullScreen={true}
-                        />
-                    </span>
-                </span>
-            </div>
-            <div class="m-1" />
-            <div
-                ref={notificationsOutput}
-                class="panel-body panel-body-dashboard terminal m-1"
-                onScroll={(e) => {
+        <PanelShell
+            id={id}
+            icon={<MessageSquare />}
+            title={T("notification")}
+            headerRight={<PanelMenu items={menu} />}
+            beforeBody={<div class="m-1" />}
+            bodyClass="terminal m-1"
+            bodyProps={{
+                ref: notificationsOutput,
+                onScroll: (e) => {
                     if (
                         lastPos > e.target.scrollTop &&
                         notifications.isAutoScroll.current
@@ -151,45 +134,45 @@ const NotificationsPanel = () => {
                         setIsAutoScrollPaused(false)
                     }
                     lastPos = e.target.scrollTop
-                }}
-            >
-                {notifications.list &&
-                    notifications.list.map((line) => {
-                        let icon = ""
-                        let classText = "text-primary"
-                        switch (line.type) {
-                            case "error":
-                                icon = <AlertCircle size="1rem" />
-                                classText = "text-error"
-                                break
-                            case "notification":
-                                icon = <MessageSquare size="1rem" />
-                                break
-                            case "success":
-                                icon = <CheckCircle size="1rem" />
-                                classText = "text-success"
-                                break
-                            case "warning":
-                                icon = <Eye size="1rem" />
-                                classText = "text-warning"
-                                break
-                            default:
-                                break
-                        }
+                },
+            }}
+        >
+            {notifications.list &&
+                notifications.list.map((line) => {
+                    let icon = ""
+                    let classText = "text-primary"
+                    switch (line.type) {
+                        case "error":
+                            icon = <AlertCircle size="1rem" />
+                            classText = "text-error"
+                            break
+                        case "notification":
+                            icon = <MessageSquare size="1rem" />
+                            break
+                        case "success":
+                            icon = <CheckCircle size="1rem" />
+                            classText = "text-success"
+                            break
+                        case "warning":
+                            icon = <Eye size="1rem" />
+                            classText = "text-warning"
+                            break
+                        default:
+                            break
+                    }
 
-                        return (
-                            <div
-                                class={`${classText} feather-icon-container notification-line`}
-                            >
-                                {icon}
-                                <label class="m-1">{line.time}</label>
-                                <label>{line.content}</label>
-                            </div>
-                        )
-                    })}
-                <div ref={messagesEndRef} />
-            </div>
-        </div>
+                    return (
+                        <div
+                            class={`${classText} feather-icon-container notification-line`}
+                        >
+                            {icon}
+                            <label class="m-1">{line.time}</label>
+                            <label>{line.content}</label>
+                        </div>
+                    )
+                })}
+            <div ref={messagesEndRef} />
+        </PanelShell>
     )
 }
 

@@ -1,0 +1,819 @@
+/* ==========================================================================
+   ESP3D-WEBUI - REFERENCE THEME
+   ==========================================================================
+
+   Purpose
+   -------
+   This file lists EVERY entry point a theme can restyle, organized by
+   component, with the factory default values. It is a working template:
+   copy it, rename it theme-<yourname> (no extension), change the values
+   in the VARIABLES section, and delete the sections you do not need.
+
+   Install
+   -------
+   Upload the file to the `themes/` directory of the device (or to the
+   root of the filesystem), then select it in Settings > Interface.
+   See docs/themes.md for the scanner rules and the JSON bundle format
+   (fonts, external scripts, custom JS).
+
+   Rules
+   -----
+   - Every rule carries !important: theme files are applied on top of the
+     built-in stylesheet and must win over it.
+   - All colors/sizes go through the CSS variables defined on :root below:
+     change the palette once, every rule follows.
+   - Hex values marked [= derived] are Sass lighten()/darken() shades of a
+     base color - treat them as indicative and tune them to your palette.
+   - The file name must not contain a dot: `theme-reference` is valid,
+     `theme-reference.css` is ignored by the scanner.
+
+   Variables managed by the APPLICATION (do NOT set them here)
+   -----------------------------------------------------------
+   --panel-height, --panel-min-width, --panel-max-width are written inline
+   by the app from the user preferences (Settings > Interface > Panels) -
+   the preferences always win.
+
+   Variable READ by the application (optional hook)
+   ------------------------------------------------
+   --body-bg: when defined, fieldset legends that cover a top border use
+   it as their background (default fallback: #fff). Set it to your page
+   background.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. VARIABLES - factory palette
+   ========================================================================== */
+:root {
+    /* --body-bg hook (see header): page background used by legend labels */
+    --body-bg: #ffffff;
+
+    /* Core palette */
+    --esp3d-primary: #5755d9;
+    --esp3d-primary-dark: #514ed4;      /* [= derived] darken(primary, 3%) */
+    --esp3d-secondary: #f1f1fc;         /* [= derived] lighten(primary, 37.5%) */
+    --esp3d-dark: #303742;
+    --esp3d-light: #ffffff;
+    --esp3d-gray: #bcc3ce;              /* [= derived] */
+    --esp3d-gray-dark: #66758c;         /* [= derived] */
+    --esp3d-gray-light: #e7e9ed;        /* [= derived] */
+
+    /* Surfaces */
+    --esp3d-border: #dadee4;            /* [= derived] */
+    --esp3d-bg: #f7f8f9;                /* [= derived] */
+    --esp3d-bg-dark: #f0f1f4;           /* [= derived] */
+    --esp3d-body-bg: #ffffff;
+
+    /* Status colors */
+    --esp3d-success: #32b643;
+    --esp3d-warning: #ffb700;
+    --esp3d-error: #ff0000;             /* ESP3D override (Spectre: #e85600) */
+
+    /* Text */
+    --esp3d-body-font: #3b4351;         /* [= derived] */
+    --esp3d-link: #5755d9;
+    --esp3d-code: #d73e48;
+    --esp3d-highlight: #ffe9b3;
+
+    /* Accent used for active items, field legends, terminal echo,
+       drop-zone animation (plain CSS `blue` in the factory theme) */
+    --esp3d-accent: #0000ff;
+
+    /* Panels */
+    --esp3d-panel-bg: #ffffff;
+    --esp3d-panel-color: #000000;
+    --esp3d-panel-header-bg: #f1f1fc;
+    --esp3d-panel-header-color: #5755d9;
+
+    /* Tabs */
+    --esp3d-tab-color: #8080ff;
+
+    /* Layout edition (red dashed outlines, resize handle) */
+    --esp3d-edit: #e74c3c;
+    --esp3d-edit-dark: #c0392b;
+
+    /* Emergency stop button */
+    --esp3d-emergency: #ff5160;
+    --esp3d-emergency-hover: #ff0000;
+
+    /* Terminal */
+    --esp3d-terminal-echo: #0000ff;
+    --esp3d-terminal-error: #ff0000;
+
+    /* Sizing */
+    --esp3d-html-font-size: 20px;       /* root rem base */
+    --esp3d-border-radius: 0.2rem;
+}
+
+
+/* ==========================================================================
+   2. PAGE & BASE
+   ========================================================================== */
+
+html {
+    font-size: var(--esp3d-html-font-size) !important;
+}
+
+html,
+body {
+    background-color: var(--esp3d-body-bg) !important;
+    color: var(--esp3d-body-font) !important;
+    /* font-family: "MyFont", sans-serif !important;  (see JSON bundle
+       format in docs/themes.md to embed a font file) */
+}
+
+/* Links */
+a {
+    color: var(--esp3d-link) !important;
+}
+a:focus,
+a:hover,
+a:active,
+a.active {
+    color: var(--esp3d-primary-dark) !important;
+}
+
+/* Inline code and highlighted text */
+code {
+    color: var(--esp3d-code) !important;
+}
+mark,
+.mark {
+    background: var(--esp3d-highlight) !important;
+}
+
+
+/* ==========================================================================
+   3. BUTTONS
+   ========================================================================== */
+
+/* Default button (outlined) */
+.btn {
+    background: var(--esp3d-light) !important;
+    border-color: var(--esp3d-primary) !important;
+    color: var(--esp3d-primary) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.btn:focus,
+.btn:hover {
+    background: var(--esp3d-secondary) !important;
+    border-color: var(--esp3d-primary-dark) !important;
+    color: var(--esp3d-primary-dark) !important;
+}
+.btn:active,
+.btn.active {
+    background: var(--esp3d-primary-dark) !important;
+    border-color: var(--esp3d-primary-dark) !important;
+    color: var(--esp3d-light) !important;
+}
+.btn.disabled,
+.btn:disabled,
+.btn[disabled] {
+    opacity: 0.5 !important;
+}
+
+/* Primary button (filled) */
+.btn.btn-primary {
+    background: var(--esp3d-primary) !important;
+    border-color: var(--esp3d-primary-dark) !important;
+    color: var(--esp3d-light) !important;
+}
+.btn.btn-primary:focus,
+.btn.btn-primary:hover {
+    background: var(--esp3d-primary-dark) !important;
+    border-color: var(--esp3d-primary-dark) !important;
+    color: var(--esp3d-light) !important;
+}
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    background: var(--esp3d-primary-dark) !important;
+    border-color: var(--esp3d-primary-dark) !important;
+    color: var(--esp3d-light) !important;
+}
+
+/* Success / error buttons */
+.btn.btn-success {
+    background: var(--esp3d-success) !important;
+    border-color: var(--esp3d-success) !important;
+    color: var(--esp3d-light) !important;
+}
+.btn.btn-error {
+    background: var(--esp3d-error) !important;
+    border-color: var(--esp3d-error) !important;
+    color: var(--esp3d-light) !important;
+}
+
+/* Link-style button */
+.btn.btn-link {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: var(--esp3d-link) !important;
+}
+.btn.btn-link:focus,
+.btn.btn-link:hover {
+    color: var(--esp3d-primary-dark) !important;
+}
+
+/* Clear button (the X icons: modal/panel close) */
+.btn.btn-clear {
+    color: inherit !important;
+}
+
+/* ESP3D extra-small button (inline +/- steppers, etc.) */
+.btn-xs {
+    font-size: 0.4rem !important;
+}
+
+/* ESP3D panel close button */
+.btn-close {
+    color: inherit !important;
+}
+
+/* ESP3D panel header buttons */
+.btn-header {
+    background-color: var(--esp3d-panel-header-bg) !important;
+    color: var(--esp3d-panel-header-color) !important;
+}
+
+/* ESP3D emergency stop */
+.emergency-btn {
+    color: var(--esp3d-emergency) !important;
+    background-color: var(--esp3d-light) !important;
+    border-color: var(--esp3d-emergency) !important;
+}
+.emergency-btn:hover {
+    background-color: var(--esp3d-emergency-hover) !important;
+    color: var(--esp3d-light) !important;
+}
+.emergency-btn:active {
+    color: var(--esp3d-emergency-hover) !important;
+    background-color: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   4. FORMS
+   ========================================================================== */
+
+.form-input,
+.form-select,
+textarea.form-input {
+    background: var(--esp3d-light) !important;
+    border-color: var(--esp3d-border) !important;
+    color: var(--esp3d-body-font) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--esp3d-primary) !important;
+    box-shadow: 0 0 0 0.1rem rgba(87, 85, 217, 0.2) !important; /* primary @ 20% */
+}
+.form-input:disabled,
+.form-select:disabled {
+    background: var(--esp3d-bg) !important;
+    color: var(--esp3d-gray) !important;
+}
+
+/* Validation states */
+.form-input.is-error,
+.has-error .form-input,
+.form-select.is-error,
+.has-error .form-select {
+    border-color: var(--esp3d-error) !important;
+}
+.form-input.is-success,
+.has-success .form-input {
+    border-color: var(--esp3d-success) !important;
+}
+.has-error .form-input-hint,
+.form-input-hint.is-error {
+    color: var(--esp3d-error) !important;
+}
+
+/* Labels and hints */
+.form-label {
+    color: var(--esp3d-body-font) !important;
+}
+
+/* Checkbox / radio / switch indicator */
+.form-checkbox .form-icon,
+.form-radio .form-icon {
+    border-color: var(--esp3d-border) !important;
+    background: var(--esp3d-light) !important;
+}
+.form-checkbox input:checked + .form-icon,
+.form-radio input:checked + .form-icon {
+    background: var(--esp3d-primary) !important;
+    border-color: var(--esp3d-primary) !important;
+}
+.form-switch .form-icon {
+    background: var(--esp3d-gray-light) !important;
+    border-color: var(--esp3d-gray) !important;
+}
+.form-switch input:checked + .form-icon {
+    background: var(--esp3d-primary) !important;
+    border-color: var(--esp3d-primary) !important;
+}
+
+/* Input groups (addon next to an input) */
+.input-group .input-group-addon {
+    background: var(--esp3d-bg) !important;
+    border-color: var(--esp3d-border) !important;
+    color: var(--esp3d-body-font) !important;
+}
+
+/* ESP3D: slider labels and addons are forced to plain text color */
+.slider-ctrl label,
+span.input-group-addon {
+    color: var(--esp3d-panel-color) !important;
+}
+
+
+/* ==========================================================================
+   5. NAVBARS & TABS
+   ========================================================================== */
+
+/* Top application navbar / panel title bars base */
+.navbar {
+    background-color: var(--esp3d-bg-dark) !important;
+}
+.navbar .btn {
+    color: var(--esp3d-link) !important;
+}
+
+/* Tabs */
+.tab .tab-item a {
+    color: var(--esp3d-link) !important;
+    border-bottom-color: transparent !important;
+}
+.tab .tab-item a:focus,
+.tab .tab-item a:hover {
+    color: var(--esp3d-primary-dark) !important;
+}
+.tab .tab-item a.active,
+.tab .tab-item.active a {
+    border-bottom-color: var(--esp3d-primary) !important;
+    color: var(--esp3d-primary) !important;
+}
+
+/* ESP3D: tab text and the "active" marker on sections/list items */
+.tab-item {
+    color: var(--esp3d-tab-color) !important;
+}
+section .active,
+li .active {
+    color: var(--esp3d-accent) !important;
+    font-weight: 700 !important;
+}
+.mobile-view section .active,
+.mobile-view li .active {
+    background-color: rgba(0, 0, 255, 0.1) !important;
+}
+
+
+/* ==========================================================================
+   6. PANELS
+   ========================================================================== */
+
+.panel {
+    background-color: var(--esp3d-panel-bg) !important;
+    color: var(--esp3d-panel-color) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+
+/* Panel shadow in the responsive grid */
+.column .panel {
+    box-shadow: 0px 0px 14px -5px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Panel title bar (navbar) */
+.panel .navbar,
+.panel .navbar-section {
+    background: var(--esp3d-panel-header-bg) !important;
+    color: var(--esp3d-panel-header-color) !important;
+}
+
+/* Active entry of a panel dropdown menu */
+.panel .menu-item:active,
+.panel .menu-item.active {
+    background: var(--esp3d-primary) !important;
+    color: var(--esp3d-secondary) !important;
+}
+
+
+/* ==========================================================================
+   7. DASHBOARD LAYOUT (grid, canvas, edition)
+   ========================================================================== */
+
+/* Grid container: panel min/max widths come from the preferences
+   (--panel-min-width / --panel-max-width, inline) - only the gap is
+   themeable here */
+.panels-container {
+    grid-gap: 5px !important;
+}
+
+/* Layout edition: dashed outline around every panel */
+.panels-layout-edit .panel {
+    outline-color: var(--esp3d-edit) !important;
+}
+
+/* Canvas edition: corner resize handle */
+.panel-canvas-resize {
+    background: linear-gradient(135deg, transparent 50%, var(--esp3d-edit) 50%) !important;
+}
+.panel-canvas-resize:hover {
+    background: linear-gradient(135deg, transparent 50%, var(--esp3d-edit-dark) 50%) !important;
+}
+
+/* Canvas edition: per-panel borderless toggle pill */
+.panel-canvas-borderless {
+    background: rgba(241, 241, 252, 0.9) !important;  /* secondary @ 90% */
+    border-color: rgba(87, 85, 217, 0.4) !important;  /* primary @ 40% */
+}
+
+/* Layout edition: width/height control groups */
+.panel-layout-group {
+    background: rgba(241, 241, 252, 0.9) !important;
+    border-color: rgba(87, 85, 217, 0.4) !important;
+}
+.panel-layout-group-label,
+.panel-layout-group-value {
+    color: var(--esp3d-primary) !important;
+}
+
+/* Panel being dragged/resized */
+.panel-lifted {
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Canvas edition: outline over cached extension contents (iframes) */
+#app.canvas-edit .extra-content-container {
+    outline-color: var(--esp3d-edit) !important;
+}
+
+/* Canvas mode overlay: its background is set inline from the page body
+   color so themes apply seamlessly - style `body` above, nothing to do
+   here. Borderless panels (.panels-borderless / .panel-borderless)
+   remove the whole chrome by design. */
+
+
+/* ==========================================================================
+   8. MENUS & DROPDOWNS
+   ========================================================================== */
+
+.menu {
+    background: var(--esp3d-light) !important;
+    box-shadow: 0 0.05rem 0.2rem rgba(48, 55, 66, 0.3) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+
+/* ESP3D menu entries (panels menu, dashboard menu) */
+.menu .menu-item {
+    color: var(--esp3d-primary) !important;
+}
+.menu .menu-item > .menu-entry,
+.menu .menu-item > a {
+    color: inherit !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.menu .menu-item > .menu-entry:focus,
+.menu .menu-item > .menu-entry:hover,
+.menu .menu-item > a:focus,
+.menu .menu-item > a:hover {
+    background: var(--esp3d-secondary) !important;
+    color: var(--esp3d-primary) !important;
+}
+.menu .menu-item > .menu-entry:active,
+.menu .menu-item > .menu-entry.active,
+.menu .menu-item > a:active,
+.menu .menu-item > a.active {
+    background: var(--esp3d-secondary) !important;
+    color: var(--esp3d-primary) !important;
+}
+
+/* Divider between menu sections */
+.menu .divider,
+.divider {
+    border-top-color: var(--esp3d-border) !important;
+}
+
+/* Text of a menu entry (truncated with ellipsis) */
+.text-menu-item {
+    color: inherit !important;
+}
+
+
+/* ==========================================================================
+   9. MODALS
+   ========================================================================== */
+
+.modal .modal-overlay {
+    background: rgba(247, 248, 249, 0.75) !important; /* bg @ 75% */
+    opacity: 0.7 !important;                          /* ESP3D override */
+}
+.modal .modal-container {
+    background: var(--esp3d-light) !important;
+    box-shadow: 0 0.2rem 0.5rem rgba(48, 55, 66, 0.3) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+    color: var(--esp3d-body-font) !important;
+    max-height: 95vh !important;                      /* ESP3D override */
+}
+.modal .modal-header {
+    color: var(--esp3d-dark) !important;
+}
+.modal .modal-title {
+    color: var(--esp3d-dark) !important;
+}
+.modal .modal-body {
+    background: var(--esp3d-light) !important;
+    color: var(--esp3d-body-font) !important;
+}
+.modal .modal-footer {
+    background: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   10. TOASTS (notifications)
+   Default: colored background at 95% opacity, light text
+   ========================================================================== */
+
+.toast {
+    background: rgba(48, 55, 66, 0.95) !important;   /* dark @ 95% */
+    border-color: var(--esp3d-dark) !important;
+    color: var(--esp3d-light) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.toast.toast-primary {
+    background: rgba(87, 85, 217, 0.95) !important;  /* primary @ 95% */
+    border-color: var(--esp3d-primary) !important;
+}
+.toast.toast-success {
+    background: rgba(50, 182, 67, 0.95) !important;  /* success @ 95% */
+    border-color: var(--esp3d-success) !important;
+}
+.toast.toast-warning {
+    background: rgba(255, 183, 0, 0.95) !important;  /* warning @ 95% */
+    border-color: var(--esp3d-warning) !important;
+}
+.toast.toast-error {
+    background: rgba(255, 0, 0, 0.95) !important;    /* error @ 95% */
+    border-color: var(--esp3d-error) !important;
+}
+.toast a {
+    color: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   11. TABLES
+   ========================================================================== */
+
+.table {
+    color: var(--esp3d-body-font) !important;
+}
+.table th,
+.table td {
+    border-bottom-color: var(--esp3d-border) !important;
+}
+.table.table-striped tbody tr:nth-of-type(odd) {
+    background: var(--esp3d-bg) !important;
+}
+.table.table-hover tbody tr:hover {
+    background: var(--esp3d-bg-dark) !important;
+}
+
+
+/* ==========================================================================
+   12. LABELS & BADGES
+   ========================================================================== */
+
+.label {
+    background: var(--esp3d-bg-dark) !important;
+    color: var(--esp3d-body-font) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.label.label-primary {
+    background: var(--esp3d-primary) !important;
+    color: var(--esp3d-light) !important;
+}
+.label.label-success {
+    background: var(--esp3d-success) !important;
+    color: var(--esp3d-light) !important;
+}
+.label.label-warning {
+    background: var(--esp3d-warning) !important;
+    color: var(--esp3d-light) !important;
+}
+.label.label-error {
+    background: var(--esp3d-error) !important;
+    color: var(--esp3d-light) !important;
+}
+
+/* Badge dot/counter attached to a button */
+.badge[data-badge]::after,
+.badge:not([data-badge])::after {
+    background: var(--esp3d-primary) !important;
+    color: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   13. PROGRESS BARS
+   ========================================================================== */
+
+.bar {
+    background: var(--esp3d-bg-dark) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+.bar .bar-item {
+    background: var(--esp3d-primary) !important;
+    color: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   14. TOOLTIPS
+   ========================================================================== */
+
+.tooltip::after {
+    background: rgba(48, 55, 66, 0.95) !important;   /* dark @ 95% */
+    color: var(--esp3d-light) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+/* Tooltip arrow (position-dependent border color) */
+.tooltip::before {
+    border-color: rgba(48, 55, 66, 0.95) transparent transparent transparent !important;
+}
+
+
+/* ==========================================================================
+   15. EMPTY STATES & LOADING
+   ========================================================================== */
+
+.empty {
+    background: var(--esp3d-bg) !important;
+    color: var(--esp3d-gray-dark) !important;
+}
+.empty .empty-title,
+.empty .empty-subtitle {
+    color: var(--esp3d-gray-dark) !important;
+}
+
+/* Spinner */
+.loading::after {
+    border-color: var(--esp3d-primary) !important;
+    border-right-color: transparent !important;
+    border-top-color: transparent !important;
+}
+.loading.loading-lg::after {
+    border-color: var(--esp3d-primary) !important;
+    border-right-color: transparent !important;
+    border-top-color: transparent !important;
+}
+
+
+/* ==========================================================================
+   16. TERMINAL PANEL
+   ========================================================================== */
+
+.terminal {
+    background: var(--esp3d-panel-bg) !important;
+    color: var(--esp3d-panel-color) !important;
+    border-color: var(--esp3d-border) !important;
+}
+.terminal .echo {
+    color: var(--esp3d-terminal-echo) !important;
+}
+.terminal .error {
+    color: var(--esp3d-terminal-error) !important;
+    font-weight: bolder !important;
+}
+
+
+/* ==========================================================================
+   17. FILES PANEL & DROP ZONES
+   ========================================================================== */
+
+.files-list {
+    background: var(--esp3d-panel-bg) !important;
+    border-color: var(--esp3d-border) !important;
+}
+.file-line:hover {
+    color: var(--esp3d-primary) !important;
+    background-color: var(--esp3d-secondary) !important;
+}
+.file-line-action:active {
+    color: var(--esp3d-accent) !important;
+}
+.files-list-footer {
+    color: var(--esp3d-primary) !important;
+}
+
+/* Drag-over animation color of upload drop zones */
+.drop-zone--over {
+    background: linear-gradient(90deg, var(--esp3d-accent) 50%, transparent 50%),
+        linear-gradient(90deg, var(--esp3d-accent) 50%, transparent 50%),
+        linear-gradient(0deg, var(--esp3d-accent) 50%, transparent 50%),
+        linear-gradient(0deg, var(--esp3d-accent) 50%, transparent 50%) !important;
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y !important;
+    background-size: 15px 4px, 15px 4px, 4px 15px, 4px 15px !important;
+}
+
+
+/* ==========================================================================
+   18. SETTINGS / CONTROLS EXTRAS
+   ========================================================================== */
+
+/* Fieldset legends (settings groups) */
+.field-group {
+    color: var(--esp3d-accent) !important;
+}
+.control-fieldset {
+    color: var(--esp3d-panel-color) !important;
+}
+
+/* Comment rows inside settings lists */
+.comment {
+    background: var(--esp3d-secondary) !important;
+    color: var(--esp3d-primary) !important;
+}
+
+/* Hover of selection lists (e.g. package pickers) */
+.item-selection-list:hover {
+    background-color: var(--esp3d-secondary) !important;
+}
+
+/* Legend covering a top border (Verbose filters, etc.): the background
+   follows the --body-bg hook (see header) */
+.items-list-top-separator legend {
+    background: var(--body-bg) !important;
+}
+
+/* Login page error message */
+.error-login-message {
+    color: var(--esp3d-terminal-error) !important;
+    background-color: var(--esp3d-light) !important;
+}
+
+
+/* ==========================================================================
+   19. EXTRA CONTENTS & EXTENSIONS (iframes, camera, pages)
+   ========================================================================== */
+
+.contentContainer,
+.extensionContainer,
+.cameraContainer,
+.imageContainer,
+.extra-content-container,
+.page-container {
+    background-color: var(--esp3d-panel-bg) !important;
+}
+
+
+/* ==========================================================================
+   20. ESP3D LOGO & FEATHER ICONS
+   ========================================================================== */
+
+/* The inline ESP3D logo uses currentColor - style its color */
+svg.esp3dlogo {
+    color: var(--esp3d-primary) !important;
+}
+
+/* All icons are Feather SVGs stroked with currentColor: they follow the
+   text color of their container - style the container, not the icon */
+.feather-icon-container svg {
+    color: inherit !important;
+}
+
+
+/* ==========================================================================
+   21. SCROLLBARS (WebKit / Blink only)
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 0.4rem;
+    height: 0.4rem;
+}
+::-webkit-scrollbar-track {
+    background: var(--esp3d-bg) !important;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--esp3d-gray) !important;
+    border-radius: var(--esp3d-border-radius) !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--esp3d-gray-dark) !important;
+}
+
+
+/* ==========================================================================
+   22. MOBILE VIEW SPECIFICS
+   In mobile view the panel header buttons are filled for readability
+   ========================================================================== */
+
+.mobile-view .btn-header,
+.mobile-view .btn-close {
+    color: var(--esp3d-light) !important;
+    background-color: var(--esp3d-accent) !important;
+}
