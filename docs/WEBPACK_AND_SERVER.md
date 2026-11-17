@@ -193,7 +193,10 @@ Result: a single file **dist/Printer3D/Marlin/index.html.gz** (or other target/s
 
 ### Scripts (package.json)
 
-- **Dev**: `dev-<system>-<firmware>` (e.g. `dev-printer-marlin`) → `node config/dev.js <Target> <Subtarget> [secure]`, which runs `server` (nodemon `config/server.js`) and `front` (webpack serve with `webpack.dev.js`) under `concurrently`, plus Caddy in secure mode (see §2bis). `npm run dev` without arguments defaults to `Printer3D/Marlin`.
+- **Dev**: `dev-<system>-<firmware>` (e.g. `dev-printer-marlin`) → `node config/dev.js <Target> <Subtarget> [secure] [auth] [root=<subdir>]`, which runs `server` (nodemon `config/server.js`) and `front` (webpack serve with `webpack.dev.js`) under `concurrently`, plus Caddy in secure mode (see §2bis). `npm run dev` without arguments defaults to `Printer3D/Marlin`. npm forwards extra arguments directly (no `--` needed), and flags can be combined in any order, e.g. `npm run dev-cnc-grblhal secure auth root=www`:
+  - `secure`: HTTPS front via Caddy (see §2bis).
+  - `auth`: enable authentication — sets `AUTH=1` for the mock and the target (login `admin`/`admin`; see §2ter).
+  - `root=<subdir>`: override the target web root (HostPath), e.g. `root=www` simulates a `HostPath=/www` system — sets `WEBROOT` for the mock; the fixtures directory is created if missing.
 - **Build**: `printer-marlin`, `cnc-grbl`, etc. → same env vars, `webpack --config config/webpack.prod.js`.
 - **Analyze**: `ANALYZE=1` with the same env and prod config to get the bundle treemap (no inlining). For a scriptable alternative (CI, grepping), `webpack --config config/webpack.prod.js --json=build/stats.json` writes the full module statistics without starting the analyzer server.
 
@@ -220,7 +223,7 @@ The **test server** (`config/server.js`) runs on **port 8080** and simulates the
   - Loads **`config/targets/<target>/<subtarget>/index.js`**, which exports:
     - `commandsQuery(req, res, SendWS)` — handles `/command` and drives WebSocket replies.
     - `configURI(req, res)` — handles `/config` (e.g. preferences/capabilities).
-    - `getLastconnection`, `hasEnabledAuthentication` — auth/session (optional).
+    - `getLastconnection`, `hasEnabledAuthentication` — auth/session (optional); `hasEnabledAuthentication` reflects the `AUTH=1` env var (see §2ter).
   - Implements **`/files`**, **`/sdfiles`** (list/upload/delete/create dir) against `server/<target>/<subtarget>/Flash` and `SD`.
   - Implements **`/login`** (if auth enabled), **`/updatefw`** (stub).
 
@@ -283,14 +286,17 @@ The dev server also forces its HMR client socket to `wss://localhost:8443/ws` in
 | `SECURE=1` | Set by the launcher in secure mode: dev server opens `https://localhost:8443` and fixes the HMR socket URL. |
 | `WS_PUBLIC_PORT` | Port reported as `WebSocketPort` by the mock (8444 in secure mode, 8089 otherwise). |
 | `CADDY` | Full path to `caddy.exe` if not in PATH. |
+| `AUTH=1` | Enable authentication — set by the launcher `auth` flag. All targets honor it; ESP800 reports `Authentication: Enabled`. |
+| `WEBROOT` | Override the target web root / HostPath (e.g. `/www`) — set by the launcher `root=` flag (normalized: leading slash added, trailing slash stripped); ESP800 reports it as `HostPath` and the fixtures directory is created if missing. |
+| `PORT` | Override the mock HTTP port (default 8080). |
 
 ### Can be tested
 
 - All HTTP routes: `/command`, `/config`, `/files`, `/sdfiles` (list / upload / delete / mkdir), `/login`, `/updatefw` (stub), static serving.
 - WebSocket push (status reports, `SendWS` messages, `PING:` session keep-alive when auth is enabled).
 - `.gz` / `.br` packaged serving (`.br` only over HTTPS, see §2bis).
-- grblHAL-style web root: when a target exports `webRoot` (grblHAL: `"/www"`), the mock behaves like that firmware — the `/files` API and the default document are rooted at `Flash/www/`, while static URLs (`/www/…`) and uploads use the real filesystem path. Fixtures must mirror the firmware layout (web content under `server/<target>/<subtarget>/Flash/www/`).
-- Authentication, when the target module enables it (`hasEnabledAuthentication`).
+- grblHAL-style web root: when a target exports `webRoot` (grblHAL: `"/www"`), the mock behaves like that firmware — the `/files` API and the default document are rooted at `Flash/www/`, while static URLs (`/www/…`) and uploads use the real filesystem path. Fixtures must mirror the firmware layout (web content under `server/<target>/<subtarget>/Flash/www/`). Full path-convention memo: [hostpath_files_api.md](hostpath_files_api.md).
+- Authentication, enabled with the `auth` launcher flag (`AUTH=1`): login `admin`/`admin`; until login, `/command`, `/config`, `/files`, `/sdfiles` and `/updatefw` answer **401** and the WebSocket only accepts `PING` (answered with the full keep-alive window `PING:60000:60000`); logout returns to 401. When auth is disabled, any login is accepted. The startup log recaps the active options (target, auth, web root, ports).
 - Extensions hosted under `Flash/ext/…`, 404 behaviour (e.g. missing `preferences.json`), upload flows.
 
 ### Cannot be tested (limits)

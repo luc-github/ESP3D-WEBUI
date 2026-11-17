@@ -4,25 +4,24 @@
  Copyright (c) 2020 Luc Lebosse. All rights reserved.
 
  This code is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
+ modify it under the terms of the GNU General Public
  License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
+ version 3 of the License, or (at your option) any later version.
 
  This code is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+ General Public License for more details.
 
- You should have received a copy of the GNU Lesser General Public
- License along with This code; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ You should have received a copy of the GNU General Public
+ License along with This code; if not, see <https://www.gnu.org/licenses/>.
 */
 
 const chalk = require("chalk")
 const wscolor = chalk.cyan
 const expresscolor = chalk.green
 const commandcolor = chalk.white
-const enableAuthentication = false
+const enableAuthentication = process.env.AUTH === "1"
 let lastconnection = Date.now()
 let logindone = false
 const sessiontTime = 60000
@@ -200,7 +199,7 @@ const commandsQuery = (req, res, SendWS) => {
     }
 
     if (!logindone && enableAuthentication) {
-        res.status(401)
+        res.sendStatus(401)
         return
     }
     lastconnection = Date.now()
@@ -802,7 +801,7 @@ const commandsQuery = (req, res, SendWS) => {
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
                 FlashFileSystem: "LittleFS",
-                HostPath: "/",
+                HostPath: process.env.WEBROOT || "/",
                 Time: "none",
                 CameraID: "4",
                 CameraName: "ESP32 Cam",
@@ -1189,7 +1188,10 @@ const loginURI = (req, res) => {
     if (req.body.DISCONNECT == "YES") {
         res.status(401)
         logindone = false
-    } else if (req.body.USER == "admin" && req.body.PASSWORD == "admin") {
+    } else if (
+        !enableAuthentication ||
+        (req.body.USER == "admin" && req.body.PASSWORD == "admin")
+    ) {
         logindone = true
         lastconnection = Date.now()
     } else {
@@ -1201,7 +1203,7 @@ const loginURI = (req, res) => {
 
 const configURI = (req, res) => {
     if (!logindone && enableAuthentication) {
-        res.status(401)
+        res.sendStatus(401)
         return
     }
     lastconnection = Date.now()

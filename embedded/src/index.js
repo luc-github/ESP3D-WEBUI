@@ -30,7 +30,7 @@ let wsMsg = "";
 let logOff = false;
 let pageId = "";
 let currentPath = "/";
-const version = "3.0.0.a6";
+const version = "3.0.0";
 let xmlhttpupload;
 let prgfiletext;
 let prgfile;
@@ -45,6 +45,18 @@ let loginUser = "";
 let loginMsg;
 let fspath = "/files";
 let hostpath = "/";
+
+//The file panel is rooted at hostpath: its content is the user's root
+//(e.g. "/" shows the content of "/www" on grblHAL). Uploads and direct
+//file access use the real FS path instead - prepend hostpath for the
+//flash FS, SD paths are already absolute. See docs/hostpath_files_api.md
+function toFSPath(relativePath) {
+    if (fspath != "/files" || !hostpath || hostpath == "/")
+        return relativePath;
+    return (
+        hostpath + (relativePath.startsWith("/") ? "" : "/") + relativePath
+    ).replace("//", "/");
+}
 
 window.onload = function () {
     consolePanel = document.getElementById("consolePanel");
@@ -685,7 +697,9 @@ function dispatchFileStatus(jsonresponse) {
         for (let i1 = 0; i1 < json.files.length; i1++) {
             if (String(json.files[i1].size) != "-1") {
                 if (
-                    currentPath == hostpath &&
+                    //the panel root IS the hostpath content, so the WebUI
+                    //package is looked for at "/"
+                    currentPath == "/" &&
                     (json.files[i1].name == "index.html.gz" ||
                         json.files[i1].name == "index.html" ||
                         (window.location.protocol === "https:" &&
@@ -740,7 +754,7 @@ function dispatchFileStatus(jsonresponse) {
                         .addEventListener("click", function () {
                             let url = new URL(
                                 window.location.origin +
-                                (currentPath + "/" + eventslisteners[i].target).replace("//", "/")
+                                toFSPath((currentPath + "/" + eventslisteners[i].target).replace("//", "/"))
                             );
                             window.open(url, "_blank");
                         });
@@ -843,8 +857,9 @@ function uploadFiles() {
     prgfile.classList.remove("hide");
     prgfile.value = 0;
     prgfiletext.innerHTML = "Uploading ...0%";
-    formData.append("path", currentPath);
-    let currentpath = currentPath;
+    //upload uses absolute FS paths (firmware convention)
+    formData.append("path", toFSPath(currentPath));
+    let currentpath = toFSPath(currentPath);
     if (!currentpath.endsWith("/")) currentpath += "/";
     for (let i3 = 0; i3 < files.length; i3++) {
         let file = files[i3];

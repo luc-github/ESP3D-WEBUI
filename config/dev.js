@@ -1,9 +1,13 @@
 /*
  * Dev launcher: mock server + webpack dev server (+ Caddy HTTPS front)
  *
- *   node config/dev.js <Target> <Subtarget> [secure]
+ *   node config/dev.js <Target> <Subtarget> [secure] [auth] [root=<subdir>]
  *   npm run dev-cnc-grblhal            -> http://localhost:8088
  *   npm run dev-cnc-grblhal secure     -> https://localhost:8443
+ *   npm run dev-cnc-grblhal auth       -> mock with authentication (admin/admin)
+ *   npm run dev-cnc-grblhal root=www   -> override the target webRoot
+ *                                         (HostPath simulation, fixtures must
+ *                                         exist under server/<T>/<S>/Flash/www)
  *
  * secure mode needs Caddy (https://caddyserver.com, `winget install CaddyServer.Caddy`):
  *   https://localhost:8443 -> webpack dev server 8088 (dev bundle)
@@ -18,14 +22,24 @@ const fs = require("fs")
 
 const args = process.argv.slice(2)
 const secure = args.includes("secure")
+const auth = args.includes("auth")
+const rootArg = args.find((a) => a.startsWith("root="))
 const [target = "Printer3D", subtarget = "Marlin"] = args.filter(
-    (a) => a !== "secure"
+    (a) => a !== "secure" && a !== "auth" && !a.startsWith("root=")
 )
 
 const env = {
     ...process.env,
     TARGET_ENV: target,
     SUBTARGET_ENV: subtarget,
+}
+if (auth) env.AUTH = "1"
+//root=<subdir> overrides the target webRoot AND the HostPath reported by
+//ESP800 - normalized here so targets can use it as-is
+if (rootArg) {
+    let w = rootArg.substring("root=".length)
+    if (!w.startsWith("/")) w = "/" + w
+    env.WEBROOT = w.replace(/\/+$/, "") || "/"
 }
 
 const commands = ['"npm run server"', '"npm run front"']
@@ -73,6 +87,13 @@ if (secure) {
         "Secure mode: https://localhost or https://localhost:8443 (dev) / https://localhost:8445 (packaged) / wss://localhost:8444"
     )
 }
+
+const options = [
+    secure ? "secure" : null,
+    rootArg ? `webRoot=${env.WEBROOT}` : null,
+    auth ? "auth (admin/admin)" : null,
+].filter(Boolean)
+if (options.length) console.log("Options: " + options.join(", "))
 
 const concurrently = path.join(
     __dirname,

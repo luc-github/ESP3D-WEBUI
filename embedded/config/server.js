@@ -2,7 +2,7 @@ const express = require("express");
 const chalk = require("chalk");
 let path = require("path");
 const fs = require("fs");
-const port = 8080;
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 /*
  * Web Server for development
  * Web Socket server for development
@@ -28,6 +28,38 @@ const app = express();
 const fileUpload = require("express-fileupload");
 let serverpath = path.normalize(__dirname + "/../server/public/");
 let sdpath = path.normalize(__dirname + "/../server/sd/");
+
+//Optional host path, like the firmware HostPath (e.g. "/www" on grblHAL):
+//the /files query API and the default document are rooted at it, while
+//static URLs and uploads use absolute FS paths. Set it as first CLI
+//argument (npm run server -- /www) or with the HOSTPATH env var
+//(default "/"); fixtures must then live under server/public/www/.
+//See docs/hostpath_files_api.md
+let hostPathValue = process.argv[2] || process.env.HOSTPATH || "/";
+//Git Bash mangles leading-/ arguments into Windows paths - reject with a
+//hint rather than rooting the FS at a nonsense location
+if (/^[A-Za-z]:[\\/]/.test(hostPathValue)) {
+    console.log(
+        `[server] Invalid hostPath "${hostPathValue}" - in Git Bash use //www instead of /www, or use PowerShell`
+    );
+    process.exit(1);
+}
+if (!hostPathValue.startsWith("/")) hostPathValue = "/" + hostPathValue;
+const hostPath = hostPathValue.replace(/\/+$/, "") || "/";
+const filesRoot =
+    hostPath == "/" ? serverpath : path.join(serverpath, "." + hostPath);
+
+//Authentication simulation (dev.js `auth` flag / AUTH=1 env var): same
+//convention as the main mock - admin/admin, DISCONNECT=YES to log out
+const enableAuthentication = process.env.AUTH === "1";
+let logindone = false;
+const checkAuthentication = (req, res) => {
+    if (enableAuthentication && !logindone) {
+        res.status(401).send("Authentication required");
+        return false;
+    }
+    return true;
+};
 
 let WebSocketServer = require("ws").Server;
 // All WebSocket endpoints share one connection handler and one broadcast
@@ -58,23 +90,45 @@ registerWsServer(
 );
 app.use(fileUpload({ preserveExtension: true, debug: false }));
 
-// Like the firmware: serve the packaged page (gzip) from the "flash" dir
+// Like the firmware: serve the packaged page from the "flash" dir, looking
+// at the FS root first, then under the host path. Brotli is only used when
+// the browser advertises it in Accept-Encoding - which browsers only do
+// over HTTPS, matching the firmware behavior
 app.use("/", (req, res, next) => {
     if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next();
     const relPath = !req.path || req.path === "/" ? "index.html" : req.path;
-    const base = path.join(serverpath, relPath);
-    if (fs.existsSync(base + ".gz") && fs.statSync(base + ".gz").isFile()) {
-        res.setHeader("Content-Type", "text/html");
-        res.setHeader("Content-Encoding", "gzip");
-        res.setHeader("Vary", "Accept-Encoding");
-        return res.sendFile(path.resolve(base + ".gz"));
+    const acceptsBr = /\bbr\b/.test(req.headers["accept-encoding"] || "");
+    const candidates = [path.join(serverpath, relPath)];
+    if (hostPath != "/")
+        candidates.push(path.join(serverpath, "." + hostPath, relPath));
+    for (const base of candidates) {
+        for (const [ext, encoding] of acceptsBr
+            ? [[".br", "br"], [".gz", "gzip"]]
+            : [[".gz", "gzip"]]) {
+            const file = base + ext;
+            if (fs.existsSync(file) && fs.statSync(file).isFile()) {
+                res.setHeader("Content-Type", "text/html");
+                res.setHeader("Content-Encoding", encoding);
+                res.setHeader("Vary", "Accept-Encoding");
+                console.log(
+                    `[server] ${relPath} -> ${path.basename(file)} (Accept-Encoding: ${req.headers["accept-encoding"] || "none"})`
+                );
+                return res.sendFile(path.resolve(file));
+            }
+        }
     }
     next();
 });
 app.use("/", express.static(serverpath));
 
 const httpServer = app.listen(port, () =>
-    console.log(expresscolor(`[express] Listening on port ${port}!`))
+    console.log(
+        expresscolor(
+            `[express] Listening on port ${port}!` +
+                (hostPath == "/" ? "" : ` (HostPath: ${hostPath})`) +
+                (enableAuthentication ? " (auth: admin/admin)" : "")
+        )
+    )
 );
 registerWsServer(
     new WebSocketServer({ server: httpServer, path: "/ws" }),
@@ -96,11 +150,24 @@ function SendBinary(text) {
 }
 
 app.post("/login", function (req, res) {
+    if (req.body.DISCONNECT == "YES") {
+        logindone = false;
+        res.status(401);
+    } else if (
+        !enableAuthentication ||
+        (req.body.USER == "admin" && req.body.PASSWORD == "admin")
+    ) {
+        logindone = true;
+    } else {
+        logindone = false;
+        res.status(401);
+    }
     res.send("");
     return;
 });
 
 app.get("/config", function (req, res) {
+    if (!checkAuthentication(req, res)) return;
     res.send(
         "chip id: 56398\nCPU Freq: 240 Mhz<br/>" +
             "CPU Temp: 58.3 C<br/>" +
@@ -140,6 +207,7 @@ app.get("/config", function (req, res) {
 });
 
 app.get("/command", function (req, res) {
+    if (!checkAuthentication(req, res)) return;
     console.log(commandcolor(`[server]/command params: ${req.query.cmd}`));
     let url = req.query.cmd;
     if (url.startsWith("[ESP800]json")) {
@@ -150,7 +218,7 @@ app.get("/command", function (req, res) {
                 FWVersion: "3.0.0.a28",
                 FWTarget: 40,
                 SDConnection: "none",
-                Authentication: "Disabled",
+                Authentication: enableAuthentication ? "Enabled" : "Disabled",
                 WebCommunication: process.env.WEBCOMM || "Synchronous",
                 WebSocketIP: "localhost",
                 WebSocketPort: process.env.WS_PUBLIC_PORT || "81",
@@ -158,7 +226,7 @@ app.get("/command", function (req, res) {
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
                 FlashFileSystem: "LittleFs",
-                HostPath: "/",
+                HostPath: hostPath,
                 Time: "none",
                 Cam_ID: "4",
                 Cam_name: "ESP32 Cam",
@@ -614,10 +682,12 @@ function deleteFolderRecursive(path) {
 }
 
 app.all("/updatefw", function (req, res) {
+    if (!checkAuthentication(req, res)) return;
     res.send("ok");
 });
 
 app.all("/sdfiles", function (req, res) {
+    if (!checkAuthentication(req, res)) return;
     let mypath = req.query.path;
     let url = req.originalUrl;
     let filepath = path.normalize(sdpath + mypath + "/" + req.query.filename);
@@ -667,15 +737,17 @@ app.all("/sdfiles", function (req, res) {
 });
 
 app.all("/files", function (req, res) {
+    if (!checkAuthentication(req, res)) return;
     let mypath = req.query.path;
     let url = req.originalUrl;
+    //Query-driven actions (list/delete/createdir) use paths relative to the
+    //host path; uploads use absolute FS paths - docs/hostpath_files_api.md
     let filepath = path.normalize(
-        serverpath + mypath + "/" + req.query.filename
+        filesRoot + (mypath || "/") + "/" + req.query.filename
     );
     if (url.indexOf("action=deletedir") != -1) {
         console.log("[server]delete directory " + filepath);
         deleteFolderRecursive(filepath);
-        fs.readdirSync(mypath);
     } else if (url.indexOf("action=delete") != -1) {
         fs.unlinkSync(filepath);
         console.log("[server]delete file " + filepath);
@@ -693,26 +765,39 @@ app.all("/files", function (req, res) {
         }
     }
     console.log("[server]path is " + mypath);
+    //uploads report their directory as an absolute FS path ("/www/...") -
+    //bring it back to a host-path-relative path for the listing response
+    const listPath =
+        hostPath != "/" && mypath.startsWith(hostPath + "/")
+            ? mypath.substring(hostPath.length)
+            : mypath;
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.send(filesList(mypath, serverpath));
+        return res.send(filesList(listPath, filesRoot));
     }
     let myFile = req.files.myfiles;
+    //the multipart filename is the absolute FS path - use it as-is when it
+    //is under the host path, fall back to the (host-path-relative) upload
+    //directory otherwise
+    const toAbsolute = (name) =>
+        name && hostPath != "/" && name.startsWith(hostPath + "/")
+            ? path.normalize(serverpath + name)
+            : path.normalize(filesRoot + listPath + name);
     if (typeof myFile.length == "undefined") {
-        let fullpath = path.normalize(serverpath + mypath + myFile.name);
+        let fullpath = toAbsolute(myFile.name);
         console.log("[server]one file:" + fullpath);
         myFile.mv(fullpath, function (err) {
             if (err) return res.status(500).send(err);
-            res.send(filesList(mypath, serverpath));
+            res.send(filesList(listPath, filesRoot));
         });
         return;
     } else {
         console.log(myFile.length + " files");
         for (let i = 0; i < myFile.length; i++) {
-            let fullpath = path.normalize(serverpath + mypath + myFile[i].name);
+            let fullpath = toAbsolute(myFile[i].name);
             console.log(fullpath);
             myFile[i].mv(fullpath).then(() => {
                 if (i == myFile.length - 1)
-                    res.send(filesList(mypath, serverpath));
+                    res.send(filesList(listPath, filesRoot));
             });
         }
     }
