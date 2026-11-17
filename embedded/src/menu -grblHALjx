@@ -1,0 +1,18 @@
+function initMenus() {
+    document.getElementById("FWLink").addEventListener("click", function () {
+        window.open("https://github.com/grblHAL", "_blank");
+    });
+
+    document.getElementById("UiLink").addEventListener("click", function () {
+        window.open(
+            "https://esp3d.io/esp3d-webui/version_3x/",
+            "_blank"
+        );
+    });
+
+    document.getElementById("hlpLink").addEventListener("click", function () {
+        window.open("https://github.com/grblHAL/core/wiki", "_blank");
+    });
+}
+
+export { initMenus };

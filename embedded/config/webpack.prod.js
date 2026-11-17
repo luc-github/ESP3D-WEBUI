@@ -68,7 +68,21 @@ module.exports = {
             filename: "[path][base].gz",
             algorithm: "gzip",
             exclude: /.map$/,
-            deleteOriginalAssets: "keep-source-map",
+            deleteOriginalAssets: false,
+        }),
+        new Compression({
+            test: /\.(html)$/,
+            filename: "[path][base].br",
+            algorithm: "brotliCompress",
+            compressionOptions: {
+                level: 11, // max compression
+            },
+            exclude: /.map$/,
+            // Both instances must keep deleteOriginalAssets: false - webpack's
+            // deleteAsset cascades to "related" assets, so letting one plugin
+            // delete index.html would remove the other's compressed output.
+            // The plain index.html is removed by the pack script instead.
+            deleteOriginalAssets: false,
         }),
     ],
     optimization: {
