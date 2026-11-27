@@ -3,3 +3,4 @@ node_modules
 .vscode
 dist/*.map
 dist/*.tmp
+config/.menu-last.json

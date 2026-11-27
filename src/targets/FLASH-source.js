@@ -55,13 +55,11 @@ const commands = {
         }
     },
     upload: (path, filename) => {
-        const upath = (
-            useSettingsContextFn.getValue("HostUploadPath") + path
-        ).replaceAll("//", "/")
+        //the Files panel shows the real FS root: paths are absolute as-is
         return {
             type: "url",
             url: "files",
-            args: { path: upath },
+            args: { path },
         }
     },
     formatResult: (resultTxT) => {
@@ -96,7 +94,6 @@ const commands = {
     },
     download: (path, filename) => {
         const upath = (
-            useSettingsContextFn.getValue("HostUploadPath") +
             path +
             (path == "/" ? "" : "/") +
             filename

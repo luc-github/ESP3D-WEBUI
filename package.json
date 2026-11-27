@@ -16,6 +16,7 @@
         "dev-printer-marlin-embedded": "node config/dev.js Printer3D Marlin-embedded",
         "dev-sand-grbl": "node config/dev.js SandTable GRBL",
         "dev": "node config/dev.js",
+        "menu": "node config/menu.js",
         "printer-repetier": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Repetier webpack --config config/webpack.prod.js",
         "printer-marlin": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Marlin webpack --config config/webpack.prod.js",
         "printer-smoothieware": "cross-env TARGET_ENV=Printer3D SUBTARGET_ENV=Smoothieware webpack --config config/webpack.prod.js",

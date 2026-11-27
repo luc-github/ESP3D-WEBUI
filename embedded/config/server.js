@@ -30,8 +30,8 @@ let serverpath = path.normalize(__dirname + "/../server/public/");
 let sdpath = path.normalize(__dirname + "/../server/sd/");
 
 //Optional host path, like the firmware HostPath (e.g. "/www" on grblHAL):
-//the /files query API and the default document are rooted at it, while
-//static URLs and uploads use absolute FS paths. Set it as first CLI
+//only the web resources (default document, ...) live there; the /files
+//API uses absolute FS paths from the real root. Set it as first CLI
 //argument (npm run server -- /www) or with the HOSTPATH env var
 //(default "/"); fixtures must then live under server/public/www/.
 //See docs/hostpath_files_api.md
@@ -46,8 +46,22 @@ if (/^[A-Za-z]:[\\/]/.test(hostPathValue)) {
 }
 if (!hostPathValue.startsWith("/")) hostPathValue = "/" + hostPathValue;
 const hostPath = hostPathValue.replace(/\/+$/, "") || "/";
-const filesRoot =
-    hostPath == "/" ? serverpath : path.join(serverpath, "." + hostPath);
+//the /files API shows the real FS root
+const filesRoot = serverpath;
+//File systems (dev.js noflash / nosd flags):
+//NOFLASH=1 -> no flash FS: [ESP800] FlashFileSystem "none", /files -> 400
+//            and the SD card is the root of the virtual FS (static URLs and
+//            default document served from server/sd)
+//SDCONN    -> [ESP800] SDConnection ("direct" by default); /sdfiles -> 400
+//            when "none"
+const noFlash = process.env.NOFLASH === "1";
+const sdConnection = process.env.SDCONN || "direct";
+const rootFS = noFlash ? sdpath : serverpath;
+//the mock FS folders are not tracked by git: create them (and the host
+//path directory) on a fresh checkout instead of failing on the first list
+[serverpath, sdpath, path.join(rootFS, "." + hostPath)].forEach((d) => {
+    if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
+});
 
 //Authentication simulation (dev.js `auth` flag / AUTH=1 env var): same
 //convention as the main mock - admin/admin, DISCONNECT=YES to log out
@@ -98,12 +112,27 @@ app.use("/", (req, res, next) => {
     if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next();
     const relPath = !req.path || req.path === "/" ? "index.html" : req.path;
     const acceptsBr = /\bbr\b/.test(req.headers["accept-encoding"] || "");
-    const candidates = [path.join(serverpath, relPath)];
+    const candidates = [path.join(rootFS, relPath)];
     if (hostPath != "/")
-        candidates.push(path.join(serverpath, "." + hostPath, relPath));
+        candidates.push(path.join(rootFS, "." + hostPath, relPath));
+    //nothing stored (e.g. no flash FS and no SD card): the firmware serves
+    //its built-in embedded page - use the packaged dist build
+    if (relPath == "index.html")
+        candidates.push(
+            path.join(
+                __dirname,
+                "..",
+                "dist",
+                process.env.EMBEDDED_TARGET || "esp3d",
+                relPath
+            )
+        );
     for (const base of candidates) {
         for (const [ext, encoding] of acceptsBr
-            ? [[".br", "br"], [".gz", "gzip"]]
+            ? [
+                  [".br", "br"],
+                  [".gz", "gzip"],
+              ]
             : [[".gz", "gzip"]]) {
             const file = base + ext;
             if (fs.existsSync(file) && fs.statSync(file).isFile()) {
@@ -119,7 +148,8 @@ app.use("/", (req, res, next) => {
     }
     next();
 });
-app.use("/", express.static(serverpath));
+app.use("/sd", express.static(sdpath));
+app.use("/", express.static(rootFS));
 
 const httpServer = app.listen(port, () =>
     console.log(
@@ -217,7 +247,7 @@ app.get("/command", function (req, res) {
             data: {
                 FWVersion: "3.0.0.a28",
                 FWTarget: 40,
-                SDConnection: "none",
+                SDConnection: sdConnection,
                 Authentication: enableAuthentication ? "Enabled" : "Disabled",
                 WebCommunication: process.env.WEBCOMM || "Synchronous",
                 WebSocketIP: "localhost",
@@ -225,7 +255,7 @@ app.get("/command", function (req, res) {
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
-                FlashFileSystem: "LittleFs",
+                FlashFileSystem: noFlash ? "none" : "LittleFs",
                 HostPath: hostPath,
                 Time: "none",
                 Cam_ID: "4",
@@ -688,6 +718,7 @@ app.all("/updatefw", function (req, res) {
 
 app.all("/sdfiles", function (req, res) {
     if (!checkAuthentication(req, res)) return;
+    if (sdConnection == "none") return res.status(400).send("No SD card");
     let mypath = req.query.path;
     let url = req.originalUrl;
     let filepath = path.normalize(sdpath + mypath + "/" + req.query.filename);
@@ -738,10 +769,11 @@ app.all("/sdfiles", function (req, res) {
 
 app.all("/files", function (req, res) {
     if (!checkAuthentication(req, res)) return;
+    //like the firmware: no flash FS -> the /files handler is not available
+    if (noFlash) return res.status(400).send("No flash filesystem");
     let mypath = req.query.path;
     let url = req.originalUrl;
-    //Query-driven actions (list/delete/createdir) use paths relative to the
-    //host path; uploads use absolute FS paths - docs/hostpath_files_api.md
+    //every operation uses absolute FS paths - docs/hostpath_files_api.md
     let filepath = path.normalize(
         filesRoot + (mypath || "/") + "/" + req.query.filename
     );
@@ -765,21 +797,15 @@ app.all("/files", function (req, res) {
         }
     }
     console.log("[server]path is " + mypath);
-    //uploads report their directory as an absolute FS path ("/www/...") -
-    //bring it back to a host-path-relative path for the listing response
-    const listPath =
-        hostPath != "/" && mypath.startsWith(hostPath + "/")
-            ? mypath.substring(hostPath.length)
-            : mypath;
+    const listPath = mypath;
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.send(filesList(listPath, filesRoot));
     }
     let myFile = req.files.myfiles;
-    //the multipart filename is the absolute FS path - use it as-is when it
-    //is under the host path, fall back to the (host-path-relative) upload
-    //directory otherwise
+    //the multipart filename is the absolute FS path - use it as-is,
+    //fall back to the upload directory otherwise
     const toAbsolute = (name) =>
-        name && hostPath != "/" && name.startsWith(hostPath + "/")
+        name && name.startsWith("/")
             ? path.normalize(serverpath + name)
             : path.normalize(filesRoot + listPath + name);
     if (typeof myFile.length == "undefined") {

@@ -73,15 +73,11 @@ const ScanPacksList = ({ id, setValue, refreshfn }) => {
 
     const ScanPacks = () => {
         setIsLoading(true)
-        //The /files API is rooted at the host path (panel convention):
-        //list paths are relative to the web root. sdfiles takes absolute
-        //SD paths instead, so keep the upload path prefix there
-        const isFlash = useSettingsContextFn.getValue("HostTarget") === "files"
-        const base = isFlash
-            ? ""
-            : (
-                  useSettingsContextFn.getValue("HostUploadPath") || ""
-              ).replace(/\/$/, "")
+        //files and sdfiles both take absolute FS paths; web resources live
+        //under the host path (see docs/hostpath_files_api.md)
+        const base = (
+            useSettingsContextFn.getValue("HostUploadPath") || ""
+        ).replace(/\/$/, "")
         const subdir = isLanguage ? "languages" : "themes"
         const subdirPath = base + "/" + subdir
         const rootPath = base + "/"

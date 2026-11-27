@@ -89,5 +89,6 @@ const compressFile = (filePath, targetPath) => {
 };
 
 compressFile(srcPath + "favicon.ico", destPath + "favicon.ico.gz");
-fs.copyFileSync(distPath + "index.html.gz", destPath + "index.html.gz");
+//ESP3D firmware tree: the esp3d target page (node config/pack.js esp3d)
+fs.copyFileSync(distPath + "esp3d/index.html.gz", destPath + "index.html.gz");
 console.log(`Successfully copy index.html.gz at ${destPath}index.html.gz`);

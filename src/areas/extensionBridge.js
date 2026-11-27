@@ -420,7 +420,7 @@ const createExtensionBridge = ({
             "path",
             useSettingsContextFn.getValue("HostUploadPath")
         )
-        formDataExtensions.append("creatPath", "true")
+        formDataExtensions.append("createPath", "true")
         formDataExtensions.append(
             preferencesFileName + "S",
             preferencestosave.length

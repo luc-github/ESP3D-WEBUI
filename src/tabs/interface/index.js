@@ -521,7 +521,7 @@ const InterfaceTab = () => {
         const formData = new FormData()
         const file = new File([blob], preferencesFileName)
         formData.append("path", useSettingsContextFn.getValue("HostUploadPath"))
-        formData.append("creatPath", "true")
+        formData.append("createPath", "true")
         formData.append(preferencesFileName + "S", preferencestosave.length)
         formData.append("myfiles", file, preferencesFileName)
         setIsLoading(true)

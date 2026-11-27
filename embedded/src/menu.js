@@ -1,17 +1,19 @@
+//Links of the menu buttons: injected at build time from config/targets.js
+//(EMBEDDED_TARGET: esp3d, esp3dlib, grblhal...)
+/* global __EMBEDDED_LINKS__ */
+const links = __EMBEDDED_LINKS__;
+
 function initMenus() {
     document.getElementById("FWLink").addEventListener("click", function () {
-        window.open("https://github.com/luc-github/ESP3D-X", "_blank");
+        window.open(links.firmware, "_blank");
     });
 
     document.getElementById("UiLink").addEventListener("click", function () {
-        window.open(
-            "https://github.com/luc-github/ESP3D-WEBUI/tree/3.0",
-            "_blank"
-        );
+        window.open(links.interface, "_blank");
     });
 
     document.getElementById("hlpLink").addEventListener("click", function () {
-        window.open("https://github.com/luc-github/ESP3D-X/wiki", "_blank");
+        window.open(links.help, "_blank");
     });
 }
 

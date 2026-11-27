@@ -10,3 +10,4 @@ languages/backup/
 devserver.*
 build_analysis/*
 test/out/
+config/.menu-last.json

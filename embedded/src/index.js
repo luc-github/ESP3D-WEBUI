@@ -44,18 +44,17 @@ let loginModal;
 let loginUser = "";
 let loginMsg;
 let fspath = "/files";
+//set from [ESP800]: false when there is neither a flash FS nor an SD card
+let hasFileSystem = false;
 let hostpath = "/";
 
-//The file panel is rooted at hostpath: its content is the user's root
-//(e.g. "/" shows the content of "/www" on grblHAL). Uploads and direct
-//file access use the real FS path instead - prepend hostpath for the
-//flash FS, SD paths are already absolute. See docs/hostpath_files_api.md
-function toFSPath(relativePath) {
-    if (fspath != "/files" || !hostpath || hostpath == "/")
-        return relativePath;
-    return (
-        hostpath + (relativePath.startsWith("/") ? "" : "/") + relativePath
-    ).replace("//", "/");
+//The file panel shows the real FS root "/" and uses absolute paths for
+//every operation. The host path (e.g. "/www" on grblHAL) is only where the
+//web resources live (index.html.gz, preferences.json, ...).
+//See docs/hostpath_files_api.md
+function isHostPath(p) {
+    const norm = (s) => (s || "/").replace(/\/+$/, "") || "/";
+    return norm(p) == norm(hostpath);
 }
 
 window.onload = function () {
@@ -184,7 +183,13 @@ window.onload = function () {
     fwInput.addEventListener("change", function () {
         if (fwInput.value) {
             const isResources = updateTarget.value === "ui_resources";
-            if (!confirm(isResources ? "Confirm UI Resources Update ?" : "Confirm Firmware Update ?")) {
+            if (
+                !confirm(
+                    isResources
+                        ? "Confirm UI Resources Update ?"
+                        : "Confirm Firmware Update ?"
+                )
+            ) {
                 console.log("abort");
                 fwInput.value = "";
                 return;
@@ -368,18 +373,24 @@ function processFWJson(text) {
         window.open(url);
     });
     consolePanel.classList.remove("hide");
-    if (
-        (json.FlashFileSystem && json.FlashFileSystem != "none") ||
-        (json.SDConnection && json.SDConnection != "none")
-    ) {
+    //file panel: flash FS when present (/files), otherwise the SD card
+    //(/sdfiles), otherwise no panel and no listing at all
+    const hasFlash = json.FlashFileSystem && json.FlashFileSystem != "none";
+    const hasSD = json.SDConnection && json.SDConnection != "none";
+    hasFileSystem = hasFlash || hasSD;
+    if (hasFileSystem) {
+        fspath = hasFlash ? "/files" : "/sdfiles";
+        document.getElementById("fileSystemHeader").innerHTML = hasFlash
+            ? "Flash"
+            : "SD card";
         fileSystem.classList.remove("hide");
-        if (json.FlashFileSystem && json.FlashFileSystem == "none") {
-            fspath = "/sdfiles";
-        }
+    } else {
+        fileSystem.classList.add("hide");
     }
 
     if (json.WebUpdate == "Enabled") firmware.classList.remove("hide");
-    if (json.WebUpdateResources == "Enabled") updateTarget.classList.remove("hide");
+    if (json.WebUpdateResources == "Enabled")
+        updateTarget.classList.remove("hide");
     hostpath = json.HostPath;
     // Firmware [ESP800] emits RadioMode; older WebUIs used WiFiMode.
     const radioMode = json.RadioMode || json.WiFiMode;
@@ -388,7 +399,8 @@ function processFWJson(text) {
             // Default ports are not in window.location.port: only append an
             // explicit one, whatever the scheme (http/https).
             let address =
-                window.location.protocol + "//" +
+                window.location.protocol +
+                "//" +
                 json.WebSocketIP +
                 (window.location.port ? ":" + window.location.port : "");
             InfoMSGLimited(
@@ -404,13 +416,17 @@ function processFWJson(text) {
     if (json.WebCommunication == "Asynchronous") {
         startSocket(null, null, json.WebCommunication);
     } else if (json.WebSocketIP && json.WebSocketPort) {
-        startSocket(json.WebSocketIP, json.WebSocketPort, json.WebCommunication);
+        startSocket(
+            json.WebSocketIP,
+            json.WebSocketPort,
+            json.WebCommunication
+        );
     } else {
         console.warn(
             "WebSocket: missing WebSocketIP/WebSocketPort for synchronous mode (or WS unavailable)."
         );
     }
-    SendFileCommand("list", "all");
+    if (hasFileSystem) SendFileCommand("list", "all");
 }
 
 /** Hide WebUI and stop reconnects. Idempotent via logOff. */
@@ -443,8 +459,7 @@ function startSocket(ip, port, sync) {
 
     let wsUrl;
     if (sync == "Asynchronous") {
-        const scheme =
-            window.location.protocol === "https:" ? "wss:" : "ws:";
+        const scheme = window.location.protocol === "https:" ? "wss:" : "ws:";
         wsUrl = scheme + "//" + window.location.host + "/ws";
     } else {
         if (!ip || !port) {
@@ -586,6 +601,8 @@ function getFWData() {
 }
 
 function SendFileCommand(action, filename) {
+    //no flash FS and no SD card: there is nothing to list
+    if (!hasFileSystem) return;
     let url = new URL(window.location.origin + fspath);
     url.searchParams.append("action", action);
     url.searchParams.append("filename", filename);
@@ -697,9 +714,8 @@ function dispatchFileStatus(jsonresponse) {
         for (let i1 = 0; i1 < json.files.length; i1++) {
             if (String(json.files[i1].size) != "-1") {
                 if (
-                    //the panel root IS the hostpath content, so the WebUI
-                    //package is looked for at "/"
-                    currentPath == "/" &&
+                    //the WebUI package lives in the host path
+                    isHostPath(currentPath) &&
                     (json.files[i1].name == "index.html.gz" ||
                         json.files[i1].name == "index.html" ||
                         (window.location.protocol === "https:" &&
@@ -754,7 +770,13 @@ function dispatchFileStatus(jsonresponse) {
                         .addEventListener("click", function () {
                             let url = new URL(
                                 window.location.origin +
-                                toFSPath((currentPath + "/" + eventslisteners[i].target).replace("//", "/"))
+                                    //static URLs of SD files start with /sd
+                                    (fspath == "/sdfiles" ? "/sd" : "") +
+                                    (
+                                        currentPath +
+                                        "/" +
+                                        eventslisteners[i].target
+                                    ).replace("//", "/")
                             );
                             window.open(url, "_blank");
                         });
@@ -858,8 +880,8 @@ function uploadFiles() {
     prgfile.value = 0;
     prgfiletext.innerHTML = "Uploading ...0%";
     //upload uses absolute FS paths (firmware convention)
-    formData.append("path", toFSPath(currentPath));
-    let currentpath = toFSPath(currentPath);
+    formData.append("path", currentPath);
+    let currentpath = currentPath;
     if (!currentpath.endsWith("/")) currentpath += "/";
     for (let i3 = 0; i3 < files.length; i3++) {
         let file = files[i3];
@@ -934,7 +956,8 @@ function uploadResources() {
         prgupdate.classList.add("hide");
         fwInput.value = "";
         if (xmlhttpupload.status === 200) {
-            prgupdatetext.innerHTML = "Update successful - Please restart device";
+            prgupdatetext.innerHTML =
+                "Update successful - Please restart device";
         } else if (xmlhttpupload.status == 401) {
             handle401();
         } else {

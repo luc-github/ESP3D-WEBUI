@@ -1,4 +1,7 @@
 const path = require("path");
+const webpack = require("webpack");
+//embedded page target (EMBEDDED_TARGET): links of the page and dist subfolder
+const target = require("./targets.js").currentTarget();
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -13,7 +16,7 @@ module.exports = {
     entry: path.resolve(__dirname, "../src/index.js"),
     output: {
         filename: `[name].[hash].js`, // [hash] is useful for cache busting!
-        path: path.resolve(__dirname, "../dist"),
+        path: path.resolve(__dirname, "../dist", target.id),
     },
     module: {
         rules: [
@@ -46,6 +49,9 @@ module.exports = {
         ],
     },
     plugins: [
+        new webpack.DefinePlugin({
+            __EMBEDDED_LINKS__: JSON.stringify(target.links),
+        }),
         // always deletes the dist folder first in each build run.
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({

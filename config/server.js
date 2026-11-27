@@ -64,15 +64,23 @@ const {
     )
 )
 
-//optional: the firmware roots its /files query API and default document
-//at a web subdir (e.g. grblHAL HostPath "/www"), while static URLs and
-//uploads use absolute FS paths - see docs/hostpath_files_api.md.
+//optional: the web resources (default document, preferences.json, themes,
+//...) live in a web subdir (e.g. grblHAL HostPath "/www"); the /files API
+//itself uses absolute FS paths - see docs/hostpath_files_api.md.
 //Exported by the target config, overridable via WEBROOT (normalized above)
 const webRoot = process.env.WEBROOT || targetWebRoot
 //a root= override on a target without prepared fixtures should still work:
 //create the web root directory (empty listing) instead of crashing
-const filesRootDir = path.join(serverpath + "Flash", "." + webRoot)
-if (!fs.existsSync(filesRootDir)) fs.mkdirSync(filesRootDir, { recursive: true })
+//noflash (dev launcher arg): no flash FS, the web root lives on the SD card
+const noFlash = process.env.NOFLASH === "1"
+//root of the virtual FS for static URLs: the SD card when there is no flash
+const rootFS = noFlash ? "SD" : "Flash"
+const filesRootDir = path.join(
+    serverpath + (noFlash ? "SD" : "Flash"),
+    "." + webRoot
+)
+if (!fs.existsSync(filesRootDir))
+    fs.mkdirSync(filesRootDir, { recursive: true })
 
 const WebSocketServer = require("ws").Server,
     wss = new WebSocketServer({ port: 8089 })
@@ -82,7 +90,7 @@ const WebSocketServer = require("ws").Server,
 app.use("/", (req, res, next) => {
     if (req.method !== "GET" || /\.(gz|br)$/.test(req.path)) return next()
     const relPath = !req.path || req.path === "/" ? "index.html" : req.path
-    const base = path.join(serverpath, "Flash", relPath)
+    const base = path.join(serverpath, rootFS, relPath)
     const isFile = (p) => fs.existsSync(p) && fs.statSync(p).isFile()
     const acceptsBr = /\bbr\b/.test(req.headers["accept-encoding"] || "")
     let file, encoding
@@ -95,7 +103,7 @@ app.use("/", (req, res, next) => {
     } else if (webRoot && !relPath.startsWith(webRoot + "/")) {
         //grblHAL-style targets: the default document lives under the web
         //root (e.g. / -> /www/index.html), like the real firmware
-        const baseWeb = path.join(serverpath, "Flash", webRoot, relPath)
+        const baseWeb = path.join(serverpath, rootFS, webRoot, relPath)
         if (acceptsBr && isFile(baseWeb + ".br")) {
             file = baseWeb + ".br"
             encoding = "br"
@@ -105,17 +113,26 @@ app.use("/", (req, res, next) => {
         } else return next()
     } else return next()
     const ext = path.extname(relPath)
-    const types = { ".html": "text/html", ".css": "text/css", ".js": "application/javascript", ".json": "application/json" }
+    const types = {
+        ".html": "text/html",
+        ".css": "text/css",
+        ".js": "application/javascript",
+        ".json": "application/json",
+    }
     if (types[ext]) res.setHeader("Content-Type", types[ext])
     res.setHeader("Content-Encoding", encoding)
     res.setHeader("Vary", "Accept-Encoding")
-    console.log(expresscolor(`[server] ${relPath} -> ${path.basename(file)} (Accept-Encoding: ${req.headers["accept-encoding"] || "none"})`))
+    console.log(
+        expresscolor(
+            `[server] ${relPath} -> ${path.basename(file)} (Accept-Encoding: ${req.headers["accept-encoding"] || "none"})`
+        )
+    )
     res.sendFile(path.resolve(file))
 })
 
-app.use("/", express.static(serverpath + "Flash"))
-app.use("/sd", express.static(serverpath + "sd"))
-app.use("/", expressStaticGzip(serverpath + "Flash"))
+app.use("/", express.static(serverpath + rootFS))
+app.use("/sd", express.static(serverpath + "SD"))
+app.use("/", expressStaticGzip(serverpath + rootFS))
 app.use(fileUpload({ preserveExtension: true, debug: false }))
 
 app.listen(port, () =>
@@ -194,7 +211,8 @@ app.get("/command", function (req, res) {
         //a handler that set a non-200 status without a body still ends
         //with that status - never mask it as "unknown command"
         if (res.statusCode !== 200) return res.end()
-        if (MOCK_VERBOSE) console.log(commandcolor(`[server]/command unknown: ${url}`))
+        if (MOCK_VERBOSE)
+            console.log(commandcolor(`[server]/command unknown: ${url}`))
         res.status(200).send("error:unknown command\n")
     }
 })
@@ -220,7 +238,9 @@ function fileSizeString(size) {
 }
 
 function getFileListArray(mypath, destination) {
-    const currentPath = path.normalize(serverpath + destination + (mypath || "/"))
+    const currentPath = path.normalize(
+        serverpath + destination + (mypath || "/")
+    )
     if (!fs.existsSync(currentPath)) return []
     return fs.readdirSync(currentPath).map((file) => {
         const fullpath = path.normalize(currentPath + "/" + file)
@@ -230,11 +250,8 @@ function getFileListArray(mypath, destination) {
     })
 }
 
-function filesList(mypath, destination, useWebRoot) {
-    const baseDir = path.join(
-        serverpath + destination,
-        useWebRoot ? "." + webRoot : "."
-    )
+function filesList(mypath, destination) {
+    const baseDir = path.join(serverpath + destination, ".")
     const currentPath = path.normalize(baseDir + mypath)
     console.log("[path]" + currentPath)
     const totalUsed = getTotalSize(serverpath + destination)
@@ -306,15 +323,14 @@ app.all("/updatefw", function (req, res) {
 
 app.all("/files", function (req, res) {
     if (!checkAuthentication(req, res)) return
+    //like the firmware: no flash FS -> the /files handler is not available
+    if (noFlash) return res.status(400).send("No flash filesystem")
     let mypath = req.query.path
     let url = req.originalUrl
-    //Two path conventions, like the real firmware (docs/hostpath_files_api.md):
-    //- query-driven actions (list/delete/createdir) use paths relative to
-    //  the web root (HostPath, e.g. "/www" on grblHAL): "/files?path=/"
-    //  lists the CONTENT of /www - the user never sees "/www", the panel
-    //  root IS the host path content
-    //- uploads and direct downloads use absolute FS paths ("/www/themes/...")
-    const filesBase = path.join(serverpath + "Flash", "." + webRoot)
+    //All paths are absolute FS paths (docs/hostpath_files_api.md): the
+    //Files panel shows the real root "/", and web resources are reached
+    //under the host path ("/www/themes/...")
+    const filesBase = path.join(serverpath + "Flash")
     let filepath = path.normalize(
         filesBase + (mypath || "/") + "/" + req.query.filename
     )
@@ -338,30 +354,24 @@ app.all("/files", function (req, res) {
         }
     }
     console.log("[server]path is " + mypath)
-    //uploads report their directory as an absolute FS path ("/www/themes/") -
-    //bring it back to a web-root-relative path for the listing response
-    const listPath =
-        webRoot && mypath.startsWith(webRoot + "/")
-            ? mypath.substring(webRoot.length)
-            : mypath
+    const listPath = mypath
     if (!req.files || Object.keys(req.files).length === 0) {
-        return res.send(filesList(listPath, "Flash", true))
+        return res.send(filesList(listPath, "Flash"))
     }
     let myFile = req.files.myfiles
     //the WebUI sends the multipart filename as the absolute FS path
     //(upload path + file name, e.g. "/www/themes/pack.gz") - use it as-is
-    //when absolute, fall back to the (web-root-relative) upload directory
-    //otherwise
+    //when absolute, fall back to the upload directory otherwise
     const toAbsolute = (name) =>
         name && name.startsWith("/")
-            ? path.normalize(serverpath + "Flash" + name)
+            ? path.normalize(filesBase + name)
             : path.normalize(filesBase + listPath + name)
     if (typeof myFile.length == "undefined") {
         let fullpath = toAbsolute(myFile.name)
         console.log("[server]one file:" + fullpath)
         myFile.mv(fullpath, function (err) {
             if (err) return res.status(500).send(err)
-            res.send(filesList(listPath, "Flash", true))
+            res.send(filesList(listPath, "Flash"))
         })
         return
     } else {
@@ -371,7 +381,7 @@ app.all("/files", function (req, res) {
             console.log(fullpath)
             myFile[i].mv(fullpath).then(() => {
                 if (i == myFile.length - 1)
-                    res.send(filesList(listPath, "Flash", true))
+                    res.send(filesList(listPath, "Flash"))
             })
         }
     }
@@ -379,6 +389,8 @@ app.all("/files", function (req, res) {
 
 app.all("/sdfiles", function (req, res) {
     if (!checkAuthentication(req, res)) return
+    //nosd (dev launcher arg): no SD card -> the /sdfiles handler is not available
+    if (process.env.NOSD === "1") return res.status(400).send("No SD card")
     let mypath = req.query.path
     let url = req.originalUrl
     let filepath = path.normalize(
@@ -449,7 +461,8 @@ wss.on("connection", (socket, request) => {
     }
     currentID++
     socket.on("message", (message) => {
-        if (MOCK_VERBOSE) console.log(wscolor("[ws] received:", message.toString()))
+        if (MOCK_VERBOSE)
+            console.log(wscolor("[ws] received:", message.toString()))
         else console.log(wscolor("[ws] received:", message))
         if (hasEnabledAuthentication() && message.startsWith("PING:")) {
             wss.clients.forEach(function each(client) {

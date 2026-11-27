@@ -282,7 +282,7 @@ const commandsQuery = (req, res, SendWS) => {
                 FWTarget: "grblhal",
                 FWTargetID: "80",
                 Setup: "Enabled",
-                SDConnection: "direct",
+                SDConnection: process.env.NOSD === "1" ? "none" : "direct",
                 SerialProtocol: "Socket",
                 Authentication: "Disabled",
                 WebCommunication: "Synchronous",
@@ -291,7 +291,7 @@ const commandsQuery = (req, res, SendWS) => {
                 Hostname: "esp3d",
                 WiFiMode: "STA",
                 WebUpdate: "Enabled",
-                FlashFileSystem: "LittleFS",
+                FlashFileSystem: process.env.NOFLASH === "1" ? "none" : "LittleFS",
                 HostPath: process.env.WEBROOT || "/www",
                 Time: "none",
                 Axisletters: "XYZUV",
@@ -3232,7 +3232,7 @@ module.exports = {
     getLastconnection,
     hasEnabledAuthentication,
     startAutoReport,
-    //the firmware roots its /files API and default document at /www
-    //(HostPath), while static URLs and uploads use the real FS path
+    //web resources (default document, preferences.json, packs) live in
+    //the /www HostPath; the /files API uses absolute FS paths
     webRoot: "/www",
 }

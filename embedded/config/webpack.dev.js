@@ -1,4 +1,7 @@
 const path = require("path");
+const webpack = require("webpack");
+//embedded page target (EMBEDDED_TARGET): links of the page and dist subfolder
+const target = require("./targets.js").currentTarget();
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
@@ -31,6 +34,9 @@ module.exports = {
     stats: "minimal", // default behaviour spit out way too much info. adjust to your need.
     devtool: "source-map", // a sourcemap type. map to original source with line number
     plugins: [
+        new webpack.DefinePlugin({
+            __EMBEDDED_LINKS__: JSON.stringify(target.links),
+        }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "../src/index.html"),
             inlineSource: ".(js|css)$",

@@ -220,35 +220,24 @@ const useSettings = () => {
                         connectionSettings.current.HostPath =
                             connectionSettings.current.HostPath.concat("/")
                     }
-                    if (connectionSettings.current.FlashFileSystem == "none") {
-                        // no flash filesystem so host path is on SD card
-                        connectionSettings.current.HostTarget = "sdfiles"
-                        connectionSettings.current.HostUploadPath =
-                            connectionSettings.current.HostPath
-                        connectionSettings.current.HostDownloadPath =
-                            connectionSettings.current.HostPath
-                    } else {
-                        //Flashs is supported but stil can use sd card to host files
-                        if (
-                            connectionSettings.current.HostPath.startsWith(
-                                "/sd/"
-                            ) &&
-                            connectionSettings.current.SDConnection != "none"
-                        ) {
-                            connectionSettings.current.HostTarget = "sdfiles"
-                            connectionSettings.current.HostUploadPath =
-                                connectionSettings.current.HostPath.substring(3)
-                            connectionSettings.current.HostDownloadPath =
-                                connectionSettings.current.HostPath
-                        } else {
-                            //Flash filesystem is supported and host files are on flash filesystem
-                            connectionSettings.current.HostTarget = "files"
-                            connectionSettings.current.HostUploadPath =
-                                connectionSettings.current.HostPath
-                            connectionSettings.current.HostDownloadPath =
-                                connectionSettings.current.HostPath
-                        }
-                    }
+                    //Web resources (index.html, preferences.json, packs...)
+                    //use HostPath as-is for upload and download: no /sd
+                    //handling, the firmware resolves it. The handler is
+                    //sdfiles when the host path is on the SD card (no flash
+                    //filesystem, or flash present but HostPath under /sd/)
+                    const hostOnSD =
+                        connectionSettings.current.FlashFileSystem == "none" ||
+                        (connectionSettings.current.HostPath.startsWith(
+                            "/sd/"
+                        ) &&
+                            connectionSettings.current.SDConnection != "none")
+                    connectionSettings.current.HostTarget = hostOnSD
+                        ? "sdfiles"
+                        : "files"
+                    connectionSettings.current.HostUploadPath =
+                        connectionSettings.current.HostPath
+                    connectionSettings.current.HostDownloadPath =
+                        connectionSettings.current.HostPath
 
                     if (
                         (connectionSettings.current.WiFiMode &&
