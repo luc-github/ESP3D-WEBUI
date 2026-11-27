@@ -44,6 +44,11 @@ node config/pack.js esp3d grblhal -> several targets
 `dist/<target>/` (`index.html.gz` and `index.html.br`), e.g.
 `dist/esp3d/index.html.gz`. A new target needs its npm script too.
 
+Size report: `python tools/release_bundle_sizes.py` builds every target
+and writes `dist/BUNDLE_SIZES.md` (gzip and brotli size per target);
+`--no-build` only scans the existing `dist/`, `-o <file>` changes the
+output file.
+
 ## Starting the test server
 
 ```

@@ -35,9 +35,11 @@ module.exports = {
                                 [
                                     "@babel/preset-env",
                                     {
-                                        useBuiltIns: "usage",
+                                        // no core-js polyfills: every
+                                        // feature used is native in the
+                                        // target browsers, and polyfills
+                                        // were ~40% of the page size
                                         debug: false,
-                                        corejs: 3,
                                         targets: { chrome: "88" },
                                     },
                                 ],
@@ -98,7 +100,8 @@ module.exports = {
                 minimizerOptions: {
                     collapseWhitespace: true,
                     minifyCSS: true,
-                    minifyJS: true,
+                    // no console output in the firmware page
+                    minifyJS: { compress: { drop_console: true } },
                 },
                 minify: (data, minimizerOptions) => {
                     const htmlMinifier = require("html-minifier-terser");

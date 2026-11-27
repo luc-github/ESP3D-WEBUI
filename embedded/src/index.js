@@ -610,34 +610,44 @@ function SendFileCommand(action, filename) {
     httpGet(url, dispatchFileStatus);
 }
 
+//Icons (feather style, 24x24, stroke only), kept small: the SVG is inserted
+//with innerHTML so it needs no xmlns, and lines/polylines are written as
+//path segments. d is the path data, stroke the stroke color
+function svgIcon(d, stroke = "currentColor") {
+    return (
+        "<svg width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" +
+        stroke +
+        "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='" +
+        d +
+        "'/></svg>"
+    );
+}
+//"+" sign drawn inside the file and directory icons
+const plusSign = "M12 11v6M9 14h6";
+
 function trashIcon() {
-    return "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-trash-2'><polyline points='3 6 5 6 21 6'></polyline><path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'></path><line x1='10' y1='11' x2='10' y2='17'></line><line x1='14' y1='11' x2='14' y2='17'></line></svg>";
+    return svgIcon(
+        "M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6",
+        "red"
+    );
 }
 
 function backIcon() {
-    return "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' ><polyline points='10 9 15 4 20 9'></polyline><path d='M4 20h7a4 4 0 0 0 4-4V4'></path></svg>";
+    return svgIcon("M10 9l5-5 5 5M4 20h7a4 4 0 0 0 4-4V4");
 }
 
 function fileIcon(plus = false) {
-    return (
-        "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" +
-        (plus ? "white" : "currentColor") +
-        "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'></path><polyline points='13 2 13 9 20 9'></polyline>" +
-        (plus
-            ? "<line x1='12' y1='11' x2='12' y2='17'></line><line x1='9' y1='14' x2='15' y2='14'></line>"
-            : "") +
-        "</svg>"
+    return svgIcon(
+        "M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM13 2v7h7" +
+            (plus ? plusSign : ""),
+        plus ? "white" : "currentColor"
     );
 }
 function dirIcon(plus = false) {
-    return (
-        "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" +
-        (plus ? "white" : "currentColor") +
-        "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'></path>" +
-        (plus
-            ? "<line x1='12' y1='11' x2='12' y2='17'></line><line x1='9' y1='14' x2='15' y2='14'></line>"
-            : "") +
-        "</svg>"
+    return svgIcon(
+        "M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" +
+            (plus ? plusSign : ""),
+        plus ? "white" : "currentColor"
     );
 }
 function dispatchFileStatus(jsonresponse) {

@@ -2,9 +2,7 @@
     font-family: sans-serif;
     color: #5755d9;
     background-color: #eef0f3;
-    -webkit-user-select: none; /* Chrome all / Safari all */
-    -moz-user-select: none; /* Firefox all */
-    -ms-user-select: none; /* IE 10+ */
+    -webkit-user-select: none; /* Safari */
     user-select: none;
 }
 body {
@@ -17,46 +15,45 @@ hr {
 .controlBar {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px;
-    padding-left: 15px;
+    padding: 10px 10px 10px 15px;
     background-color: white;
     margin-bottom: 6px;
 }
 .cmd {
-    color: #555555;
+    color: #555;
 }
 label {
     display: block;
     width: auto;
     padding: 3px 12px;
     color: #5755d9;
-    background-color: #ffffff;
+    background-color: #fff;
     cursor: pointer;
 }
 pre {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 0 5px;
+    margin: 10px;
+    min-height: 350px;
+    max-height: 350px;
+    border: 1px solid #5755d9;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
 }
 
 .modal {
-    position: fixed; /* Stay in place */
-    z-index: 10000; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    position: fixed;
+    z-index: 10000;
+    padding-top: 100px;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Modal Content */
 .modal-content {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-radius: 10px;
     background-color: #5755d9;
     border: 1px solid #5755d9;
     position: relative;
@@ -66,11 +63,10 @@ pre {
 }
 
 .modal-header {
-    padding: 16px 16px;
-    color: #ffffff;
+    padding: 16px;
+    color: #fff;
     background-color: #5755d9;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px 10px 0 0;
     border-bottom: 1px solid #5755d9;
     height: 2.5rem;
     line-height: 2.5rem;
@@ -79,16 +75,15 @@ pre {
 
 .modal-body {
     padding: 10px 16px;
-    background-color: #ffffff;
+    background-color: #fff;
 }
 
 .modal-footer {
-    padding: 16px 16px;
+    padding: 16px;
     height: 2.5em;
-    background-color: #ffffff;
+    background-color: #fff;
     border-top: 1px solid #5755d9;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-radius: 0 0 10px 10px;
     display: flex;
     flex-direction: row-reverse;
 }
@@ -99,14 +94,11 @@ input {
     height: 1.5rem;
     padding: 6px 12px;
     line-height: 1.42857143;
+    border: 1px solid #5755d9;
     border-radius: 4px;
     color: #5755d9;
-    background-color: #ffffff;
+    background-color: #fff;
     outline: 0;
-}
-
-input {
-    border: 1px solid #5755d9;
 }
 
 button {
@@ -120,7 +112,7 @@ button {
     border: 1px solid black;
     white-space: nowrap;
     border-radius: 4px;
-    color: #ffffff;
+    color: #fff;
     background-color: #5755d9;
 }
 
@@ -136,7 +128,6 @@ button {
     background-color: #f1f1f1;
 }
 
-progress,
 .progbar {
     margin-top: 10px;
     height: 1rem;
@@ -152,7 +143,7 @@ progress,
     display: inline-block;
     width: auto;
     color: #5755d9;
-    background-color: #ffffff;
+    background-color: #fff;
     overflow-wrap: anywhere;
 }
 
@@ -161,7 +152,7 @@ progress,
 }
 
 meter {
-    background-color: #ffffff;
+    background-color: #fff;
 }
 
 button:active {
@@ -176,18 +167,9 @@ ul {
     padding: 3px;
 }
 
-pre {
-    margin: 10px 10px;
-    min-height: 350px;
-    max-height: 350px;
-    border: 1px solid #5755d9;
-    overflow-y: auto;
-    overflow-wrap: anywhere;
-}
-
 li {
     padding: 9px 14px;
-    margin: 0px 1rem;
+    margin: 0 1rem;
     border: 1px hidden;
 }
 
@@ -197,7 +179,7 @@ li {
 }
 
 .panel {
-    margin: 10px 10px;
+    margin: 10px;
     border-radius: 10px;
 }
 
@@ -219,8 +201,7 @@ li {
 }
 
 .panel-header {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px 10px 0 0;
     background-color: #5755d9;
     color: white;
     height: 2rem;
@@ -230,29 +211,25 @@ li {
 }
 
 .no-header {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 10px 10px 0 0;
     border-top: 1px solid #5755d9;
+    padding: 10px;
 }
 
 .no-footer {
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-radius: 0 0 10px 10px;
     border-bottom: 1px solid #5755d9;
 }
 
 .panel-footer {
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-radius: 0 0 10px 10px;
     border: 1px solid #5755d9;
     background-color: white;
     min-height: 2rem;
     line-height: 2rem;
     padding: 2px 15px;
-    margin: 0px 0px;
-    display: -ms-flexbox;
+    margin: 0;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
 
@@ -267,10 +244,6 @@ li {
     border-left: 1px solid #5755d9;
 }
 
-.no-header {
-    padding: 10px 10px;
-}
-
 .hide {
     display: none;
 }
@@ -279,19 +252,13 @@ li {
 .filetype,
 .fileitem,
 .fileicon {
-    padding: 5px 5px;
-    border-radius: 5px 5px;
+    padding: 5px;
+    border-radius: 5px;
     background-color: white;
 }
 
+.fileLineHead,
 .fileLineTail {
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-    column-gap: 10px;
-}
-
-.fileLineHead {
     background-color: white;
     display: flex;
     justify-content: space-between;
@@ -302,7 +269,6 @@ li {
     display: flex;
     justify-content: space-between;
     line-height: 1.42857143;
-    vertical-align: center;
     border-top: 1px solid #5755d9;
     background-color: white;
     padding: 8px;
@@ -312,7 +278,8 @@ svg {
     background-color: white;
 }
 
-.fileicon:hover {
+.fileicon:hover,
+.fileicon:hover > svg {
     cursor: pointer;
     background-color: #5755d9;
     color: #5755d9;
@@ -331,18 +298,13 @@ li:hover {
     background-color: #0b0899;
 }
 
-.fileicon:hover > svg {
-    cursor: pointer;
-    background-color: #5755d9;
-    color: #5755d9;
-}
 .m-1 {
     margin-left: 1rem;
     margin-right: 1rem;
 }
 button > svg {
     background-color: #5755d9;
-    text-decoration-color: #ffffff;
+    text-decoration-color: #fff;
     color: white !important;
 }
 
@@ -357,7 +319,7 @@ button:active > svg,
 }
 
 #monitor_enable_autoscroll {
-    margin: 0px 0px;
+    margin: 0;
     cursor: pointer;
 }
 
