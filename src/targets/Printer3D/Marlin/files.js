@@ -23,6 +23,7 @@ import { SD } from "./SD-source"
 import { SDEXT } from "./SDEXT-source"
 import { TFTSD } from "./TFT-SD-source"
 import { TFTUSB } from "./TFT-USB-source"
+import { LCDSD, USB } from "./MarlinMount-source-factory"
 import { useSettingsContextFn, useUiContextFn } from "../../../contexts"
 
 //List of supported files systems
@@ -81,6 +82,16 @@ const supportedFileSystems = [
             return useUiContextFn.getValue("tftusb") && useUiContextFn.getValue("tftfs") != "none"
         },
     },
+    {
+        value: "LCDSD",
+        name: "S274",
+        depend: () => useUiContextFn.getValue("lcdsd"),
+    },
+    {
+        value: "USB",
+        name: "S275",
+        depend: () => useUiContextFn.getValue("usb"),
+    },
 ]
 
 const capabilities = {
@@ -88,8 +99,10 @@ const capabilities = {
     DIRECTSD: DIRECTSD.capabilities,
     SD: SD.capabilities,
     SDEXT: SDEXT.capabilities,
-    TFTUSB: TFTUSB.capabilities,
+    USB: USB.capabilities,
     TFTSD: TFTSD.capabilities,
+    LCDSD: LCDSD.capabilities,
+    TFTUSB: TFTUSB.capabilities,
 }
 
 const commands = {
@@ -97,8 +110,10 @@ const commands = {
     DIRECTSD: DIRECTSD.commands,
     SD: SD.commands,
     SDEXT: SDEXT.commands,
-    TFTUSB: TFTUSB.commands,
+    USB: USB.commands,
     TFTSD: TFTSD.commands,
+    LCDSD: LCDSD.commands,
+    TFTUSB: TFTUSB.commands,
 }
 
 function capability() {

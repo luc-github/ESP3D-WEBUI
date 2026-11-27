@@ -1169,11 +1169,18 @@
  "P116": "Swap X/Y",
  "P117": "TFT SD List commands",
  "P118": "TFT USB List commands",
+ "P119": "Play command",
  "P120": "TFT SD play command",
  "P121": "TFT USB play command",
  "P122": "SD delete path command",
  "P123": "TFT SD delete path command",
  "P124": "TFT USB delete path command",
+ "P125": "LCD SD List command",
+ "P126": "LCD SD play command",
+ "P127": "LCD SD delete path command",
+ "P128": "USB List command",
+ "P129": "USB play command",
+ "P130": "USB delete path command",
  "heating": "Heating",
  "controls": "Extra Controls panel",
  "E1": "Please use 8.3 filename only.",
@@ -1181,5 +1188,8 @@
  "SM2": "Configuration file name",
  "SM3": "Reset Board",
  "SM4": "Extra SD is Shared",
- "SM5": "SD is Shared"
+ "SM5": "SD is Shared",
+ "S273": "Snap step",
+ "S274": "LCD SD",
+ "S275": "USB"
 }
